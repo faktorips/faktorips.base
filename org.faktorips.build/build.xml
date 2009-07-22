@@ -1,0 +1,222 @@
+<project name="org.faktorips.build" default="buildjar">
+	
+		<!-- set global properties for this build -->
+
+		<!-- src -->
+		<property name="src" location="../src"/>
+		<property name="test_src" location="../test" />
+	
+		<!-- classes -->
+	  	<property name="classes" location="classes/java"/>
+	  	<property name="test_classes" location="classes/test"/>
+	
+		<!-- jars -->
+		<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
+	    <property name="jarfile" location="results/faktorips-${projectname}.jar" />
+	    <property name="src_jarfile" location="results/faktorips-${projectname}-src.zip" />
+
+		<!-- classpath -->
+		<path id="classpath" refid="classpath" />
+
+		<!-- logdir -->
+		<property name="log" location="logs" />
+
+		<!-- javac source/target VM version -->
+		<property name="vmversion" value="1.5" />
+
+        <!-- jars for the xml pretty print utility target -->
+        <path id="xml.pretty.classpath">
+             <fileset dir="./lib/xmlbeans/">
+                 <include name="**/*.jar" />
+             </fileset>
+         </path>
+         	
+	    <!-- wipes out -->
+		<target name="clean">
+			<delete failonerror="false" includeemptydirs="true" >
+				<fileset dir="${classes}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
+			<delete failonerror="false" includeemptydirs="true" >
+				<fileset dir="${test_classes}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
+			
+			<delete file="${jarfile}" />
+			<delete file="${temp_jarfile}" />
+			
+			<delete includeemptydirs="true" >
+				<fileset dir="${log}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
+        </target>
+
+		<!-- init directories -->
+	    <target name="init" depends="clean">
+			<mkdir dir="${classes}"/>
+			<mkdir dir="${test_classes}"/>
+	    </target>
+	
+	   <!--Compile -->
+        <target name="compile" depends="init">
+        	<!-- compile with debug=on to keep source line numbers -->
+        	<echo message="Compile with source/target VM-Version: ${vmversion}" />
+			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
+				debug="on" target="${vmversion}" source="${vmversion}">
+        		<compilerarg value="-Xlint:unchecked" />
+        		<compilerarg value="-Xlint:deprecation" />
+        	</javac>
+        	
+        	<copy todir="${test_classes}">
+        	    <fileset dir="${test_src}">
+        	      <include name="**/*.properties" />
+        	      <include name="**/*.xml" />
+        	      <include name="**/*.ipsproduct" />
+        	    </fileset>
+        	</copy>
+
+        	<copy todir="${classes}">
+        	    <fileset dir="${src}">
+        	      <include name="**/*.properties" />
+        	      <include name="**/*.xml" />
+        	      <include name="**/*.ipsproduct" />
+        	    </fileset>
+        	</copy>
+        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" 
+        		debug="on" target="${vmversion}" source="${vmversion}" />
+        </target>
+	
+	   <!-- perform Junit Tests -->
+	    <target name="test" depends="compile" >
+		
+	    	<!-- delete previos junit-logging -->
+	    	<delete includeemptydirs="true" >
+	    		<fileset dir="${log}">
+	    			<include name="**/*.xml" />
+	    		</fileset>
+	    	</delete>
+    	
+	    	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
+	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
+	    		<formatter type="xml" usefile="true"/>
+	    		<classpath>
+	    		    <pathelement location="${classes}"/>
+	    		    <pathelement location="${test_classes}"/>
+	    		    <pathelement path="${java.class.path}"/> 
+	    			<path refid="classpath" />
+	    		</classpath>
+				<batchtest filtertrace="off"  todir="logs"> 
+					<fileset dir="${test_classes}">
+						<patternset id="test.sources">
+						    <exclude name="**/*.java"/>
+							<exclude name="**/*AbstractTest*"/>
+							<exclude name="**/*IpsTest*" />
+						    <include name="**/*Test.class"/>
+						</patternset>
+					</fileset>
+				</batchtest>
+			</junit>
+
+	    </target>
+	
+	
+		<!-- build jarfile -->
+        <target name="buildjar" depends="compile, test">
+        	
+			<!-- create a temp-jarfile and move it after successful creation to right place -->
+        	
+        	<jar destfile="${temp_jarfile}" >
+				<fileset dir="${classes}" >
+					<patternset>
+						<exclude name="**/*.java"/>
+						<exclude name="**/*Test.java"/>
+					</patternset>
+				</fileset>
+				<manifest>
+					<attribute name="Implementation-Title" value="${manifest-title}"/>
+					<attribute name="Implementation-Version" value="${manifest-version}"/>
+					<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+				</manifest>		
+        	</jar>
+        		
+        	<delete file="${jarfile}" />
+        	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+        	<delete file="${temp_jarfile}"/>
+        	
+        </target>
+	
+	<!-- build src jarfile -->
+    <target name="buildsrcjar" depends="">
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${src}" />
+			<manifest>
+				<attribute name="Implementation-Title" value="${manifest-title}"/>
+				<attribute name="Implementation-Version" value="${manifest-version}"/>
+				<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+			</manifest>
+    	</jar>
+    	<delete file="${src_jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${src_jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    </target>	
+	
+	<!-- build jarfile -->
+    <target name="buildjarWithoutTest" depends="compile">
+    	
+		<!-- create a temp-jarfile and move it after successful creation to right place -->
+    	
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${classes}" >
+				<patternset>
+					<exclude name="**/*.java"/>
+					<exclude name="**/*Test*"/>
+				</patternset>
+			</fileset>
+    	</jar>
+    		
+    	<delete file="${jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    	
+    </target>
+
+	<!-- build specific jarfile (e.g. client jar) with limited class files in property: selectedDir and selectedFiles -->
+    <target name="buildSpecificJar" depends="">
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${selectedDir}" includes="${selectedFiles}" >
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${manifest-title}"/>
+				<attribute name="Implementation-Version" value="${manifest-version}"/>
+				<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+			</manifest>
+    	</jar>
+    	<delete file="${jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    </target>	
+	
+	<!-- xml pretty print utility target -->
+	<!-- input properties: input.xml - specifies the xml file which will be pretty printed -->
+	<!-- output: file with the name '<input.xml>_pretty', e.g. if the input filename is 'a.xml' then the output file name is 'a.xml_pretty' -->
+	<!-- not if running in eclipse the eclipse variable ${file_prompt} could be used as value for ${input.xml} to open a file prompt dialog -->
+    <target name="xml.pretty.print" description="pretty prints a given XML file">
+    	<fail unless="input.xml" message="Please specify the input xml file"/>
+    	
+    	<!-- using xmlbeans PrettyPrinter to format the generated xml file in a pretty style -->
+        <java classname="org.apache.xmlbeans.impl.tool.PrettyPrinter" fork="true" failonerror="true"
+             classpathref="xml.pretty.classpath" outputproperty="xml.pretty">
+             <arg value="-indent" />
+             <arg value="4" />
+             <arg value="${input.xml}" />
+         </java>
+         <echo file="${input.xml}_pretty" append="false">${xml.pretty}</echo>
+         <echo message="${input.xml}_pretty successfully created"/>
+    </target>	
+</project>

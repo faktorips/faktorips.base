@@ -1,0 +1,26 @@
+<!-- define cvs-user mailaddresses -->
+<!- ============================== -->
+<!-- NOTE: Please use the ant script: generate.cc.config.xml to update (generate) the cc config file -->
+<!-- afer changing this configuration -->
+<!- ============================== -->
+
+<!-- inactive user
+<map alias="senf" address="marcel.senf@faktorzehn.de"/>
+<map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+<map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+<map alias="hums" address="renate.hums@faktorzehn.de"/>
+<map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+<map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+<map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />
+-->
+<!-- active user -->
+<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+<map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
+<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+<map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+<map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
+<map alias="grutza" address="roman.grutza@faktorzehn.de" />
+<map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de" />
+<map alias="dicker" address="stefan.dicker@faktorzehn.de" />
+<map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de" />

@@ -1,0 +1,430 @@
+<!DOCTYPE project [ <!ENTITY mailmapping SYSTEM "mailmapping.txt"> ]>
+
+<!--======================================================================================================-->
+<!-- Faktor IPS project definition for Cruise Control (cc)                                                -->
+<!-- by using the ant script './generate.cc.config.xml' a new config.xml file could be re-generated       -->
+<!-- based on the project definition defined in this file                                                 -->
+<!--======================================================================================================-->
+<faktoripscruisecontrol>
+
+    <!-- global properties -->
+    <property name="workdir" value="checkout"/>
+    <property name="mainbuildfile" value="build-faktorips.xml"/>
+    <property name="logdir" value="logs"/>
+
+    <!-- cvs property -->
+    <property name="cvsroot" value="/usr/local/cvsroot"/>
+    <property name="buildresultsurl" value="http://www.faktorzehn.org/cruisecontrol/buildresults"/>
+    
+    <!-- mail properties -->
+    <property name="htmlemail.mailhost" value="62.245.204.82"/>
+    <property name="htmlemail.returnaddress" value="cruise@faktorips.org"/>
+    <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
+    <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
+
+    <!-- cc project definitions -->
+    
+    <projects>
+    
+        
+        <!--*****************************************************-->
+        <!-- Faktor IPS projects -->
+        <!--*****************************************************-->
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.util-->
+        <!--=====================================================-->
+        <project name="org.faktorips.util" mainbuildtarget="util">
+        </project>
+    
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.valuetypes-->
+        <!--=====================================================-->        
+        <project name="org.faktorips.valuetypes" mainbuildtarget="valuetypes">
+            <depends>
+                <project name="org.faktorips.util"/>
+            </depends>
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.java5-->
+        <!--=====================================================-->             
+        <project name="org.faktorips.valuetypes.java5" mainbuildtarget="valuetypes.java5">
+            <depends>
+                <project name="org.faktorips.util"/>
+            </depends>
+        </project>       
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.dtflcommon-->
+        <!--=====================================================-->            
+        <project name="org.faktorips.dtflcommon" mainbuildtarget="dtflcommon">
+            <depends>
+                <project name="org.faktorips.valuetypes"/>
+                <project name="org.faktorips.util"/>
+            </depends>            
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.runtime-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.runtime" mainbuildtarget="runtime">
+            <depends>
+                <project name="org.faktorips.valuetypes"/>
+                <project name="org.faktorips.util"/>
+            </depends>               
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.runtime.java5-->
+        <!--=====================================================-->         
+        <project name="org.faktorips.runtime.java5" mainbuildtarget="runtime.java5">
+            <depends>
+                <project name="org.faktorips.valuetypes.java5"/>
+                <project name="org.faktorips.util"/>
+            </depends>               
+        </project>   
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.fl-->
+        <!--=====================================================-->                 
+        <project name="org.faktorips.fl" mainbuildtarget="fl">
+            <depends>
+                <project name="org.faktorips.dtflcommon"/>
+            </depends>                      
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.core-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.devtools.core" mainbuildtarget="devtools.core">
+            <depends>
+                <project name="org.faktorips.fl"/>
+            </depends>
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.stdbuilder-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.devtools.stdbuilder" mainbuildtarget="devtools.stdbuilder">
+            <depends>
+                <project name="org.faktorips.fl"/>
+                <project name="org.faktorips.runtime"/>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>            
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.core.ui-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.tableconversion-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.devtools.tableconversion" mainbuildtarget="devtools.tableconversion">
+            <depends>
+                <project name="org.faktorips.devtools.core.ui"/>
+            </depends>
+        </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.ant-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
+            testresult="${workdir}/${project.name}/scripts/">
+        </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.uml-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.uml" mainbuildtarget="uml" 
+            testresult="${workdir}/${project.name}/scripts/">
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.pluginbuilder-->
+        <!--=====================================================-->
+        <!-- scheduleintervall: 300 = 5 minutes -->
+        <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testmerge="*test.xml"
+            scheduleintervall="300"> 
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
+            <jvmarg arg="-Xms124m"/>
+            <jvmarg arg="-Xmx512m"/>
+            <depends>
+                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
+                <cvs module="org.faktorips.util"/>
+                <cvs module="org.faktorips.valuetypes"/>
+                <cvs module="org.faktorips.dtflcommon"/>
+                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.fl"/>
+                <cvs module="org.faktorips.devtools.core"/>
+                <cvs module="org.faktorips.devtools.stdbuilder"/>
+                <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.tableconversion"/>
+                <cvs module="org.faktorips.devtools.ant"/>
+                
+                <!-- plugin test dependencies-->
+                <cvs module="org.faktorips.devtools.core.test"/>
+                <cvs module="org.faktorips.devtools.stdbuilder.test"/>
+                <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.tableconversion.test"/>            
+                <cvs module="org.faktorips.devtools.ant.test"/>            
+                <cvs module="org.faktorips.uml.test"/> 
+
+                <!-- customer plugins -->              
+                <cvs module="de.qv.faktorips"/>                               
+            </depends>      
+        </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.pluginbuilder branch: v2_2_patches-->
+        <!--=====================================================-->
+        <!-- scheduleintervall: 300 = 5 minutes -->
+        <project name="org.faktorips.pluginbuilder.v2_2_patches" mainbuildtarget="pluginbuilder.faktorips"
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testmerge="*test.xml"
+            cvstag="v2_2_patches"
+            cvsmodul="org.faktorips.pluginbuilder"
+            scheduleintervall="300"> 
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
+            <jvmarg arg="-Xms124m"/>
+            <jvmarg arg="-Xmx512m"/>
+            <!-- property for the ant build script -->
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_2_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            <depends>
+                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
+                <cvs module="org.faktorips.util"/>
+                <cvs module="org.faktorips.valuetypes"/>
+                <cvs module="org.faktorips.dtflcommon"/>
+                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.fl"/>
+                <cvs module="org.faktorips.devtools.core"/>
+                <cvs module="org.faktorips.devtools.stdbuilder"/>
+                <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.ant"/>
+                
+                <!-- plugin test dependencies-->
+                <cvs module="org.faktorips.devtools.core.test"/>
+                <cvs module="org.faktorips.devtools.stdbuilder.test"/>
+                <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.ant.test"/>            
+                <cvs module="org.faktorips.uml.test"/>  
+                
+                <!-- customer plugins -->              
+                <cvs module="de.qv.faktorips"/>  
+            </depends>      
+        </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.integrationtest-->
+        <!--=====================================================-->    
+        <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300">
+            <jvmarg arg="-Dprg=cruise.integrationtest"/>
+            <depends>
+                <project name="org.faktorips.pluginbuilder"/>
+            </depends>         
+        </project>
+
+        <!--============================================================-->
+        <!--Project definition: org.faktorips.integrationtest.java5-->
+        <!--============================================================-->    
+        <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300">
+            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+            <depends>
+                <project name="org.faktorips.pluginbuilder"/>
+            </depends>         
+        </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.integrationtest.v2_2_patches-->
+        <!--=====================================================-->    
+        <project name="org.faktorips.integrationtest.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_2_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_2_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
+            </depends>         
+        </project>
+
+        <!--============================================================-->
+        <!--Project definition: org.faktorips.integrationtest.java5.v2_2_patches-->
+        <!--============================================================-->    
+        <project name="org.faktorips.integrationtest.java5.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_2_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_2_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>             
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
+            </depends>         
+        </project>
+        
+        <!--*****************************************************-->
+        <!-- Customer projects -->
+        <!--*****************************************************-->
+
+        <!--============================================================-->
+        <!--Project definition: de.qv.faktorips -->
+        <!--============================================================-->    
+        <project name="de.qv.faktorips" mainbuildtarget="de.qv.faktorips">
+            <!-- TODO mail nur an developer bei der kqv -->
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>         
+        </project>
+        
+<!-- 
+TODO bbv und msgp 
+-->
+
+    </projects>
+   
+    <!-- cc publisher for several faktorips projects s-->
+    <publishers>
+        <!--=====================================================-->
+        <!-- publisher for all projects, htmlemail used in all projects -->
+        <!--   attribute spamwhilebroken=true : e-mail reports -->
+        <!--     on failed builds will continue for subsequent failed builds. -->
+        <!--     see http://cruisecontrol.sourceforge.net/main/configxml.html#email -->
+        <!--=====================================================-->
+        <publisher id="htmlemail">
+            <htmlemail 
+                buildresultsurl="${buildresultsurl}/${project.name}"
+                mailhost="${htmlemail.mailhost}"
+                username=""
+                password=""
+                returnaddress="${htmlemail.returnaddress}"
+                skipusers="false" 
+                spamwhilebroken="true"
+                returnname="faktorips-buildqueue"
+                subjectprefix="[CC ${project.name}]"
+                reportsuccess="always"
+                xsldir="${htmlemail.xsldir}"
+                css="${htmlemail.css}">
+                 
+                <!-- the failure node with attribute reportWhenFixed, will be created
+                     dynamically using all developer addresses see xsl/cretatecruisecontrolconfig.xsl
+                     <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
+                -->
+                 
+                <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
+                &mailmapping;
+                
+            </htmlemail>
+        </publisher>
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
+                </antpublisher>
+        </publisher>
+
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.java5" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
+                </antpublisher>
+        </publisher>
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.pluginbuilder" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
+                </antpublisher>
+        </publisher>
+ 
+        <!-- branch publisher -->
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.v2_2_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                </antpublisher>
+        </publisher>
+
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.java5.v2_2_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                </antpublisher>
+        </publisher>
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.pluginbuilder.v2_2_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                </antpublisher>
+        </publisher>
+    </publishers>
+    
+</faktoripscruisecontrol>
