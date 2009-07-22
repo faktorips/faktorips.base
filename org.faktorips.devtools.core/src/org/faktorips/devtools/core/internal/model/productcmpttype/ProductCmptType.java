@@ -99,12 +99,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return tableStructureUsages.iterator();
     }
 
-    public boolean hasAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException{
-        CheckIfAbstractTypeInSupertypeHierarchy visitor = new CheckIfAbstractTypeInSupertypeHierarchy(ipsProject);
-        visitor.start(findSupertype(ipsProject));
-        return visitor.check;
-    }
-    
     /**
      * {@inheritDoc}
      */

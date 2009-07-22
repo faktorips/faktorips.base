@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -207,9 +208,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodNewCopy(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        boolean implementsInterface = getPcType().hasSupertype() && getPcType().findSupertype(getIpsProject()).isAbstract();
-        implementsInterface = implementsInterface || !getPcType().hasSupertype();
-        appendOverrideAnnotation(methodsBuilder, implementsInterface);
+        CheckForOverrideAnnotationForNewCopyMethod checkVisitor = new CheckForOverrideAnnotationForNewCopyMethod();
+        checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
+        appendOverrideAnnotation(methodsBuilder, checkVisitor.implementsInterfaceMethod);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY,
                 new String[0], new String[0]);
         methodsBuilder.openBracket();
@@ -1169,6 +1170,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, !getPcType().hasSupertype());
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class,
                 MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
         methodsBuilder.append("if (" + FIELD_PARENT_MODEL_OBJECT + " instanceof ");
@@ -1290,4 +1292,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", getUnqualifiedClassName());
     }
     
+    
+    private class CheckForOverrideAnnotationForNewCopyMethod extends PolicyCmptTypeHierarchyVisitor{
+
+        boolean implementsInterfaceMethod = true;
+        
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            implementsInterfaceMethod = currentType.isAbstract();
+            if(!implementsInterfaceMethod){
+                return false;
+            }
+            return true;
+        }
+    }
 }

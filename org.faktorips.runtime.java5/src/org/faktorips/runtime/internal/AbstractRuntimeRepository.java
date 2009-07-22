@@ -681,7 +681,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         List<T> enumValues = getEnumValues(clazz);
         for (T enumValue : enumValues) {
-            if (value.equals(enumValue.getID())) {
+            if (value.equals(enumValue.getEnumValueId())) {
                 return enumValue;
             }
         }

@@ -666,6 +666,10 @@ public class GenAssociationToMany extends GenAssociation {
     protected void generateMethodGetNumOfForContainerAssociationImplementation(List implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        
+        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
+                getIpsProject());
+        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         String methodName = getMethodNameGetNumOfRefObjectsInternal();
@@ -719,6 +723,10 @@ public class GenAssociationToMany extends GenAssociation {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
+                getIpsProject());
+        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
         generateSignatureGetAllRefObjects(methodsBuilder);
         String classname = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
 
@@ -739,8 +747,6 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal() + "()];");
         }
 
-        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
-                getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
             if (isUseTypesafeCollections()) {
                 // result.addAll(super.getCoverages());

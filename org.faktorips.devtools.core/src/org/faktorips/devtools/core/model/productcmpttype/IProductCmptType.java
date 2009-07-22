@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -94,11 +93,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns <code>null</code> if this type does not refer to a policy component type.
      */
     public String getPolicyCmptType();
-
-    /**
-     * Returns <code>true</code> if this type has an abstract type within its super type hierarchy.
-     */
-    public boolean hasAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if this product component type configures a policy component type.

@@ -28,6 +28,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -104,6 +105,10 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             throw new IllegalArgumentException("Association must be a container association.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        
+        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
+                getGenProductCmptType().getProductCmptType().getIpsProject());
+        appendOverrideAnnotation(builder, supertype == null || supertype.isAbstract());
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
         String internalMethodName = getMethodNameGetNumOfRelatedCmptsInternal();
@@ -288,6 +293,10 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
+                getGenProductCmptType().getProductCmptType().getIpsProject());
+        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
+        
         generateSignatureDerivedUnionAssociation(methodsBuilder);
 
         String targetClass = getQualifiedInterfaceClassNameForTarget();
@@ -312,8 +321,6 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             methodsBuilder.appendln("()];");
         }
 
-        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
-                getGenProductCmptType().getProductCmptType().getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
             if (isUseTypesafeCollections()) {
                 // List<ICoverage> superResult = super.getCoverages();

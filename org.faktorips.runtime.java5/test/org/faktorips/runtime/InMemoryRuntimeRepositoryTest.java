@@ -484,7 +484,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         @Override
         public String marshal(IEnumValue value) throws Exception {
-            return (String)value.getID();
+            return (String)value.getEnumValueId();
         }
 
         @Override
@@ -502,7 +502,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
             this.id = id;
         }
         
-        public String getID() {
+        public String getEnumValueId() {
             return id;
         }
     }

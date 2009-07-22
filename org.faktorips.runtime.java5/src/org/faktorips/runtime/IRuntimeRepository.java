@@ -139,7 +139,7 @@ public interface IRuntimeRepository {
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
      * follows <i>qualifiedClassName'#'valueId</i>. The valueId is the value that is returned by the
-     * method {@link IEnumValue#getID()}.
+     * method {@link IEnumValue#getEnumValueId()}.
      */
     public IEnumValue getEnumValue(String uniqueId);
     

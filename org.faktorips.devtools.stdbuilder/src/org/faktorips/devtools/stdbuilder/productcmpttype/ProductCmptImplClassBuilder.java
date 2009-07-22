@@ -25,12 +25,14 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
@@ -170,7 +172,14 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         if(!returnedTypeInSignature.equals(getPcType())){
-            appendOverrideAnnotation(methodsBuilder, !getProductCmptType().hasSupertype());
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
+        IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
+        if(superType != null){
+            IPolicyCmptType superPolicyCmptType = superType.findPolicyCmptType(getIpsProject());
+            if(superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())){
+                appendOverrideAnnotation(methodsBuilder, false);
+            }
         }
         ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(
                 methodsBuilder);
@@ -200,7 +209,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         if(StringUtils.isEmpty(getProductCmptType().getPolicyCmptType())){
             appendOverrideAnnotation(methodsBuilder, !getProductCmptType().hasSupertype());
         } else if(getProductCmptType().hasSupertype()){
-            appendOverrideAnnotation(methodsBuilder, getProductCmptType().hasAbstractTypeInSupertypeHierarchy(getIpsProject()));
+            CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(getIpsProject());
+            checkVisitor.start(getProductCmptType().findSupertype(getIpsProject()));
+            appendOverrideAnnotation(methodsBuilder, checkVisitor.isInterfaceImplementation());
         }
         methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
                 MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
@@ -328,4 +339,37 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     
+    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends ProductCmptTypeHierarchyVisitor{
+
+        private boolean isInterfaceImplementation;
+        private int counter = 0;
+        private boolean firstAbstract = false;
+
+        public CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+        
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            if(counter == 0){
+                firstAbstract = currentType.isAbstract();
+                counter++;
+                return true;
+            }
+            if(!firstAbstract) {
+                isInterfaceImplementation = true;
+                return false;
+            }
+            counter++;
+            isInterfaceImplementation = currentType.isAbstract();
+            return isInterfaceImplementation;
+        }
+        
+        public boolean isInterfaceImplementation(){
+            if(counter == 1){
+                return firstAbstract;
+            }
+            return isInterfaceImplementation;
+        }
+    }
 }

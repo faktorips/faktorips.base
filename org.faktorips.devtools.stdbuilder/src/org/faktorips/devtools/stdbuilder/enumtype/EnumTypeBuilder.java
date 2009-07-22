@@ -192,7 +192,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForMethods(mainSection.getMethodBuilder());
     }
 
-    private void generateMethodGetIDOfEnumValuesInterface(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodGetEnumValueIdOfEnumValuesInterface(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         if (useInterfaceGeneration()) {
             return;
         }
@@ -207,7 +207,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return ");
         body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";");
-        methodBuilder.method(Modifier.PUBLIC, Object.class, "getID", new String[0], new Class[0], body,
+        methodBuilder.method(Modifier.PUBLIC, Object.class, "getEnumValueId", new String[0], new Class[0], body,
                 "{@inheritDoc}", ANNOTATION_GENERATED);
     }
 
@@ -529,10 +529,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                  */
                 if (!(useClassGeneration() && currentEnumAttribute.isInherited())
                         || (useClassGeneration() && !(enumType.isContainingValues()))) {
-                    appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     IIpsProject ipsProject = getIpsProject();
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                             .findDatatype(ipsProject));
+                    attributeBuilder.javaDoc(currentEnumAttribute.getDescription(), ANNOTATION_GENERATED);
                     attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
                     attributeBuilder.appendln(' ');
                 }
@@ -675,7 +675,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodValues(methodBuilder);
         generateMethodReadResolve(methodBuilder);
         generateMethodToString(methodBuilder);
-        generateMethodGetIDOfEnumValuesInterface(methodBuilder);
+        generateMethodGetEnumValueIdOfEnumValuesInterface(methodBuilder);
     }
 
     /** Generates the java code for the getter methods. */
@@ -991,7 +991,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("\"");
         methodBody.append(enumType.getName());
         methodBody.append(": \" + ");
-        methodBody.append(literalNameAttribute.getName());
+        methodBody.append(getJavaNamingConvention().getMemberVarName(literalNameAttribute.getName()));
         methodBody.append(';');
 
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);

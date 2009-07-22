@@ -103,8 +103,11 @@ public class Migration2_2_to2_3 {
         List<ITableContents> enumTableContents = new ArrayList<ITableContents>();
         for (IIpsSrcFile currentIpsSrcFile : tableContentsSrcFiles) {
             ITableContents currentTableContents = (ITableContents)currentIpsSrcFile.getIpsObject();
-            if (currentTableContents.findTableStructure(currentTableContents.getIpsProject()).getTableStructureType()
-                    .equals(TableStructureType.ENUMTYPE_MODEL)) {
+            ITableStructure tableStructure = currentTableContents.findTableStructure(currentTableContents.getIpsProject());
+            if(tableStructure == null){
+                continue;
+            }
+            if (tableStructure.getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
                 enumTableContents.add(currentTableContents);
             }
         }

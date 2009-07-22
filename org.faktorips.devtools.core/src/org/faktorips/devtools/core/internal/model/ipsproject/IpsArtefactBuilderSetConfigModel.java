@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,32 +38,32 @@ import org.w3c.dom.NodeList;
  */
 public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetConfigModel {
 
-    private Map properties;
-    private Map propertiesDescription;
+    private Map<String, String> properties;
+    private Map<String, String> propertiesDescription;
     
     /**
      * Creates an empty IPS artifact builder set configuration instances.
      */
     public IpsArtefactBuilderSetConfigModel() {
-        properties = new HashMap();
-        propertiesDescription = new HashMap();
+        properties = new LinkedHashMap<String, String>();
+        propertiesDescription = new LinkedHashMap<String, String>();
     }
 
     /**
      * This constructor is for test purposes only.
      */
-    public IpsArtefactBuilderSetConfigModel(Map properties) {
+    public IpsArtefactBuilderSetConfigModel(Map<String, String> properties) {
         ArgumentCheck.notNull(properties);
         this.properties = properties;
-        propertiesDescription = new HashMap();
+        propertiesDescription = new LinkedHashMap<String, String>();
     }
 
     /**
      * Creates and returns an IPS artifact builder set configuration instance from the provided dom element.
      */
     public final void initFromXml(Element el){
-        properties = new HashMap();
-        propertiesDescription = new HashMap();
+        properties = new LinkedHashMap<String, String>();
+        propertiesDescription = new LinkedHashMap<String, String>();
         NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element propertyEl = (Element)nl.item(i);
@@ -115,9 +115,9 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      */
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
-        Set keys = properties.keySet();
-        for (Iterator iter = keys.iterator();iter.hasNext();) {
-            String key = (String)iter.next();
+        Set<String> keys = properties.keySet();
+        for (Iterator<String> iter = keys.iterator();iter.hasNext();) {
+            String key = iter.next();
             String value = (String)properties.get(key);
             Element prop = doc.createElement("Property"); //$NON-NLS-1$
             String description = (String)propertiesDescription.get(key);
@@ -143,8 +143,8 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * {@inheritDoc}
      */
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo){
-        HashMap properties = new HashMap();
-        for (Iterator it = this.properties.keySet().iterator(); it.hasNext();) {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        for (Iterator<String> it = this.properties.keySet().iterator(); it.hasNext();) {
             String name = (String)it.next();
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if(propertyDef == null){

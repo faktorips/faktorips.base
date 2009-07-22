@@ -21,8 +21,8 @@ package org.faktorips.runtime;
 public interface IEnumValue {
 
     /**
-     * Returns the identifying string value every faktor ips generation enumeration can be requested
-     * for.
+     * A Faktor-IPS enumeration has an attribute that is marked as the identifying attribute. The 
+     * value of this attribute is returned by this method.
      */
-    public Object getID();
+    public Object getEnumValueId();
 }

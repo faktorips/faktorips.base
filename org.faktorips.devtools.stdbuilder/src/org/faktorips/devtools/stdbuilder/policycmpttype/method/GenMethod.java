@@ -99,6 +99,8 @@ public class GenMethod extends GenPolicyCmptTypePart {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
         
+        IMethod overiddenMethod = method.findOverriddenMethod(getIpsPart().getIpsProject());
+        appendOverrideAnnotation(methodsBuilder, overiddenMethod == null);
         generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(), returnType, paramTypes,
                 methodsBuilder);
         if (method.isAbstract()) {
