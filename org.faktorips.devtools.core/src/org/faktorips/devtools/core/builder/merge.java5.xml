@@ -1,82 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <merge:options
-  xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/options"
   braceStyle="matching"  
   redirect="Gen"
-  block="\s*@\s*generated\s*NOT\s*\n">
+  block="\s*@\s*generated\s*NOT\s*(?:\n\r?|\r\n?)"
+  xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
 
-<!--
-  noImport="\s*//\s*import\s+([\w.*]*)\s*;\s*\n"
-  indent="  "  
--->
-		
-	<!--
-	    This dictionary pattern defines a regular expression in the "match" attribute and a location where
-	    to look for a string that matches in the "select" attribute. If a pull rule wants to use this dictionary 
-	    pattern it declares in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
-	    surrounded by the characters ^$. 
-	 -->
-    <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(gen)erated\s*\n"/>
-    <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
+	<merge:dictionaryPattern name="generatedUnmodifiableMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^(?:\n\r?|\r\n?)]*)*(?:\n\r?|\r\n?)"/>
+	<merge:dictionaryPattern name="generatedRestrainedModifableMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
 
-    <!--
-    	This rule doesn't work. The interfaces are not added but overridden. A look in the source code
-    	suggests a false implementation.
-    -->
-    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/setSuperInterfaces"/>
+	<merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags"/>
+	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
+	<merge:pull sourceGet="Type/getSuperclass" targetMarkup="^gen$" targetPut="Type/setSuperclass"/>
+	<merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody"/>    	
+	<merge:pull sourceGet="Method/getReturnType" targetMarkup="^gen$" targetPut="Method/setReturnType"/>
+	<merge:pull sourceGet="Method/getExceptions" targetMarkup="^gen$" targetPut="Method/addException"/>
+	<merge:pull sourceGet="Method/getComment" targetMarkup="^gen$" targetPut="Method/setComment"/>
+	<merge:pull sourceGet="Field/getType" targetMarkup="^gen$" targetPut="Field/setType"/>
+	<merge:pull sourceGet="Field/getInitializer" targetMarkup="^gen$" targetPut="Field/setInitializer"/>
+	<merge:pull sourceGet="Field/getComment" targetMarkup="^gen$" targetPut="Field/setComment"/>
+	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
+	<merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface"/>
+	<merge:pull sourceGet="EnumConstant/getArguments" targetMarkup="^gen$" targetPut="EnumConstant/setArguments"/>
+	<merge:pull sourceGet="EnumConstant/getBody" targetMarkup="^gen$" targetPut="EnumConstant/setBody"/>
+	<merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^gen$" targetPut="Annotation/setContents"/>
 
-    <!-- 
-        Pull rules for JMerge. The following configuration forces JMerge to look for the "generated" meta-attribute
-        in the generated content. If available JMerge looks for a Member with the same name in the target content.
-        If also available the target content gets overridden by the generated content. 
-     -->
-   	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
-	<merge:pull targetMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
-    <merge:pull targetMarkup="^gen$" sourceGet="Member/getFlags" targetPut="Member/setFlags"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Type/getSuperclass" targetPut="Type/setSuperclass"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Method/getReturnType" targetPut="Method/setReturnType"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Method/getExceptions" targetPut="Method/addException"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Field/getInitializer" targetPut="Field/setInitializer"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Enum/getSuperInterfaces" targetPut="Enum/addSuperInterface"/>
-  	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getArguments" targetPut="EnumConstant/setArguments"/>
-  	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getBody" targetPut="EnumConstant/setBody"/>
-  	
-    <!--
-        The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
-        meta-attribute that are not available in the source content. If so it deletes the member in the target
-        content.  
-     -->
-    <merge:sweep markup="^gen$" select="Member"/>
-    
-    <!--
-    	Currently disabled because of problems with methods that have been generated in the first place and get 
-    	swept away because of a model validation error. 
-    -->
-    <!-- merge:sweep markup="^restrained$" select="Member"/-->
-
-	<!--
-		The following strategy is implemented for Java 5 annotations:
-		
-		- annotations of members that have @generated in their Javadoc are 
-		  always updated with the contents of the source file 
-		- any annotation of an @generated member that only exists in the target is removed 
-
-	    Source: http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.emf/org.eclipse.emf/tests/org.eclipse.emf.test.tools/data/merge.input/java5/various/annotations2/merge.xml?revision=1.1&root=Modeling_Project&view=markup
-	-->
-	
-	<!--
-		With this pull rule, the annotations of members marked as @generated
-		are replaced by the contents of the annotations in the source.
-	-->
-	<merge:pull sourceGet="Annotation/getContents"
-		targetParentMarkup="^gen$" targetPut="Annotation/setContents" />
-
-	<!--
-		With this sweep rule, any annotation in the target that is not
-		available in the source is deleted.
-	-->
+	<merge:sweep markup="^gen$" select="Member"/>
+	<!-- Remove annotations of generated target nodes if the annotation is not in the source -->
 	<merge:sweep parentMarkup="^gen$" select="Annotation" />
 	
 </merge:options>
+
+<!-- There is currently a problem when merging javadoc of members. The merging of javadoc of methods and field still works in
+     the way that the javadoc of the target is overridden by the javadoc of the source as long as the target is marked 
+     @generated. The merging of the javadoc of the type has been disabled for the moment because it conflicted with the
+     functionality of adding additional interfaces to the type. Adding addtion interfaces to a type is accomplished by
+     an @implements marker in the type javadoc section of the target. By means of the Type/getSuperInterfaces pull rule,
+     see above, the part specified after @implements will be added to implements part of the class definition. 
+     If there would be a rule in place that overrides the type javadoc also the @implements part would be overridden and
+     therefore the mechanism of adding additional interfaces to the class definition wouldn't work.
+     See faktorips.org flyspray entry No. where the fixing of this problem is addressed. 
+	 The pull rules below are there to keep remembering the alternatives.	 
+		<merge:pull sourceMarkup="^gen$" sourceGet="Type/getComment" sourceTransfer="(\s*begin-user-doc.*?end-user-doc\s*)(?:\n\r?|\r\n?)" targetMarkup="^gen$" targetPut="Type/setComment"/>
+		<merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
+-->
+
+
+<!-- New addtional
+<merge:pull sourceGet="Type/getTypeParameters" targetMarkup="^gen$" targetPut="Type/setTypeParameters"/>
+  <merge:pull 
+    sourceGet="Method/getTypeParameters"
+    targetMarkup="^gen$"
+    targetPut="Method/setTypeParameters"/>
+
+-->
+
+<!--
+
+-->
