@@ -788,3 +788,5 @@ if [ -n "$BUILDPRODUCT" ] ; then
 else
   createAndAddLicensePdf $WORKINGDIR/archives_features
 fi
+
+echo 'OK: release build ${BUILD_VERSION} successful'
