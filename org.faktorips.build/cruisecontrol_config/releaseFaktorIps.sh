@@ -3,8 +3,7 @@
 #   die src.zip in den plugin Ordnern in plugin/org.faktorips.feature.source../
 #   sind falsch (alle gleich) problem entsteht beim generieren der Updatesite
 #   Workaround: postBuild.xml -fixUpdateSiteStagingLocation
-# TODO site.xml auf dem server neu auschecken, problem mit permission
-# TODO projectsrootdir und workingdir relativ zum user anlegen
+# TODO siehe Assert1
 ##############################################################################################################################
 # Faktor IPS release build script
 ##############################################################################################################################
@@ -615,6 +614,10 @@ checkAndCreateReleaseProperty()
     RELEASE_PROPERTIES_EXISTS=true
   fi
 
+  # TODO Assert1 check property file in all branches and HEAD!
+  # otherwise a build with tagging and no info about branches will move the release tag
+  # from the branch to the head
+  
   # assert new release property 
   #    - if release property already exists then tagging Cvs is not allowed, must be deleted manually
   if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
