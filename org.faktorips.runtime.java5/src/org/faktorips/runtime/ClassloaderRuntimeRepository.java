@@ -377,7 +377,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             Constructor<T>[] constructors =  clazz.getDeclaredConstructors();
             Constructor<T> constructor = null;
             for (Constructor<T> currentConstructor : constructors) {
-                if((currentConstructor.getModifiers() & Modifier.PRIVATE) > 0){
+                if((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0){
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
                     if (parameterTypes.length == 2 && parameterTypes[0] == List.class
                             && parameterTypes[1] == IRuntimeRepository.class) {

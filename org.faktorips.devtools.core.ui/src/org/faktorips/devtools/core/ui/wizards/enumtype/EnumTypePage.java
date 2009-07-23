@@ -248,7 +248,7 @@ public class EnumTypePage extends IpsObjectPage {
         newEnumType.setAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setContainingValues(!(Boolean)valuesDeferredToContentField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
-        newEnumType.setEnumContentPackageFragment(enumContentPackageSpecificationField.getText());
+        newEnumType.setEnumContentName(enumContentPackageSpecificationField.getText());
 
         // Inherit enum attributes from supertype hierarchy.
         newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(newEnumType.getIpsProject()));

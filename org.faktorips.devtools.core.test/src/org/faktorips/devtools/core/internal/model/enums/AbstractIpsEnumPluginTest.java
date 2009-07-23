@@ -51,7 +51,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String GENDER_ENUM_LITERAL_MALE_NAME = "male";
     protected final String GENDER_ENUM_LITERAL_FEMALE_NAME = "female";
 
-    protected final String ENUMCONTENTS_PACKAGE_FRAGMENT = "enumcontents";
+    protected final String ENUMCONTENTS_NAME = "enumcontents.GenderEnumContent";
 
     protected IIpsProject ipsProject;
 
@@ -110,7 +110,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumType.setAbstract(false);
         genderEnumType.setContainingValues(false);
         genderEnumType.setSuperEnumType("");
-        genderEnumType.setEnumContentPackageFragment(ENUMCONTENTS_PACKAGE_FRAGMENT);
+        genderEnumType.setEnumContentName(ENUMCONTENTS_NAME);
 
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
@@ -124,7 +124,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(true);
         genderEnumAttributeName.setUnique(true);
 
-        genderEnumContent = newEnumContent(ipsProject, ENUMCONTENTS_PACKAGE_FRAGMENT + '.' + GENDER_ENUM_CONTENT_NAME);
+        genderEnumContent = newEnumContent(ipsProject, ENUMCONTENTS_NAME);
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
         genderEnumValueMale = genderEnumContent.newEnumValue();

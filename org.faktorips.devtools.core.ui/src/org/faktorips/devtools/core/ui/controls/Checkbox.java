@@ -27,5 +27,9 @@ public class Checkbox extends AbstractCheckbox {
     public Checkbox(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, SWT.CHECK);
     }
+
+    public Checkbox(Composite parent, UIToolkit toolkit, boolean invertValue) {
+        super(parent, toolkit, SWT.CHECK, invertValue);
+    }
     
 }

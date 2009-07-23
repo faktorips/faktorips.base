@@ -63,7 +63,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public final static String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
     /** Name of the <code>enumContentPackageFragment</code> property. */
-    public final static String PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT = "enumContentPackageFragment"; //$NON-NLS-1$
+    public final static String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
@@ -120,7 +120,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
             + "EnumTypeEnumContentPackageFragmentEmpty";
 
     /** Returns the package fragment a referencing enum content must be stored in. */
-    public String getEnumContentPackageFragment();
+    public String getEnumContentName();
 
     /**
      * Sets the package fragment a referencing enum content must be stored in.
@@ -131,7 +131,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @throws NullPointerException If <code>packageFragmentQualifiedName</code> is
      *             <code>null</code>.
      */
-    public void setEnumContentPackageFragment(String packageFragmentQualifiedName);
+    public void setEnumContentName(String name);
 
     /**
      * Returns the qualified name of the super enum type of this enum type.

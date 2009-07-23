@@ -359,7 +359,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         newEnumType.setAbstract(true);
         newEnumType.setContainingValues(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        newEnumType.setEnumContentPackageFragment("bar");
+        newEnumType.setEnumContentName("bar");
         newEnumType.newEnumAttribute();
 
         Element xmlElement = newEnumType.toXml(createXmlDocument(IEnumType.XML_TAG));
@@ -368,14 +368,14 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_CONTAINING_VALUES)));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
-        assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT));
+        assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
         assertTrue(loadedEnumType.isContainingValues());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
-        assertEquals("bar", loadedEnumType.getEnumContentPackageFragment());
+        assertEquals("bar", loadedEnumType.getEnumContentName());
     }
 
     public void testDeleteEnumAttributeWithValues() throws CoreException {
@@ -516,7 +516,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateEnumContentPackageFragment() throws CoreException {
-        genderEnumType.setEnumContentPackageFragment("");
+        genderEnumType.setEnumContentName("");
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
@@ -675,9 +675,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetEnumContentPackageFragment() {
-        assertEquals(ENUMCONTENTS_PACKAGE_FRAGMENT, genderEnumType.getEnumContentPackageFragment());
-        genderEnumType.setEnumContentPackageFragment("bar");
-        assertEquals("bar", genderEnumType.getEnumContentPackageFragment());
+        assertEquals(ENUMCONTENTS_NAME, genderEnumType.getEnumContentName());
+        genderEnumType.setEnumContentName("bar");
+        assertEquals("bar", genderEnumType.getEnumContentName());
     }
 
     public void testGetLiteralNameAttribute() throws CoreException {

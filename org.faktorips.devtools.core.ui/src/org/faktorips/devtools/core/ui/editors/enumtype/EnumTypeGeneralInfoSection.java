@@ -135,8 +135,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         // Values are part of model
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
-        valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite);
-        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+        valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
+        valuesArePartOfModelCheckbox.setEnabled(!enumType.isAbstract());
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // Enum content package fragment
@@ -147,7 +147,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
 
         bindingContext.bindContent(packageSpecificationControl, enumType,
-                IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
+                IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);

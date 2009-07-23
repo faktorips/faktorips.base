@@ -1939,26 +1939,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFiles.contains(eC2.getIpsSrcFile()));
     }
 
-    public void testFindFirstEnumContent() throws Exception{
+    public void testFindEnumContent() throws Exception{
         IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
         eA.setContainingValues(false);
-        eA.setEnumContentPackageFragment("a.b.c");
+        eA.setEnumContentName("a.b.c");
+        eA.setEnumContentName("a.b.c.contentA");
         IEnumContent contentA = newEnumContent(eA, "a.b.c.contentA");
-        newEnumContent(eA, "a.b.c.contentB");
-        newEnumContent(eA, "a.b.c.contentC");
-
-        IEnumType eB = newEnumType(ipsProject, "a.b.c.EB");
-        eB.setContainingValues(false);
-        eB.setEnumContentPackageFragment("a.b.c");
-        IEnumContent contentA2 = newEnumContent(eB, "a.b.c.contentA2");
-        newEnumContent(eB, "a.b.c.contentB2");
-        newEnumContent(eB, "a.b.c.contentC2");
-        
-        IEnumContent result = ipsProject.findFirstEnumContent(eA);
+        IEnumContent result = ipsProject.findEnumContent(eA);
         assertEquals(contentA, result);
-
-        result = ipsProject.findFirstEnumContent(eB);
-        assertEquals(contentA2, result);
     }
     
     private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {

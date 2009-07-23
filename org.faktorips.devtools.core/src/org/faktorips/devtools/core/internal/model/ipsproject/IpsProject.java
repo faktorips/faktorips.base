@@ -56,8 +56,8 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -94,7 +94,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -1040,18 +1039,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IEnumContent findFirstEnumContent(IEnumType enumType) throws CoreException {
+    public IEnumContent findEnumContent(IEnumType enumType) throws CoreException {
         ArgumentCheck.notNull(enumType, this);
         if (enumType.isContainingValues()) {
             return null;
         }
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
-        findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_CONTENT, enumType.getEnumContentPackageFragment());
-        for (IIpsSrcFile contentFiles : ipsSrcFiles) {
-            IEnumContent enumContent = (IEnumContent)contentFiles.getIpsObject();
-            if (enumContent.getEnumType().equals(enumType.getQualifiedName())) {
-                return enumContent;
-            }
+        IIpsSrcFile enumContentSrcFile = findIpsSrcFile(IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
+        
+        if(enumContentSrcFile != null && enumContentSrcFile.exists()){
+            return (IEnumContent)enumContentSrcFile.getIpsObject();
         }
         return null;
     }
@@ -1114,7 +1110,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 result.add(new EnumTypeDatatypeAdapter(enumType, null));
                 continue;
             }
-            IEnumContent enumContent = findFirstEnumContent(enumType);
+            IEnumContent enumContent = findEnumContent(enumType);
             result.add(new EnumTypeDatatypeAdapter(enumType, enumContent));
         }
         if (!valuetypesOnly) {
@@ -1248,7 +1244,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if(enumType.isContainingValues()){
                 return new EnumTypeDatatypeAdapter(enumType, null);
             }
-            IEnumContent enumContent = ipsProject.findFirstEnumContent(enumType);
+            IEnumContent enumContent = ipsProject.findEnumContent(enumType);
             return new EnumTypeDatatypeAdapter(enumType, enumContent);
         }
         return null;

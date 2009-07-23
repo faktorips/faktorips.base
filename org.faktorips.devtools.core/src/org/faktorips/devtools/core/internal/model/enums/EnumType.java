@@ -279,7 +279,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
-        enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
+        enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
 
         super.initFromXml(element, id);
     }
@@ -294,7 +294,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
-        element.setAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT, enumContentPackageFragment);
+        element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
     /**
@@ -865,14 +865,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public String getEnumContentPackageFragment() {
+    public String getEnumContentName() {
         return enumContentPackageFragment;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setEnumContentPackageFragment(String packageFragmentQualifiedName) {
+    public void setEnumContentName(String packageFragmentQualifiedName) {
         ArgumentCheck.notNull(packageFragmentQualifiedName);
 
         String oldEnumContentPackageFragment = enumContentPackageFragment;

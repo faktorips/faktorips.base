@@ -79,8 +79,8 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * Validation message code to indicate that the package fragment this enum content is stored in
      * is not correct due to the specification in the referenced enum type.
      */
-    public final static String MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_CORRECT = MSGCODE_PREFIX
-            + "EnumContentPackageFragmentNotCorrect"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT = MSGCODE_PREFIX
+            + "EnumContentNameNotCorrect"; //$NON-NLS-1$
 
     /**
      * Sets the enum type this enum content is based upon.

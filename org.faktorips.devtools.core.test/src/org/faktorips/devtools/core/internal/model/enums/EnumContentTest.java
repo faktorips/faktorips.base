@@ -126,7 +126,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         MessageList validationMessageList = enumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
-                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_CORRECT));
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT));
     }
 
     public void testDependsOn() throws CoreException {

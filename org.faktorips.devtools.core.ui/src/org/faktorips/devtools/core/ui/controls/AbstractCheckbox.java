@@ -29,7 +29,14 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public abstract class AbstractCheckbox extends ControlComposite {
     
     private Button button;
+    private boolean invertValue = false;
 
+    
+    protected AbstractCheckbox(Composite parent, UIToolkit toolkit, int checkboxStyle, boolean invertValue) {
+        this(parent, toolkit, checkboxStyle);
+        this.invertValue = invertValue;
+    }
+    
     /**
      * @param parent
      * @param style
@@ -59,6 +66,9 @@ public abstract class AbstractCheckbox extends ControlComposite {
     }
     
     public boolean isChecked() {
+        if(invertValue){
+            return !button.getSelection();
+        }
         return button.getSelection();
     }
     

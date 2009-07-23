@@ -103,7 +103,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     public void testGetDatatypeValueIdsWithEnumContent() throws Exception{
         
         enum1.setContainingValues(false);
-        enum1.setEnumContentPackageFragment(enum1.getIpsPackageFragment().getName());
+        enum1.setEnumContentName(enum1.getIpsPackageFragment().getName());
         
         IEnumContent enumContent = newEnumContent(enum1, "enum1Content");
         IEnumValue value1 = enumContent.newEnumValue();

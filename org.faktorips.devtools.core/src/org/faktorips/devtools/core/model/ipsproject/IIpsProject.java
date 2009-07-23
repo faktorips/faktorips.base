@@ -460,7 +460,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an exception occurs while processing the search
      * @throws NullPointerException if the provided parameter is <code>null</code> 
      */
-    public IEnumContent findFirstEnumContent(IEnumType enumType) throws CoreException;
+    public IEnumContent findEnumContent(IEnumType enumType) throws CoreException;
     
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such

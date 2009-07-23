@@ -161,7 +161,7 @@ public class EnumTypeValidations {
                 String text = Messages.EnumType_EnumContentPackageFragmentEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY, text,
                         Message.INFO, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
-                                IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT) } : new ObjectProperty[0]);
+                                IEnumType.PROPERTY_ENUM_CONTENT_NAME) } : new ObjectProperty[0]);
                 msgList.add(message);
             }
         }

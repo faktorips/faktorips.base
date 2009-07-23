@@ -374,6 +374,13 @@ public class UIToolkit {
     /**
      * Creates a new checkbox.
      */
+    public Checkbox createCheckbox(Composite parent, boolean invertValue) {
+        return new Checkbox(parent, this, invertValue);
+    }
+
+    /**
+     * Creates a new checkbox.
+     */
     public Checkbox createCheckbox(Composite parent, String text) {
         Checkbox checkbox = new Checkbox(parent, this);
         if (text != null) {

@@ -120,7 +120,7 @@ public class EnumContentPage extends IpsObjectPage {
 
             IEnumType enumType = ipsProject.findEnumType(enumTypeFieldText);
             if (enumType != null) {
-                EnumContentValidations.validatePackageFragment(validationMessageList, null, enumType, getPackage());
+                EnumContentValidations.validateEnumContentPackageName(validationMessageList, null, enumType, getQualifiedIpsObjectName());
             }
 
             if (!(validationMessageList.isEmpty())) {
