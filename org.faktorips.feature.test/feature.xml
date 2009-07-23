@@ -252,7 +252,6 @@ http.//www.beanshell.org         Gnu Lesser License (LGPL)
       <import plugin="org.faktorips.devtools.core.ui"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.jdt"/>
-      <import plugin="org.eclipse.uml2.uml"/>
       <import plugin="org.faktorips.uml"/>
    </requires>
 
