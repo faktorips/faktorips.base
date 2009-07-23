@@ -437,6 +437,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             Memento memento = ipsObject.newMemento();
             IIpsObjectPart newPart = newIpsPart();
             EditDialog dialog = createEditDialog(newPart, getShell());
+            if (dialog == null) {
+                return;
+            }
             dialog.open();
             if (dialog.getReturnCode() == Window.CANCEL) {
                 ipsObject.setState(memento);
