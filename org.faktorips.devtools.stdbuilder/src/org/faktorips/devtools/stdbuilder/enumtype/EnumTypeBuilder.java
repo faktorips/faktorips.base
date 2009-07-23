@@ -610,7 +610,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
 
-        String enumValuesListName = "enumValues";
+        String enumValuesListName = "propertyValues";
         JavaCodeFragment body = new JavaCodeFragment();
         int i = 0;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
@@ -645,7 +645,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 IRuntimeRepository.class.getName() };
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
-        constructorBuilder.methodBegin(Modifier.PRIVATE, null, getNameForConstructor(enumType),
+        constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType),
                 new String[] { enumValuesListName, "productRepository" }, argClasses);
         constructorBuilder.append(body);
         constructorBuilder.methodEnd();
