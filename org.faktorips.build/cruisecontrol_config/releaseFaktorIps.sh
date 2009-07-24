@@ -8,7 +8,7 @@
 # Faktor IPS release build script
 ##############################################################################################################################
 # Note that the default parameters are uses the server environment (faktorzehn.org).
-# If tis script is running local, you can change the environment parameters by using the corresponding pararemters (see below).
+# If this script is running local, you can change the environment parameters by using the corresponding parameters (see below).
 # If this script should be executed under Windows then you need additional software like 'cygwin'.
 #
 # mandatory input parameter:
