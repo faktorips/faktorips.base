@@ -56,13 +56,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetAbstract() {
-        genderEnumType.setContainingValues(true);
-        assertTrue(genderEnumType.isContainingValues());
-
         assertFalse(genderEnumType.isAbstract());
         genderEnumType.setAbstract(true);
         assertTrue(genderEnumType.isAbstract());
-        assertFalse(genderEnumType.isContainingValues());
     }
 
     public void testGetSetContainingValues() {
