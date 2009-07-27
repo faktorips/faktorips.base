@@ -116,8 +116,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute";
 
     /** Validation message code to indicate that the enum content package fragment is empty. */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY = MSGCODE_PREFIX
-            + "EnumTypeEnumContentPackageFragmentEmpty";
+    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
+            + "EnumTypeEnumContentNameEmpty";
 
     /** Returns the package fragment a referencing enum content must be stored in. */
     public String getEnumContentName();

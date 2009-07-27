@@ -27,13 +27,13 @@ public class Messages extends NLS {
     public static String EnumType_SupertypeIsNotAbstract;
     public static String EnumType_cycleDetected;
     public static String EnumType_inconsistentHierarchy;
-    public static String EnumType_EnumContentPackageFragmentEmpty;
+    public static String EnumType_EnumContentNameEmpty;
 
     public static String EnumContent_EnumTypeMissing;
     public static String EnumContent_EnumTypeDoesNotExist;
     public static String EnumContent_EnumTypeIsAbstract;
     public static String EnumContent_ValuesArePartOfType;
-    public static String EnumContent_PackageFragmentNotCorrect;
+    public static String EnumContent_EnumContentNameNotCorrect;
 
     static {
         // initialize resource bundle

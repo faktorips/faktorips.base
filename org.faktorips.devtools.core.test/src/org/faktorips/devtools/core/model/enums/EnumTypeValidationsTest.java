@@ -115,8 +115,8 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
 
     public void testValidateEnumContentPackageFragment() {
         MessageList msgList = new MessageList();
-        EnumTypeValidations.validateEnumContentPackageFragment(msgList, paymentMode, true, "");
-        assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY));
+        EnumTypeValidations.validateEnumContentName(msgList, paymentMode, true, "");
+        assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));
     }
 
 }

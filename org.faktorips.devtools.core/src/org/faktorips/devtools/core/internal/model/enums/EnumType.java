@@ -475,7 +475,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate enum content package fragment.
         EnumTypeValidations
-                .validateEnumContentPackageFragment(list, this, !containingValues, enumContentPackageFragment);
+                .validateEnumContentName(list, this, !isContainingValues(), enumContentPackageFragment);
     }
 
     /**

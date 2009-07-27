@@ -35,37 +35,37 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class EnumContentValidations {
 
     /**
-     * Validates whether the given package equals the enum content package specification in the
-     * given enum type.
+     * Validates whether the given qualified name of an enumeration content is equal to the
+     * enumeration content name that is specified in provided enumeration type. Therefore it is
+     * assumed that the provided enumeration type is the corresponding one for the enumeration
+     * content in question.
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The enum content that might be invalid or <code>null</code> if that
-     *            information cannot be supported.
-     * @param enumType The enum type the enum content is build upon.
-     * @param enumContentName The qualified name of the package the enum
-     *            content to be validated is stored in.
+     * @param enumContent The enumeration content object can be specified if available. If so it is
+     *            added to the message object in case the check fails.
+     * @param enumType the corresponding enumeration type
+     * @param enumContentName The qualified name of the enumeration content that is validated by
+     *            this method.
      * 
      * @throws NullPointerException If <code>validationMessageList</code>, <code>enumType</code> or
      *             <code>enumContentPackageFragmentQualifiedName</code> is <code>null</code>.
      */
-    public static void validateEnumContentPackageName(MessageList validationMessageList,
+    public static void validateEnumContentName(MessageList validationMessageList,
             IEnumContent enumContent,
             IEnumType enumType,
             String enumContentName) {
 
-        ArgumentCheck
-                .notNull(new Object[] { validationMessageList, enumType, enumContentName });
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType, enumContentName });
 
         String enumTypeEnumContentName = enumType.getEnumContentName();
         if (!(enumContentName.equals(enumTypeEnumContentName))) {
-            String text = NLS.bind(Messages.EnumContent_PackageFragmentNotCorrect, enumType.getQualifiedName());
+            String text = NLS.bind(Messages.EnumContent_EnumContentNameNotCorrect, enumType.getQualifiedName());
             Message message;
             if (enumContent == null) {
-                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT, text,
-                        Message.ERROR);
+                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT, text, Message.ERROR);
             } else {
-                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT, text,
-                        Message.ERROR, enumContent);
+                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT, text, Message.ERROR,
+                        enumContent);
             }
             validationMessageList.add(message);
         }

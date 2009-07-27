@@ -298,7 +298,7 @@ public class EnumTypePage extends IpsObjectPage {
         }
 
         // Validate enum content package fragment specification.
-        EnumTypeValidations.validateEnumContentPackageFragment(validationMessages, null, valuesDeferredToContentField
+        EnumTypeValidations.validateEnumContentName(validationMessages, null, valuesDeferredToContentField
                 .getCheckbox().isChecked(), enumContentPackageSpecificationField.getText());
 
         // Display the first error message if any.

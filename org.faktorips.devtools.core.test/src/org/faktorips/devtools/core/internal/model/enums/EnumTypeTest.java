@@ -520,7 +520,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
-                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY));
+                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));
     }
 
     public void testFindSuperEnumType() throws CoreException {

@@ -132,34 +132,33 @@ public class EnumTypeValidations {
     }
 
     /**
-     * Validates the package specification for enum contents that might want to reference this enum
-     * type.
+     * Validates the qualified enumeration content name that has to be specified for an enumeration
+     * type which delegates the its values to an enumeration content.
      * <p>
      * Adds validation messages to the given message list.
      * 
-     * @param msgList The message list where messages are added to in cases of failing validations.
-     * @param enumType The enum type that might be invalid or <code>null</code> if that information
-     *            cannot be supported.
-     * @param valuesDeferredToContent Flag indicating whether the enum type to validate does contain
-     *            values.
-     * @param enumContentPackageFragment The enum content package fragment of the enum type to
-     *            validate.
+     * @param msgList The message list where messages are added to in cases of failing validations
+     * @param enumType The enumeration type that needs to be validated
+     * @param valuesDeferredToContent flag indicating whether the enumeration type is supposed to
+     *            contain values by itself or if it defers the values to an enumeration content
+     * @param enumContentName The qualified name of the enumeration content of the enumeration type
+     *            that is validated
      * 
-     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentPackageFragment</tt> is
+     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentName</tt> is
      *             <tt>null</tt>.
      */
-    public static void validateEnumContentPackageFragment(MessageList msgList,
+    public static void validateEnumContentName(MessageList msgList,
             IEnumType enumType,
             boolean valuesDeferredToContent,
-            String enumContentPackageFragment) {
+            String enumContentName) {
 
-        ArgumentCheck.notNull(new Object[] { msgList, enumContentPackageFragment });
+        ArgumentCheck.notNull(new Object[] { msgList, enumContentName });
 
         // Package specification should not be empty if this enum type does not contain values.
         if (valuesDeferredToContent) {
-            if (enumContentPackageFragment.equals("")) {
-                String text = Messages.EnumType_EnumContentPackageFragmentEmpty;
-                Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY, text,
+            if (enumContentName.equals("")) {
+                String text = Messages.EnumType_EnumContentNameEmpty;
+                Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text,
                         Message.INFO, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
                                 IEnumType.PROPERTY_ENUM_CONTENT_NAME) } : new ObjectProperty[0]);
                 msgList.add(message);
