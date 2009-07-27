@@ -353,12 +353,6 @@ public interface IRuntimeRepository {
      * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the given repository.
      * If the repository references other repositories (directly or indirectly), the context can also handle the
      * classes defined in these other repositories.  
-     * 
-     * Note: The repository contains the model classed by name, so this method needs to actually load the classes.
-     * This method uses the given class loader do load the classes.
-     * 
-     * @param repository The repository that contains the information about the model classes
-     * @param cl         The class loader to load the model classes.
      */
     public JAXBContext newJAXBContext();
 }
