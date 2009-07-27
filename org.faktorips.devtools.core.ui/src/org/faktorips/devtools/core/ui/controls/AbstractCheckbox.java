@@ -73,6 +73,10 @@ public abstract class AbstractCheckbox extends ControlComposite {
     }
     
     public void setChecked(boolean checked) {
+        if(invertValue){
+            button.setSelection(!checked);
+            return;
+        }
         button.setSelection(checked);
     }
     

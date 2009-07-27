@@ -149,13 +149,14 @@ public class EnumTypeValidations {
      */
     public static void validateEnumContentName(MessageList msgList,
             IEnumType enumType,
+            boolean enumTypeIsAbstract,
             boolean valuesDeferredToContent,
             String enumContentName) {
 
         ArgumentCheck.notNull(new Object[] { msgList, enumContentName });
 
         // Package specification should not be empty if this enum type does not contain values.
-        if (valuesDeferredToContent) {
+        if (valuesDeferredToContent && !enumTypeIsAbstract) {
             if (enumContentName.equals("")) {
                 String text = Messages.EnumType_EnumContentNameEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text,

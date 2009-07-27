@@ -106,10 +106,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public void setAbstract(boolean isAbstract) {
-        if (isAbstract) {
-            setContainingValues(false);
-        }
-
         boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
         valueChanged(oldIsAbstract, isAbstract);
@@ -475,7 +471,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate enum content package fragment.
         EnumTypeValidations
-                .validateEnumContentName(list, this, !isContainingValues(), enumContentPackageFragment);
+                .validateEnumContentName(list, this, isAbstract(), !isContainingValues(), enumContentPackageFragment);
     }
 
     /**
