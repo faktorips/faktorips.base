@@ -18,10 +18,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
@@ -58,8 +58,8 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     
     private boolean inclJavaSources;
     private boolean inclJavaBinaries;
-    private HashSet handledRootFolders = new HashSet();
-    private HashMap handledEntries = new HashMap(1000);
+    private Set<IFolder> handledRootFolders = new HashSet<IFolder>();
+    private Set<String> handledEntries = new HashSet<String>(1000);
     
     /**
      * Creates a new operation to create an ips archive. From the given project the content from all source folders
@@ -71,7 +71,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             IIpsProject projectToArchive, 
             File archive) throws CoreException {
         this.archive = archive;
-        List rootsInt = new ArrayList();
+        List<IIpsPackageFragmentRoot> rootsInt = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();
         for (int i = 0; i < candidateRoots.length; i++) {
             if (candidateRoots[i].isBasedOnSourceFolder()) {
@@ -203,18 +203,18 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      * Check if the archive contains the given entry specified by the name, e.g. objects which were
      * copied from the src folder to the bin folder
      */
-    private boolean isDuplicateEnty(String entryName){
-        if (handledEntries.containsKey(entryName)){
+    private boolean isDuplicateEntry(String entryName){
+        if (handledEntries.contains(entryName)){
             return true;
         }
-        handledEntries.put(entryName, entryName);
+        handledEntries.add(entryName);
         return false;
     }
     
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) throws CoreException {
         InputStream content = file.getContentFromEnclosingResource();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + file.getQualifiedNameType().toPath().toString();
-        if (isDuplicateEnty(entryName)){
+        if (isDuplicateEntry(entryName)){
             return;
         }
         
@@ -296,7 +296,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addFiles(IFolder rootFolder, IFile fileToAdd, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
         String name = fileToAdd.getFullPath().removeFirstSegments(rootFolder.getFullPath().segmentCount()).toString();
-        if (isDuplicateEnty(name)){
+        if (isDuplicateEntry(name)){
             return;
         }
         JarEntry newEntry = new JarEntry(name);
