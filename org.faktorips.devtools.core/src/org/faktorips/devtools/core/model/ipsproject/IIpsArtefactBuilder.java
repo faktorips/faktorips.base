@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+//TODO Kommentar verbessern. Die Methoden beforeFullBuild und afterFullBuild gibt es nicht mehr
 /**
  * An implementation of this interface is supposed to create one artefact for an IpsObject. The
  * isBuilderFor() method indicates to the ips build framework which kind of IpsObjects this builder
@@ -88,7 +89,6 @@ public interface IIpsArtefactBuilder {
      * build has finished.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
-     * @param monitor can be used within this method report progress
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. The
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.

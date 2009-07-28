@@ -134,54 +134,61 @@ public class JavaCodeFragment {
     /**
      * Appends '{' to the sourcecode and increases the indentation level.
      */
-    public void appendOpenBracket() {
+    public JavaCodeFragment appendOpenBracket() {
         appendln('{');
         incIndentationLevel();
+        return this;
     }
 
     /**
      * Appends '}' to the sourcecode and dereases the indentation level.
      */
-    public void appendCloseBracket() {
+    public JavaCodeFragment appendCloseBracket() {
         appendln('}');
         decIndentationLevel();
+        return this;
     }
 
     /**
      * Appends the given String to the sourcecode.
      */
-    public void append(String s) {
+    public JavaCodeFragment append(String s) {
         indentIfBol();
         sourcecode.append(s);
-    }
+        return this;
+   }
 
     /**
      * Encloses the given String with doublequotes (") and appends it to the sourcecode.
      */
-    public void appendQuoted(String s) {
+    public JavaCodeFragment appendQuoted(String s) {
         append("\"" + s + "\"");
+        return this;
     }
 
     /**
      * Appends the given char to the sourcecode.
      */
-    public void append(char c) {
+    public JavaCodeFragment append(char c) {
         indentIfBol();
         sourcecode.append(c);
-    }
+        return this;
+   }
 
     /**
      * Transform the given int into a String and appends it to the sourcecode.
      */
-    public void append(int i) {
+    public JavaCodeFragment append(int i) {
         append("" + i);
-    }
+        return this;
+   }
 
     /**
      * Transform the given boolean into a String and appends it to the sourcecode.
      */
-    public void append(boolean b) {
+    public JavaCodeFragment append(boolean b) {
         append("" + b);
+        return this;
     }
 
     /**
@@ -190,13 +197,14 @@ public class JavaCodeFragment {
      * 
      * @throws NullPointerException if clazz is null.
      */
-    public void appendClassName(Class clazz) {
+    public JavaCodeFragment appendClassName(Class<?> clazz) {
         if (clazz.isArray()) {
             appendClassName(clazz.getComponentType());
             append("[]");
-            return;
+            return this;
         }
         appendClassName(clazz.getName());
+        return this;
     }
 
     /**
@@ -205,9 +213,10 @@ public class JavaCodeFragment {
      * 
      * @throws NullPointerException if clazz is null.
      */
-    public void appendInnerClassName(Class clazz) {
+    public JavaCodeFragment appendInnerClassName(Class<?> clazz) {
         appendInnerClassName(clazz.getName());
-    }
+        return this;
+   }
 
     /**
      * Appends the unqualified class name of an public inner class to the sourcecode and updates the
@@ -215,9 +224,10 @@ public class JavaCodeFragment {
      * 
      * @throws NullPointerException if clazz is null.
      */
-    public void appendInnerClassName(String qualifiedClassName) {
+    public JavaCodeFragment appendInnerClassName(String qualifiedClassName) {
         appendClassName(qualifiedClassName.replaceAll("\\$", "\\."));
-    }
+        return this;
+   }
 
     /**
      * Appends the unqualified class name to the source code and updates the import declaration (if
@@ -226,7 +236,7 @@ public class JavaCodeFragment {
      * 
      * @throws NullPointerException if qualifiedClassName is null.
      */
-    public void appendClassName(String qualifiedClassName) {
+    public JavaCodeFragment appendClassName(String qualifiedClassName) {
         if (qualifiedClassName.indexOf('<') > 0) {
             appendClassName(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
             append("<");
@@ -246,76 +256,82 @@ public class JavaCodeFragment {
                 }
             }
             append(">");
-            return;
+            return this;
         }
         qualifiedClassName = qualifiedClassName.replace('$', '.'); // for inner classes.
         String unqualifiedClassName = StringUtil.unqualifiedName(qualifiedClassName);
         // don't add two imports for the same unqualified name
-        for (Iterator iterator = importDecl.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = importDecl.iterator(); iterator.hasNext();) {
             String imp = (String)iterator.next();
             if (imp.substring(imp.lastIndexOf('.')+1).equals(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
                 append(qualifiedClassName);
-                return;
+                return this;
             }
         }
         append(unqualifiedClassName);
         if (qualifiedClassName.indexOf('.') < 0) {
-            return;
-        }
+            return this;
+       }
         int bracketIndex = qualifiedClassName.indexOf("[]");
         if (bracketIndex > -1) {
             importDecl.add(qualifiedClassName.substring(0, bracketIndex));
         } else {
             importDecl.add(qualifiedClassName);
         }
-    }
+        return this;
+   }
 
     /**
      * Adds an import entry to this code fragment.
      * 
      * @param qualifiedClassName the java class that is added to the import declaration
      */
-    public void addImport(String qualifiedClassName) {
+    public JavaCodeFragment addImport(String qualifiedClassName) {
         importDecl.add(qualifiedClassName);
+        return this;
     }
 
     /**
      * Appends a line separator to the sourcecode.
      */
-    public void appendln() {
+    public JavaCodeFragment appendln() {
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
-    }
+        return this;
+   }
 
     /**
      * Appends the given String and a line separator to the sourcecode.
      */
-    public void appendln(String s) {
+    public JavaCodeFragment appendln(String s) {
         indentIfBol();
         sourcecode.append(s);
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        return this;
     }
 
     /**
      * Appends the given String as is to the sourcecode without indenting it.
      */
-    public void appendlnUnindented(String arg) {
+    public JavaCodeFragment appendlnUnindented(String arg) {
         sourcecode.append(arg);
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
-    }
+        return this;
+  }
 
     /**
      * Appends the given char to the sourcecode.
      */
-    public void appendln(char c) {
+    public JavaCodeFragment appendln(char c) {
         indentIfBol();
         sourcecode.append(c);
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
-    }
+        return this;
+   }
 
     /**
      * Appends the given fragment to his fragment and idents it properly.
      */
-    public void append(JavaCodeFragment fragment) {
+    public JavaCodeFragment append(JavaCodeFragment fragment) {
         importDecl.add(fragment.getImportDeclaration());
         String sourcecode = fragment.getSourcecode();
         StringTokenizer tokenizer = new StringTokenizer(sourcecode, SystemUtils.LINE_SEPARATOR);
@@ -330,7 +346,8 @@ public class JavaCodeFragment {
         if (sourcecode.endsWith(SystemUtils.LINE_SEPARATOR)) {
             appendln("");
         }
-    }
+        return this;
+   }
 
     /**
      * Two fragments are equal if they contain the same sourcecode and have the same import

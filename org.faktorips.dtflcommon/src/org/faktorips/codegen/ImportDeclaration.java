@@ -46,17 +46,17 @@ public class ImportDeclaration {
     private final static String JAVA_LANG_ASTERIX = "java.lang.*";
 
     // List that holds the class imports 
-    private List classes;
+    private List<String> classes;
 
     // Set that holds the package imports (e.g. java.util.*) 
-    private List packages;
+    private List<String> packages;
 
 	/**
 	 * Creates a new import declaration.
 	 */
 	public ImportDeclaration() {
-        classes = new ArrayList();
-        packages = new ArrayList();
+        classes = new ArrayList<String>();
+        packages = new ArrayList<String>();
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class ImportDeclaration {
 		String packageImport = packageName + ".*";
 		ImportDeclaration temp = new ImportDeclaration(decl);
 		temp.add(packageImport);
-		for (Iterator it=temp.iterator(); it.hasNext();) {
+		for (Iterator<String> it=temp.iterator(); it.hasNext();) {
 			String importSpec = (String)it.next();
 			if (!importSpec.equals(packageImport)) {
 				add(importSpec);
@@ -87,7 +87,7 @@ public class ImportDeclaration {
     /**
      * Adds the class to the import list.
      */
-    public void add(Class clazz) {
+    public void add(Class<?> clazz) {
         add(clazz.getName());
     }
     
@@ -99,7 +99,7 @@ public class ImportDeclaration {
 		if (decl == null) {
 			return;
 		}
-		for (Iterator it=decl.iterator(); it.hasNext();) {
+		for (Iterator<String> it=decl.iterator(); it.hasNext();) {
 			add((String)it.next());
 		}
 	}
@@ -138,7 +138,7 @@ public class ImportDeclaration {
      * Removes the class imports that are covered by the package import.
      */
     private void removeClassImports(String packageImport) {
-        for (Iterator it=classes.iterator(); it.hasNext();) {
+        for (Iterator<String> it=classes.iterator(); it.hasNext();) {
             String classImport = (String)it.next();
             if (classImportCoveredByPackageImport(classImport, packageImport)) {
                    it.remove();
@@ -153,7 +153,7 @@ public class ImportDeclaration {
      * 
      * @throws NullPointerException if clazz is null.
      */
-    public boolean isCovered(Class clazz) {
+    public boolean isCovered(Class<?> clazz) {
         return isCovered(clazz.getName());
     }
 
@@ -199,9 +199,9 @@ public class ImportDeclaration {
     /**
      * Returns an Iterator over the import statements as Strings.
      */
-    public Iterator iterator()
+    public Iterator<String> iterator()
     {
-    	List allImports = new ArrayList();
+    	List<String> allImports = new ArrayList<String>();
         allImports.addAll(packages);
 		allImports.addAll(classes);
         return allImports.iterator();
@@ -224,7 +224,7 @@ public class ImportDeclaration {
         if (importsToTest==null) {
             return uncovered;
         }
-        for (Iterator it=importsToTest.iterator(); it.hasNext();) {
+        for (Iterator<String> it=importsToTest.iterator(); it.hasNext();) {
             String importToTest = (String)it.next();
             if (!isCovered(importToTest)) {
                 uncovered.add(importToTest);
@@ -255,7 +255,7 @@ public class ImportDeclaration {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		String separator = SystemUtils.LINE_SEPARATOR;
-		for (Iterator it=iterator(); it.hasNext();)
+		for (Iterator<String> it=iterator(); it.hasNext();)
 		{
 			sb.append(("import "));
 			sb.append(it.next());

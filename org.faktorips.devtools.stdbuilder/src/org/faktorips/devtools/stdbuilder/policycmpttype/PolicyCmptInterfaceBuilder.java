@@ -43,13 +43,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         setMergeEnabled(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public PolicyCmptInterfaceBuilder getInterfaceBuilder() {
-        return this;
-    }
-
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
@@ -81,7 +74,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
-        List interfaces = new ArrayList();
+        List<String> interfaces = new ArrayList<String>();
         IPolicyCmptType type = getPcType();
         IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(getIpsProject());
         if (supertype != null) {
@@ -110,7 +103,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             interfaces.add(IDependantObject.class.getName());
         }
 
-        return (String[])interfaces.toArray(new String[interfaces.size()]);
+        return interfaces.toArray(new String[interfaces.size()]);
     }
 
     /**

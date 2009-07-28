@@ -264,7 +264,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Convenience method that delegates the call to the package structure and returns the package
      * name for the java class that is build by this builder.
      * 
-     * @param the package string
+     * @param ipsSrcFile The source file to get the package from
      * @throws CoreException is delegated from calls to other methods
      */
     public String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -354,7 +354,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-        ipsSrcFile = null;
+        this.ipsSrcFile = null;
         ipsObject = null;
         buildStatus = null;
         generationCanceled = false;
@@ -507,7 +507,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
+     * @param keyPrefix the key prefix that identifies the requested javadoc and annotation. The
      *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
      * @param element the ips element used to access the ips project where the language to use is
@@ -515,7 +515,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
-     * @return the requested text
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             IIpsElement element,
@@ -547,7 +546,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
+     * @param keyPrefix the key prefix that identifies the requested javadoc and annotation. The
      *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param replacement Object that replaces the placeholder {0} in the property file
@@ -556,7 +555,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
-     * @return the requested text
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
@@ -593,7 +591,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
+     * @param keyPrefix the key prefix that identifies the requested javadoc and annotation. The
      *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param replacements Objects that replaces the placeholders {0}, {1} etc. in the property
@@ -603,7 +601,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
-     * @return the requested text
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object[] replacements,
