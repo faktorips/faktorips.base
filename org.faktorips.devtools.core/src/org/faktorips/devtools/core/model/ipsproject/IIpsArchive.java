@@ -89,14 +89,14 @@ public interface IIpsArchive {
     /**
      * Returns the set of qualified name types for the ips objects stored in the archive
      */
-    public Set getQNameTypes() throws CoreException;
+    public Set<QualifiedNameType> getQNameTypes() throws CoreException;
     
     /**
      * Returns the set of qualified name types for the ips objects stored in the given package.
      * Returns an empty set if the archive does not contain an object for the given package or
      * packName is <code>null</code>.
      */
-    public Set getQNameTypes(String packName) throws CoreException;
+    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException;
     
     /**
      * Returns <code>true</code> if the archive contains the ips object indentified by the given
