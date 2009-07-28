@@ -69,8 +69,12 @@ public class Migration2_2_to2_3 {
     }
 
     /**
-     * Replaces all <tt>ITableStructure</tt>s that have been declared to be enumeration structures
-     * with new, abstract <code>IEnumType</code>s.
+     * Creates new, abstract <code>IEnumType</code>s for all <tt>ITableStructure</tt>s that have
+     * been declared to be enumeration structures. The old <tt>ITableStructure</tt>s will not be
+     * deleted however because this would result in <tt>NullPointerException</tt>s when an
+     * <tt>ITableContents</tt> in another project is based upon an <tt>ITableStructure</tt> already
+     * deleted. Clients need to delete the <tt>ITableStructure</tt>s themselves after the migration
+     * was performed.
      * <p>
      * Also, all <tt>ITableContents</tt> that are built upon an <tt>ITableStructure</tt> will become
      * <code>IEnumType</code>s containing the enum values. The referenced table structure will be
@@ -88,27 +92,33 @@ public class Migration2_2_to2_3 {
     public static void migrate(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
+        List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allIpsSrcFiles);
+
         // Find all enum type table structures.
-        IIpsSrcFile[] tableStructureSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
         List<ITableStructure> enumTableStructures = new ArrayList<ITableStructure>();
-        for (IIpsSrcFile currentIpsSrcFile : tableStructureSrcFiles) {
-            ITableStructure currentTableStructure = (ITableStructure)currentIpsSrcFile.getIpsObject();
-            if (currentTableStructure.getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
-                enumTableStructures.add(currentTableStructure);
+        for (IIpsSrcFile currentIpsSrcFile : allIpsSrcFiles) {
+            if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE)) {
+                ITableStructure currentTableStructure = (ITableStructure)currentIpsSrcFile.getIpsObject();
+                if (currentTableStructure.getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
+                    enumTableStructures.add(currentTableStructure);
+                }
             }
         }
 
         // Find all table contents that refer to enum type table structures.
-        IIpsSrcFile[] tableContentsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
         List<ITableContents> enumTableContents = new ArrayList<ITableContents>();
-        for (IIpsSrcFile currentIpsSrcFile : tableContentsSrcFiles) {
-            ITableContents currentTableContents = (ITableContents)currentIpsSrcFile.getIpsObject();
-            ITableStructure tableStructure = currentTableContents.findTableStructure(currentTableContents.getIpsProject());
-            if(tableStructure == null){
-                continue;
-            }
-            if (tableStructure.getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
-                enumTableContents.add(currentTableContents);
+        for (IIpsSrcFile currentIpsSrcFile : allIpsSrcFiles) {
+            if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
+                ITableContents currentTableContents = (ITableContents)currentIpsSrcFile.getIpsObject();
+                ITableStructure tableStructure = currentTableContents.findTableStructure(currentTableContents
+                        .getIpsProject());
+                if (tableStructure == null) {
+                    continue;
+                }
+                if (tableStructure.getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
+                    enumTableContents.add(currentTableContents);
+                }
             }
         }
 
@@ -117,8 +127,8 @@ public class Migration2_2_to2_3 {
             monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size());
         }
 
-        // Replace the table structures and table contents.
-        replaceTableStructures(enumTableStructures, monitor);
+        // Add enum types for the table structures and replace the table contents.
+        addForTableStructures(enumTableStructures, monitor);
         replaceTableContents(enumTableContents, ipsProject, monitor);
 
         migrateInitFromXmlMethods(ipsProject, monitor);
@@ -160,7 +170,8 @@ public class Migration2_2_to2_3 {
                                                 Type paramType = parameter.getType();
                                                 if (paramType instanceof SimpleType) {
                                                     SimpleType paraTypeSimple = (SimpleType)paramType;
-                                                    if (paraTypeSimple.getName().getFullyQualifiedName().equals("HashMap")) {
+                                                    if (paraTypeSimple.getName().getFullyQualifiedName().equals(
+                                                            "HashMap")) {
                                                         methodDecl.delete();
                                                         modified = true;
                                                     }
@@ -168,8 +179,9 @@ public class Migration2_2_to2_3 {
                                                 if (paramType instanceof ParameterizedType) {
                                                     ParameterizedType paraType = (ParameterizedType)paramType;
                                                     Type hashTable = paraType.getType();
-                                                    if(hashTable instanceof SimpleType){
-                                                        if (((SimpleType)hashTable).getName().getFullyQualifiedName().equals("Map")) {
+                                                    if (hashTable instanceof SimpleType) {
+                                                        if (((SimpleType)hashTable).getName().getFullyQualifiedName()
+                                                                .equals("Map")) {
                                                             methodDecl.delete();
                                                             modified = true;
                                                         }
@@ -200,8 +212,8 @@ public class Migration2_2_to2_3 {
 
     }
 
-    /** Replaces the given enum table structures with new enum types. */
-    private static void replaceTableStructures(List<ITableStructure> enumTableStructures, IProgressMonitor monitor)
+    /** Adds new enum types for the given enum table structures. */
+    private static void addForTableStructures(List<ITableStructure> enumTableStructures, IProgressMonitor monitor)
             throws CoreException {
 
         /*
@@ -241,9 +253,6 @@ public class Migration2_2_to2_3 {
                 newEnumAttribute.setInherited(false);
                 newEnumAttribute.setDescription(currentColumn.getDescription());
             }
-
-            // Delete the old table structure.
-            currentTableStructure.getIpsSrcFile().getCorrespondingResource().delete(true, null);
 
             // Update monitor if available.
             if (monitor != null) {

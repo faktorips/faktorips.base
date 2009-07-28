@@ -35,9 +35,11 @@ public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getDescription() {
-        return "New ips object types" + " have been added for modeling enumerations. All table structures"
-                + " that represent enum types will be changed to abstract EnumType objects. The referencing"
-                + " table contents will also be replaced with EnumType objects containing the enum values.";
+        return "New Faktor-IPS object types"
+                + " have been added for modeling enumerations."
+                + " Abstract enumeration type objects will be created for each table structure that represents an enumeration type"
+                + " (the old table structures must be deleted manually). The referencing"
+                + " table contents will also be replaced with new enumeration type objects containing the enumeration values.";
     }
 
     /**
