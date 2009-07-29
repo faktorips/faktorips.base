@@ -59,7 +59,7 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 /**
- * An implementation of <code>IpsArtefactBuilder</code> that generates a java source file for a
+ * An implementation of <code>IIpsArtefactBuilder</code> that generates a java source file for a
  * specific IpsObject. It provides support for formatting of the java source file content and
  * merging of the content with the content of an already existing java file that has the same file
  * name. A JavaSourceFileBuilder needs a IJavaPackageStructure that provides the package information
