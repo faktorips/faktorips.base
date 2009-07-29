@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -88,16 +87,14 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement != null) {
-                /*
-                 * Prevent errors in IIpsObject from being displayed by its parts (even if they are
-                 * themselves the error source).
-                 */
-                if (ipsElement instanceof IIpsObjectPart) {
-                    return 0;
-                } else if (ipsElement instanceof IIpsProject) {
+                if (ipsElement instanceof IIpsProject) {
                     return computeAdornmentFlagsProject((IIpsProject)ipsElement);
                 } else {
-                    res = ipsElement.getEnclosingResource();
+                    // Following line changed from getEnclosingRessource to getCorrespondingRessource() due to bug 1500
+                    // The special handling of ips obejcts parts in former version, was removed as parts return null
+                    // as corresponding ressource. If for some reaseon we have to switch back to getEnclosingRessource()
+                    // we must readd the special handling to ips object parts.
+                    res = ipsElement.getCorrespondingResource();
                     if (res == null || !res.isAccessible()) {
                         return 0;
                     }
