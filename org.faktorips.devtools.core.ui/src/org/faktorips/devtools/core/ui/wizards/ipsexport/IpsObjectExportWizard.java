@@ -21,8 +21,8 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
- * Base class for wizards exporting <code>IIpsObject</code> types like 
- * <code>IEnumType</code>, <code>IEnumContent</code> or <code>ITableContents</code>. 
+ * Base class for wizards exporting <code>IIpsObject</code> types like <code>IEnumType</code>,
+ * <code>IEnumContent</code> or <code>ITableContents</code>.
  * 
  * @author Roman Grutza
  */
@@ -33,8 +33,7 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
 
     protected IStructuredSelection selection;
 
-    
-    /** 
+    /**
      * Saves dialog settings, like size and position information.
      */
     protected void saveDialogSettings() {

@@ -61,7 +61,6 @@ public class EnumTypeValuesPage extends EnumTypeEditorPage {
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
         try {
             createToolbarActions();
-            
             enumValuesSection = new EnumValuesSection(enumType, parentContainer, toolkit);
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -73,6 +72,6 @@ public class EnumTypeValuesPage extends EnumTypeEditorPage {
      */
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // nothing to do
+        // Nothing to do.
     }
 }

@@ -18,10 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -87,9 +83,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          */
         public EnumAttributesComposite(IEnumType enumType, Composite parent, UIToolkit toolkit) {
             super(enumType, parent, toolkit);
-
             ArgumentCheck.notNull(enumType);
-
             this.enumType = enumType;
         }
 
@@ -105,11 +99,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                 }
 
                 public void dispose() {
-                    // nothing todo
+                    // Nothing to do.
                 }
 
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                    // nothing todo
+                    // Nothing to do.
                 }
 
             };
@@ -153,7 +147,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
-            // Delete all enum values if there are no more enum attributes
+            // Delete all enum values if there are no more enum attributes.
             if (enumType.getEnumAttributesCount(true) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
@@ -188,21 +182,30 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
             createButtonSpace(buttons, toolkit);
 
-            Button inheritButton = toolkit.createButton(buttons, Messages.EnumAttributessection_buttonInherit);
-            inheritButton
-                    .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-            inheritButton.addSelectionListener(new SelectionListener() {
-                public void widgetSelected(SelectionEvent e) {
-                    // TODO aw: open the InheritAttributesDialog.
-                }
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-
-                }
-            });
+            // TODO AW: out commented for release 2.3.0rfinal
+            /*
+             * Button inheritButton = toolkit.createButton(buttons,
+             * Messages.EnumAttributessection_buttonInherit); inheritButton .setLayoutData(new
+             * GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+             * inheritButton.addSelectionListener(new SelectionListener() { public void
+             * widgetSelected(SelectionEvent e) { inheritClicked(); }
+             * 
+             * public void widgetDefaultSelected(SelectionEvent e) {
+             * 
+             * } });
+             */
 
             return true;
         }
+
+        /**
+         * Opens a dialog enabling the user to inherit enum attributes from the supertype hierarchy
+         * in a comfortable way.
+         */
+        // TODO AW: out commented for release 2.3.0.rfinal
+        /*private void inheritClicked() {
+
+        }*/
 
     }
 
