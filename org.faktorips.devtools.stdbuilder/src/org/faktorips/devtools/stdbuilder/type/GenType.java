@@ -62,9 +62,9 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             throws CoreException {
         if (type != null) {
             if (forInterface) {
-                return builderSet.getPackageName(type.getIpsSrcFile());
+                return builderSet.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
             }
-            return builderSet.getInternalPackageName(type.getIpsSrcFile());
+            return builderSet.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
         }
         return null;
     }

@@ -115,13 +115,13 @@ public interface IIpsArtefactBuilder {
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException;
 
     /**
-     * Indicates if an implementation of this interface generates files that are considered derived. This means that 
+     * Indicates if the builder generates files that are considered derived. This means that 
      * the files will be regenerated during each build cycle and be deleted during a clean build cycle. Code that is 
-     * added to these files in between a build cycle will be removed. The location where the artefact is
+     * added to these files between builds will be removed. The location where the artefact is
      * put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of an IpsObjectPath.
      */
     public boolean buildsDerivedArtefacts();
-    
+
     /**
      * Deletes the artefact that is created by this builder upon the provided IpsSrcFile.
      * 

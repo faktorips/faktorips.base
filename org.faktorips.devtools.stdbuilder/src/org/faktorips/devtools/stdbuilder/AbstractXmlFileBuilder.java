@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
+// TODO This class should be moved to devtools.core
 public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;

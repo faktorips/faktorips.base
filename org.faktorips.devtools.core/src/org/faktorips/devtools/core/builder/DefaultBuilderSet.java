@@ -78,27 +78,43 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public JavaNamingConvention getJavaNamingConvention() {
         return JavaNamingConvention.ECLIPSE_STANDARD;
     }
-
+    
     /**
-     * Returns the addition of the name of the ips package fragment that contains the provided
-     * IpsSrcFile and the base package name. This method is used within the getPackage() method
-     * implementation.
+     * Returns the name of the (Java) package that contains the artefacts specified by the parameters
+     * generated for the given ips source file.
+     * 
+     * @param publishedArtefact <code>true</code> if the artefacts are published (ussable by clients), 
+     *                          <code>false</code> if they are internal.
+     * @param mergableArtefact <code>true</code> if the generated artefacte is mergable (at the moment this applies to Java Source files only).
+     *                         <code>false</code) if the artefact is 100% generated and can't be modified by the user.                          
      */
-    public String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String basePackName = ipsSrcFile.getBasePackageNameForMergableArtefacts();
+    public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile, boolean publishedArtefact, boolean mergableArtefact) throws CoreException {
+        String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile.getBasePackageNameForDerivedArtefacts();
+        if (!publishedArtefact) {
+            basePackName = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
+        }
         String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
         return QNameUtil.concat(basePackName, packageFragName);
     }
 
+
     /**
-     * Returns ips package fragment + ".internal." + base package name. This method is used within
-     * the getPackage() method implementation.
+     * Returns the name of the (Java) package name that contains the published artefacts that
+     * are generated for the given ips source file that (the artefacts) are also mergable.
      */
-    public String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String basePackName = QNameUtil.concat(ipsSrcFile.getBasePackageNameForMergableArtefacts(), INTERNAL_PACKAGE);
-        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-        return QNameUtil.concat(basePackName, packageFragName);
+    public String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getPackageNameForGeneratedArtefacts(ipsSrcFile, true, true);
     }
+
+    /**
+     * Returns the name of the (Java) package name that contains the internal artefacts that
+     * are generated for the given ips source file that (the artefacts) are also mergable.
+     */
+    public String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
+    }
+    
+    
 
     /**
      * {@inheritDoc}
@@ -154,87 +170,87 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         // TODO v2 - das koenner wir effizienter implementieren
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_POLICY_CMPT_INTERFACE.equals(kind)) {
-                return getPackageName(ipsSrcFile);
+                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
 
             if (KIND_POLICY_CMPT_IMPL.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
 
             if (KIND_MODEL_TYPE.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
 
         }
 
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_PRODUCT_CMPT_INTERFACE.equals(kind)) {
-                return getPackageName(ipsSrcFile);
+                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
 
             if (KIND_PRODUCT_CMPT_IMPL.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_GENERATION_INTERFACE.equals(kind)) {
-                return getPackageName(ipsSrcFile);
+                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
 
             if (KIND_MODEL_TYPE.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_PRODUCT_CMPT_CONTENT.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_TOCENTRY.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_FORMULA_TEST_CASE.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.ENUM_CONTENT.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_ENUM_CONTENT.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_ENUM_CONTENT_TOCENTRY.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TABLE_CONTENT.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_TABLE_TOCENTRY.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.TEST_CASE_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TEST_CASE_TYPE_CLASS.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
         if (IpsObjectType.TEST_CASE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TEST_CASE_XML.equals(kind)) {
-                return getInternalPackageName(ipsSrcFile);
+                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
         }
 
