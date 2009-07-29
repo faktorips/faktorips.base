@@ -99,6 +99,9 @@ public class IpsArchive implements IIpsArchive {
         //see javadoc IIpsArchiveEntry#isContained(IResourceDelta)
         IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = wsRoot.getFileForLocation(getLocation());
+        if (file==null) {
+            return false; // file is outside the workspace
+        }
         if (delta.findMember(file.getProjectRelativePath()) != null) {
             return true;
         }
