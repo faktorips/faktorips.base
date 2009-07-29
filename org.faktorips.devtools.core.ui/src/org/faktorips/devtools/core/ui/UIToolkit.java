@@ -474,33 +474,31 @@ public class UIToolkit {
      * @param parent The parent ui composite.
      * @param chooseSuperEnumType Flag indicating whether the created control shall be used to
      *            choose a super enum type.
-     * 
-     * @return A handle to the newly created EnumTypeRefControl.
      */
     public EnumTypeRefControl createEnumTypeRefControl(IIpsProject ipsProject,
             Composite parent,
             boolean chooseSuperEnumType) {
-        
+
         return new EnumTypeRefControl(ipsProject, parent, this, chooseSuperEnumType);
     }
 
     /**
-     * Creates and returns a new <code>EnumRefControl</code> which allows to 
-     * select either an <code>IEnumType</code> or an <code>IEnumContent</code>.
+     * Creates and returns a new <code>EnumRefControl</code> which allows to select either an
+     * <code>IEnumType</code> or an <code>IEnumContent</code>.
      * 
      * @param ipsProject The ips project to search for enum types and contents.
      * @param parent The parent ui composite.
-     * @param chooseSuperEnumType Flag indicating whether the created control shall be used to
-     *            choose a super enum type.
-     * 
-     * @return A handle to the newly created EnumRefControl.
+     * @param hideAbstract Flag indicating whether to hide abstract enum types.
+     * @param hideNotContainingValues Flag indicating whether to hide enum types that are not
+     *            containing values.
      */
     public EnumRefControl createEnumRefControl(IIpsProject ipsProject,
             Composite parent,
-            boolean chooseSuperEnumType) {
-        return new EnumRefControl(ipsProject, parent, this, chooseSuperEnumType);
+            boolean hideAbstract,
+            boolean hideNotContainingValues) {
+        return new EnumRefControl(ipsProject, parent, this, hideAbstract, hideNotContainingValues);
     }
-    
+
     /**
      * Creates a new TableStructureRefControl.
      */
@@ -609,8 +607,9 @@ public class UIToolkit {
      * @param combo The combo to set the values.
      * @param values The values to set.
      */
-//    pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't not be modified
-    //within this method.
+    // pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't not be
+    // modified
+    // within this method.
     private void setComboValues(Combo combo, String[] values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] == null) {
