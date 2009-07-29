@@ -21,21 +21,21 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * Base class for wizards to import tabular data. 
+ * Base class for wizards to import tabular data.
  * 
  * @author Roman Grutza
  */
 public abstract class IpsObjectImportWizard extends Wizard implements IImportWizard {
 
     protected final static String DIALOG_SETTINGS_KEY = "IpsObjectImportWizard"; //$NON-NLS-1$
-    
+
     protected IStructuredSelection selection;
     protected boolean hasNewDialogSettings;
     protected boolean importIntoExisting;
 
     public IpsObjectImportWizard() {
-        IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
+        IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
+        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
         if (section == null)
             hasNewDialogSettings = true;
         else {
@@ -52,8 +52,8 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
     }
 
     /**
-     * Sets if the table content will be imported into the existing table content (<code>true</code>),
-     * or not (<code>false</code>)
+     * Sets if the table content will be imported into the existing table content (<code>true</code>
+     * ), or not (<code>false</code>)
      */
     public void setImportIntoExisting(boolean importIntoExisting) {
         this.importIntoExisting = importIntoExisting;

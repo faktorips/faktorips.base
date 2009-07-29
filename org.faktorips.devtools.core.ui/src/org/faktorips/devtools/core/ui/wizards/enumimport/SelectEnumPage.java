@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,43 +43,43 @@ import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
  * @author Roman Grutza
  */
 public class SelectEnumPage extends SelectImportTargetPage {
-    
+
     private IpsObjectRefControl enumControl;
     private TextButtonField enumField;
-    
+
     // true if the input is validated and errors are displayed in the messages area.
     protected boolean validateInput = true;
-    
+
     /**
-	 * @param pageName
+     * @param pageName
      * @param selection
      * @throws JavaModelException
-	 */
-	public SelectEnumPage(IStructuredSelection selection) throws JavaModelException {
-	    super(selection, Messages.SelectEnumPage_title);
-	}
+     */
+    public SelectEnumPage(IStructuredSelection selection) throws JavaModelException {
+        super(selection, Messages.SelectEnumPage_title);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createControl(Composite parent) {
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle(Messages.SelectEnumPage_title);
-        
+
         pageControl = new Composite(parent, SWT.NONE);
         pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout pageLayout = new GridLayout(1, false);
         pageLayout.verticalSpacing = 20;
         pageControl.setLayout(pageLayout);
         setControl(pageControl);
-        
-        Composite locationComposite  = toolkit.createLabelEditColumnComposite(pageControl);
+
+        Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(locationComposite, Messages.SelectEnumPage_locationLabel);
         projectControl = toolkit.createIpsProjectRefControl(locationComposite);
         projectField = new TextButtonField(projectControl);
         projectField.addChangeListener(this);
-        
+
         Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         createEnumImportControls(toolkit);
@@ -88,10 +87,10 @@ public class SelectEnumPage extends SelectImportTargetPage {
         setDefaults(selectedResource);
 
         validateInput = true;
-	}
+    }
 
     private void createEnumImportControls(UIToolkit toolkit) {
-        Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl); 
+        Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
         enumControl = toolkit.createEnumRefControl(null, lowerComposite, true, true);
         enumField = new TextButtonField(enumControl);
@@ -104,17 +103,17 @@ public class SelectEnumPage extends SelectImportTargetPage {
     protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         try {
-            if (selectedResource==null) {
+            if (selectedResource == null) {
                 setImportTarget(null);
                 return;
             }
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
             if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile src = (IIpsSrcFile) element;
-                setImportTarget(src.getIpsObject()); 
+                IIpsSrcFile src = (IIpsSrcFile)element;
+                setImportTarget(src.getIpsObject());
             }
             if (element == null) {
-                setImportTarget(null);    
+                setImportTarget(null);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -123,11 +122,11 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     private void setImportTarget(IIpsObject ipsObject) throws CoreException {
         if (ipsObject != null && ipsObject instanceof IEnumValueContainer) {
-            IEnumValueContainer valueContainer = (IEnumValueContainer) ipsObject;
+            IEnumValueContainer valueContainer = (IEnumValueContainer)ipsObject;
             setEnum(valueContainer);
         }
     }
-    
+
     private void setEnum(IEnumValueContainer enumValueContainer) {
         if (enumValueContainer == null) {
             enumControl.setText(""); //$NON-NLS-1$
@@ -139,12 +138,13 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     public IEnumValueContainer getEnum() throws CoreException {
-        return ((EnumRefControl) enumControl).findEnum();
+        return ((EnumRefControl)enumControl).findEnum();
     }
-    
+
     protected void contentsChanged() {
+        
     }
-    
+
     protected void projectChanged() {
         if ("".equals(projectField.getText())) { //$NON-NLS-1$
             enumControl.setIpsProject(null);
@@ -157,7 +157,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
         }
         enumControl.setIpsProject(null);
     }
-        
+
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == projectField) {
             projectChanged();
@@ -166,54 +166,56 @@ public class SelectEnumPage extends SelectImportTargetPage {
             contentsChanged();
         }
         if (validateInput) { // don't validate during control creating!
-            validatePage();    
+            validatePage();
         }
         updatePageComplete();
     }
-    
+
     /**
-     * Validates the page and generates error messages if needed. 
-     * Can be overridden in subclasses to add specific validation logic.s 
+     * Validates the page and generates error messages if needed. Can be overridden in subclasses to
+     * add specific validation logic.s
      */
     protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         validateProject();
-        if (getErrorMessage()!=null) {
+        if (getErrorMessage() != null) {
             return;
         }
         validateImportTarget();
-        if (getErrorMessage()!=null) {
+        if (getErrorMessage() != null) {
             return;
         }
         updatePageComplete();
     }
-    
+
     protected void validateImportTarget() {
+        if (enumControl.getText().length() == 0) {
+            setErrorMessage(Messages.SelectEnumPage_msgEnumEmpty);
+            return;
+        }
         try {
             IEnumValueContainer valueContainer = getEnum();
             if (valueContainer == null) {
-                setErrorMessage(NLS.bind(Messages.SelectEnumPage_msgMissingContent, enumControl.getText()));
+                setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
                 return;
             }
             if (!valueContainer.exists()) {
-                setErrorMessage(NLS.bind(Messages.SelectEnumPage_msgMissingContent, enumControl.getText()));
+                setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
                 return;
             }
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            setErrorMessage(Messages.SelectEnumPage_msgMissingContent + e);
-            return;
+            throw new RuntimeException(e);
         }
     }
-    
+
     protected void updatePageComplete() {
-        if (getErrorMessage()!=null) {
+        if (getErrorMessage() != null) {
             setPageComplete(false);
             return;
         }
         boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
-        && !"".equals(enumField.getText()); //$NON-NLS-1$
+                && !"".equals(enumField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
     }
 }

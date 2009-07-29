@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String EnumImportWizard_title;
     public static String SelectEnumPage_locationLabel;
     public static String SelectEnumPage_msgMissingContent;
+    public static String SelectEnumPage_msgEnumEmpty;
     public static String SelectEnumPage_targetTypeLabel;
     public static String SelectEnumPage_title;
     public static String SelectFileAndImportMethodPage_labelImportExisting;

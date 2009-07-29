@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
 
 /**
- * A wizard page where one can specify an IPS object as the target of an import.   
+ * A wizard page where one can specify an IPS object as the target of an import.
  * 
  * @author Roman Grutza
  */
@@ -41,14 +41,13 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     protected TextButtonField projectField;
     protected Composite pageControl;
 
-    
     public SelectImportTargetPage(IStructuredSelection selection, String pageName) throws JavaModelException {
         super(pageName);
-        
+
         if (selection.getFirstElement() instanceof IResource) {
             selectedResource = (IResource)selection.getFirstElement();
         } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();                
+            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
         } else if (selection.getFirstElement() instanceof IIpsElement) {
             selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
         } else {
@@ -66,11 +65,11 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      */
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-            IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+                IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
     }
 
     /**
-     * Sets the given IPS project for this wizard page. 
+     * Sets the given IPS project for this wizard page.
      * 
      * @param project A valid IPS project.
      */
@@ -79,11 +78,10 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     }
 
     /**
-     * Derives the default value for the project from
-     * the selected resource.
+     * Derives the default value for the project from the selected resource.
      * 
-     * @param selectedResource The resource that was selected in the current selection when
-     * the wizard was opened.
+     * @param selectedResource The resource that was selected in the current selection when the
+     *            wizard was opened.
      */
     protected void setDefaults(IResource selectedResource) {
         if (selectedResource == null) {
@@ -96,13 +94,17 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     }
 
     /**
-     * Validates the project currently set. Error messages are set on the wizard page if an
-     * invalid project is set.
+     * Validates the project currently set. Error messages are set on the wizard page if an invalid
+     * project is set.
      */
     protected void validateProject() {
+        if (projectField.getText().equals("")) {
+            setErrorMessage(Messages.SelectContentsPage_msgProjectEmpty);
+            return;
+        }
         IIpsProject project = getIpsProject();
         if (project == null) {
-            setErrorMessage(Messages.SelectContentsPage_msgInvalidProject);
+            setErrorMessage(Messages.SelectContentsPage_msgNonExistingProject);
             return;
         }
         if (!project.exists()) {
@@ -112,8 +114,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     }
 
     /**
-     * Saves the dialog settings to be able to restore them on future instances of
-     * this wizard page.
+     * Saves the dialog settings to be able to restore them on future instances of this wizard page.
      */
     public void saveWidgetValues() {
     }

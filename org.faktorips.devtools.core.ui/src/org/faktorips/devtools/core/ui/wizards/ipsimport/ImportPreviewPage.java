@@ -80,7 +80,6 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     // creates configuration controls specific to a table format
     private TableFormatConfigurationCompositeFactory configCompositeFactory;
 
-    
     /**
      * Initializes the preview dialog using the given selection.
      * <p>
@@ -127,11 +126,12 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             previewTable.dispose();
         }
 
-// TODO rg:
-//        if preview is not available this label should be shown
-//        Label previewNotAvailableLabel = toolkit.createLabel(parent, "A preview is not available.");
-//        previewNotAvailableLabel.getLayoutData();
-        
+        // TODO rg:
+        // if preview is not available this label should be shown
+        // Label previewNotAvailableLabel = toolkit.createLabel(parent,
+        // "A preview is not available.");
+        // previewNotAvailableLabel.getLayoutData();
+
         previewTable = toolkit.createTable(parent, SWT.BORDER | SWT.NO_SCROLL);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         previewTable.setLayoutData(data);
@@ -153,12 +153,13 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             dynamicPropertiesComposite.dispose();
         }
 
-        dynamicPropertiesComposite = toolkit.createGroup(pageControl, Messages.ImportPreviewPage_configurationGroupTitle);
+        dynamicPropertiesComposite = toolkit.createGroup(pageControl,
+                Messages.ImportPreviewPage_configurationGroupTitle);
         Object layoutData = dynamicPropertiesComposite.getLayoutData();
         if (layoutData instanceof GridData) {
             ((GridData)layoutData).grabExcessVerticalSpace = false;
         }
-        
+
         try {
             configCompositeFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
             if (configCompositeFactory != null) {
@@ -167,7 +168,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
-        }        
+        }
 
         // make sure the configuration composite is displayed above the preview
         dynamicPropertiesComposite.moveAbove(null);
@@ -179,14 +180,14 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         }
 
         createTablePreviewControls(previewGroup, toolkit);
-        
+
         List preview = Collections.EMPTY_LIST;
         if (structure instanceof ITableStructure) {
-            preview = tableFormat.getImportTablePreview(
-                    (ITableStructure)structure, new Path(filename), MAX_NUMBER_PREVIEW_ROWS);
+            preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),
+                    MAX_NUMBER_PREVIEW_ROWS);
         } else if (structure instanceof IEnumType) {
-            preview = tableFormat.getImportEnumPreview(
-                    (IEnumType)structure, new Path(filename), MAX_NUMBER_PREVIEW_ROWS);
+            preview = tableFormat.getImportEnumPreview((IEnumType)structure, new Path(filename),
+                    MAX_NUMBER_PREVIEW_ROWS);
         }
 
         int numberOfColumns = preview.isEmpty() ? 0 : ((String[])preview.get(0)).length;
@@ -201,7 +202,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             if (structure instanceof ITableStructure) {
                 columns[i].setText(((ITableStructure)structure).getColumn(i - 1).getName());
             } else if (structure instanceof IEnumType) {
-                IEnumType type = (IEnumType) structure;
+                IEnumType type = (IEnumType)structure;
                 String attributeName = type.getEnumAttributes().get(i - 1).getName();
                 columns[i].setText(attributeName);
             }
@@ -266,7 +267,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     public void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
-        if (! tableFormat.isValidImportSource(filename)) {
+        if (!tableFormat.isValidImportSource(filename)) {
             setMessage(Messages.ImportPreviewPage_validationWarningInvalidFile, IMessageProvider.WARNING);
         }
         setErrorMessage(null);
@@ -286,8 +287,8 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
      * 
      * @param filename
      * @param tableFormat
-     * @param An <code>IEnumType</code> instance when previewing an enum, or
-     *        an <code>ITableStructure</code> instance for table previews 
+     * @param An <code>IEnumType</code> instance when previewing an enum, or an
+     *            <code>ITableStructure</code> instance for table previews
      */
     public void reinit(String filename, ITableFormat tableFormat, IIpsObject structure) {
         this.filename = filename;
@@ -295,6 +296,6 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         this.structure = structure;
 
         resetDynamicPropertiesControl(dynamicPropertiesAnchorComposite, toolkit, tableFormat);
-        refreshPage();        
+        refreshPage();
     }
 }
