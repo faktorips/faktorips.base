@@ -16,22 +16,27 @@ package org.faktorips.devtools.core.ui.wizards.enumexport;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumexport.messages"; //$NON-NLS-1$
+
     public static String EnumExportPage_enum_label;
     public static String EnumExportPage_messagearea_title;
-    public static String EnumExportPage_msgInvalidEnum;
+    public static String EnumExportPage_msgAbstractEnumType;
+    public static String EnumExportPage_msgEnumTypeNotContainingValues;
     public static String EnumExportPage_msgNonExistingEnum;
-    public static String EnumExportPage_msgValidateEnumError;
     public static String EnumExportPage_title;
     public static String EnumExportWizard_msgFileExists;
     public static String EnumExportWizard_msgFileExistsTitle;
     public static String EnumExportWizard_operationName;
     public static String EnumExportWizard_title;
+    public static String EnumExportPage_msgEnumEmpty;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
+
     }
 }

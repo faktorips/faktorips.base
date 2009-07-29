@@ -897,7 +897,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.notNull(ipsProject);
 
         List<IEnumType> subEnumTypes = new ArrayList<IEnumType>();
-        List<IEnumType> allEnumTypes = ipsProject.findEnumTypes();
+        List<IEnumType> allEnumTypes = ipsProject.findEnumTypes(true, true);
         for (IEnumType currentEnumType : allEnumTypes) {
             if (!(currentEnumType.hasSuperEnumType())) {
                 continue;

@@ -93,7 +93,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     private void createEnumImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl); 
         toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
-        enumControl = toolkit.createEnumRefControl(null, lowerComposite, true);
+        enumControl = toolkit.createEnumRefControl(null, lowerComposite, true, true);
         enumField = new TextButtonField(enumControl);
         enumField.addChangeListener(this);
     }

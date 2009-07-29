@@ -38,8 +38,8 @@ public class Messages extends NLS {
     public static String TableExportPage_labelName;
     public static String TableExportPage_msgEmptyName;
     public static String TableExportPage_labelProject;
-    public static String TableExportPage_msgInvalidProject;
     public static String TableExportPage_msgNonExistingProject;
+    public static String TableExportPage_msgProjectEmpty;
     public static String TableExportPage_msgInvalidContents;
     public static String TableExportPage_msgNonExisitingContents;
     public static String TableExportPage_msgValidateContentsError;

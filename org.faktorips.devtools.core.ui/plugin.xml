@@ -654,7 +654,7 @@
             id="enumExportWizard"
             name="%EnumExportWizard.name">
          <description>
-            %TableExportWizard.description
+            %EnumExportWizard.description
          </description>
          <selection
                class="org.eclipse.core.resources.IResource">

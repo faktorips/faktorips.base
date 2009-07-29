@@ -543,8 +543,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     public void testfindEnumTypes() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
-        paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setAbstract(true);
+        paymentMode.setContainingValues(false);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -552,17 +552,29 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
-        paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
-        id = paymentMode.newEnumAttribute();
+        gender.setAbstract(false);
+        gender.setContainingValues(true);
+        id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
         id.setLiteralName(true);
         id.setName("id");
 
-        List<IEnumType> enumTypes = ipsProject.findEnumTypes();
+        List<IEnumType> enumTypes = ipsProject.findEnumTypes(true, true);
         assertEquals(2, enumTypes.size());
         assertTrue(enumTypes.contains(paymentMode));
+        assertTrue(enumTypes.contains(gender));
+
+        enumTypes = ipsProject.findEnumTypes(false, true);
+        assertEquals(1, enumTypes.size());
+        assertTrue(enumTypes.contains(gender));
+
+        enumTypes = ipsProject.findEnumTypes(true, false);
+        assertEquals(1, enumTypes.size());
+        assertTrue(enumTypes.contains(gender));
+
+        enumTypes = ipsProject.findEnumTypes(false, false);
+        assertEquals(1, enumTypes.size());
         assertTrue(enumTypes.contains(gender));
     }
 
@@ -1888,8 +1900,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testFindAllIpsSrcFilesByPackageFragment() throws Exception{
-        
+    public void testFindAllIpsSrcFilesByPackageFragment() throws Exception {
+
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
@@ -1897,7 +1909,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.A");
         IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.B");
         IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
-        
+
         IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
         IEnumType eB = newEnumType(ipsProject, "a.b.c.EB");
         IEnumType eC = newEnumType(ipsProject, "a.b.c.EC");
@@ -1905,10 +1917,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumType eA2 = newEnumType(ipsProject, "a.b.d.EA");
         IEnumType eB2 = newEnumType(ipsProject, "a.b.d.EB");
         IEnumType eC2 = newEnumType(ipsProject, "a.b.d.EC");
-        
+
         ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.POLICY_CMPT_TYPE, "a.b.c");
-        
+
         assertEquals(3, ipsSrcFiles.size());
         assertTrue(ipsSrcFiles.contains(a.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(b.getIpsSrcFile()));
@@ -1916,7 +1928,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         ipsSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.POLICY_CMPT_TYPE, "a.b.d");
-        
+
         assertEquals(3, ipsSrcFiles.size());
         assertTrue(ipsSrcFiles.contains(a2.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(b2.getIpsSrcFile()));
@@ -1924,22 +1936,22 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         ipsSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE, "a.b.c");
-        
+
         assertEquals(3, ipsSrcFiles.size());
         assertTrue(ipsSrcFiles.contains(eA.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(eB.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(eC.getIpsSrcFile()));
-        
+
         ipsSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE, "a.b.d");
-        
+
         assertEquals(3, ipsSrcFiles.size());
         assertTrue(ipsSrcFiles.contains(eA2.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(eB2.getIpsSrcFile()));
         assertTrue(ipsSrcFiles.contains(eC2.getIpsSrcFile()));
     }
 
-    public void testFindEnumContent() throws Exception{
+    public void testFindEnumContent() throws Exception {
         IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
         eA.setContainingValues(false);
         eA.setEnumContentName("a.b.c");
@@ -1948,7 +1960,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumContent result = ipsProject.findEnumContent(eA);
         assertEquals(contentA, result);
     }
-    
+
     private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {
         for (int i = 0; i < result.length; i++) {
             if (result[i].getIpsObject().equals(policyCmptType.getIpsObject())) {

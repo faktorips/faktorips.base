@@ -52,11 +52,11 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
     private boolean chooseSuperEnumType;
 
     /**
-     * Creates a new enum type ref control.
+     * Creates a new <tt>EnumTypeRefControl</tt>.
      * 
-     * @param project The ips project to search for enum types.
-     * @param parent The parent ui composite.
-     * @param toolkit The ui toolkit to create ui elements with.
+     * @param project The IPS project to search for enum types.
+     * @param parent The parent UI composite.
+     * @param toolkit The UI toolkit to create UI elements with.
      * @param chooseSuperEnumType Flag indicating whether this control will be used to select a
      *            super enum type.
      */

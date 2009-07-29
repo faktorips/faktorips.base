@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,14 +32,17 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
 
 /**
- * Wizard page for configuring an Enum type or content for export.
+ * Wizard page for configuring an enum type or enum content for export.
  * 
  * @see {@link IEnumType}, {@link IEnumContent}
+ * 
  * @author Roman Grutza
  */
 public class EnumExportPage extends IpsObjectExportPage {
 
-    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
@@ -48,13 +51,12 @@ public class EnumExportPage extends IpsObjectExportPage {
         setTitle(Messages.EnumExportPage_messagearea_title);
     }
 
-
     public EnumExportPage(IStructuredSelection selection) throws JavaModelException {
         super(Messages.EnumExportPage_title);
         if (selection.getFirstElement() instanceof IResource) {
             selectedResource = (IResource)selection.getFirstElement();
         } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();                
+            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
         } else if (selection.getFirstElement() instanceof IIpsElement) {
             selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
         } else {
@@ -62,11 +64,13 @@ public class EnumExportPage extends IpsObjectExportPage {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
         toolkit.createFormLabel(parent, Messages.EnumExportPage_enum_label);
-        return toolkit.createEnumRefControl(getIpsProject(), parent, false); 
+        return toolkit.createEnumRefControl(getIpsProject(), parent, true, true);
     }
 
     /**
@@ -74,52 +78,75 @@ public class EnumExportPage extends IpsObjectExportPage {
      */
     protected void validateObjectToExport() {
         try {
-            IEnumValueContainer enumContainer = getEnum();
-            if (enumContainer == null) {
-                setErrorMessage(Messages.EnumExportPage_msgInvalidEnum);
-                return;
+            IEnumValueContainer enumValueContainer = getEnum();
+            if (!(exportedIpsObjectControl.getText().equals(""))) {
+                if (enumValueContainer == null) {
+                    setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+                    return;
+                }
+                if (!enumValueContainer.exists()) {
+                    setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+                    return;
+                }
             }
-            if (!enumContainer.exists()) {
-                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
-                return;
+            if (enumValueContainer instanceof IEnumType) {
+                IEnumType enumType = (IEnumType)enumValueContainer;
+                if (enumType.isAbstract()) {
+                    setErrorMessage(Messages.EnumExportPage_msgAbstractEnumType);
+                    return;
+                }
+                if (!(enumType.isContainingValues())) {
+                    setErrorMessage(Messages.EnumExportPage_msgEnumTypeNotContainingValues);
+                    return;
+                }
             }
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            setErrorMessage(Messages.EnumExportPage_msgValidateEnumError + e);
-            return;
+            throw new RuntimeException(e);
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateFieldsExtension() {
+        if (exportedIpsObjectControl.getText().equals("")) {
+            setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
     protected void setDefaults(IResource selectedResource) {
+        if (selectedResource == null) {
+            setEnum(null);
+            return;
+        }
         try {
-            if (selectedResource==null) {
-                setEnum(null);
-                return;
-            }
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+            if (element == null) {
+                setEnum(null);
+            }
+            setIpsProject(element.getIpsProject());
             if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile src = (IIpsSrcFile) element;
-                if (src.getIpsObjectType() == IpsObjectType.ENUM_TYPE
-                    || src.getIpsObjectType() == IpsObjectType.ENUM_CONTENT) {
-                    
-                    IEnumValueContainer enumContainer = (IEnumValueContainer) src.getIpsObject();
-                    setEnum(enumContainer);
+                IIpsSrcFile src = (IIpsSrcFile)element;
+                IpsObjectType ipsObjectType = src.getIpsObjectType();
+                if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
+                    IEnumType enumType = (IEnumType)src.getIpsObject();
+                    if (!(enumType.isAbstract()) && enumType.isContainingValues()) {
+                        setEnum(enumType);
+                    }
+                } else if (ipsObjectType.equals(IpsObjectType.ENUM_CONTENT)) {
+                    IEnumContent enumContent = (IEnumContent)src.getIpsObject();
+                    setEnum(enumContent);
                 }
-            } else if (element != null) {
-                setIpsProject(element.getIpsProject());
-            } else {
-                setEnum(null);    
             }
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            throw new RuntimeException(e);
         }
     }
 
-
-    
     private void setEnum(IEnumValueContainer enumContainer) {
         if (enumContainer == null) {
             exportedIpsObjectControl.setText(""); //$NON-NLS-1$
@@ -129,11 +156,10 @@ public class EnumExportPage extends IpsObjectExportPage {
         exportedIpsObjectControl.setText(enumContainer.getQualifiedName());
         setIpsProject(enumContainer.getIpsProject());
     }
-    
+
     public IEnumValueContainer getEnum() throws CoreException {
         if (exportedIpsObjectControl instanceof EnumRefControl) {
-            return ((EnumRefControl)exportedIpsObjectControl)
-                .findEnum();
+            return ((EnumRefControl)exportedIpsObjectControl).findEnum();
         }
         return null;
     }

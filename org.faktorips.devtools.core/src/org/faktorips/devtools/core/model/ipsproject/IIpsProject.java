@@ -446,22 +446,26 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IEnumType findEnumType(String qualifiedName) throws CoreException;
 
     /**
-     * Returns all {@link IEnumType} objects found in this ips project. An empty list will be
+     * Returns all {@link IEnumType} objects found in this IPS project. An empty list will be
      * returned if none is found.
      * 
-     * @throws CoreException if an exception occurs while processing the search
+     * @param includeAbstract
+     * @param includeNotContainingValues
+     * 
+     * @throws CoreException if an exception occurs while processing the search.
      */
-    public List<IEnumType> findEnumTypes() throws CoreException;
+    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues)
+            throws CoreException;
 
     /**
      * Returns the first enumeration content that is found within this ips project that references
      * the provided enumeration type.
      * 
      * @throws CoreException if an exception occurs while processing the search
-     * @throws NullPointerException if the provided parameter is <code>null</code> 
+     * @throws NullPointerException if the provided parameter is <code>null</code>
      */
     public IEnumContent findEnumContent(IEnumType enumType) throws CoreException;
-    
+
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
      * product component exists. If more than one product component with the given id exists, the

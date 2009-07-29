@@ -842,10 +842,27 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public List<IEnumType> findEnumTypes() throws CoreException {
+    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues)
+            throws CoreException {
+
         List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
         findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE);
-        return (List<IEnumType>)filesToIpsObjects(ipsSrcFiles);
+        List<IEnumType> enumTypes = (List<IEnumType>)filesToIpsObjects(ipsSrcFiles);
+        if (includeAbstract && includeNotContainingValues) {
+            return enumTypes;
+        }
+
+        List<IEnumType> filteredList = new ArrayList<IEnumType>(enumTypes.size());
+        for (IEnumType currentEnumType : enumTypes) {
+            if (!includeAbstract && currentEnumType.isAbstract()) {
+                continue;
+            }
+            if (!includeNotContainingValues && !(currentEnumType.isContainingValues())) {
+                continue;
+            }
+            filteredList.add(currentEnumType);
+        }
+        return filteredList;
     }
 
     /**
@@ -1031,11 +1048,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment) throws CoreException{
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
+            throws CoreException {
         Set<IIpsSrcFile> visitedEntries = new HashSet<IIpsSrcFile>();
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, packageFragment, result, visitedEntries);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1045,13 +1063,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return null;
         }
         IIpsSrcFile enumContentSrcFile = findIpsSrcFile(IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
-        
-        if(enumContentSrcFile != null && enumContentSrcFile.exists()){
+
+        if (enumContentSrcFile != null && enumContentSrcFile.exists()) {
             return (IEnumContent)enumContentSrcFile.getIpsObject();
         }
         return null;
     }
-    
+
     private void findAllIpsSrcFiles(List result, IpsObjectType ipsObjectType) throws CoreException {
         Set visitedEntries = new HashSet();
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
@@ -1104,9 +1122,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         Set<Datatype> result = new LinkedHashSet<Datatype>();
         getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
 
-        List<IEnumType> enumTypeList = findEnumTypes();
+        List<IEnumType> enumTypeList = findEnumTypes(includeAbstract, true);
         for (IEnumType enumType : enumTypeList) {
-            if(enumType.isContainingValues()){
+            if (enumType.isContainingValues()) {
                 result.add(new EnumTypeDatatypeAdapter(enumType, null));
                 continue;
             }
@@ -1155,7 +1173,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean includePrimitives,
             Set<IIpsProject> visitedProjects,
             Set<Datatype> result) throws CoreException {
-        ((IpsModel)getIpsModel()).getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives, result);
+        ((IpsModel)getIpsModel()).getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives,
+                result);
         IIpsProject[] projects = ipsProject.getIpsObjectPathInternal().getReferencedIpsProjects();
         for (int i = 0; i < projects.length; i++) {
             if (!visitedProjects.contains(projects[i])) {
@@ -1224,7 +1243,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 }
             }
         }
-        if(type != null){
+        if (type != null) {
             if (arrayDimension == 0) {
                 return type;
             }
@@ -1232,16 +1251,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 return new ArrayOfValueDatatype(type, arrayDimension);
             }
             throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
-            "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+                    "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
         return getEnumTypeDatatypeAdapter(qualifiedName, this);
     }
 
-    private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject) throws CoreException{
+    private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject)
+            throws CoreException {
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
-        if(enumTypeSrcFile != null && enumTypeSrcFile.exists()){
+        if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
             IEnumType enumType = (IEnumType)enumTypeSrcFile.getIpsObject();
-            if(enumType.isContainingValues()){
+            if (enumType.isContainingValues()) {
                 return new EnumTypeDatatypeAdapter(enumType, null);
             }
             IEnumContent enumContent = ipsProject.findEnumContent(enumType);
@@ -1249,7 +1269,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1277,7 +1297,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String qualifiedName,
             Set<IIpsProject> visitedProjects) throws CoreException {
 
-        ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
+        ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatypeDefinedInProjectProperties(ipsProject,
+                qualifiedName);
         if (datatype != null) {
             return datatype;
         }
