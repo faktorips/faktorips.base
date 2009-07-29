@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
+import org.faktorips.util.message.Message;
 
 /**
  * Wizard page for configuring an enum type or enum content for export.
@@ -39,6 +41,9 @@ import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
  * @author Roman Grutza
  */
 public class EnumExportPage extends IpsObjectExportPage {
+
+    /** The maximum number of columns allowed in an Excel sheet. */
+    private static final short MAX_EXCEL_COLUMNS = Short.MAX_VALUE;
 
     /**
      * {@inheritDoc}
@@ -89,6 +94,10 @@ public class EnumExportPage extends IpsObjectExportPage {
                     return;
                 }
             }
+            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
+                return;
+            }
             if (enumValueContainer instanceof IEnumType) {
                 IEnumType enumType = (IEnumType)enumValueContainer;
                 if (enumType.isAbstract()) {
@@ -99,6 +108,15 @@ public class EnumExportPage extends IpsObjectExportPage {
                     setErrorMessage(Messages.EnumExportPage_msgEnumTypeNotContainingValues);
                     return;
                 }
+            }
+            IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            if (enumType.getEnumAttributesCount(true) > MAX_EXCEL_COLUMNS) {
+                Object[] objects = new Object[3];
+                objects[0] = new Integer(enumType.getEnumAttributesCount(true));
+                objects[1] = enumType;
+                objects[2] = new Short(MAX_EXCEL_COLUMNS);
+                String text = NLS.bind(Messages.EnumExportPage_msgEnumHasTooManyColumns, objects);
+                setErrorMessage(text);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);

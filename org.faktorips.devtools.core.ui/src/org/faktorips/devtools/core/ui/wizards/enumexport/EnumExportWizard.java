@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -49,20 +49,19 @@ import org.faktorips.util.message.MessageList;
 public class EnumExportWizard extends IpsObjectExportWizard {
 
     private static String DIALOG_SETTINGS_KEY = "EnumExportWizard"; //$NON-NLS-1$
-    
-    // mandatory page to select filename, table format etc. 
+
+    // mandatory page to select filename, table format etc.
     private EnumExportPage exportPage;
-    
+
     // each table format can contain custom properties which are shown in the second wizard page
-    private Map< ITableFormat, TableFormatPropertiesPage> customPages; 
-    
-    
+    private Map<ITableFormat, TableFormatPropertiesPage> customPages;
+
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);
         this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumExportWizard.png")); //$NON-NLS-1$
 
-        IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
+        IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
+        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
         if (section == null)
             hasNewDialogSettings = true;
         else {
@@ -78,8 +77,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         try {
             exportPage = new EnumExportPage(selection);
             addPage(exportPage);
-            
-            // add page for each table format having custom properties 
+
+            // add page for each table format having custom properties
             customPages = new HashMap<ITableFormat, TableFormatPropertiesPage>();
             ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
             for (ITableFormat format : externalTableFormats) {
@@ -93,18 +92,18 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
+
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == exportPage) {
             exportPage.validateObjectToExport();
             boolean isValid = exportPage.getErrorMessage() == null;
-            
+
             for (WizardPage customPage : customPages.values()) {
                 customPage.setPageComplete(isValid);
-                
+
             }
-            
+
             ITableFormat tableFormat = exportPage.getFormat();
             TableFormatPropertiesPage nextPage = customPages.get(tableFormat);
             return nextPage;
@@ -127,11 +126,9 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             File exportFile = new File(exportFilename);
             if (exportFile.exists()) {
                 MessageDialog dialog = new MessageDialog(getContainer().getShell(),
-                        Messages.EnumExportWizard_msgFileExistsTitle,
-                        (Image) null, Messages.EnumExportWizard_msgFileExists,
-                        MessageDialog.QUESTION, new String[] {
-                                IDialogConstants.YES_LABEL,
-                                IDialogConstants.NO_LABEL }, 0);
+                        Messages.EnumExportWizard_msgFileExistsTitle, (Image)null,
+                        Messages.EnumExportWizard_msgFileExists, MessageDialog.QUESTION, new String[] {
+                                IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
 
                 if (dialog.open() != MessageDialog.OK) {
                     // user did not say "yes" to overwrite the file, so return to the wizard
@@ -140,37 +137,38 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             }
 
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
-                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+                        InterruptedException {
                     MessageList messageList = new MessageList();
-                    format.executeEnumExport(exportEnumContainer, new Path(exportFilename), nullRepresentation, exportColumnHeaderRow, messageList);
+                    format.executeEnumExport(exportEnumContainer, new Path(exportFilename), nullRepresentation,
+                            exportColumnHeaderRow, messageList);
 
                     if (!messageList.isEmpty()) {
-                        getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), Messages.EnumExportWizard_operationName, messageList));
+                        getShell().getDisplay().syncExec(
+                                new ResultDisplayer(getShell(), Messages.EnumExportWizard_operationName, messageList));
                     }
                 }
             };
 
             /*
-             * use a ProgressMonitorDialog to display the progress and allow the
-             * user to cancel the process - which both is not possible if only
-             * getContainer().run() is called.
+             * use a ProgressMonitorDialog to display the progress and allow the user to cancel the
+             * process - which both is not possible if only getContainer().run() is called.
              */
             ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
             pmd.setCancelable(true);
             pmd.open();
             ModalContext.run(operation, true, pmd.getProgressMonitor(), getShell().getDisplay());
             pmd.close();
-            
+
             saveDialogSettings();
-            
-        } catch (InterruptedException ignoredException){
+
+        } catch (InterruptedException ignoredException) {
         } catch (Exception e) {
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {
-                throwable = ((InvocationTargetException) e).getCause();
+                throwable = ((InvocationTargetException)e).getCause();
             }
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus(
-                    "An error occurred during the export process.", throwable)); //$NON-NLS-1$
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the export process.", throwable)); //$NON-NLS-1$
         } finally {
             saveWidgetSettings();
         }
@@ -181,7 +179,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         // keep the dialog up
         return true;
     }
-    
+
     public void saveWidgetSettings() {
         exportPage.saveWidgetValues();
     }

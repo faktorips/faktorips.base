@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,7 +41,6 @@ public class EnumImportExportAction extends IpsAction {
     private Shell shell;
     private boolean isImport;
 
-    
     protected EnumImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
@@ -50,8 +49,8 @@ public class EnumImportExportAction extends IpsAction {
     protected EnumImportExportAction(Shell shell, IEnumValueContainer valueContainer) {
         super(new SimpleSelectionProvider(valueContainer));
         this.shell = shell;
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -61,35 +60,35 @@ public class EnumImportExportAction extends IpsAction {
     }
 
     /**
-     * Special run method returns the result of the dialog.
-     * Returns <code>true</code> if the dialog was closed with the ok return code otherwise <code>false</code>.
+     * Special run method returns the result of the dialog. Returns <code>true</code> if the dialog
+     * was closed with the ok return code otherwise <code>false</code>.
      */
     protected boolean runInternal(IStructuredSelection selection) {
         IWorkbenchWizard wizard;
-        if (isImport){
+        if (isImport) {
             wizard = new EnumImportWizard();
             ((EnumImportWizard)wizard).setImportIntoExisting(true);
         } else {
-            wizard = new EnumExportWizard(); 
+            wizard = new EnumExportWizard();
         }
-        
-        if (! (selection.getFirstElement() instanceof IEnumValueContainer)){
+
+        if (!(selection.getFirstElement() instanceof IEnumValueContainer)) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no enum value container!"));
         }
-        
-        if (isImport){
-            if (! checkAndSaveDirtyStateBeforeImport((IEnumValueContainer)selection.getFirstElement())){
+
+        if (isImport) {
+            if (!checkAndSaveDirtyStateBeforeImport((IEnumValueContainer)selection.getFirstElement())) {
                 // abort import
                 return false;
             }
         }
-        
+
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
         return dialog.open() == WizardDialog.OK;
     }
-    
-    protected void initImportAction(){
+
+    protected void initImportAction() {
         setText(Messages.EnumImportExportAction_importActionTitle);
         setToolTipText(Messages.EnumImportExportAction_importActionTooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportEnum.gif")); //$NON-NLS-1$
@@ -103,7 +102,7 @@ public class EnumImportExportAction extends IpsAction {
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final IIpsObject enumIpsObject) {
-        if (! enumIpsObject.getIpsSrcFile().isDirty()) {
+        if (!enumIpsObject.getIpsSrcFile().isDirty()) {
             return true;
         }
         boolean confirmation = MessageDialog.openConfirm(shell,
@@ -125,28 +124,27 @@ public class EnumImportExportAction extends IpsAction {
 
         return true;
     }
-    
-    
+
     // TODO rg: code duplication in TableImportExportAction
-    //      consider changing the selection type to IIpsObject and refactor this+TableImportExportAction
+    // consider changing the selection type to IIpsObject and refactor this+TableImportExportAction
     private static class SimpleSelectionProvider implements ISelectionProvider {
-        
+
         private IEnumValueContainer valueContainer;
 
         public SimpleSelectionProvider(IEnumValueContainer valueContainer) {
             this.valueContainer = valueContainer;
         }
-        
+
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
-        
+
         public ISelection getSelection() {
             return new StructuredSelection(valueContainer);
         }
-        
+
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
-        
+
         public void setSelection(ISelection selection) {
         }
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,13 +27,13 @@ import org.apache.commons.lang.SystemUtils;
  * @author Jan Ortmann
  */
 public class MessageList {
-    
+
     /**
-     * Creates a copy from the message list and replaces all references to the old object
-     * with the new object. 
+     * Creates a copy from the message list and replaces all references to the old object with the
+     * new object.
      * 
      * @param list the list to copy
-     * @param oldObject the old object reference that should be replaced. 
+     * @param oldObject the old object reference that should be replaced.
      * @param newObject the object reference to set
      */
     public final static MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
@@ -42,7 +42,7 @@ public class MessageList {
         }
         MessageList newList = new MessageList();
         int numOfMsg = list.getNoOfMessages();
-        for (int i=0; i<numOfMsg; i++) {
+        for (int i = 0; i < numOfMsg; i++) {
             newList.add(Message.createCopy(list.getMessage(i), oldObject, newObject));
         }
         return newList;
@@ -57,7 +57,8 @@ public class MessageList {
     }
 
     /**
-     * Creates a message list that contains the given message. <code>null</code> will be ignored as a parameter value.
+     * Creates a message list that contains the given message. <code>null</code> will be ignored as
+     * a parameter value.
      */
     public MessageList(Message msg) {
         add(msg);
@@ -67,7 +68,7 @@ public class MessageList {
      * Adds the message to the list. <code>null</code> will be ignored as a parameter value.
      */
     public void add(Message msg) {
-        if(msg == null){
+        if (msg == null) {
             return;
         }
         messages.add(msg);
@@ -76,11 +77,10 @@ public class MessageList {
     /**
      * Adds the messages in the given list to this list.
      * 
-     * @throws IllegalArgumentException
-     *             if msgList is null.
+     * @throws IllegalArgumentException if msgList is null.
      */
     public void add(MessageList msgList) {
-        if (msgList==null) {
+        if (msgList == null) {
             return;
         }
         int max = msgList.getNoOfMessages();
@@ -90,23 +90,23 @@ public class MessageList {
     }
 
     /**
-     * Copies the messages from the given list to this list and sets the message's
-     * invallid object properties.
+     * Copies the messages from the given list to this list and sets the message's invallid object
+     * properties.
      * 
      * @param msgList the list to coppy the messages from.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
-     * @param override <code>true</code> if the invalidObjectProperty should be set in all
-     * messages. <code>false</code> if the invalidObjectProperty is set only for messages
-     * that do not contain any invalid object property information.
+     * @param override <code>true</code> if the invalidObjectProperty should be set in all messages.
+     *            <code>false</code> if the invalidObjectProperty is set only for messages that do
+     *            not contain any invalid object property information.
      */
     public void add(MessageList msgList, ObjectProperty invalidObjectProperty, boolean override) {
-        if (msgList==null) {
+        if (msgList == null) {
             return;
         }
         int max = msgList.getNoOfMessages();
         for (int i = 0; i < max; i++) {
             Message msg = msgList.getMessage(i);
-            if (override || msg.getInvalidObjectProperties().length==0) {
+            if (override || msg.getInvalidObjectProperties().length == 0) {
                 add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), invalidObjectProperty));
             } else {
                 add(msg);
@@ -122,20 +122,35 @@ public class MessageList {
     }
 
     /**
-     * Returns the number of messages in the list.
+     * Returns the total number of messages in the list.
      */
     public int getNoOfMessages() {
         return messages.size();
     }
 
     /**
+     * Returns the number of messages in this list that have the indicated severity.
+     * 
+     * @param severity
+     */
+    public int getNoOfMessages(int severity) {
+        List msgList = new ArrayList(messages.size());
+        for (int i = 0; i < messages.size(); i++) {
+            Message msg = (Message)messages.get(i);
+            if (msg.getSeverity() == severity) {
+                msgList.add(msg);
+            }
+        }
+        return msgList.size();
+    }
+
+    /**
      * Returns the message at the indicated index (indexing starts with 0).
      * 
-     * @throws IndexOutOfBoundsException
-     *             if the index is out of range.
+     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public Message getMessage(int index) {
-        return (Message) messages.get(index);
+        return (Message)messages.get(index);
     }
 
     /**
@@ -143,18 +158,18 @@ public class MessageList {
      */
     public Message getFirstMessage(int severity) {
         for (Iterator it = messages.iterator(); it.hasNext();) {
-            Message msg = (Message) it.next();
+            Message msg = (Message)it.next();
             if (msg.getSeverity() == severity) {
                 return msg;
             }
         }
         return null;
     }
-    
+
     /**
-     * Returns the message with the highest severity or <code>null</code> if the list
-     * does not contain any message. If more than one message with the highest severity
-     * exists, the first one is returned.
+     * Returns the message with the highest severity or <code>null</code> if the list does not
+     * contain any message. If more than one message with the highest severity exists, the first one
+     * is returned.
      */
     public Message getMessageWithHighestSeverity() {
         int highestSeverity = getSeverity();
@@ -183,7 +198,7 @@ public class MessageList {
         for (int i = 0; i < getNoOfMessages(); i++) {
             if (getMessage(i).getSeverity() > severity) {
                 severity = getMessage(i).getSeverity();
-                if (severity==Message.ERROR) {
+                if (severity == Message.ERROR) {
                     return severity;
                 }
             }
@@ -229,7 +244,8 @@ public class MessageList {
 
     /**
      * Returns a new list with the messages in this list that belong to the given object and
-     * property and the property is of the given index. Returns an empty list if no such message is found.
+     * property and the property is of the given index. Returns an empty list if no such message is
+     * found.
      */
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
@@ -237,13 +253,13 @@ public class MessageList {
             Message msg = getMessage(i);
             ObjectProperty[] op = msg.getInvalidObjectProperties();
             for (int j = 0; j < op.length; j++) {
-                if (op[j].getObject().equals(object)){
-                    if(property == null){
+                if (op[j].getObject().equals(object)) {
+                    if (property == null) {
                         result.add(msg);
                         break;
                     }
-                    if(property.equals(op[j].getProperty())){
-                        if(index < 0 || op[j].getIndex() == index){
+                    if (property.equals(op[j].getProperty())) {
+                        if (index < 0 || op[j].getIndex() == index) {
                             result.add(msg);
                             break;
                         }
@@ -252,9 +268,9 @@ public class MessageList {
             }
         }
         return result;
-    
+
     }
-    
+
     /**
      * Returns a new list with the messages in this list that belong to the given object and
      * property. Returns an empty list if no such message is found.
@@ -287,7 +303,7 @@ public class MessageList {
         if (!(o instanceof MessageList)) {
             return false;
         }
-        MessageList other = (MessageList) o;
+        MessageList other = (MessageList)o;
         if (this.getNoOfMessages() != other.getNoOfMessages()) {
             return false;
         }
@@ -306,14 +322,14 @@ public class MessageList {
     public void clear() {
         messages.clear();
     }
-    
-    /** Liefert einen iterator, mit dessen Hilfe man �ber die vorhandene 
-     *  Liste iterieren kann
+
+    /**
+     * Liefert einen iterator, mit dessen Hilfe man �ber die vorhandene Liste iterieren kann
+     * 
      * @return Iterator
      */
-    public Iterator iterator (){
+    public Iterator iterator() {
         return messages.iterator();
     }
-
 
 }

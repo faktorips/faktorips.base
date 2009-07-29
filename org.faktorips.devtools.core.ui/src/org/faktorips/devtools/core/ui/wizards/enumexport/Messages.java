@@ -24,12 +24,14 @@ public class Messages extends NLS {
     public static String EnumExportPage_msgAbstractEnumType;
     public static String EnumExportPage_msgEnumTypeNotContainingValues;
     public static String EnumExportPage_msgNonExistingEnum;
+    public static String EnumExportPage_msgEnumHasTooManyColumns;
     public static String EnumExportPage_title;
     public static String EnumExportWizard_msgFileExists;
     public static String EnumExportWizard_msgFileExistsTitle;
     public static String EnumExportWizard_operationName;
     public static String EnumExportWizard_title;
     public static String EnumExportPage_msgEnumEmpty;
+    public static String EnumExportPage_msgEnumNotValid;
 
     static {
         // initialize resource bundle

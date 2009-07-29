@@ -26,9 +26,9 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * Base page for <code>IEnumType</code> editors providing controls to edit its 
- * properties and attributes.
- * <p/>
+ * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
+ * attributes.
+ * <p>
  * This class also adds controls to import an export enum values.
  * 
  * @see EnumTypeEditor
@@ -46,21 +46,23 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
     /** Values section showing the enumType */
     // package access for EnumTypeStructurePage, EnumTypeValuesPage
     EnumValuesSection enumValuesSection;
-    
-    /** Actions corresponding to the toolbar items */
+
+    /** Action to import enum values into the opened enum type from an external file. */
     private EnumImportExportActionInEditor importAction;
+
+    /** Action to export the enum values of the opened enum type into an external file. */
     private EnumImportExportActionInEditor exportAction;
-    
+
     /** to toggle import/export actions on page change */
     protected ContentsChangeListener changeListener;
 
     public EnumTypeEditorPage(TypeEditor editor, IEnumType type, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
         super(editor, twoSectionsWhenTrueOtherwiseFour, title);
-        
+
         this.enumType = type;
         changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile()) ) {
+                if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
                     updateToolbarActionEnabledStates();
                 }
             }
@@ -76,40 +78,32 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
 
     /** Creates actions for import and export */
     protected void createToolbarActions() {
-        importAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumType, true);
-        exportAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumType, false);
-        
-        addActionsToToolbar();
-    }
+        importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, true);
+        exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, false);
 
-    /** Creates toolbar items to trigger im- and export operations */
-    private void addActionsToToolbar() {
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(importAction);
         form.getToolBarManager().add(exportAction);
-        
+
         form.updateToolBar();
-        
+
         updateToolbarActionEnabledStates();
     }
 
-    /** Enable im/export operations if the enum type's values are part of the model */
+    /** Enable the import and export operation if the enum type contains values and is not abstract. */
     protected void updateToolbarActionEnabledStates() {
-        boolean enableImportExportActions = enumType.isContainingValues();
-        
-        if(importAction != null){
+        boolean enableImportExportActions = enumType.isContainingValues() && !(enumType.isAbstract());
+        if (importAction != null) {
             importAction.setEnabled(enableImportExportActions);
         }
-        if(exportAction != null){
+        if (exportAction != null) {
             exportAction.setEnabled(enableImportExportActions);
         }
     }
-    
-    /** 
-     * Extend <code>EnumImportExportAction</code> in order to react to import operations 
-     * and update the view after the operation is completed.
+
+    /**
+     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update
+     * the view after the operation is completed.
      */
     class EnumImportExportActionInEditor extends EnumImportExportAction {
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
@@ -118,7 +112,7 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
                 initImportAction();
             } else {
                 initExportAction();
-            }            
+            }
         }
 
         /**
@@ -130,6 +124,6 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
                     enumValuesSection.refresh();
                 }
             }
-        }        
+        }
     }
 }

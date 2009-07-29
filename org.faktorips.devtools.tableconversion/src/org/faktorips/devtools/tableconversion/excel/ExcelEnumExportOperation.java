@@ -27,7 +27,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -49,10 +48,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class ExcelEnumExportOperation extends AbstractTableExportOperation {
 
-    /* The maximum number of rows allowed in an Excel sheet */
-    private static final short MAX_ROWS = Short.MAX_VALUE;
-
-    /*
+    /**
      * Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
      * to display a date as a date and not as a stupid number is to format the cell :-(
      */
@@ -87,47 +83,12 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
      * {@inheritDoc}
      */
     public void run(IProgressMonitor monitor) throws CoreException {
-
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
 
         IEnumValueContainer enumContainer = getEnum(typeToExport);
-
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 5 + enumContainer.getEnumValuesCount());
-
-        // first of all, check if the environment allows an export...
-        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
-        if (structure == null) {
-            String text = Messages.TableExportOperation_errStructureNotFound;
-            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
-            return;
-        }
-        monitor.worked(1);
-
-        messageList.add(enumContainer.validate(enumContainer.getIpsProject()));
-        if (messageList.containsErrorMsg()) {
-            return;
-        }
-        monitor.worked(1);
-
-        messageList.add(structure.validate(structure.getIpsProject()));
-        if (messageList.containsErrorMsg()) {
-            return;
-        }
-
-        // if we have reached here, the environment is valid, so try to export the data
-        monitor.worked(1);
-
-        if (structure.getEnumAttributesCount(false) > MAX_ROWS) {
-            Object[] objects = new Object[3];
-            objects[0] = new Integer(structure.getEnumAttributesCount(false));
-            objects[1] = structure;
-            objects[2] = new Short(MAX_ROWS);
-            String text = NLS.bind(Messages.TableExportOperation_errStructureTooMuchColumns, objects);
-            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
-            return;
-        }
+        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumContainer.getEnumValuesCount());
 
         // if we have reached here, the environment is valid, so try to export the data
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -139,12 +100,9 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         dateStyle.setDataFormat((short)27);
 
         monitor.worked(1);
-
-        // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und Zielordner
-        exportHeader(sheet, structure.getEnumAttributes(), exportColumnHeaderRow);
-
+        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
+        exportHeader(sheet, structure.getEnumAttributesIncludeSupertypeCopies(), exportColumnHeaderRow);
         monitor.worked(1);
-
         exportDataCells(sheet, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
 
         try {
