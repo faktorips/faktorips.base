@@ -183,7 +183,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
             // if no file was selected (e.g. cancel clicked)
             // set the previous filename
-            if (super.askForFilename() == null) {
+            if (askForFilename() == null) {
                 setFilename(previousFilename);
             }
         }
@@ -354,11 +354,11 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     protected void filenameChanged() {
-        
+
     }
 
     protected void formatChanged() {
-    
+
     }
 
     public void valueChanged(FieldValueChangedEvent e) {
