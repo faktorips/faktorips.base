@@ -77,7 +77,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
-        appendLocalizedJavaDoc("CLASS", getUnqualifiedClassName(), getEnumType(), mainSection.getJavaDocForTypeBuilder());
+        mainSection.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getEnumType(), "CLASS_JAVADOC"));
         mainSection.setClass(true);
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
@@ -110,7 +110,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateFieldRepository(JavaCodeFragmentBuilder builder){
-        appendLocalizedJavaDoc("FIELD_REPOSITORY", getEnumType(), builder);
+        builder.javaDoc(getLocalizedText(getEnumType(), "FIELD_REPOSITORY_JAVADOC"));
         builder.varDeclaration(Modifier.PRIVATE, IRuntimeRepository.class, "repository"); //$NON-NLS-1$
     }
     
@@ -125,7 +125,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("CONSTRUCTOR", getEnumType(), builder);
+        builder.javaDoc(getLocalizedText(getEnumType(), "CONSTRUCTOR_JAVADOC"));
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$
         builder.append(new JavaCodeFragment("this.repository = repository;")); //$NON-NLS-1$
@@ -158,7 +158,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("();"); //$NON-NLS-1$
         
         
-        appendLocalizedJavaDoc("METHOD_MARSHAL", getEnumType(), builder);
+        builder.javaDoc(getLocalizedText(getEnumType(), "METHOD_MARSHAL_JAVADOC"));
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new String[] { enumTypeBuilder.getQualifiedClassName(getEnumType()) }, body, null);
     }
@@ -190,7 +190,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append(".class, "); //$NON-NLS-1$
         body.append("id);"); //$NON-NLS-1$
 
-        appendLocalizedJavaDoc("METHOD_UNMARSHAL", getEnumType(), builder);
+        builder.javaDoc(getLocalizedText(getEnumType(), "METHOD_UNMARSHAL_JAVADOC"));
         builder.method(Modifier.PUBLIC, enumTypeBuilder.getQualifiedClassName(getEnumType()), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
 

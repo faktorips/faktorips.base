@@ -113,7 +113,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     /**
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;
         testCase.setTestCaseType(getSuperType());

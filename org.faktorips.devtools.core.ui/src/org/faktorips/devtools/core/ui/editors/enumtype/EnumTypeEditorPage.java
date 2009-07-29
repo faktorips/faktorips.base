@@ -99,8 +99,12 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
     protected void updateToolbarActionEnabledStates() {
         boolean enableImportExportActions = enumType.isContainingValues();
         
-        importAction.setEnabled(enableImportExportActions);
-        exportAction.setEnabled(enableImportExportActions);
+        if(importAction != null){
+            importAction.setEnabled(enableImportExportActions);
+        }
+        if(exportAction != null){
+            exportAction.setEnabled(enableImportExportActions);
+        }
     }
     
     /** 

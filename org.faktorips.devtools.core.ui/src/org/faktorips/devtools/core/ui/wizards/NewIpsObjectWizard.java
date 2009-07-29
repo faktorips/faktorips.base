@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,14 +15,12 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
@@ -36,6 +34,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -43,27 +42,26 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
-
 /**
  * Base class for wizards to create a new ips object.
  */
 public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObjectWizard, IPageChangedListener {
-    
+
     private IStructuredSelection selection;
-    
+
     // first page
-    private IpsObjectPage objectPage;
-    
+    private AbstractIpsObjectNewWizardPage objectPage;
+
     public NewIpsObjectWizard() {
         this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.png")); //$NON-NLS-1$
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public final void addPages() {
         try {
-            objectPage = createFirstPage(selection); 
+            objectPage = createFirstPage(selection);
             addPage(objectPage);
             IWizardPage[] additionalPages = createAdditionalPages(selection);
             for (int i = 0; additionalPages != null && i < additionalPages.length; i++) {
@@ -73,21 +71,22 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
+
     /**
-     * In addition the default behaviour of the super class implementation it calls the 
-     * finishWhenThisPageIsComplete() method on IpsObjectPages. When the finishWhenThisPageIsComplete()
-     * method of one of the pages returns true this method returns true. 
+     * In addition the default behaviour of the super class implementation it calls the
+     * finishWhenThisPageIsComplete() method on IpsObjectPages. When the
+     * finishWhenThisPageIsComplete() method of one of the pages returns true this method returns
+     * true.
      */
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         IWizardPage[] pages = getPages();
         for (int i = 0; i < pages.length; i++) {
-            if(!pages[i].isPageComplete()){
+            if (!pages[i].isPageComplete()) {
                 return false;
             }
-            if(pages[i] instanceof IpsObjectPage){
-                if(((IpsObjectPage)pages[i]).finishWhenThisPageIsComplete()){
+            if (pages[i] instanceof AbstractIpsObjectNewWizardPage) {
+                if (((AbstractIpsObjectNewWizardPage)pages[i]).finishWhenThisPageIsComplete()) {
                     return true;
                 }
             }
@@ -95,52 +94,54 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         return true;
     }
 
-    
-    protected abstract IpsObjectPage createFirstPage(IStructuredSelection selection) throws Exception;
-    
+    protected abstract AbstractIpsObjectNewWizardPage createFirstPage(IStructuredSelection selection) throws Exception;
+
     /**
-     * To create additional pages for this wizard this method need to be overridden and the additional
-     * pages are to return by it.
-     *  
+     * To create additional pages for this wizard this method need to be overridden and the
+     * additional pages are to return by it.
+     * 
      * @param selection the current selection within the workbench if any
      * @return the new addtion wizard pages or <code>null</code> if no additional page exists
-     * @throws Exception exceptions that are thrown by this method will be logged and shown to the user
+     * @throws Exception exceptions that are thrown by this method will be logged and shown to the
+     *             user
      */
-    protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws Exception{
+    protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws Exception {
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return objectPage.getIpsObjectType();
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
-        IWorkspaceRunnable op= new IWorkspaceRunnable() {
+        IWorkspaceRunnable op = new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 IWizardPage[] pages = getPages();
-                if(pages.length > 1){
+                if (pages.length > 1) {
                     monitor.beginTask("Creating objects", pages.length * 4); //$NON-NLS-1$
-                } else{
+                } else {
                     monitor.beginTask("Creating object", 4); //$NON-NLS-1$
                 }
                 for (int i = 0; i < pages.length; i++) {
-                    if(pages[i] instanceof IpsObjectPage){
-                        IpsObjectPage page = (IpsObjectPage)pages[i];
-                        if(page.canCreateIpsSrcFile()){
+                    if (pages[i] instanceof AbstractIpsObjectNewWizardPage) {
+                        AbstractIpsObjectNewWizardPage page = (AbstractIpsObjectNewWizardPage)pages[i];
+                        if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
-                            ArrayList modifiedIpsObjects = new ArrayList(0);
+                            if(srcFile == null){
+                                IpsPlugin.logAndShowErrorDialog(new IpsStatus("Unable to create the IPS Source File."));
+                            }
+                            ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
                             page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
                             srcFile.save(true, new SubProgressMonitor(monitor, 1));
                             SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-                            for (Iterator it = modifiedIpsObjects.iterator(); it.hasNext();) {
-                                IIpsObject modifiedIpsObject = (IIpsObject)it.next();
+                            for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
                                 modifiedIpsObject.getIpsSrcFile().save(true, subMonitor);
                             }
                         }
@@ -150,29 +151,29 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
             }
         };
         try {
-            ISchedulingRule rule= null;
-            Job job= Platform.getJobManager().currentJob();
+            ISchedulingRule rule = null;
+            Job job = Job.getJobManager().currentJob();
             if (job != null)
-                rule= job.getRule();
-            IRunnableWithProgress runnable= null;
+                rule = job.getRule();
+            IRunnableWithProgress runnable = null;
             if (rule != null) {
-                runnable= new WorkbenchRunnableAdapter(op, rule);
+                runnable = new WorkbenchRunnableAdapter(op, rule);
             } else {
-                runnable= new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
+                runnable = new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
             }
             getContainer().run(false, true, runnable);
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
-        } catch  (InterruptedException e) {
+        } catch (InterruptedException e) {
             return false;
         }
         IIpsSrcFile srcFile = pack.getIpsSrcFile(getIpsObjectType().getFileName(objectPage.getIpsObjectName()));
         IpsUIPlugin.getDefault().openEditor(srcFile);
         return true;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -180,18 +181,18 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     }
 
     /**
-     * This wizard registeres itself as an IPageChangedListener on the IWizardContainer if it implements the 
-     * IPageChangeProvider interface. Hence the IpsObjectsPages will be informed via the pageEntered method
-     * when the page is about to be entered (will be shown to the user). 
+     * This wizard registeres itself as an IPageChangedListener on the IWizardContainer if it
+     * implements the IPageChangeProvider interface. Hence the IpsObjectsPages will be informed via
+     * the pageEntered method when the page is about to be entered (will be shown to the user).
      */
     public void pageChanged(PageChangedEvent event) {
         IWizardPage page = (IWizardPage)event.getSelectedPage();
         setWindowTitle(page.getTitle());
         getContainer().updateWindowTitle();
-        if(page instanceof IpsObjectPage){
-            try{
-                ((IpsObjectPage)page).pageEntered();
-            } catch(CoreException e){
+        if (page instanceof AbstractIpsObjectNewWizardPage) {
+            try {
+                ((AbstractIpsObjectNewWizardPage)page).pageEntered();
+            } catch (Exception e) {
                 IpsPlugin.log(e);
             }
         }
@@ -203,10 +204,11 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
      */
     public void setContainer(IWizardContainer wizardContainer) {
         super.setContainer(wizardContainer);
-        if(wizardContainer instanceof IPageChangeProvider){
-            //in case this listener has already been added remove it first and then add it again
-            //this might happen if the setContainer-Method is called several times during the life cycle
-            //of this wizard
+        if (wizardContainer instanceof IPageChangeProvider) {
+            // in case this listener has already been added remove it first and then add it again
+            // this might happen if the setContainer-Method is called several times during the life
+            // cycle
+            // of this wizard
             ((IPageChangeProvider)wizardContainer).removePageChangedListener(this);
             ((IPageChangeProvider)wizardContainer).addPageChangedListener(this);
         }

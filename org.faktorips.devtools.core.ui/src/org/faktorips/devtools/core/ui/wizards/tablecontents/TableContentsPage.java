@@ -158,7 +158,7 @@ public class TableContentsPage extends IpsObjectPage {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject pdObject, List modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjects(IIpsObject pdObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
         table.setTableStructure(getTableStructureName());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();

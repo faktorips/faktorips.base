@@ -374,7 +374,7 @@ public class ProductCmptPage extends IpsObjectPage {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject ipsObject, List modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjects(IIpsObject ipsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsObject;
         productCmpt.setProductCmptType(getProductCmptType());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();

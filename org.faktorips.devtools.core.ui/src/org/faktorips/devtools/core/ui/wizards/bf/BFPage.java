@@ -38,7 +38,7 @@ public class BFPage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException{
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException{
         IBusinessFunction bf = (IBusinessFunction)newIpsObject;
         bf.newStart(new Point(200, 20));
         bf.newEnd(new Point(200, 120));

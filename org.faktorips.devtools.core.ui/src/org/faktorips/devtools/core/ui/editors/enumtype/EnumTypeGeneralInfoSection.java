@@ -63,7 +63,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     private Checkbox valuesArePartOfModelCheckbox;
 
     /** The ui control for the <code>enumContentPackageFragment</code> property */
-    private TextField packageSpecificationControl;
+    private TextField enumContentNameControl;
 
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
@@ -142,18 +142,18 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         // Enum content package fragment
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
-        packageSpecificationControl = new TextField(text);
-        packageSpecificationControl.getTextControl().setEnabled(
+        enumContentNameControl = new TextField(text);
+        enumContentNameControl.getTextControl().setEnabled(
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
 
-        bindingContext.bindContent(packageSpecificationControl, enumType,
+        bindingContext.bindContent(enumContentNameControl, enumType,
                 IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);
         addFocusControl(abstractCheckbox);
         addFocusControl(valuesArePartOfModelCheckbox);
-        addFocusControl(packageSpecificationControl.getTextControl());
+        addFocusControl(enumContentNameControl.getTextControl());
 
         // Create extension properties
         extFactory.createControls(composite, toolkit, enumType);
@@ -184,7 +184,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 try {
                     IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
                     valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-                    packageSpecificationControl.getTextControl().setEnabled(
+                    enumContentNameControl.getTextControl().setEnabled(
                             !(enumType.isAbstract()) && !(enumType.isContainingValues()));
                 } catch (CoreException e) {
                     throw new RuntimeException(e);

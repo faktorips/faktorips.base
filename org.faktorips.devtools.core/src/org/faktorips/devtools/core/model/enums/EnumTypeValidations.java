@@ -160,7 +160,7 @@ public class EnumTypeValidations {
             if (enumContentName.equals("")) {
                 String text = Messages.EnumType_EnumContentNameEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text,
-                        Message.INFO, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                        Message.ERROR, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
                                 IEnumType.PROPERTY_ENUM_CONTENT_NAME) } : new ObjectProperty[0]);
                 msgList.add(message);
             }

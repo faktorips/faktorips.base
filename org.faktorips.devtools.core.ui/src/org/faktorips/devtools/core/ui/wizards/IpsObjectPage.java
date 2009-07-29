@@ -13,20 +13,15 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,15 +31,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -70,10 +62,7 @@ import org.faktorips.util.message.MessageList;
  * TODO aw: this class contains many public / protected functions that have no or not enough javadoc
  * attached
  */
-public abstract class IpsObjectPage extends WizardPage implements ValueChangeListener {
-
-    // the resource that was selected in the workbench or null if none.
-    private IResource selectedResource;
+public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
 
     // edit controls
     private IpsPckFragmentRootRefControl sourceFolderControl;
@@ -100,8 +89,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     private IpsObjectType ipsObjectType;
 
     /**
-     * 
-     * 
      * @param ipsObjectType
      * @param selection
      * @param pageName
@@ -109,40 +96,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * @throws JavaModelException
      */
     public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
-        super(pageName);
-
+        super(selection, pageName);
         ArgumentCheck.notNull(ipsObjectType, this);
-        ArgumentCheck.notNull(pageName, this);
-
         this.ipsObjectType = ipsObjectType;
-        selectedResource = getSelectedResourceFromSelection(selection);
     }
 
-    private IResource getSelectedResourceFromSelection(IStructuredSelection selection) {
-        if (selection == null) {
-            return null;
-        }
-
-        try {
-            Object element = selection.getFirstElement();
-            if (element instanceof IResource) {
-                return (IResource)selection.getFirstElement();
-            } else if (element instanceof IJavaElement) {
-                return ((IJavaElement)element).getCorrespondingResource();
-            } else if (element instanceof IIpsElement) {
-                return ((IIpsElement)element).getEnclosingResource();
-            } else if (element instanceof IProductCmptReference) {
-                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource();
-            }
-        } catch (Exception e) {
-            // if we can't get the selected ressource, we can't put default in the controls
-            // but no need to bother the user with this, so we just log the exception
-            IpsPlugin.log(e);
-        }
-
-        return null;
-    }
-
+    @Override
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -185,21 +144,8 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             additionalComposite = toolkit.createComposite(pageControl);
             fillAdditionalComposite(additionalComposite, toolkit);
         }
-
-        try {
-            setDefaults(selectedResource);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
         validateInput = true;
         return pageControl;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void createControl(Composite parent) {
-        setControl(createControlInternal(parent));
     }
 
     /**
@@ -214,46 +160,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         buf.append(getIpsObjectName());
 
         return buf.toString();
-    }
-
-    /**
-     * Derives the default values for source folder and package from the selected resource.
-     * 
-     * @param selectedResource The resource that was selected in the current selection when the
-     *            wizard was opened.
-     */
-    protected void setDefaults(IResource selectedResource) throws CoreException {
-        if (selectedResource == null) {
-            setIpsPackageFragmentRoot(null);
-            return;
-        }
-
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
-        if (element instanceof IIpsProject) {
-            IIpsPackageFragmentRoot[] roots;
-            try {
-                roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                if (roots.length > 0) {
-                    setIpsPackageFragmentRoot(roots[0]);
-                }
-            } catch (CoreException e) {
-                /*
-                 * user can still work with the system, just so the defaults are missing so just log
-                 * it.
-                 */
-                IpsPlugin.log(e);
-            }
-        } else if (element instanceof IIpsPackageFragmentRoot) {
-            setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
-        } else if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment pack = (IIpsPackageFragment)element;
-            setIpsPackageFragment(pack);
-        } else if (element instanceof IIpsSrcFile) {
-            IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
-            setIpsPackageFragment(pack);
-        } else {
-            setIpsPackageFragmentRoot(null);
-        }
     }
 
     /**
@@ -312,6 +218,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return nameText;
     }
 
+    @Override
     public String getIpsObjectName() {
         return nameField.getText();
     }
@@ -353,22 +260,17 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 
     }
 
-    private void setIpsPackageFragment(IIpsPackageFragment pack) {
+    @Override
+    protected void setIpsPackageFragment(IIpsPackageFragment pack) {
         packageControl.setIpsPackageFragment(pack);
-        if (pack != null) {
-            setIpsPackageFragmentRoot(pack.getRoot());
-        }
     }
 
-    private void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
-        sourceFolderControl.setPdPckFragmentRoot(root);
-    }
-
+    @Override
     public IIpsPackageFragment getIpsPackageFragment() {
         return packageControl.getIpsPackageFragment();
     }
 
-    public IIpsProject getIpsProject() {
+    protected IIpsProject getIpsProject() {
         if (getIpsPackageFragmentRoot() == null) {
             return null;
         }
@@ -376,25 +278,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return getIpsPackageFragmentRoot().getIpsProject();
     }
 
-    /**
-     * Returns the ips object that is stored in the resource that was selected when the wizard was
-     * opened or <code>null</code> if none is selected.
-     * 
-     * @throws CoreException if the contents of the resource can't be parsed.
-     */
-    public IIpsObject getSelectedIpsObject() throws CoreException {
-        if (selectedResource == null) {
-            return null;
-        }
-
-        IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
-        if (el instanceof IIpsSrcFile) {
-            return ((IIpsSrcFile)el).getIpsObject();
-        }
-
-        return null;
-    }
-
+    @Override
     protected IpsObjectType getIpsObjectType() {
         if (ipsObjectType == null) {
             return ((INewIpsObjectWizard)getWizard()).getIpsObjectType();
@@ -461,11 +345,13 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         validateSourceRoot();
 
         if (getErrorMessage() != null) {
+            updatePageComplete();
             return;
         }
 
         validatePackage();
         if (getErrorMessage() != null) {
+            updatePageComplete();
             return;
         }
 
@@ -579,6 +465,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         }
     }
 
+    @Override
     protected void updatePageComplete() {
         if (getErrorMessage() != null) {
             setPageComplete(false);
@@ -589,35 +476,15 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         setPageComplete(complete);
     }
 
-    public boolean canCreateIpsSrcFile() {
-        return true;
-    }
-
+    @Override
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
                 new SubProgressMonitor(monitor, 1));
     }
-
-    /**
-     * Returns <code>false</code> by default. Subclasses can override this method to indicate that
-     * the Wizard can finish without stepping to the next page. It only makes sense to use this
-     * method if this page is added to a NewIpsObjectWizard.
-     */
-    public boolean finishWhenThisPageIsComplete() {
-        return false;
-    }
-
-    /**
-     * This method is empty by default and can be overridden by sub classes when they want to change
-     * the new created IpsObject before it will be saved.
-     */
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
-
-    }
-
     /**
      * Sets the focus to the source folder control if empty if not to the name control.
      */
+    @Override
     protected void setDefaultFocus() {
         if (StringUtils.isEmpty(sourceFolderField.getText())) {
             sourceFolderField.getControl().setFocus();
@@ -628,21 +495,16 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         nameField.getControl().setFocus();
     }
 
-    /**
-     * This method is called when the page is entered. By default it calls the setDefaultFocus()
-     * method.
-     * 
-     * @throws CoreException
-     */
-    public void pageEntered() throws CoreException {
-        setDefaultFocus();
-    }
-
     protected IpsPckFragmentRootRefControl getSourceFolderControl() {
         return sourceFolderControl;
     }
 
     protected IpsPckFragmentRefControl getPackageControl() {
         return packageControl;
+    }
+
+    @Override
+    protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
+        sourceFolderControl.setPdPckFragmentRoot(root);
     }
 }

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.faktorips.devtools.core.ui.wizards.AbstractIpsObjectNewWizardPage;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
@@ -32,7 +33,7 @@ public class NewEnumContentWizard extends NewIpsObjectWizard {
      * {@inheritDoc}
      */
     @Override
-    protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws Exception {
+    protected AbstractIpsObjectNewWizardPage createFirstPage(IStructuredSelection selection) throws Exception {
         return new EnumContentPage(selection);
     }
 

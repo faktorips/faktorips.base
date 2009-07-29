@@ -237,10 +237,8 @@ public class EnumTypePage extends IpsObjectPage {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
-        super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
