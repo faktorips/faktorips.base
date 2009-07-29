@@ -683,7 +683,7 @@
         icon="icons/ImportTestCase.gif"
         id="transformRuntimeTestCase"
         name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
-	 	   <description>Transform and import runtime test cases</description>
+	 	   <description>%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard.description</description>
  	    </wizard>
   <wizard
         category="org.faktorips.devtools"
@@ -692,7 +692,7 @@
         id="enumImportWizard"
         name="%EnumImportWizard.name">
      <description>
-        %TableImportWizard.description
+        %EnumImportWizard.description
      </description>
      <selection
            class="org.eclipse.core.resources.IResource">
