@@ -27,14 +27,20 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
+import org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPage;
@@ -68,6 +74,24 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             hasNewDialogSettings = false;
             setDialogSettings(section);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        if (selection.isEmpty()) {
+            IEditorPart activeEditor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if (activeEditor instanceof EnumTypeEditor) {
+                EnumTypeEditor enumTypeEditor = (EnumTypeEditor)activeEditor;
+                selection = new StructuredSelection(enumTypeEditor.getIpsObject());
+            } else if (activeEditor instanceof EnumContentEditor) {
+                EnumContentEditor enumContentEditor = (EnumContentEditor)activeEditor;
+                selection = new StructuredSelection(enumContentEditor.getIpsObject());
+            }
+        }
+        super.init(workbench, selection);
     }
 
     /**
