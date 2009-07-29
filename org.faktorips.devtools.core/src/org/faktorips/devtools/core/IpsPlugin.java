@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -57,9 +57,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 /**
- * The main plugin class. 
+ * The main plugin class.
  * 
- * @author Jan Ortmann   
+ * @author Jan Ortmann
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
@@ -103,22 +103,23 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     // All available feature version managers
     private IIpsFeatureVersionManager[] featureVersionManagers;
-    
+
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
-    
+
     private IFunctionResolverFactory[] flFunctionResolvers;
-    
+
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
 
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
+
     /**
-     * Returns the number of the installed Faktor-IPS version. 
+     * Returns the number of the installed Faktor-IPS version.
      */
     public final static String getInstalledFaktorIpsVersion() {
         return (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     /**
      * Returns the shared instance.
      */
@@ -145,19 +146,19 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the version of the Faktor-IPS feature. If the Faktor-IPS feature is not found
      * <code>null</code> will be returned.
      */
-    public String getIpsFeatureVersion(){
+    public String getIpsFeatureVersion() {
         IBundleGroupProvider[] bundleGroupProviders = Platform.getBundleGroupProviders();
         for (int i = 0; i < bundleGroupProviders.length; i++) {
             IBundleGroup[] bundleGroups = bundleGroupProviders[i].getBundleGroups();
             for (int j = 0; j < bundleGroups.length; j++) {
-                if(bundleGroups[i].getIdentifier().equals("org.faktorips.feature")){ //$NON-NLS-1$
+                if (bundleGroups[i].getIdentifier().equals("org.faktorips.feature")) { //$NON-NLS-1$
                     return bundleGroups[i].getVersion();
                 }
             }
         }
         return null;
     }
-    
+
     /**
      * This method is called upon plug-in activation
      */
@@ -170,7 +171,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
-        
+
         IpsObjectType.POLICY_CMPT_TYPE.getId(); // force loading of class before model is created!
         // ensure that this class is loaded in time
         BFElementType.ACTION_BUSINESSFUNCTIONCALL.getClass();
@@ -219,8 +220,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder and overlays
-     * it with the product relevant image. If the given image is not found return the missing image
+     * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
+     * with the product relevant image. If the given image is not found return the missing image
      * overlaid with the product relevant image.
      * 
      * @see IpsPlugin#getImage(String)
@@ -240,9 +241,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
-     * is found and <code>returnNull</code> is true, null is returned. Otherwise (no image found,
-     * but <code>returnNull</code> is false), the missing image is returned.
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no image is
+     * found and <code>returnNull</code> is true, null is returned. Otherwise (no image found, but
+     * <code>returnNull</code> is false), the missing image is returned.
      * 
      * @param name The name of the image.
      * @param returnNull <code>true</code> to get null as return value if the image is not found,
@@ -299,8 +300,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static void logAndShowErrorDialog(final IStatus status) {
         plugin.getLog().log(status);
-        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault(); 
-        display.asyncExec(new Runnable(){
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
             public void run() {
                 ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
                         Messages.IpsPlugin_msgUnexpectedError, status);
@@ -332,8 +333,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public DocumentBuilder newDocumentBuilder() {
         try {
             return docBuilderFactory.newDocumentBuilder();
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
 
@@ -352,9 +352,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     public IpsPreferences getIpsPreferences() {
         return preferences;
     }
-    
-    /**    /**
-     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+
+    /**
+     * /** <strong>FOR INTNERNAL TEST USE ONLY.</strong>
      * <p>
      * Activate or deactivate test mode.
      */
@@ -393,10 +393,10 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the locale used by the localization. The returned locale is not the locale the
-     * localization <strong>should</strong> use, it is the locale the localization <strong>can</strong>
-     * use. That means if the default locale this plugin runs is for example de_DE, but no language
-     * pack for german is installed, the localization uses the english language, and this method
-     * will return the Locale for "en".
+     * localization <strong>should</strong> use, it is the locale the localization
+     * <strong>can</strong> use. That means if the default locale this plugin runs is for example
+     * de_DE, but no language pack for german is installed, the localization uses the english
+     * language, and this method will return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
         Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
@@ -432,18 +432,16 @@ public class IpsPlugin extends AbstractUIPlugin {
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         List result = new ArrayList();
         for (int i = 0; i < elements.length; i++) {
+            if (i == 1) continue; // TODO AW: CSV Format skipped for release 2.3.0rfinal
             try {
-                ITableFormat format = (ITableFormat)elements[i]
-                        .createExecutableExtension("class"); //$NON-NLS-1$
+                ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 initExternalTableFormat(format, elements[i]);
                 result.add(format);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 log(e);
             }
         }
-        externalTableFormats = (ITableFormat[])result.toArray(new ITableFormat[result
-                .size()]);
+        externalTableFormats = (ITableFormat[])result.toArray(new ITableFormat[result.size()]);
     }
 
     /**
@@ -458,7 +456,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
         IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
-            "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
+                "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
 
         IConfigurationElement tableFormatElement = null;
         for (int i = 0; i < elements.length; i++) {
@@ -469,14 +467,13 @@ public class IpsPlugin extends AbstractUIPlugin {
                 break;
             }
         }
-        
+
         IConfigurationElement[] valueConverters = tableFormatElement.getChildren();
         for (int i = 0; i < valueConverters.length; i++) {
             try {
-                IValueConverter converter = (IValueConverter)valueConverters[i]
-                    .createExecutableExtension("class"); //$NON-NLS-1$
+                IValueConverter converter = (IValueConverter)valueConverters[i].createExecutableExtension("class"); //$NON-NLS-1$
                 converter.setTableFormat(format);
-                
+
                 format.addValueConverter(converter);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -537,8 +534,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the <code>org.faktorips.fl.FunctionResolver</code>s that are registered at the according
-     * extension-point.
+     * Returns the <code>org.faktorips.fl.FunctionResolver</code>s that are registered at the
+     * according extension-point.
      */
     public IFunctionResolverFactory[] getFlFunctionResolverFactories() {
 
@@ -559,7 +556,8 @@ public class IpsPlugin extends AbstractUIPlugin {
                             flFunctionResolverFactoryList.add(functionResolverFactory);
 
                         } catch (CoreException e) {
-                            log(new IpsStatus("Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
+                            log(new IpsStatus(
+                                    "Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
                                             + extension.getUniqueIdentifier(), e));
                         }
                     }
@@ -570,7 +568,6 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         return flFunctionResolvers;
     }
-    
 
     /**
      * @return All installed ips feature version managers.
@@ -588,15 +585,14 @@ public class IpsPlugin extends AbstractUIPlugin {
                     manager.setId(elements[i].getAttribute("id")); //$NON-NLS-1$
                     manager.setPredecessorId(elements[i].getAttribute("basedOnFeatureManager")); //$NON-NLS-1$
                     result.add(manager);
-                }
-                catch (CoreException e) {
+                } catch (CoreException e) {
                     log(e);
                 }
             }
             featureVersionManagers = (IIpsFeatureVersionManager[])result.toArray(new IIpsFeatureVersionManager[result
                     .size()]);
             if (featureVersionManagers.length == 0) {
-                featureVersionManagers = new IIpsFeatureVersionManager[] {EmptyIpsFeatureVersionManager.INSTANCE};
+                featureVersionManagers = new IIpsFeatureVersionManager[] { EmptyIpsFeatureVersionManager.INSTANCE };
             }
         }
         return featureVersionManagers;
@@ -604,8 +600,8 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * @param featureId The id of the feature the manager has to be returned.
-     * @return The manager for the feature with the given id or <code>null</code> if no manager
-     *         was found.
+     * @return The manager for the feature with the given id or <code>null</code> if no manager was
+     *         found.
      */
     public IIpsFeatureVersionManager getIpsFeatureVersionManager(String featureId) {
         IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
@@ -616,19 +612,19 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         return null;
     }
-    
+
     /**
      * THIS METHOD SHOULD ONLY BE CALLED FROM TEST CASES.
      * 
      * Sets the feature version managers. This method overwrites all feature managers registered via
-     * extension points. 
+     * extension points.
      * 
      * @param managers
      */
     public void setFeatureVersionManagers(IIpsFeatureVersionManager[] managers) {
         featureVersionManagers = managers;
     }
-    
+
     /**
      * @param projectToMigrate The project the migration operation should be returned for.
      * @return A migration operation migrating the content of the given IpsProject to match the
@@ -637,7 +633,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
             throws CoreException {
-        
+
         IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
         if (isTestMode()) {
             Object obj = getTestAnswerProvider().getAnswer();
@@ -650,14 +646,14 @@ public class IpsPlugin extends AbstractUIPlugin {
         // of the extension-point.
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
         managers = sorter.sortForMigartionOrder(managers);
-        
+
         IpsFeatureMigrationOperation operation = new IpsFeatureMigrationOperation(projectToMigrate);
         for (int i = 0; i < managers.length; i++) {
             operation.addMigrationPath(managers[i].getMigrationOperations(projectToMigrate));
         }
         return operation;
     }
-    
+
     /**
      * Returns the persistence manager of the dependency graphs.
      */
