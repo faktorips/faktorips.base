@@ -85,7 +85,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * implementation.
      */
     public String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String basePackName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
+        String basePackName = ipsSrcFile.getBasePackageNameForMergableArtefacts();
         String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
         return QNameUtil.concat(basePackName, packageFragName);
     }
@@ -95,7 +95,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * the getPackage() method implementation.
      */
     public String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String basePackName = QNameUtil.concat(ipsSrcFile.getBasePackageNameForGeneratedJavaClass(), INTERNAL_PACKAGE);
+        String basePackName = QNameUtil.concat(ipsSrcFile.getBasePackageNameForMergableArtefacts(), INTERNAL_PACKAGE);
         String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
         return QNameUtil.concat(basePackName, packageFragName);
     }

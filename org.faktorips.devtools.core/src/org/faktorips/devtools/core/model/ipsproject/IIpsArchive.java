@@ -40,9 +40,9 @@ public interface IIpsArchive {
 
     public final static String QNT_PROPERTY_POSTFIX_SEPARATOR = "#"; //$NON-NLS-1$
     
-    public final static String PROPERTY_POSTFIX_BASE_PACKAGE = "basePackage"; //$NON-NLS-1$
-    
-    public final static String PROPERTY_POSTFIX_EXTENSION_PACKAGE = "extensionPackage"; //$NON-NLS-1$
+    public final static String PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE = "basePackageMergable"; //$NON-NLS-1$
+
+    public final static String PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED = "basePackageDerived"; //$NON-NLS-1$
 
     /**
      * Returns the path to the underlying file. Note that the file might exists outside the workspace or might not 
@@ -113,16 +113,15 @@ public interface IIpsArchive {
     public InputStream getSortDefinitionContent(String packName) throws CoreException;
     
     /**
-     * Returns the name of the base package for the generated Java source files.
-     * All generated Java types are contained in this package or one of the child packages.
+     * Returns the name of the base package for the mergable artefacts (XML-Files, Java source files).
+     * All mergable artefacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForGeneratedJavaClass(QualifiedNameType qnt) throws CoreException;
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException;
 
     /**
-     * Returns the name of the base package for the extension Java source files. All generated Java types
-     * are contained in this package or one of the child packages.
-     * Extension Java files are the files where the developer adds his own code.
+     * Returns the name of the base package for the derived artefacts (XML-Files, Java source files).
+     * All derived artefacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForExtensionJavaClass(QualifiedNameType qnt) throws CoreException;
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException;
     
 }

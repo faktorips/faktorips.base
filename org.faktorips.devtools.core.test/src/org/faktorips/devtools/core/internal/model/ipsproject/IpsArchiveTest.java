@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -31,8 +30,6 @@ import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
@@ -92,14 +89,14 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.contains(qnt));
     }
     
-    public void testBasePackageNameForGeneratedJavaClass() throws CoreException {
-        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForGeneratedJavaClass();
-        assertEquals(expPackage, archive.getBasePackageNameForGeneratedJavaClass(motorPolicyType.getQualifiedNameType())); 
+    public void testGetBasePackageNameForMergableArtefacts() throws CoreException {
+        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForMergableArtefacts();
+        assertEquals(expPackage, archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType())); 
     }
     
-    public void testBasePackageNameForExtensionJavaClass() throws CoreException {
-        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForExtensionJavaClass();
-        assertEquals(expPackage, archive.getBasePackageNameForExtensionJavaClass(motorPolicyType.getQualifiedNameType())); 
+    public void testGetBasePackageNameForDerivedArtefacts() throws CoreException {
+        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForDerivedArtefacts();
+        assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(motorPolicyType.getQualifiedNameType())); 
     }
     
     public void testContains() throws CoreException {
@@ -204,8 +201,22 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, subpacks.length);
     }
 
+    /*
+     * Test for bug #1498
+     */
+    public void testGetNoneEmptySubpackages_DefaultPackageContainsIpsSrcFile() throws Exception {
+        IIpsProject anotherProject = newIpsProject("AnotherArchiveProject");
+        newPolicyCmptType(anotherProject, "SomeType");
+        archiveFile = anotherProject.getProject().getFile("anotherArchive.ipsar");
+        archivePath = archiveFile.getProjectRelativePath();
+        createArchive(anotherProject, archiveFile);
+        archive = new IpsArchive(anotherProject, archivePath);
+        
+        assertEquals(0, archive.getNonEmptySubpackages("").length);
+    }
+
     public void testGetQNameTypes_FileInWorkspace() throws CoreException {
-        Set qnt = archive.getQNameTypes();
+        Set<QualifiedNameType> qnt = archive.getQNameTypes();
         assertEquals(4, qnt.size());
         QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
         qnt.toArray(qntArray);
@@ -220,7 +231,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     	IIpsArchive archiveOutsideWorkspace = new IpsArchive(project, externalArchivePath);
     	assertNotNull(archiveOutsideWorkspace);
     	
-        Set qnt = archiveOutsideWorkspace.getQNameTypes();
+        Set<QualifiedNameType> qnt = archiveOutsideWorkspace.getQNameTypes();
         
         // same as in testGetQNameTypes_FileInWorkspace()
         assertEquals(4, qnt.size());
@@ -234,7 +245,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     public void testGetQNameType_Pack() throws CoreException {
-        Set qnt = archive.getQNameTypes(null);
+        Set<QualifiedNameType> qnt = archive.getQNameTypes(null);
         assertEquals(0, qnt.size());
         
         qnt = archive.getQNameTypes("motor");

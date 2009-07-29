@@ -146,7 +146,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
     /**
      * {@inheritDoc}
      */
-    public String getBasePackageNameForGeneratedJavaClass() throws CoreException {
+    public String getBasePackageNameForMergableArtefacts() throws CoreException {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForMergableJavaClasses();
@@ -155,7 +155,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
     /**
      * {@inheritDoc}
      */
-    public String getBasePackageNameForExtensionJavaClass() throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts() throws CoreException {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();

@@ -189,6 +189,9 @@ public class IpsArchive implements IIpsArchive {
     }
     
     private boolean isChildPackageOf(String candidate, String parentPack) {
+        if (candidate.equals(parentPack)) {
+            return false;
+        }
         if (parentPack.equals("")) { // default package //$NON-NLS-1$
             return candidate.indexOf('.')==-1;
         } else {
@@ -336,9 +339,18 @@ public class IpsArchive implements IIpsArchive {
             if (qNameType==null) {
                 continue;
             }
-            IpsObjectProperties props = new IpsObjectProperties(
-                    getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE),
-                    getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_EXTENSION_PACKAGE));
+            String basePackageMergable = getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE);
+            if (basePackageMergable == null) {
+                // for archives created with versions up to 2.2.5
+                getPropertyValue(ipsObjectProperties, qNameType, "basePackage");
+            }
+            String basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED);
+            if (basePackageDerived == null) {
+                // for archives created with versions up to 2.2.5
+                getPropertyValue(ipsObjectProperties, qNameType, "extensionPackage");
+            }
+            
+            IpsObjectProperties props = new IpsObjectProperties(basePackageMergable, basePackageDerived);
             qntTemp.put(qNameType, props);
             Set<QualifiedNameType> content = packs.get(qNameType.getPackageName());
             if (content==null) {
@@ -413,25 +425,25 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public String getBasePackageNameForGeneratedJavaClass(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = qNameTypes.get(qnt);
         if (props==null) {
             return null;
         }
-        return props.basePackage;
+        return props.basePackageMergable;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getBasePackageNameForExtensionJavaClass(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = qNameTypes.get(qnt);
         if (props==null) {
             return null;
         }
-        return props.extensionPackage;
+        return props.extensionPackageDerived;
     }
 
     /**
@@ -466,12 +478,12 @@ public class IpsArchive implements IIpsArchive {
     
     class IpsObjectProperties {
         
-        String basePackage;
-        String extensionPackage;
+        String basePackageMergable;
+        String extensionPackageDerived;
 
-        public IpsObjectProperties(String basePackage, String extensionPackage) {
-            this.basePackage = basePackage;
-            this.extensionPackage = extensionPackage;
+        public IpsObjectProperties(String basePackageMergable, String extensionPackageDerived) {
+            this.basePackageMergable = basePackageMergable;
+            this.extensionPackageDerived = extensionPackageDerived;
         }
      
     }

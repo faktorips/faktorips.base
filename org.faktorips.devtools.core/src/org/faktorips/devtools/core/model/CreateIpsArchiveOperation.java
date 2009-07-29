@@ -238,10 +238,10 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             }
         }
         String path = file.getQualifiedNameType().toPath().toString();
-        String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE;
-        ipsObjectsProperties.setProperty(basePackageProperty, file.getBasePackageNameForGeneratedJavaClass());
-        String extensionPackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + IIpsArchive.PROPERTY_POSTFIX_EXTENSION_PACKAGE;
-        ipsObjectsProperties.setProperty(extensionPackageProperty, file.getBasePackageNameForExtensionJavaClass());
+        String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE;
+        ipsObjectsProperties.setProperty(basePackageProperty, file.getBasePackageNameForMergableArtefacts());
+        String extensionPackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED;
+        ipsObjectsProperties.setProperty(extensionPackageProperty, file.getBasePackageNameForDerivedArtefacts());
     }
     
     private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties) throws CoreException {
