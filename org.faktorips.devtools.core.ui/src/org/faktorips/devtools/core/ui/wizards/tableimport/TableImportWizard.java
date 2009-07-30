@@ -51,7 +51,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
     public TableImportWizard() {
         setWindowTitle(Messages.TableImport_title);
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+        this
+                .setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
                         "wizards/TableImportWizard.png")); //$NON-NLS-1$
     }
 
@@ -67,8 +68,9 @@ public class TableImportWizard extends IpsObjectImportWizard {
             addPage(newContentsPage);
             selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);
-            tablePreviewPage = new ImportPreviewPage(selection);
-            addPage(tablePreviewPage);
+            // TODO AW: preview feature out commented for release 2.3.0.rfinal
+            // tablePreviewPage = new ImportPreviewPage(selection);
+            // addPage(tablePreviewPage);
 
             filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
@@ -99,13 +101,13 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeTableImport(structure,
-                            new Path(filename), generation, nullRepresentation, ignoreColumnHeader, messageList);
+                    format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
+                            ignoreColumnHeader, messageList);
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
-            
+
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(
                         new ResultDisplayer(getShell(), Messages.TableImportWizard_operationName, messageList));
@@ -118,7 +120,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
                 setDialogSettings(section);
             }
-            
+
             IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
         } catch (Exception e) {
             Throwable throwable = e;
@@ -157,17 +159,12 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * @return The table contents to import into.
      */
-    private ITableContents getTableContents() {
-        try {
-            if (filePage.isImportIntoExisting()) {
-                return selectContentsPage.getTableContents();
-            } else {
-                return newContentsPage.getTableContents();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+    private ITableContents getTableContents() throws CoreException {
+        if (filePage.isImportIntoExisting()) {
+            return selectContentsPage.getTableContents();
+        } else {
+            return newContentsPage.getTableContents();
         }
-        return null;
     }
 
     /**
@@ -184,12 +181,16 @@ public class TableImportWizard extends IpsObjectImportWizard {
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
-            // set the completed state on the opposite page to true so that the wizard can finish
-            // normally
+            /*
+             * Set the completed state on the opposite page to true so that the wizard can finish
+             * normally.
+             */
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
             newContentsPage.setPageComplete(filePage.isImportIntoExisting());
-            // Validate the returned Page so that finished state is already set to true if all
-            // default settings are correct
+            /*
+             * Validate the returned Page so that finished state is already set to true if all
+             * default settings are correct.
+             */
             if (filePage.isImportIntoExisting()) {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
@@ -197,12 +198,15 @@ public class TableImportWizard extends IpsObjectImportWizard {
             newContentsPage.validatePage();
             return newContentsPage;
         }
-        if (page == selectContentsPage || page == newContentsPage) {
-            tablePreviewPage.reinit(filePage.getFilename(),filePage.getFormat(), getTableStructure());
-            tablePreviewPage.validatePage();
 
-            return tablePreviewPage;
-        }
+        // TODO AW: out commented for release 2.3.0.rfinal
+        // if (page == selectContentsPage || page == newContentsPage) {
+        // tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(),
+        // getTableStructure());
+        // tablePreviewPage.validatePage();
+        // return tablePreviewPage;
+        // }
+
         return null;
     }
 

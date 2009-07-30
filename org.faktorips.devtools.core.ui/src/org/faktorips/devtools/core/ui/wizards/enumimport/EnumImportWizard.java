@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -28,7 +27,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -166,11 +164,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
-
-            if (!(filePage.isImportIntoExisting())) {
-                IEnumContent createdEnumContent = (IEnumContent)enumTypeOrContent;
-                // TODO AW: open the enum content editor for the newly created file
-            }
+            IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
