@@ -202,7 +202,7 @@ public class EnumTypePage extends IpsObjectPage {
         GridData data = new GridData();
         data.verticalAlignment = GridData.BEGINNING;
         valuesDeferredToContentField.getControl().setLayoutData(data);
-        
+
         valuesDeferredToContentField.setValue(false);
         valuesDeferredToContentField.addChangeListener(this);
         valuesDeferredToContentField.addChangeListener(new ValueChangeListener() {
@@ -210,8 +210,8 @@ public class EnumTypePage extends IpsObjectPage {
                 enableEnumContentControls();
             }
         });
-        
-        // Package specification for product side enum content.
+
+        // Name specification for product side enum content.
         toolkit.createFormLabel(additionalComposite, Messages.Fields_PackageSpecification + ':');
         Text text = toolkit.createText(additionalComposite);
         enumContentPackageSpecificationField = new TextField(text);
@@ -223,9 +223,36 @@ public class EnumTypePage extends IpsObjectPage {
      * {@inheritDoc}
      */
     @Override
+    protected void packageChanged() {
+        updateEnumContentName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void nameChanged() {
+        updateEnumContentName();
+    }
+
+    /**
+     * Updates the <tt>enumContentPackageSpecificationField</tt> so that it reflects the current
+     * package and name of the enum type.
+     */
+    private void updateEnumContentName() {
+        String pack = getPackage();
+        String name = getIpsObjectName();
+        if (pack.length() > 0 && name.length() > 0) {
+            enumContentPackageSpecificationField.setText(pack + '.' + name);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
-
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
             ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(root.getIpsProject());
@@ -239,7 +266,6 @@ public class EnumTypePage extends IpsObjectPage {
      */
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
-
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
         // Set properties.
