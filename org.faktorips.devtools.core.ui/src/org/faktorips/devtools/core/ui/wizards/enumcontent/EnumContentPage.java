@@ -73,6 +73,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     // page control as defined by the wizard page class
     private Composite pageControl;
 
+    private IEnumContent createdEnumContent;
+
     /**
      * Creates the enum content page.
      * 
@@ -84,15 +86,17 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(PAGE_IMAGE));
 
     }
-    
+
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.NewIpsObjectWizard_title, WordUtils.capitalize(IpsObjectType.ENUM_CONTENT.getDisplayName())));
-        setMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgNew, IpsObjectType.ENUM_CONTENT.getDisplayName()));
+        setTitle(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.NewIpsObjectWizard_title, WordUtils
+                .capitalize(IpsObjectType.ENUM_CONTENT.getDisplayName())));
+        setMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgNew,
+                IpsObjectType.ENUM_CONTENT.getDisplayName()));
 
-        // dont set the layout of the parent composite - this will lead to
-        // layout-problems when this wizard-page is opened within allready open dialogs
+        // don't set the layout of the parent composite - this will lead to
+        // layout-problems when this wizard-page is opened within already open dialogs
         // (for example when the user wants a new policy class and starts the wizard using
         // the file-menu File->New->Other).
 
@@ -106,7 +110,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         pageControl.setLayout(pageLayout);
 
         Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_labelSrcFolder);
+        toolkit.createFormLabel(locationComposite,
+                org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_labelSrcFolder);
         sourceFolderControl = toolkit.createPdPackageFragmentRootRefControl(locationComposite, true);
         sourceFolderField = new TextButtonField(sourceFolderControl);
         sourceFolderField.addChangeListener(this);
@@ -120,6 +125,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return pageControl;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
@@ -128,6 +136,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return sourceFolderField.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void setDefaultFocus() {
         if (StringUtils.isEmpty(getSourceFolder())) {
             sourceFolderControl.setFocus();
@@ -138,14 +149,20 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return sourceFolderControl.getIpsPckFragmentRoot();
     }
 
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IEnumType enumType = getEnumType();
         if (enumType != null) {
             IIpsPackageFragment packageFrag = getIpsPackageFragment();
-            if(!packageFrag.exists()){
+            if (!packageFrag.exists()) {
                 packageFrag = getIpsPackageFragmentRoot().createPackageFragment(packageFrag.getName(), false, monitor);
             }
-            return packageFrag.createIpsFile(IpsObjectType.ENUM_CONTENT, getIpsObjectName(), true, monitor);
+            IIpsSrcFile createdIpsSrcFile = packageFrag.createIpsFile(IpsObjectType.ENUM_CONTENT, getIpsObjectName(),
+                    true, monitor);
+            createdEnumContent = (IEnumContent)createdIpsSrcFile.getIpsObject();
+            return createdIpsSrcFile;
         }
         return null;
     }
@@ -162,8 +179,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     /**
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
-
+    @Override
+    public void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
         newEnumContent.setEnumType(enumTypeField.getText());
 
@@ -191,60 +208,77 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         updatePageComplete();
     }
 
-    private void validatePageInternal() throws CoreException{
-        
+    private void validatePageInternal() throws CoreException {
         String enumTypeFieldText = enumTypeField.getText();
-        if(StringUtils.isEmpty(enumTypeFieldText)){
+        if (StringUtils.isEmpty(enumTypeFieldText)) {
             setErrorMessage(Messages.EnumContentPage_msgEnumTypeMissing);
             return;
         }
-        if(getEnumType() == null){
+        if (getEnumType() == null) {
             setErrorMessage(Messages.EnumContentPage_msgEnumTypeNotExisting);
             return;
         }
         IEnumType enumType = getEnumType();
-        if(enumType.isContainingValues()){
-            //do nothing validation is in EnumContentValidations.validateEnumType()
+        if (enumType.isContainingValues()) {
+            // Do nothing, validation is in EnumContentValidations.validateEnumType().
             return;
         }
-        if(StringUtils.isEmpty(enumType.getEnumContentName())){
+        if (StringUtils.isEmpty(enumType.getEnumContentName())) {
             setErrorMessage(Messages.EnumContentPage_msgEnumContentNameOfEnumTypeMissing);
             return;
         }
         IEnumContent enumContent = getIpsPackageFragmentRoot().getIpsProject().findEnumContent(enumType);
-        if(enumContent != null){
+        if (enumContent != null) {
             setErrorMessage(Messages.EnumContentPage_msgEnumContentAlreadyExists);
+            return;
         }
-        IIpsSrcFile enumContentSrcFile = getIpsPackageFragmentRoot().getIpsProject().findIpsSrcFile(IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
-        if(enumContentSrcFile != null){
-            setErrorMessage(Messages.EnumContentPage_msgEnumContentExistsForNameExistsAlready);
+        IIpsSrcFile enumContentSrcFile = getIpsPackageFragmentRoot().getIpsProject().findIpsSrcFile(
+                IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
+        if (enumContentSrcFile != null) {
+            setErrorMessage(NLS.bind(Messages.EnumContentPage_msgEnumContentExistsForNameExistsAlready, enumType
+                    .getEnumContentName(), enumType.getQualifiedName()));
+            return;
         }
 
-        //some of the validations in the following method are already made above. This is because the
-        //text messages a designed to meet the needs of the wizard user interface
+        /*
+         * Some of the validations in the following method are already made above. This is because
+         * the text messages a designed to meet the needs of the wizard user interface.
+         */
         MessageList msgList = new MessageList();
-        EnumContentValidations.validateEnumType(msgList, null, enumTypeFieldText, getIpsPackageFragmentRoot().getIpsProject());
-        if(!msgList.isEmpty()){
+        EnumContentValidations.validateEnumType(msgList, null, enumTypeFieldText, getIpsPackageFragmentRoot()
+                .getIpsProject());
+        if (!msgList.isEmpty()) {
             setErrorMessage(msgList.getMessage(0).getText());
         }
     }
 
     /**
-     * Returns the selected enum type which defines the structure for the
-     * enum content to be created.
+     * Returns the selected enum type which defines the structure for the enum content to be
+     * created.
      * 
      * @return An <code>IEnumType</code> instance, or null if it could not be determined.
      */
     public IEnumType getEnumType() {
         try {
             IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-            return (IEnumType) root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
+            return (IEnumType)root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
         } catch (CoreException e) {
             // page controls are currently invalid, return null
             return null;
         }
     }
-    
+
+    /**
+     * Returns the <tt>IEnumContent</tt> that has been created by this page or <tt>null</tt> if none
+     * has been created yet.
+     */
+    public IEnumContent getCreatedEnumContent() {
+        return createdEnumContent;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();
@@ -268,15 +302,19 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
-                setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootMissing, root.getName()));
+                setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootMissing,
+                        root.getName()));
             } else if (!root.exists()) {
-                setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootNoIPSSrcFolder, root.getName()));
+                setErrorMessage(NLS.bind(
+                        org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootNoIPSSrcFolder, root
+                                .getName()));
             }
         } else {
             if (sourceFolderControl.getText().length() == 0) {
                 setErrorMessage(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootRequired);
             } else {
-                setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootMissing, sourceFolderControl.getText()));
+                setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootMissing,
+                        sourceFolderControl.getText()));
             }
         }
     }
@@ -291,11 +329,11 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         IEnumType enumType = getEnumType();
         if (enumType != null) {
             String enumContentName = enumType.getEnumContentName();
-            if(enumContentName == null){
+            if (enumContentName == null) {
                 return null;
             }
             int index = enumContentName.lastIndexOf('.');
-            if(index != -1){
+            if (index != -1) {
                 return enumContentName.substring(index + 1, enumContentName.length());
             }
             return enumContentName;
@@ -313,11 +351,11 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         IEnumType enumType = getEnumType();
         if (enumType != null) {
             String enumContentName = enumType.getEnumContentName();
-            if(enumContentName == null){
+            if (enumContentName == null) {
                 return null;
             }
             int index = enumContentName.lastIndexOf('.');
-            if(index != -1){
+            if (index != -1) {
                 String enumContentPackage = enumContentName.substring(0, index);
                 return getIpsPackageFragmentRoot().getIpsPackageFragment(enumContentPackage);
             }

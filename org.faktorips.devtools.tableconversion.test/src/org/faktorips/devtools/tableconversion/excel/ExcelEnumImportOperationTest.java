@@ -84,13 +84,6 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
-        // invalid structure
-        ml.clear();
-        enumType.getEnumAttribute("AddedColumn").delete();
-        enumType.getEnumAttributes().get(0).setDatatype("");
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
         // too less columns
         ml.clear();
         enumType.getEnumAttributes().get(0).delete();

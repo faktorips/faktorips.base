@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
+import org.faktorips.util.message.Message;
 
 /**
  * A wizard page to select enum types or contents.
@@ -142,7 +143,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     protected void contentsChanged() {
-        
+
     }
 
     protected void projectChanged() {
@@ -195,14 +196,17 @@ public class SelectEnumPage extends SelectImportTargetPage {
             return;
         }
         try {
-            IEnumValueContainer valueContainer = getEnum();
-            if (valueContainer == null) {
+            IEnumValueContainer enumValueContainer = getEnum();
+            if (enumValueContainer == null) {
                 setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
                 return;
             }
-            if (!valueContainer.exists()) {
+            if (!enumValueContainer.exists()) {
                 setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
                 return;
+            }
+            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                setErrorMessage(Messages.SelectEnumPage_msgEnumNotValid);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);

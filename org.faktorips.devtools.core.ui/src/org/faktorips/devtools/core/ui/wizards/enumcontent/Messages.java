@@ -24,30 +24,12 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumcontent.messages"; //$NON-NLS-1$
 
     public static String EnumContentPage_msgEnumContentAlreadyExists;
-
     public static String EnumContentPage_msgEnumContentExistsForNameExistsAlready;
-
     public static String EnumContentPage_msgEnumContentNameOfEnumTypeMissing;
-
     public static String EnumContentPage_msgEnumTypeMissing;
-
     public static String EnumContentPage_msgEnumTypeNotExisting;
-
     public static String Page_Title;
-
     public static String Fields_EnumType;
-
-    public static String IpsObjectPage_labelSrcFolder;
-
-    public static String IpsObjectPage_msgNew;
-
-    public static String IpsObjectPage_msgRootMissing;
-
-    public static String IpsObjectPage_msgRootNoIPSSrcFolder;
-
-    public static String IpsObjectPage_msgRootRequired;
-
-    public static String NewIpsObjectWizard_title;
 
     static {
         // initialize resource bundle

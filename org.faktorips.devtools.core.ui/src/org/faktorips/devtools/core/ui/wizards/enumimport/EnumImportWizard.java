@@ -55,7 +55,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
 
     private SelectFileAndImportMethodPage filePage;
-    private ImportedEnumContentPage newEnumContentPage;
+    private EnumContentPage newEnumContentPage;
     private SelectEnumPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
 
@@ -74,7 +74,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         try {
             filePage = new SelectFileAndImportMethodPage(null);
             addPage(filePage);
-            newEnumContentPage = new ImportedEnumContentPage(selection);
+            newEnumContentPage = new EnumContentPage(selection);
             addPage(newEnumContentPage);
             selectContentsPage = new SelectEnumPage(selection);
             addPage(selectContentsPage);
@@ -112,12 +112,17 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
-            // set the completed state on the opposite page to true so that the wizard can finish
-            // normally
+            /*
+             * Set the completed state on the opposite page to true so that the wizard can finish
+             * normally.
+             */
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
             newEnumContentPage.setPageComplete(filePage.isImportIntoExisting());
-            // Validate the returned Page so that finished state is already set to true if all
-            // default settings are correct
+
+            /*
+             * Validate the returned Page so that finished state is already set to true if all
+             * default settings are correct.
+             */
             if (filePage.isImportIntoExisting()) {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
@@ -131,13 +136,13 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             return newEnumContentPage;
         }
 
-        if (page == selectContentsPage || page == newEnumContentPage) {
-            IEnumType enumType = getEnumType();
-            // TODO AW: out commented for release 2.3.0.rfinal
-            //tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType);
-            //tablePreviewPage.validatePage();
-            //return tablePreviewPage;
-        }
+        // TODO AW: out commented for release 2.3.0.rfinal
+        // if (page == selectContentsPage || page == newEnumContentPage) {
+        // IEnumType enumType = getEnumType();
+        // tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType);
+        // tablePreviewPage.validatePage();
+        // return tablePreviewPage;
+        // }
 
         return null;
     }
@@ -149,7 +154,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         final ITableFormat format = filePage.getFormat();
         try {
             final IEnumValueContainer enumTypeOrContent = getEnumValueContainer();
-
             if (filePage.isImportExistingReplace()) {
                 enumTypeOrContent.clear();
             }
@@ -162,11 +166,16 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
+
+            if (!(filePage.isImportIntoExisting())) {
+                IEnumContent createdEnumContent = (IEnumContent)enumTypeOrContent;
+                // TODO AW: open the enum content editor for the newly created file
+            }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
 
-        // don't keep wizard open
+        // Don't keep wizard open.
         return true;
     }
 
@@ -199,43 +208,9 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             return selectContentsPage.getEnum();
         } else {
             IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
-            newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList());
-            return newEnumContentPage.getEnumContent();
+            newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList<IIpsObject>());
+            return newEnumContentPage.getCreatedEnumContent();
         }
     }
 
-    // TODO rg: get rid of this private class by adding getEnumContent() to the
-    // new enum content wizard
-    private class ImportedEnumContentPage extends EnumContentPage {
-
-        private IIpsSrcFile ipsSrcFile;
-
-        public ImportedEnumContentPage(IStructuredSelection selection) {
-            super(selection);
-        }
-
-        // EnumContentPage is missing this method
-        public IEnumContent getEnumContent() {
-            if (ipsSrcFile != null) {
-                try {
-                    return (IEnumContent)ipsSrcFile.getIpsObject();
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
-            super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
-        }
-
-        @Override
-        protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-            ipsSrcFile = super.createIpsSrcFile(monitor);
-            return ipsSrcFile;
-        }
-
-    }
 }

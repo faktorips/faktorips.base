@@ -90,31 +90,39 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         IEnumValueContainer enumContainer = getEnum(typeToExport);
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumContainer.getEnumValuesCount());
 
-        // if we have reached here, the environment is valid, so try to export the data
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet();
-        // create style for cells which represent a date - excel represents date as
-        // a number and has no internal type for dates, so this has to be done by styles :-(
+
+        /*
+         * Create style for cells which represent a date - excel represents date as a number and has
+         * no internal type for dates, so this has to be done by styles :-(
+         */
         dateStyle = workbook.createCellStyle();
-        // user defined style dd.MM.yyyy, hopefully works on all excel installations...
+
+        // User defined style dd.MM.yyyy, hopefully works on all excel installations ...
         dateStyle.setDataFormat((short)27);
 
         monitor.worked(1);
         IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
         exportHeader(sheet, structure.getEnumAttributesIncludeSupertypeCopies(), exportColumnHeaderRow);
         monitor.worked(1);
+        if (monitor.isCanceled()) {
+            return;
+        }
         exportDataCells(sheet, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
 
+        if (monitor.isCanceled()) {
+            return;
+        }
         try {
-            if (!monitor.isCanceled()) {
-                FileOutputStream out = new FileOutputStream(new File(filename));
-                workbook.write(out);
-                out.close();
-            }
+            FileOutputStream out = new FileOutputStream(new File(filename));
+            workbook.write(out);
+            out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
+        monitor.done();
     }
 
     private IEnumValueContainer getEnum(IIpsObject typeToExport) {
@@ -171,7 +179,6 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
             if (monitor.isCanceled()) {
                 return;
             }
-
             monitor.worked(1);
         }
     }

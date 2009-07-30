@@ -27,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -55,6 +56,7 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
 
     public ExcelEnumImportOperation(IEnumValueContainer valueContainer, String filename, ExcelTableFormat format,
             String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList) {
+
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
         this.format = format;
@@ -68,7 +70,7 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
             List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributes();
+                    .getEnumAttributesIncludeSupertypeCopies();
             datatypes = new Datatype[enumAttributes.size()];
 
             for (int i = 0; i < datatypes.length; i++) {
@@ -77,7 +79,6 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
                 datatypes[i] = datatype;
             }
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
     }
@@ -101,55 +102,52 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
     }
 
     public void run(IProgressMonitor monitor) throws CoreException {
-        // TODO rg: calculate amount of work
-        monitor.beginTask("Import file " + sourceFile, 5);
-
-        MessageList ml = valueContainer.validate(valueContainer.getIpsProject());
-        if (ml.containsErrorMsg()) {
-            messageList.add(ml);
-        }
-
-        monitor.worked(1);
-        if (monitor.isCanceled()) {
-            return;
+        // TODO AW: monitor is not shown to the user somehow
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
         }
 
         HSSFWorkbook workbook = getWorkbook(null);
-        monitor.worked(1);
-        if (monitor.isCanceled()) {
-            return;
-        }
-
         HSSFSheet sheet = workbook.getSheetAt(0);
-        
-        // update datatypes because the structure might be altered if this operation is reused
+        monitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet));
+
+        // Update datatypes because the structure might be altered if this operation is reused.
         initDatatypes(valueContainer);
-        fillEnum(valueContainer, sheet, monitor);
-
         monitor.worked(1);
-
-        if (!monitor.isCanceled()) {
-//             TODO rg: this crashes the unit test.
-//            valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
-            monitor.worked(1);
-        } else {
+        fillEnum(valueContainer, sheet, monitor);
+        if (monitor.isCanceled()) {
             valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
         }
+
+        valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
+        monitor.worked(1);
         monitor.done();
+    }
+
+    private int getNumberOfExcelRows(HSSFSheet sheet) {
+        int numberRows = 0;
+        // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
+        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+        for (int i = startRow;; i++) {
+            HSSFRow sheetRow = sheet.getRow(i);
+            if (sheetRow == null) { // No more rows.
+                break;
+            }
+            numberRows++;
+        }
+        return numberRows;
     }
 
     private void fillEnum(IEnumValueContainer valueContainer, HSSFSheet sheet, IProgressMonitor monitor)
             throws CoreException {
 
-        // row 0 is the header if ignoreColumnHeaderRow is true,
-        // otherwise row 0 contains data
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
-        int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject()).getEnumAttributesCount(false);
+        int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject()).getEnumAttributesCount(true);
 
         for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
-                // no more rows, we are finished whit this sheet.
+                // No more rows, we are finished whit this sheet.
                 break;
             }
             IEnumValue enumValue = valueContainer.newEnumValue();
@@ -164,18 +162,17 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
                     objects[2] = nullRepresentationString;
                     String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-
                     enumAttributeValue.setValue(nullRepresentationString);
                 } else {
                     enumAttributeValue.setValue(readCell(cell, datatypes[j]));
                 }
 
-                if (monitor.isCanceled()) {
-                    return;
-                }
-
-                monitor.worked(1);
             }
+
+            if (monitor.isCanceled()) {
+                return;
+            }
+            monitor.worked(1);
         }
     }
 
