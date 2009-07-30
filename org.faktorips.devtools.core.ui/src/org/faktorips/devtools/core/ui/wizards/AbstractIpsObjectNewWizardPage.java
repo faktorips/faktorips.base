@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
@@ -73,7 +74,6 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         if (selection == null) {
             return null;
         }
-
         try {
             Object element = selection.getFirstElement();
             if (element instanceof IResource) {
@@ -85,12 +85,13 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             } else if (element instanceof IProductCmptReference) {
                 return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource();
             }
-        } catch (Exception e) {
-            // if we can't get the selected ressource, we can't put default in the controls
-            // but no need to bother the user with this, so we just log the exception
+        } catch (JavaModelException e) {
+            /*
+             * If we can't get the selected resource, we can't put default in the controls but no
+             * need to bother the user with this, so we just log the exception.
+             */
             IpsPlugin.log(e);
         }
-
         return null;
     }
 
@@ -101,6 +102,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      *            wizard was opened.
      */
     protected void setDefaults(IResource selectedResource) throws CoreException {
+        setDefaultsExtension(selectedResource);
         if (selectedResource == null) {
             setIpsPackageFragmentRoot(null);
             return;
@@ -134,6 +136,11 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         } else {
             setIpsPackageFragmentRoot(null);
         }
+    }
+    
+    /** Subclasses may overwrite to set default values based upon the user selection. */
+    protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+        
     }
 
     /**

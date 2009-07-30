@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -28,6 +29,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -87,6 +89,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -94,13 +99,6 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
                 .capitalize(IpsObjectType.ENUM_CONTENT.getDisplayName())));
         setMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgNew,
                 IpsObjectType.ENUM_CONTENT.getDisplayName()));
-
-        // don't set the layout of the parent composite - this will lead to
-        // layout-problems when this wizard-page is opened within already open dialogs
-        // (for example when the user wants a new policy class and starts the wizard using
-        // the file-menu File->New->Other).
-
-        // parent.setLayout(new GridLayout(1, false));
 
         pageControl = new Composite(parent, SWT.NONE);
         GridData data = new GridData(SWT.FILL, SWT.TOP, true, true);
@@ -123,6 +121,23 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         enumTypeField.addChangeListener(this);
         validateInput = true;
         return pageControl;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        if (element instanceof IIpsSrcFile) {
+            IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();
+            if (ipsObject instanceof IEnumType) {
+                IEnumType enumType = (IEnumType)ipsObject;
+                if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
+                    enumTypeField.setText(enumType.getQualifiedName());
+                }
+            }
+        }
     }
 
     /**
@@ -190,10 +205,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     /**
      * Validates the page and generates error messages that are displayed in the message area of the
-     * wizard container. If subclasses what to add further validations they can override the
-     * validatePageExtension() Method. The validationPageExtension() Method is called by this method
-     * before the page get updated. This method is protected because subclasses might need to call
-     * within event szenarios implemented within the subclass.
+     * wizard container.
      */
     public final void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
