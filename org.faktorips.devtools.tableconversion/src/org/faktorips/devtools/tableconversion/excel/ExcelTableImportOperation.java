@@ -35,7 +35,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Operation to import ipstablecontents from an excel-file.
  * 
- * @author Thorsten Guenther
+ * @author Thorsten Guenther, Alexander Weickmann
  */
 public class ExcelTableImportOperation extends AbstractExcelImportOperation {
 

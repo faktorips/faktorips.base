@@ -40,7 +40,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Operation to export an ipstablecontents to an excel-file.
  * 
- * @author Thorsten Waertel, Thorsten Guenther
+ * @author Thorsten Waertel, Thorsten Guenther, Alexander Weickmann
  */
 public class ExcelTableExportOperation extends AbstractExcelExportOperation {
 

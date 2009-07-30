@@ -219,10 +219,6 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
             return;
         }
         IEnumType enumType = getEnumType();
-        if (enumType.isContainingValues()) {
-            // Do nothing, validation is in EnumContentValidations.validateEnumType().
-            return;
-        }
         if (StringUtils.isEmpty(enumType.getEnumContentName())) {
             setErrorMessage(Messages.EnumContentPage_msgEnumContentNameOfEnumTypeMissing);
             return;
@@ -319,11 +315,17 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean canCreateIpsSrcFile() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getIpsObjectName() {
         IEnumType enumType = getEnumType();
@@ -341,11 +343,17 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_CONTENT;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
         IEnumType enumType = getEnumType();
@@ -364,8 +372,12 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setIpsPackageFragment(IIpsPackageFragment pack) {
         // Not used
     }
+
 }

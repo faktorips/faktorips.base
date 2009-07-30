@@ -37,7 +37,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Operation to import IPS enum types or contents from an Excel file.
  * 
- * @author Roman Grutza
+ * @author Roman Grutza, Alexander Weickmann
  */
 public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
 

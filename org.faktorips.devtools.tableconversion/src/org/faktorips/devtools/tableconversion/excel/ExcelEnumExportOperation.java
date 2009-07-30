@@ -40,7 +40,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Operation to export Enum types or contents to an Excel file.
  * 
- * @author Roman Grutza
+ * @author Roman Grutza, Alexander Weickmann
  */
 public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
