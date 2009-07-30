@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,18 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
-import org.faktorips.devtools.tableconversion.excel.BooleanValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DateValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DecimalValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DoubleValueConverter;
-import org.faktorips.devtools.tableconversion.excel.ExcelTableExportOperation;
-import org.faktorips.devtools.tableconversion.excel.ExcelTableFormat;
-import org.faktorips.devtools.tableconversion.excel.IntegerValueConverter;
-import org.faktorips.devtools.tableconversion.excel.LongValueConverter;
-import org.faktorips.devtools.tableconversion.excel.MoneyValueConverter;
-import org.faktorips.devtools.tableconversion.excel.StringValueConverter;
 import org.faktorips.util.message.MessageList;
 
 public class ExcelTableExportOperationTest extends AbstractTableTest {
@@ -39,16 +28,16 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
     private String filename;
     private IIpsProject ipsProject;
 
-    
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         ipsProject = newIpsProject("test");
         IIpsProjectProperties props = ipsProject.getProperties();
         String[] datatypes = getColumnDatatypes();
         props.setPredefinedDatatypesUsed(datatypes);
         ipsProject.setProperties(props);
-        
+
         format = new ExcelTableFormat();
         format.setDefaultExtension(".xls");
         format.setName("Excel");
@@ -61,13 +50,14 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
 
-        this.filename = "table" + format.getDefaultExtension();
+        filename = "table" + format.getDefaultExtension();
     }
 
+    @Override
     protected void tearDownExtension() throws Exception {
         new File(filename).delete();
     }
-    
+
     public void testExportValid() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
 
@@ -77,37 +67,13 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
-    public void testExportValidRowMismatch() throws Exception {
-        ITableContents contents = createValidTableContents(ipsProject);
-
-        // too many columns
-        IColumn col = getStructure().newColumn();
-
-        MessageList ml = new MessageList();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml );
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
-        // invalid structure
-        ml.clear();
-        col.delete();
-        getStructure().getColumn(0).setDatatype("");
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
-        // too less columns
-        ml.clear();
-        getStructure().getColumn(0).delete();
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-    }
-
     public void testExportInvalid() throws Exception {
         ITableContents contents = createInvalidTableContents(ipsProject);
 
         MessageList ml = new MessageList();
         ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertEquals(7, ml.getNoOfMessages());
+        assertEquals(6, ml.getNoOfMessages());
     }
+
 }

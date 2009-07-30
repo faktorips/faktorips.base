@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,27 +13,22 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -42,79 +37,78 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class ExcelTableImportOperation extends AbstractTableImportOperation {
+public class ExcelTableImportOperation extends AbstractExcelImportOperation {
+
+    /**
+     * The table structure the imported table content is bound to
+     */
+    private ITableStructure structure;
+
+    /**
+     * Generation of the table contents the import has to be inserted.
+     */
+    private ITableContentsGeneration targetGeneration;
 
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
-            ITableContentsGeneration targetGeneration, ITableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
-        
-        super(structure, sourceFile,
-                targetGeneration, format,
-                nullRepresentationString, ignoreColumnHeaderRow, list);
+            ITableContentsGeneration targetGeneration, ExcelTableFormat format, String nullRepresentationString,
+            boolean ignoreColumnHeaderRow, MessageList list) {
+
+        super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list);
+        this.structure = structure;
+        this.targetGeneration = targetGeneration;
+        initDatatypes();
+    }
+
+    protected void initDatatypes() {
+        try {
+            IColumn[] columns = structure.getColumns();
+            datatypes = new Datatype[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void run(IProgressMonitor monitor) throws CoreException {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+        }
         try {
-            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile, targetGeneration.getNumOfRows() + 3);
-            
-            MessageList ml = structure.validate(structure.getIpsProject()); 
-            if (ml.containsErrorMsg()) {
-                messageList.add(ml);
-                return;
-            }
+            initWorkbookAndSheet();
+            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile, targetGeneration
+                    .getNumOfRows() + 2);
 
+            // Update datatypes because the structure might be altered if this operation is reused.
+            initDatatypes();
             monitor.worked(1);
-            if (monitor.isCanceled()) {
-                return;
-            }
-            
-            HSSFWorkbook workbook = getWorkbook(null);
-            monitor.worked(1);
-            if (monitor.isCanceled()) {
-                return;
-            }
-
-            HSSFSheet sheet = workbook.getSheetAt(0);
-
-            // update datatypes because the structure might be altered if this operation is reused
             fillGeneration(targetGeneration, sheet, monitor);
-            if (!monitor.isCanceled()) {
-                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
-                monitor.worked(1);
-            } else {
+            if (monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
-        }
-        catch (IOException e) {
+
+            targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
+            monitor.worked(1);
+            monitor.done();
+        } catch (IOException e) {
             throw new CoreException(new IpsStatus(NLS
                     .bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }
 
-    private HSSFWorkbook getWorkbook(String sourcefile) throws FileNotFoundException, IOException {
-        File importFile = new File(sourceFile);
-        FileInputStream fis = null;
-        HSSFWorkbook workbook = null;
-        fis = new FileInputStream(importFile);
-        workbook = new HSSFWorkbook(fis);
-        if (fis != null) {
-            fis.close();
-        }
-        return workbook;
-    }
-
     private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor)
             throws CoreException {
-        // row 0 is the header if ignoreColumnHeaderRow is true,
-        // otherwise row 0 contains data
-        int startRow = ignoreColumnHeaderRow?1:0;
+
+        // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
+        int startRow = ignoreColumnHeaderRow ? 1 : 0;
         for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
-                // no more rows, we are finished whit this sheet.
+                // No more rows, we are finished whit this sheet.
                 break;
             }
             IRow genRow = generation.newRow();
@@ -128,36 +122,15 @@ public class ExcelTableImportOperation extends AbstractTableImportOperation {
                     String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, objects);
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                     genRow.setValue(j, nullRepresentationString);
-                }
-                else {
+                } else {
                     genRow.setValue(j, readCell(cell, datatypes[j]));
-                } 
+                }
             }
 
             if (monitor.isCanceled()) {
                 return;
             }
-
             monitor.worked(1);
-        }
-    }
-
-    private String readCell(HSSFCell cell, Datatype datatype) {
-        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-            if (HSSFDateUtil.isCellDateFormatted(cell)) {
-                return format.getIpsValue(cell.getDateCellValue(), datatype, messageList);
-            }
-            return format.getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
-        }
-        else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
-            return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
-        }
-        else {
-            String value = cell.getStringCellValue();
-            if (nullRepresentationString.equals(value)) {
-                return null;
-            }
-            return format.getIpsValue(value, datatype, messageList);
         }
     }
 

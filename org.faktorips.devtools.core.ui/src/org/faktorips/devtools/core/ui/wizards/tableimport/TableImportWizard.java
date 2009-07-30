@@ -173,6 +173,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IWizardPage getStartingPage() {
         return filePage;
     }
@@ -180,6 +181,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
             // set the completed state on the opposite page to true so that the wizard can finish

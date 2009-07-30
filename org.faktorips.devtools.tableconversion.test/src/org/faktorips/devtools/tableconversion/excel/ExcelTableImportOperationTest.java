@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,19 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
-import org.faktorips.devtools.tableconversion.excel.BooleanValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DateValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DecimalValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DoubleValueConverter;
-import org.faktorips.devtools.tableconversion.excel.ExcelTableFormat;
-import org.faktorips.devtools.tableconversion.excel.ExcelTableImportOperation;
-import org.faktorips.devtools.tableconversion.excel.IntegerValueConverter;
-import org.faktorips.devtools.tableconversion.excel.LongValueConverter;
-import org.faktorips.devtools.tableconversion.excel.MoneyValueConverter;
-import org.faktorips.devtools.tableconversion.excel.StringValueConverter;
 import org.faktorips.util.message.MessageList;
 
 public class ExcelTableImportOperationTest extends AbstractTableTest {
@@ -48,13 +37,13 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
     ITableContentsGeneration importTarget;
     ExcelTableFormat format;
     ITableStructure structure;
-    
+
     File file;
-    
+
     private IIpsProject ipsProject;
     private ITableContents contents;
 
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -92,6 +81,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertTrue(file.createNewFile());
     }
 
+    @Override
     protected void tearDownExtension() throws Exception {
         file.delete();
     }
@@ -106,35 +96,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
-    public void testImportValidRowMismatch() throws Exception {
-        createValidExternalTable(ipsProject, format, true);
-        
-        // too many columns
-        IColumn col = getStructure().newColumn();
-        
-        MessageList ml = new MessageList();
-        ExcelTableImportOperation op = new ExcelTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
-        // invalid structure
-        ml.clear();
-        col.delete();
-        getStructure().getColumn(0).setDatatype("");
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
-        // too less columns
-        ml.clear();
-        getStructure().getColumn(0).delete();
-        op = new ExcelTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-    }
-
-    public void testImportFirstRowContainsNoColumnHeader() throws Exception{
+    public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
         createValid();
@@ -142,27 +104,27 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
                 "NULL", false, ml);
         op.run(new NullProgressMonitor());
-        
+
         assertEquals(4, importTarget.getRows().length);
     }
-    
-    public void testImportFirstRowContainsColumnHeader() throws Exception{
+
+    public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
         createValid();
-        
+
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        
+
         assertEquals(3, importTarget.getRows().length);
     }
-    
+
     public void testImportInvalid() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
         createInvalid();
-        
+
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
@@ -243,4 +205,5 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         wb.write(fos);
         fos.close();
     }
+
 }
