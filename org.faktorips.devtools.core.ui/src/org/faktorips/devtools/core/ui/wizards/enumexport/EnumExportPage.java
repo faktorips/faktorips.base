@@ -42,9 +42,6 @@ import org.faktorips.util.message.Message;
  */
 public class EnumExportPage extends IpsObjectExportPage {
 
-    /** The maximum number of columns allowed in an Excel sheet. */
-    private static final short MAX_EXCEL_COLUMNS = Short.MAX_VALUE;
-
     /**
      * {@inheritDoc}
      */
@@ -82,17 +79,19 @@ public class EnumExportPage extends IpsObjectExportPage {
      * {@inheritDoc}
      */
     protected void validateObjectToExport() {
+        if (exportedIpsObjectControl.getText().length() == 0) {
+            setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
+            return;
+        }
         try {
             IEnumValueContainer enumValueContainer = getEnum();
-            if (!(exportedIpsObjectControl.getText().equals(""))) {
-                if (enumValueContainer == null) {
-                    setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
-                    return;
-                }
-                if (!enumValueContainer.exists()) {
-                    setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
-                    return;
-                }
+            if (enumValueContainer == null) {
+                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+                return;
+            }
+            if (!enumValueContainer.exists()) {
+                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+                return;
             }
             if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
                 setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
@@ -110,6 +109,12 @@ public class EnumExportPage extends IpsObjectExportPage {
                 }
             }
             IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            if (enumValueContainer instanceof IEnumContent) {
+                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                    setErrorMessage(Messages.EnumExportPage_msgEnumTypeNotValid);
+                    return;
+                }
+            }
             if (enumType.getEnumAttributesCount(true) > MAX_EXCEL_COLUMNS) {
                 Object[] objects = new Object[3];
                 objects[0] = new Integer(enumType.getEnumAttributesCount(true));
@@ -120,16 +125,6 @@ public class EnumExportPage extends IpsObjectExportPage {
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void validateFieldsExtension() {
-        if (exportedIpsObjectControl.getText().equals("")) {
-            setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
         }
     }
 
@@ -181,4 +176,5 @@ public class EnumExportPage extends IpsObjectExportPage {
         }
         return null;
     }
+
 }

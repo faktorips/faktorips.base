@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
 public class TableImportExportAction extends IpsAction {
     private Shell shell;
     private boolean isImport;
-    
+
     private static class SimpleSelectionProvider implements ISelectionProvider {
         private ITableContents tableContents;
-        
+
         public SimpleSelectionProvider(ITableContents tableContents) {
             this.tableContents = tableContents;
         }
@@ -58,7 +58,7 @@ public class TableImportExportAction extends IpsAction {
         public void setSelection(ISelection selection) {
         }
     }
-    
+
     public static TableImportExportAction createTableImportAction(Shell shell, ISelectionProvider selectionProvider) {
         TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
         tableImportExportAction.initImportAction();
@@ -70,7 +70,7 @@ public class TableImportExportAction extends IpsAction {
         tableImportExportAction.initExportAction();
         return tableImportExportAction;
     }
-    
+
     public static TableImportExportAction createTableImportAction(Shell shell, ITableContents tableContents) {
         return createTableImportAction(shell, tableContents);
     }
@@ -78,7 +78,7 @@ public class TableImportExportAction extends IpsAction {
     public static TableImportExportAction createTableExportAction(Shell shell, ITableContents tableContents) {
         return createTableExportAction(shell, tableContents);
     }
-    
+
     protected TableImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
@@ -88,8 +88,8 @@ public class TableImportExportAction extends IpsAction {
         super(new SimpleSelectionProvider(tableContents));
         this.shell = shell;
     }
-    
-    protected void initImportAction(){
+
+    protected void initImportAction() {
         setText(Messages.TableImportExportAction_importActionTitle);
         setToolTipText(Messages.TableImportExportAction_importActionTooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
@@ -101,48 +101,48 @@ public class TableImportExportAction extends IpsAction {
         setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void run(IStructuredSelection selection) {
         runInternal(selection);
     }
-    
+
     /**
-     * Special run method returns the result of the dialog.
-     * Returns <code>true</code> if the dialog was closed with the ok return code otherwise <code>false</code>.
+     * Special run method returns the result of the dialog. Returns <code>true</code> if the dialog
+     * was closed with the ok return code otherwise <code>false</code>.
      */
     protected boolean runInternal(IStructuredSelection selection) {
         IWorkbenchWizard wizard;
-        if (isImport){
+        if (isImport) {
             wizard = new TableImportWizard();
             ((IpsObjectImportWizard)wizard).setImportIntoExisting(true);
         } else {
-            wizard = new TableExportWizard(); 
+            wizard = new TableExportWizard();
         }
-        
-        if (! (selection.getFirstElement() instanceof ITableContents)){
+
+        if (!(selection.getFirstElement() instanceof ITableContents)) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no table contents!")); //$NON-NLS-1$
         }
-        
-        if (isImport){
-            if (! checkAndSaveDirtyStateBeforeImport((ITableContents)selection.getFirstElement())){
+
+        if (isImport) {
+            if (!checkAndSaveDirtyStateBeforeImport((ITableContents)selection.getFirstElement())) {
                 // abort import
                 return false;
             }
         }
-        
+
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
         return dialog.open() == WizardDialog.OK;
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final ITableContents tableContents) {
-        if (! tableContents.getIpsSrcFile().isDirty()) {
+        if (!tableContents.getIpsSrcFile().isDirty()) {
             return true;
         }
-            boolean confirmation = MessageDialog.openConfirm(shell,
+        boolean confirmation = MessageDialog.openConfirm(shell,
                 Messages.TableImportExportAction_confirmDialogDirtyTableContentsTitle,
                 Messages.TableImportExportAction_confirmDialogDirtyTableContentsText);
         if (!confirmation) {
@@ -161,4 +161,5 @@ public class TableImportExportAction extends IpsAction {
 
         return true;
     }
+
 }

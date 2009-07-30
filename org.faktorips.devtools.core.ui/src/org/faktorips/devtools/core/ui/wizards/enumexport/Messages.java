@@ -32,6 +32,7 @@ public class Messages extends NLS {
     public static String EnumExportWizard_title;
     public static String EnumExportPage_msgEnumEmpty;
     public static String EnumExportPage_msgEnumNotValid;
+    public static String EnumExportPage_msgEnumTypeNotValid;
 
     static {
         // initialize resource bundle

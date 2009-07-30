@@ -52,8 +52,11 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class IpsObjectExportPage extends WizardDataTransferPage implements ValueChangeListener {
 
+    /** The maximum number of columns allowed in an Excel sheet. */
+
     public static final String PAGE_NAME = "IpsObjectExportPage"; //$NON-NLS-1$
 
+    protected static final short MAX_EXCEL_COLUMNS = Short.MAX_VALUE;
     protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
     protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
 
@@ -222,16 +225,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (getErrorMessage() != null) {
             return;
         }
-        validateFieldsExtension();
-        if (getErrorMessage() != null) {
-            return;
-        }
         updatePageComplete();
-    }
-
-    /** Can be overwritten by subclasses to validate their input fields. */
-    protected void validateFieldsExtension() {
-
     }
 
     protected void updatePageComplete() {

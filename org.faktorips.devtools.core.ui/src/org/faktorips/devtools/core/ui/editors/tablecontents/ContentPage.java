@@ -71,6 +71,7 @@ import org.faktorips.util.message.MessageList;
  * @author Stefan Widmaier
  */
 public class ContentPage extends IpsObjectEditorPage {
+
     /*
      * SWT event type for the measure item event
      * 
@@ -142,7 +143,7 @@ public class ContentPage extends IpsObjectEditorPage {
         form.getToolBarManager().add(new Separator());
 
         // create own TableImportExportActionInEditor because the editor must be refreshed after
-        // importing of the table contents othwise the old content is visible until the editor is
+        // importing of the table contents otherwise the old content is visible until the editor is
         // reopened
         // Workaround see
         TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(),
@@ -222,8 +223,7 @@ public class ContentPage extends IpsObjectEditorPage {
             }
         });
 
-        // TODO VIRTUAL table causes exceptions when creating and deleting rows dynamically, see
-        // FS#533
+        // TODO VIRTUAL table causes exceptions when creating / deleting rows dynamically, FS#533
         // table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
 
         return table;
@@ -276,7 +276,8 @@ public class ContentPage extends IpsObjectEditorPage {
                             tableStructure.getIpsProject());
                     ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                             dataType);
-                    TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i, getTableContents().getIpsProject());
+                    TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
+                            getTableContents().getIpsProject());
                     cellEditor.setRowCreating(true);
                     editors[i] = cellEditor;
                     datatypes[i] = dataType;
@@ -377,11 +378,11 @@ public class ContentPage extends IpsObjectEditorPage {
             if (tableViewer.getTable().getItemCount() <= 1) {
                 return;
             }
-            
-            if (selectionIndex != tableViewer.getTable().getItemCount() -2 ){
+
+            if (selectionIndex != tableViewer.getTable().getItemCount() - 2) {
                 return;
             }
-            
+
             for (int i = tableViewer.getTable().getItemCount() - 1; i > selectionIndex; i--) {
                 IRow row = (IRow)tableViewer.getElementAt(i);
                 // delete the row if the row is empty
@@ -404,7 +405,6 @@ public class ContentPage extends IpsObjectEditorPage {
              */
         }
 
-
     }
 
     /*
@@ -413,12 +413,12 @@ public class ContentPage extends IpsObjectEditorPage {
      * not.
      */
     private boolean areCellEditorEmpty(CellEditor[] cellEditors) {
-        if (cellEditors.length == 0){
+        if (cellEditors.length == 0) {
             return false;
         }
         for (int i = 0; i < cellEditors.length; i++) {
             Object value = cellEditors[i].getValue();
-            if (StringUtils.isNotEmpty(value==null?"":""+value)){ //$NON-NLS-1$ //$NON-NLS-2$
+            if (StringUtils.isNotEmpty(value == null ? "" : "" + value)) { //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
         }
@@ -597,15 +597,16 @@ public class ContentPage extends IpsObjectEditorPage {
         table.redraw();
     }
 
-    private boolean wasUniqueKeyErrorStateChanged(){
+    private boolean wasUniqueKeyErrorStateChanged() {
         return ((TableContentsGeneration)getActiveGeneration()).wasUniqueKeyErrorStateChange();
     }
 
     public void refreshTable(final IRow row) {
         tableViewer.refresh(row);
-        if (wasUniqueKeyErrorStateChanged()){
+        if (wasUniqueKeyErrorStateChanged()) {
             // either the unique key error is solved or there is a new unique key error
-            // refresh the rest of the table because an unique key error concerns to more than one row
+            // refresh the rest of the table because an unique key error concerns to more than one
+            // row
             refreshTable();
         }
     }

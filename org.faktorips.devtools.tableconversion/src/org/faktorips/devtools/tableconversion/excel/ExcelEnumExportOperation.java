@@ -16,14 +16,11 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -36,7 +33,6 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
-import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -46,15 +42,11 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-public class ExcelEnumExportOperation extends AbstractTableExportOperation {
+public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
     /**
-     * Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
-     * to display a date as a date and not as a stupid number is to format the cell :-(
-     */
-    private HSSFCellStyle dateStyle = null;
-
-    /**
+     * 
+     * 
      * @param typeToExport An <code>IEnumValueContainer</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
@@ -66,17 +58,12 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
     public ExcelEnumExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
+        super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
                     "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
                             : typeToExport.getClass().toString() + "'");
         }
-        this.typeToExport = typeToExport;
-        this.filename = filename;
-        this.format = format;
-        this.nullRepresentationString = nullRepresentationString;
-        this.exportColumnHeaderRow = exportColumnHeaderRow;
-        this.messageList = list;
     }
 
     /**
@@ -86,34 +73,24 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-
         IEnumValueContainer enumContainer = getEnum(typeToExport);
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumContainer.getEnumValuesCount());
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet();
-
-        /*
-         * Create style for cells which represent a date - excel represents date as a number and has
-         * no internal type for dates, so this has to be done by styles :-(
-         */
-        dateStyle = workbook.createCellStyle();
-
-        // User defined style dd.MM.yyyy, hopefully works on all excel installations ...
-        dateStyle.setDataFormat((short)27);
-
+        initWorkbookAndSheet();
         monitor.worked(1);
+
         IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
         exportHeader(sheet, structure.getEnumAttributesIncludeSupertypeCopies(), exportColumnHeaderRow);
         monitor.worked(1);
         if (monitor.isCanceled()) {
             return;
         }
-        exportDataCells(sheet, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
 
+        exportDataCells(sheet, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
         if (monitor.isCanceled()) {
             return;
         }
+
         try {
             FileOutputStream out = new FileOutputStream(new File(filename));
             workbook.write(out);
@@ -168,14 +145,12 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         int offest = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < values.size(); i++) {
             HSSFRow sheetRow = sheet.createRow(i + offest);
-
             IEnumValue value = values.get(i);
             String[] fieldsToExport = getFieldsForEnumValue(datatypes, value);
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
                 HSSFCell cell = sheetRow.createCell((short)j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
             }
-
             if (monitor.isCanceled()) {
                 return;
             }
@@ -192,42 +167,6 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
             fieldsToExport[j] = obj;
         }
         return fieldsToExport;
-    }
-
-    /**
-     * Fill the content of the cell.
-     * 
-     * @param cell The cell to set the value.
-     * @param ipsValue The ips-string representing the value.
-     * @param datatype The datatype defined for the value.
-     */
-    private void fillCell(HSSFCell cell, String ipsValue, Datatype datatype) {
-        Object obj = format.getExternalValue(ipsValue, datatype, messageList);
-
-        if (obj instanceof Date) {
-            cell.setCellValue((Date)obj);
-            cell.setCellStyle(dateStyle);
-            return;
-        }
-        if (obj instanceof Number) {
-            try {
-                cell.setCellValue(((Number)obj).doubleValue());
-            } catch (NullPointerException npe) {
-                cell.setCellValue(nullRepresentationString);
-            }
-            return;
-        }
-        if (obj instanceof Boolean) {
-            cell.setCellValue(((Boolean)obj).booleanValue());
-            return;
-        }
-
-        if (obj != null) {
-            cell.setCellValue(obj.toString());
-        } else {
-            cell.setCellValue(nullRepresentationString);
-        }
-
     }
 
 }
