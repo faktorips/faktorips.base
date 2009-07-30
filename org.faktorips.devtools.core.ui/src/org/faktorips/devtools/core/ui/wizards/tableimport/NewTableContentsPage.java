@@ -219,6 +219,7 @@ public class NewTableContentsPage extends NewImportedIpsObjectPage implements Va
     }
 
     protected void contentsChanged() {
+        
     }
 
     private void setPdPackageFragment(IIpsPackageFragment pack) {
