@@ -53,6 +53,8 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Thorsten Waertel
  */
+// TODO AW: No longer used, wizard directly uses page of the new wizard ... delete this class if
+// everything is ok
 public class NewTableContentsPage extends NewImportedIpsObjectPage implements ValueChangeListener {
 
     public static final String PAGE_NAME = "NewContentsPage"; //$NON-NLS-1$
@@ -219,7 +221,7 @@ public class NewTableContentsPage extends NewImportedIpsObjectPage implements Va
     }
 
     protected void contentsChanged() {
-        
+
     }
 
     private void setPdPackageFragment(IIpsPackageFragment pack) {

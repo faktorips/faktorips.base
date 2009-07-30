@@ -116,7 +116,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
              */
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
             newEnumContentPage.setPageComplete(filePage.isImportIntoExisting());
-
             /*
              * Validate the returned Page so that finished state is already set to true if all
              * default settings are correct.
@@ -128,8 +127,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             try {
                 newEnumContentPage.validatePage();
             } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return null;
+                throw new RuntimeException(e);
             }
             return newEnumContentPage;
         }

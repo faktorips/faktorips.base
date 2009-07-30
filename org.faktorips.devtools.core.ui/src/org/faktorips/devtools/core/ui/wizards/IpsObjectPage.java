@@ -481,6 +481,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
                 new SubProgressMonitor(monitor, 1));
     }
+
     /**
      * Sets the focus to the source folder control if empty if not to the name control.
      */

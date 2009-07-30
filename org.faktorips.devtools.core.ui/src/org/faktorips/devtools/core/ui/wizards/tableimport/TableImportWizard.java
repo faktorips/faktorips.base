@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
+import org.faktorips.devtools.core.ui.wizards.tablecontents.TableContentsPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -45,7 +46,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     protected final static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
 
     private SelectFileAndImportMethodPage filePage;
-    private NewTableContentsPage newContentsPage;
+    private TableContentsPage newTableContentsPage;
     private SelectTableContentsPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
 
@@ -64,8 +65,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
             // create pages
             filePage = new SelectFileAndImportMethodPage(null);
             addPage(filePage);
-            newContentsPage = new NewTableContentsPage(selection);
-            addPage(newContentsPage);
+            newTableContentsPage = new TableContentsPage(selection);
+            addPage(newTableContentsPage);
             selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);
             // TODO AW: preview feature out commented for release 2.3.0.rfinal
@@ -148,7 +149,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 return selectContentsPage.getTableContents().findTableStructure(
                         selectContentsPage.getTableContents().getIpsProject());
             } else {
-                return newContentsPage.getTableStructure();
+                return newTableContentsPage.getTableStructure();
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -163,7 +164,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
         if (filePage.isImportIntoExisting()) {
             return selectContentsPage.getTableContents();
         } else {
-            return newContentsPage.getTableContents();
+            return newTableContentsPage.getCreatedTableContents();
         }
     }
 
@@ -186,7 +187,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
              * normally.
              */
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
-            newContentsPage.setPageComplete(filePage.isImportIntoExisting());
+            newTableContentsPage.setPageComplete(filePage.isImportIntoExisting());
             /*
              * Validate the returned Page so that finished state is already set to true if all
              * default settings are correct.
@@ -195,12 +196,16 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
-            newContentsPage.validatePage();
-            return newContentsPage;
+            try {
+                newTableContentsPage.validatePage();
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+            return newTableContentsPage;
         }
 
         // TODO AW: out commented for release 2.3.0.rfinal
-        // if (page == selectContentsPage || page == newContentsPage) {
+        // if (page == selectContentsPage || page == newTableContentsPage) {
         // tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(),
         // getTableStructure());
         // tablePreviewPage.validatePage();

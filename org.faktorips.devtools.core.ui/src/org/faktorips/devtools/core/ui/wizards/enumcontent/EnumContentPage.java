@@ -265,8 +265,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     /**
-     * Returns the <tt>IEnumContent</tt> that has been created by this page or <tt>null</tt> if none
-     * has been created yet.
+     * Returns the <tt>IEnumContent</tt> that has been created by this page or <tt>null</tt> if it
+     * has not been created yet.
      */
     public IEnumContent getCreatedEnumContent() {
         return createdEnumContent;

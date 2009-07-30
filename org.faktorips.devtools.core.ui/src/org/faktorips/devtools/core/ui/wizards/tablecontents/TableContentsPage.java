@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -28,26 +29,29 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.StringUtil;
 
-
 /**
  *
  */
 public class TableContentsPage extends IpsObjectPage {
-    
+
     private TableStructureRefControl structureControl;
     private TextButtonField structureField;
     private Text name;
-    
+
+    private ITableContents createdTableContents;
+
     /**
      * @param pageName
      * @param selection
@@ -55,15 +59,17 @@ public class TableContentsPage extends IpsObjectPage {
      */
     public TableContentsPage(IStructuredSelection selection) throws JavaModelException {
         super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png"));
     }
-    
+
     String getTableStructureName() {
         return structureControl.getText();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
         structureControl = toolkit.createTableStructureRefControl(null, nameComposite);
@@ -75,47 +81,46 @@ public class TableContentsPage extends IpsObjectPage {
             public void focusGained(FocusEvent e) {
                 setDefaultName();
             }
+
             public void focusLost(FocusEvent e) {
             }
         });
-        
+
         structureControl.setFocus();
-        
+
         // sets the default table structure if the selection is a table structure or a table content
         String tableStructureInSelect = getTableStructureFromSelection();
-        if (tableStructureInSelect != null){
+        if (tableStructureInSelect != null) {
             structureControl.getTextControl().setText(tableStructureInSelect);
             name.setFocus();
         }
     }
-    
+
     /**
-     * Calls the supertype method and checks sets the focus to the structure field if it is empty and the
-     * source folder field isn't empty. 
+     * Calls the supertype method and checks sets the focus to the structure field if it is empty
+     * and the source folder field isn't empty.
      */
-    protected void setDefaultFocus(){
+    @Override
+    protected void setDefaultFocus() {
         super.setDefaultFocus();
-        if(StringUtils.isEmpty(getSourceFolder())){
+        if (StringUtils.isEmpty(getSourceFolder())) {
             return;
         }
-        if(StringUtils.isEmpty(structureField.getText())){
+        if (StringUtils.isEmpty(structureField.getText())) {
             structureField.getControl().setFocus();
         }
     }
 
-    
     private String getTableStructureFromSelection() {
         IIpsObject selectedObject;
         try {
             selectedObject = getSelectedIpsObject();
             if (selectedObject instanceof ITableStructure) {
                 return ((ITableStructure)selectedObject).getQualifiedName();
-            }
-            else if (selectedObject instanceof ITableContents) {
+            } else if (selectedObject instanceof ITableContents) {
                 return ((ITableContents)selectedObject).getTableStructure();
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -124,18 +129,35 @@ public class TableContentsPage extends IpsObjectPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-        if (root!=null) {
+        if (root != null) {
             structureControl.setIpsProject(root.getIpsProject());
         } else {
             structureControl.setIpsProject(null);
         }
     }
-    
+
+    public ITableStructure getTableStructure() {
+        try {
+            return structureControl.findTableStructure();
+        } catch (CoreException e) {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void validatePageExtension() throws CoreException {
         if (getErrorMessage() != null) {
+            return;
+        }
+        if (structureControl.getText().length() == 0) {
+            setErrorMessage(Messages.TableContentsPage_msgStructureEmpty);
             return;
         }
         ITableStructure structure = structureControl.findTableStructure();
@@ -147,31 +169,52 @@ public class TableContentsPage extends IpsObjectPage {
             }
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+        IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
+        createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
+        return createdIpsSrcFile;
+    }
+
     private void setDefaultName() {
         if (getIpsObjectName().equals("")) { //$NON-NLS-1$
             String structureName = structureField.getText();
             setIpsObjectName(StringUtil.unqualifiedName(structureName));
         }
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
+    @Override
     protected void finishIpsObjects(IIpsObject pdObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
         table.setTableStructure(getTableStructureName());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        if (date==null) {
+        if (date == null) {
             return;
         }
         IIpsObjectGeneration generation = table.newGeneration();
         generation.setValidFrom(date);
-        ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, table.getTableStructure());
-        if (structure!=null) {
-            for (int i=0; i<structure.getNumOfColumns(); i++) {
+        ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
+                table.getTableStructure());
+        if (structure != null) {
+            for (int i = 0; i < structure.getNumOfColumns(); i++) {
                 table.newColumn(""); //$NON-NLS-1$
             }
         }
     }
+
+    /**
+     * Returns the <tt>ITableContents</tt> that has been created by this page or <tt>null</tt> if it
+     * has not been created yet.
+     */
+    public ITableContents getCreatedTableContents() {
+        return createdTableContents;
+    }
+
 }
