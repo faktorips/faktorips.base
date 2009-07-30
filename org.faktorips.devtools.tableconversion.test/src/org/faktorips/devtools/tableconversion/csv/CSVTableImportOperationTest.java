@@ -52,8 +52,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
     private IIpsProject ipsProject;
     private ITableContents contents;
-    
-    
+
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -80,7 +79,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
             format.addValueConverter(converter);
             converter.setTableFormat(format);
         }
-        
+
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         contents.newColumn(null);
         contents.newColumn(null);
@@ -106,7 +105,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
         MessageList ml = new MessageList();
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
     }
@@ -119,7 +118,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
         MessageList ml = new MessageList();
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -133,8 +132,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         // too less columns
         ml.clear();
         getStructure().getColumn(0).delete();
-        op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
+        op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format, "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
     }
@@ -144,7 +142,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
         MessageList ml = new MessageList();
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", false, ml);
+                "NULL", false, ml, true);
         op.run(new NullProgressMonitor());
         assertFalse(ml.containsErrorMsg());
         assertEquals(3, importTarget.getNumOfRows());
@@ -155,7 +153,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
         MessageList ml = new MessageList();
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertFalse(ml.containsErrorMsg());
         assertEquals(3, importTarget.getNumOfRows());
@@ -163,25 +161,24 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
     public void testImportInvalid() throws Exception {
         createInvalidCsvFile();
-        
+
         MessageList ml = new MessageList();
-        CSVTableImportOperation op = new CSVTableImportOperation(createTableStructure(ipsProject), 
-                file.getName(), importTarget, format, "NULL", true, ml);
-        
+        CSVTableImportOperation op = new CSVTableImportOperation(createTableStructure(ipsProject), file.getName(),
+                importTarget, format, "NULL", true, ml, true);
+
         op.run(new NullProgressMonitor());
         assertEquals(6, ml.getNoOfMessages());
     }
-    
+
     private void createInvalidCsvFile() throws Exception {
         CSVWriter writer = new CSVWriter(new FileWriter(file));
-        
-        String[] invalidLine = new String[] {
-                "invalid is impossible", "INVALID", "INVALID", "INVALID",
-                "INVALID", "INVALID", "INVALID", "invalid is impossible"
-        };
 
-        writer.writeNext(new String[] {"This", "is", "the", "header."});
+        String[] invalidLine = new String[] { "invalid is impossible", "INVALID", "INVALID", "INVALID", "INVALID",
+                "INVALID", "INVALID", "invalid is impossible" };
+
+        writer.writeNext(new String[] { "This", "is", "the", "header." });
         writer.writeNext(invalidLine);
         writer.close();
     }
+    
 }

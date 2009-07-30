@@ -55,6 +55,8 @@ public abstract class AbstractTableImportOperation implements IWorkspaceRunnable
      */
     protected MessageList messageList;
 
+    protected boolean importIntoExisting;
+
     /**
      * <code>true</code> if the first row contains column header and should be ignored
      * <code>false</code> if the to be imported content contains no column header row.
@@ -62,13 +64,14 @@ public abstract class AbstractTableImportOperation implements IWorkspaceRunnable
     protected boolean ignoreColumnHeaderRow;
 
     public AbstractTableImportOperation(String sourceFile, ITableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+            boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
 
         this.sourceFile = sourceFile;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
         this.messageList = list;
+        this.importIntoExisting = importIntoExisting;
     }
 
     /**

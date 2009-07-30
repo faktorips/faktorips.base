@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,27 +27,37 @@ import org.faktorips.util.message.MessageList;
 class TestTableFormat extends AbstractExternalTableFormat {
 
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
-            IPath filename, String nullRepresentationString,
-            boolean exportColumnHeaderRow, MessageList list) {
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
+            MessageList list) {
         return false;
     }
 
     public boolean executeEnumImport(IEnumValueContainer valueContainer,
-            IPath filename, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+            IPath filename,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list,
+            boolean importIntoExisting) {
         return false;
     }
 
     public boolean executeTableExport(ITableContents contents,
-            IPath filename, String nullRepresentationString,
-            boolean exportColumnHeaderRow, MessageList list) {
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
+            MessageList list) {
         return false;
     }
 
     public boolean executeTableImport(ITableStructure structure,
-            IPath filename, ITableContentsGeneration targetGeneration,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow,
-            MessageList list) {
+            IPath filename,
+            ITableContentsGeneration targetGeneration,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list,
+            boolean importIntoExisting) {
         return false;
     }
 
@@ -67,4 +77,5 @@ class TestTableFormat extends AbstractExternalTableFormat {
 }
 
 class TestTableFormatTwo extends TestTableFormat {
+    
 }

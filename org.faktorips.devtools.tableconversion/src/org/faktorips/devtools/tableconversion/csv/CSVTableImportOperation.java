@@ -54,9 +54,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
     public CSVTableImportOperation(ITableStructure structure, String sourceFile,
             ITableContentsGeneration targetGeneration, ITableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+            boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
 
-        super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list);
+        super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
 
         this.structure = structure;
         this.targetGeneration = targetGeneration;

@@ -51,9 +51,9 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
 
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
             ITableContentsGeneration targetGeneration, ExcelTableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+            boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
 
-        super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list);
+        super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
         this.structure = structure;
         this.targetGeneration = targetGeneration;
         initDatatypes();
@@ -91,7 +91,9 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
 
-            targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
+            if (!importIntoExisting) {
+                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
+            }
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {

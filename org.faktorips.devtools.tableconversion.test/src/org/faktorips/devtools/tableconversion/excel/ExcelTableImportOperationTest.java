@@ -91,7 +91,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         structure = createTableStructure(ipsProject);
         createValid();
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
     }
@@ -102,7 +102,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         createValid();
 
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", false, ml);
+                "NULL", false, ml, true);
         op.run(new NullProgressMonitor());
 
         assertEquals(4, importTarget.getRows().length);
@@ -114,7 +114,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         createValid();
 
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
 
         assertEquals(3, importTarget.getRows().length);
@@ -126,7 +126,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         createInvalid();
 
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", true, ml);
+                "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertEquals(6, ml.getNoOfMessages());
     }

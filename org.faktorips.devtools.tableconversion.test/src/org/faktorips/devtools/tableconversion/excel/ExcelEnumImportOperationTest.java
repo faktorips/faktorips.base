@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,16 +35,16 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     IIpsProject ipsProject;
 
     File file;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         ipsProject = newIpsProject("test");
         IIpsProjectProperties props = ipsProject.getProperties();
         String[] datatypes = getColumnDatatypes();
         props.setPredefinedDatatypesUsed(datatypes);
         ipsProject.setProperties(props);
-        
+
         format = new ExcelTableFormat();
         format.setName("Excel");
         format.setDefaultExtension(".xls");
@@ -56,7 +56,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         format.addValueConverter(new LongValueConverter());
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
-        
+
         file = new File("enum" + format.getDefaultExtension());
         file.delete();
     }
@@ -73,14 +73,14 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
 
     public void testImportValidRowMismatch() throws Exception {
         IEnumType enumType = createExternalEnumType();
-        
+
         // too many columns
         enumType.newEnumAttribute().setName("AddedColumn");
         enumType.clear();
-        
+
         MessageList ml = new MessageList();
-        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format,
-                "NULL", true, ml);
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
+                true);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -91,13 +91,13 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         assertFalse(ml.isEmpty());
     }
 
-    public void testImportFirstRowContainsNoColumnHeader() throws Exception{
+    public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImport(ml, false);
         assertEquals(4, enumType.getEnumValuesCount());
     }
 
-    public void testImportFirstRowContainsColumnHeader() throws Exception{
+    public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImport(ml, true);
         assertEquals(3, enumType.getEnumValuesCount());
@@ -107,34 +107,34 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         IEnumType enumType = createExternalEnumType();
         enumType.clear();
-        
+
         createInvalid();
 
-        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format,
-                "NULL", true, ml);
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
+                true);
         op.run(new NullProgressMonitor());
         assertEquals(6, ml.getNoOfMessages());
     }
-    
+
     private IEnumType createExternalEnumType() throws Exception, CoreException {
         // create ips src file
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
-        
+
         // create enum.xls
-        ExcelEnumExportOperation excelEnumExportOperation = 
-            new ExcelEnumExportOperation(enumType, file.getName(), format, "NULL", true, new MessageList());
+        ExcelEnumExportOperation excelEnumExportOperation = new ExcelEnumExportOperation(enumType, file.getName(),
+                format, "NULL", true, new MessageList());
         excelEnumExportOperation.run(null);
         return enumType;
     }
 
     private IEnumType executeImport(MessageList ml, boolean containsHeader) throws Exception, CoreException {
         IEnumType enumType = createExternalEnumType();
-        
+
         // clear the exported file for reimport (keeping the attributes)
         enumType.clear();
-        
-        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format,
-                "NULL", containsHeader, ml);
+
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL",
+                containsHeader, ml, true);
         op.run(new NullProgressMonitor());
         return enumType;
     }

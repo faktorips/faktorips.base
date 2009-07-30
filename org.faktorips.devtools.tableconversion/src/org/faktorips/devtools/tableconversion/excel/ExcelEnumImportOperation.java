@@ -44,9 +44,10 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     private final IEnumValueContainer valueContainer;
 
     public ExcelEnumImportOperation(IEnumValueContainer valueContainer, String filename, ExcelTableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList) {
+            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList,
+            boolean importIntoExisting) {
 
-        super(filename, format, nullRepresentationString, ignoreColumnHeaderRow, messageList);
+        super(filename, format, nullRepresentationString, ignoreColumnHeaderRow, messageList, importIntoExisting);
         this.valueContainer = valueContainer;
         initDatatypes();
     }
@@ -83,7 +84,9 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                 valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
             }
 
-            valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
+            if (!importIntoExisting) {
+                valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
+            }
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {

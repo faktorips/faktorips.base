@@ -37,9 +37,9 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     protected HSSFSheet sheet;
 
     protected AbstractExcelImportOperation(String filename, ExcelTableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList messageList) {
+            boolean ignoreColumnHeaderRow, MessageList messageList, boolean importIntoExisting) {
 
-        super(filename, format, nullRepresentationString, ignoreColumnHeaderRow, messageList);
+        super(filename, format, nullRepresentationString, ignoreColumnHeaderRow, messageList, importIntoExisting);
     }
 
     protected abstract void initDatatypes();

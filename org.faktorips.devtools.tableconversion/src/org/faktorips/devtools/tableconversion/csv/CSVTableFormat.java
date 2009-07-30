@@ -73,12 +73,13 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            boolean importIntoExisting) {
 
         try {
             CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure,
                     filename.toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow,
-                    list);
+                    list, importIntoExisting);
             tableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -94,11 +95,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            boolean importIntoExisting) {
 
         try {
             CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
+                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -180,25 +182,25 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      */
     @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
-        return getImportPreview(structure, filename, maxNumberOfRows);        
+        return getImportPreview(structure, filename, maxNumberOfRows);
     }
 
     /**
      * @return A preview of the imported data to be imported using the given structure which can be
-     *         an {@link ITableStructure} or an {@link IEnumType}. 
+     *         an {@link ITableStructure} or an {@link IEnumType}.
      */
     @SuppressWarnings("unchecked")
     private List getImportPreview(IIpsObject structure, IPath filename, int maxNumberOfRows) {
         Datatype[] datatypes;
         try {
             if (structure instanceof ITableStructure) {
-                datatypes = getDatatypes((ITableStructure) structure);
+                datatypes = getDatatypes((ITableStructure)structure);
             } else if (structure instanceof IEnumType) {
-                datatypes = getDatatypes((IEnumType) structure);
+                datatypes = getDatatypes((IEnumType)structure);
             } else {
                 return Collections.EMPTY_LIST;
             }
-            
+
             return getPreviewInternal(datatypes, filename, maxNumberOfRows);
         } catch (CoreException e) {
             IpsPlugin.log(e);

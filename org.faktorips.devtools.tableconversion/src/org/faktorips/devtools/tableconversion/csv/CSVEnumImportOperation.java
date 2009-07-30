@@ -52,7 +52,9 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     private Datatype[] datatypes;
 
     public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename, CSVTableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList) {
+            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList,
+            boolean importIntoExisting) {
+        
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
         this.format = format;

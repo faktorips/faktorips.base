@@ -65,10 +65,13 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            boolean importIntoExisting) {
+
         try {
             ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename
-                    .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list);
+                    .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
+                    importIntoExisting);
             excelTableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -104,11 +107,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            boolean importIntoExisting) {
 
         try {
             ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
+                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {

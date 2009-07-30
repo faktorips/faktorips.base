@@ -102,7 +102,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
-                            ignoreColumnHeader, messageList);
+                            ignoreColumnHeader, messageList, filePage.isImportIntoExisting());
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();

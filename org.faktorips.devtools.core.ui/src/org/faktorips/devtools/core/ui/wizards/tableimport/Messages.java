@@ -51,6 +51,9 @@ public class Messages extends NLS {
     public static String SelectContentsPage_labelProject;
     public static String SelectContentsPage_msgProjectEmpty;
     public static String SelectContentsPage_msgNonExistingProject;
+    public static String SelectContentsPage_msgContentsEmpty;
+    public static String SelectContentsPage_msgContentsNotValid;
+    public static String SelectContentsPage_msgStructureNotValid;
     public static String SelectFileAndImportMethodPage_labelImportExisting;
     public static String SelectFileAndImportMethodPage_labelImportNew;
 }

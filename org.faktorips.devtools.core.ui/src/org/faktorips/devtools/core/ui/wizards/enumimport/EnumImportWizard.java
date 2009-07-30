@@ -159,7 +159,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     format.executeEnumImport(enumTypeOrContent, new Path(filePage.getFilename()), filePage
-                            .getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(), new MessageList());
+                            .getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(), new MessageList(),
+                            filePage.isImportIntoExisting());
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
