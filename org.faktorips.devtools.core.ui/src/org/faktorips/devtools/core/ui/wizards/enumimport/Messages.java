@@ -33,8 +33,12 @@ public class Messages extends NLS {
     public static String SelectEnumPage_msgMissingContent;
     public static String SelectEnumPage_msgEnumEmpty;
     public static String SelectEnumPage_msgEnumNotValid;
+    public static String SelectEnumPage_msgAbstractEnumType;
+    public static String SelectEnumPage_msgEnumTypeNotContainingValues;
+    public static String SelectEnumPage_msgEnumTypeNotValid;
     public static String SelectEnumPage_targetTypeLabel;
     public static String SelectEnumPage_title;
     public static String SelectFileAndImportMethodPage_labelImportExisting;
     public static String SelectFileAndImportMethodPage_labelImportNew;
+
 }

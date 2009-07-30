@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -101,6 +103,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         try {
@@ -207,6 +210,24 @@ public class SelectEnumPage extends SelectImportTargetPage {
             }
             if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
                 setErrorMessage(Messages.SelectEnumPage_msgEnumNotValid);
+                return;
+            }
+            if (enumValueContainer instanceof IEnumType) {
+                IEnumType enumType = (IEnumType)enumValueContainer;
+                if (enumType.isAbstract()) {
+                    setErrorMessage(Messages.SelectEnumPage_msgAbstractEnumType);
+                    return;
+                }
+                if (!(enumType.isContainingValues())) {
+                    setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotContainingValues);
+                    return;
+                }
+            }
+            if (enumValueContainer instanceof IEnumContent) {
+                IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                    setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotValid);
+                }
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -222,4 +243,5 @@ public class SelectEnumPage extends SelectImportTargetPage {
                 && !"".equals(enumField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
     }
+
 }
