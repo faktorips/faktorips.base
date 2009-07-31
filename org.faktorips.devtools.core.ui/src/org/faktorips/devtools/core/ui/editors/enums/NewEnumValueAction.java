@@ -15,7 +15,12 @@ package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -35,7 +40,10 @@ public class NewEnumValueAction extends Action {
     /** The name of the image for the action. */
     private final String IMAGE_NAME = "InsertRowAfter.gif";
 
-    /** The enum values table viewer linking the enum values ui table widget with the model data. */
+    /**
+     * The enum values table viewer linking the enumeration values UI table widget with the model
+     * data.
+     */
     private TableViewer enumValuesTableViewer;
 
     /**
@@ -43,7 +51,6 @@ public class NewEnumValueAction extends Action {
      */
     public NewEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
-
         ArgumentCheck.notNull(enumValuesTableViewer);
 
         this.enumValuesTableViewer = enumValuesTableViewer;
@@ -58,12 +65,12 @@ public class NewEnumValueAction extends Action {
      */
     @Override
     public void run() {
-        // Do nothing if there are no columns yet
+        // Do nothing if there are no columns yet.
         if (enumValuesTableViewer.getColumnProperties().length <= 0) {
             return;
         }
 
-        IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
+        final IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
         IEnumValue newEnumValue = null;
         try {
             newEnumValue = enumValueContainer.newEnumValue();
@@ -71,11 +78,21 @@ public class NewEnumValueAction extends Action {
             throw new RuntimeException(e);
         }
 
+        /*
+         * Show dialog to the user if the enumeration value could not be created. This can only
+         * happen, when the enumValueContainer is an enumeration content and the referenced
+         * enumeration type could not be found.
+         */
         if (newEnumValue == null) {
-            /*
-             * TODO aw: show information dialog, can only happen for enum content and therefore will
-             * be implemented after 2.3.0rc1
-             */
+            Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
+            display.asyncExec(new Runnable() {
+                public void run() {
+                    MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                            Messages.EnumValuesSection_titleEnumValueCreationNotPossible, NLS.bind(
+                                    Messages.EnumValuesSection_msgEnumValueCreationNotPossibleDueToNotFoundEnumType,
+                                    ((IEnumContent)enumValueContainer).getEnumType()));
+                }
+            });
         }
 
         enumValuesTableViewer.refresh(true);

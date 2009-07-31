@@ -33,6 +33,8 @@ public class Messages extends NLS {
     public static String EnumValuesSection_labelMoveEnumValueDown;
     public static String EnumValuesSection_tooltipMoveEnumValueDown;
     public static String EnumValuesSection_defaultColumnName;
+    public static String EnumValuesSection_titleEnumValueCreationNotPossible;
+    public static String EnumValuesSection_msgEnumValueCreationNotPossibleDueToNotFoundEnumType;
 
     static {
         // initialize resource bundle
