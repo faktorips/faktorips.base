@@ -173,12 +173,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
-    /*
-     * TODO aw: is this a good name for this method? it seems to be intended to be extended by
-     * subclasses to fill in additional controls, "name composite" is rather confusing then. Maybe
-     * it would be better to add yet another composite with an abstract method
-     * fillAdditionsComposite() or something like that ...
-     */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
