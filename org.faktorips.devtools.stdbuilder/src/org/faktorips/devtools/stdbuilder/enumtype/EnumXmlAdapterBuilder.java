@@ -77,7 +77,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
-        mainSection.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getEnumType(), "CLASS_JAVADOC"));
+        mainSection.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getEnumType(), "CLASS_JAVADOC", getEnumType().getQualifiedName()));
         mainSection.setClass(true);
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
