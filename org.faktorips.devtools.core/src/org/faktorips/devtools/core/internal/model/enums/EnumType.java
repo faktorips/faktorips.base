@@ -531,7 +531,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
         // Pass validation if the enum type is abstract
-        if (isAbstract) {
+        if (isAbstract || !isContainingValues()) {
             return;
         }
 

@@ -486,11 +486,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateLiteralNameAttribute() throws CoreException {
         genderEnumAttributeId.setLiteralName(false);
+        genderEnumType.setContainingValues(true);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE));
 
         genderEnumType.setAbstract(true);
+        getIpsModel().clearValidationCache();
+        assertTrue(genderEnumType.isValid());
+
+        genderEnumType.setAbstract(false);
+        genderEnumType.setContainingValues(false);
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid());
     }
