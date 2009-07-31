@@ -675,6 +675,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodValues(methodBuilder);
         generateMethodReadResolve(methodBuilder);
         generateMethodToString(methodBuilder);
+        generateMethodEquals(methodBuilder);
+        generateMethodHashCode(methodBuilder);
         generateMethodGetEnumValueIdOfEnumValuesInterface(methodBuilder);
     }
 
@@ -961,6 +963,67 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 new Class[] { ObjectStreamException.class }, methodBody, null);
     }
 
+    /*
+     *     public boolean equals(Object obj){
+        if(obj instanceof PaymentOption){
+            return this.getId().equals(((PaymentOption)obj).getId());
+        }
+        return false;
+    }
+
+     */
+    private void generateMethodEquals(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        if(!useClassGeneration()){
+            return;
+        }
+        IEnumAttribute idAttr = getEnumType().findIsIdentiferAttribute(getIpsProject());
+        if(idAttr == null || !idAttr.isValid()){
+            return;
+        }
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.append("if(obj instanceof ");
+        body.appendClassName(getQualifiedClassName());
+        body.append(")");
+        body.appendOpenBracket();
+        body.append("return this.");
+        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append("().equals(((");
+        body.appendClassName(getQualifiedClassName());
+        body.append(")obj).");
+        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append("());");
+        body.appendCloseBracket();
+        body.appendln("return false;");
+        
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodBuilder, false);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE.getName(), "equals", new String[]{"obj"}, new String[]{Object.class.getName()});
+        methodBuilder.append(body);
+        methodBuilder.methodEnd();
+    }
+
+    private void generateMethodHashCode(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        if(!useClassGeneration()){
+            return;
+        }
+        IEnumAttribute idAttr = getEnumType().findIsIdentiferAttribute(getIpsProject());
+        if(idAttr == null || !idAttr.isValid()){
+            return;
+        }
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.append("return ");
+        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.appendln("().hashCode();");
+
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodBuilder, false);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "hashCode", new String[0], new String[0]);
+        methodBuilder.append(body);
+        methodBuilder.methodEnd();
+        
+    }
+
+    
     /**
      * Code sample:
      * 
