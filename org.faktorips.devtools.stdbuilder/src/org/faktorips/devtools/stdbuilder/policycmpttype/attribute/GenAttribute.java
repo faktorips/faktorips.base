@@ -51,6 +51,8 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     protected String staticConstantPropertyName;
     protected String memberVarName;
 
+    private EnumXmlAdapterBuilder xmlAdapterBuilder;
+
     public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a, LOCALIZED_STRINGS);
         attribute = a;
@@ -61,6 +63,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         }
         staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
         memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
+        xmlAdapterBuilder = getGenPolicyCmptType().getBuilderSet().getBuildersByClass(EnumXmlAdapterBuilder.class).get(0);
     }
 
     public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
@@ -267,7 +270,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
             }
             memberVarsBuilders.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
             if (datatypeHelper instanceof EnumTypeDatatypeHelper) {
-                EnumXmlAdapterBuilder xmlAdapterBuilder = (EnumXmlAdapterBuilder)getGenPolicyCmptType().getBuilderSet().getBuilder(EnumXmlAdapterBuilder.class);
+                xmlAdapterBuilder = getGenPolicyCmptType().getBuilderSet().getBuildersByClass(EnumXmlAdapterBuilder.class).get(0);
                 EnumTypeDatatypeHelper enumDatatypeHelper = (EnumTypeDatatypeHelper)datatypeHelper;
                 if (!enumDatatypeHelper.getEnumType().isContainingValues()) {
                     memberVarsBuilders.annotationClassValueLn("javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter", "value",

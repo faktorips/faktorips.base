@@ -39,7 +39,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -154,9 +153,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * @param formula The formula the method will be generated for
      * @param builder The builder which is used to generate the code
      * @param methodSuffix Suffix which will append to the method name
-     * @param attributeSubstitution String which will be used to replace the type attribute
-     *            generated code, this enables the ability to test the generated method without
-     *            having the type
      * @param testParameterNames additional parameter name which will be append to the method
      *            signature
      * @param testParameterTypes additional parameter types which will be append to the method

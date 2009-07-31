@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -193,15 +195,21 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     }
 
     /**
-     * For testing purposes.
+     * {@inheritDoc}
      */
-    public IIpsArtefactBuilder getBuilder(Class builderClass) {
-        for (int i = 0; i < builders.length; i++) {
-            if (builders[i].getClass().equals(builderClass)) {
-                return builders[i];
-            }
-        }
-        throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
+    @SuppressWarnings("unchecked")
+    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {
+      List<T> result = new ArrayList<T>();
+      if (builders == null) {
+          return result;
+      }
+      for (int i = 0; i < builders.length; i++) {
+          //TODO genau die Klasse oder auch subklassen?
+          if (builderClass.isAssignableFrom(builders[i].getClass())) {
+              result.add((T)builders[i]);
+          }
+      }
+      return result;
     }
 
 	public boolean isTableBasedEnumValidationRequired() {

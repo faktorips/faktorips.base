@@ -251,9 +251,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         return getIpsLoggingFrameworkConnector() != null;
     }
     
-    private void addLoggingConnectorImports(List usedClasses, JavaCodeFragment frag){
-        for (Iterator it = usedClasses.iterator(); it.hasNext();) {
-            String className = (String)it.next();
+    private void addLoggingConnectorImports(List<String> usedClasses, JavaCodeFragment frag){
+        for (Iterator<String> it = usedClasses.iterator(); it.hasNext();) {
+            String className = it.next();
             frag.addImport(className);
         }
     }
@@ -269,7 +269,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if(!checkLoggingGenerationConditions()){
             return;
         }
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         IIpsLoggingFrameworkConnector connector = getIpsLoggingFrameworkConnector();
         JavaCodeFragment value = new JavaCodeFragment();
         value.append(connector.getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
@@ -290,7 +290,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         generateLoggerConstantIfNecessary();
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         String loggingStmt = getIpsLoggingFrameworkConnector().getLogStmtForMessageExp(
                 level, messageExp, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
@@ -303,7 +303,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         generateLoggerConstantIfNecessary();
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         frag.append("if ("); //$NON-NLS-1$
         frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
@@ -319,7 +319,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         generateLoggerConstantIfNecessary();
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         String loggingStmt = getIpsLoggingFrameworkConnector().getLogStmtForMessage(
                 level, message, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
@@ -332,7 +332,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         generateLoggerConstantIfNecessary();
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
         addLoggingConnectorImports(usedClasses, frag);
@@ -343,7 +343,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         generateLoggerConstantIfNecessary();
-        ArrayList usedClasses = new ArrayList();
+        List<String> usedClasses = new ArrayList<String>();
         frag.append("if ("); //$NON-NLS-1$
         frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));

@@ -63,8 +63,8 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         project.setProperties(props);
         builderSet = (StandardBuilderSet)project.getIpsArtefactBuilderSet();
-        tableImplBuilder = (TableImplBuilder)builderSet.getBuilder(TableImplBuilder.class);
-        tocFileBuilder = (TocFileBuilder)builderSet.getBuilder(TocFileBuilder.class);
+        tableImplBuilder = builderSet.getBuildersByClass(TableImplBuilder.class).get(0);
+        tocFileBuilder = builderSet.getBuildersByClass(TocFileBuilder.class).get(0);
         validFrom = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
     }
 

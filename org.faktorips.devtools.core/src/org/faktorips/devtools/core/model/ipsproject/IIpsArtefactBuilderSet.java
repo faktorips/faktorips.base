@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
@@ -186,7 +187,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * When the builder set is loaded by the faktor ips plugin the extension describtion label is
      * set by means of this method. This method is called before initialization.
      * 
-     * @param id the extension description label
+     * @param label the extension description label
      */
     public void setLabel(String label);
 
@@ -265,4 +266,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      */
     public void afterBuildProcess(int buildKind) throws CoreException;
 
+    /**
+     * To get an array of concrete builders registered in this builder set specified by the class.
+     * @param builderClass The class of the builders you are searching for
+     * @return an array of builders which are subtypes or from same type as builderClass 
+     * 
+     */
+    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
+    
 }
