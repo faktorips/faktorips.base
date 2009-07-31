@@ -197,7 +197,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {
       List<T> result = new ArrayList<T>();
       if (builders == null) {
@@ -206,7 +205,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
       for (int i = 0; i < builders.length; i++) {
           //TODO genau die Klasse oder auch subklassen?
           if (builderClass.isAssignableFrom(builders[i].getClass())) {
-              result.add((T)builders[i]);
+              result.add(builderClass.cast(builders[i]));
           }
       }
       return result;
