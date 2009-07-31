@@ -16,12 +16,14 @@ package org.faktorips.devtools.core.builder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 
 class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     public boolean generateCalled = false;
     public boolean isBuilderFor = false;
+    
 
     public DumyJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {

@@ -31,7 +31,9 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject();
         ipsSrcFile = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
-        builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
+        builderSet.setIpsProject(project);
+        builder = new DumyJavaSourceFileBuilder(builderSet, "dumy",
                   new LocalizedStringsSet(JavaSourceFileBuilderTest.class));
         builder.beforeBuildProcess(project, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
