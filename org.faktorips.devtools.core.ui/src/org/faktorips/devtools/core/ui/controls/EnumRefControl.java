@@ -93,16 +93,22 @@ public class EnumRefControl extends IpsObjectRefControl {
      * Returns the currently selected enum type or enum content. Returns <tt>null</tt> if no such
      * enum type or enum content exists.
      * 
+     * @param priorContent This flag is only relevant if an enum type and an enum content with the
+     *            same qualified name exist. If this flag <tt>true</tt> the enum content will be
+     *            returned, else the enum type.
+     * 
      * @throws CoreException If an error occurs while searching for the selected enum type or enum
      *             content.
      */
-    public IEnumValueContainer findEnum() throws CoreException {
-        IEnumValueContainer enumType = null;
-        enumType = (IEnumValueContainer)getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, getText());
-        if (enumType == null) {
-            return (IEnumValueContainer)getIpsProject().findIpsObject(IpsObjectType.ENUM_CONTENT, getText());
+    public IEnumValueContainer findEnum(boolean priorContent) throws CoreException {
+        IpsObjectType firstType = priorContent ? IpsObjectType.ENUM_CONTENT : IpsObjectType.ENUM_TYPE;
+        IpsObjectType secondType = priorContent ? IpsObjectType.ENUM_TYPE : IpsObjectType.ENUM_CONTENT;
+        IEnumValueContainer enumValueContainer = null;
+        enumValueContainer = (IEnumValueContainer)getIpsProject().findIpsObject(firstType, getText());
+        if (enumValueContainer != null) {
+            return enumValueContainer;
         }
-        return enumType;
+        return (IEnumValueContainer)getIpsProject().findIpsObject(secondType, getText());
     }
 
 }

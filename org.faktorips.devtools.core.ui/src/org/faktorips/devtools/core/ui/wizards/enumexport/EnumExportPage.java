@@ -172,7 +172,7 @@ public class EnumExportPage extends IpsObjectExportPage {
 
     public IEnumValueContainer getEnum() throws CoreException {
         if (exportedIpsObjectControl instanceof EnumRefControl) {
-            return ((EnumRefControl)exportedIpsObjectControl).findEnum();
+            return ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
         }
         return null;
     }

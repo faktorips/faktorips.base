@@ -142,7 +142,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     public IEnumValueContainer getEnum() throws CoreException {
-        return ((EnumRefControl)enumControl).findEnum();
+        return ((EnumRefControl)enumControl).findEnum(true);
     }
 
     protected void contentsChanged() {
