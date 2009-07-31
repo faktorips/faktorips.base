@@ -14,16 +14,20 @@
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -165,6 +169,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
         if (filePage.isImportIntoExisting()) {
             return selectContentsPage.getTableContents();
         } else {
+            IIpsSrcFile ipsSrcFile = newTableContentsPage.createIpsSrcFile(new NullProgressMonitor());
+            newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList<IIpsObject>());
             return newTableContentsPage.getCreatedTableContents();
         }
     }

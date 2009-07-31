@@ -174,7 +174,7 @@ public class TableContentsPage extends IpsObjectPage {
      * {@inheritDoc}
      */
     @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
         createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
         return createdIpsSrcFile;
@@ -191,7 +191,7 @@ public class TableContentsPage extends IpsObjectPage {
      * {@inheritDoc}
      */
     @Override
-    protected void finishIpsObjects(IIpsObject pdObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    public void finishIpsObjects(IIpsObject pdObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
         table.setTableStructure(getTableStructureName());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
