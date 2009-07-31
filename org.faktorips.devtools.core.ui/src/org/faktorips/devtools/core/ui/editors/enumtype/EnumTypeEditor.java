@@ -41,8 +41,9 @@ public class EnumTypeEditor extends TypeEditor {
      */
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new EnumTypeStructurePage(this, true));
-        addPage(new EnumTypeValuesPage(this, true));
+        addPage(new EnumTypeStructurePage(this, false));
+        // TODO AW: out commented 2nd page for release 2.3.0rfinal, see FS#1379
+        // addPage(new EnumTypeValuesPage(this, true));
     }
 
     /**
