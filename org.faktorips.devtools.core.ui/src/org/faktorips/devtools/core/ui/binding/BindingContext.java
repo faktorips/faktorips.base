@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
@@ -46,6 +47,7 @@ import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.Messages;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
@@ -210,6 +212,10 @@ public class BindingContext {
         bindContent(field, object, property);
 
         return field;
+    }
+    
+    public void bindContent(ComboViewer comboViewer, Object object, String propertyName) {
+        bindContent(new ComboViewerField(comboViewer), object, propertyName);
     }
 
     /**
@@ -393,7 +399,6 @@ public class BindingContext {
      * properties of the IpsPartContainer. It returns the MessageList which is the result of the
      * validation. This return value can be evaluated when overriding this method.
      * 
-     * @return the validation message list. Never returns <code>null</code>.
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
         ArrayList<IIpsObject> copy = new ArrayList<IIpsObject>(ipsObjects);
