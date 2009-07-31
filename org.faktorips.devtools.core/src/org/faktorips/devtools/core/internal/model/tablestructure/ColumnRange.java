@@ -163,8 +163,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         if(rangeType.isTwoColumn() && toColumnDatatype != null && fromColumnDatatype != null){
             if (!toColumnDatatype.equals(fromColumnDatatype)){
                 String text = NLS.bind(Messages.ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype, to);
-                list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE, text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$
-                list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE, text, Message.ERROR, this, PROPERTY_FROM_COLUMN)); //$NON-NLS-1$
+                list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE, text, Message.ERROR, this)); //$NON-NLS-1$
             }
         }
         
@@ -263,7 +262,7 @@ s     * {@inheritDoc}
      * {@inheritDoc}
      */
     public IColumn[] getColumns() {
-        List columns = new ArrayList();
+        List<IColumn> columns = new ArrayList<IColumn>();
         if (!rangeType.isOneColumnTo()) {
             if (getTableStructure().getColumn(from)!=null) {
                 columns.add(getTableStructure().getColumn(from));

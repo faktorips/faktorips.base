@@ -187,7 +187,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         from.setDatatype(Datatype.INTEGER.getName());
         from.setName("from");
         IColumn to = table.newColumn();
-        to.setDatatype(Datatype.STRING.getName());
+        to.setDatatype(Datatype.INTEGER.getName());
         to.setName("to");
         
         range.setFromColumn("from");
@@ -196,6 +196,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         table.getIpsSrcFile().save(true, null);
         
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
+        System.out.println(ml);
         assertTrue(ml.isEmpty());
         
         from.setDatatype(Datatype.BOOLEAN.getName());
@@ -230,7 +231,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         c1.setDatatype(Datatype.STRING.getName());
         IColumnRange range = table.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
-        ((ColumnRange)range).setParameterName("c0Toc1"); // TODO Joerg wie macht das die GUI?
+        ((ColumnRange)range).setParameterName("c0Toc1");
         range.setFromColumn(c0.getName());
         range.setToColumn(c1.getName());
 
@@ -242,8 +243,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertFalse(ml.isEmpty());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
-        assertNotNull(ml.getMessagesFor(range, IColumnRange.PROPERTY_TO_COLUMN));
-        assertNotNull(ml.getMessagesFor(range, IColumnRange.PROPERTY_FROM_COLUMN));
+        assertNotNull(ml.getMessagesFor(range));
         
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         ((ColumnRange)range).setParameterName("c0");

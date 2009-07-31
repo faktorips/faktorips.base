@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
  *
