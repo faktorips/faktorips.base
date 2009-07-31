@@ -85,8 +85,8 @@ PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
-LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/lizenzvertrag_fips.pdf
-DATENSCHUTZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/datenschutzbestimmung.pdf
+LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Lizenzvertrag.pdf
+DATENSCHUTZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Datenschutzbestimmung.pdf
 
 ###########
 # functions
@@ -436,7 +436,7 @@ showParameter()
   if [ -n "$BUILDPRODUCT" ] ; then
     echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
   fi
-  echo -e "  -projectsrootdir : Checkout/Copysource directory \e[35m$PROJECTSROOTDIR\e[0m"
+  echo -e "  -projectsrootdir : Checkout/source directory \e[35m$PROJECTSROOTDIR\e[0m"
   echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
   if [ ! "$SKIPPUBLISH" = "true" ] ; then
     echo    "  Published result"
