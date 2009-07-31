@@ -19,15 +19,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The <tt>ValidationDecorator</tt> is responsible for drawing markers to ui composites. This
- * mechanism is used to show little images to ui controls when the ips object being edited by an
+ * The <tt>ValidationDecorator</tt> is responsible for drawing markers to UI composites. This
+ * mechanism is used to show little images to UI controls when the IPS object being edited by an
  * editor or a dialog does not pass the validation because of invalid input.
  * <p>
  * The used pattern is a GoF pattern called DecoratorPattern. In this structural pattern a so called
@@ -40,14 +39,11 @@ import org.faktorips.util.message.MessageList;
 // FIXME aw: This class seems not to be used at all.
 public class ValidationDecorator extends Composite {
 
-    /** The size of the marker to decorate the ui composite with. */
+    /** The size of the marker to decorate the UI composite with. */
     protected final static Point IMAGE_SIZE = new Point(8, 8);
 
-    /** The ui label that is used to show the validation image. */
+    /** The UI label that is used to show the validation image. */
     private Label imageLabel;
-
-    // TODO aw: This field seems not to be used at all.
-    private Control control;
 
     /**
      * Creates an instance of the <tt>ValidationDecorator</tt>.
@@ -75,7 +71,6 @@ public class ValidationDecorator extends Composite {
     public void setBackground(Color color) {
         super.setBackground(color);
         imageLabel.setBackground(color);
-        control.setBackground(color);
     }
 
     public void setMessageList(MessageList list) {

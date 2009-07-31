@@ -77,7 +77,9 @@ public class OpenFixEnumContentWizardAction extends Action {
         FixEnumContentWizard wizard = new FixEnumContentWizard(enumContent);
         WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();
-        editorPage.refresh();
+        if (editorPage != null) {
+            editorPage.refresh();
+        }
     }
 
 }
