@@ -158,7 +158,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Set supertype / implemented interface and ensure serialization
         List<String> implementedInterfaces = new ArrayList<String>(5);
-        implementedInterfaces.add(org.faktorips.runtime.IEnumValue.class.getName());
 
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
@@ -169,6 +168,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
                 }
             }
+        } else {
+            implementedInterfaces.add(org.faktorips.runtime.IEnumValue.class.getName());
         }
         if (useClassGeneration()) {
             if ((enumType.isAbstract() && !(enumType.hasSuperEnumType()))
