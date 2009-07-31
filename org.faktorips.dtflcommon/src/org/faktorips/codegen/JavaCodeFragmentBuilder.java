@@ -1238,6 +1238,24 @@ public class JavaCodeFragmentBuilder {
         return this;
     }
 
+    /**
+     * Writes a method call to the java code fragment builder.
+     * @param name The name of the method to call
+     * @param parameters the parameters for the method call
+     * @return the fragment builder for method chaining
+     */
+    public JavaCodeFragmentBuilder appendMethodCall(String name, String[] parameters) {
+        fragment.append(name).append('(');
+        for (String aParameter : parameters) {
+            fragment.append(aParameter);
+            if (!aParameter.equals(parameters[parameters.length-1])) {
+                fragment.append(", ");
+            }
+        }
+        fragment.appendln(");");
+        return this;
+    }
+    
     public String toString() {
         return fragment.toString();
     }
