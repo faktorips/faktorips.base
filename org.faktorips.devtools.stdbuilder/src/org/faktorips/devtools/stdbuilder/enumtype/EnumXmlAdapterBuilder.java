@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,13 +26,14 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * A builder for JAXB XmlAdapters. XmlAdapters are generated for Faktor-IPS enumerations that defer their content
- * to a Faktor-IPS enumeration content. These contents can only be accessed through the {@link IRuntimeRepository}.
- * This is the responsibility of the generated XmlAdapter.
+ * A builder for JAXB XmlAdapters. XmlAdapters are generated for Faktor-IPS enumerations that defer
+ * their content to a Faktor-IPS enumeration content. These contents can only be accessed through
+ * the {@link IRuntimeRepository}. This is the responsibility of the generated XmlAdapter.
  * 
  * @author Peter Kuntz
  */
@@ -42,12 +43,12 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumXmlAdapterBuilder.enumtype.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
     public EnumTypeBuilder enumTypeBuilder;
-    
+
     public EnumXmlAdapterBuilder(IIpsArtefactBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
         super(builderSet, PACKAGE_STRUCTURE_KIND_ID, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
     }
-    
+
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
@@ -56,6 +57,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     /** Returns the enum type for that code is being generated. */
     private IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
+    }
+
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+        if (!((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport()) {
+            return;
+        }
+        super.build(ipsSrcFile);
     }
 
     /**
@@ -68,26 +76,27 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         }
         return false;
     }
-    
+
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return super.getUnqualifiedClassName(ipsSrcFile) + "XmlAdapter"; //$NON-NLS-1$
     }
-    
+
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
-        mainSection.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getEnumType(), "CLASS_JAVADOC", getEnumType().getQualifiedName()));
+        mainSection.getJavaDocForTypeBuilder().javaDoc(
+                getLocalizedText(getEnumType(), "CLASS_JAVADOC", getEnumType().getQualifiedName()));
         mainSection.setClass(true);
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName(getEnumType().getIpsSrcFile()));
         IEnumAttribute idAttribute = getEnumType().findIsIdentiferAttribute(getIpsProject());
-        if(idAttribute == null || !idAttribute.isValid()){
+        if (idAttribute == null || !idAttribute.isValid()) {
             return;
         }
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));
-        
+
         StringBuffer superClassName = new StringBuffer();
         superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$
         superClassName.append("<"); //$NON-NLS-1$
@@ -109,11 +118,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      private IRuntimeRepository repository;
      * </pre>
      */
-    private void generateFieldRepository(JavaCodeFragmentBuilder builder){
+    private void generateFieldRepository(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(getLocalizedText(getEnumType(), "FIELD_REPOSITORY_JAVADOC"));
         builder.varDeclaration(Modifier.PRIVATE, IRuntimeRepository.class, "repository"); //$NON-NLS-1$
     }
-    
+
     /**
      * Code sample:
      * 
@@ -131,7 +140,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         builder.append(new JavaCodeFragment("this.repository = repository;")); //$NON-NLS-1$
         builder.methodEnd();
     }
-    
+
     /**
      * Code sample:
      * 
@@ -147,7 +156,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodMarshal(JavaCodeFragmentBuilder builder, DatatypeHelper datatypeHelper)
             throws CoreException {
-        
+
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("if(value == null)"); //$NON-NLS-1$
         body.appendOpenBracket();
@@ -156,8 +165,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return value."); //$NON-NLS-1$
         body.append(enumTypeBuilder.getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
         body.append("();"); //$NON-NLS-1$
-        
-        
+
         builder.javaDoc(getLocalizedText(getEnumType(), "METHOD_MARSHAL_JAVADOC"));
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new String[] { enumTypeBuilder.getQualifiedClassName(getEnumType()) }, body, null);
