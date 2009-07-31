@@ -345,12 +345,12 @@ public class IpsArchive implements IIpsArchive {
             String basePackageMergable = getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE);
             if (basePackageMergable == null) {
                 // for archives created with versions up to 2.2.5
-                getPropertyValue(ipsObjectProperties, qNameType, "basePackage");
+                basePackageMergable = getPropertyValue(ipsObjectProperties, qNameType, "basePackage");
             }
             String basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED);
             if (basePackageDerived == null) {
                 // for archives created with versions up to 2.2.5
-                getPropertyValue(ipsObjectProperties, qNameType, "extensionPackage");
+                basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType, "extensionPackage");
             }
             
             IpsObjectProperties props = new IpsObjectProperties(basePackageMergable, basePackageDerived);
