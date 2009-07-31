@@ -37,6 +37,7 @@ import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -804,7 +805,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (content == null) {
             return content;
         }
-        CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
+        IJavaProject javaProject = getIpsProject().getJavaProject();
+        CodeFormatter formatter;
+        if(javaProject != null){
+            formatter = ToolFactory.createCodeFormatter(javaProject.getOptions(true));
+        } else {
+            formatter = ToolFactory.createCodeFormatter(null);
+        }
         // with parameter null the CodeFormatter is configured with the
         // preferences that are currently set
         TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content, 0, content.length(), 0, StringUtil
