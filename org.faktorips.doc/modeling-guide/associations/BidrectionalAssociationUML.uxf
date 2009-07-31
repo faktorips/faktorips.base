@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>110</x><y>40</y><w>310</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=1
-r1=PolicyOwner
-m2=*
-r2=OwnedPolicy</panel_attributes><additional_attributes>290;20;20;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>400</x><y>30</y><w>100</w><h>80</h></coordinates><panel_attributes>Person</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>30</x><y>30</y><w>100</w><h>80</h></coordinates><panel_attributes>Policy</panel_attributes><additional_attributes></additional_attributes></element></umlet_diagram>
