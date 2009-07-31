@@ -62,10 +62,7 @@ public class Message {
      * 
      * @return The newly created, copied message.
      */
-    // TODO javadoc params
     public final static Message createCopy(Message msg, Object oldObject, Object newObject) {
-        // TODO Argument Check?
-
         ObjectProperty[] op = msg.getInvalidObjectProperties();
         ObjectProperty[] newOp = new ObjectProperty[op.length];
         for (int i = 0; i < op.length; i++) {
@@ -117,7 +114,7 @@ public class Message {
     public final static Message newWarning(String code, String text) {
         return new Message(code, text, WARNING);
     }
-    
+
     /**
      * Constructs a new warning message.
      * 
@@ -149,7 +146,8 @@ public class Message {
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object to refer to.
-     * @param invalidProperty The name of the invalid property (which is a property of the invalidObject)
+     * @param invalidProperty The name of the invalid property (which is a property of the
+     *            invalidObject)
      * 
      * @return The newly created message.
      */
