@@ -18,6 +18,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -40,22 +41,28 @@ public class OpenFixEnumContentWizardAction extends Action {
     /** The parent shell. */
     private Shell parentShell;
 
+    /** The editor page that requested the operation or <tt>null</tt>. */
+    private IpsObjectEditorPage editorPage;
+
     /**
      * Creates a new <code>OpenFixEnumContentWizardAction</code>.
      * 
+     * @param editorPage The IpsObjectEditorPage that requested the operation or <tt>null</tt> (the
+     *            page will be refreshed after the operation was performed if given).
      * @param enumContent The enum content to fix.
      * @param parentShell The parent shell.
      * 
      * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is
      *             <code>null</code>.
      */
-    public OpenFixEnumContentWizardAction(IEnumContent enumContent, Shell parentShell) {
+    public OpenFixEnumContentWizardAction(IpsObjectEditorPage editorPage, IEnumContent enumContent, Shell parentShell) {
         super();
 
         ArgumentCheck.notNull(new Object[] { enumContent, parentShell });
 
         this.enumContent = enumContent;
         this.parentShell = parentShell;
+        this.editorPage = editorPage;
 
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumContentPage_labelOpenFixEnumTypeDialog);
@@ -70,6 +77,7 @@ public class OpenFixEnumContentWizardAction extends Action {
         FixEnumContentWizard wizard = new FixEnumContentWizard(enumContent);
         WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();
+        editorPage.refresh();
     }
 
 }

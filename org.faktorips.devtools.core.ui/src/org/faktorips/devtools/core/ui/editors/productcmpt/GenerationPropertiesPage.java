@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,72 +41,70 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
-	/**
-	 * Id to identify the page.
-	 */
-	public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
+    /**
+     * Id to identify the page.
+     */
+    public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
-	// Sections for different property-groups
-	private GenerationAttributesSection productAttributesSection;
+    // Sections for different property-groups
+    private GenerationAttributesSection productAttributesSection;
 
-	private FormulasSection formulasSection;
+    private FormulasSection formulasSection;
 
-	private DefaultsAndRangesSection defaultsAndRangesSection;
+    private DefaultsAndRangesSection defaultsAndRangesSection;
 
-	private LinksSection linksSection;
+    private LinksSection linksSection;
 
-	/*
-	 * Layout for this page (see pageRoot) - if the content-structure for this
-	 * page changes, the current set top level composite is disposed and a
-	 * completely new one is created. This is to avoid complex code for
-	 * structural refresh.
-	 */
-	private StackLayout stack;
+    /*
+     * Layout for this page (see pageRoot) - if the content-structure for this page changes, the
+     * current set top level composite is disposed and a completely new one is created. This is to
+     * avoid complex code for structural refresh.
+     */
+    private StackLayout stack;
 
-	/*
-	 * The composite which serves as root-composite for this page. This composit
-	 * is controlled by the Forms-framework, so it should not be disposed.
-	 */
-	private Composite pageRoot;
+    /*
+     * The composite which serves as root-composite for this page. This composit is controlled by
+     * the Forms-framework, so it should not be disposed.
+     */
+    private Composite pageRoot;
 
-	/*
-	 * The toolkit to make ui-construction easier.
-	 */
-	private UIToolkit toolkit;
+    /*
+     * The toolkit to make ui-construction easier.
+     */
+    private UIToolkit toolkit;
 
-	private GotoGenerationAction gotoPreviousGenerationAction;
-	private GotoGenerationAction gotoNextGenerationAction;
-    
-	/**
-	 * Creates a new page for editing properties of a product.
-	 * 
-	 * @param editor
-	 *            The owner of this page
-	 */
-	public GenerationPropertiesPage(IpsObjectEditor editor) {
-		super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
-	}
+    private GotoGenerationAction gotoPreviousGenerationAction;
+    private GotoGenerationAction gotoNextGenerationAction;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-		this.pageRoot = formBody;
-		this.toolkit = toolkit;
+    /**
+     * Creates a new page for editing properties of a product.
+     * 
+     * @param editor The owner of this page
+     */
+    public GenerationPropertiesPage(IpsObjectEditor editor) {
+        super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
+    }
 
-		// create a stack for easy update the view by disposing the old top of
-		// stack and put a new one
-		stack = new StackLayout();
-		formBody.setLayout(stack);
-		Composite root = new Composite(formBody, SWT.NONE);
-		stack.topControl = root;
+    /**
+     * {@inheritDoc}
+     */
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        this.pageRoot = formBody;
+        this.toolkit = toolkit;
 
-		buildContent(toolkit, root);
-		
-		createNavigationButtons();
-	}
+        // create a stack for easy update the view by disposing the old top of
+        // stack and put a new one
+        stack = new StackLayout();
+        formBody.setLayout(stack);
+        Composite root = new Composite(formBody, SWT.NONE);
+        stack.topControl = root;
 
-	private void createNavigationButtons() {
+        buildContent(toolkit, root);
+
+        createNavigationButtons();
+    }
+
+    private void createNavigationButtons() {
         gotoPreviousGenerationAction = new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
             protected IIpsObjectGeneration getGeneration() {
                 return generationPropertiesPage.getActiveGeneration().getPreviousByValidDate();
@@ -163,60 +161,55 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         }
     }
 
-	/**
-	 * Create the page-content by building the different sections.
-	 * 
-	 * @param toolkit
-	 *            The toolkit to use for control creation.
-	 * @param root
-	 *            the parent for the new controls.
-	 */
-	private void buildContent(UIToolkit toolkit, Composite root) {
-		GridLayout layout = new GridLayout(2, true);
-		layout.verticalSpacing = VERTICAL_SECTION_SPACE;
-		layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
+    /**
+     * Create the page-content by building the different sections.
+     * 
+     * @param toolkit The toolkit to use for control creation.
+     * @param root the parent for the new controls.
+     */
+    private void buildContent(UIToolkit toolkit, Composite root) {
+        GridLayout layout = new GridLayout(2, true);
+        layout.verticalSpacing = VERTICAL_SECTION_SPACE;
+        layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
 
-		root.setLayout(layout);
-		root.setBackground(pageRoot.getBackground());
+        root.setLayout(layout);
+        root.setBackground(pageRoot.getBackground());
 
-		IProductCmptGeneration generation = getActiveGeneration();
+        IProductCmptGeneration generation = getActiveGeneration();
 
-		Composite left = createGridComposite(toolkit, root, 1, true,
-				GridData.FILL_BOTH);
-		productAttributesSection = new GenerationAttributesSection(generation,
-				left, toolkit, (ProductCmptEditor)getEditor());
-		formulasSection = new FormulasSection(generation, left, toolkit);
+        Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
+        productAttributesSection = new GenerationAttributesSection(generation, left, toolkit,
+                (ProductCmptEditor)getEditor());
+        formulasSection = new FormulasSection(generation, left, toolkit);
 
-		Composite right = createGridComposite(toolkit, root, 1, true,
-				GridData.FILL_BOTH);
-		defaultsAndRangesSection = new DefaultsAndRangesSection(generation,
-				right, toolkit);
-		linksSection = new LinksSection(generation, right, toolkit,
-				getEditorSite());
+        Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
+        defaultsAndRangesSection = new DefaultsAndRangesSection(generation, right, toolkit);
+        linksSection = new LinksSection(generation, right, toolkit, getEditorSite());
 
-		productAttributesSection.setFocusSuccessor(formulasSection);
-		formulasSection.setFocusSuccessor(defaultsAndRangesSection);
-		defaultsAndRangesSection.setFocusSuccessor(linksSection);
-        
-        //searches for Composites that implement the ISelectionProviderActivation interface and registers
-        //them with the selection provider dispatcher of the IpsObjectEditor
-		registerSelectionProviderActivation(root);
-		
+        productAttributesSection.setFocusSuccessor(formulasSection);
+        formulasSection.setFocusSuccessor(defaultsAndRangesSection);
+        defaultsAndRangesSection.setFocusSuccessor(linksSection);
+
+        // searches for Composites that implement the ISelectionProviderActivation interface and
+        // registers
+        // them with the selection provider dispatcher of the IpsObjectEditor
+        registerSelectionProviderActivation(root);
+
         pageRoot.layout();
-	}
-    
-	/**
-	 * Returns the currently active generation set in the owning editor.
-	 */
-	private IProductCmptGeneration getActiveGeneration() {
-		return (IProductCmptGeneration) ((ProductCmptEditor) getEditor())
-				.getActiveGeneration();
-	}
+    }
+
+    /**
+     * Returns the currently active generation set in the owning editor.
+     */
+    private IProductCmptGeneration getActiveGeneration() {
+        return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
+    }
 
     /**
      * {@inheritDoc}
      */
-    protected void refresh() {
+    @Override
+    public void refresh() {
         updateTabname();
         super.refresh();
     }
@@ -224,9 +217,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     /**
      * Refreshes the page when the active generation has changed.
      * 
-     * A call to this method causes the currently displayed composite to be
-     * disposed. A completely new composite is created and stacked on top of the
-     * layout. This is done to avoid complex code for structural updates.
+     * A call to this method causes the currently displayed composite to be disposed. A completely
+     * new composite is created and stacked on top of the layout. This is done to avoid complex code
+     * for structural updates.
      */
     protected void rebuildInclStructuralChanges() {
         // if stack == null, the page contents are not created yet, so do
@@ -239,7 +232,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             updateTabname();
             resetDataChangeableState();
         }
-        
+
         gotoPreviousGenerationAction.update();
         gotoNextGenerationAction.update();
     }
@@ -252,16 +245,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         String validToString;
         if (date == null) {
             validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
-        }
-        else {
+        } else {
             validToString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(date.getTime());
         }
 
         validRange += " - " + validToString; //$NON-NLS-1$
-        String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
+        String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
         return generationConceptName + " " + validRange; //$NON-NLS-1$
     }
-    
+
     private void updateTabname() {
         setPartName(getTabname(getActiveGeneration()));
         updateTabText(getPartControl());
@@ -287,5 +280,5 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
     }
-    
+
 }

@@ -187,16 +187,13 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * <p>
      * Refreshes the page with the data from the model.
-     * </p>
      * <p>
-     * The default implementation refreshs all ancestors that are instances of
+     * The default implementation refreshes all ancestors that are instances of
      * <code>IpsSection</code>. By ancestors we mean the children of the composite that represents
      * this page and its children.
-     * </p>
      */
-    protected void refresh() {
+    public void refresh() {
         if (!(getPartControl() instanceof Composite)) {
             return;
         }

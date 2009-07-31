@@ -110,7 +110,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     /** Creates the actions for the toolbar. */
     private void createToolbarActions() {
-        openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(enumContent, getSite().getShell());
+        openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(this, enumContent, getSite().getShell());
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, true);
         exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, false);
 
