@@ -54,27 +54,6 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumValueFemale.isValid());
     }
 
-    public void testValidateEnumTypeAbstract() throws CoreException {
-        genderEnumType.setAbstract(true);
-        IEnumValue enumTypeValue = genderEnumType.newEnumValue();
-        enumTypeValue.getEnumAttributeValues().get(0).setValue("foo");
-        enumTypeValue.getEnumAttributeValues().get(1).setValue("bar");
-        MessageList validationMessageList = enumTypeValue.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList.getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_ENUM_TYPE_ABSTRACT));
-    }
-
-    public void testValidateEnumTypeDoesNotContainValues() throws CoreException {
-        genderEnumType.setContainingValues(false);
-        IEnumValue enumTypeValue = genderEnumType.newEnumValue();
-        enumTypeValue.getEnumAttributeValues().get(0).setValue("foo");
-        enumTypeValue.getEnumAttributeValues().get(1).setValue("bar");
-        MessageList validationMessageList = enumTypeValue.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES));
-    }
-
     public void testValidateNumberEnumAttributeValues() throws CoreException {
         genderEnumType.newEnumAttribute();
         assertTrue(genderEnumValueFemale.isValid());

@@ -515,8 +515,29 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setEnumContentName("");
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));
+    }
+
+    public void testValidateObsoleteValues() throws CoreException {
+        genderEnumType.setContainingValues(false);
+        IEnumValue enumValue = genderEnumType.newEnumValue();
+        enumValue.setEnumAttributeValue(0, "foo");
+        enumValue.setEnumAttributeValue(1, "bar");
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE));
+
+        genderEnumType.setContainingValues(true);
+        genderEnumType.setAbstract(true);
+        getIpsModel().clearValidationCache();
+        validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE));
+
+        genderEnumType.setAbstract(false);
+        getIpsModel().clearValidationCache();
+        validationMessageList = genderEnumType.validate(ipsProject);
+        assertEquals(0, validationMessageList.getNoOfMessages());
     }
 
     public void testFindSuperEnumType() throws CoreException {

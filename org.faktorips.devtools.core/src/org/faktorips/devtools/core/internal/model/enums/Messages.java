@@ -25,7 +25,6 @@ public class Messages extends NLS {
 
     public static String EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
     public static String EnumValue_EnumTypeAbstract;
-    public static String EnumValue_EnumTypeDoesNotContainValues;
 
     public static String EnumAttributeValue_ValueNotParsable;
     public static String EnumAttributeValue_UniqueIdentifierValueEmpty;
@@ -59,6 +58,7 @@ public class Messages extends NLS {
     public static String EnumType_NoLiteralNameAttribute;
     public static String EnumType_NoUsedAsIdInFaktorIpsUiAttribute;
     public static String EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
+    public static String EnumType_EnumValuesObsolete;
 
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
 

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -142,21 +141,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         IEnumValueContainer enumValueContainer = getEnumValueContainer();
         IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         if (enumType == null) {
-            return;
-        }
-
-        if (enumType.isAbstract() && enumValueContainer instanceof IEnumType) {
-            String text = NLS.bind(Messages.EnumValue_EnumTypeAbstract, enumType.getQualifiedName());
-            Message validationMessage = new Message(MSGCODE_ENUM_VALUE_ENUM_TYPE_ABSTRACT, text, Message.WARNING, this);
-            list.add(validationMessage);
-            return;
-        }
-
-        if (!(enumType.isContainingValues()) && enumValueContainer instanceof IEnumType) {
-            String text = NLS.bind(Messages.EnumValue_EnumTypeDoesNotContainValues, enumType.getQualifiedName());
-            Message validationMessage = new Message(MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES, text,
-                    Message.WARNING, this);
-            list.add(validationMessage);
             return;
         }
 
