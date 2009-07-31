@@ -49,7 +49,6 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * <p>
  * A page that provides basic functionality for creating ips objects. Allows the user to specify the
  * ipssourcefolder, the ips package and the object's name.
  * <p>
@@ -57,10 +56,6 @@ import org.faktorips.util.message.MessageList;
  * <code>setImageDescriptor()</code> method within the subclass constructor. Alternatively the image
  * can also be set in the constructor of the wizard if the wizard contains only one page or if the
  * image doesn't change when the page within the wizard changes.
- */
-/*
- * TODO aw: this class contains many public / protected functions that have no or not enough javadoc
- * attached
  */
 public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
 
@@ -101,6 +96,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         this.ipsObjectType = ipsObjectType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -212,6 +210,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return nameText;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIpsObjectName() {
         return nameField.getText();
@@ -254,11 +255,17 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setIpsPackageFragment(IIpsPackageFragment pack) {
         packageControl.setIpsPackageFragment(pack);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IIpsPackageFragment getIpsPackageFragment() {
         return packageControl.getIpsPackageFragment();
@@ -272,6 +279,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return getIpsPackageFragmentRoot().getIpsProject();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IpsObjectType getIpsObjectType() {
         if (ipsObjectType == null) {
@@ -288,6 +298,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return nameComposite;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();
@@ -459,6 +472,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updatePageComplete() {
         if (getErrorMessage() != null) {
@@ -470,6 +486,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         setPageComplete(complete);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
@@ -498,8 +517,12 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return packageControl;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
+
 }
