@@ -156,7 +156,7 @@ public class StringUtil
 	 * one line. The lines don't contains the line separator.
 	 */
     public final static String[] getLines(String text, String lineSeparator) {
-        List lines = new ArrayList();
+        List<String> lines = new ArrayList<String>();
         int start = 0;
         int end = text.indexOf(lineSeparator);
         while (end>0) {
@@ -165,7 +165,7 @@ public class StringUtil
             end = text.indexOf(lineSeparator, start);
         }
         lines.add(text.substring(start));
-        return (String[])lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[lines.size()]);
     }
     
     /**
@@ -201,5 +201,19 @@ public class StringUtil
     public static InputStream getInputStreamForString(String data, String charset) throws UnsupportedEncodingException {
         return new ByteArrayInputStream(data.getBytes(charset));
     }
+    
+    public static String toCamelCase(String text) {
+        if (text == null || text.equals("")) {
+            return "";
+        }
+        String[] words = text.split("[-_., ]");
+        String result = "";
+        for (String word : words) {
+            char firstChar = word.charAt(0);
+            result += Character.toUpperCase(firstChar) + word.substring(1).toLowerCase();
+        }
+        return result;
+    }
+
     
 }
