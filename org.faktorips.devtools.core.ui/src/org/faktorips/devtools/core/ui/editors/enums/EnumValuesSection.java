@@ -156,7 +156,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         setText(Messages.EnumValuesSection_title);
 
         updateEnabledStates(enumType);
-        createFirstRow(enumType);
 
         enumValueContainer.getIpsModel().addChangeListener(this);
         addDisposeListener(new DisposeListener() {
@@ -186,24 +185,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         createTableColumns(enumType);
-    }
-
-    /**
-     * Makes sure that there is at least one row in the enum values table if there are any
-     * attributes in the enum type and the enum values table is enabled.
-     */
-    private void createFirstRow(IEnumType enumType) throws CoreException {
-        if (enumType == null) {
-            return;
-        }
-
-        if (enumType.isContainingValues() && !(enumType.isAbstract())) {
-            if (enumType.getEnumAttributesCount(true) > 0 && enumValueContainer.getEnumValuesCount() == 0) {
-                enumValueContainer.newEnumValue();
-            }
-        }
-
-        updateTableViewer();
     }
 
     /** Creates the actions. */
