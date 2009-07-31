@@ -42,6 +42,13 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
      */
     public final static String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
 
+    
+    /**
+     * Validation message code that indicates that if the column range type is two column then the from
+     * and the to column must have the same datatype
+     */
+    public final static String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX + "TwoColumnRangeFromToColumnWithDifferentDatatype"; //$NON-NLS-1$
+    
     /**
      * Returns the table structure this range belongs to.
      */

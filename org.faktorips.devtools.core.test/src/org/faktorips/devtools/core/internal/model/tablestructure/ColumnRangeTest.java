@@ -219,4 +219,50 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
     }
+    
+    public void testValidateTwoColumnRangeWithSameDatatype() throws CoreException {
+        // test two column rage with same datatypes
+        IColumn c0 = table.newColumn();
+        c0.setName("c0");
+        IColumn c1 = table.newColumn();
+        c1.setName("c1");
+        c0.setDatatype(Datatype.STRING.getName());
+        c1.setDatatype(Datatype.STRING.getName());
+        IColumnRange range = table.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        ((ColumnRange)range).setParameterName("c0Toc1"); // TODO Joerg wie macht das die GUI?
+        range.setFromColumn(c0.getName());
+        range.setToColumn(c1.getName());
+
+        MessageList ml = range.validate(ipsSrcFile.getIpsProject());
+        System.out.println(ml);
+        assertTrue(ml.isEmpty());
+
+        c1.setDatatype(Datatype.DECIMAL.getName());
+        ml = range.validate(ipsSrcFile.getIpsProject());
+        assertFalse(ml.isEmpty());
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
+        assertNotNull(ml.getMessagesFor(range, IColumnRange.PROPERTY_TO_COLUMN));
+        assertNotNull(ml.getMessagesFor(range, IColumnRange.PROPERTY_FROM_COLUMN));
+        
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
+        ((ColumnRange)range).setParameterName("c0");
+        ml = range.validate(ipsSrcFile.getIpsProject());
+        assertTrue(ml.isEmpty());
+        
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
+        ((ColumnRange)range).setParameterName("c1");
+        ml = range.validate(ipsSrcFile.getIpsProject());
+        assertTrue(ml.isEmpty());
+
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        ((ColumnRange)range).setParameterName("c0Toc1");
+        ml = range.validate(ipsSrcFile.getIpsProject());
+        assertFalse(ml.isEmpty());
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
+        
+        c0.setDatatype(Datatype.DECIMAL.getName());
+        ml = range.validate(ipsSrcFile.getIpsProject());
+        assertTrue(ml.isEmpty());
+    }
 }

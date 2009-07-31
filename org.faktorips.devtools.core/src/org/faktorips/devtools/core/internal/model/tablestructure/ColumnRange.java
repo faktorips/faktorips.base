@@ -125,19 +125,21 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        String fromColumnDatatype = null;
+        String toColumnDatatype = null;
         
         if (!StringUtils.isEmpty(from) && getTableStructureImpl().getColumn(from) != null) {
-        	String datatype = getTableStructure().getColumn(from).getDatatype(); 
-            if (datatype.equals(Datatype.BOOLEAN.getName()) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
-            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, datatype);
+            fromColumnDatatype = getTableStructure().getColumn(from).getDatatype(); 
+            if (fromColumnDatatype.equals(Datatype.BOOLEAN.getName()) || fromColumnDatatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
+            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, fromColumnDatatype);
             	list.add(new Message(MSGCODE_INVALID_DATATYPE_FOR_FROM, msg, Message.ERROR, this, PROPERTY_FROM_COLUMN));
             }
         }
         
         if (!StringUtils.isEmpty(to) && getTableStructureImpl().getColumn(to) != null) {
-        	String datatype = getTableStructure().getColumn(to).getDatatype(); 
-            if (datatype.equals(Datatype.BOOLEAN.getName()) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
-            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, datatype);
+            toColumnDatatype = getTableStructure().getColumn(to).getDatatype(); 
+            if (toColumnDatatype.equals(Datatype.BOOLEAN.getName()) || toColumnDatatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
+            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, toColumnDatatype);
             	list.add(new Message(MSGCODE_INVALID_DATATYPE_FOR_TO, msg, Message.ERROR, this, PROPERTY_TO_COLUMN));
             }
         }
@@ -155,6 +157,14 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
             if (getTableStructure().getColumn(to)==null) {
                 String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, to);
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$
+            }
+        }
+        
+        if(rangeType.isTwoColumn() && toColumnDatatype != null && fromColumnDatatype != null){
+            if (!toColumnDatatype.equals(fromColumnDatatype)){
+                String text = NLS.bind(Messages.ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype, to);
+                list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE, text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$
+                list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE, text, Message.ERROR, this, PROPERTY_FROM_COLUMN)); //$NON-NLS-1$
             }
         }
         
