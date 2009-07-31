@@ -91,7 +91,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Validation message code to indicate that there exists a cycle in the hierarchy of this
      * enumeration type.
      */
-    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy";
+    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists an inconsistency in the hierarchy of
@@ -99,25 +99,31 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * that is missing its super type or that the super type is not abstract which is an additional
      * constraint for enumeration types.
      */
-    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy";
+    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this enum type does not contain any enum attribute
      * being marked to be used as ID in the Faktor-IPS UI while not being abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
-            + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute";
+            + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this enum type does not contain any enum attribute
      * being marked to be used as name in the Faktor-IPS UI while not being abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
-            + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute";
+            + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /** Validation message code to indicate that the enum content package fragment is empty. */
     public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
-            + "EnumTypeEnumContentNameEmpty";
+            + "EnumTypeEnumContentNameEmpty"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the enum type stores enum values even tough it does
+     * not contain values or is abstract.
+     */
+    public final static String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
     /** Returns the package fragment a referencing enum content must be stored in. */
     public String getEnumContentName();

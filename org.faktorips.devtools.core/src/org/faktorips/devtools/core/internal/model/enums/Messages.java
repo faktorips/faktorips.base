@@ -24,7 +24,6 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enums.messages"; //$NON-NLS-1$
 
     public static String EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
-    public static String EnumValue_EnumTypeAbstract;
 
     public static String EnumAttributeValue_ValueNotParsable;
     public static String EnumAttributeValue_UniqueIdentifierValueEmpty;

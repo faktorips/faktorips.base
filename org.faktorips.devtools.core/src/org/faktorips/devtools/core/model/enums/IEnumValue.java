@@ -45,19 +45,6 @@ public interface IEnumValue extends IIpsObjectPart {
     public final static String MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
             + "EnumValueNumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that the enum type is abstract and therefore this enum
-     * value is obsolete (only if this enum value belongs to an enum type).
-     */
-    public final static String MSGCODE_ENUM_VALUE_ENUM_TYPE_ABSTRACT = MSGCODE_PREFIX + "EnumValueEnumTypeAbstract"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the enum type does not contain values and therefore
-     * this enum value is obsolete (only if this enum value belongs to an enum type).
-     */
-    public final static String MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES = MSGCODE_PREFIX
-            + "EnumValueEnumTypeDoesNotContainValues"; //$NON-NLS-1$
-
     /** Returns a list containing all enum attribute values. */
     public List<IEnumAttributeValue> getEnumAttributeValues();
 
