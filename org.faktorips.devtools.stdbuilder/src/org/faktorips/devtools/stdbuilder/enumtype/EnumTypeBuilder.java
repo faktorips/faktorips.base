@@ -980,10 +980,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if(enumType.isAbstract()){
             return;
         }
-        IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute(getIpsProject());
-        if (literalNameAttribute == null || !(literalNameAttribute.isValid())) {
-            return;
-        }
         IEnumAttribute idAttribute = enumType.findIsIdentiferAttribute(getIpsProject());
         if (idAttribute == null || !(idAttribute.isValid())) {
             return;
@@ -994,11 +990,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("\"");
         methodBody.append(enumType.getName());
         methodBody.append(": \" + ");
-        methodBody.append(getJavaNamingConvention().getMemberVarName(literalNameAttribute.getName()));
-        methodBody.append(" + '(' + ");
         methodBody.append(getJavaNamingConvention().getMemberVarName(idAttribute.getName()));
-        methodBody.append(" + ')';");
-        
+        IEnumAttribute displayName = enumType.findIsUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
+        if (displayName == null || !(displayName.isValid())) {
+            methodBody.append(";");
+        } else {
+            methodBody.append(" + '(' + ");
+            methodBody.append(getJavaNamingConvention().getMemberVarName(displayName.getName()));
+            methodBody.append(" + ')';");
+        }
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);
