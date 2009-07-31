@@ -36,7 +36,7 @@ import org.faktorips.util.message.MessageList;
  * change the implementation of methods of the object to decorate without the need to change the
  * client (by calling another method or something like that).
  */
-// FIXME aw: This class seems not to be used at all.
+// FIXME AW: This class seems not to be used at all, save to delete?
 public class ValidationDecorator extends Composite {
 
     /** The size of the marker to decorate the UI composite with. */
