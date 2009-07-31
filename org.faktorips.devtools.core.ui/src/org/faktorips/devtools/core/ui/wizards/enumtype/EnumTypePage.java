@@ -295,9 +295,7 @@ public class EnumTypePage extends IpsObjectPage {
                 nameAttribute.setDatatype(Datatype.STRING.getName());
                 nameAttribute.setUsedAsNameInFaktorIpsUi(true);
                 nameAttribute.setUnique(true);
-                if(!(Boolean)valuesDeferredToContentField.getValue()){
-                    nameAttribute.setLiteralName(true);
-                }
+                nameAttribute.setLiteralName(true);
             }
         }
 
