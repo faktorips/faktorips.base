@@ -208,7 +208,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * {@inheritDoc}
      */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        // TODO aw: Auto-generated method stub
+        // TODO AW: Auto-generated method stub
         return false;
     }
 
@@ -216,7 +216,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * {@inheritDoc}
      */
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        // TODO aw: Auto-generated method stub
+        // TODO AW: Auto-generated method stub
     }
 
     /**

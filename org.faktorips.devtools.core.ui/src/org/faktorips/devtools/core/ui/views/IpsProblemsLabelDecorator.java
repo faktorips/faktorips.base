@@ -90,10 +90,19 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 if (ipsElement instanceof IIpsProject) {
                     return computeAdornmentFlagsProject((IIpsProject)ipsElement);
                 } else {
-                    // Following line changed from getEnclosingRessource to getCorrespondingRessource() due to bug 1500
-                    // The special handling of ips obejcts parts in former version, was removed as parts return null
-                    // as corresponding ressource. If for some reaseon we have to switch back to getEnclosingRessource()
-                    // we must readd the special handling to ips object parts.
+                    /*
+                     * Following line changed from getEnclosingRessource() to
+                     * getCorrespondingRessource() due to bug 1500. The special handling of IPS
+                     * objects parts in former version, was removed as parts return null as
+                     * corresponding resource. If for some reason we have to switch back to
+                     * getEnclosingRessource() we must readd the special handling to IPS object
+                     * parts.
+                     */
+                    /*
+                     * TODO AW: Returns null for IPS objects like policy component type etc ...
+                     * causes bug FS #1513 together with the method getCorrespondingResource() from
+                     * IpsObject.
+                     */
                     res = ipsElement.getCorrespondingResource();
                     if (res == null || !res.isAccessible()) {
                         return 0;

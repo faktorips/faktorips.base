@@ -336,8 +336,8 @@ public class BindingContext {
      * Removes all bindings for the given control.
      */
     /*
-     * TODO aw: it would be nice to have this more fine granular - remove enabledState binding,
-     * content binding
+     * TODO AW: it would be nice to have this more fine granular - remove enabledState binding,
+     * content binding etc.
      */
     public void removeBindings(Control control) {
         for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {

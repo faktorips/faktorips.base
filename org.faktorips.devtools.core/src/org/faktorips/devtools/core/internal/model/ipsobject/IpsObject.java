@@ -56,7 +56,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * Constructor for testing purposes.
      */
     protected IpsObject() {
-        
+
     }
 
     /**
@@ -103,10 +103,10 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         if (folderName.equals("")) { //$NON-NLS-1$
             return getName();
         }
-        
+
         return folderName + '.' + getName();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -117,18 +117,23 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         String filename = getParent().getName();
         int index = filename.indexOf('.');
         if (index == -1) {
             throw new RuntimeException("filename has no extension: " + filename); //$NON-NLS-1$
         }
-        
+
         return filename.substring(0, index);
     }
 
     /**
      * {@inheritDoc}
+     */
+    /*
+     * TODO AW: Seems not to be consistent with the JavaDoc, causes bug FS #1513 together with
+     * IpsProblemLabelDecorator computeAdornmentFlags().
      */
     public IResource getCorrespondingResource() {
         return null;
@@ -137,6 +142,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile() {
         if (getParent() instanceof IIpsSrcFile) {
             return (IIpsSrcFile)getParent();
@@ -151,9 +157,11 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         if (getIpsSrcFile().exists()) {
             return getIpsObjectType().getEnabledImage();
         } else {
-            // the ips source file doesn't exists, thus the ips object couldn't be linked to
-            // an ips src file in the workspace, return the image of the ips source file to
-            // decide between valid and invalid ips objects
+            /*
+             * The IPS source file doesn't exists, thus the IPS object couldn't be linked to an IPS
+             * source file in the workspace, return the image of the IPS source file to decide
+             * between valid and invalid IPS objects.
+             */
             return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
         }
     }
@@ -249,18 +257,15 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * <p>
      * This operation is extended by <code>IpsObject</code> to perform validations on the name
      * property.
-     * </p>
      * 
      * @see #validateNamingConventions(MessageList, String, String)
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        
+
         validateNamingConventions(list, getName(), PROPERTY_NAME);
         validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(list, ipsProject);
     }

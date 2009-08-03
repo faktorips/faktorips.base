@@ -59,8 +59,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
- * <p>
- * Base class for all editors to edit ips objects.
+ * Base class for all editors that want to edit IPS objects.
  * <p>
  * This editor uses an implementation of <code>ISelectionProvider</code> where
  * <code>ISelectionProvider</code> objects used on the different pages of this editor can be
@@ -147,14 +146,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * <p>
      * Returns the ips project of the ips src file to be edited.
-     * </p>
      * <p>
      * This is a shortcut for <code>getIpsSrcFile().getIpsProject()</code>.
-     * </p>
-     * 
-     * @return The ips project that contains the ips src file to be edited by this editor.
      */
     public IIpsProject getIpsProject() {
         return ipsSrcFile.getIpsProject();
@@ -164,8 +158,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Returns the ips object that is contained in the ips src file currently edited, returns
      * <code>null</code> if the ips object does not exist (e.g. if the ips src file is outside an
      * ips package).
-     * 
-     * @return The ips object contained in the ips src file to be edited by this editor.
      */
     public IIpsObject getIpsObject() {
         try {
@@ -182,8 +174,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     /**
      * Returns the title that is shown on every page.
-     * 
-     * @return A <code>String</code> representing the title for every page of this editor.
      */
     protected abstract String getUniformPageTitle();
 
@@ -217,9 +207,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             title = ((IStorageEditorInput)input).getName();
         }
 
-        // for what ever reason they made setTitle deprecated. This method does something
-        // different than the offered alternatives
-        // TODO: what does it do different?
+        /*
+         * For what ever reason they made setTitle deprecated. This method does something different
+         * than the offered alternatives.
+         */
+        // TODO AW: what does it do different?
         // setPartName(title);
         // setContentDescription(title);
         setTitle(title);
@@ -236,9 +228,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
         }
 
-        // check if the ips src file is valid and could be edited in the editor,
-        // if the ips src file doesn't exists (e.g. ips src file outside ips package)
-        // close the editor and open the current file in the default text editor
+        /*
+         * Check if the ips src file is valid and could be edited in the editor, if the ips src file
+         * doesn't exists (e.g. ips src file outside ips package) close the editor and open the
+         * current file in the default text editor.
+         */
         if (!ipsSrcFile.exists()) {
             Runnable closeRunnable = new Runnable() {
                 public void run() {
@@ -444,7 +438,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         /*
          * ipsSrcFile can be null if the editor is opened on an ips source file that is not in an
-         * ips package
+         * ips package.
          */
 
         if (ipsSrcFile == null || !ipsSrcFile.exists()) {
@@ -511,16 +505,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * <p>
      * Evaluates whether the data shown in this editor is changeable by the user.
-     * </p>
      * <p>
      * The data is changeable if the ips source file shown in the editor is mutable and the working
      * mode preference is set to edit mode.
-     * </p>
      * <p>
      * Subclasses may override this method.
-     * </p>
      */
     protected boolean computeDataChangeableState() {
         return ipsSrcFile.isMutable() && IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
@@ -535,13 +525,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * <p>
      * Sets the content changeable state.
-     * </p>
      * <p>
      * This method is final. If you want to change an editor's data changeable behaviour override
      * {@link #computeDataChangeableState()}.
-     * </p>
      */
     final protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
@@ -635,11 +622,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * <p>
      * We have to close the editor if the underlying resource is removed.
-     * </p>
      */
     public void resourceChanged(IResourceChangeEvent event) {
         IResource enclResource = ipsSrcFile.getEnclosingResource();
@@ -751,7 +734,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Does what the methodname says :-)
+     * Does what the method name says :-)
      */
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
@@ -947,7 +930,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * <p>
      * Internal part and shell activation listener.
      * <p>
      * Copied from <code>AbstractTextEditor</code>.
@@ -1037,6 +1019,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         public void windowOpened(IWorkbenchWindow window) {
 
         }
+
     }
 
     /*
@@ -1081,7 +1064,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsObject());
         }
 
-        // TODO aw: parameter is not used by this method
+        // TODO AW: parameter is not used by this method, save to remove?
         private void updateEditorImage(IResource changedResources) {
             Image image = getDecoratedImage();
             postImageChange(image);
@@ -1105,6 +1088,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             decorator.dispose();
             IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
         }
+
     }
 
 }

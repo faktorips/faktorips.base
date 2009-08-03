@@ -79,7 +79,7 @@ public abstract class IpsAction extends Action {
      * 
      * @param selectionProvider
      */
-    // TODO aw: the possibility to give null as selection provider would be good ...
+    // TODO AW: the possibility to give null as selection provider would be good ...
     public IpsAction(ISelectionProvider selectionProvider) {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {

@@ -28,7 +28,7 @@ public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
     final static String PAGEID = "Structure"; //$NON-NLS-1$
 
     /*
-     * TODO aw: needs to be renamed because the number of sections will be defined by subclasses.
+     * TODO AW: needs to be renamed because the number of sections will be defined by subclasses.
      * The enum type editor for example has (apart from the general info section) two sections: the
      * attributes section and the values section. If in the ips preferences two sections is set,
      * then the values section will be shown on a second tab. So the enum type editor would have
