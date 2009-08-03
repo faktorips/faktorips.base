@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,17 +26,17 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Composite for configuring CSV table format options like field delimiters, date formats and the like.
+ * Composite for configuring CSV table format options like field delimiters, date formats and the
+ * like.
  * 
  * @author Roman Grutza
  */
-public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory {
+public class CSVPropertyCompositeFactory extends TableFormatConfigurationCompositeFactory {
 
     private ITableFormat tableFormat;
-    
+
     private Text fieldDelimiterText;
     private Text dateFormatText;
-
 
     public void setTableFormat(ITableFormat tableFormat) {
         this.tableFormat = tableFormat;
@@ -45,26 +45,26 @@ public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory
     public Composite createPropertyComposite(Composite parent, UIToolkit toolkit) {
         Composite root = toolkit.createLabelEditColumnComposite(parent);
 
-        // first row: field delimiter controls
+        // First row: field delimiter controls.
         toolkit.createLabel(root, Messages.CSVPropertyFactory_fieldDelimiterLabel);
         fieldDelimiterText = toolkit.createText(root);
         TextField fieldDelimiterTextField = new TextField(fieldDelimiterText);
         fieldDelimiterTextField.addChangeListener(this);
-        
-        // second row: date format controls
+
+        // Second row: date format controls.
         toolkit.createLabel(root, Messages.CSVPropertyFactory_dateFormatLabel);
         dateFormatText = toolkit.createText(root);
         TextField dateFormatTextField = new TextField(dateFormatText);
         dateFormatTextField.addChangeListener(this);
-        
-        // help area for date format syntax
+
+        // Help area for date format syntax.
         toolkit.createLabel(root, ""); //$NON-NLS-1$
-        Text helpText = toolkit.createText(root, SWT.MULTI|SWT.READ_ONLY);
+        Text helpText = toolkit.createText(root, SWT.MULTI | SWT.READ_ONLY);
         helpText.setText(Messages.CSVPropertyFactory_dateFormatHelp1);
         helpText.setBackground(root.getBackground());
-        
+
         initializeProperties();
-        
+
         return root;
     }
 
@@ -74,20 +74,20 @@ public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory
             fieldDelimiter = ","; //$NON-NLS-1$
         }
         fieldDelimiterText.setText(fieldDelimiter);
-        
+
         String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
         if (dateFormat == null) {
             dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
         }
         dateFormatText.setText(dateFormat);
     }
-    
+
     public MessageList validate() {
         MessageList ml = new MessageList();
 
         validateFieldDelimiter(ml);
         validateDateFormat(ml);
-        
+
         return ml;
     }
 
@@ -104,7 +104,8 @@ public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory
             ml.add(new Message("", Messages.CSVPropertyFactory_errMsgFieldDelimiterLength, Message.ERROR)); //$NON-NLS-1$
         }
     }
-    
+
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         super.valueChanged(e);
 
@@ -118,4 +119,5 @@ public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory
             tableFormat.setProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER, fieldDelimiterText.getText());
         }
     }
+
 }

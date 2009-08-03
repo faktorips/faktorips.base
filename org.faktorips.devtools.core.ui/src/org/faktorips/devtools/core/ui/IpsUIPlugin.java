@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -72,40 +72,41 @@ import org.osgi.framework.BundleContext;
  */
 public class IpsUIPlugin extends AbstractUIPlugin {
 
-    // The plug-in ID
+    /** The plug-in ID. */
     public static final String PLUGIN_ID = "org.faktorips.devtools.core.ui"; //$NON-NLS-1$
 
     /**
      * The simple extension point id of the extension point
-     * <i>extensionPropertyEditFieldFactory</i>;
+     * <tt>extensionPropertyEditFieldFactory</tt>.
      */
     public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory";
 
-    // The shared instance
+    /** The shared instance. */
     private static IpsUIPlugin plugin;
 
-    // Factories for creating controls depending on the datatype
+    /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
-    // Broadcaster for broadcasting delayed change events triggerd by edit fields
+    /** Broadcaster for broadcasting delayed change events triggered by edit fields. */
     private EditFieldChangesBroadcaster editFieldChangeBroadcaster;
 
     private IpsObjectEditorSettings ipsEditorSettings;
 
-    // Manager to update ips problem marker
+    /** Manager to update IPS problem marker. */
     private IpsProblemMarkerManager ipsProblemMarkerManager;
 
     private Map<String, IExtensionPropertyEditFieldFactory> extensionPropertyEditFieldFactoryMap;
 
     private IExtensionRegistry registry;
 
-    // registry for image descriptors
+    /** Registry for image descriptors. */
     private ImageDescriptorRegistry imageDescriptorRegistry;
 
     /**
-     * The constructor
+     * The constructor.
      */
     public IpsUIPlugin() {
+
     }
 
     /**
@@ -118,6 +119,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
@@ -135,6 +137,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
@@ -180,7 +183,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Returns all controls factories.
      */
-    // TODO control factories sollten ueber einen extension point definiert sein und geladen werden.
+    // TODO control factories should be defined and loaded by an extension point.
     private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
         return controlFactories;
     }
@@ -189,14 +192,15 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Returns a factory for creating table format controls/widgets.
      * 
      * @param tableFormat ITableFormat to test whether it has custom properties.
-     * @return A Factory class which can be used to create the controls for configuring 
-     * the custom properties, or <code>null</code> if the table format has no custom properties.
+     * @return A Factory class which can be used to create the controls for configuring the custom
+     *         properties, or <code>null</code> if the table format has no custom properties.
      * 
-     *  @throws CoreException if the factory class could not be created.
+     * @throws CoreException if the factory class could not be created.
      */
-    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) throws CoreException {
+    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat)
+            throws CoreException {
         ArgumentCheck.notNull(tableFormat);
-        
+
         Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
         if (tableFormatToPropertiesCompositeMap == null) {
             tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
@@ -209,21 +213,21 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isEmpty(configElClass)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: "
-                                + extensions[i].getExtensionPointUniqueIdentifier()
-                                + ". The attribute 'class' is not specified."));
+                                        + extensions[i].getExtensionPointUniqueIdentifier()
+                                        + ". The attribute 'class' is not specified."));
                     }
                     if (tableFormat.getClass().getName().equals(configElClass)) {
                         // the current configuration element corresponds to the given table format
                         String configElGuiClass = configElement.getAttribute("guiClass");
-                        if (! StringUtils.isEmpty(configElGuiClass)) {
-                            TableFormatConfigurationCompositeFactory factory = (TableFormatConfigurationCompositeFactory) ExtensionPoints
+                        if (!StringUtils.isEmpty(configElGuiClass)) {
+                            TableFormatConfigurationCompositeFactory factory = (TableFormatConfigurationCompositeFactory)ExtensionPoints
                                     .createExecutableExtension(extensions[i], configElement, "guiClass",
                                             TableFormatConfigurationCompositeFactory.class);
 
                             // assign the given table format to the created factory
                             factory.setTableFormat(tableFormat);
 
-                            if(factory != null) {
+                            if (factory != null) {
                                 tableFormatToPropertiesCompositeMap.put(tableFormat, factory);
                             }
                         }
@@ -232,29 +236,28 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        
+
         return tableFormatToPropertiesCompositeMap.get(tableFormat);
     }
-    
+
     /**
-     * Test if the given table format class has custom properties. 
-     * This method returns true if the optional <code>guiClass</code> property is defined for the externalTableFormat
-     * extension belonging to the given table format and if the guiClass can be instantiated.
+     * Test if the given table format class has custom properties. This method returns true if the
+     * optional <code>guiClass</code> property is defined for the externalTableFormat extension
+     * belonging to the given table format and if the guiClass can be instantiated.
      * 
      * @param tableFormat ITableFormat to test whether it has custom properties.
      * @return true if the given table format has custom properties, false otherwise.
      */
     public boolean hasTableFormatCustomProperties(ITableFormat tableFormat) {
         try {
-            TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = 
-                getTableFormatPropertiesControlFactory(tableFormat);
+            TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = getTableFormatPropertiesControlFactory(tableFormat);
             return (tableFormatPropertiesControlFactory != null);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
         }
     }
-    
+
     /**
      * Opens the given IpsObject in its editor.<br>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
@@ -319,10 +322,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (fileToEdit == null) {
             return null;
         }
-        // check if the file can be edit with a corresponding ips object editor,
-        // if the file is outside an ips package then the ips object editor couldn't be used
-        // - the ips object could not be retrieved from the ips src file -
-        // therefore open the default text editor (to edit the ips src file as xml)
+        /*
+         * Check if the file can be edit with a corresponding IPS object editor, if the file is
+         * outside an IPS package then the IPS object editor couldn't be used - the IPS object could
+         * not be retrieved from the IPS source file - therefore open the default text editor (to
+         * edit the IPS source file as XML).
+         */
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
         IIpsElement ipsElement = model.getIpsElement(fileToEdit);
         if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
@@ -352,9 +357,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IFile file = editorInput.getFile();
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             /*
-             * For known filetypes always use the registered editor, NOT the editor specified by the
-             * preferences/file-associations. This ensures that, when calling this method,
-             * IpsObjects are always opened in their IpsObjectEditor and never in an xml-editor
+             * For known file types always use the registered editor, NOT the editor specified by
+             * the preferences/file-associations. This ensures that, when calling this method,
+             * IpsObjects are always opened in their IpsObjectEditor and never in an XML editor
              * (which might be the default editor for the given file).
              */
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(file.getName());
@@ -375,8 +380,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder and overlays
-     * it with the product relevant image. If the given image is not found return the missing image
+     * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
+     * with the product relevant image. If the given image is not found return the missing image
      * overlaid with the product relevant image.
      * 
      * @see IpsPlugin#getImage(String)
@@ -397,7 +402,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /*
      * Open the given file with the default text editor. And show an information message in the
-     * editors status bar to inform the user about using the text editor instead of the ips object
+     * editors status bar to inform the user about using the text editor instead of the IPS object
      * editor.
      */
     private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
@@ -423,8 +428,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             if (editorPart == null) {
                 throw new CoreException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
             }
-            // show information in the status bar about using the default text editor instead of
-            // using the default ips object editor
+            /*
+             * show information in the status bar about using the default text editor instead of
+             * using the default IPS object editor.
+             */
             ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
                     IpsUIPlugin.getDefault().getImage("size8/InfoMessage.gif"), //$NON-NLS-1$
                     Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
@@ -447,7 +454,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the ips problem marker manager which manages ips marker updates.
+     * Returns the IPS problem marker manager which manages IPS marker updates.
      */
     public IpsProblemMarkerManager getIpsProblemMarkerManager() {
         if (ipsProblemMarkerManager == null) {
@@ -486,7 +493,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     IExtensionPropertyEditFieldFactory factory = (IExtensionPropertyEditFieldFactory)ExtensionPoints
                             .createExecutableExtension(extensions[i], configElements[0], "class",
                                     IExtensionPropertyEditFieldFactory.class);
-                    if(factory != null){
+                    if (factory != null) {
                         extensionPropertyEditFieldFactoryMap.put(configElPropertyId, factory);
                     }
                 }
@@ -515,9 +522,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
-     * is found and <code>returnNull</code> is true, null is returned. Otherwise (no image found,
-     * but <code>returnNull</code> is false), the missing image is returned.
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no image is
+     * found and <code>returnNull</code> is true, null is returned. Otherwise (no image found, but
+     * <code>returnNull</code> is false), the missing image is returned.
      * 
      * @param name The name of the image.
      * @param returnNull <code>true</code> to get null as return value if the image is not found,
@@ -543,11 +550,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private ImageDescriptorRegistry getImageDescriptorRegistry() {
-        // must use lazy initialization, as the current display is not necessarily
-        // available when the plugin is started.
+        /*
+         * Must use lazy initialization, as the current display is not necessarily available when
+         * the plug-in is started.
+         */
         if (this.imageDescriptorRegistry == null) {
             imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
         }
         return imageDescriptorRegistry;
     }
+
 }

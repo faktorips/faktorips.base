@@ -430,9 +430,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     private void initExternalTableFormats() {
         IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
-        List result = new ArrayList();
+        List<ITableFormat> result = new ArrayList<ITableFormat>();
         for (int i = 0; i < elements.length; i++) {
-            if (i == 1) continue; // TODO AW: CSV Format skipped for release 2.3.0rfinal
             try {
                 ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 initExternalTableFormat(format, elements[i]);
@@ -501,9 +500,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      * extension-point.
      */
     public IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors() {
-
         if (loggingFrameworkConnectors == null) {
-            ArrayList builders = new ArrayList();
+            ArrayList<IIpsLoggingFrameworkConnector> builders = new ArrayList<IIpsLoggingFrameworkConnector>();
             IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "loggingFrameworkConnector"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
@@ -538,9 +536,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      * according extension-point.
      */
     public IFunctionResolverFactory[] getFlFunctionResolverFactories() {
-
         if (flFunctionResolvers == null) {
-            ArrayList flFunctionResolverFactoryList = new ArrayList();
+            ArrayList<IFunctionResolverFactory> flFunctionResolverFactoryList = new ArrayList<IFunctionResolverFactory>();
             IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "flFunctionResolverFactory"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
@@ -576,7 +573,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         if (featureVersionManagers == null) {
             IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     "org.faktorips.devtools.core.faktorIpsFeatureVersionManager"); //$NON-NLS-1$
-            List result = new ArrayList();
+            List<IIpsFeatureVersionManager> result = new ArrayList<IIpsFeatureVersionManager>();
             for (int i = 0; i < elements.length; i++) {
                 try {
                     IIpsFeatureVersionManager manager = (IIpsFeatureVersionManager)elements[i]
@@ -642,11 +639,12 @@ public class IpsPlugin extends AbstractUIPlugin {
             }
         }
 
-        // sort the managers to match the required order given by the basedOnFeatureManager-property
-        // of the extension-point.
+        /*
+         * Sort the managers to match the required order given by the basedOnFeatureManager-property
+         * of the extension-point.
+         */
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
         managers = sorter.sortForMigartionOrder(managers);
-
         IpsFeatureMigrationOperation operation = new IpsFeatureMigrationOperation(projectToMigrate);
         for (int i = 0; i < managers.length; i++) {
             operation.addMigrationPath(managers[i].getMigrationOperations(projectToMigrate));

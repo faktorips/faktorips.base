@@ -43,9 +43,9 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Wizard to import tabular data into IEnumType or IEnumContent.
+ * Wizard to import tabular data into an <tt>IEnumType</tt> or <tt>IEnumContent</tt>.
  * 
- * @author Roman Grutza
+ * @author Roman Grutza, Alexnader Weickmann
  */
 public class EnumImportWizard extends IpsObjectImportWizard {
 
@@ -173,7 +173,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     /**
-     * @return The enum type defining the structure for import.
+     * Returns the enumeration type defining the structure for import.
      */
     private IEnumType getEnumType() {
         try {
@@ -193,7 +193,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     /**
-     * @return the enum type or content as a target for import.
+     * Returns the enumeration type or enumeration content as a target for import.
+     * 
      * @throws CoreException
      */
     private IEnumValueContainer getEnumValueContainer() throws CoreException {

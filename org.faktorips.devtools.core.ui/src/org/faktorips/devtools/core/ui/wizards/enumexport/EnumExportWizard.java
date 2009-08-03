@@ -48,9 +48,9 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Wizard for exporting Enum types or contents to external files.
+ * Wizard for exporting enumeration types and enumeration contents to external files.
  * 
- * @author Roman Grutza
+ * @author Roman Grutza, Alexander Weickmann
  */
 public class EnumExportWizard extends IpsObjectExportWizard {
 
@@ -102,7 +102,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             exportPage = new EnumExportPage(selection);
             addPage(exportPage);
 
-            // add page for each table format having custom properties
+            // Add page for each table format having custom properties.
             customPages = new HashMap<ITableFormat, TableFormatPropertiesPage>();
             ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
             for (ITableFormat format : externalTableFormats) {
@@ -155,7 +155,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
                                 IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
 
                 if (dialog.open() != MessageDialog.OK) {
-                    // user did not say "yes" to overwrite the file, so return to the wizard
+                    // User did not say "yes" to overwrite the file, so return to the wizard.
                     return false;
                 }
             }
@@ -175,7 +175,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             };
 
             /*
-             * use a ProgressMonitorDialog to display the progress and allow the user to cancel the
+             * Use a ProgressMonitorDialog to display the progress and allow the user to cancel the
              * process - which both is not possible if only getContainer().run() is called.
              */
             ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
@@ -197,10 +197,11 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             saveWidgetSettings();
         }
 
-        // this implementation of this method should always return true since
-        // this causes the wizard dialog to close.
-        // in either case if an exception arises or not it doesn't make sense to
-        // keep the dialog up
+        /*
+         * This implementation of this method should always return true since this causes the wizard
+         * dialog to close. In either case if an exception arises or not it doesn't make sense to
+         * keep the dialog up.
+         */
         return true;
     }
 

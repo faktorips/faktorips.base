@@ -14,7 +14,7 @@
       <externalTableFormat
             class="org.faktorips.devtools.tableconversion.csv.CSVTableFormat"
             defaultExtension=".csv"
-            guiClass="org.faktorips.devtools.tableconversion.ui.CSVPropertyFactory"
+            guiClass="org.faktorips.devtools.tableconversion.ui.CSVPropertyCompositeFactory"
             id="org.faktorips.devtools.tableconversion.csv.CSVTableFormat"
             name="Text (CSV)">
       </externalTableFormat>
