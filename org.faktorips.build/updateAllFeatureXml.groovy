@@ -4,9 +4,9 @@
  *   FaktorIps "lizenzvertrag" and "datenschutzbestimmung" text
  *   both text files must be extracted from the corresponding Pdf files before
  *
- * Note: make sure that all feature projects are checkout and updated in
- *   the current workspace (..) and the two text files are up to date
- *   see #lizenzvertragTextLocation and #datenschutzbestimmungTextLocation
+ * Note: make sure that 
+ *   a) all feature projects are checkout and updated in the current workspace .. and 
+ *   b) the two text files are up to date, see #lizenzvertragTextLocation and #datenschutzbestimmungTextLocation
  */
 import groovy.xml.StreamingMarkupBuilder
 import groovy.util.IndentPrinter
@@ -125,17 +125,19 @@ def handleDir(File dir, String filename1, String filename2){
 }
 
 def handleFile(File file, String filename1, String filename2){
-  if (isFeatureXmlFile(file)){
+  if (isFaktorIpsFeatureXmlFile(file)){
     replace(file.getAbsolutePath(), "Lizenzvertrag", filename1, "Datenschutzbestimmung", filename2)
   }
 }
 
-def isFeatureXmlFile(file){
+// return true if feature.xml and path contains no de.qv 
+def isFaktorIpsFeatureXmlFile(file){
+  if (file.getAbsolutePath() ==~ /.*de\.qv\..*/) return false;
   return file.getName() ==~ /^feature\.xml$/
 }
 
 /***************************************
  * MAIN
  ***************************************/
-dir = new File(".."); // workspace location
+File dir = new File("..");
 handleDir(dir, lizenzvertragTextLocation, datenschutzbestimmungTextLocation)
