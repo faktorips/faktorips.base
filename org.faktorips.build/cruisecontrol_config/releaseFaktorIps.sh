@@ -529,7 +529,7 @@ tagProjects()
   tagProject $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME $BRANCH
   
   # b) tag integrationtest projetcs
-  for project in $INTEGRATIONTEST_PROJECTS ; do
+  for project in ${INTEGRATIONTEST_PROJECTS[*]} ; do
     tagProject $FETCH_TAG $project $BRANCH
   done
 

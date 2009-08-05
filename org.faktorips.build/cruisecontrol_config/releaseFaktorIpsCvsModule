@@ -47,7 +47,7 @@ createBranch()
   branchProject $PLUGINBUILDER_PROJECT_NAME
   
   # branch integrationtets projects
-  for project in $INTEGRATIONTEST_PROJECTS ; do
+  for project in ${INTEGRATIONTEST_PROJECTS[*]} ; do
     branchProject $project
   done
   
