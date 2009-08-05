@@ -720,7 +720,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                 return Collections.unmodifiableList(values);
             }
         }
-        return new ArrayList<T>(0);
+        return null;
     }
     
     /**

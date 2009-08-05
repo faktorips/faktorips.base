@@ -368,23 +368,42 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     
     public void testGetEnumValueFromLookup() {
     	Lookup lookup = new Lookup();
-    	assertNull(mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+    	assertNull(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
     	
-    	mainRepository.addEnumValueLookupService(lookup);
-    	assertEquals(lookup.value1, mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-    	assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
+    	baseRepository.addEnumValueLookupService(lookup);
+    	assertEquals(lookup.value1, baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+    	assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
+    	assertNull(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"));
+
+    	// test if the search through referenced repositories works
+        assertEquals(lookup.value1, mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+        assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
+        
+        assertNull(mainRepository.getEnumValue(TestEnumValue.class, "unknownId"));
     	
-    	assertNull(mainRepository.getEnumValue(TestEnumValue.class, "unknownId"));
     }
 
     public void testGetEnumValuesFromLookup() {
     	Lookup lookup = new Lookup();
-    	assertEquals(0, mainRepository.getEnumValues(TestEnumValue.class).size());
+    	assertNull(baseRepository.getEnumValues(TestEnumValue.class));
     	
-    	mainRepository.addEnumValueLookupService(lookup);
-    	List<TestEnumValue> values = mainRepository.getEnumValues(TestEnumValue.class);
+    	baseRepository.addEnumValueLookupService(lookup);
+    	List<TestEnumValue> values = baseRepository.getEnumValues(TestEnumValue.class);
     	assertEquals(lookup.value1, values.get(0));
     	assertEquals(lookup.value2, values.get(1));
+    	
+        values = mainRepository.getEnumValues(TestEnumValue.class);
+        assertEquals(lookup.value1, values.get(0));
+        assertEquals(lookup.value2, values.get(1));
+        
+        // test if list is unmodfiable
+        try {
+            values.add(new TestEnumValue("value3"));
+            fail();
+        } catch (UnsupportedOperationException e) {
+            
+        }
+        
     }
 
     class TestTable implements ITable {
