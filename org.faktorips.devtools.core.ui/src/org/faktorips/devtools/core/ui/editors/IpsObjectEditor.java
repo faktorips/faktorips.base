@@ -1078,7 +1078,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         Image getDecoratedImage() {
             Image titleImage = ipsObjectEditor.getIpsSrcFile().getIpsObjectType().getImage(
                     ipsObjectEditor.isDataChangeable().booleanValue());
-            return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsObject());
+            return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsSrcFile());
         }
 
         // TODO aw: parameter is not used by this method
