@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -115,6 +118,32 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * {@inheritDoc}
      */
     @Override
+    public boolean initUniqueIdentifierValidationCacheImpl() throws CoreException {
+        IIpsProject ipsProject = getIpsProject();
+        IEnumType referencedEnumType = findEnumType(ipsProject);
+
+        /*
+         * If we can't find the base enum type we can't init the validation cache. This is no
+         * problem however, because unique identifiers are not validated as long as the base enum
+         * type cannot be found.
+         */
+        if (referencedEnumType == null) {
+            return false;
+        }
+
+        List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(ipsProject);
+        for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
+            addUniqueIdentifierToValidationCache(referencedEnumType
+                    .getIndexOfEnumAttribute(currentUniqueAttribute));
+        }
+        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void initFromXml(Element element, Integer id) {
         enumType = element.getAttribute(PROPERTY_ENUM_TYPE);
         enumAttributesCount = Integer.parseInt(element.getAttribute(PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT));
@@ -149,8 +178,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
         if (list.getNoOfMessages() == 0) {
-            EnumContentValidations.validateEnumContentName(list, this, findEnumType(ipsProject),
-                    getQualifiedName());
+            EnumContentValidations.validateEnumContentName(list, this, findEnumType(ipsProject), getQualifiedName());
         }
 
         validateReferencedEnumAttributesCount(list, this, ipsProject);

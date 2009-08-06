@@ -306,21 +306,23 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 }
 
                 String columnName;
-                boolean isIdentifier = false;
+                Boolean identifierBoolean = null;
                 if (obtainNamesFromAttributes) {
                     IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies()
                             .get(i);
                     columnName = currentEnumAttribute.getName();
-                    isIdentifier = currentEnumAttribute.isUnique();
+                    identifierBoolean = currentEnumAttribute.findIsUnique(ipsProject);
                 } else {
                     columnName = NLS.bind(Messages.EnumValuesSection_defaultColumnName, i + 1);
                 }
-                addTableColumn(columnName, isIdentifier);
+                addTableColumn(columnName, (identifierBoolean == null) ? false : identifierBoolean.booleanValue());
             }
 
         } else {
             for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isUnique());
+                Boolean identifierBoolean = currentEnumAttribute.findIsUnique(ipsProject);
+                addTableColumn(currentEnumAttribute.getName(), ((identifierBoolean == null) ? false : identifierBoolean
+                        .booleanValue()));
             }
         }
     }
@@ -733,7 +735,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         // Format value properly
                         String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
-                        if(valueDatatype instanceof EnumTypeDatatypeAdapter){
+                        if (valueDatatype instanceof EnumTypeDatatypeAdapter) {
                             return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                     (EnumTypeDatatypeAdapter)valueDatatype, columnValue);
                         }
@@ -876,13 +878,14 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         private boolean isRowEmpty(IEnumValue enumValue) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
             boolean allValuesEmpty = true;
-            for(IEnumAttributeValue attrValue : enumAttributeValues){
+            for (IEnumAttributeValue attrValue : enumAttributeValues) {
                 String value = attrValue.getValue();
-                if (value == null) { 
+                if (value == null) {
                     continue;
                 }
-                //TODO pk 10-07-2009: this is not really correct. We actually need an empty-string-representation-value
-                if(!(value.trim().equals(""))){
+                // TODO pk 10-07-2009: this is not really correct. We actually need an
+                // empty-string-representation-value
+                if (!(value.trim().equals(""))) {
                     allValuesEmpty = false;
                     break;
                 }

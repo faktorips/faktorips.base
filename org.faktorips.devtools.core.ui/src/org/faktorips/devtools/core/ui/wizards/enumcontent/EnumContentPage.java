@@ -128,6 +128,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      */
     @Override
     protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+        if (selectedResource == null) {
+            return;
+        }
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
         if (element instanceof IIpsSrcFile) {
             IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();

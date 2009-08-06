@@ -141,6 +141,7 @@ public class FixEnumContentWizard extends Wizard {
                         createNewEnumAttributeValues();
                         moveAttributeValues();
                         enumContent.setEnumType(newEnumType.getQualifiedName());
+                        enumContent.clearUniqueIdentifierValidationCache();
                     }
 
                 };

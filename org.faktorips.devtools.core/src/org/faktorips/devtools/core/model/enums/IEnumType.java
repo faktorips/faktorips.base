@@ -291,18 +291,23 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <code>null</code> is returned if none is found. The supertype hierachy is considered if
      * necessary.
      * 
-     * @param ipsProject used for look up in the supertype hierarchy if necessary
-     * @throws CoreException if an exception occurs during the look up
+     * @param ipsProject The ips project used for look up in the supertype hierarchy if necessary.
+     * 
+     * @throws CoreException If an exception occurs during the look up.
      */
     public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the index of the given enum attribute in the containing list.
+     * <p>
+     * Be careful: If the given enum attribute is an original from the supertype hierarchy, for
+     * which this enum type only stores a copy, the element won't be found and an exception is
+     * thrown.
      * 
      * @param enumAttribute The enum attribute to obtain its index for.
      * 
-     * @throws NoSuchElementException If there is no such enum attribute in this enum type.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
+     * @throws NoSuchElementException If there is no such enum attribute in this enum type.
      */
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
 
@@ -418,11 +423,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @param enumAttribute The enum attribute to delete.
      * 
-     * @throws CoreException If an error occurs while delete the enum attribute.
      * @throws IllegalArgumentException If the given enum attribute is not part of this enum type.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
+    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute);
 
     /**
      * Returns whether this enum type has a super enum type.
@@ -464,6 +468,17 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns a list containing all enum attributes that are unique. Attributes inherited from the
+     * supertype hierarchy are also scanned (only their copies will be returned however).
+     * 
+     * @param ipsProject The ips project which ips object path is used for the search.
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     */
+    public List<IEnumAttribute> findUniqueEnumAttributes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates and returns new enum attributes in this enum type inheriting the given enum

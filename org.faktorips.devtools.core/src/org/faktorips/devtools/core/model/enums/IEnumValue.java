@@ -141,4 +141,34 @@ public interface IEnumValue extends IIpsObjectPart {
      */
     public void setEnumAttributeValue(int enumAttributeIndex, String value);
 
+    /**
+     * Returns a list containing all <tt>IEnumAttributeValue</tt>s that refer to the given unique
+     * <tt>IEnumAttribute</tt>s.
+     * <p>
+     * Returns an empty list if none could be found (either none exist or it was not possible to
+     * find the referenced enum type). Never returns <tt>null</tt>.
+     * 
+     * @param ipsProject The ips project which ips object path is used for the search of the
+     *            referenced enum type. This is not necessarily the project this enum attribute is
+     *            part of.
+     * 
+     * @throws CoreException If an error occurs while searching for the referenced
+     *             <tt>IEnumType</tt>.
+     * @throws NullPointerException If <tt>uniqueEnumAttributes</tt> or <tt>ipsProject</tt> is
+     *             <tt>null</tt>.
+     */
+    public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
+            IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the index of the given enum attribute value in this enum value.
+     * 
+     * @param enumAttributeValue The enum attribute value to obtain its index for.
+     * 
+     * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
+     * @throws NoSuchElementException If the given enum attribute value can not be found in this
+     *             enum value.
+     */
+    public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue);
+
 }

@@ -181,6 +181,21 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public void setValue(String value) {
         String oldValue = this.value;
         this.value = value;
+
+        /*
+         * Update unique identifier validation cache if this enum attribute value refers to a unique
+         * enum attribute.
+         */
+        IEnumValue enumValue = getEnumValue();
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)enumValue.getEnumValueContainer();
+        if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+            int index = enumValue.getIndexOfEnumAttributeValue(this);
+            if (enumValueContainerImpl.containsValidationCacheUniqueIdentifier(index)) {
+                enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(index, oldValue, this);
+                enumValueContainerImpl.addValidationCacheUniqueIdentifierEntry(index, value, this);
+            }
+        }
+
         valueChanged(oldValue, value);
     }
 
@@ -189,8 +204,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        super.validateThis(list, ipsProject);
-
         IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         if (enumAttribute == null) {
             return;
@@ -214,12 +227,21 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         }
 
-        // Unique identifier and literal name validations
-        if (isUniqueIdentifierEnumAttributeValue()) {
-            validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
-            if (list.getNoOfMessages() == 0) {
-                if (isLiteralNameEnumAttributeValue()) {
-                    validateLiteralNameEnumAttributeValue(list, ipsProject);
+        // Unique identifier and literal name validations.
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
+        boolean cacheInitialized = true;
+        if (!(enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized())) {
+            cacheInitialized = enumValueContainerImpl.initUniqueIdentifierValidationCache();
+        }
+
+        if (cacheInitialized) {
+            if (isUniqueIdentifierEnumAttributeValue()) {
+                validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
+                if (list.getNoOfMessages() == 0) {
+                    Boolean literalName = enumAttribute.findIsLiteralName(ipsProject);
+                    if (literalName == null ? false : literalName.booleanValue()) {
+                        validateLiteralNameEnumAttributeValue(list, ipsProject);
+                    }
                 }
             }
         }
@@ -227,7 +249,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Validations neccessary if this enum attribute value refers to an enum attribute that is used
+     * Validations necessary if this enum attribute value refers to an enum attribute that is used
      * as literal name.
      */
     private void validateLiteralNameEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -245,7 +267,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Validations neccessary if this enum attribute value refers to a unique identifier enum
+     * Validations necessary if this enum attribute value refers to a unique identifier enum
      * attribute.
      */
     private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject)
@@ -255,7 +277,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         String text;
         Message validationMessage;
 
-        // The unique identifier enum attribute value must not be empty
+        // The unique identifier enum attribute value must not be empty.
         String uniqueIdentifierValue = getValue();
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true : uniqueIdentifierValue
                 .equals("")
@@ -265,71 +287,29 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
                     Message.ERROR, this);
             list.add(validationMessage);
+            return;
         }
 
-        if (!uniqueIdentifierValueMissing) {
-            // The unique identifier enum attribute value must be unique
-            String value = getValue();
-            IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
-            for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
-                if (currentEnumValue == getEnumValue()) {
-                    continue;
-                }
-
-                IEnumAttributeValue otherEnumAttributeValue = currentEnumValue.findEnumAttributeValue(ipsProject,
-                        enumAttribute);
-                if (otherEnumAttributeValue != null) {
-                    String otherValue = otherEnumAttributeValue.getValue();
-                    boolean otherValueMissing = (otherValue == null) ? true : uniqueIdentifierValue.equals("")
-                            || uniqueIdentifierValue.equals("<null>");
-                    if (!otherValueMissing) {
-                        if (otherValue.equals(value)) {
-                            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute
-                                    .getName());
-                            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE,
-                                    text, Message.ERROR, this);
-                            list.add(validationMessage);
-                            break;
-                        }
-                    }
-                }
+        // The unique identifier enum attribute value must be unique.
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
+        List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl
+                .getValidationCacheListForUniqueIdentifier(getEnumValue().getIndexOfEnumAttributeValue(this),
+                        getValue());
+        if (cachedAttributeValues != null) {
+            if (cachedAttributeValues.size() > 1) {
+                text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
+                        Message.ERROR, this);
+                list.add(validationMessage);
             }
         }
     }
 
-    /**
-     * Returns whether this enum attribute value refers to an enum attribute that is used as literal
-     * name.
-     */
-    private boolean isLiteralNameEnumAttributeValue() throws CoreException {
-        IIpsProject ipsProject = getIpsProject();
-        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
-        if (referencedEnumAttribute == null) {
-            throw new NullPointerException();
-        }
-
-        Boolean literalName = referencedEnumAttribute.findIsLiteralName(ipsProject);
-        if (literalName == null) {
-            return false;
-        }
-
-        return literalName;
-    }
-
     /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
     private boolean isUniqueIdentifierEnumAttributeValue() throws CoreException {
-        IIpsProject ipsProject = getIpsProject();
-        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
-        if (referencedEnumAttribute == null) {
-            throw new NullPointerException();
-        }
-
-        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUnique(ipsProject);
-        if (uniqueIdentifier == null) {
-            return false;
-        }
-
-        return uniqueIdentifier;
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
+        return enumValueContainerImpl.containsValidationCacheUniqueIdentifier(getEnumValue()
+                .getIndexOfEnumAttributeValue(this));
     }
 
     /**
