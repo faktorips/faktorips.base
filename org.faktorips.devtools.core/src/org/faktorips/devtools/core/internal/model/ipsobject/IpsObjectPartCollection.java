@@ -91,10 +91,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             }
             if (params[1].equals(Integer.TYPE)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
-                    return constructors[i];
+                    return (Constructor<IpsObjectPart>)constructors[i];
                 }
                 if (IIpsObject.class.isAssignableFrom(params[0])) {
-                    return constructors[i];
+                    return (Constructor<IpsObjectPart>)constructors[i];
                 }
             }
         }

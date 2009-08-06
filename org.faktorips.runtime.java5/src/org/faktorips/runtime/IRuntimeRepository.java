@@ -121,6 +121,8 @@ public interface IRuntimeRepository {
      * deferred to a content that is hold by this repository.
      * 
      * @param clazz the enumeration class upon which the list of enumeration values is returned
+     * 
+     * @return The UNMODIFIABLE list of enum values.
      */
     public <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz);
 
@@ -131,10 +133,10 @@ public interface IRuntimeRepository {
      * ips enumeration <code>null</code> will be returned. This method is only relevant for faktor
      * ips enumerations whose values are deferred to a content that is hold by this repository.
      * 
-     * @param clazz the enumeration class upon which the enumeration value is returned
-     * @param value the string representation of enumeration value
+     * @param clazz The enumeration class upon which the enumeration value is returned
+     * @param id The enum value's identification
      */
-    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object value);
+    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object id);
     
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
@@ -142,7 +144,28 @@ public interface IRuntimeRepository {
      * method {@link IEnumValue#getEnumValueId()}.
      */
     public IEnumValue getEnumValue(String uniqueId);
+
+    /**
+     * Adds the service to lookup enumeration values for the enumeration type specified by 
+     * {@link IEnumValueLookupService#getEnumTypeClass()}. If a service is already registered for the enumeration type,
+     * the new service replaces the old one.
+     *  
+     * @param lookupService The new lookup service.
+     */
+    public void addEnumValueLookupService(IEnumValueLookupService<?> lookupService);
     
+    /**
+     * Returns the lookup service for the given enumeration type.
+     * Returns <code>null</code> if no service is registered for the given type. 
+     */
+    public <T extends IEnumValue> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz);
+    
+    /**
+     * Removes the lookup service registered for the given enumeration type.
+     * Does nothing if no such service has been registered.
+     */
+    public void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService);
+
     /**
      * Returns the product component generation identified by the id and the effective date. Returns
      * <code>null</code> if either the id is <code>null</code>, the effectiveDate is

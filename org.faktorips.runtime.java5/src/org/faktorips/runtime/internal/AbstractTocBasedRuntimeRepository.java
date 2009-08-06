@@ -390,15 +390,15 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 	/**
 	 * {@inheritDoc}
 	 */
-    protected List<XmlAdapter<?, IEnumValue>> getAllEnumXmlAdapters(){
+    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(){
         if(!enumXmlAdapters.isEmpty()){
             return enumXmlAdapters;
         }
         for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
-                enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName()));
+            	enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName()));
             } catch (Exception e) {
-                enumXmlAdapters.clear();
+                throw new RuntimeException("Unable to create an XmlAdapter for the enumeration: " + tocEntry.getImplementationClassName(), e);
             }
         }            
         return enumXmlAdapters;

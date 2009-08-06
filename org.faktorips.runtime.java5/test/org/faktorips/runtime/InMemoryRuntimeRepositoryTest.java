@@ -456,7 +456,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     public void testAddEnumXmlAdapter(){
         XmlAdapter<?, IEnumValue> xmlAdapter = new TestXmlAdapter();
         repository.addEnumXmlAdapter(xmlAdapter);
-        List<XmlAdapter<?, IEnumValue>> xmlAdapterList = repository.getAllEnumXmlAdapters();
+        List<XmlAdapter<?, IEnumValue>> xmlAdapterList = repository.getAllInternalEnumXmlAdapters();
         assertEquals(1, xmlAdapterList.size());
         assertEquals(xmlAdapter, xmlAdapterList.get(0));
         

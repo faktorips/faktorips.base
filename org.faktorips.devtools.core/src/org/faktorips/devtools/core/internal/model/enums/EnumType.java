@@ -19,16 +19,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -270,6 +267,34 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
+    public List<IEnumAttribute> findUniqueEnumAttributes(IIpsProject ipsProject) throws CoreException {
+        List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            Boolean unqiueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
+            if ((unqiueBoolean == null) ? false : unqiueBoolean.booleanValue()) {
+                uniqueEnumAttributes.add(currentEnumAttribute);
+            }
+        }
+        return uniqueEnumAttributes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean initUniqueIdentifierValidationCacheImpl() throws CoreException {
+        IIpsProject ipsProject = getIpsProject();
+        List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(ipsProject);
+        for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
+            addUniqueIdentifierToValidationCache(getIndexOfEnumAttribute(currentUniqueAttribute));
+        }
+        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void initFromXml(Element element, Integer id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
@@ -313,19 +338,27 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
-        // Move the enum attribute
+        // Move the enum attribute.
         int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
 
-        // Move the enum attribute values of the enum values of this enum type
+        // Move the enum attribute values of the enum values of this enum type.
         if (newIndex[0] != indexToMove) {
             moveEnumAttributeValues(indexToMove, getEnumValues(), up);
         }
 
+        // Update unique identifier validation cache.
+        if (isUniqueIdentifierValidationCacheInitialized()) {
+            handleMoveEnumAttributeForUniqueIdentifierValidationCache(indexToMove, up);
+        }
+
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+
         if (newIndex[0] != indexToMove) {
             objectHasChanged();
         }
@@ -338,12 +371,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
-
         int index = enumAttributes.indexOf(enumAttribute);
         if (index >= 0) {
             return index;
         }
-
         throw new NoSuchElementException();
     }
 
@@ -365,13 +396,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public boolean enumAttributeExists(String name) {
         ArgumentCheck.notNull(name);
-
         for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
             if (currentEnumAttribute.getName().equals(name)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -380,7 +409,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute getEnumAttribute(String name) {
         ArgumentCheck.notNull(name);
-
         return getEnumAttribute(name, false);
     }
 
@@ -389,7 +417,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name) {
         ArgumentCheck.notNull(name);
-
         return getEnumAttribute(name, true);
     }
 
@@ -411,7 +438,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // No enum attribute with the given name found
+        // No enum attribute with the given name found.
         return null;
     }
 
@@ -682,6 +709,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IEnumAttribute findIsIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsIdInFaktorIpsUi = currentEnumAttribute.findIsIdentifier(ipsProject);
@@ -695,6 +725,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
@@ -728,37 +761,37 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public void deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
+    // TODO AW: Could we not override delete here instead of making this a new operation?
+    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
         ArgumentCheck.isTrue(enumAttributes.contains(enumAttribute));
 
-        // Deleting an enum attribute consists of multiple operations that need to be batched.
-        IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-            /**
-             * {@inheritDoc}
-             */
-            public void run(IProgressMonitor monitor) throws CoreException {
-                deleteEnumAttributeValues(enumAttribute, getEnumValues());
-                enumAttribute.delete();
-            }
-        };
-        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+        // Update unique identifier validation cache if necessary.
+        if (isUniqueIdentifierValidationCacheInitialized()) {
+            int index = getIndexOfEnumAttribute(enumAttribute);
+            removeUniqueIdentifierFromValidationCache(index);
+            handleEnumAttributeDeletion(index);
+        }
+
+        // TODO broadcast changes
+        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
+        deleteEnumAttributeValues(enumAttribute, getEnumValues());
+        enumAttribute.delete();
+        objectHasChanged();
+
+        // TODO broadcast changes
+        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
     }
 
     /**
      * Deletes all enum attribute values in the given enum values that refer to the given enum
      * attribute.
      */
-    private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues)
-            throws CoreException {
-
+    private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
         for (IEnumValue currentEnumValue : enumValues) {
-            for (IEnumAttributeValue currentEnumAttributeValue : currentEnumValue.getEnumAttributeValues()) {
-                if (currentEnumAttributeValue.findEnumAttribute(getIpsProject()) == enumAttribute) {
-                    currentEnumAttributeValue.delete();
-                    break;
-                }
-            }
+            int index = getIndexOfEnumAttribute(enumAttribute);
+            currentEnumValue.getEnumAttributeValues().get(index).delete();
         }
     }
 

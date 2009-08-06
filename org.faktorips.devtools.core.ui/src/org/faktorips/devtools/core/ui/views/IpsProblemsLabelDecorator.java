@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -62,6 +63,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     private ArrayList<ILabelProviderListener> listeners = null;
 
+    private final static int NO_ADORNMENT = 0;
+    
     /**
      * {@inheritDoc}
      */
@@ -81,7 +84,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     private int computeAdornmentFlags(Object element) throws CoreException {
-        int flag = 0;
+        int flag = NO_ADORNMENT;
         IMarker[] markers = EMPTY_MARKER_ARRAY;
         IResource res = null;
         if (element instanceof IIpsElement) {
@@ -90,22 +93,18 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 if (ipsElement instanceof IIpsProject) {
                     return computeAdornmentFlagsProject((IIpsProject)ipsElement);
                 } else {
-                    /*
-                     * Following line changed from getEnclosingRessource() to
-                     * getCorrespondingRessource() due to bug 1500. The special handling of IPS
-                     * objects parts in former version, was removed as parts return null as
-                     * corresponding resource. If for some reason we have to switch back to
-                     * getEnclosingRessource() we must readd the special handling to IPS object
-                     * parts.
-                     */
-                    /*
-                     * TODO AW: Returns null for IPS objects like policy component type etc ...
-                     * causes bug FS #1513 together with the method getCorrespondingResource() from
-                     * IpsObject.
-                     */
+                    // As we don't show ips source file in the user interface, but the ips object, we handle ips objects as ips source files.
+                    // Added due to bug 1513
+                    if (ipsElement instanceof IIpsObject) {
+                        ipsElement = ipsElement.getParent();
+                    }
+                    // Following line changed from getEnclosingRessource to getCorrespondingRessource() due to bug 1500
+                    // The special handling of ips obejcts parts in former version, was removed as parts return null
+                    // as corresponding ressource. If for some reaseon we have to switch back to getEnclosingRessource()
+                    // we must readd the special handling to ips object parts.
                     res = ipsElement.getCorrespondingResource();
                     if (res == null || !res.isAccessible()) {
-                        return 0;
+                        return NO_ADORNMENT;
                     }
                     if (isFlatLayout && !(element instanceof IIpsPackageFragmentRoot)) {
                         /*
@@ -125,7 +124,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         } else if (element instanceof IResource) {
             markers = ((IResource)element).findMarkers(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
         } else {
-            return 0;
+            return NO_ADORNMENT;
         }
 
         for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {

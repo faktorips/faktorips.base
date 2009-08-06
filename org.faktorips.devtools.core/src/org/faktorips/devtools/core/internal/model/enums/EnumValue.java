@@ -86,7 +86,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         for (IIpsObjectPart currentObjectPart : parts) {
             attributeValuesList.add((IEnumAttributeValue)currentObjectPart);
         }
-
         return attributeValuesList;
     }
 
@@ -102,18 +101,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up) {
         ArgumentCheck.notNull(enumAttributeValue);
-        if (!(getEnumAttributeValues().contains(enumAttributeValue))) {
-            throw new NoSuchElementException();
-        }
-
-        int index = -1;
-        for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
-            index++;
-            if (currentEnumAttributeValue == enumAttributeValue) {
-                break;
-            }
-        }
-
+        int index = getIndexOfEnumAttributeValue(enumAttributeValue);
         // Return if element is already the first / last one.
         if (up) {
             if (index == 0) {
@@ -213,13 +201,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException {
         ArgumentCheck.notNull(enumAttributeName);
-
         IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
         IEnumAttribute enumAttribute = enumType.getEnumAttribute(enumAttributeName);
         if (enumAttribute == null) {
             throw new NoSuchElementException();
         }
-
         setEnumAttributeValue(enumAttribute, value);
     }
 
@@ -231,6 +217,63 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             throw new IndexOutOfBoundsException();
         }
         getEnumAttributeValues().get(enumAttributeIndex).setValue(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
+            IIpsProject ipsProject) throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { uniqueEnumAttributes, ipsProject });
+        List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(uniqueEnumAttributes
+                .size());
+        IEnumType enumType = getEnumValueContainer().findEnumType(ipsProject);
+        for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
+            int attributeIndex = enumType.getIndexOfEnumAttribute(currentUniqueAttribute);
+            uniqueAttributeValues.add(enumAttributeValues.getPart(attributeIndex));
+        }
+        return uniqueAttributeValues;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue) {
+        ArgumentCheck.notNull(enumAttributeValue);
+        int index = enumAttributeValues.indexOf(enumAttributeValue);
+        if (index >= 0) {
+            return index;
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete() {
+        // Remove unique identifier entries of this enum value from the validation cache.
+        IIpsProject ipsProject = getIpsProject();
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValueContainer();
+        if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+            try {
+                IEnumType referencedEnumType = getEnumValueContainer().findEnumType(ipsProject);
+                if (referencedEnumType != null) {
+                    List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(ipsProject);
+                    for (IEnumAttributeValue currentEnumAttributeValue : findUniqueEnumAttributeValues(
+                            uniqueEnumAttributes, ipsProject)) {
+                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(
+                                getIndexOfEnumAttributeValue(currentEnumAttributeValue), currentEnumAttributeValue
+                                        .getValue(), currentEnumAttributeValue);
+                    }
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        super.delete();
     }
 
 }

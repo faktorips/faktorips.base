@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -68,7 +69,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private boolean unique;
 
     /**
-     * Flag indicating whether this enum attribute is the identifying attribute of this enumeration type.
+     * Flag indicating whether this enum attribute is the identifying attribute of this enumeration
+     * type.
      */
     private boolean identifier;
 
@@ -343,7 +345,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-
     /** Validates the <code>inherited</code> property. */
     private void validateInherited(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
@@ -446,6 +447,31 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     public void setUnique(boolean uniqueIdentifier) {
         boolean oldIsUniqueIdentifier = this.unique;
         this.unique = uniqueIdentifier;
+
+        // Update unique identifier validation cache.
+        if (oldIsUniqueIdentifier != uniqueIdentifier) {
+            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumType();
+            if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+                int index = getEnumType().getIndexOfEnumAttribute(this);
+                if (uniqueIdentifier) {
+                    enumValueContainerImpl.addUniqueIdentifierToValidationCache(index);
+                    /*
+                     * Add all the unique identifier values of the column to the unique identifier
+                     * validation cache.
+                     */
+                    List<IEnumAttribute> newUniqueAttributeList = new ArrayList<IEnumAttribute>(1);
+                    newUniqueAttributeList.add(this);
+                    try {
+                        enumValueContainerImpl.initValidationCacheUniqueIdentifierEntries(newUniqueAttributeList);
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    enumValueContainerImpl.removeUniqueIdentifierFromValidationCache(index);
+                }
+            }
+        }
+
         valueChanged(oldIsUniqueIdentifier, uniqueIdentifier);
     }
 
@@ -548,12 +574,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return isUsedAsNameInFaktorIpsUi();
         }
     }
-    
-    private void validateDuplicateIndicator(MessageList list, IIpsProject ipsProject, IndicationProvider indicationProvider) throws CoreException {
+
+    private void validateDuplicateIndicator(MessageList list,
+            IIpsProject ipsProject,
+            IndicationProvider indicationProvider) throws CoreException {
         String text;
         Message validationMessage;
         List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies();
-        
+
         if (indicationProvider.uiValue()) {
             // Check for other enum attributes being indicated
             int numberOfIndicatedAttributes = 0;
@@ -570,28 +598,28 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     break;
                 }
             }
-            
+
             // A literal name must also be a unique literalName
             if (!unique) {
-                text = NLS.bind(Messages.EnumAttribute_LiteralNameButNotUniqueIdentifier, indicationProvider.getPropertyDisplayName());
+                text = NLS.bind(Messages.EnumAttribute_LiteralNameButNotUniqueIdentifier, indicationProvider
+                        .getPropertyDisplayName());
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER, text,
                         Message.ERROR, this, indicationProvider.getPropertyName());
                 list.add(validationMessage);
             }
         }
     }
-    
-    
+
     private interface IndicationProvider {
-        
+
         public boolean uiValue();
 
         public boolean modelValue(IEnumAttribute enumAttribute);
-        
+
         public Message message();
-        
+
         public String getPropertyName();
-        
+
         public String getPropertyDisplayName();
     }
 
@@ -599,8 +627,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateLiteralName;
-            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME, text, Message.ERROR,
-                    this, PROPERTY_LITERAL_NAME);
+            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME, text, Message.ERROR, this,
+                    PROPERTY_LITERAL_NAME);
         }
 
         public boolean modelValue(IEnumAttribute enumAttribute) {
@@ -610,65 +638,65 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         public boolean uiValue() {
             return literalName;
         }
-        
-        public String getPropertyName(){
+
+        public String getPropertyName() {
             return PROPERTY_LITERAL_NAME;
         }
 
-        public String getPropertyDisplayName(){
-            return Messages.EnumAttribute_PropertyDisplayName_LiteralName; 
+        public String getPropertyDisplayName() {
+            return Messages.EnumAttribute_PropertyDisplayName_LiteralName;
         }
 
     }
 
     private class IdentifierIndictionProvider implements IndicationProvider {
-        
+
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsIdInFaktorIpsUi;
-            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI, text,
-                    Message.ERROR, this, PROPERTY_IDENTIFIER);
+            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI, text, Message.ERROR, this,
+                    PROPERTY_IDENTIFIER);
         }
-        
+
         public boolean modelValue(IEnumAttribute enumAttribute) {
             return enumAttribute.isIdentifier();
         }
-        
+
         public boolean uiValue() {
             return identifier;
         }
-        
-        public String getPropertyName(){
+
+        public String getPropertyName() {
             return PROPERTY_IDENTIFIER;
         }
 
-        public String getPropertyDisplayName(){
-            return Messages.EnumAttribute_PropertyDisplayName_Identifier; 
+        public String getPropertyDisplayName() {
+            return Messages.EnumAttribute_PropertyDisplayName_Identifier;
         }
 
     }
 
     private class DisplayNameIndictionProvider implements IndicationProvider {
-        
+
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
-            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI,
-                    text, Message.ERROR, this, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
+            return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI, text, Message.ERROR,
+                    this, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         }
-        
+
         public boolean modelValue(IEnumAttribute enumAttribute) {
             return enumAttribute.isUsedAsNameInFaktorIpsUi();
         }
-        
+
         public boolean uiValue() {
             return usedAsNameInFaktorIpsUi;
         }
-        
-        public String getPropertyName(){
+
+        public String getPropertyName() {
             return PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI;
         }
 
-        public String getPropertyDisplayName(){
-            return Messages.EnumAttribute_PropertyDisplayNameDisplayName; 
+        public String getPropertyDisplayName() {
+            return Messages.EnumAttribute_PropertyDisplayNameDisplayName;
         }
 
     }

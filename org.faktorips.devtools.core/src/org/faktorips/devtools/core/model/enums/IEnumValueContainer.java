@@ -49,15 +49,16 @@ public interface IEnumValueContainer extends IIpsObject {
     public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Creates a new {@link List} and collects the values of the enumeration attribute that is marked as
-     * the identifier attribute of all enumeration values of this container and returns it.
+     * Creates a new {@link List} and collects the values of the enumeration attribute that is
+     * marked as the identifier attribute of all enumeration values of this container and returns
+     * it.
      * 
      * @param ipsProject used as the starting point to search for enumeration type if necessary
      * @return the list of enumeration attribute values of the identifier attribute. An empty list
      *         will be returned if now values are found.
      */
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject);
-    
+
     /**
      * Creates and returns a new enum value that has as many enum attribute values as the
      * corresponding enum type has attributes.
@@ -113,9 +114,10 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
 
-    /**
-     * Deletes all enum values from this enum value container.
-     */
+    /** Deletes all enum values from this enum value container. */
     public void clear();
+
+    /** Clears the unique identifier validation cache. */
+    public void clearUniqueIdentifierValidationCache();
 
 }
