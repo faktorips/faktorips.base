@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IEnumValueLookupService;
@@ -438,6 +440,10 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
 		public List<TestEnumValue> getEnumValues() {
 			return values;
 		}
+
+        public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
+            return null;
+        }
     	
     }
 }

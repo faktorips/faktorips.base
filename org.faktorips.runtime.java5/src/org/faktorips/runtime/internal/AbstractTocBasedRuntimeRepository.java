@@ -390,7 +390,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 	/**
 	 * {@inheritDoc}
 	 */
-    protected List<XmlAdapter<?, IEnumValue>> getAllEnumXmlAdapters(){
+    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(){
         if(!enumXmlAdapters.isEmpty()){
             return enumXmlAdapters;
         }
