@@ -87,6 +87,17 @@ public class StringUtil
     }
     
     /**
+     * Returns the passed List of String enclosing every entry in double quotes
+     */
+    public static List<String> quoteAll(List<String> strings) {
+        List<String> result = new ArrayList<String>(strings.size());
+        for (String aString : strings) {
+            result.add(quote(aString));
+        }
+        return result;
+    }
+    
+    /**
      * Takes a name like a class name and removes the package information from the beginning.
      */
     public final static String unqualifiedName(String qualifiedName) {
