@@ -134,14 +134,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * {@inheritDoc}
      */
     public MessageList checkReadyToUse() {
-        try {
-            if (enumContent == null) {
-                return enumType.validate(enumType.getIpsProject());
-            }
-            return enumType.validate(enumContent.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+    	return new MessageList();
+    	// TODO pk 07-08-2009: we need to provide an effective implementation
+		// for this method
+		// a simple call to the validate method of the EnumType is not efficient
+		// since all enum values of the enum type are validated and that means
+		// that the system slowes down with the increasing number of enum values
     }
 
     /**
