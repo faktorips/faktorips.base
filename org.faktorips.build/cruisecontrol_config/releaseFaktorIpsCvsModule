@@ -13,8 +13,8 @@ createBranch()
   # remove branch example: cvs -d /usr/local/cvsroot rtag -d -B tagname module/project
   ###############################################################################
   # a) all plugin projects: for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | \
-                            sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; \ 
-                            do cvs -d /usr/local/cvsroot rtag -d <tag> $project ; done
+  #                         sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; \ 
+  #                         do cvs -d /usr/local/cvsroot rtag -d <tag> $project ; done
   # b) org.faktorips.integration*
   # c) org.faktorips.pluginbuilder
   ###############################################################################
