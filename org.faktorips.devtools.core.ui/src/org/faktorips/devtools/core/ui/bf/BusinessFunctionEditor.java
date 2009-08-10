@@ -101,7 +101,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     // TODO duplicate code in IpsObjectEditor
     private Image getDecoratedImage() throws CoreException {
         Image titleImage = ipsSrcFile.getIpsObjectType().getImage(true);
-        return decorator.decorateImage(titleImage, ipsSrcFile.getIpsObject());
+        return decorator.decorateImage(titleImage, ipsSrcFile);
     }
 
     /**
