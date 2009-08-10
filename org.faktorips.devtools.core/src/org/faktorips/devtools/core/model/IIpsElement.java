@@ -86,5 +86,10 @@ public interface IIpsElement {
      * Returns the element's image.
      */
     public Image getImage();
+    
+    /**
+     * Returns <code>true</code> if this element is contained in an archive, <code>false</code> otherwise. 
+     */
+    public boolean isContainedInArchive();
 
 }

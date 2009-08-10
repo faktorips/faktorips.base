@@ -2012,4 +2012,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public String toString() {
         return getName();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainedInArchive() {
+        return false;
+    }
+
 }

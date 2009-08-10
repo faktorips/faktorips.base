@@ -271,4 +271,12 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainedInArchive() {
+        return false;
+    }
+
+    
 }

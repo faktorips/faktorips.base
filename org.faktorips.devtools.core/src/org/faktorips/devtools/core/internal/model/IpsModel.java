@@ -1712,4 +1712,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         return sortDef;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainedInArchive() {
+        return false;
+    }
+    
 }

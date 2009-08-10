@@ -190,4 +190,12 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainedInArchive() {
+        return true;
+    }
+
+    
 }

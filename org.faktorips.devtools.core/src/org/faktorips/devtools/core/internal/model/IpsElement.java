@@ -208,5 +208,11 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         return getParent().toString() + "/" + getName(); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainedInArchive() {
+        return getParent().isContainedInArchive();
+    }
 
 }
