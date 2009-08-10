@@ -82,16 +82,15 @@ public class GeneralInfoSection extends IpsSection  {
 	    PcTypeRefControl supertypeRefControl = toolkit.createPcTypeRefControl(type.getIpsProject(), composite);
         bindingContext.bindContent(supertypeRefControl, type, IType.PROPERTY_SUPERTYPE); 
 	    
-	    Composite c2 = toolkit.createLabelEditColumnComposite(client);
-	    toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelAbstractClass);
-	    Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
+	    toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelAbstractClass);
+	    Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
 	    bindingContext.bindContent(abstractCheckbox, type, IType.PROPERTY_ABSTRACT);
         
-        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelProduct);
-	    Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);
+        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelProduct);
+	    Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(configuratedCheckbox, type, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
 
-        Hyperlink link2 = toolkit.createHyperlink(c2, Messages.GeneralInfoSection_labelType);
+        Hyperlink link2 = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_labelType);
         link2.addHyperlinkListener(new HyperlinkAdapter() {
             
             public void linkActivated(HyperlinkEvent event) {
@@ -107,7 +106,7 @@ public class GeneralInfoSection extends IpsSection  {
             }
             
         });
-        ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(type.getIpsProject(), c2, toolkit, false);
+        ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(type.getIpsProject(), composite, toolkit, false);
         bindingContext.bindContent(productCmptTypeRefControl, type, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
         bindingContext.bindEnabled(productCmptTypeRefControl, type, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
 	
@@ -117,7 +116,7 @@ public class GeneralInfoSection extends IpsSection  {
 	    addFocusControl(productCmptTypeRefControl);
 	    addFocusControl(configuratedCheckbox);
 	    
-	    extFactory.createControls(c2,toolkit,type);
+	    extFactory.createControls(composite, toolkit, type);
 	    extFactory.bind(bindingContext);
 	}
     
