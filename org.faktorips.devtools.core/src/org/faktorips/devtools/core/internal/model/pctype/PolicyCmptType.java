@@ -125,9 +125,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return ipsProject.findProductCmptType(getProductCmptType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setProductCmptType(String newName) {
         ArgumentCheck.notNull(newName);
         String oldName = productCmptType;

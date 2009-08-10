@@ -197,7 +197,9 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertFalse(msgList.containsErrorMsg());
         paymentModeAdapter.getEnumType().getEnumAttributes().get(0).delete();
         msgList = paymentModeAdapter.checkReadyToUse();
-        assertTrue(msgList.containsErrorMsg());
+        //TODO pk 07.08.2009: checkReadyToUse is currently returning just an empty message list since
+        //the validation of the unterlying enum type is too inperformant
+        assertFalse(msgList.containsErrorMsg());
     }
 
     public void testIsParsable() {

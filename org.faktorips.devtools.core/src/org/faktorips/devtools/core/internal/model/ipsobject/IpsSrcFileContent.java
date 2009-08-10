@@ -143,6 +143,9 @@ public class IpsSrcFileContent {
     }
 
     public void markAsUnmodified() {
+        if(!((IpsModel)getIpsObject().getIpsModel()).isBroadcastingChangesForCurrentThread()){
+            return;
+        }
         if (modified) {
             modified = false;
             modificationStatusHasChanged();
@@ -150,6 +153,9 @@ public class IpsSrcFileContent {
     }
 
     public void markAsModified() {
+        if(!((IpsModel)getIpsObject().getIpsModel()).isBroadcastingChangesForCurrentThread()){
+            return;
+        }
         if (!modified) {
             modified = true;
             modificationStatusHasChanged();
