@@ -21,6 +21,7 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.policycmpttype,
+ org.faktorips.devtools.stdbuilder.policycmpttype.attribute,
  org.faktorips.devtools.stdbuilder.productcmpt,
  org.faktorips.devtools.stdbuilder.productcmpttype,
  org.faktorips.devtools.stdbuilder.table,
