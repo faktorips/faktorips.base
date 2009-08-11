@@ -14,6 +14,7 @@
 package org.faktorips.codegen;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -1244,15 +1245,91 @@ public class JavaCodeFragmentBuilder {
      * @param parameters the parameters for the method call
      * @return the fragment builder for method chaining
      */
-    public JavaCodeFragmentBuilder appendMethodCall(String name, String[] parameters) {
-        fragment.append(name).append('(');
-        for (String aParameter : parameters) {
-            fragment.append(aParameter);
-            if (!aParameter.equals(parameters[parameters.length-1])) {
+    public JavaCodeFragmentBuilder methodCall(String name, String[] parameters, boolean finishLine) {
+        fragment.append(name);
+        appendParameters(parameters);
+        if (finishLine) {
+            fragment.appendln(';');
+        }
+        return this;
+    }
+    
+    /**
+     * Writes a method call to the java code fragment builder.
+     * @param name The name of the method to call
+     * @param parameterFragments the parameters for the method call
+     * @return the fragment builder for method chaining
+     */
+    public JavaCodeFragmentBuilder methodCall(String name, JavaCodeFragment[] parameterFragments, boolean finishLine) {
+        fragment.append(name);
+        appendParameters(parameterFragments);
+        if (finishLine) {
+            fragment.appendln(';');
+        }
+        return this;
+    }
+    
+    /**
+     * @see #methodCall(String, String[], boolean)
+     * 
+     * @param name the name of the method
+     * @param parameters the list of parameters
+     * @param finishLine
+     * @return the fragment builder for method chaining
+     */
+    public JavaCodeFragmentBuilder methodCall(String name, List<String> parameters, boolean finishLine) {
+        return methodCall(name, parameters.toArray(new String[parameters.size()]), finishLine);
+    }
+    
+    
+    /**
+     * append a constructor call: new <name>(parameters[0], parameters[1], ...)
+     * @param className
+     * @param parameters
+     * @param finishLine append a semicolon and new line if true
+     * @return the JavaCodeFragmentBuilder for Method chaining
+     */
+    public JavaCodeFragmentBuilder constructorCall(String className, String[] parameters, boolean finishLine) {
+        append("new ");
+        appendClassName(className);
+        appendParameters(parameters);
+        if (finishLine) {
+            fragment.appendln(';');
+        }
+        return this;
+    }
+
+    /**
+     * @see #constructorCall(String, String[], boolean)
+     * @param className
+     * @param parameters
+     * @param finishLine
+     * @return @see #constructorCall(String, String[], boolean)
+     */
+    public JavaCodeFragmentBuilder constructorCall(String className, List<String> parameters, boolean finishLine) {
+        return constructorCall(className, parameters.toArray(new String[parameters.size()]), finishLine);
+    }
+    
+    public JavaCodeFragmentBuilder appendParameters(String[] parameters) {
+        JavaCodeFragment[] jcfParams = new JavaCodeFragment[parameters.length];
+        for (int i = 0; i < parameters.length;i++) {
+            jcfParams[i] = new JavaCodeFragment(parameters[i]);
+        }
+        appendParameters(jcfParams);
+        return this;
+    }
+    
+    public JavaCodeFragmentBuilder appendParameters(JavaCodeFragment[] parameters) {
+        append('(');
+        int i = 1;
+        for (JavaCodeFragment aParameter : parameters) {
+            append(aParameter);
+            if (i < parameters.length) {
                 fragment.append(", ");
             }
+            i++;
         }
-        fragment.appendln(");");
+        append(')');
         return this;
     }
     
