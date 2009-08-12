@@ -243,9 +243,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             throws CoreException {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
-        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(includeLiteralName,
-                ipsProject)) {
-            if (currentEnumAttribute.isUnique()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(true)) {
+            Boolean unqiueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
+            if ((unqiueBoolean == null) ? false : unqiueBoolean.booleanValue()) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
             }
         }
