@@ -281,8 +281,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Looks up the enumeration attribute for which the isIdentifier property is <code>true</code>
-     * and returns it. If none is found <code>null</code> will be returned. The supertype hierachy
-     * is considered if necessary.
+     * and returns it. If none is found <code>null</code> will be returned.
      * 
      * @param ipsProject used for look up in the supertype hierarchy if necessary
      * @throws CoreException if an exception occurs during the look up
@@ -291,8 +290,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Looks up the enumeration attribute for which the isUsedAsNameInFaktorIpsUi is true.
-     * <code>null</code> is returned if none is found. The supertype hierachy is considered if
-     * necessary.
+     * <code>null</code> is returned if none is found.
      * 
      * @param ipsProject The ips project used for look up in the supertype hierarchy if necessary.
      * 
