@@ -594,8 +594,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(false, ipsProject)) {
-            if (currentEnumAttribute.isIdentifier()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
+            Boolean identifierBoolean = currentEnumAttribute.findIsIdentifier(ipsProject);
+            if (identifierBoolean == null) {
+                continue;
+            }
+            if (identifierBoolean) {
                 return currentEnumAttribute;
             }
         }
@@ -603,8 +607,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(false, ipsProject)) {
-            if (currentEnumAttribute.isUsedAsNameInFaktorIpsUi()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
+            Boolean displayNameBoolean = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
+            if (displayNameBoolean == null) {
+                continue;
+            }
+            if (displayNameBoolean) {
                 return currentEnumAttribute;
             }
         }
