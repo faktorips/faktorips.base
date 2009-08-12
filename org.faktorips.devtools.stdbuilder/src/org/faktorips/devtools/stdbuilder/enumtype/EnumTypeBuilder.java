@@ -318,11 +318,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             if (enumValue == null) {
                 return fragment;
             }
-            IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(getIpsProject(), enumTypeAdapter
-                    .getEnumType().getEnumLiteralNameAttribute());
+            IEnumAttributeValue literalNameAttributeValue = enumValue.findEnumAttributeValue(getIpsProject(),
+                    enumTypeAdapter.getEnumType().getEnumLiteralNameAttribute());
+            if (literalNameAttributeValue == null) {
+                return fragment;
+            }
             fragment.appendClassName(getQualifiedClassName(enumTypeAdapter.getEnumType()));
             fragment.append('.');
-            fragment.append(getConstantNameForEnumAttributeValue(attrValue));
+            fragment.append(getConstantNameForEnumAttributeValue(literalNameAttributeValue));
             return fragment;
         }
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value,
