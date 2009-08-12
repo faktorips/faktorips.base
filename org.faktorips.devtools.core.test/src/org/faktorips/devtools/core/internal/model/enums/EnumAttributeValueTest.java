@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -49,6 +50,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (NullPointerException e) {
         }
+
+        IEnumLiteralNameAttribute literalNameAttribute = genderEnumType.newEnumLiteralNameAttribute();
+        genderEnumType.moveEnumAttribute(literalNameAttribute, true);
 
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
@@ -91,13 +95,11 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         IEnumType enumType = newEnumType(ipsProject, "AnEnum");
         IEnumAttribute enumAttr = enumType.newEnumAttribute();
         enumAttr.setDatatype(Datatype.STRING.getQualifiedName());
-        enumAttr.setLiteralName(true);
         enumAttr.setName("a");
         enumAttr.setUnique(true);
 
         IEnumAttribute enumAttr2 = enumType.newEnumAttribute();
         enumAttr2.setDatatype(Datatype.INTEGER.getQualifiedName());
-        enumAttr2.setLiteralName(true);
         enumAttr2.setName("b");
         enumAttr2.setUnique(true);
 
@@ -113,14 +115,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
 
         List<IEnumAttributeValue> enumAttrList1 = enumValue.getEnumAttributeValues();
-        enumAttrList1.get(0).setValue("hallo");
-        enumAttrList1.get(1).setValue("1");
+        enumAttrList1.get(0).setValue("foo");
+        enumAttrList1.get(1).setValue("bar");
 
         Element enumTypeEl3 = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
         IEnumType enumType3 = newEnumType(ipsProject, "AnEnum3");
         enumType3.initFromXml(enumTypeEl3);
-        assertEquals("hallo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
-        assertEquals("1", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
+        assertEquals("foo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
+        assertEquals("bar", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
 
     }
 
@@ -212,9 +214,10 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateLiteralNameValueNotJavaConform() throws CoreException {
-        IEnumAttributeValue literalNameEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues().get(0);
-        literalNameEnumAttributeValueMale.setValue("3sdj4%332§4^2");
-        MessageList validationMessageList = literalNameEnumAttributeValueMale.validate(ipsProject);
+        IEnumAttributeValue literalNameAttributeValue = paymentMode.getEnumValues().get(0).getEnumAttributeValues()
+                .get(0);
+        literalNameAttributeValue.setValue("3sdj4%332§4^2");
+        MessageList validationMessageList = literalNameAttributeValue.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM));

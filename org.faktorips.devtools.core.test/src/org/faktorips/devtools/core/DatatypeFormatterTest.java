@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,10 +31,10 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
         enum1.setContainingValues(true);
+        enum1.newEnumLiteralNameAttribute();
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
-        attr1.setLiteralName(true);
         attr1.setIdentifier(true);
         attr1.setName("id");
         attr1.setUnique(true);
@@ -50,25 +50,28 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
         attr3.setUnique(false);
-        
+
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("aname");
-        values.get(2).setValue("adesc");
+        values.get(0).setValue("A");
+        values.get(1).setValue("a");
+        values.get(2).setValue("aname");
+        values.get(3).setValue("adesc");
 
         IEnumValue enumValue2 = enum1.newEnumValue();
         values = enumValue2.getEnumAttributeValues();
-        values.get(0).setValue("b");
-        values.get(1).setValue("bname");
-        values.get(2).setValue("bdesc");
+        values.get(0).setValue("B");
+        values.get(1).setValue("b");
+        values.get(2).setValue("bname");
+        values.get(3).setValue("bdesc");
 
         IEnumValue enumValue3 = enum1.newEnumValue();
         values = enumValue3.getEnumAttributeValues();
-        values.get(0).setValue("c");
-        values.get(1).setValue("cname");
-        values.get(2).setValue("cdesc");
-        
+        values.get(0).setValue("C");
+        values.get(1).setValue("c");
+        values.get(2).setValue("cname");
+        values.get(3).setValue("cdesc");
+
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
         DatatypeFormatter formatter = new DatatypeFormatter(ipsPreferences);
@@ -81,54 +84,53 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         assertEquals("cname", text);
 
         attr1.setIdentifier(false);
-        //Returns the unformatted value since the value a cannot be identified as an id value of
-        //the enum1
+        // Returns the unformatted value since the value a cannot be identified as an id value of
+        // the enum1
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr1.setIdentifier(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
-        //since the display setting is name and no name ui attribute exists the default is to 
-        //return the input value
+        // since the display setting is name and no name ui attribute exists the default is to
+        // return the input value
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.ID);
         formatter = new DatatypeFormatter(ipsPreferences);
-        
+
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("a", text);
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "b");
         assertEquals("b", text);
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "c");
         assertEquals("c", text);
-        
+
         attr1.setIdentifier(false);
-        //since the display setting is id and no id ui attribute exists the default is to 
-        //return the input value
+        // since the display setting is id and no id ui attribute exists the default is to
+        // return the input value
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr1.setIdentifier(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
-        //should not have any influence 
+        // should not have any influence
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
-        
+
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         formatter = new DatatypeFormatter(ipsPreferences);
-        
+
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("aname (a)", text);
 
         attr1.setIdentifier(false);
-        //Returns the unformatted value since the value a cannot be identified as an id value of
-        //the enum1
+        // Returns the unformatted value since the value a cannot be identified as an id value of
+        // the enum1
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("a", text);
         attr1.setIdentifier(true);
 
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "k");
         assertEquals("k", text);
-
     }
 
 }

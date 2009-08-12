@@ -80,18 +80,13 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private IpsProject ipsProject;
     private IpsProject baseProject;
     private IIpsPackageFragmentRoot root;
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
@@ -104,7 +99,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindAllProductCmpts() throws CoreException {
-        // create the following types: Type0, Type1 and Type2
+        // Create the following types: Type0, Type1 and Type2.
         IProductCmptType type0 = newProductCmptType(ipsProject, "pack.Type0");
         IProductCmptType type1 = newProductCmptType(ipsProject, "pack.Type1");
 
@@ -123,7 +118,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(product1, result[1]);
         assertEquals(product2, result[2]);
 
-        // consider class hierarchy; make type1 a subtype of type0
+        // Consider class hierarchy; make type1 a subtype of type0.
         type1.setSupertype(type0.getQualifiedName());
         result = ipsProject.findAllProductCmpts(type0, true);
         assertEquals(3, result.length);
@@ -145,7 +140,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmpt[] result = ipsProject.findAllProductCmpts(type, true);
         assertEquals(1, result.length);
 
-        // now creeate a component without product component type
+        // Now create a component without product component type.
         newProductCmpt(ipsProject, "ProductCmpt2");
         result = ipsProject.findAllProductCmpts(type, true);
         assertEquals(1, result.length);
@@ -520,19 +515,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
+        paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
-        paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
-        id = paymentMode.newEnumAttribute();
+        gender.setAbstract(false);
+        gender.setContainingValues(true);
+        gender.newEnumLiteralNameAttribute();
+        id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         ValueDatatype datatype = ipsProject.findValueDatatype("PaymentMode");
@@ -548,16 +543,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         gender.setAbstract(false);
         gender.setContainingValues(true);
+        gender.newEnumLiteralNameAttribute();
         id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         List<IEnumType> enumTypes = ipsProject.findEnumTypes(true, true);
@@ -713,19 +707,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
+        paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
-        paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
-        id = paymentMode.newEnumAttribute();
+        gender.setAbstract(false);
+        gender.setContainingValues(true);
+        gender.newEnumLiteralNameAttribute();
+        id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         Datatype[] datatypes = ipsProject.findDatatypes(true, false, false, null);
@@ -1410,19 +1404,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
+        paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
-        paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
-        id = paymentMode.newEnumAttribute();
+        gender.setAbstract(false);
+        gender.setContainingValues(true);
+        gender.newEnumLiteralNameAttribute();
+        id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setName("id");
 
         dataTypes = ipsProject.findEnumDatatypes();

@@ -79,7 +79,7 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
             return;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         DescriptionItem[] descriptionItems = new DescriptionItem[enumAttributes.size()];
         for (int i = 0; i < enumAttributes.size(); i++) {
             IEnumAttribute currentEnumAttribute = enumAttributes.get(i);

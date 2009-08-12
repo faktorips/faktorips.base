@@ -31,6 +31,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     private IEnumType enumType;
+
     private IEnumContent enumContent;
 
     /**
@@ -49,23 +50,27 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Returns the ids of the values of adapted enumeration type respectively the enumeration
-     * content. The literal name attribute value is considered to be the id. </p>Returns a string
-     * array containing only <code>null</code> as a value if the enumeration type of this adapter
-     * doesn't contain values and the enumeration content of this adapter is <code>null</code> and
-     * the parameter includeNull is set to true. Returns an empty string array if the parameter
-     * includeNull is set to false.</p> Returns an empty string array if the literal name attribute
-     * of the adapted enumeration type has not been specified.
+     * Returns the IDs of the values of adapted enumeration type respectively the enumeration
+     * content. The attribute value referring to the enumeration attribute marked as identifier is
+     * considered to be the ID.
+     * <p>
+     * Returns a string array containing only <code>null</code> as a value if the enumeration type
+     * of this adapter doesn't contain values and the enumeration content of this adapter is
+     * <code>null</code> and the parameter includeNull is set to true. Returns an empty string array
+     * if the parameter <tt>includeNull</tt> is set to false.
+     * <p>
+     * Returns an empty string array if the identifier attribute of the adapted enumeration type has
+     * not been specified.
      * 
      * @throws RuntimeException If the process of determining the enum attribute values throws a
      *             <code>CoreException</code>.
      */
     public String[] getAllValueIds(boolean includeNull) {
         if (enumContent == null) {
-            if (!enumType.isContainingValues() && includeNull) {
+            if (!(enumType.isContainingValues()) && includeNull) {
                 return new String[] { null };
             }
-            if (!enumType.isContainingValues()) {
+            if (!(enumType.isContainingValues())) {
                 return new String[0];
             }
         }
@@ -74,28 +79,32 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Checks if the provided id is equal to one of the enumeration attribute values of the literal
-     * name attribute of the adapted enumeration type. If so the id is returned otherwise
-     * <code>null</code> is returned.
+     * Checks if the provided ID is equal to one of the enumeration attribute values referencing to
+     * the display name attribute adapted enumeration type. If so the display name is returned,
+     * otherwise <tt>null</tt>.
      */
     public String getValueName(String id) {
+        if (id == null) {
+            return null;
+        }
+
         if (enumContent == null) {
-            if (id == null || !enumType.isContainingValues()) {
+            if (!(enumType.isContainingValues())) {
                 return null;
             }
         }
+
         try {
             IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
             IEnumValue enumValue = getEnumValueContainer().findEnumValue(id, ipsProject);
-            if(enumValue == null){
+            if (enumValue == null) {
                 return null;
             }
-            IEnumAttribute literalNameAttr = getEnumType().findLiteralNameAttribute(ipsProject);
-            if(literalNameAttr == null){
-                return null;
-            }
-            IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(ipsProject, literalNameAttr);
+
+            IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
+            IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(ipsProject, displayNameAttribute);
             return enumAttributeValue.getValue();
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -111,15 +120,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     private List<String> findAllIdentifierAttributeValues(boolean includesNull) {
         List<String> result = getEnumValueContainer().findAllIdentifierAttributeValues(
                 getEnumValueContainer().getIpsProject());
-        if(includesNull){
+        if (includesNull) {
             result.add(null);
         }
         return result;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public boolean areValuesEqual(String valueA, String valueB) {
         List<String> result = findAllIdentifierAttributeValues(true);
         if (result.contains(valueA) && result.contains(valueB)) {
@@ -130,21 +136,15 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 + " is not part of this enumeration type. Therefor the equality cannot be determined.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList checkReadyToUse() {
-    	return new MessageList();
-    	// TODO pk 07-08-2009: we need to provide an effective implementation
-		// for this method
-		// a simple call to the validate method of the EnumType is not efficient
-		// since all enum values of the enum type are validated and that means
-		// that the system slowes down with the increasing number of enum values
+        return new MessageList();
+        // TODO pk 07-08-2009: we need to provide an effective implementation
+        // for this method
+        // a simple call to the validate method of the EnumType is not efficient
+        // since all enum values of the enum type are validated and that means
+        // that the system slowes down with the increasing number of enum values
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -200,23 +200,14 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         return getEnumValueContainer().getIpsProject().getDatatypeHelper(this).getJavaClassName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return enumType.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         return enumType.getQualifiedName();
     }

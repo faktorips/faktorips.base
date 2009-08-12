@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,14 +16,13 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
-
 
 /**
  *
@@ -33,7 +32,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private IColumn column;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -42,7 +41,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column = table.newColumn();
         ipsSrcFile.save(true, null);
     }
-    
+
     public void testSetName() {
         column.setName("newName");
         assertEquals("newName", column.getName());
@@ -59,11 +58,11 @@ public class ColumnTest extends AbstractIpsPluginTest {
         IColumn c0 = column;
         IColumn c1 = table.newColumn();
         IColumn c2 = table.newColumn();
-        
+
         assertSame(c0, table.getColumns()[0]);
         assertSame(c1, table.getColumns()[1]);
         assertSame(c2, table.getColumns()[2]);
-        
+
         c1.delete();
         assertEquals(2, table.getNumOfColumns());
         assertEquals(c0, table.getColumns()[0]);
@@ -76,7 +75,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column.setName("premium");
         column.setDatatype("Money");
         Element element = column.toXml(newDocument());
-        
+
         assertEquals("1", element.getAttribute(IColumn.PROPERTY_ID));
         assertEquals("premium", element.getAttribute(IColumn.PROPERTY_NAME));
         assertEquals("Money", element.getAttribute(IColumn.PROPERTY_DATATYPE));
@@ -90,29 +89,30 @@ public class ColumnTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			column.newPart(IPolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            column.newPart(PolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     public void testValidateName() throws Exception {
         column.setName("Boolean");
         column.setDatatype(Datatype.STRING.getQualifiedName());
         MessageList ml = column.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
-        
+
         column.setName("integer");
         ml = column.validate(ipsSrcFile.getIpsProject());
         assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
     }
-    
-    public void testFindValueDatatype() throws CoreException{
+
+    public void testFindValueDatatype() throws CoreException {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 

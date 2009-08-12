@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -33,7 +34,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.forms.IMessage;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -85,7 +85,7 @@ public class FixEnumContentWizard extends Wizard {
      */
     public FixEnumContentWizard(IEnumContent enumContent) {
         this.enumContent = enumContent;
-        this.uiToolkit = new UIToolkit(null);
+        uiToolkit = new UIToolkit(null);
 
         setWindowTitle(Messages.FixEnumContentWizard_title);
         setNeedsProgressMonitor(false);
@@ -514,13 +514,13 @@ public class FixEnumContentWizard extends Wizard {
                     assignEnumAttributesPage.refreshControl();
                 }
                 if (newEnumType.isAbstract()) {
-                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract, IMessage.ERROR);
+                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract, IMessageProvider.ERROR);
                 }
                 if (newEnumType.isContainingValues()) {
-                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel, IMessage.ERROR);
+                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel, IMessageProvider.ERROR);
                 }
             } else {
-                setMessage(Messages.FixEnumContentWizard_chosenEnumTypeDoesNotExist, IMessage.ERROR);
+                setMessage(Messages.FixEnumContentWizard_chosenEnumTypeDoesNotExist, IMessageProvider.ERROR);
             }
 
             setPageComplete(pageComplete);
@@ -599,10 +599,10 @@ public class FixEnumContentWizard extends Wizard {
             contents.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
             // Create the widgets
-            int numberEnumAttributes = newEnumType.getEnumAttributesCount(true);
+            int numberEnumAttributes = newEnumType.getEnumAttributesCountIncludeSupertypeCopies(false);
             combos = new Combo[numberEnumAttributes];
             labels = new Label[numberEnumAttributes];
-            List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies();
+            List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (int i = 0; i < numberEnumAttributes; i++) {
                 IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
                 labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');
@@ -645,7 +645,8 @@ public class FixEnumContentWizard extends Wizard {
 
                 String currentComboText = currentCombo.getText();
                 if (currentComboText.equals("")) {
-                    setMessage(Messages.FixEnumContentWizard_assignEnumAttributesAttributeNotAssigned, IMessage.ERROR);
+                    setMessage(Messages.FixEnumContentWizard_assignEnumAttributesAttributeNotAssigned,
+                            IMessageProvider.ERROR);
                     pageComplete = false;
                     break;
 
@@ -656,7 +657,7 @@ public class FixEnumContentWizard extends Wizard {
                                 .equals(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn))) {
 
                             setMessage(Messages.FixEnumContentWizard_assignEnumAttributesDuplicateColumnAssigned,
-                                    IMessage.ERROR);
+                                    IMessageProvider.ERROR);
                             pageComplete = false;
                             break;
                         }

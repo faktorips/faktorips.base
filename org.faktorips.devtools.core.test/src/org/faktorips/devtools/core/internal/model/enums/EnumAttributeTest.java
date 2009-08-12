@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -76,21 +77,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
-    public void testGetSetIsLiteralName() {
-        assertTrue(genderEnumAttributeId.isLiteralName());
-        assertFalse(genderEnumAttributeName.isLiteralName());
-
-        genderEnumAttributeName.setLiteralName(true);
-        assertTrue(genderEnumAttributeName.isLiteralName());
-    }
-
     public void testGetSetIsInherited() {
         assertFalse(genderEnumAttributeId.isInherited());
         genderEnumAttributeId.setInherited(true);
 
         assertTrue(genderEnumAttributeId.isInherited());
         assertEquals("", genderEnumAttributeId.getDatatype());
-        assertFalse(genderEnumAttributeId.isLiteralName());
         assertFalse(genderEnumAttributeId.isUnique());
         assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
         assertFalse(genderEnumAttributeId.isIdentifier());
@@ -105,11 +97,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
-        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
-                .getTextContent());
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
         assertEquals(Datatype.STRING.getQualifiedName(), attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE)
                 .getTextContent());
-        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IDENTIFIER).getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI)
@@ -119,15 +109,14 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
-        IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes().get(0);
+        IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes(true).get(0);
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(Datatype.STRING.getQualifiedName(), idAttribute.getDatatype());
-        assertTrue(idAttribute.isLiteralName());
         assertTrue(idAttribute.isUnique());
         assertTrue(idAttribute.isIdentifier());
         assertFalse(idAttribute.isUsedAsNameInFaktorIpsUi());
         assertFalse(idAttribute.isInherited());
-        assertEquals(2, loadedEnumType.getEnumAttributes().size());
+        assertEquals(2, loadedEnumType.getEnumAttributesCountIncludeSupertypeCopies(true));
     }
 
     public void testValidateThis() throws CoreException {
@@ -229,36 +218,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES));
     }
 
-    public void testValidateLiteralName() throws CoreException {
-        IIpsModel ipsModel = getIpsModel();
-
-        // Test duplicate literal names.
-        genderEnumAttributeName.setLiteralName(true);
-        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME));
-        genderEnumAttributeName.setLiteralName(false);
-
-        // Test literal name but datatype not String.
-        ipsModel.clearValidationCache();
-        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
-        validationMessageList = genderEnumAttributeId.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING));
-        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
-
-        // Test literal name but not unique identifier.
-        ipsModel.clearValidationCache();
-        genderEnumAttributeId.setUnique(false);
-        validationMessageList = genderEnumAttributeId.validate(ipsProject);
-        assertEquals(2, validationMessageList.getNoOfMessages());
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER));
-        genderEnumAttributeId.setUnique(true);
-    }
-
     public void testValidateInherited() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
@@ -339,21 +298,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumAttributeId.setInherited(true);
         assertNull(genderEnumAttributeId.findDatatype(ipsProject));
-    }
-
-    public void testFindIsLiteralName() throws CoreException {
-        try {
-            inheritedEnumAttributeId.findIsLiteralName(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
-
-        assertTrue(inheritedEnumAttributeId.findIsLiteralName(ipsProject));
-        inheritedEnumAttributeId.setInherited(false);
-        assertFalse(inheritedEnumAttributeId.findIsLiteralName(ipsProject));
-
-        genderEnumAttributeId.setInherited(true);
-        assertNull(genderEnumAttributeId.findIsLiteralName(ipsProject));
     }
 
     public void testFindIsUniqueIdentifier() throws CoreException {

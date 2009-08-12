@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- *
+ * 
  * @author Markus Blum
  */
 public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
@@ -34,9 +34,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot rootPackage;
     private IpsProjectSortOrdersPM sortOrderPM;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -77,13 +75,13 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     public void testGetChildrenExtended() throws IOException, CoreException {
         sortOrderPM.dispose();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("vertragsarten");
         list.add("gruppenarten");
         list.add("leistungsarten");
 
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.kranken");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         list.clear();
         list.add("kranken");
@@ -92,7 +90,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
 
         fragment = rootPackage.getIpsPackageFragment("products");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         rootPackage.createPackageFragment("products.kranken.notlisted", true, null);
 
@@ -128,7 +126,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         list.add("hausrat");
         list.add("haftpflicht");
         list.add("notlisted");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         elements = sortOrderPM.getChildren(fragment);
         assertEquals(4, elements.length);
@@ -173,13 +171,13 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     public void testMoveUp() throws IOException, CoreException {
         sortOrderPM.dispose();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("vertragsarten");
         list.add("gruppenarten");
         list.add("leistungsarten");
 
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.kranken");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         list.clear();
         list.add("kranken");
@@ -188,7 +186,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
 
         fragment = rootPackage.getIpsPackageFragment("products");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         IIpsPackageFragment[] elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
@@ -224,13 +222,13 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     public void testMoveDown() throws IOException, CoreException {
         sortOrderPM.dispose();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("vertragsarten");
         list.add("gruppenarten");
         list.add("leistungsarten");
 
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.kranken");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         list.clear();
         list.add("kranken");
@@ -239,7 +237,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
 
         fragment = rootPackage.getIpsPackageFragment("products");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         IIpsPackageFragment selectedFragment = rootPackage.getIpsPackageFragment("products.kranken.leistungsarten");
         sortOrderPM.moveDown(selectedFragment, 1);
@@ -273,13 +271,13 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     public void testRestore() throws IOException, CoreException {
         sortOrderPM.dispose();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("vertragsarten");
         list.add("gruppenarten");
         list.add("leistungsarten");
 
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.kranken");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
 
         list.clear();
         list.add("kranken");
@@ -288,7 +286,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
 
         fragment = rootPackage.getIpsPackageFragment("products");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         IIpsPackageFragment[] elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
 
@@ -304,14 +302,14 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     public void testSaveSortDefDelta() throws IOException, CoreException {
         sortOrderPM.dispose();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("kranken");
         list.add("unfall");
         list.add("hausrat");
         list.add("haftpflicht");
 
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products");
-        createPackageOrderFile((IFolder) fragment.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)fragment.getCorrespondingResource(), list);
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         IIpsPackageFragment[] elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         fragment = rootPackage.getIpsPackageFragment("products.kranken.gruppenarten");

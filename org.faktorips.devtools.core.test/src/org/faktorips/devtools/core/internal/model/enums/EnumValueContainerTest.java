@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 
@@ -138,66 +139,63 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testUniqueIdentifierValidation() throws CoreException {
-        genderEnumType.setContainingValues(true);
-        IEnumValue testValue1 = genderEnumType.newEnumValue();
-        testValue1.setEnumAttributeValue(0, "id1");
-        testValue1.setEnumAttributeValue(1, "name1");
-        IEnumValue testValue2 = genderEnumType.newEnumValue();
-        testValue2.setEnumAttributeValue(0, "id2");
-        testValue2.setEnumAttributeValue(1, "name2");
-        assertEquals(0, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
+        IEnumValue testValue1 = paymentMode.getEnumValues().get(0);
+        IEnumValue testValue2 = paymentMode.getEnumValues().get(1);
 
         // Test working after new unique attribute addition.
-        IEnumAttribute newUnique = genderEnumType.newEnumAttribute();
+        IEnumAttribute newUnique = paymentMode.newEnumAttribute();
         newUnique.setDatatype(Datatype.STRING.getQualifiedName());
         newUnique.setName("newUnique");
         newUnique.setUnique(true);
-        testValue1.setEnumAttributeValue(2, "newUniqueValue");
-        testValue2.setEnumAttributeValue(2, "newUniqueValue");
+        testValue1.setEnumAttributeValue(newUnique, "newUniqueValue");
+        testValue2.setEnumAttributeValue(newUnique, "newUniqueValue");
         getIpsModel().clearValidationCache();
-        assertEquals(2, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
 
         // Test working for enum value deletion.
         testValue2.delete();
         getIpsModel().clearValidationCache();
-        assertEquals(0, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
 
         // Test working for enum value addition.
-        testValue2 = genderEnumType.newEnumValue();
-        testValue2.setEnumAttributeValue(0, "id1");
-        testValue2.setEnumAttributeValue(1, "name1");
-        testValue2.setEnumAttributeValue(2, "newUniqueValue");
+        testValue2 = paymentMode.newEnumValue();
+        testValue2.setEnumAttributeValue(0, "MONTHLY");
+        testValue2.setEnumAttributeValue(1, "P1");
+        testValue2.setEnumAttributeValue(2, "monthly");
+        testValue2.setEnumAttributeValue(3, "newUniqueValue");
         getIpsModel().clearValidationCache();
-        assertEquals(6, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(8, paymentMode.validate(ipsProject).getNoOfMessages());
 
         // Test working for toggling unique property.
         newUnique.setUnique(false);
         getIpsModel().clearValidationCache();
-        assertEquals(4, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(6, paymentMode.validate(ipsProject).getNoOfMessages());
         newUnique.setUnique(true);
         getIpsModel().clearValidationCache();
-        assertEquals(6, genderEnumType.validate(ipsProject).getNoOfMessages());
-        testValue2.setEnumAttributeValue(0, "id2");
-        testValue2.setEnumAttributeValue(1, "name2");
-        testValue2.setEnumAttributeValue(2, "otherUniqueValue");
+        assertEquals(8, paymentMode.validate(ipsProject).getNoOfMessages());
+        testValue2.setEnumAttributeValue(0, "ANNUALLY");
+        testValue2.setEnumAttributeValue(1, "P2");
+        testValue2.setEnumAttributeValue(2, "annually");
+        testValue2.setEnumAttributeValue(3, "otherUniqueValue");
 
         // Test working for enum attribute movement.
-        genderEnumType.moveEnumAttribute(newUnique, true);
-        testValue2.setEnumAttributeValue(2, "name1");
+        paymentMode.moveEnumAttribute(newUnique, true);
+        testValue2.setEnumAttributeValue(3, "monthly");
         getIpsModel().clearValidationCache();
-        assertEquals(2, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
 
         // Test working for enum attribute deletion.
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
-        newUnique.setUsedAsNameInFaktorIpsUi(true);
-        testValue2.setEnumAttributeValue(1, "newUniqueValue");
+        paymentMode.deleteEnumAttributeWithValues(newUnique);
         getIpsModel().clearValidationCache();
-        assertEquals(2, genderEnumType.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
     }
 
     public void _testUniqueIdentifierValidationPerformance() throws CoreException {
         IEnumType hugeEnumType = newEnumType(ipsProject, "HugeEnumType");
         hugeEnumType.setContainingValues(true);
+        IEnumLiteralNameAttribute literalNameAttribute = hugeEnumType.newEnumLiteralNameAttribute();
+        literalNameAttribute.setDefaultValueProviderAttribute("id");
         IEnumAttribute idAttribute = hugeEnumType.newEnumAttribute();
         idAttribute.setName("id");
         idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
@@ -206,7 +204,6 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute nameAttribute = hugeEnumType.newEnumAttribute();
         nameAttribute.setName("name");
         nameAttribute.setUsedAsNameInFaktorIpsUi(true);
-        nameAttribute.setLiteralName(true);
         nameAttribute.setUnique(true);
 
         // Create 15 further enum attributes, each 2nd one a unique.
@@ -221,7 +218,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         System.out.println("Creating enum values ...");
         for (int i = 1; i <= 7500; i++) {
             IEnumValue enumValue = hugeEnumType.newEnumValue();
-            for (int j = 0; j < 17; j++) {
+            for (int j = 0; j < 18; j++) {
                 enumValue.setEnumAttributeValue(j, "value" + j);
             }
             System.out.println("Enum value # " + i + " created.");

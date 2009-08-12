@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -82,12 +85,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         }
 
         assertNull(genderEnumValueMale.findEnumAttributeValue(ipsProject, null));
-
-        try {
-            genderEnumValueMale.findEnumAttributeValue(ipsProject, paymentMode.getEnumAttributes().get(0));
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        assertNull(genderEnumValueMale.findEnumAttributeValue(ipsProject, paymentMode.getEnumAttributes(true).get(0)));
 
         assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale.findEnumAttributeValue(
                 ipsProject, genderEnumAttributeId));
@@ -127,15 +125,22 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (IndexOutOfBoundsException e) {
         }
-        
+
         try {
             genderEnumValueMale.setEnumAttributeValue(20, "");
             fail();
         } catch (IndexOutOfBoundsException e) {
         }
-        
+
         genderEnumValueMale.setEnumAttributeValue(1, "foo");
         assertEquals("foo", genderEnumValueMale.getEnumAttributeValues().get(1).getValue());
+    }
+
+    public void testFindUniqueEnumAttributeValues() throws CoreException {
+        IEnumValue value = paymentMode.getEnumValues().get(0);
+        List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(paymentMode
+                .findUniqueEnumAttributes(true, ipsProject), ipsProject);
+        assertEquals(3, uniqueAttributeValues.size());
     }
 
 }

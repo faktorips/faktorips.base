@@ -115,7 +115,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
                 out = new FileOutputStream(new File(filename));
                 writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)));
 
-                exportHeader(writer, structure.getEnumAttributes(), exportColumnHeaderRow);
+                exportHeader(writer, structure.getEnumAttributes(true), exportColumnHeaderRow);
 
                 monitor.worked(1);
 
@@ -180,7 +180,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException, IOException {
 
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes(true);
 
         Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(false)];
         for (int i = 0; i < datatypes.length; i++) {

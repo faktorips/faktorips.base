@@ -83,15 +83,15 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * <code>initialized(String[], String[])</code> method is supposed to be used to set the values
      * of the combo within implementations of <code>reInitInternal()</code>.
      */
-    protected final void reInitInternal(){
+    protected final void reInitInternal() {
         ids = getDatatypeValueIds();
-        if(ids == null){
+        if (ids == null) {
             ids = new ArrayList<String>();
         }
         ArrayList<String> items = new ArrayList<String>(ids.size());
         for (String id : ids) {
             String text = getDisplayTextForValue(id);
-            if(text == null){
+            if (text == null) {
                 throw new RuntimeException(
                         "Inconsistant state during initialization of this edit field. The method getDisplayTextForValue(String) returned null for the provided id="
                                 + id);
@@ -125,6 +125,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * Returns the value of the currently selected index (which is the id of the enumeration value).
      * Returns null if no value is selected.
      */
+    @Override
     public Object parseContent() {
         int selectedIndex = getCombo().getSelectionIndex();
         if (selectedIndex == -1) {
@@ -144,8 +145,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * not contained in the EnumValueSet then the value will be added and selected otherwise only
      * selected.
      */
+    @Override
     public void setValue(Object newValue) {
-
         if (datatype.isParsable((String)newValue)) {
             setText(getDisplayTextForValue((String)newValue));
         }
@@ -189,5 +190,5 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
     public String getInvalidValue() {
         return invalidValue;
     }
-    
+
 }

@@ -105,7 +105,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         this.canDelete = canDelete;
         this.canMove = canMove;
         this.showEditButton = showEditButton;
-        this.uiToolkit = toolkit;
+        uiToolkit = toolkit;
         initControls(toolkit);
         toolkit.getFormToolkit().adapt(this);
     }
@@ -180,6 +180,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
         table = createTable(parent, toolkit);
         setEditDoubleClickListenerEnabled(true);
@@ -194,6 +195,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         new TableMessageHoverService(viewer) {
 
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 return messageCueLabelProvider.getMessages(element);
             }
@@ -202,16 +204,17 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         return viewer;
     }
-    
+
     /**
-     * Create the table for the viewer in this component. If you want to create another Table for example
-     * a table with a different style you could override this method
+     * Create the table for the viewer in this component. If you want to create another Table for
+     * example a table with a different style you could override this method
+     * 
      * @param parent the composite the table is nested in
      * @param toolkit the toolkit to create the table
      * @return the new table
      */
     protected Table createTable(Composite parent, UIToolkit toolkit) {
-    	return toolkit.getFormToolkit().createTable(parent, SWT.NONE);
+        return toolkit.getFormToolkit().createTable(parent, SWT.NONE);
     }
 
     /*
@@ -278,6 +281,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * @see org.faktorips.devtools.core.ui.forms.ViewerButtonSection#createButtons(org.eclipse.swt.widgets.Composite,
      *      org.eclipse.ui.forms.widgets.FormToolkit)
      */
+    @Override
     protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
         boolean buttonCreated = false;
         if (canCreate) {
@@ -396,6 +400,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void updateButtonEnabledStates() {
         boolean itemSelected = false;
 
@@ -496,7 +501,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount() - 2);
             IIpsObjectPart part = getSelectedPart();
             if (!fireAboutToDelete(part)) {
-            	return;
+                return;
             }
             deleteIpsPart(part);
             if (selectedIndexAfterDeletion >= 0) {
@@ -583,10 +588,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     private boolean fireAboutToDelete(IIpsObjectPart part) {
         for (Iterator<IDeleteListener> iter = deleteListeners.iterator(); iter.hasNext();) {
-            IDeleteListener listener = (IDeleteListener)iter.next();
+            IDeleteListener listener = iter.next();
             boolean accept = listener.aboutToDelete(part);
             if (!accept) {
-            	return false;
+                return false;
             }
         }
         return true;

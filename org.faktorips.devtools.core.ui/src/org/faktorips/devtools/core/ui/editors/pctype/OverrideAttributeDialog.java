@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,14 +19,14 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
+public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog {
 
-public class OverrideAttributeDialog extends OverrideDialog {
-    
-	/**
+    /**
      * Creates a new dialog to select candidates for overwriting.
      * 
      * @param pcType The type to get the candidates for overwriting from.
@@ -38,34 +38,35 @@ public class OverrideAttributeDialog extends OverrideDialog {
         setEmptyListMessage(Messages.OverrideAttributeDialog_labelNoAttributes);
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
     }
-    
-	/**
-	 * Returns the methods the user has selected to override. 
-	 */
-	public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
-	    List attributes = new ArrayList();
-	    Object[] checked = getResult();
-	    for (int i=0; i<checked.length; i++) {
-	        if (checked[i] instanceof IPolicyCmptTypeAttribute) {
-	            attributes.add(checked[i]);
-	        }
-	    }
-	    return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
-	}
 
-    private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {
-        
+    /**
+     * Returns the methods the user has selected to override.
+     */
+    public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
+        List attributes = new ArrayList();
+        Object[] checked = getResult();
+        for (int i = 0; i < checked.length; i++) {
+            if (checked[i] instanceof IPolicyCmptTypeAttribute) {
+                attributes.add(checked[i]);
+            }
+        }
+        return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
+    }
+
+    private static class CandidatesContentProvider extends SelectSupertypeHierarchyPartsDialog.PartsContentProvider {
+
         CandidatesContentProvider(IPolicyCmptType pcType) {
-        	super(pcType);
+            super(pcType);
         }
 
-		public IIpsObjectPartContainer[] getCandidates(IPolicyCmptType pcType) {
-			try {
-				return pcType.findOverrideAttributeCandidates(pcType.getIpsProject());
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-				return new IIpsObjectPartContainer[0];
-			}
-		}
-	}
+        public IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
+            IPolicyCmptType pcType = (IPolicyCmptType)ipsObject;
+            try {
+                return pcType.findOverrideAttributeCandidates(pcType.getIpsProject());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return new IIpsObjectPart[0];
+            }
+        }
+    }
 }

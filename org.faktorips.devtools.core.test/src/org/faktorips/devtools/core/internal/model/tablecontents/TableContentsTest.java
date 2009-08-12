@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
@@ -28,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -46,7 +46,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IIpsSrcFile pdSrcFile;
     private ITableContents table;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -55,27 +55,29 @@ public class TableContentsTest extends AbstractIpsPluginTest {
     }
 
     /*
-     * Test method for 'org.faktorips.plugin.internal.model.tablecontents.TableContentsImpl.dependsOn()'
+     * Test method for
+     * 'org.faktorips.plugin.internal.model.tablecontents.TableContentsImpl.dependsOn()'
      */
     public void testDependsOn() throws Exception {
-        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IDependency[] dependsOn = table.dependsOn();
         assertEquals(0, dependsOn.length);
-        
+
         table.setTableStructure(structure.getQualifiedName());
         List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
-        assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(), structure.getQualifiedNameType())));
+        assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(
+                table.getQualifiedNameType(), structure.getQualifiedNameType())));
     }
 
     public void testNewColumn() {
-        
+
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
         table.newGeneration();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
-        
+
         pdSrcFile.markAsClean();
         table.newColumn("a");
         assertTrue(pdSrcFile.isDirty());
@@ -84,7 +86,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("a", row12.getValue(0));
         assertEquals("a", row21.getValue(0));
         assertEquals("a", row22.getValue(0));
-        
+
         table.newColumn("b");
         assertEquals(2, table.getNumOfColumns());
         assertEquals("a", row11.getValue(0));
@@ -96,7 +98,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("b", row21.getValue(1));
         assertEquals("b", row22.getValue(1));
     }
-    
+
     public void testDeleteColumn() {
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
@@ -104,11 +106,11 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.newGeneration();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
-        
+
         table.newColumn("a");
         table.newColumn("b");
         table.newColumn("c");
-        
+
         pdSrcFile.markAsClean();
         table.deleteColumn(1);
         assertTrue(pdSrcFile.isDirty());
@@ -121,7 +123,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("c", row12.getValue(1));
         assertEquals("c", row21.getValue(1));
         assertEquals("c", row22.getValue(1));
-        
+
     }
 
     public void testInitFromXml() {
@@ -141,16 +143,16 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         property.setExtendedType(extendedClass);
         ((IpsModel)table.getIpsModel()).addIpsObjectExtensionProperty(property);
     }
-    
+
     public void testInitFromXmlWithExtensionProperties() {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
-        
+
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("XYZ", table.getExtPropertyValue("prop1"));
         assertEquals("ABC", table.getExtPropertyValue("prop2"));
     }
-    
+
     /**
      * Test init via SAX
      */
@@ -167,7 +169,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("0.5", rows[0].getValue(1));
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
-        
+
         generation = (ITableContentsGeneration)generation.getNextByValidDate();
         assertEquals("2008-02-01", DateUtil.dateToIsoDateString(generation.getValidFrom().getTime()));
         rows = generation.getRows();
@@ -176,7 +178,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("0.05", rows[0].getValue(1));
         assertEquals("190", rows[1].getValue(0));
         assertEquals("0.06", rows[1].getValue(1));
-        
+
         assertEquals(2, table.getNumOfGenerations());
 
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
@@ -202,9 +204,11 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         } catch (CoreException e) {
             exception = true;
         }
-        assertTrue("Expected RuntimeException because extension properties inside generations are not supported using SAX", exception);
+        assertTrue(
+                "Expected RuntimeException because extension properties inside generations are not supported using SAX",
+                exception);
     }
-    
+
     /*
      * Class under test for Element toXml(Document)
      */
@@ -216,7 +220,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         IIpsObjectGeneration gen2 = table.newGeneration();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
-        
+
         Element element = table.toXml(this.newDocument());
         table.setDescription("");
         table.setTableStructure("");
@@ -232,36 +236,38 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals(1, gen.getRows().length);
         row = gen.getRows()[0];
         assertEquals("value", row.getValue(0));
-        
+
     }
+
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
         try {
-            table.newPart(IPolicyCmptTypeAttribute.class);
+            table.newPart(PolicyCmptTypeAttribute.class);
             fail();
         } catch (IllegalArgumentException e) {
-            //nothing to do :-)
+            // nothing to do :-)
         }
     }
 
-    public void testValidateRowRangeFromGreaterToValue() throws Exception{
-        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+    public void testValidateRowRangeFromGreaterToValue() throws Exception {
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn fromColumn = structure.newColumn();
         fromColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
         fromColumn.setName("fromColumn");
         IColumn toColumn = structure.newColumn();
         toColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
         toColumn.setName("toColumn");
-        
+
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("fromColumn");
         range.setToColumn("toColumn");
-        
+
         structure.newUniqueKey().addKeyItem(range.getName());
-        
+
         table.setTableStructure(structure.getQualifiedName());
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
         table.newColumn("fromColumn");
@@ -269,20 +275,20 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         IRow newRow = tableGen.newRow();
         newRow.setValue(0, "10");
         newRow.setValue(1, "20");
-        
+
         MessageList msgList = table.validate(project);
         assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
-        
+
         newRow.setValue(0, "21");
         newRow.setValue(1, "20");
-        
+
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
-        
+
     }
-    
-    public void testValidate() throws Exception{
-        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+
+    public void testValidate() throws Exception {
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn column1 = structure.newColumn();
         column1.setDatatype(Datatype.STRING.getQualifiedName());
         column1.setName("first");
@@ -296,38 +302,41 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         IUniqueKey key = structure.newUniqueKey();
         key.addKeyItem("first");
         key.addKeyItem("third");
-        
+
         table.setTableStructure(structure.getQualifiedName());
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
-        
+
         tableGen.newRow();
         MessageList msgList = table.validate(project);
         System.out.println(msgList.toString());
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        
+
         table.deleteColumn(0);
-        //there was an error in the code of the Row validate method that caused an IndexOutOfBoundsException if a column was removed from the tablecontents
-        //but not from the table structure and a UniqueKey was defined which contained an item which index number was equal
-        //or greater than the number of table contents columns.
+        // there was an error in the code of the Row validate method that caused an
+        // IndexOutOfBoundsException if a column was removed from the tablecontents
+        // but not from the table structure and a UniqueKey was defined which contained an item
+        // which index number was equal
+        // or greater than the number of table contents columns.
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
-        
+
         // test validate with missing table structure
         table.setTableStructure("NONE");
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
     }
-    
+
     /**
      * test the findMetaClass method
+     * 
      * @throws CoreException
      */
     public void testFindMetaClass() throws CoreException {
-    	ITableStructure structure = newTableStructure(project, "Structure");
-    	table.setTableStructure(structure.getQualifiedName());
+        ITableStructure structure = newTableStructure(project, "Structure");
+        table.setTableStructure(structure.getQualifiedName());
 
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
         assertEquals(structure.getIpsSrcFile(), typeSrcFile);

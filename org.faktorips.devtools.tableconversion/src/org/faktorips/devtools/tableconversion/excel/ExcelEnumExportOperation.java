@@ -44,6 +44,9 @@ import org.faktorips.util.message.MessageList;
  */
 public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
+    /** The enumeration to export. */
+    private IEnumValueContainer enumValueContainer;
+
     /**
      * 
      * 
@@ -64,29 +67,32 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
                     "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
                             : typeToExport.getClass().toString() + "'");
         }
+        enumValueContainer = (IEnumValueContainer)typeToExport;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-        IEnumValueContainer enumContainer = getEnum(typeToExport);
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumContainer.getEnumValuesCount());
+        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumValueContainer.getEnumValuesCount());
 
         initWorkbookAndSheet();
         monitor.worked(1);
 
-        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
-        exportHeader(sheet, structure.getEnumAttributesIncludeSupertypeCopies(), exportColumnHeaderRow);
+        IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+        boolean includeLiteralName = structure instanceof IEnumType;
+        List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
+        exportHeader(sheet, attributes, exportColumnHeaderRow);
         monitor.worked(1);
         if (monitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
+        exportDataCells(sheet, enumValueContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
         if (monitor.isCanceled()) {
             return;
         }
@@ -100,13 +106,6 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
         monitor.done();
-    }
-
-    private IEnumValueContainer getEnum(IIpsObject typeToExport) {
-        if (typeToExport instanceof IEnumValueContainer) {
-            return (IEnumValueContainer)typeToExport;
-        }
-        return null;
     }
 
     /**
@@ -134,12 +133,12 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {
 
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies();
-
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(true)];
+        List<IEnumAttribute> enumAttributes = structure
+                .getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
+        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(structure
+                .needsToUseEnumLiteralNameAttribute())];
         for (int i = 0; i < datatypes.length; i++) {
-            String datatype = enumAttributes.get(i).getDatatype();
-            datatypes[i] = structure.getIpsProject().findDatatype(datatype);
+            datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }
 
         int offest = exportColumnHeaderRow ? 1 : 0;
@@ -159,9 +158,9 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
     }
 
     private String[] getFieldsForEnumValue(Datatype[] datatypes, IEnumValue value) {
-        int numberOfAttributes = value.getEnumAttributeValuesCount();
-        String[] fieldsToExport = new String[numberOfAttributes];
-        for (int j = 0; j < numberOfAttributes; j++) {
+        int numberOfFields = value.getEnumAttributeValuesCount();
+        String[] fieldsToExport = new String[numberOfFields];
+        for (int j = 0; j < numberOfFields; j++) {
             IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
             String obj = attributeValue.getValue();
             fieldsToExport[j] = obj;

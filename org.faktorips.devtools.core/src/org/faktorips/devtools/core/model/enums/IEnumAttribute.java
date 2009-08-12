@@ -19,22 +19,22 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * An enum attribute is a part of an enum type that describes a property of the enum type.
+ * An <tt>IEnumAttribute</tt> is a part of an <tt>IEnumType</tt> that describes a property of this
+ * <tt>IEnumType</tt>.
  * <p>
- * Enum attributes are always of a specific <code>datatype</code> and can be <code>inherited</code>
- * from an enum type in the supertype hierarchy. If an enum attribute is inherited from the
- * supertype hierarchy it is treated as a copy of the original enum attribute referring to its
- * properties.
+ * <tt>IEnumAttribute</tt>s are always of a specific <code>datatype</code> and can be
+ * <code>inherited</code> from an <tt>IEnumType</tt> in the supertype hierarchy. If an
+ * <tt>IEnumAttribute</tt> is inherited from the supertype hierarchy it is treated as a copy of the
+ * original <tt>IEnumAttribute</tt> referring to its properties.
  * <p>
- * An enum attribute can be marked as <code>useAsLiteralName</code> which implies that the values
- * for this enum attribute will be used to identify the respective enum values in the generated
- * source code. An enum attribute can also be marked as <code>uniqueIdentifier</code> which implies
- * that each value for this enum attribute must be unique.
+ * An <tt>IEnumAttribute</tt> can be marked as <code>unique</code> which implies that each value for
+ * this <tt>IEnumAttribute</tt> must be unique.
  * <p>
- * Furthermore an enum attribute can be marked to be used as name or as ID in the Faktor-IPS UI.
+ * Furthermore an <tt>IEnumAttribute</tt> can be marked to be used as name or as ID in the
+ * Faktor-IPS UI.
  * <p>
- * For more information about how enum attributes relate to the entire Faktor-IPS enums concept
- * please read the documentation of IEnumType.
+ * For more information about how <tt>IEnumAttribute</tt>s relate to the entire Faktor-IPS
+ * enumeration concept please read the documentation of <tt>IEnumType</tt>.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -44,14 +44,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IEnumAttribute extends IIpsObjectPart {
 
-    /** The xml tag for this ips object part. */
+    /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
 
     /** Name of the <code>datatype</code> property. */
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
-
-    /** Name of the <code>literalName</code> property. */
-    public final static String PROPERTY_LITERAL_NAME = "literalName"; //$NON-NLS-1$
 
     /** Name of the <code>inherited</code> property. */
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
@@ -68,78 +65,89 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the name of this enum attribute is missing. */
+    /**
+     * Validation message code to indicate that the name of this <tt>IEnumAttribute</tt> is missing.
+     */
     public final static String MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING = MSGCODE_PREFIX + "EnumAttributeNameMissing"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the name of this enum attribute is already used. */
+    /**
+     * Validation message code to indicate that the name of this <tt>IEnumAttribute</tt> is already
+     * used.
+     */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME = MSGCODE_PREFIX + "EnumAttributeNameMissing"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the datatype of this enum attribute is missing. */
+    /**
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is
+     * missing.
+     */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING = MSGCODE_PREFIX
             + "EnumAttributeDatatypeMissing"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the datatype of this enum attribute does not exist. */
+    /**
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> does
+     * not exist.
+     */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this enum attribute is a primitive
-     * datatype, which is forbidden.
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is a
+     * primitive datatype, which is forbidden.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsPrimitive"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this enum attribute is the void
-     * datatype, which is forbidden.
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is the
+     * void datatype, which is forbidden.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID = MSGCODE_PREFIX + "EnumAttributeDatatypeIsVoid"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this enum attribute is an abstract
-     * datatype, which is forbidden.
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is an
+     * abstract datatype, which is forbidden.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsAbstract"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this enum attribute is the
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is the
      * containing enum type or a subclass of it, which is forbidden.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsContainingEnumTypeOrSubclass"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute is marked as literal name but is
-     * not of datatype String.
+     * Validation message code to indicate that this <tt>IEnumAttribute</tt> is marked as literal
+     * name but is not of datatype String.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
             + "EnumAttributeLiteralNameNotOfDatatypeString"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute is inherited from the supertype
-     * hierarchy but there is no such enum attribute in the supertype hierarchy.
+     * Validation message code to indicate that this <tt>IEnumAttribute</tt> is inherited from the
+     * supertype hierarchy but there is no such <tt>IEnumAttribute</tt> in the supertype hierarchy.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that there is at least one other enum attribute marked as
-     * literal name in the parent enum type.
+     * Validation message code to indicate that there is at least one other <tt>IEnumAttribute</tt>
+     * marked as literal name in the parent <tt>IEnumType</tt>.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME = MSGCODE_PREFIX
             + "EnumAttributeDuplicateLiteralName"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute is marked to be used as literal
-     * name but is not a unique identifier.
+     * Validation message code to indicate that this <tt>IEnumAttribute</tt> is marked to be used as
+     * literal name but is not a unique identifier.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER = MSGCODE_PREFIX
             + "EnumAttributeLiteralNameButNotUniqueIdentifier"; //$NON-NLS-1$;
 
     /**
-     * Validation message code to indicate that there is at least one other enum attribute marked to
-     * be used as name in the Faktor-IPS UI in the parent enum type.
+     * Validation message code to indicate that there is at least one other <tt>IEnumAttribute</tt>
+     * marked to be used as name in the Faktor-IPS UI in the parent <tt>IEnumType</tt>.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
             + "EnumAttributeDuplicateUsedAsNameInFaktorIpsUi"; //$NON-NLS-1$
@@ -152,44 +160,44 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeDuplicateUsedAsIdInFaktorIpsUi"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this enum attribute is an enum type
-     * that does not contain values while the parent enum type does.
+     * Validation message code to indicate that the datatype of this <tt>IEnumAttribute</tt> is an
+     * <tt>IEnumType</tt> that does not contain values while the parent <tt>IEnumType</tt> does.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES = MSGCODE_PREFIX
             + "EnumAttributeEnumDatatypeDoesNotContainValuesButParentEnumTypeDoes"; //$NON-NLS-1$
 
     /**
-     * Sets the name of this enum attribute.
+     * Sets the name of this <tt>IEnumAttribute</tt>.
      * 
-     * @param name The new name for this enum attribute.
+     * @param name The new name for this <tt>IEnumAttribute</tt>.
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
     public void setName(String name);
 
     /**
-     * Returns the qualified name of the datatype of this enum attribute.
+     * Returns the qualified name of the datatype of this <tt>IEnumAttribute</tt>.
      * <p>
      * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * datatype if this enum attribute is inherited. Use <code>findDatatype(IIpsProject)</code> in
-     * this case.
+     * datatype if this <tt>IEnumAttribute</tt> is inherited. Use
+     * <code>findDatatype(IIpsProject)</code> in this case.
      * 
      * @see #findDatatype(IIpsProject)
      */
     public String getDatatype();
 
     /**
-     * Returns this enum attribute's value datatype.
+     * Returns this <tt>IEnumAttribute</tt>'s <tt>ValueDatatype</tt>.
      * <p>
-     * If this enum attribute is inherited the value datatype of the super enum attribute will be
-     * returned.
+     * If this <tt>IEnumAttribute</tt> is inherited the <tt>ValueDatatype</tt> of the super enum
+     * attribute will be returned.
      * <p>
-     * Returns <code>null</code> if no value datatype can be found or if the super enum attribute
-     * could not be found.
+     * Returns <code>null</code> if no <tt>ValueDatatype</tt> can be found or if the super enum
+     * attribute could not be found.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum attribute. This is not necessarily the project this enum attribute is part
-     *            of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this <tt>IEnumAttribute</tt>
+     *            is part of.
      * 
      * @see #getDatatype()
      * 
@@ -207,44 +215,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * @throws NullPointerException If <code>datatype</code> is <code>null</code>.
      */
     public void setDatatype(String datatype);
-
-    /**
-     * Returns <code>true</code> if this enum attribute is used as literal name, <code>false</code>
-     * if not.
-     * <p>
-     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * <code>literalName</code> property if this enum attribute is inherited. Use
-     * <code>findIsLiteralName()</code> in this case.
-     * 
-     * @see #findIsLiteralName()
-     */
-    public boolean isLiteralName();
-
-    /**
-     * Returns <code>true</code> if this enum attribute is used as literal name, <code>false</code>
-     * if not.
-     * <p>
-     * If this enum attribute is inherited the property of the super enum attribute will be
-     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
-     * 
-     * @see #isLiteralName()
-     * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum attribute. This is not necessarily the project this enum attribute is part
-     *            of.
-     * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum attribute.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
-     */
-    public Boolean findIsLiteralName(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Sets whether this enum attribute is used as literal name.
-     * 
-     * @param literalName Flag indicating whether this enum attribute will be used as literal name.
-     */
-    public void setLiteralName(boolean literalName);
 
     /**
      * Returns <code>true</code> if this enum attribute is inherited from the supertype hierarchy,
@@ -275,8 +245,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public IEnumType getEnumType();
 
     /**
-     * Returns <code>true</code> if by means of this attribute a value of this enumeration type
-     * can be identified uniquely.
+     * Returns <code>true</code> if by means of this attribute a value of this enumeration type can
+     * be identified uniquely.
      * <p>
      * <strong>Important:</strong> This method does not search the supertype hierarchy for the
      * <code>unique</code> property. The method <code>findIsUnique()</code> also takes the supertype
@@ -344,11 +314,11 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setIdentifier(boolean usedAsIdInFaktorIpsUi);
 
     /**
-     * Returns true if this attribute is the identifiying attribute of this {@link IEnumType}.
-     * Only one attribute within an {@link IEnumType} can be the identifiying attribute.
+     * Returns true if this attribute is the identifiying attribute of this {@link IEnumType}. Only
+     * one attribute within an {@link IEnumType} can be the identifiying attribute.
      * <p>
-     * <strong>Important:</strong> This method does not search the supertype hierarchy to look
-     * for the this property. Use <code>findIsIdentifier()</code> if necessary.
+     * <strong>Important:</strong> This method does not search the supertype hierarchy to look for
+     * the this property. Use <code>findIsIdentifier()</code> if necessary.
      * 
      * @see #findIsIdentifier(IIpsProject)
      */

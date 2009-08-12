@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -142,6 +143,7 @@ public class Migration2_2_to2_3 {
     @SuppressWarnings("unchecked")
     private static void migrateInitFromXmlMethods(IIpsProject ipsProject, IProgressMonitor monitor)
             throws CoreException {
+
         for (IPackageFragmentRoot root : ipsProject.getJavaProject().getPackageFragmentRoots()) {
             for (IJavaElement javaElement : root.getChildren()) {
                 if (javaElement instanceof IPackageFragment) {
@@ -230,23 +232,20 @@ public class Migration2_2_to2_3 {
             newEnumType.setDescription(currentTableStructure.getDescription());
 
             // Create enum attributes.
-            // 1. key is the id, 2. key is the java literal name.
+            // 1. key is the id, 2. key is the name.
             IUniqueKey[] uniqueKeys = currentTableStructure.getUniqueKeys();
             String id = uniqueKeys[0].getKeyItemAt(0).getName();
-            String literalName = uniqueKeys[1].getKeyItemAt(0).getName();
+            String name = uniqueKeys[1].getKeyItemAt(0).getName();
             for (IColumn currentColumn : currentTableStructure.getColumns()) {
                 IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
                 String currentColumnName = currentColumn.getName();
                 newEnumAttribute.setName(currentColumnName);
                 newEnumAttribute.setDatatype(currentColumn.getDatatype());
-                boolean isLiteralName = literalName.equals(currentColumnName);
-                if (isLiteralName) {
-                    newEnumAttribute.setLiteralName(true);
+                if (name.equals(currentColumnName)) {
                     newEnumAttribute.setUnique(true);
                     newEnumAttribute.setUsedAsNameInFaktorIpsUi(true);
                 }
-                boolean isId = id.equals(currentColumnName);
-                if (isId) {
+                if (id.equals(currentColumnName)) {
                     newEnumAttribute.setUnique(true);
                     newEnumAttribute.setIdentifier(true);
                 }
@@ -284,6 +283,11 @@ public class Migration2_2_to2_3 {
 
             // Inherit the enum attributes.
             newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(ipsProject));
+
+            // Create new literal name attribute.
+            IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
+            IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
+            literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
 
             // Create the enum values.
             for (IRow currentRow : ((ITableContentsGeneration)currentTableContents.getFirstGeneration()).getRows()) {

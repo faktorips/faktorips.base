@@ -28,6 +28,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
@@ -52,13 +53,15 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         initDatatypes();
     }
 
+    @Override
     protected void initDatatypes() {
         try {
-            List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributesIncludeSupertypeCopies();
+            IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
+            boolean includeLiteralName = valueContainer instanceof IEnumType;
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
             datatypes = new Datatype[enumAttributes.size()];
             for (int i = 0; i < datatypes.length; i++) {
-                IEnumAttribute enumAttribute = (IEnumAttribute)enumAttributes.get(i);
+                IEnumAttribute enumAttribute = enumAttributes.get(i);
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
@@ -67,8 +70,9 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
     }
 
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        // TODO AW: monitor is not shown to the user somehow
+        // TODO AW: ProgressMonitor is not shown to the user somehow.
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -113,7 +117,9 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             throws CoreException {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
-        int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject()).getEnumAttributesCount(true);
+        IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
+        int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType
+                .needsToUseEnumLiteralNameAttribute());
         for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {

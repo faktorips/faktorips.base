@@ -18,8 +18,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * An enum attribute value belongs to an enum value. It represents the value for a specific enum
- * attribute of the enum type referenced by the enum value container the enum value is contained in.
+ * An <tt>IEnumAttributeValue</tt> belongs to an <tt>IEnumValue</tt>. It represents the value for a
+ * specific <tt>IEnumAttribute</tt> of the <tt>IEnumType</tt> referenced by the
+ * <tt>IEnumValueContainer</tt> the <tt>IEnumValue</tt> is contained in.
+ * <p>
+ * When searching for the referenced <tt>IEnumAttribute</tt> the assumption is made, that the
+ * attributes in the <tt>IEnumType</tt> are ordered so that normal attributes come first and after
+ * them the <tt>IEnumLiteralNameAttribute</tt>s.
  * 
  * @author Alexander Weickmann
  * 

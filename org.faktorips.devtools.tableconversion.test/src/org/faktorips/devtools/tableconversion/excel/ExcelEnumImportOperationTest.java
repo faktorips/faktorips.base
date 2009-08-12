@@ -71,26 +71,6 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
-    public void testImportValidRowMismatch() throws Exception {
-        IEnumType enumType = createExternalEnumType();
-
-        // too many columns
-        enumType.newEnumAttribute().setName("AddedColumn");
-        enumType.clear();
-
-        MessageList ml = new MessageList();
-        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
-                true);
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-
-        // too less columns
-        ml.clear();
-        enumType.getEnumAttributes().get(0).delete();
-        op.run(new NullProgressMonitor());
-        assertFalse(ml.isEmpty());
-    }
-
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImport(ml, false);
@@ -113,7 +93,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
                 true);
         op.run(new NullProgressMonitor());
-        assertEquals(6, ml.getNoOfMessages());
+        assertEquals(7, ml.getNoOfMessages());
     }
 
     private IEnumType createExternalEnumType() throws Exception, CoreException {

@@ -17,8 +17,8 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -471,8 +471,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     public void testNewPart() {
     	try {
-    		assertTrue(productCmpt.newPart(IConfigElement.class) instanceof IConfigElement);
-    		assertTrue(productCmpt.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
+    		assertTrue(productCmpt.newPart(ConfigElement.class) instanceof IConfigElement);
+    		assertTrue(productCmpt.newPart(PolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
     		
     		productCmpt.newPart(Object.class);
 			fail();

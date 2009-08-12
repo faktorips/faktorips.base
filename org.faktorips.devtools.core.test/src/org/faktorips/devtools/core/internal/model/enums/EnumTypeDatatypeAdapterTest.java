@@ -30,6 +30,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     private EnumTypeDatatypeAdapter genderAdapter;
     private EnumTypeDatatypeAdapter paymentModeAdapter;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         genderAdapter = new EnumTypeDatatypeAdapter(genderEnumType, null);
@@ -39,11 +40,11 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     public void testGetJavaClassName() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
+        enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -57,6 +58,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
         values.get(0).setValue("a");
         values.get(1).setValue("an");
+        values.get(2).setValue("AN");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         assertEquals("org.faktorips.sample.model.EnumType", adapter.getJavaClassName());
     }
@@ -113,27 +115,29 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         IEnumType color = newEnumType(ipsProject, "Color");
         color.setAbstract(false);
         color.setContainingValues(true);
+        color.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = color.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(false);
         id.setName("name");
+
         IEnumValue red = color.newEnumValue();
-        IEnumAttributeValue redN = red.getEnumAttributeValues().get(0);
-        redN.setValue("red");
+        red.getEnumAttributeValues().get(0).setValue("red");
+        red.getEnumAttributeValues().get(1).setValue("RED");
         IEnumValue blue = color.newEnumValue();
-        IEnumAttributeValue blueN = blue.getEnumAttributeValues().get(0);
-        blueN.setValue("blue");
+        blue.getEnumAttributeValues().get(0).setValue("blue");
+        blue.getEnumAttributeValues().get(1).setValue("BLUE");
 
         String[] colorIds = new EnumTypeDatatypeAdapter(color, null).getAllValueIds(false);
-        // is expected to be null because the literal name attribute is not specified for the enum
-        // type
+        /*
+         * Is expected to be null because the identifier attribute is not specified for the
+         * EnumType.
+         */
         assertEquals(0, colorIds.length);
     }
 
     public void testGetAllValueIds2() throws Exception {
-
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
@@ -144,15 +148,16 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, result.length);
     }
 
-    public void testgGetValueName() {
+    public void testGetValueName() {
         assertNotNull(paymentModeAdapter.getValueName("P1"));
         assertNotNull(paymentModeAdapter.getValueName("P2"));
         assertNull(paymentModeAdapter.getValueName("quarterly"));
     }
 
-    public void testgGetValueName2() throws Exception {
+    public void testGetValueName2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(false);
+        enumType.setContainingValues(true);
+        enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         assertNull(adapter.getValueName(null));
         assertNull(adapter.getValueName("a"));
@@ -160,7 +165,6 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -177,9 +181,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         values.get(1).setValue("an");
         adapter = new EnumTypeDatatypeAdapter(enumType, content);
 
-        assertEquals("a", adapter.getValueName("a"));
+        assertEquals("an", adapter.getValueName("a"));
         assertNull(adapter.getValueName("b"));
-
     }
 
     public void testAreValuesEqual() {
@@ -195,10 +198,11 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     public void testCheckReadyToUse() {
         MessageList msgList = paymentModeAdapter.checkReadyToUse();
         assertFalse(msgList.containsErrorMsg());
-        paymentModeAdapter.getEnumType().getEnumAttributes().get(0).delete();
+        paymentModeAdapter.getEnumType().getEnumAttributes(true).get(0).delete();
         msgList = paymentModeAdapter.checkReadyToUse();
-        //TODO pk 07.08.2009: checkReadyToUse is currently returning just an empty message list since
-        //the validation of the unterlying enum type is too inperformant
+        // TODO pk 07.08.2009: checkReadyToUse is currently returning just an empty message list
+        // since
+        // the validation of the unterlying enum type is too inperformant
         assertFalse(msgList.containsErrorMsg());
     }
 
@@ -210,11 +214,11 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     public void testEquals() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
+        enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -228,17 +232,17 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
         values.get(0).setValue("a");
         values.get(1).setValue("an");
+        values.get(2).setValue("AN");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
 
         assertEquals(adapter, adapter);
-        
+
         IEnumType enumType2 = newEnumType(ipsProject, "a.EnumType");
         enumType2.setContainingValues(true);
 
         IEnumAttribute id2 = enumType2.newEnumAttribute();
         id2.setName("id");
         id2.setDatatype(Datatype.STRING.getQualifiedName());
-        id2.setLiteralName(true);
         id2.setUnique(true);
         id2.setIdentifier(true);
 
@@ -248,22 +252,24 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         name2.setUnique(true);
         name2.setUsedAsNameInFaktorIpsUi(true);
 
+        enumType2.newEnumLiteralNameAttribute();
+
         IEnumValue enumValue2 = enumType2.newEnumValue();
         List<IEnumAttributeValue> values2 = enumValue2.getEnumAttributeValues();
         values2.get(0).setValue("a");
         values2.get(1).setValue("an");
+        values2.get(2).setValue("AN");
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType2, null);
         assertFalse(adapter.equals(adapter2));
     }
-    
-    public void testEquals2() throws Exception{
+
+    public void testEquals2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -289,15 +295,14 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
         assertFalse(adapter1.equals(adapter2));
     }
-    
-    public void testHashCode() throws Exception{
+
+    public void testHashCode() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -320,8 +325,9 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         values2.get(0).setValue("a");
         values2.get(1).setValue("an");
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, content2);
-        
+
         assertEquals(adapter1.hashCode(), adapter1.hashCode());
         assertEquals(adapter1.hashCode(), adapter2.hashCode());
     }
+
 }

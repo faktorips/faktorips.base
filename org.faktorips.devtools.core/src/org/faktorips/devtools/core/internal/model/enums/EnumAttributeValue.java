@@ -23,6 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -60,32 +61,15 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
         super(parent, id);
-
         descriptionChangable = false;
         value = null;
-
-        // Initialize the value with the proper default value
-        IIpsProject ipsProject = getIpsProject();
-        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
-        if (referencedEnumAttribute != null) {
-            ValueDatatype datatype = referencedEnumAttribute.findDatatype(ipsProject);
-            if (datatype != null) {
-                value = datatype.getDefaultValue();
-            }
-        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -106,9 +90,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -125,59 +106,45 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
-        IEnumValue enumValue = (IEnumValue)parent;
-
-        // Calculate index
-        int index;
-        List<IEnumAttributeValue> enumAttributeValuesList = enumValue.getEnumAttributeValues();
-        for (index = 0; index < enumAttributeValuesList.size(); index++) {
-            IEnumAttributeValue currentEnumAttributeValue = enumAttributeValuesList.get(index);
-            if (currentEnumAttributeValue == this) {
-                break;
-            }
-        }
-
+        IEnumValue enumValue = getEnumValue();
+        IEnumValueContainer valueContainer = enumValue.getEnumValueContainer();
         IEnumType enumType = valueContainer.findEnumType(ipsProject);
         if (enumType == null) {
             return null;
         }
 
-        if (!(enumType.getEnumAttributesCount(true) == enumValue.getEnumAttributeValuesCount())) {
+        // Check number of EnumAttributeValues matching number of EnumAttributes
+        int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
+        boolean includeLiteralNames = valueContainer instanceof IEnumType;
+        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames);
+        if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount())
+                || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
-        if (enumAttributes.size() < index + 1) {
-            return null;
-        }
-
-        return enumAttributes.get(index);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralNames);
+        return enumAttributes.get(attributeValueIndex);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether this <tt>EnumAttributeValue</tt> refers to an
+     * <tt>EnumLiteralNameAttribute</tt>.
      */
+    private boolean isLiteralNameEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException {
+        return enumAttribute instanceof IEnumLiteralNameAttribute;
+    }
+
     public String getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValue(String value) {
         String oldValue = this.value;
         this.value = value;
@@ -199,9 +166,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         valueChanged(oldValue, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
@@ -236,31 +200,27 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         if (cacheInitialized) {
             if (isUniqueIdentifierEnumAttributeValue()) {
-                validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
+                validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
                 if (list.getNoOfMessages() == 0) {
-                    Boolean literalName = enumAttribute.findIsLiteralName(ipsProject);
-                    if (literalName == null ? false : literalName.booleanValue()) {
-                        validateLiteralNameEnumAttributeValue(list, ipsProject);
+                    if (isLiteralNameEnumAttributeValue(enumAttribute)) {
+                        validateLiteralNameEnumAttributeValue(list, enumAttribute);
                     }
                 }
             }
         }
-
     }
 
     /**
      * Validations necessary if this enum attribute value refers to an enum attribute that is used
      * as literal name.
      */
-    private void validateLiteralNameEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
-        String text;
-        Message validationMessage;
+    private void validateLiteralNameEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
+            throws CoreException {
 
-        // The identifier enum attribute value must be java conform
+        // The identifier enum attribute value must be java conform.
         if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
-            text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, enumAttribute.getName());
-            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
+            String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, enumAttribute.getName());
+            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
                     Message.ERROR, this);
             list.add(validationMessage);
         }
@@ -270,18 +230,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this enum attribute value refers to a unique identifier enum
      * attribute.
      */
-    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject)
+    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
             throws CoreException {
 
-        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         String text;
         Message validationMessage;
 
         // The unique identifier enum attribute value must not be empty.
         String uniqueIdentifierValue = getValue();
-        boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true : uniqueIdentifierValue
-                .equals("")
-                || uniqueIdentifierValue.equals("<null>");
+        boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
+                : uniqueIdentifierValue.length() == 0 || uniqueIdentifierValue.equals("<null>");
         if (uniqueIdentifierValueMissing) {
             text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueEmpty, enumAttribute.getName());
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
@@ -312,9 +270,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 .getIndexOfEnumAttributeValue(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumValue getEnumValue() {
         return (IEnumValue)getParent();
     }

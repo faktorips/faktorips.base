@@ -40,11 +40,12 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
 
     /** The enum type the enum type editor this page belongs to is currently editing. */
-    // package access for EnumTypeStructurePage, EnumTypeValuesPage
     IEnumType enumType;
 
+    /** Attributes section show the enum attributes. */
+    EnumAttributesSection enumAttributesSection;
+
     /** Values section showing the enumType */
-    // package access for EnumTypeStructurePage, EnumTypeValuesPage
     EnumValuesSection enumValuesSection;
 
     /** Action to import enum values into the opened enum type from an external file. */
@@ -53,17 +54,21 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
     /** Action to export the enum values of the opened enum type into an external file. */
     private EnumImportExportActionInEditor exportAction;
 
-    /** to toggle import/export actions on page change */
+    /**
+     * Listener responsible for toggling the import/export actions and to refresh the enum
+     * attributes section on page change.
+     */
     protected ContentsChangeListener changeListener;
 
     public EnumTypeEditorPage(TypeEditor editor, IEnumType type, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
         super(editor, twoSectionsWhenTrueOtherwiseFour, title);
 
-        this.enumType = type;
+        enumType = type;
         changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
                     updateToolbarActionEnabledStates();
+                    enumAttributesSection.refresh();
                 }
             }
         };
@@ -118,6 +123,7 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
                 if (enumValuesSection != null) {

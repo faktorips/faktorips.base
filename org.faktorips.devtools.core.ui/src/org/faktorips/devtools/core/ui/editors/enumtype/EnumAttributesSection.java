@@ -16,11 +16,14 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -54,9 +57,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new EnumAttributesComposite((IEnumType)getIpsObject(), parent, toolkit);
@@ -66,7 +66,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * A composite that shows an enum type's attributes in a viewer and allows to edit these
      * attributes in a dialog, to create new attributes, move attributes and to delete attributes.
      */
-    private class EnumAttributesComposite extends IpsPartsComposite {
+    private class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
         /** The enum type being edited by the editor. */
         private IEnumType enumType;
@@ -85,17 +85,16 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             super(enumType, parent, toolkit);
             ArgumentCheck.notNull(enumType);
             this.enumType = enumType;
+            addSelectionChangedListener(this);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    return enumType.getEnumAttributesIncludeSupertypeCopies().toArray();
+                    boolean includeLiteralName = enumType.needsToUseEnumLiteralNameAttribute();
+                    return enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName).toArray();
                 }
 
                 public void dispose() {
@@ -109,17 +108,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             };
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new EnumAttributeEditDialog((IEnumAttribute)part, shell);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() throws CoreException {
             IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
@@ -128,7 +121,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
              * If this is the first attribute to be created and the values are being defined in the
              * enum type then make sure that there will be one enum value available for editing.
              */
-            if (enumType.getEnumAttributesCount(true) == 1) {
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
                 if (enumType.isContainingValues() && !(enumType.isAbstract())) {
                     if (enumType.getEnumValuesCount() == 0) {
                         enumType.newEnumValue();
@@ -139,29 +132,23 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return newEnumAttribute;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all enum values if there are no more enum attributes.
-            if (enumType.getEnumAttributesCount(true) == 0) {
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.needsToUseEnumLiteralNameAttribute()) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             int newIndex = indexes[0];
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
 
             IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
             try {
@@ -173,9 +160,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return new int[] { newIndex };
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             super.createButtons(buttons, toolkit);
@@ -199,13 +183,28 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
+         * {@inheritDoc}
+         * <p>
+         * Disables the "Delete" - Button if the selected <tt>IIpsObjectPart</tt> is an
+         * <tt>IEnumLiteralNameAttribute</tt>.
+         */
+        public void selectionChanged(SelectionChangedEvent event) {
+            setCanDelete(true);
+            if (getSelectedPart() instanceof IEnumLiteralNameAttribute) {
+                setCanDelete(false);
+            }
+        }
+
+        /**
          * Opens a dialog enabling the user to inherit enum attributes from the supertype hierarchy
          * in a comfortable way.
          */
         // TODO AW: out commented for release 2.3.0.rfinal
-        /*private void inheritClicked() {
-
-        }*/
+        /*
+         * private void inheritClicked() {
+         * 
+         * }
+         */
 
     }
 

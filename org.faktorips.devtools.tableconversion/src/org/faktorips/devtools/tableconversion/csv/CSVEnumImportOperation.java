@@ -54,7 +54,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename, CSVTableFormat format,
             String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList,
             boolean importIntoExisting) {
-        
+
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
         this.format = format;
@@ -68,7 +68,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
             List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributes();
+                    .getEnumAttributes(true);
             datatypes = new Datatype[enumAttributes.size()];
 
             for (int i = 0; i < datatypes.length; i++) {

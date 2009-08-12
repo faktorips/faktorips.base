@@ -38,9 +38,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * Enum values can be defined directly in the <code>IEnumType</code> itself or separate from it as
  * product content (<code>IEnumContent</code>).
  * <p>
- * At least one enum attribute needs to be marked as <code>useAsLiteralName</code> which implies
- * that the values for this enum attribute will be used to identify the respective enum values in
- * the generated source code.
+ * There must exist exactly one enum literal name attribute that will be used to identify the
+ * respective enum values in the generated source code.
  * 
  * @see IEnumContent
  * 
@@ -86,6 +85,13 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Validation message code to indicate that this enum type has no literal name attribute. */
     public final static String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this enum type has multiple
+     * <tt>IEnumLiteralNameAttribute</tt>s.
+     */
+    public final static String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
+            + "EnumTypeMultipleLiteralNameAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists a cycle in the hierarchy of this
@@ -229,8 +235,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @see #getEnumAttributesIncludeSupertypeCopies()
      * @see #findAllEnumAttributesIncludeSupertypeOriginals()
+     * 
+     * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
+     *            will be contained in the returned list.
      */
-    public List<IEnumAttribute> getEnumAttributes();
+    public List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName);
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type
@@ -243,8 +252,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @see #getEnumAttributes()
      * @see #findAllEnumAttributesIncludeSupertypeOriginals()
+     * 
+     * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
+     *            will be contained in the returned list.
      */
-    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies();
+    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type
@@ -255,6 +267,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @see #getEnumAttributes()
      * @see #getEnumAttributesIncludeSupertypeCopies()
      * 
+     * @param includeLiteralName If this flag is <tt>true</tt> all
+     *            <tt>IEnumLiteralNameAttribute</tt>s will be contained in the returned list.
      * @param ipsProject The ips project which ips object path is used for the search of the super
      *            enum types. This is not necessarily the project this enum attribute is part of.
      * 
@@ -262,19 +276,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      *             enum types.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(IIpsProject ipsProject)
-            throws CoreException;
-
-    /**
-     * Returns the enum attribute that has been marked to be used as literal name or
-     * <code>null</code> if no such enum attribute exists in this enum type.
-     * <p>
-     * Enum attributes inherited from the supertype hierarchy <strong>are</strong> included in the
-     * search (as copies of their respective originals).
-     * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy.
-     */
-    public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException;
+    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(boolean includeLiteralName,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Looks up the enumeration attribute for which the isIdentifier property is <code>true</code>
@@ -284,7 +287,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @param ipsProject used for look up in the supertype hierarchy if necessary
      * @throws CoreException if an exception occurs during the look up
      */
-    public IEnumAttribute findIsIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Looks up the enumeration attribute for which the isUsedAsNameInFaktorIpsUi is true.
@@ -295,10 +298,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @throws CoreException If an exception occurs during the look up.
      */
-    public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the index of the given enum attribute in the containing list.
+     * Returns the index of the given <tt>IEnumAttribute</tt>.
      * <p>
      * Be careful: If the given enum attribute is an original from the supertype hierarchy, for
      * which this enum type only stores a copy, the element won't be found and an exception is
@@ -363,26 +366,54 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
             throws CoreException;
 
     /**
-     * <p>
      * Creates a new enum attribute and returns a reference to it.
      * <p>
      * Note that for all enum values <strong>that are defined directly in this enum type</strong>
-     * new <code>EnumAttributeValue</code> objects will be created.
+     * new <code>EnumAttributeValue</code> objects will be created (these will also be moved to
+     * their right position).
      * <p>
      * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
-     * 
-     * @return A reference to the newly created enum attribute.
      * 
      * @throws CoreException If an error occurs while creating the new enum attribute.
      */
     public IEnumAttribute newEnumAttribute() throws CoreException;
 
     /**
-     * Returns how many enum attributes are currently part of this enum type.
+     * Creates a new <tt>IEnumLiteralNameAttribute</tt> and returns a reference to it. The attribute
+     * will already have a default name and be of datatype <tt>String</tt>.
+     * <p>
+     * Note that for all enum values <strong>that are defined directly in this enum type</strong>
+     * new <code>EnumAttributeValue</code> objects will be created.
+     * <p>
+     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
-     * @param includeInherited Flag indicating whether to count inherited enum attributes.
+     * @throws CoreException If an error occurs while creating the new enum attribute.
      */
-    public int getEnumAttributesCount(boolean includeInherited);
+    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException;
+
+    /**
+     * Returns how many enum attributes are currently part of this enum type.
+     * <p>
+     * This operation does <strong>not</strong> inherited enum attributes.
+     * 
+     * @see #getEnumAttributesCountIncludeSupertypeCopies(boolean)
+     * 
+     * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
+     *            will be counted, too.
+     */
+    public int getEnumAttributesCount(boolean includeLiteralName);
+
+    /**
+     * Returns how many enum attributes are currently part of this enum type.
+     * <p>
+     * this operation <strong>does</tt> count inherited enum attributes.
+     * 
+     * @see #getEnumAttributesCount(boolean)
+     * 
+     * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
+     *            will be counted, too.
+     */
+    public int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
      * Moves the given enum attribute one position up or down in the containing list and returns its
@@ -405,15 +436,6 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @throws NoSuchElementException If the given enum attribute is not a part of this enum type.
      */
     public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException;
-
-    /**
-     * Checks whether an enum attribute with the given name exists.
-     * 
-     * @param name The name of the enum attribute that will be checked for existence.
-     * 
-     * @throws NullPointerException If <code>name</code> is <code>null</code>.
-     */
-    public boolean enumAttributeExists(String name);
 
     /**
      * Deletes the given enum attribute and all the <code>EnumAttributeValue</code> objects
@@ -473,12 +495,16 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns a list containing all enum attributes that are unique. Attributes inherited from the
      * supertype hierarchy are also scanned (only their copies will be returned however).
      * 
+     * @param includeLiteralName If this flag is <tt>true</tt> the
+     *            <tt>IEnumLiteralNameAttribute</tt>s of this <tt>IEnumType</tt> will be contained
+     *            in the returned list (<em>those of the super enum types not</em>).
      * @param ipsProject The ips project which ips object path is used for the search.
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public List<IEnumAttribute> findUniqueEnumAttributes(IIpsProject ipsProject) throws CoreException;
+    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
+            throws CoreException;
 
     /**
      * Creates and returns new enum attributes in this enum type inheriting the given enum
@@ -507,5 +533,47 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @throws NullPointerException If <code>ipsProject<code> is <code>null</code>.
      */
     public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns whether an enum attribute with the given name exists in this enum type.
+     * <p>
+     * The check does <strong>not</strong> include the copies from the supertype hierarchy.
+     * 
+     * @see #containsEnumAttributeIncludeSupertypeCopies(String)
+     * 
+     * @param attributeName The name of the enum attribute to check for existence in this enum type.
+     */
+    public boolean containsEnumAttribute(String attributeName);
+
+    /**
+     * Returns whether an enum attribute with the given name exists in this enum type.
+     * <p>
+     * The check <strong>does</strong> include the copies from the supertype hierarchy.
+     * 
+     * @see #containsEnumAttribute(String)
+     * 
+     * @param attributeName The name of the enum attribute to check for existence in this enum type.
+     */
+    public boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName);
+
+    /**
+     * Returns the first <tt>IEnumLiteralNameAttribute</tt> of this <tt>IEnumType</tt> or
+     * <tt>null</tt> if none exists.
+     */
+    public IEnumLiteralNameAttribute getEnumLiteralNameAttribute();
+
+    /** Returns <tt>true</tt> if this enum type currently has an enum literal name attribute. */
+    public boolean containsEnumLiteralNameAttribute();
+
+    /**
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> currently needs to use an
+     * <tt>IEnumLiteralNameAttribute</tt>.
+     * <p>
+     * This is the case if the <tt>IEnumType</tt> is not abstract and does contain values.
+     */
+    public boolean needsToUseEnumLiteralNameAttribute();
+
+    /** Returns the number of <tt>IEnumLiteralNameAttribute</tt>s this <tt>IEnumType</tt> contains. */
+    public int getEnumLiteralNameAttributesCount();
 
 }

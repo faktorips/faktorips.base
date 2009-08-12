@@ -46,44 +46,38 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     private String xmlTag;
     private Class<? extends IpsObjectPart> partsBaseClass;
     private Class<? extends IIpsObjectPart> partsPublishedInterface;
-    private Constructor<IpsObjectPart> constructor;
 
     private List<T> parts = new ArrayList<T>();
 
-    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends IpsObjectPart> partsClazz, Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
+    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends IpsObjectPart> partsClazz,
+            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
         ipsObject.addPartCollection(this);
     }
 
-    public IpsObjectPartCollection(
-            BaseIpsObjectPart ipsObjectPart, 
-            Class<? extends IpsObjectPart> partsClazz, 
-            Class<? extends IIpsObjectPart> publishedInterface,
-            String xmlTag) {
+    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class<? extends IpsObjectPart> partsClazz,
+            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
         this.parent = ipsObjectPart;
         ipsObjectPart.addPartCollection(this);
     }
 
-    private IpsObjectPartCollection(
-            Class<? extends IpsObjectPart> partsClazz, 
-            Class<? extends IIpsObjectPart> publishedInterface, 
-            String xmlTag) {
+    private IpsObjectPartCollection(Class<? extends IpsObjectPart> partsClazz,
+            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);
         this.partsBaseClass = partsClazz;
         this.partsPublishedInterface = publishedInterface;
         this.xmlTag = xmlTag;
-        constructor = getConstructor();
     }
 
     @SuppressWarnings("unchecked")
-    private Constructor<IpsObjectPart> getConstructor() {
-        Constructor<IpsObjectPart>[] constructors = partsBaseClass.getConstructors();
+    private Constructor<IpsObjectPart> getConstructor(Class<? extends IpsObjectPart> clazz) {
+        Constructor<IpsObjectPart>[] constructors = clazz.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
             if (params.length != 2) {
@@ -108,11 +102,11 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     public int size() {
         return parts.size();
     }
-    
+
     public int indexOf(T part) {
         return parts.indexOf(part);
     }
-    
+
     public boolean contains(T part) {
         return parts.contains(part);
     }
@@ -167,7 +161,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * no part with the given id exists.
      */
     public T getPartById(int id) {
-        for (T part: parts) {
+        for (T part : parts) {
             if (id == part.getId()) {
                 return part;
             }
@@ -186,28 +180,40 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * @return the new IpsPart
      */
     protected T newPart(IpsObjectPartInitializer<T> initializer) {
-        T part = newPartInternal(parent.getNextPartId());
+        T part = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
         initializer.initialize(part);
         parent.partWasAdded(part);
         return part;
     }
 
     public T newPart() {
-        T newPart = newPartInternal(parent.getNextPartId());
+        T newPart = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
         parent.partWasAdded(newPart);
         return newPart;
     }
 
     public T newPart(Element el, int id) {
         if (xmlTag.equals(el.getNodeName())) {
-            return newPartInternal(id);
+            return newPartInternal(id, getConstructor(partsBaseClass));
         }
         return null;
     }
 
+    /**
+     * Creates and returns a new part. The concrete type of the new part depends on the given class.
+     * <p>
+     * The given class must be a subclass of the class this <tt>IpsObjectPartCollection</tt> is
+     * based upon. If that is not the case, <tt>null</tt> will be returned.
+     * <p>
+     * This operation can be used if you want to create an <tt>IpsObjectPartCollection</tt> of a
+     * certain type and you also want to store subclasses of that type in the collection.
+     * 
+     * @param clazz
+     */
     public T newPart(Class<IpsObjectPart> clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
-            return newPart();
+            T newPart = newPartInternal(parent.getNextPartId(), getConstructor(clazz));
+            return newPart;
         }
         return null;
     }
@@ -233,7 +239,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * of the concrete subclass of IpsObjectPart.
      */
     @SuppressWarnings("unchecked")
-    private T newPartInternal(int id) {
+    private T newPartInternal(int id, Constructor<IpsObjectPart> constructor) {
         try {
             T newPart = (T)constructor.newInstance(new Object[] { parent, new Integer(id) });
             parts.add(newPart);

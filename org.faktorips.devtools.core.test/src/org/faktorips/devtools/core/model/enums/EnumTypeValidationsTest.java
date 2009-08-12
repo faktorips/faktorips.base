@@ -36,7 +36,6 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         IEnumAttribute id = abstractEnum.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setName("id");
 
@@ -48,7 +47,6 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         IEnumAttribute shortText = abstractSubEnum.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(false);
-        shortText.setLiteralName(false);
         shortText.setUnique(false);
         shortText.setName("shortText");
 
@@ -57,18 +55,17 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
         paymentMode.setEnumContentName("enumcontents");
+        paymentMode.newEnumLiteralNameAttribute();
 
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(true);
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setName("id");
 
         shortText = paymentMode.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(true);
-        shortText.setLiteralName(false);
         shortText.setUnique(false);
         shortText.setName("shortText");
 
@@ -83,7 +80,6 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         value2id.setValue("annually");
         IEnumAttributeValue value2Text = value2.getEnumAttributeValues().get(1);
         value2Text.setValue("Annual Payment");
-
     }
 
     public void testValidateSuperTypeHierarchyValidHierarchy() throws Exception {

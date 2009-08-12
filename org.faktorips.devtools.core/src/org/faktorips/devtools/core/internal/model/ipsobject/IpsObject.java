@@ -131,10 +131,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
-    /*
-     * TODO AW: Seems not to be consistent with the JavaDoc, causes bug FS #1513 together with
-     * IpsProblemLabelDecorator computeAdornmentFlags().
-     */
+    // TODO AW: Seems not to be consistent with the JavaDoc?
     public IResource getCorrespondingResource() {
         return null;
     }

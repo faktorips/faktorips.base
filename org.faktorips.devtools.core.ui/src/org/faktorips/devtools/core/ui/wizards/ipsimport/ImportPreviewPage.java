@@ -203,7 +203,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
                 columns[i].setText(((ITableStructure)structure).getColumn(i - 1).getName());
             } else if (structure instanceof IEnumType) {
                 IEnumType type = (IEnumType)structure;
-                String attributeName = type.getEnumAttributes().get(i - 1).getName();
+                String attributeName = type.getEnumAttributes(true).get(i - 1).getName();
                 columns[i].setText(attributeName);
             }
         }

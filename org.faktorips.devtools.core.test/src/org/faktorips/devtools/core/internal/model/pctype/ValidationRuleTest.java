@@ -245,7 +245,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			rule.newPart(IPolicyCmptTypeAttribute.class);
+			rule.newPart(PolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

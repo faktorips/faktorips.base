@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -28,10 +29,13 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 
 /**
- * Base test for all enum tests providing a simple enum model with a gender enum.
+ * Base test for all enumeration tests providing a simple enumeration model with a gender
+ * enumeration and a payment mode enumeration.
  * <p>
- * There is a gender enum type, the values are stored separated from the enum type in a gender enum
- * content object.
+ * There is a gender <tt>IEnumType</tt>, the values are stored separated from the <tt>IEnumType</tt>
+ * in a gender <tt>IEnumContent</tt>.
+ * <p>
+ * The payment mode <tt>IEnumType</tt> stores its values directly
  * <p>
  * Utility methods and helpful string constants are provided.
  * 
@@ -67,12 +71,9 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-
         ipsProject = newIpsProject("EnumTestProject");
-
         createGenderEnum();
         initGenderEnumValues();
-
         createPaymentModeEnum();
     }
 
@@ -80,11 +81,12 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
+        IEnumLiteralNameAttribute literalNameAttribute = paymentMode.newEnumLiteralNameAttribute();
+        literalNameAttribute.setDefaultValueProviderAttribute("name");
 
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setName("id");
         id.setIdentifier(true);
@@ -93,16 +95,15 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         name.setUsedAsNameInFaktorIpsUi(true);
         name.setUnique(true);
         name.setDatatype(Datatype.STRING.getQualifiedName());
+
         IEnumValue value1 = paymentMode.newEnumValue();
-        IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
-        value1id.setValue("P1");
-        IEnumAttributeValue value1Name = value1.getEnumAttributeValues().get(1);
-        value1Name.setValue("monthly");
+        value1.setEnumAttributeValue(0, "MONTHLY");
+        value1.setEnumAttributeValue(1, "P1");
+        value1.setEnumAttributeValue(2, "monthly");
         IEnumValue value2 = paymentMode.newEnumValue();
-        IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
-        value2id.setValue("P2");
-        IEnumAttributeValue value2Name = value2.getEnumAttributeValues().get(1);
-        value2Name.setValue("annually");
+        value2.setEnumAttributeValue(0, "ANNUALLY");
+        value2.setEnumAttributeValue(1, "P2");
+        value2.setEnumAttributeValue(2, "annually");
     }
 
     private void createGenderEnum() throws CoreException {
@@ -115,7 +116,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
-        genderEnumAttributeId.setLiteralName(true);
         genderEnumAttributeId.setUnique(true);
         genderEnumAttributeId.setIdentifier(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();

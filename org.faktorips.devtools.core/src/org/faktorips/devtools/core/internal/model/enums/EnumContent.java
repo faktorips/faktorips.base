@@ -64,24 +64,19 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public EnumContent(IIpsSrcFile file) {
         super(file);
 
-        this.enumType = null;
-        this.enumAttributesCount = 0;
+        enumType = null;
+        enumAttributesCount = 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_CONTENT;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         IIpsSrcFile[] enumTypeSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+
         for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
             if (currentIpsSrcFile.getIpsObject().getQualifiedName().equals(enumType)) {
                 return (IEnumType)currentIpsSrcFile.getIpsObject();
@@ -91,9 +86,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setEnumType(String enumType) throws CoreException {
         ArgumentCheck.notNull(enumType);
 
@@ -103,46 +95,42 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         IEnumType newEnumType = findEnumType(getIpsProject());
         if (newEnumType != null) {
-            setEnumAttributesCount(newEnumType.getEnumAttributesCount(true));
+            setEnumAttributesCount(newEnumType.getEnumAttributesCountIncludeSupertypeCopies(false));
         }
     }
 
-    /** Sets the enum attributes count. */
+    /**
+     * Sets the number of <tt>EnumAttribute</tt>s that must be referred by
+     * <tt>EnumAttributeValue</tt>s by this <tt>EnumContent</tt>.
+     */
     private void setEnumAttributesCount(int enumAttributesCount) {
         int oldEnumAttributesCount = this.enumAttributesCount;
         this.enumAttributesCount = enumAttributesCount;
         valueChanged(oldEnumAttributesCount, enumAttributesCount);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean initUniqueIdentifierValidationCacheImpl() throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         IEnumType referencedEnumType = findEnumType(ipsProject);
 
         /*
-         * If we can't find the base enum type we can't init the validation cache. This is no
-         * problem however, because unique identifiers are not validated as long as the base enum
-         * type cannot be found.
+         * If we can't find the base EnumType we can't initialize the validation cache. This is no
+         * problem however, because unique identifiers are not validated as long as the base
+         * EnumType cannot be found.
          */
         if (referencedEnumType == null) {
             return false;
         }
 
-        List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(ipsProject);
+        List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(false, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            addUniqueIdentifierToValidationCache(referencedEnumType
-                    .getIndexOfEnumAttribute(currentUniqueAttribute));
+            addUniqueIdentifierToValidationCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute));
         }
         initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes);
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initFromXml(Element element, Integer id) {
         enumType = element.getAttribute(PROPERTY_ENUM_TYPE);
@@ -151,9 +139,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.initFromXml(element, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -162,16 +147,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         element.setAttribute(PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT, String.valueOf(enumAttributesCount));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getEnumType() {
         return enumType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -197,7 +176,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             return;
         }
 
-        if (enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
+        if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != enumContent
+                .getReferencedEnumAttributesCount()) {
             String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
                     .getQualifiedName());
             Message validationMessage = new Message(
@@ -208,9 +188,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDependency[] dependsOn() throws CoreException {
         IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
@@ -218,38 +195,23 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return new IDependency[] { enumTypeDependency };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getReferencedEnumAttributesCount() {
         return enumAttributesCount;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         // TODO AW: Auto-generated method stub
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         // TODO AW: Auto-generated method stub
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getMetaClass() {
         return getEnumType();
     }

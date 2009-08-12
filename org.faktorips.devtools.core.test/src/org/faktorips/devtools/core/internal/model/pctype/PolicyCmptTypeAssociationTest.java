@@ -365,7 +365,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			association.newPart(IPolicyCmptTypeAttribute.class);
+			association.newPart(PolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

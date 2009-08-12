@@ -33,6 +33,7 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 	IPolicyCmptTypeAttribute attribute;
 	IPolicyCmptType pcType;
 	
+	@Override
     protected void setUp() throws Exception {
         super.setUp();
 

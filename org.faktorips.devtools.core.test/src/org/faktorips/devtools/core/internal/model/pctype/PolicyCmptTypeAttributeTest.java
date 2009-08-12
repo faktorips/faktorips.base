@@ -300,7 +300,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			attribute.newPart(IPolicyCmptTypeAttribute.class);
+			attribute.newPart(PolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

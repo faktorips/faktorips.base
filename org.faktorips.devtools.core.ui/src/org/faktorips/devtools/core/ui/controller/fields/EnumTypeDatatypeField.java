@@ -62,10 +62,9 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
         return (EnumTypeDatatypeAdapter)getDatatype();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getDisplayTextForValue(String id) {
         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
     }
+    
 }

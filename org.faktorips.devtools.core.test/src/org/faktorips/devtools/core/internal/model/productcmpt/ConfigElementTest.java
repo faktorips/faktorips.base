@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -148,14 +149,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
-    public void testValidateParsableEnumTypeDatatype() throws Exception{
+    public void testValidateParsableEnumTypeDatatype() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
+        enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setLiteralName(true);
         id.setUnique(true);
         id.setIdentifier(true);
 
@@ -167,8 +168,9 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
+        values.get(0).setValue("AN");
+        values.get(1).setValue("a");
+        values.get(2).setValue("an");
 
         IConfigElement ce = generation.newConfigElement();
         ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
@@ -189,7 +191,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         ml = ce.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
-    
+
     public void testValidate_InvalidValueset() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
@@ -423,7 +425,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
         try {
-            configElement.newPart(IPolicyCmptTypeAttribute.class);
+            configElement.newPart(PolicyCmptTypeAttribute.class);
             fail();
         } catch (IllegalArgumentException e) {
             // nothing to do :-)

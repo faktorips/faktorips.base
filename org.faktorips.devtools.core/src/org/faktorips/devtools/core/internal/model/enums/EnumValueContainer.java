@@ -76,9 +76,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         uniqueIdentifierValidationCache = new HashMap<Integer, Map<String, List<IEnumAttributeValue>>>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IEnumValue> getEnumValues() {
         List<IEnumValue> valuesList = new ArrayList<IEnumValue>();
         IIpsObjectPart[] parts = enumValues.getParts();
@@ -88,14 +85,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return valuesList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject) {
         try {
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
             IEnumType enumType = findEnumType(ipsProject);
-            IEnumAttribute isIdentifierEnumAttribute = enumType.findIsIdentiferAttribute(ipsProject);
+            IEnumAttribute isIdentifierEnumAttribute = enumType.findIdentiferAttribute(ipsProject);
             if (isIdentifierEnumAttribute != null) {
                 for (IEnumValue enumValue : getEnumValues()) {
                     IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, isIdentifierEnumAttribute);
@@ -112,15 +106,13 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
         if (identifierAttributeValue == null) {
             return null;
         }
+
         IEnumType enumType = findEnumType(ipsProject);
-        IEnumAttribute identifierAttribute = enumType.findIsIdentiferAttribute(ipsProject);
+        IEnumAttribute identifierAttribute = enumType.findIdentiferAttribute(ipsProject);
         for (IEnumValue enumValue : getEnumValues()) {
             IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, identifierAttribute);
             if (value == null) {
@@ -130,12 +122,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                 return enumValue;
             }
         }
+
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumValue newEnumValue() throws CoreException {
         IEnumType enumType = findEnumType(getIpsProject());
 
@@ -148,13 +138,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enumeration value.
-        IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
+        IEnumValue newEnumValue = (IEnumValue)newPart(EnumValue.class);
 
-        // Add as many enumeration attribute values as there are enumeration attributes in the
-        // enumeration type.
-        for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
+        /*
+         * Add as many enumeration attribute values as there are enumeration attributes in the
+         * enumeration type.
+         */
+        boolean includeLiteralNames = this instanceof IEnumType;
+        for (int i = 0; i < enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames); i++) {
             newEnumValue.newEnumAttributeValue();
         }
+
         // TODO pk 16-06-2009 activate when bug #1439 is fixed
         // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
@@ -162,16 +156,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return newEnumValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getEnumValuesCount() {
         return enumValues.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
         ArgumentCheck.notNull(enumValue);
 
@@ -182,9 +170,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return enumValues.moveParts(new int[] { index }, up)[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getIndexOfEnumValue(IEnumValue enumValue) {
         ArgumentCheck.notNull(enumValue);
 
@@ -195,10 +180,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         throw new NoSuchElementException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void clear() {
+        clearUniqueIdentifierValidationCache();
         enumValues.clear();
         objectHasChanged();
     }
@@ -238,15 +221,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     void handleEnumAttributeDeletion(int enumAttributeIndex) {
         // All keys that are a higher number then the index must be decremented by 1.
         List<Map<String, List<IEnumAttributeValue>>> movingMaps = new LinkedList<Map<String, List<IEnumAttributeValue>>>();
+        List<Integer> movingKeys = new LinkedList<Integer>();
         Integer[] keyArray = getCachedUniqueIdentifierKeys();
         for (Integer key : keyArray) {
             int keyValue = key.intValue();
             if (keyValue > enumAttributeIndex) {
                 movingMaps.add(uniqueIdentifierValidationCache.get(new Integer(keyValue)));
+                movingKeys.add(new Integer(keyValue));
             }
         }
         for (int i = 0; i < movingMaps.size(); i++) {
-            int newKeyValue = keyArray[i] - 1;
+            int newKeyValue = movingKeys.get(i) - 1;
             uniqueIdentifierValidationCache.put(new Integer(newKeyValue), movingMaps.get(i));
         }
     }
@@ -346,13 +331,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      */
     abstract boolean initUniqueIdentifierValidationCacheImpl() throws CoreException;
 
-    /**
-     * Initializes the unique identifier entries.
-     * 
-     * @param uniqueEnumAttributes The unique enum attributes of the referenced enum type.
-     * 
-     * @throws CoreException If an error occurs when searching for the unique enum attribute values.
-     */
+    /** Initializes the unique identifier entries. */
     void initValidationCacheUniqueIdentifierEntries(List<IEnumAttribute> uniqueEnumAttributes) throws CoreException {
         ArgumentCheck.notNull(uniqueEnumAttributes);
         for (IEnumValue currentEnumValue : getEnumValues()) {
@@ -426,17 +405,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return keys.toArray(new Integer[keys.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void clearUniqueIdentifierValidationCache() {
         uniqueIdentifierValidationCache.clear();
         uniqueIdentifierValidationCacheInitialized = false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element) {
         super.initFromXml(element);

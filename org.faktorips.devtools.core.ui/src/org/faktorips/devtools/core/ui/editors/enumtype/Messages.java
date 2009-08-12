@@ -48,6 +48,7 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelIdentifier;
     public static String EnumAttributeEditDialog_labelDisplayName;
     public static String EnumAttributeEditDialog_labelIsInherited;
+    public static String EnumAttributeEditDialog_labelDefaultValueProviderAttribute;
 
     static {
         // initialize resource bundle

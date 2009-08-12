@@ -256,7 +256,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     private Datatype[] getDatatypes(IEnumType structure) throws CoreException {
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes(true);
         Datatype[] datatypes = new Datatype[enumAttributes.size()];
         for (int i = 0; i < datatypes.length; i++) {
             IEnumAttribute enumAttribute = enumAttributes.get(i);
@@ -264,4 +264,5 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
         return datatypes;
     }
+
 }

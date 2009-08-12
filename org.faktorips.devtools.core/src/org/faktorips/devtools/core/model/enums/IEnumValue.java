@@ -66,8 +66,8 @@ public interface IEnumValue extends IIpsObjectPart {
      * Searches and returns the enum attribute value that refers to the given enum attribute of the
      * enum type this enum value refers to.
      * <p>
-     * Returns <tt>null</tt> if none can be found, if the referenced enum type can't be found or if
-     * the provided enum attribute is <tt>null</tt>.
+     * Returns <tt>null</tt> if none can be found, if the given enum attribute does not exist in the
+     * referenced enum type or if the provided enum attribute is <tt>null</tt>.
      * 
      * @param ipsProject The ips project which ips object path is used for the search of the
      *            referenced enum type. This is not necessarily the project this enum attribute is
@@ -76,8 +76,6 @@ public interface IEnumValue extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs while searching the given ips project for the
      *             referenced enum type.
-     * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
-     *             referenced by this enum value.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
@@ -105,6 +103,11 @@ public interface IEnumValue extends IIpsObjectPart {
     /**
      * Sets the value of the <tt>IEnumAttributeValue</tt> that refers to the given
      * <tt>IEnumAttribute</tt>.
+     * <p>
+     * This version of <tt>setEnumAttributeValue</tt> offers best performance.
+     * 
+     * @see #setEnumAttributeValue(String, String)
+     * @see #setEnumAttributeValue(int, String)
      * 
      * @param enumAttribute The enum attribute for that the value shall be set.
      * @param value The new value. May also be <tt>null</tt>.
@@ -122,6 +125,9 @@ public interface IEnumValue extends IIpsObjectPart {
      * @param enumAttributeName The name of the enum attribute for that the value shall be set.
      * @param value The new value. May also be <tt>null</tt>.
      * 
+     * @see #setEnumAttributeValue(IEnumAttribute, String)
+     * @see #setEnumAttributeValue(int, String)
+     * 
      * @throws CoreException If an error occurs while searching for the enum attribute identified by
      *             the given name or while searching for the <tt>IEnumAttributeValue</tt> that
      *             refers to this enum attribute.
@@ -133,13 +139,20 @@ public interface IEnumValue extends IIpsObjectPart {
 
     /**
      * Sets the value of the <tt>IEnumAttributeValue</tt> identified by the given index.
+     * <p>
+     * <strong>Attention:</strong> Use this operation only if you must because the ordering of the
+     * <tt>IEnumAttributeValue</tt>s changes often.
      * 
-     * @param enumAttributeIndex The index of the enum attribute value which value shall be set.
+     * @see #setEnumAttributeValue(IEnumAttribute, String)
+     * @see #setEnumAttributeValue(String, String)
+     * 
+     * @param enumAttributeValueIndex The index of the enum attribute value which value shall be
+     *            set.
      * @param value The new value. May also be <tt>null</tt>.
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public void setEnumAttributeValue(int enumAttributeIndex, String value);
+    public void setEnumAttributeValue(int enumAttributeValueIndex, String value);
 
     /**
      * Returns a list containing all <tt>IEnumAttributeValue</tt>s that refer to the given unique
@@ -148,14 +161,15 @@ public interface IEnumValue extends IIpsObjectPart {
      * Returns an empty list if none could be found (either none exist or it was not possible to
      * find the referenced enum type). Never returns <tt>null</tt>.
      * 
+     * @param uniqueEnumAttributes A list containing all <tt>IEnumAttribute</tt>s for which the
+     *            <tt>IEnumAttributeValue</tt>s shall be returned.
      * @param ipsProject The ips project which ips object path is used for the search of the
      *            referenced enum type. This is not necessarily the project this enum attribute is
      *            part of.
      * 
      * @throws CoreException If an error occurs while searching for the referenced
      *             <tt>IEnumType</tt>.
-     * @throws NullPointerException If <tt>uniqueEnumAttributes</tt> or <tt>ipsProject</tt> is
-     *             <tt>null</tt>.
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
     public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
             IIpsProject ipsProject) throws CoreException;

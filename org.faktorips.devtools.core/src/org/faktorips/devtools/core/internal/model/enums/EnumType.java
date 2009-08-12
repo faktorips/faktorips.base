@@ -21,11 +21,13 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -51,89 +53,70 @@ import org.w3c.dom.Element;
  */
 public class EnumType extends EnumValueContainer implements IEnumType {
 
-    /** Qualified name of the super enum type if any. */
+    /** Qualified name of the super <tt>IEnumType</tt> if any. */
     private String superEnumType;
 
-    /** Flag indicating whether the values for this enum type are defined in the model. */
+    /** Flag indicating whether the values for this <tt>IEnumType</tt> are defined in the model. */
     private boolean containingValues;
 
-    /** Qualified name of the package fragment a referencing enum content must be stored in. */
+    /**
+     * Qualified name of the package fragment a referencing <tt>IEnumContent</tt> must be stored in.
+     */
     private String enumContentPackageFragment;
 
-    /** Collection containing all enum attributes for this enum type. */
+    /** Collection containing all <tt>IEnumAttribute</tt>s for this <tt>IEnumType</tt>. */
     private IpsObjectPartCollection<IEnumAttribute> enumAttributes;
 
     /**
-     * Flag indicating whether this enum type is abstract in means of the object oriented abstract
-     * concept.
+     * Flag indicating whether this <tt>IEnumType</tt> is abstract in means of the object oriented
+     * abstract concept.
      */
     private boolean isAbstract;
 
     /**
      * Creates a new <code>EnumType</code>.
      * 
-     * @param file The ips source file in which this enum type will be stored in.
+     * @param file The IPS source file in which this <tt>IEnumType</tt> will be stored in.
      */
     public EnumType(IIpsSrcFile file) {
         super(file);
 
-        this.superEnumType = "";
-        this.containingValues = false;
-        this.isAbstract = false;
-        this.enumContentPackageFragment = "";
-        this.enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class,
-                IEnumAttribute.class, IEnumAttribute.XML_TAG);
+        superEnumType = "";
+        containingValues = false;
+        isAbstract = false;
+        enumContentPackageFragment = "";
+        enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
+                IEnumAttribute.XML_TAG);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_TYPE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return isAbstract;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setAbstract(boolean isAbstract) {
         boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
         valueChanged(oldIsAbstract, isAbstract);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isContainingValues() {
         return containingValues;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setContainingValues(boolean containingValues) {
         boolean oldContainingValues = this.containingValues;
         this.containingValues = containingValues;
         valueChanged(oldContainingValues, containingValues);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getSuperEnumType() {
         return superEnumType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setSuperEnumType(String superEnumTypeQualifiedName) {
         ArgumentCheck.notNull(superEnumTypeQualifiedName);
 
@@ -142,9 +125,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         valueChanged(oldSupertype, superEnumType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (superEnumTypeCandidate == null) {
             return false;
@@ -161,130 +141,121 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return visitor.isSubtype();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
-        if (this.equals(superEnumTypeCandidate)) {
+        if (equals(superEnumTypeCandidate)) {
             return true;
         }
         return isSubEnumTypeOf(superEnumTypeCandidate, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<IEnumAttribute> getEnumAttributes() {
-        return getEnumAttributes(false);
+    public List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName) {
+        return getEnumAttributesInternal(false, includeLiteralName);
+    }
+
+    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName) {
+        return getEnumAttributesInternal(true, includeLiteralName);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * . It can be specified whether to include copied inherited attributes or not and whether to
+     * include literal name attributes or not.
      */
-    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies() {
-        return getEnumAttributes(true);
-    }
+    private List<IEnumAttribute> getEnumAttributesInternal(boolean includeInheritedCopies,
+            boolean includeLiteralNameAttributes) {
 
-    /**
-     * Returns a list containing all enum attributes that belong to this enum type. It can be
-     * specified whether to include copied inherited attributes or not.
-     */
-    private List<IEnumAttribute> getEnumAttributes(boolean includeInheritedCopies) {
         List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
         IIpsObjectPart[] parts = enumAttributes.getParts();
         for (IIpsObjectPart currentIpsObjectPart : parts) {
             IEnumAttribute currentEnumAttribute = (IEnumAttribute)currentIpsObjectPart;
             if (!(currentEnumAttribute.isInherited()) || includeInheritedCopies) {
-                attributesList.add(currentEnumAttribute);
+                boolean literalNameAttribute = currentEnumAttribute instanceof IEnumLiteralNameAttribute;
+                if ((literalNameAttribute && includeLiteralNameAttributes) || !literalNameAttribute) {
+                    attributesList.add(currentEnumAttribute);
+                }
             }
         }
 
         return attributesList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(IIpsProject ipsProject)
-            throws CoreException {
+    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(boolean includeLiteralName,
+            IIpsProject ipsProject) throws CoreException {
 
         ArgumentCheck.notNull(ipsProject);
-
-        List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
 
         List<IEnumType> superEnumTypes = findAllSuperEnumTypes(ipsProject);
         List<IEnumType> completeHierarchy = new ArrayList<IEnumType>(superEnumTypes.size() + 1);
         completeHierarchy.add(this);
         completeHierarchy.addAll(superEnumTypes);
 
+        List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
         for (IEnumType currentEnumType : completeHierarchy) {
-            attributesList.addAll(currentEnumType.getEnumAttributes());
+            attributesList.addAll(currentEnumType.getEnumAttributes(includeLiteralName));
         }
-
         return attributesList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttribute newEnumAttribute() throws CoreException {
+        return createNewEnumAttribute(EnumAttribute.class);
+    }
+
+    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException {
+        IEnumLiteralNameAttribute literalNameAttribute = (IEnumLiteralNameAttribute)createNewEnumAttribute(EnumLiteralNameAttribute.class);
+        literalNameAttribute.setName(IEnumLiteralNameAttribute.DEFAULT_NAME);
+        literalNameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        literalNameAttribute.setUnique(true);
+        return literalNameAttribute;
+    }
+
+    private IEnumAttribute createNewEnumAttribute(Class<? extends IEnumAttribute> attributeClass) throws CoreException {
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
-        // Create new enum attribute.
-        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
+        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
 
-        // Create new enum attribute value objects on the enum values of this enum type.
+        // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
         for (IEnumValue currentEnumValue : getEnumValues()) {
             currentEnumValue.newEnumAttributeValue();
         }
 
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-        objectHasChanged();
 
+        objectHasChanged();
         return newEnumAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumType findEnumType(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
-
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getEnumAttributesCount(boolean includeInherited) {
-        if (includeInherited) {
-            return getEnumAttributesIncludeSupertypeCopies().size();
-        } else {
-            return getEnumAttributes().size();
-        }
+    public int getEnumAttributesCount(boolean includeLiteralName) {
+        return getEnumAttributes(includeLiteralName).size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<IEnumAttribute> findUniqueEnumAttributes(IIpsProject ipsProject) throws CoreException {
+    public int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName) {
+        return getEnumAttributesIncludeSupertypeCopies(includeLiteralName).size();
+    }
+
+    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
+            throws CoreException {
+
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean unqiueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
-            if ((unqiueBoolean == null) ? false : unqiueBoolean.booleanValue()) {
+        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(includeLiteralName,
+                ipsProject)) {
+            if (currentEnumAttribute.isUnique()) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
             }
         }
         return uniqueEnumAttributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean initUniqueIdentifierValidationCacheImpl() throws CoreException {
         IIpsProject ipsProject = getIpsProject();
-        List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(ipsProject);
+        List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(true, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             addUniqueIdentifierToValidationCache(getIndexOfEnumAttribute(currentUniqueAttribute));
         }
@@ -292,9 +263,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initFromXml(Element element, Integer id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
@@ -305,9 +273,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         super.initFromXml(element, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -318,9 +283,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         if (enumAttribute.getEnumType() != this) {
@@ -366,9 +328,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return newIndex[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
         int index = enumAttributes.indexOf(enumAttribute);
@@ -379,8 +338,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Moves the enum attribute value corresponding to the given enum attribute identified by its
-     * index in each given enum value up or down in the containing list by 1.
+     * Moves the <tt>IEnumAttributeValue</tt> corresponding to the given <tt>IEnumAttribute</tt>
+     * identified by its index in each given <tt>IEnumValue</tt> up or down in the containing list
+     * by 1.
      */
     private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up)
             throws CoreException {
@@ -391,45 +351,26 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean enumAttributeExists(String name) {
-        ArgumentCheck.notNull(name);
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
-            if (currentEnumAttribute.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttribute getEnumAttribute(String name) {
         ArgumentCheck.notNull(name);
         return getEnumAttribute(name, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name) {
         ArgumentCheck.notNull(name);
         return getEnumAttribute(name, true);
     }
 
     /**
-     * Searches and returns the enum attribute with the given name or <code>null</code> if none
-     * exists. It can be specified whether to include inherited enum attributes.
+     * Searches and returns the <tt>IEnumAttribute</tt> with the given name or <code>null</code> if
+     * none exists. It can be specified whether to include inherited <tt>IEnumAttribute</tt>s.
      */
     private IEnumAttribute getEnumAttribute(String name, boolean includeInherited) {
         List<IEnumAttribute> enumAttributesToSearch;
         if (includeInherited) {
-            enumAttributesToSearch = getEnumAttributesIncludeSupertypeCopies();
+            enumAttributesToSearch = getEnumAttributesIncludeSupertypeCopies(true);
         } else {
-            enumAttributesToSearch = getEnumAttributes();
+            enumAttributesToSearch = getEnumAttributes(true);
         }
 
         for (IEnumAttribute currentEnumAttribute : enumAttributesToSearch) {
@@ -438,13 +379,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // No enum attribute with the given name found.
+        // No IEnumAttribute with the given name found.
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
             throws CoreException {
 
@@ -462,41 +400,29 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // No enum attribute with the given name found
+        // No IEnumAttribute with the given name found.
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        // Validate super enum type.
         if (hasSuperEnumType()) {
             EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
         }
-
         EnumTypeValidations.validateSuperTypeHierarchy(list, this, ipsProject);
 
-        // Validate inherited attributes.
         if (hasSuperEnumType()) {
             if (list.getNoOfMessages() == 0) {
                 validateInheritedAttributes(list, ipsProject);
             }
         }
 
-        // Validate literal name attribute.
-        validateLiteralNameAttribute(list, ipsProject);
-
-        // Validate id attribute.
-        validateUsedAsIdInFaktorIpsUiAttribute(list, ipsProject);
-
-        // Validate name attribute.
+        validateLiteralNameAttribute(list);
+        validateIdentifierAttribute(list, ipsProject);
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
 
-        // Validate enum content package fragment.
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), !isContainingValues(),
                 enumContentPackageFragment);
 
@@ -512,18 +438,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this enum type inherits all enum attributes defined in its supertype
-     * hierarchy.
+     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in
+     * its supertype hierarchy.
      * <p>
      * Adds validation messages to the given message list. The validation will pass immediately if
-     * the enum type is abstract.
+     * the <tt>IEnumType</tt> is abstract.
      */
     private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
-        // Pass validation on abstract enum type
+        // Pass validation on abstract EnumType.
         if (isAbstract) {
             return;
         }
@@ -546,72 +472,66 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this enum type has at least one enum attribute being marked as literal
-     * name.
+     * Validates whether this <tt>IEnumType</tt> contains at least one
+     * <tt>IEnumLiteralNameAttribute</tt>.
      * <p>
-     * If the given enum type is abstract the validation will succeed even if there is no literal
-     * name attribute.
+     * If the this <tt>IEnumType</tt> is abstract or does not contain values the validation will
+     * succeed even if there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
-    private void validateLiteralNameAttribute(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
-
-        // Pass validation if the enum type is abstract
+    private void validateLiteralNameAttribute(MessageList validationMessageList) throws CoreException {
+        // Pass validation if the EnumType is abstract or does not contain values.
         if (isAbstract || !isContainingValues()) {
             return;
         }
 
-        boolean literalNameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean literalName = currentEnumAttribute.findIsLiteralName(ipsProject);
-            if (literalName == null) {
-                continue;
-            }
-            if (literalName) {
-                literalNameAttributeFound = true;
-                break;
-            }
+        String text;
+        Message message;
+
+        if (!(containsEnumLiteralNameAttribute())) {
+            text = Messages.EnumType_NoLiteralNameAttribute;
+            message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(this, null) });
+            validationMessageList.add(message);
+            return;
         }
 
-        if (!(literalNameAttributeFound)) {
-            String text = Messages.EnumType_NoLiteralNameAttribute;
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(this, null) });
+        int literalNameAttributesCount = getEnumLiteralNameAttributesCount();
+        if (literalNameAttributesCount > 1) {
+            text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
+            message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text, Message.ERROR,
+                    this);
             validationMessageList.add(message);
         }
     }
 
+    public int getEnumLiteralNameAttributesCount() {
+        int count = 0;
+        for (IEnumAttribute currentEnumAttribute : enumAttributes.getBackingList()) {
+            if (currentEnumAttribute instanceof IEnumLiteralNameAttribute) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
-     * Validates whether this enum type has at least one enum attribute being marked to be used as
-     * ID in the Faktor-IPS UI.
+     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * marked to be used as ID in the Faktor-IPS UI.
      * <p>
-     * If the given enum type is abstract the validation will succeed even if there is no such enum
-     * attribute.
+     * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
+     * <tt>IEnumAttribute</tt>.
      */
-    private void validateUsedAsIdInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject)
+    private void validateIdentifierAttribute(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
 
-        ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
+        ArgumentCheck.notNull(new Object[] { ipsProject });
 
-        // Pass validation if the enum type is abstract
+        // Pass validation if the EnumType is abstract.
         if (isAbstract) {
             return;
         }
 
-        boolean idAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean usedAsIdInFaktorIpsUi = currentEnumAttribute.findIsIdentifier(ipsProject);
-            if (usedAsIdInFaktorIpsUi == null) {
-                continue;
-            }
-            if (usedAsIdInFaktorIpsUi) {
-                idAttributeFound = true;
-                break;
-            }
-        }
-
-        if (!(idAttributeFound)) {
+        if (findIdentiferAttribute(ipsProject) == null) {
             String text = Messages.EnumType_NoUsedAsIdInFaktorIpsUiAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE, text,
                     Message.ERROR, new ObjectProperty[] { new ObjectProperty(this, null) });
@@ -620,35 +540,23 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this enum type has at least one enum attribute being marked to be used as
-     * name in the Faktor-IPS UI.
+     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * marked to be used as name in the Faktor-IPS UI.
      * <p>
-     * If the given enum type is abstract the validation will succeed even if there is no such enum
-     * attribute.
+     * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
+     * <tt>IEnumAttribute</tt>.
      */
     private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
-        // Pass validation if the enum type is abstract
+        // Pass validation if the EnumType is abstract.
         if (isAbstract) {
             return;
         }
 
-        boolean nameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean usedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
-            if (usedAsNameInFaktorIpsUi == null) {
-                continue;
-            }
-            if (usedAsNameInFaktorIpsUi) {
-                nameAttributeFound = true;
-                break;
-            }
-        }
-
-        if (!(nameAttributeFound)) {
+        if (findUsedAsNameInFaktorIpsUiAttribute(ipsProject) == null) {
             String text = Messages.EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE, text,
                     Message.ERROR, new ObjectProperty[] { new ObjectProperty(this, null) });
@@ -656,45 +564,22 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    /** Returns all attributes that are defined in the supertype hierarchy of this enum type. */
+    /**
+     * Returns all <tt>IEnumAttribute</tt>s that are defined in the supertype hierarchy of this
+     * <tt>IEnumType</tt>.
+     */
     private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
 
-        /* Go over all enum attributes of every enum type of the supertype hierarchy */
+        // Go over all enum attributes of every enum type of the supertype hierarchy.
         for (IEnumType currentSuperEnumType : findAllSuperEnumTypes(ipsProject)) {
-            for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes()) {
-
-                /*
-                 * Add to the return list if the list does not yet contain an attribute with the
-                 * name, datatype and identifier of the current inspected enum attribute from the
-                 * supertype hierarchy.
-                 */
-                String currentName = currentEnumAttribute.getName();
-                String currentDatatype = currentEnumAttribute.getDatatype();
-                boolean currentIsIdentifier = currentEnumAttribute.isLiteralName();
-
-                boolean attributeInList = false;
-                for (IEnumAttribute currentAttributeInReturnList : returnAttributesList) {
-                    if (currentAttributeInReturnList.getName().equals(currentName)
-                            && currentAttributeInReturnList.getDatatype().equals(currentDatatype)
-                            && currentAttributeInReturnList.isLiteralName() == currentIsIdentifier) {
-                        attributeInList = true;
-                        break;
-                    }
-                }
-
-                if (!(attributeInList)) {
-                    returnAttributesList.add(currentEnumAttribute);
-                }
+            for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes(false)) {
+                returnAttributesList.add(currentEnumAttribute);
             }
         }
-
         return returnAttributesList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -705,62 +590,27 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 return currentEnumType;
             }
         }
-
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IEnumAttribute findIsIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean isUsedAsIdInFaktorIpsUi = currentEnumAttribute.findIsIdentifier(ipsProject);
-            if (isUsedAsIdInFaktorIpsUi == null) {
-                continue;
-            }
-            if (isUsedAsIdInFaktorIpsUi) {
+    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
+        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(false, ipsProject)) {
+            if (currentEnumAttribute.isIdentifier()) {
                 return currentEnumAttribute;
             }
         }
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean isUsedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
-            if (isUsedAsNameInFaktorIpsUi == null) {
-                continue;
-            }
-            if (isUsedAsNameInFaktorIpsUi) {
+    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
+        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributesIncludeSupertypeOriginals(false, ipsProject)) {
+            if (currentEnumAttribute.isUsedAsNameInFaktorIpsUi()) {
                 return currentEnumAttribute;
             }
         }
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean literalName = currentEnumAttribute.findIsLiteralName(ipsProject);
-            if (literalName == null) {
-                continue;
-            }
-            if (literalName) {
-                return currentEnumAttribute;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     // TODO AW: Could we not override delete here instead of making this a new operation?
     public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
@@ -785,8 +635,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Deletes all enum attribute values in the given enum values that refer to the given enum
-     * attribute.
+     * Deletes all <tt>IEnumAttributeValue</tt>s in the given <tt>IEnumValue</tt>s that refer to the
+     * given <tt>IEnumAttribute</tt>.
      */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
         for (IEnumValue currentEnumValue : enumValues) {
@@ -795,16 +645,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasSuperEnumType() {
         return !("".equals(superEnumType));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -812,6 +656,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         IEnumType directSuperEnumType = findSuperEnumType(ipsProject);
         if (directSuperEnumType != null) {
             EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+                @Override
                 protected boolean visit(IEnumType currentType) throws CoreException {
                     superEnumTypes.add(currentType);
                     return true;
@@ -823,14 +668,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return superEnumTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         List<IEnumAttribute> inheritedEnumAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.isInherited()) {
                 inheritedEnumAttributes.add(currentEnumAttribute);
             }
@@ -848,8 +690,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Checks whether the given enum attribute is contained in the given list of enum attributes in
-     * means of an equal enum attribute.
+     * Checks whether the given <tt>IEnumAttribute</tt> is contained in the given list of
+     * <tt>IEnumAttribute</tt>s in means of an equal <tt>IEnumAttribute</tt>.
      */
     private boolean containsEqualEnumAttribute(List<IEnumAttribute> listOfEnumAttributes, IEnumAttribute enumAttribute) {
         for (IEnumAttribute currentEnumAttribute : listOfEnumAttributes) {
@@ -861,15 +703,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException {
         List<IEnumAttribute> newEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
             String currentSuperEnumAttributeName = currentSuperEnumAttribute.getName();
 
-            // Continue if already inherited
+            // Continue if already inherited.
             IEnumAttribute searchedEnumAttribute = getEnumAttributeIncludeSupertypeCopies(currentSuperEnumAttributeName);
             if (searchedEnumAttribute != null) {
                 if (searchedEnumAttribute.isInherited()) {
@@ -877,7 +716,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 }
             }
 
-            // Throw exception if not part of supertype hierarchy
+            // Throw exception if not part of supertype hierarchy.
             searchedEnumAttribute = findEnumAttributeIncludeSupertypeOriginals(getIpsProject(),
                     currentSuperEnumAttributeName);
             boolean partOfSupertypeHierarchy = false;
@@ -891,7 +730,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                         + " is not part of the supertype hierarchy.");
             }
 
-            // Every check passed, inherit enum attribute
+            // Every check passed, inherit enum attribute.
             IEnumAttribute newEnumAttribute = newEnumAttribute();
             newEnumAttribute.setName(currentSuperEnumAttributeName);
             newEnumAttribute.setInherited(true);
@@ -901,16 +740,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return newEnumAttributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getEnumContentName() {
         return enumContentPackageFragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setEnumContentName(String packageFragmentQualifiedName) {
         ArgumentCheck.notNull(packageFragmentQualifiedName);
 
@@ -919,9 +752,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         valueChanged(oldEnumContentPackageFragment, packageFragmentQualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDependency[] dependsOn() throws CoreException {
         if (hasSuperEnumType()) {
@@ -933,9 +763,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -953,9 +780,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return subEnumTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
             throws CoreException {
 
@@ -966,6 +790,56 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    public boolean containsEnumAttribute(String attributeName) {
+        return containsEnumAttribute(attributeName, false);
+    }
+
+    public boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName) {
+        return containsEnumAttribute(attributeName, true);
+    }
+
+    public boolean containsEnumLiteralNameAttribute() {
+        return getEnumLiteralNameAttribute() != null;
+    }
+
+    /**
+     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
+     * <tt>IEnumType</tt>. Depending on the boolean flag the supertype copies are included in the
+     * check.
+     */
+    private boolean containsEnumAttribute(String attributeName, boolean includeSupertypeCopies) {
+        List<IEnumAttribute> enumAttributesToCheck = includeSupertypeCopies ? getEnumAttributesIncludeSupertypeCopies(true)
+                : getEnumAttributes(true);
+        for (IEnumAttribute currentEnumAttribute : enumAttributesToCheck) {
+            if (currentEnumAttribute.getName().equals(attributeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        ArgumentCheck.notNull(xmlTag);
+        if (xmlTag.getTagName().equals(IEnumLiteralNameAttribute.XML_TAG)) {
+            return newPart(EnumLiteralNameAttribute.class);
+        }
+        return super.newPart(xmlTag, id);
+    }
+
+    public IEnumLiteralNameAttribute getEnumLiteralNameAttribute() {
+        for (IEnumAttribute currentAttribute : enumAttributes.getBackingList()) {
+            if (currentAttribute instanceof IEnumLiteralNameAttribute) {
+                return (IEnumLiteralNameAttribute)currentAttribute;
+            }
+        }
+        return null;
+    }
+
+    public boolean needsToUseEnumLiteralNameAttribute() {
+        return !isAbstract && containingValues;
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
@@ -983,9 +857,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return subEnumType;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IEnumType currentEnumType) throws CoreException {
             if (currentEnumType == superEnumTypeCandidate) {

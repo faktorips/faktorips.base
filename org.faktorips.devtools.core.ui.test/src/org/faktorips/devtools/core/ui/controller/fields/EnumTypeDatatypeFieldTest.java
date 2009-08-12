@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,16 +36,16 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     IIpsProject ipsProject;
     IEnumType enum1;
 
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         ipsProject = newIpsProject("TestProject");
 
         enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
         enum1.setContainingValues(true);
+        enum1.newEnumLiteralNameAttribute();
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
-        attr1.setLiteralName(true);
         attr1.setName("id");
         attr1.setUnique(true);
         attr1.setIdentifier(true);
@@ -60,31 +60,33 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
         attr3.setUnique(false);
-        
+
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("aname");
-        values.get(2).setValue("adesc");
+        values.get(0).setValue("A");
+        values.get(1).setValue("a");
+        values.get(2).setValue("aname");
+        values.get(3).setValue("adesc");
 
         IEnumValue enumValue2 = enum1.newEnumValue();
         values = enumValue2.getEnumAttributeValues();
-        values.get(0).setValue("b");
-        values.get(1).setValue("bname");
-        values.get(2).setValue("bdesc");
+        values.get(0).setValue("B");
+        values.get(1).setValue("b");
+        values.get(2).setValue("bname");
+        values.get(3).setValue("bdesc");
 
         IEnumValue enumValue3 = enum1.newEnumValue();
         values = enumValue3.getEnumAttributeValues();
-        values.get(0).setValue("c");
-        values.get(1).setValue("cname");
-        values.get(2).setValue("cdesc");
-        
+        values.get(0).setValue("C");
+        values.get(1).setValue("c");
+        values.get(2).setValue("cname");
+        values.get(3).setValue("cdesc");
+
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
-        
     }
-    
-    public void testGetDatatypeValueIds() throws Exception{
+
+    public void testGetDatatypeValueIds() throws Exception {
         Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null));
         field.setValue("a");
@@ -100,11 +102,11 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
     }
 
-    public void testGetDatatypeValueIdsWithEnumContent() throws Exception{
-        
+    public void testGetDatatypeValueIdsWithEnumContent() throws Exception {
         enum1.setContainingValues(false);
+        enum1.deleteEnumAttributeWithValues(enum1.getEnumLiteralNameAttribute());
         enum1.setEnumContentName(enum1.getIpsPackageFragment().getName());
-        
+
         IEnumContent enumContent = newEnumContent(enum1, "enum1Content");
         IEnumValue value1 = enumContent.newEnumValue();
         List<IEnumAttributeValue> values = value1.getEnumAttributeValues();
@@ -123,21 +125,21 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         values.get(0).setValue("CContent");
         values.get(1).setValue("CNameContent");
         values.get(2).setValue("CDescContent");
-        
+
         Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent));
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());
         assertEquals("ANameContent", field.getText());
-        
+
         field.setValue("BContent");
         assertEquals("BContent", field.getValue());
         assertEquals("BNameContent", field.getText());
-        
+
         field.setValue(null);
         assertNull(field.getValue());
         assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
-        
+
         field.setEnableEnumContentDisplay(false);
         field.setValue(null);
         assertNull(field.getValue());
@@ -147,7 +149,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());
         assertEquals("AContent", field.getInvalidValue());
-        
+
     }
 
 }

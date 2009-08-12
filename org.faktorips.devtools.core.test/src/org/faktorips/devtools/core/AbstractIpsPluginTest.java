@@ -461,11 +461,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
         return (EnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
-    
+
     /**
-     * Creates a new enum content that is based on the given enum type. The product component
-     * is stored in the same package fragment root as the type. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new enum content that is based on the given enum type. The product component is
+     * stored in the same package fragment root as the type. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
@@ -476,7 +476,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         enumContent.getIpsSrcFile().save(true, null);
         return enumContent;
     }
-
 
     /**
      * Creates a new enum type in the indicated package fragment root. If the qualified name
@@ -507,13 +506,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
         return (EnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, qualifiedName);
     }
-    
+
     /**
-     * Creates a new default enum type in the project's first package fragment root. 
-     * The enum type has two attributes named "id" and "name" but does not contain any values, so it
-     * is defined as containing values.
+     * Creates a new default enum type in the project's first package fragment root. The enum type
+     * has two attributes named "id" and "name" but does not contain any values, so it is defined as
+     * containing values.
      * 
-     * If the qualified name includes a package name, the package is created if it does not already exist.
+     * If the qualified name includes a package name, the package is created if it does not already
+     * exist.
      * 
      * @param ipsProject The ips project in which to create the new enum type.
      * @param qualifiedName The qualified name of the new enum type.
@@ -522,9 +522,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws CoreException If the enum type could not be created.
      */
-    protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
+    protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName)
+            throws CoreException {
+        
         EnumType enumType = newEnumType(ipsProject, qualifiedName);
         enumType.setContainingValues(true);
+        enumType.newEnumLiteralNameAttribute();
         IEnumAttribute idAttr = enumType.newEnumAttribute();
         idAttr.setName("id");
         idAttr.setDatatype(Datatype.STRING.getQualifiedName());
@@ -535,7 +538,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         nameAttr.setName("name");
         nameAttr.setUsedAsNameInFaktorIpsUi(true);
         nameAttr.setUnique(true);
-        nameAttr.setLiteralName(true);
+        
         return enumType;
     }
 
@@ -549,7 +552,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             throws CoreException {
         return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
-    
+
     /**
      * Creates a new policy component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
@@ -676,10 +679,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
         return file.getIpsObject();
     }
-    
+
     /**
-     * Creates a new table structure in the indicated package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * Creates a new table structure in the indicated package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
@@ -697,21 +700,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected TableStructure newTableStructure(IIpsProject ipsProject, String qualifiedName) throws CoreException {
         return (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
     }
-    
+
     /**
-     * Creates a new table content that is based on the given table structure and has one
-     * generation with it's valid from date set to the current working date. The table content
-     * is stored in the same package fragment root as the structure. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new table content that is based on the given table structure and has one generation
+     * with it's valid from date set to the current working date. The table content is stored in the
+     * same package fragment root as the structure. If the qualifiedName includes a package name,
+     * the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
     protected TableContents newTableContents(ITableStructure ts0, String qualifiedName) throws CoreException {
-    	TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
+        TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
                 IpsObjectType.TABLE_CONTENTS, qualifiedName);
-    	tableContents.setTableStructure(ts0.getQualifiedName());
-    	tableContents.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-    	tableContents.getIpsSrcFile().save(true, null);
+        tableContents.setTableStructure(ts0.getQualifiedName());
+        tableContents.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        tableContents.getIpsSrcFile().save(true, null);
         return tableContents;
     }
 
@@ -736,8 +739,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new test case type in the indicated package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * Creates a new test case type in the indicated package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
@@ -755,25 +758,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected TestCaseType newTestCaseType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
         return (TestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, qualifiedName);
     }
-    
+
     /**
-     * Creates a new test case that is based on the given test case type. The test case
-     * is stored in the same package fragment root as the structure. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new test case that is based on the given test case type. The test case is stored in
+     * the same package fragment root as the structure. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
     protected TestCase newTestCase(TestCaseType tCase, String qualifiedName) throws CoreException {
-    	TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(),
-                IpsObjectType.TEST_CASE, qualifiedName);
-    	testCase.setTestCaseType(tCase.getQualifiedName());
-    	testCase.getIpsSrcFile().save(true, null);
+        TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(), IpsObjectType.TEST_CASE,
+                qualifiedName);
+        testCase.setTestCaseType(tCase.getQualifiedName());
+        testCase.getIpsSrcFile().save(true, null);
         return testCase;
     }
 
     /**
-     * Creates a new test case in the indicated package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new test case in the indicated package fragment root. If the qualifiedName includes
+     * a package name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
@@ -782,15 +785,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new test case in the project's first package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * Creates a new test case in the project's first package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
      * 
      * @throws CoreException
      */
     protected TestCase newTestCase(IIpsProject project, String qualifiedName) throws CoreException {
         return (TestCase)newIpsObject(project, IpsObjectType.TEST_CASE, qualifiedName);
     }
-
 
     /**
      * Triggers a full build of the workspace.

@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -281,6 +282,7 @@ public class EnumTypePage extends IpsObjectPage {
          * Create id attribute and name attribute if checked and possible (no supertype must be
          * specified).
          */
+        String nameAttributeName = "";
         if (supertypeField.getText().equals("")) { //$NON-NLS-1$
             if (createIdAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
@@ -290,13 +292,19 @@ public class EnumTypePage extends IpsObjectPage {
                 idAttribute.setIdentifier(true);
             }
             if (createNameAttributeField.getCheckbox().isChecked()) {
+                nameAttributeName = nameAttributeNameField.getText();
                 IEnumAttribute nameAttribute = newEnumType.newEnumAttribute();
-                nameAttribute.setName(nameAttributeNameField.getText());
+                nameAttribute.setName(nameAttributeName);
                 nameAttribute.setDatatype(Datatype.STRING.getName());
                 nameAttribute.setUsedAsNameInFaktorIpsUi(true);
                 nameAttribute.setUnique(true);
-                nameAttribute.setLiteralName(true);
             }
+        }
+
+        // Create literal name attribute if not abstract and containing values.
+        if (!((Boolean)valuesDeferredToContentField.getValue()) && !((Boolean)isAbstractField.getValue())) {
+            IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
+            literalNameAttribute.setDefaultValueProviderAttribute(nameAttributeName);
         }
 
         modifiedIpsObjects.add(newEnumType);

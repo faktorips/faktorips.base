@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,10 +15,10 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -29,45 +29,45 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
 public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
-	private IIpsSrcFile ipsSrcFile;
+    private IIpsSrcFile ipsSrcFile;
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IProductCmptLink link;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IIpsProject ipsProject;
+
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-    	super.setUp();
-    	ipsProject = newIpsProject();
-    	policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
-    	productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        super.setUp();
+        ipsProject = newIpsProject();
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
-    	generation = productCmpt.getProductCmptGeneration(0);
-    	link = generation.newLink("CoverageType");
-    	ipsSrcFile = productCmpt.getIpsSrcFile();
+        generation = productCmpt.getProductCmptGeneration(0);
+        link = generation.newLink("CoverageType");
+        ipsSrcFile = productCmpt.getIpsSrcFile();
     }
-    
+
     public void testGetAssociation() throws CoreException {
-    	assertEquals("CoverageType", link.getAssociation());
+        assertEquals("CoverageType", link.getAssociation());
     }
 
     public void testFindAssociation() throws CoreException {
-    	IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
+        IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
 
         assocation.setTargetRoleSingular("CoverageType");
-    	assertEquals(assocation, link.findAssociation(ipsProject));
-    	
-    	assocation.setTargetRoleSingular("blabla");
-    	assertNull(link.findAssociation(ipsProject));
+        assertEquals(assocation, link.findAssociation(ipsProject));
+
+        assocation.setTargetRoleSingular("blabla");
+        assertNull(link.findAssociation(ipsProject));
     }
 
     public void testRemove() {
@@ -88,7 +88,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMinCardinality(2);
         link.setMaxCardinality(3);
         Element element = link.toXml(newDocument());
-        
+
         IProductCmptLink copy = new ProductCmptLink();
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
@@ -96,7 +96,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals("coverage", copy.getAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
-        
+
         link.setMaxCardinality(Integer.MAX_VALUE);
         element = link.toXml(newDocument());
         copy.initFromXml(element);
@@ -104,116 +104,119 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     public void testInitFromXml() {
-        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
         assertEquals(42, link.getId());
         assertEquals("FullCoverage", link.getAssociation());
         assertEquals("FullCoveragePlus", link.getTarget());
         assertEquals(2, link.getMinCardinality());
         assertEquals(3, link.getMaxCardinality());
 
-        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME).item(1));
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(1));
         assertEquals(43, link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			link.newPart(IPolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            link.newPart(PolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     public void testValidateUnknownAssociate() throws CoreException {
         MessageList ml = link.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
     }
-    
+
     public void testValidateUnknownTarget() throws CoreException {
         link.setTarget("unknown");
         MessageList ml = link.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
-        
+
         link.setTarget(productCmpt.getQualifiedName());
         ml = link.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
     }
- 
+
     public void testValidateCardinality() throws CoreException {
         IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
         IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
-        
+
         IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
         productAssociation.setTarget(coverageTypeType.getQualifiedName());
         productAssociation.setTargetRoleSingular("CoverageType");
-        
+
         IAssociation policyAssociation = policyCmptType.newAssociation();
         policyAssociation.setTarget(coverageType.getQualifiedName());
         policyAssociation.setTargetRoleSingular("Coverage");
-        
+
         // test setup
         assertEquals(policyAssociation, productAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject));
         assertEquals(productAssociation, link.findAssociation(ipsProject));
-        
-    	link.setMaxCardinality(0);
-    	MessageList ml = link.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
-    	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
-    	link.setMaxCardinality(1);
-    	ml = link.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
-    	
-    	link.setMinCardinality(2);
-    	ml = link.validate(ipsProject);
-    	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
-    	
-    	link.setMaxCardinality(3);
-    	ml = link.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
-    	
+        link.setMaxCardinality(0);
+        MessageList ml = link.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
+        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+
+        link.setMaxCardinality(1);
+        ml = link.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+
+        link.setMinCardinality(2);
+        ml = link.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+
+        link.setMaxCardinality(3);
+        ml = link.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+
         policyAssociation.setMaxCardinality(1);
-    	ml = link.validate(ipsProject);
-    	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        ml = link.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
         policyAssociation.setMaxCardinality(3);
-    	ml = link.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        ml = link.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
-    
-    public void testValidateInvalidTarget() throws Exception{
+
+    public void testValidateInvalidTarget() throws Exception {
         IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTarget(targetProductType.getQualifiedName());
         association.setTargetRoleSingular("testRelation");
-        
+
         IProductCmptLink link = generation.newLink(association.getName());
         IProductCmpt target = newProductCmpt(targetProductType, "target.Target");
         link.setTarget(productCmpt.getQualifiedName());
-        
+
         MessageList ml = link.validate(ipsProject);
         Message invalidTargetMessage = ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET);
         assertNotNull(invalidTargetMessage);
         assertEquals(1, ml.getMessagesFor(link).getNoOfMessages());
         assertEquals(invalidTargetMessage, ml.getMessagesFor(link).getMessage(0));
-        
+
         link.setTarget(target.getQualifiedName());
-        
+
         ml = link.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
     }
 
-    public void testIsMandatory(){
+    public void testIsMandatory() {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
         assertFalse(link.isMandatory());
-        
+
         link.setMinCardinality(1);
         link.setMaxCardinality(1);
         assertTrue(link.isMandatory());
@@ -226,11 +229,12 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(2);
         assertFalse(link.isMandatory());
     }
-    public void testIsOptional(){
+
+    public void testIsOptional() {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
         assertTrue(link.isOptional());
-        
+
         link.setMinCardinality(1);
         link.setMaxCardinality(1);
         assertFalse(link.isOptional());

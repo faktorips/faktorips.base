@@ -78,6 +78,7 @@ public class EnumExportPage extends IpsObjectExportPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateObjectToExport() {
         if (exportedIpsObjectControl.getText().length() == 0) {
             setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
@@ -89,14 +90,17 @@ public class EnumExportPage extends IpsObjectExportPage {
                 setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
                 return;
             }
+
             if (!enumValueContainer.exists()) {
                 setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
                 return;
             }
+
             if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
                 setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
                 return;
             }
+
             if (enumValueContainer instanceof IEnumType) {
                 IEnumType enumType = (IEnumType)enumValueContainer;
                 if (enumType.isAbstract()) {
@@ -108,6 +112,7 @@ public class EnumExportPage extends IpsObjectExportPage {
                     return;
                 }
             }
+
             IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
             if (enumValueContainer instanceof IEnumContent) {
                 if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
@@ -115,14 +120,17 @@ public class EnumExportPage extends IpsObjectExportPage {
                     return;
                 }
             }
-            if (enumType.getEnumAttributesCount(true) > MAX_EXCEL_COLUMNS) {
+
+            boolean includeLiteralName = enumValueContainer instanceof IEnumType;
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName) > MAX_EXCEL_COLUMNS) {
                 Object[] objects = new Object[3];
-                objects[0] = new Integer(enumType.getEnumAttributesCount(true));
+                objects[0] = new Integer(enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName));
                 objects[1] = enumType;
                 objects[2] = new Short(MAX_EXCEL_COLUMNS);
                 String text = NLS.bind(Messages.EnumExportPage_msgEnumHasTooManyColumns, objects);
                 setErrorMessage(text);
             }
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -131,6 +139,7 @@ public class EnumExportPage extends IpsObjectExportPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setDefaults(IResource selectedResource) {
         if (selectedResource == null) {
             setEnum(null);

@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -139,12 +140,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {
 
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(enumValueContainer);
         this.enumValueContainer = enumValueContainer;
-        this.ipsProject = enumValueContainer.getIpsProject();
-        this.columnNames = new ArrayList<String>(4);
+        ipsProject = enumValueContainer.getIpsProject();
+        columnNames = new ArrayList<String>(4);
 
         IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
 
@@ -299,7 +300,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 if (referencedEnumType == null) {
                     obtainNamesFromAttributes = false;
                 } else {
-                    if (referencedEnumType.getEnumAttributesCount(true) != enumContent
+                    if (referencedEnumType.getEnumAttributesCountIncludeSupertypeCopies(false) != enumContent
                             .getReferencedEnumAttributesCount()) {
                         obtainNamesFromAttributes = false;
                     }
@@ -308,8 +309,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 String columnName;
                 Boolean identifierBoolean = null;
                 if (obtainNamesFromAttributes) {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies()
-                            .get(i);
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(
+                            false).get(i);
                     columnName = currentEnumAttribute.getName();
                     identifierBoolean = currentEnumAttribute.findIsUnique(ipsProject);
                 } else {
@@ -319,10 +320,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
 
         } else {
-            for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-                Boolean identifierBoolean = currentEnumAttribute.findIsUnique(ipsProject);
-                addTableColumn(currentEnumAttribute.getName(), ((identifierBoolean == null) ? false : identifierBoolean
-                        .booleanValue()));
+            for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributesIncludeSupertypeOriginals(true,
+                    ipsProject)) {
+                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isIdentifier());
             }
         }
     }
@@ -393,6 +393,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             /**
              * {@inheritDoc}
              */
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
                     return ((IEnumValue)element).validate(enumValueContainer.getIpsProject());
@@ -438,13 +439,15 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             if (enumType != null) {
                 boolean obtainDatatype = true;
                 if (enumValueContainer instanceof IEnumContent) {
-                    if (enumType.getEnumAttributesCount(true) != ((IEnumContent)enumValueContainer)
+                    if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != ((IEnumContent)enumValueContainer)
                             .getReferencedEnumAttributesCount()) {
                         obtainDatatype = false;
                     }
                 }
                 if (obtainDatatype) {
-                    datatypeQualifiedName = enumType.getEnumAttributesIncludeSupertypeCopies().get(i).getDatatype();
+                    boolean includeLiteralNameAttributes = enumValueContainer instanceof IEnumType;
+                    datatypeQualifiedName = enumType.getEnumAttributesIncludeSupertypeCopies(
+                            includeLiteralNameAttributes).get(i).getDatatype();
                 }
             }
 
@@ -737,7 +740,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
                         if (valueDatatype instanceof EnumTypeDatatypeAdapter) {
                             return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                                    (EnumTypeDatatypeAdapter)valueDatatype, columnValue);
+                                    valueDatatype, columnValue);
                         }
                         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                 valueDatatype, columnValue);

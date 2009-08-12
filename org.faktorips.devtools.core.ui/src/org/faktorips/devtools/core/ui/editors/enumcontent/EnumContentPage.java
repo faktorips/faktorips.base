@@ -157,8 +157,10 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
             if (enumType == null) {
                 enableOpenFixEnumTypeDialogAction = true;
             } else {
-                if (enumType.isAbstract() || enumType.isContainingValues()
-                        || enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
+                if (enumType.isAbstract()
+                        || enumType.isContainingValues()
+                        || enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != enumContent
+                                .getReferencedEnumAttributesCount()) {
                     enableOpenFixEnumTypeDialogAction = true;
                 }
             }
@@ -219,6 +221,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
                 enumValuesSection.refresh();
