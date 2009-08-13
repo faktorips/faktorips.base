@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
@@ -103,8 +104,9 @@ public class IpsObjectType {
     /**
      * Contains all ips object types.
      * 
-     * @deprecated Deprecated since 2.3: Use IpsModel.getIpsObjectTypes() instead.
+     * @deprecated Deprecated since 2.3: Use {@link IpsModel#getIpsObjectTypes()} instead.
      */
+    @Deprecated
     public static IpsObjectType[] ALL_TYPES = null;
 
     /**
@@ -152,8 +154,8 @@ public class IpsObjectType {
     // The human readable type's name
     private String displayName;
 
-    //The human readable type's plural name
-	private String displayNamePlural;
+    // The human readable type's plural name
+    private String displayNamePlural;
 
     // The identifying name of this type
     private String id;
@@ -236,14 +238,14 @@ public class IpsObjectType {
         return displayName;
     }
 
-	/**
-	 * @return The display plural name of this type.
-	 */
-	public String getDisplayNamePlural() {
-		return displayNamePlural;
-	}
+    /**
+     * @return The display plural name of this type.
+     */
+    public String getDisplayNamePlural() {
+        return displayNamePlural;
+    }
 
-	/**
+    /**
      * Returns the name of xml elements that represent the state of PdObjects of that type. This
      * method never returns <code>null</code>.
      * 
@@ -262,6 +264,7 @@ public class IpsObjectType {
     public final String getFileExtension() {
         return fileExtension;
     }
+
     /**
      * Returns <code>true</code> if the ips objects of this type are also datatypes, otherwise
      * <code>false</code>.
@@ -275,12 +278,13 @@ public class IpsObjectType {
     /**
      * Returns <code>true</code> if the object type is a entity type (policy component type or
      * product component type), otherwise <code>false</code>.
+     * 
      * @return true for entity types
      */
     public boolean isEntityType() {
         return this == POLICY_CMPT_TYPE || this == PRODUCT_CMPT_TYPE;
     }
-    
+
     /**
      * Returns <code>true</code> if instances of this type are product definition objects, otherwise
      * <code>false</code>. Currently product components, enum values, table contents and test cases
@@ -331,7 +335,8 @@ public class IpsObjectType {
     /**
      * Returns the name of a file (including the extension) that stores a ips object with the given
      * name.
-     * @param ipsObjectName 
+     * 
+     * @param ipsObjectName
      * 
      * @return The given ips object name with the file extension of this ips object type appended.
      * 
@@ -352,6 +357,7 @@ public class IpsObjectType {
 
     /**
      * Creates a new ips object type.
+     * 
      * @param id The name of the new ips object type.
      * @param xmlElementName The name for the xml element.
      * @param displayName A human readable name for the new ips object type.
@@ -366,7 +372,8 @@ public class IpsObjectType {
      *             <code>null</code>.
      */
     public IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
-            String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage, String disabledImage) {
+            String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage,
+            String disabledImage) {
 
         ArgumentCheck.notNull(xmlElementName);
         ArgumentCheck.notNull(id);

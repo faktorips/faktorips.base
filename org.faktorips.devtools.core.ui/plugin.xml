@@ -500,6 +500,15 @@
             icon="icons/TestCase.gif"
             id="testCaseEditor"
             name="%testCaseEditor"/>
+      	<editor
+            class="org.faktorips.devtools.core.ui.editors.question.QuestionEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
+            default="true"
+            extensions="ipsquestion"
+            icon="icons/Question.gif"
+            id="questionEditor"
+            name="%questionEditor">
+      	</editor>
 	</extension>
 
 <!-- 
