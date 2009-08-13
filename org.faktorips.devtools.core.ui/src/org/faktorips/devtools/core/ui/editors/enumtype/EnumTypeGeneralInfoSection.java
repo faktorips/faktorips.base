@@ -22,10 +22,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -38,7 +40,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * 
- * The general info section for the <code>EnumTypeEditor</code> provides ui controls to edit the
+ * The general info section for the <code>EnumTypeEditor</code> provides UI controls to edit the
  * <em>superEnumType</em> property, the <em>abstract</em> property and the
  * <em>valuesArePartOfModel</em> property of an <code>IEnumType</code>.
  * <p>
@@ -53,52 +55,45 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsChangeListener {
 
-    /** The enum type the editor is currently editing. */
+    /** The <tt>IEnumType</tt> the editor is currently editing. */
     private IEnumType enumType;
 
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The ui checkbox for the <code>valuesArePartOfModelCheckbox</code> property. */
+    /** The UI checkbox for the <code>valuesArePartOfModelCheckbox</code> property. */
     private Checkbox valuesArePartOfModelCheckbox;
 
-    /** The ui control for the <code>enumContentPackageFragment</code> property */
+    /** The UI control for the <code>enumContentPackageFragment</code> property */
     private TextField enumContentNameControl;
 
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
      * 
-     * @param enumType The enum type the enum type editor is currently editing.
-     * @param parent The parent ui composite to attach this info section to.
-     * @param toolkit The ui toolkit to be used to create new ui elements.
+     * @param enumType The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> is currently editing.
+     * @param parent The parent UI composite to attach this info section to.
+     * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public EnumTypeGeneralInfoSection(final IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
-
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
-        this.extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
+        extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
 
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
 
         enumType.getIpsModel().addChangeListener(this);
         addDisposeListener(new DisposeListener() {
-            /**
-             * {@inheritDoc}
-             */
             public void widgetDisposed(DisposeEvent e) {
                 enumType.getIpsModel().removeChangeListener(EnumTypeGeneralInfoSection.this);
             }
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
@@ -106,9 +101,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         Hyperlink link = toolkit.createHyperlink(composite, Messages.EnumTypeGeneralInfoSection_linkSuperclass);
         link.addHyperlinkListener(new HyperlinkAdapter() {
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public void linkActivated(HyperlinkEvent event) {
                 try {
@@ -122,59 +114,50 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             }
         });
 
-        // Super enum type
+        // Supertype.
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);
         supertypeRefControl.setCurrentEnumType(enumType);
         bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
-        // Abstract
+        // Abstract.
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
         Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
-        // Values are part of model
+        // Values are part of model.
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
         valuesArePartOfModelCheckbox.setEnabled(!enumType.isAbstract());
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
-        // Enum content package fragment
+        // EnumContent specification.
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
-        enumContentNameControl.getTextControl().setEnabled(
-                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+        enumContentNameControl.getTextControl()
+                .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
 
-        bindingContext.bindContent(enumContentNameControl, enumType,
-                IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+        bindingContext.bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
-        // Register controls for focus handling
+        // Register controls for focus handling.
         addFocusControl(supertypeRefControl);
         addFocusControl(abstractCheckbox);
         addFocusControl(valuesArePartOfModelCheckbox);
         addFocusControl(enumContentNameControl.getTextControl());
 
-        // Create extension properties
+        // Create extension properties.
         extFactory.createControls(composite, toolkit, enumType);
         extFactory.bind(bindingContext);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void contentsChanged(ContentChangeEvent event) {
-        /*
-         * Return if the content changed was not the enum type container to be edited.
-         */
+        // Return if the content changed was not the EnumType to be edited.
         if (!(event.getIpsSrcFile().equals(enumType.getIpsSrcFile()))) {
             return;
         }
@@ -189,6 +172,29 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
+                // Here is no "break;" by intention!
+
+            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                /*
+                 * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs
+                 * one.
+                 */
+                if (enumType.needsToUseEnumLiteralNameAttribute()) {
+                    if (!(enumType.containsEnumLiteralNameAttribute())) {
+                        try {
+                            IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType
+                                    .newEnumLiteralNameAttribute();
+                            IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType
+                                    .getIpsProject());
+                            if (nameAttribute != null) {
+                                newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+                            }
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                break;
         }
     }
 
