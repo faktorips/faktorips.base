@@ -20,15 +20,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The general info section for the enum content editor. It shows the enum type the enum content to
@@ -45,22 +47,26 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     /** The enum content the editor is currently editing. */
     private IEnumContent enumContent;
 
+    private EnumContentPage enumContentPage;
+
     /**
      * Creates a new <code>EnumContentGeneralInfoSection</code> using the specified parameters.
      * 
+     * @param enumContentPage
      * @param enumContent The enum content the enum content editor is currently editing.
      * @param parent The parent ui composite to attach this info section to.
      * @param toolkit The ui toolkit to be used to create new ui elements.
      * 
      * @throws NullPointerException If <code>enumContent</code> is <code>null</code>.
      */
-    public EnumContentGeneralInfoSection(IEnumContent enumContent, Composite parent, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+    public EnumContentGeneralInfoSection(EnumContentPage enumContentPage, IEnumContent enumContent, Composite parent,
+            UIToolkit toolkit) {
 
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumContent);
 
+        this.enumContentPage = enumContentPage;
         this.enumContent = enumContent;
-
         initControls();
         setText(Messages.EnumContentGeneralInfoSection_title);
     }
@@ -76,9 +82,6 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
             Hyperlink link = toolkit.createHyperlink(composite, Messages.EnumContentGeneralInfoSection_linkEnumType);
             link.addHyperlinkListener(new HyperlinkAdapter() {
-                /**
-                 * {@inheritDoc}
-                 */
                 @Override
                 public void linkActivated(HyperlinkEvent event) {
                     // If the setting has been changed while the editor was opened
@@ -111,6 +114,18 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
+
+        IIpsProject ipsProject = enumContent.getIpsProject();
+        try {
+            MessageList validationMessages = enumContent.validate(ipsProject);
+            if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
+                    || validationMessages
+                            .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
+                enumContentPage.enumValuesSection.reinit(null);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

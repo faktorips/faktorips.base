@@ -55,7 +55,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     private EnumImportExportActionInEditor importAction;
     private EnumImportExportActionInEditor exportAction;
 
-    private EnumValuesSection enumValuesSection;
+    EnumValuesSection enumValuesSection;
 
     /**
      * Creates a new <code>EnumContentPage</code>.
@@ -64,31 +64,20 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      */
     public EnumContentPage(EnumContentEditor editor) {
         super(editor, false, Messages.EnumContentValuesPage_title);
-
         enumContent = editor.getEnumContent();
-
         enumContent.getIpsModel().addChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         enumContent.getIpsModel().removeChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
         createContent(parentContainer, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
         createContent(parentContainer, toolkit);
@@ -99,7 +88,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         createToolbarActions();
         createToolbar();
 
-        new EnumContentGeneralInfoSection(enumContent, parentContainer, toolkit);
+        new EnumContentGeneralInfoSection(this, enumContent, parentContainer, toolkit);
 
         try {
             enumValuesSection = new EnumValuesSection(enumContent, parentContainer, toolkit);
@@ -169,17 +158,11 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         openFixEnumTypeDialogAction.setEnabled(enableOpenFixEnumTypeDialogAction);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
         try {
@@ -204,9 +187,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
 
-    /**
-     * Executes the enum import operation and refreshes the view.
-     */
+    /** Executes the enum import operation and refreshes the view. */
     private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
@@ -218,9 +199,6 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {

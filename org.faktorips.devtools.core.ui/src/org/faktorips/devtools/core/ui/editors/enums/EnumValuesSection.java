@@ -175,8 +175,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * <li>The <code>columnNames</code> will be emptied and created anew.
      * <li>Every table column of the <code>enumValuesTable</code> will be disposed and the table
      * columns will be created anew.
+     * 
+     * @param enumType The new enum type or <tt>null</tt> if none exists (only allowed for editing
+     *            EnumContent however).
      */
-    private void reinit(IEnumType enumType) throws CoreException {
+    public void reinit(IEnumType enumType) throws CoreException {
         // Clear column names
         columnNames.clear();
 
@@ -184,7 +187,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
             currentColumn.dispose();
         }
-
         createTableColumns(enumType);
     }
 
