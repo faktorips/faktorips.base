@@ -282,7 +282,6 @@ public class EnumTypePage extends IpsObjectPage {
          * Create id attribute and name attribute if checked and possible (no supertype must be
          * specified).
          */
-        String nameAttributeName = "";
         if (supertypeField.getText().equals("")) { //$NON-NLS-1$
             if (createIdAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
@@ -292,9 +291,8 @@ public class EnumTypePage extends IpsObjectPage {
                 idAttribute.setIdentifier(true);
             }
             if (createNameAttributeField.getCheckbox().isChecked()) {
-                nameAttributeName = nameAttributeNameField.getText();
                 IEnumAttribute nameAttribute = newEnumType.newEnumAttribute();
-                nameAttribute.setName(nameAttributeName);
+                nameAttribute.setName(nameAttributeNameField.getText());
                 nameAttribute.setDatatype(Datatype.STRING.getName());
                 nameAttribute.setUsedAsNameInFaktorIpsUi(true);
                 nameAttribute.setUnique(true);
@@ -304,7 +302,8 @@ public class EnumTypePage extends IpsObjectPage {
         // Create literal name attribute if not abstract and containing values.
         if (!((Boolean)valuesDeferredToContentField.getValue()) && !((Boolean)isAbstractField.getValue())) {
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
-            literalNameAttribute.setDefaultValueProviderAttribute(nameAttributeName);
+            IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
+            literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
         }
 
         modifiedIpsObjects.add(newEnumType);

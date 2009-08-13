@@ -460,8 +460,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     enumValuesTableViewer, i, enumValueContainer.getIpsProject());
             cellEditor.setRowCreating(true);
             if (literalNameAttribute != null) {
-                IEnumAttribute defaultValueProviderAttribute = enumType.getEnumAttribute(literalNameAttribute
-                        .getDefaultValueProviderAttribute());
+                IEnumAttribute defaultValueProviderAttribute = enumType
+                        .getEnumAttributeIncludeSupertypeCopies(literalNameAttribute.getDefaultValueProviderAttribute());
                 addDefaultProviderListenerToCellEditor(cellEditor, defaultValueProviderAttribute);
             }
             cellEditors[i] = cellEditor;
@@ -484,7 +484,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             public void focusGained(FocusEvent event) {
                 // Literal name field is a text field.
                 Text textControl = (Text)control;
-                if (textControl.getText().length() == 0) {
+                String existingText = textControl.getText();
+                if (existingText.length() == 0
+                        || existingText.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
                     int rowNumber = enumValuesTable.getSelectionIndex();
                     IEnumValue enumValue = enumValueContainer.getEnumValues().get(rowNumber);
                     try {
