@@ -18,7 +18,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -40,12 +39,13 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         id.setIdentifier(true);
         id.setUnique(true);
         id.setName("id");
+
         IEnumValue value1 = paymentMode.newEnumValue();
-        IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
-        value1id.setValue("monthly");
+        value1.setEnumAttributeValue(0, "MONTHLY");
+        value1.setEnumAttributeValue(1, "monthly");
         IEnumValue value2 = paymentMode.newEnumValue();
-        IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
-        value2id.setValue("annually");
+        value2.setEnumAttributeValue(0, "ANNUALLY");
+        value2.setEnumAttributeValue(1, "annually");
         Datatype datatype = ipsProject.findDatatype("PaymentMode");
         DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(datatype);
         assertTrue(datatypeHelper instanceof EnumTypeDatatypeHelper);
@@ -55,7 +55,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         JavaCodeFragment fragment = enumHelper.newInstance("annually");
         assertEquals("PaymentMode.ANNUALLY", fragment.getSourcecode());
 
-        // ensure than no exception is thrown if the enumtype doesn't have an id attribute
+        // Ensure than no exception is thrown if the EnumType doesn't have an identifier attribute.
         id.setIdentifier(false);
         enumHelper.newInstance("annually");
         id.setIdentifier(true);
