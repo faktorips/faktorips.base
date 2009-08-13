@@ -192,10 +192,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         ArgumentCheck.notNull(new Object[] { uniqueEnumAttributes, ipsProject });
         List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(uniqueEnumAttributes
                 .size());
-        IEnumType enumType = getEnumValueContainer().findEnumType(ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            int attributeIndex = enumType.getIndexOfEnumAttribute(currentUniqueAttribute);
-            uniqueAttributeValues.add(enumAttributeValues.getPart(attributeIndex));
+            uniqueAttributeValues.add(findEnumAttributeValue(ipsProject, currentUniqueAttribute));
         }
         return uniqueAttributeValues;
     }
@@ -220,11 +218,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                 if (referencedEnumType != null) {
                     List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(
                             getEnumValueContainer() instanceof IEnumType, ipsProject);
-                    for (IEnumAttributeValue currentEnumAttributeValue : findUniqueEnumAttributeValues(
-                            uniqueEnumAttributes, ipsProject)) {
-                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(
-                                getIndexOfEnumAttributeValue(currentEnumAttributeValue), currentEnumAttributeValue
-                                        .getValue(), currentEnumAttributeValue);
+                    List<IEnumAttributeValue> uniqueEnumAttributeValues = findUniqueEnumAttributeValues(
+                            uniqueEnumAttributes, ipsProject);
+                    for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
+                        IEnumAttributeValue currentEnumAttributeValue = uniqueEnumAttributeValues.get(i);
+                        IEnumAttribute currentReferencedEnumAttribute = uniqueEnumAttributes.get(i);
+                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(referencedEnumType
+                                .getIndexOfEnumAttribute(currentReferencedEnumAttribute), currentEnumAttributeValue
+                                .getValue(), currentEnumAttributeValue);
                     }
                 }
             } catch (CoreException e) {

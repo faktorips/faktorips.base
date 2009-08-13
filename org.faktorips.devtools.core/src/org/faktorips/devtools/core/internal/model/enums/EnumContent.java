@@ -127,7 +127,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             addUniqueIdentifierToValidationCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute));
         }
-        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes);
+        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes, referencedEnumType);
         return true;
     }
 

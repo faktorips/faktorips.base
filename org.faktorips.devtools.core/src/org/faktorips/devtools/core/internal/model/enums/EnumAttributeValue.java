@@ -156,10 +156,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         IEnumValue enumValue = getEnumValue();
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)enumValue.getEnumValueContainer();
         if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
-            int index = enumValue.getIndexOfEnumAttributeValue(this);
-            if (enumValueContainerImpl.containsValidationCacheUniqueIdentifier(index)) {
-                enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(index, oldValue, this);
-                enumValueContainerImpl.addValidationCacheUniqueIdentifierEntry(index, value, this);
+            try {
+                IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
+                IEnumType enumType = referencedEnumAttribute.getEnumType();
+                int index = enumType.getIndexOfEnumAttribute(referencedEnumAttribute);
+                if (enumValueContainerImpl.containsValidationCacheUniqueIdentifier(index)) {
+                    enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(index, oldValue, this);
+                    enumValueContainerImpl.addValidationCacheUniqueIdentifierEntry(index, value, this);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -199,7 +205,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         if (cacheInitialized) {
-            if (isUniqueIdentifierEnumAttributeValue()) {
+            if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
                 if (list.getNoOfMessages() == 0) {
                     if (isLiteralNameEnumAttributeValue(enumAttribute)) {
@@ -221,7 +227,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
             String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, enumAttribute.getName());
             Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
-                    Message.ERROR, this);
+                    Message.ERROR, this, PROPERTY_VALUE);
             list.add(validationMessage);
         }
     }
@@ -243,31 +249,33 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         if (uniqueIdentifierValueMissing) {
             text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueEmpty, enumAttribute.getName());
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
-                    Message.ERROR, this);
+                    Message.ERROR, this, PROPERTY_VALUE);
             list.add(validationMessage);
             return;
         }
 
         // The unique identifier enum attribute value must be unique.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
+        IEnumType enumType = enumAttribute.getEnumType();
         List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl
-                .getValidationCacheListForUniqueIdentifier(getEnumValue().getIndexOfEnumAttributeValue(this),
-                        getValue());
+                .getValidationCacheListForUniqueIdentifier(enumType.getIndexOfEnumAttribute(enumAttribute), getValue());
         if (cachedAttributeValues != null) {
             if (cachedAttributeValues.size() > 1) {
                 text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
-                        Message.ERROR, this);
+                        Message.ERROR, this, PROPERTY_VALUE);
                 list.add(validationMessage);
             }
         }
     }
 
     /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
-    private boolean isUniqueIdentifierEnumAttributeValue() throws CoreException {
+    private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType)
+            throws CoreException {
+
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        return enumValueContainerImpl.containsValidationCacheUniqueIdentifier(getEnumValue()
-                .getIndexOfEnumAttributeValue(this));
+        return enumValueContainerImpl.containsValidationCacheUniqueIdentifier(enumType
+                .getIndexOfEnumAttribute(enumAttribute));
     }
 
     public IEnumValue getEnumValue() {

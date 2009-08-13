@@ -243,7 +243,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             throws CoreException {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(true)) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
             Boolean unqiueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
             if ((unqiueBoolean == null) ? false : unqiueBoolean.booleanValue()) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
@@ -259,7 +259,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             addUniqueIdentifierToValidationCache(getIndexOfEnumAttribute(currentUniqueAttribute));
         }
-        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes);
+        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes, this);
         return true;
     }
 

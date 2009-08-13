@@ -332,14 +332,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     abstract boolean initUniqueIdentifierValidationCacheImpl() throws CoreException;
 
     /** Initializes the unique identifier entries. */
-    void initValidationCacheUniqueIdentifierEntries(List<IEnumAttribute> uniqueEnumAttributes) throws CoreException {
+    void initValidationCacheUniqueIdentifierEntries(List<IEnumAttribute> uniqueEnumAttributes, IEnumType enumType)
+            throws CoreException {
+
         ArgumentCheck.notNull(uniqueEnumAttributes);
         for (IEnumValue currentEnumValue : getEnumValues()) {
             List<IEnumAttributeValue> uniqueEnumAttributeValues = currentEnumValue.findUniqueEnumAttributeValues(
                     uniqueEnumAttributes, getIpsProject());
-            for (IEnumAttributeValue currentUniqueAttributeValue : uniqueEnumAttributeValues) {
-                addValidationCacheUniqueIdentifierEntry(currentEnumValue
-                        .getIndexOfEnumAttributeValue(currentUniqueAttributeValue), currentUniqueAttributeValue
+            for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
+                IEnumAttributeValue currentUniqueAttributeValue = uniqueEnumAttributeValues.get(i);
+                int currentReferencedAttributeIndex = enumType.getIndexOfEnumAttribute(uniqueEnumAttributes.get(i));
+                addValidationCacheUniqueIdentifierEntry(currentReferencedAttributeIndex, currentUniqueAttributeValue
                         .getValue(), currentUniqueAttributeValue);
             }
         }
@@ -347,19 +350,19 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     /**
      * Returns the list from the unique identifier validation cache corresponding to the given
-     * unique identifier value for the given unique identifier identified by the index of the enum
-     * attribute value.
+     * unique identifier value for the given unique identifier identified by the given enum
+     * attribute index.
      * 
-     * @param enumAttributeValueIndex The index of the enum attribute value.
+     * @param enumAttributeIndex The index of the enum attribute.
      * @param uniqueIdentifierValue The value of the unique identifier.
      * 
      * @throws NullPointerException If <tt>uniqueIdentifierValue</tt> is <tt>null</tt>.
      */
-    List<IEnumAttributeValue> getValidationCacheListForUniqueIdentifier(int enumAttributeValueIndex,
+    List<IEnumAttributeValue> getValidationCacheListForUniqueIdentifier(int enumAttributeIndex,
             String uniqueIdentifierValue) {
 
         ArgumentCheck.notNull(uniqueIdentifierValue);
-        Integer outerKey = new Integer(enumAttributeValueIndex);
+        Integer outerKey = new Integer(enumAttributeIndex);
         ArgumentCheck.isTrue(uniqueIdentifierValidationCache.containsKey(outerKey));
         return uniqueIdentifierValidationCache.get(outerKey).get(uniqueIdentifierValue);
     }
