@@ -251,6 +251,50 @@
         </project>
         
         <!--=====================================================-->
+        <!--Project definition: org.faktorips.pluginbuilder branch: v2_3_patches-->
+        <!--=====================================================-->
+        <!-- scheduleintervall: 300 = 5 minutes -->
+        <project name="org.faktorips.pluginbuilder.v2_3_patches" mainbuildtarget="pluginbuilder.faktorips"
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_3/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testmerge="*test.xml"
+            cvstag="v2_3_patches"
+            cvsmodul="org.faktorips.pluginbuilder"
+            scheduleintervall="300"> 
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
+            <jvmarg arg="-Xms124m"/>
+            <jvmarg arg="-Xmx512m"/>
+            <!-- property for the ant build script -->
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_3_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            <depends>
+                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
+                <cvs module="org.faktorips.util"/>
+                <cvs module="org.faktorips.valuetypes"/>
+                <cvs module="org.faktorips.dtflcommon"/>
+                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.fl"/>
+                <cvs module="org.faktorips.devtools.core"/>
+                <cvs module="org.faktorips.devtools.stdbuilder"/>
+                <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.ant"/>
+                <cvs module="org.faktorips.uml"/>
+                <cvs module="org.faktorips.devtools.ormext"/>
+                
+                <!-- plugin test dependencies-->
+                <cvs module="org.faktorips.devtools.core.test"/>
+                <cvs module="org.faktorips.devtools.stdbuilder.test"/>
+                <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.ant.test"/>            
+                <cvs module="org.faktorips.uml.test"/>  
+                <cvs module="org.faktorips.devtools.ormext.test"/> 
+                
+                <!-- customer plugins -->              
+                <cvs module="de.qv.faktorips"/>  
+            </depends>      
+        </project>
+        
+        <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest-->
         <!--=====================================================-->    
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
@@ -308,6 +352,39 @@
             </depends>         
         </project>
         
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.integrationtest.v2_3_patches-->
+        <!--=====================================================-->    
+        <project name="org.faktorips.integrationtest.v2_3_patches" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_3/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_3_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_3_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_3_patches"/>
+<!-- TODO to receive emails add cvs projects -->
+            </depends>         
+        </project>
+
+        <!--============================================================-->
+        <!--Project definition: org.faktorips.integrationtest.java5.v2_3_patches-->
+        <!--============================================================-->    
+        <project name="org.faktorips.integrationtest.java5.v2_3_patches" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_3/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_3_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvsTag" value="v2_3_patches"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>             
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_3_patches"/>
+            </depends>         
+        </project>        
         <!--*****************************************************-->
         <!-- Customer projects -->
         <!--*****************************************************-->
