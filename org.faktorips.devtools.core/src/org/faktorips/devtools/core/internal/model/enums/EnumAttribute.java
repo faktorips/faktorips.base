@@ -231,7 +231,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
-            return;
         }
 
         // The datatype may not be void.
@@ -240,7 +239,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
-            return;
         }
 
         // The datatype may not be abstract.
@@ -249,7 +247,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
-            return;
         }
 
         /*
@@ -264,7 +261,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS,
                         text, Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
-                return;
             }
         }
 
@@ -282,7 +278,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                         MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
-                return;
             }
         }
     }
