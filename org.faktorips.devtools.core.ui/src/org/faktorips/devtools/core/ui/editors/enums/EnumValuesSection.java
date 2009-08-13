@@ -496,7 +496,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         String value = providerAttributeValue.getValue();
                         if (value != null) {
                             if (value.length() > 0) {
-                                // TODO AW: The next two lines should better somehow use the core.
+                                // TODO AW: The next two lines should better be moved to core.
                                 value = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
                                 value = value.replaceAll(" ", "_");
 
