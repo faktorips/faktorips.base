@@ -784,14 +784,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
 
-        List<IEnumAttribute> uniqueIdentifierAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
+        List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         List<IEnumValue> enumValues = enumType.getEnumValues();
         IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
         if (literalNameAttribute == null) {
             return;
         }
 
-        for (IEnumAttribute currentEnumAttribute : uniqueIdentifierAttributes) {
+        for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid()) {
                 if (currentEnumAttribute.findIsUnique(getIpsProject())) {
 

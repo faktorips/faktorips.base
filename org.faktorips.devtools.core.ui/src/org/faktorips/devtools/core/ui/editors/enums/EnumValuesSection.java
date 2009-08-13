@@ -320,9 +320,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
 
         } else {
-            for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributesIncludeSupertypeOriginals(true,
-                    ipsProject)) {
-                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isIdentifier());
+            for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
+                Boolean uniqueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
+                addTableColumn(currentEnumAttribute.getName(), ((uniqueBoolean == null) ? false : uniqueBoolean
+                        .booleanValue()));
             }
         }
     }

@@ -89,7 +89,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * 
      * <p>
      * Overwritten to be sure to get the cancel-button as soon as possible ...
-     * </p>
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
@@ -106,18 +105,12 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleShellCloseEvent() {
         handleAbortion();
         super.handleShellCloseEvent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean close() {
         if (bindingContext != null) {
@@ -136,9 +129,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
@@ -153,8 +143,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * Creates the description tab.
      * 
      * @param folder
-     * 
-     * @return
      */
     protected TabItem createDescriptionTabItem(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
@@ -169,17 +157,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     /**
      * Returns the part being edited.
-     * 
-     * @return The <code>IIpsObjectPart</code> that is being edited by this ips object part edit
-     *         dialog.
      */
     public IIpsObjectPart getIpsPart() {
         return part;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void updateTitleInTitleArea() {
         setTitle(buildTitle());
@@ -188,10 +170,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     /**
      * Creates the title of this dialog. The title will include the name of the ips object the ips
      * object part belongs to and the name of the ips object part itself.
-     * 
-     * @return A <code>String</code> following this format:<br />
-     *         <code>part.getIpsObject().getName() + '.' +
-     *         part.getName()</code>
      */
     protected String buildTitle() {
         IIpsObjectPart part = getIpsPart();
