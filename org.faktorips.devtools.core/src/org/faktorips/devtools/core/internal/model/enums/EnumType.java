@@ -571,8 +571,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
 
-        // Go over all enum attributes of every enum type of the supertype hierarchy.
-        for (IEnumType currentSuperEnumType : findAllSuperEnumTypes(ipsProject)) {
+        /*
+         * Go over all EnumAttributes of every EnumType in the supertype hierarchy. Do this
+         * backwards so the attributes of the EnumType up highest in the hierarchy will be showed
+         * first.
+         */
+        List<IEnumType> superEnumTypes = findAllSuperEnumTypes(ipsProject);
+        for (int i = superEnumTypes.size() - 1; i >= 0; i--) {
+            IEnumType currentSuperEnumType = superEnumTypes.get(i);
             for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes(false)) {
                 returnAttributesList.add(currentEnumAttribute);
             }
