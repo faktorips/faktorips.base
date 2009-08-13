@@ -58,6 +58,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -495,6 +496,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         String value = providerAttributeValue.getValue();
                         if (value != null) {
                             if (value.length() > 0) {
+                                // TODO AW: The next two lines should better somehow use the core.
+                                value = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
+                                value = value.replaceAll(" ", "_");
+
                                 textControl.setText(value);
                             }
                         }
