@@ -87,22 +87,20 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 
-    /**
-     * Returns the value as <code>String</code>.
-     */
+    /** Returns the value as <tt>String</tt>. */
     public String getValue();
 
     /**
      * Sets the actual value.
      * 
-     * @param value The new value. May also be <code>null</code>.
+     * @param value The new value. May also be <tt>null</tt>.
      */
     public void setValue(String value);
 
     /**
-     * Returns the enum value this enum attribute value belongs to.
+     * Returns the <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
      * <p>
-     * This is a shortcut for: <code>(IEnumValue)this.getParent();</code>
+     * This is a shortcut for: <tt>(IEnumValue)this.getParent();</tt>
      */
     public IEnumValue getEnumValue();
 

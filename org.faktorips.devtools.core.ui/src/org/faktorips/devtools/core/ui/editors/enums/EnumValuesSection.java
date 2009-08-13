@@ -35,12 +35,15 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
@@ -48,9 +51,11 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -59,6 +64,7 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -75,15 +81,16 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The ui section for the enum type pages and the enum content page that contains the enum values
- * table to be edited.
+ * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentPage</tt> that contains the
+ * <tt>enumValuesTable</tt> to be edited.
  * <p>
- * If the ips object being edited is an enum type then in-place fixing of the enum values table will
- * be done. That means, if an enum attribute is added there will be a new column in the table, if an
- * enum attribute is deleted the corresponding table column will be deleted and so on.
+ * If the IPS object being edited is an <tt>IEnumType</tt> then in-place fixing of the
+ * <tt>enumValuesTable</tt> will be done. That means, if an <tt>IEnumAttribute</tt> is added there
+ * will be a new column in the table, if an <tt>IEnumAttribute</tt> is deleted the corresponding
+ * table column will be deleted and so on.
  * <p>
- * Fixing the table when editing enum content objects is done manually by the user trough a separate
- * dialog.
+ * Fixing the table when editing <tt>IEnumContent</tt> objects is done manually by the user trough a
+ * separate dialog.
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeValuesPage
@@ -98,44 +105,45 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The image to show for columns that contain the identifier value. */
     private final static Image UNIQUE_IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
 
-    /** The enum value container holding the enum values to be edited. */
+    /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
     private IEnumValueContainer enumValueContainer;
 
-    /** The ips project the enum value container to edit is stored in. */
+    /** The <tt>IIpsProject</tt> the <tt>IEnumValueContainer</tt> to edit is stored in. */
     private IIpsProject ipsProject;
 
-    /** The ui table widget. */
+    /** The UI table widget. */
     private Table enumValuesTable;
 
-    /** The jface table viewer linking the ui table with the model data. */
+    /** The JFace table viewer linking the UI table with the model data. */
     private TableViewer enumValuesTableViewer;
 
-    /** The names of the columns for the enum values table ui widget. */
+    /** The names of the columns for the <tt>enumValuesTable</tt> UI widget. */
     private List<String> columnNames;
 
-    /** Action to add new enum values. */
+    /** Action to add new <tt>IEnumValue</tt>s. */
     private IAction newEnumValueAction;
 
-    /** Action to delete enum values. */
+    /** Action to delete <tt>IEnumValue</tt>s. */
     private IAction deleteEnumValueAction;
 
-    /** Action to move enum values up by 1. */
+    /** Action to move <tt>IEnumValue</tt>s up by 1. */
     private IAction moveEnumValueUpAction;
 
-    /** Action to move enum values down by 1. */
+    /** Action to move <tt>IEnumValue</tt>s down by 1. */
     private IAction moveEnumValueDownAction;
 
     /**
-     * Creates a new <code>EnumValuesSection</code> containing the enum values of the given enum
-     * value container.
+     * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
+     * <tt>IEnumValueContainer</tt>.
      * 
-     * @param enumValueContainer The enum values of this enum value container will be shown.
-     * @param parent The parent ui composite.
-     * @param toolkit The ui toolkit that shall be used to create ui elements.
+     * @param enumValueContainer The <tt>IEnumValue</tt>s of this <tt>IEnumValueContainer</tt> will
+     *            be shown.
+     * @param parent The parent UI composite.
+     * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws CoreException If an error occurs while searching for the enum type referenced by the
-     *             ips object being edited.
-     * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>
+     *             referenced by the IPS object being edited.
+     * @throws NullPointerException If <tt>enumValueContainer</tt> is <tt>null</tt>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {
@@ -160,9 +168,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         enumValueContainer.getIpsModel().addChangeListener(this);
         addDisposeListener(new DisposeListener() {
-            /**
-             * {@inheritDoc}
-             */
             public void widgetDisposed(DisposeEvent e) {
                 enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
             }
@@ -172,25 +177,25 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /**
      * Reinitializes the contents of this section:
      * <ul>
-     * <li>The <code>columnNames</code> will be emptied and created anew.
-     * <li>Every table column of the <code>enumValuesTable</code> will be disposed and the table
-     * columns will be created anew.
+     * <li>The <tt>columnNames</tt> will be emptied and created anew.
+     * <li>Every table column of the <tt>enumValuesTable</tt> will be disposed and the table columns
+     * will be created anew.
      * 
-     * @param enumType The new enum type or <tt>null</tt> if none exists (only allowed for editing
-     *            EnumContent however).
+     * @param enumType The assigned <tt>IEnumType</tt> or <tt>null</tt> if none exists (only allowed
+     *            for editing EnumContent however).
      */
     public void reinit(IEnumType enumType) throws CoreException {
-        // Clear column names
+        // Clear column names.
         columnNames.clear();
 
-        // Dispose enum values table columns
+        // Dispose enumValuesTable columns.
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
             currentColumn.dispose();
         }
         createTableColumns(enumType);
     }
 
-    /** Creates the actions. */
+    /** Creates the toolbar actions. */
     private void createActions() {
         newEnumValueAction = new NewEnumValueAction(enumValuesTableViewer);
         deleteEnumValueAction = new DeleteEnumValueAction(enumValuesTableViewer);
@@ -200,12 +205,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     /** Creates the section's toolbar. */
     private void createToolbar() {
-        // Create the toolbar
+        // Create the toolbar.
         Section section = getSectionControl();
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(section);
 
-        // Add the actions to the toolbar
+        // Add the actions to the toolbar.
         toolBarManager.add(newEnumValueAction);
         toolBarManager.add(deleteEnumValueAction);
         toolBarManager.add(new Separator());
@@ -215,16 +220,17 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         // TODO AW: align the toolbar at the right of the section title bar (not so easy).
         toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
-        // Update the toolbar with the new information
+        // Update the toolbar with the new information.
         toolBarManager.update(true);
     }
 
     /**
-     * Updates the enabled states of the enum values table and its actions.
+     * Updates the enabled states of the <tt>enumValuesTable</tt> and its actions.
      * <p>
-     * The enabled states result from the fact whether this enum values section is used for an enum
-     * type or for an enum content and whether the (referenced) enum type defines its values in the
-     * model or not. The enum values table will also be disabled if the enum type is abstract.
+     * The enabled states result from the fact whether this <tt>EnumValuesSection</tt> is used for
+     * an <tt>IEnumType</tt> or for an <tt>IEnumContent</tt> and whether the (referenced)
+     * <tt>IEnumType</tt> defines its values in the model or not. The <tt>enumValuesTable</tt> will
+     * also be disabled if the <tt>IEnumType</tt> is abstract.
      */
     private void updateEnabledStates(IEnumType enumType) {
         boolean valuesArePartOfModel = (enumType != null) ? enumType.isContainingValues() : false;
@@ -240,9 +246,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         try {
@@ -252,19 +255,18 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-
         createTableValidationHoverService();
     }
 
-    /** Creates the ui table for editing enum values. */
+    /** Creates the UI table for editing <tt>IEnumValue</tt>s. */
     private void createTable(IEnumType enumType, Composite parent, UIToolkit toolkit) throws CoreException {
-        // Create the ui widget
+        // Create the UI widget.
         enumValuesTable = toolkit.createTable(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
                 | SWT.FULL_SELECTION);
         enumValuesTable.setHeaderVisible(true);
         enumValuesTable.setLinesVisible(true);
 
-        // Fill all space
+        // Fill all space.
         GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableGridData.widthHint = parent.getClientArea().width;
         tableGridData.heightHint = parent.getClientArea().height;
@@ -273,7 +275,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         createTableColumns(enumType);
         increaseHeightOfTableRows();
 
-        // Key listener for deleting rows with the DEL key
+        // Key listener for deleting rows with the DEL key.
         enumValuesTable.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
 
@@ -288,10 +290,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * Creates the columns of the enum values table based upon enum attribute values if there are
-     * any enum values yet and the ips object to edit is an <code>IEnumContent</code>.
+     * Creates the columns of the <tt>enumValuesTable</tt> based upon <tt>IEnumAttributeValue</tt>s
+     * if there are any <tt>IEnumValue</tt>s yet and the IPS object to edit is an
+     * <tt>IEnumContent</tt>.
      * <p>
-     * If this is not the case the enum attributes of the enum type are used to create the columns.
+     * If this is not the case the <tt>IEnumAttribute</tt>s of the <tt>IEnumType</tt> are used to
+     * create the columns.
      */
     private void createTableColumns(IEnumType enumType) throws CoreException {
         if (enumValueContainer instanceof IEnumContent) {
@@ -333,9 +337,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** Increases the height of the table rows slightly. */
     private void increaseHeightOfTableRows() {
         Listener paintListener = new Listener() {
-            /**
-             * {@inheritDoc}
-             */
             public void handleEvent(Event event) {
                 if (event.type == SWT.MeasureItem) {
                     if (enumValuesTable.getColumnCount() == 0) {
@@ -346,16 +347,15 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     String text = item.getText(event.index);
                     Point size = event.gc.textExtent(text);
 
-                    // The height will be increased by 5 pixel
+                    // The height will be increased by 5 pixel.
                     event.height = Math.max(event.height, size.y + 5);
                 }
             }
         };
-
         enumValuesTable.addListener(SWT.MeasureItem, paintListener);
     }
 
-    /** Creates the context menu for the enum values table. */
+    /** Creates the context menu for the <tt>enumValuesTable</tt>. */
     private void createContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 
@@ -369,33 +369,30 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         enumValuesTable.setMenu(menu);
     }
 
-    /** Creates the table viewer for the enum values table widget. */
+    /** Creates the table viewer for the <tt>enumValuesTable</tt>. */
     private void createTableViewer() throws CoreException {
-        // Create and setup general properties
+        // Create and setup general properties.
         enumValuesTableViewer = new TableViewer(enumValuesTable);
         enumValuesTableViewer.setUseHashlookup(true);
 
-        // Create cell editors and set column properties
+        // Create cell editors and set column properties.
         updateTableViewer();
 
-        // Assign the content provider and the label provider
+        // Assign the content provider and the label provider.
         enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider());
         enumValuesTableViewer.setLabelProvider(new EnumValuesLabelProvider());
         enumValuesTableViewer.setInput(enumValueContainer);
 
-        // Set the cell modifier
+        // Set the cell modifier.
         enumValuesTableViewer.setCellModifier(new EnumCellModifier());
 
-        // Set the row deletor listener to automatically delete empty rows at the end of the table
+        // Set the RowDeletor listener to automatically delete empty rows at the end of the table.
         enumValuesTableViewer.addSelectionChangedListener(new RowDeletor());
     }
 
-    /** Creates the hover service for validation messages for the enum values table viewer. */
+    /** Creates the hover service for validation messages for the <tt>enumValuesTableViewer</tt>. */
     private void createTableValidationHoverService() {
         new TableMessageHoverService(enumValuesTableViewer) {
-            /**
-             * {@inheritDoc}
-             */
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
@@ -408,7 +405,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * Updates the cell editors for the enum values table viewer by creating them anew and
+     * Updates the cell editors for the <tt>enumValuesTableViewer</tt> by creating them anew and
      * overwrites the column properties with actual data. Also refreshes the viewer with actual
      * model data.
      */
@@ -418,27 +415,28 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         String[] columnNamesArray = columnNames.toArray(new String[columnNames.size()]);
-
-        // Update column properties
         enumValuesTableViewer.setColumnProperties(columnNamesArray);
 
-        // Create cell editors
         IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         CellEditor[] cellEditors = createCellEditors(enumType, columnNamesArray);
-
-        // Assign the cell editors to the table viewer
         enumValuesTableViewer.setCellEditors(cellEditors);
-
-        // Refresh the viewer
         enumValuesTableViewer.refresh();
     }
 
-    /** Updates the cell editors for the enum values table by recreating them. */
-    private CellEditor[] createCellEditors(IEnumType enumType, String[] columnNames) throws CoreException {
+    /** Updates the cell editors for the <tt>enumValuesTable</tt> by recreating them. */
+    private CellEditor[] createCellEditors(final IEnumType enumType, String[] columnNames) throws CoreException {
+        List<IEnumAttribute> enumAttributes = new ArrayList<IEnumAttribute>();
+        if (enumType != null) {
+            boolean includeLiteralNameAttributes = enumValueContainer instanceof IEnumType;
+            enumAttributes.addAll(enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralNameAttributes));
+        }
+
         CellEditor[] cellEditors = new CellEditor[columnNames.length];
         for (int i = 0; i < cellEditors.length; i++) {
-            // If the table is in an invalid state every cell will be represented as string
-            String datatypeQualifiedName = "String";
+            IEnumLiteralNameAttribute literalNameAttribute = null;
+
+            // If the table is in an invalid state every cell will be represented as String.
+            ValueDatatype datatype = Datatype.STRING;
             if (enumType != null) {
                 boolean obtainDatatype = true;
                 if (enumValueContainer instanceof IEnumContent) {
@@ -448,21 +446,24 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     }
                 }
                 if (obtainDatatype) {
-                    boolean includeLiteralNameAttributes = enumValueContainer instanceof IEnumType;
-                    datatypeQualifiedName = enumType.getEnumAttributesIncludeSupertypeCopies(
-                            includeLiteralNameAttributes).get(i).getDatatype();
+                    IEnumAttribute referencedEnumAttribute = enumAttributes.get(i);
+                    datatype = referencedEnumAttribute.findDatatype(enumValueContainer.getIpsProject());
+                    if (referencedEnumAttribute instanceof IEnumLiteralNameAttribute) {
+                        literalNameAttribute = (IEnumLiteralNameAttribute)referencedEnumAttribute;
+                    }
                 }
             }
 
-            TableCellEditor cellEditor = null;
-            ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
             ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                     .getValueDatatypeControlFactory(datatype);
-
-            // the ips project of the enum value container is provided to this method
-            cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
+            TableCellEditor cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
                     enumValuesTableViewer, i, enumValueContainer.getIpsProject());
             cellEditor.setRowCreating(true);
+            if (literalNameAttribute != null) {
+                IEnumAttribute defaultValueProviderAttribute = enumType.getEnumAttribute(literalNameAttribute
+                        .getDefaultValueProviderAttribute());
+                addDefaultProviderListenerToCellEditor(cellEditor, defaultValueProviderAttribute);
+            }
             cellEditors[i] = cellEditor;
         }
 
@@ -470,40 +471,74 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * {@inheritDoc}
+     * Attaches a <tt>FocusListener</tt> to the control of the given cell editor responsible for
+     * filling the field with the default value for the literal name obtained from the default value
+     * provider attribute.
      */
+    private void addDefaultProviderListenerToCellEditor(TableCellEditor cellEditor,
+            final IEnumAttribute defaultValueProviderAttribute) {
+
+        final Control control = cellEditor.getControl();
+        control.addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent event) {
+                // Literal name field is a text field.
+                Text textControl = (Text)control;
+                if (textControl.getText().length() == 0) {
+                    int rowNumber = enumValuesTable.getSelectionIndex();
+                    IEnumValue enumValue = enumValueContainer.getEnumValues().get(rowNumber);
+                    try {
+                        IEnumAttributeValue providerAttributeValue = enumValue.findEnumAttributeValue(ipsProject,
+                                defaultValueProviderAttribute);
+                        String value = providerAttributeValue.getValue();
+                        if (value != null) {
+                            if (value.length() > 0) {
+                                textControl.setText(value);
+                            }
+                        }
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                // Nothing to do.
+            }
+
+        });
+    }
+
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
     }
 
-    /** Adds a new column to the end of the enum values table with the given name. */
+    /** Adds a new column to the end of the <tt>enumValuesTable</tt> with the given name. */
     private void addTableColumn(String columnName, boolean identifierColumnn) throws CoreException {
-        // Add column to the table
+        // Add column to the table.
         TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
 
-        // Set identifier image as neccessary
+        // Set identifier image as necessary.
         if (identifierColumnn) {
             newColumn.setImage(UNIQUE_IDENTIFIER_COLUMN_IMAGE);
         }
 
-        // Add the name to the column names list
+        // Add the name to the column names list.
         columnNames.add(columnName);
 
         updateTableViewer();
     }
 
-    /**
-     * Renames the column identified by the given column name to the given new column name.
-     */
+    /** Renames the column identified by the given column name to the given new column name. */
     public void renameTableColumn(String columnName, String newColumnName) throws CoreException {
         if (!(columnNames.contains(columnName))) {
             throw new NoSuchElementException();
         }
 
-        // Change name in table column
+        // Change name in table column.
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
             if (currentColumn.getText().equals(columnName)) {
                 currentColumn.setText(newColumnName);
@@ -511,7 +546,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
-        // Update column names
+        // Update column names.
         for (int i = 0; i < columnNames.size(); i++) {
             String currentColumnName = columnNames.get(i);
             if (currentColumnName.equals(columnName)) {
@@ -524,8 +559,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * Returns the current index of the column identified by the given name. Returns
-     * <code>null</code> if no column with the given name exists.
+     * Returns the current index of the column identified by the given name. Returns <tt>null</tt>
+     * if no column with the given name exists.
      */
     private int getColumnIndexByName(String columnName) {
         int[] columnOrder = enumValuesTable.getColumnOrder();
@@ -543,11 +578,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /**
      * {@inheritDoc}
      * <p>
-     * Initiates in-place fixing of the enum values table if the enum value container to be edited
-     * is an enum type.
+     * Initiates in-place fixing of the <tt>enumValuesTable</tt> if the <tt>IEnumValueContainer</tt>
+     * to be edited is an <tt>IEnumType</tt>.
      * <p>
-     * Updates the <code>originalOrderedAttributeValuesMap</code> and refreshes the
-     * <code>enumValuesTableViewer</code> when enum values have been added, moved or removed.
+     * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the
+     * <tt>enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
      */
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
@@ -558,8 +593,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         /*
-         * Return if the content changed was not the enum value container to be edited or the
-         * referenced enum type.
+         * Return if the content changed was not the EnumValueContainer to be edited or the
+         * referenced EnumType.
          */
         if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
             if (enumType != null) {
@@ -597,7 +632,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
-
                 break;
 
             case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
@@ -617,7 +651,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                                 }
                             }
 
-                            // Something else but the name has changed
+                            // Something else but the name has changed.
                             if (oldName == null) {
                                 if (enumValueContainer instanceof IEnumType) {
                                     reinit(enumTypeModifiedEnumAttribute);
@@ -633,67 +667,48 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         }
                     }
                 }
-
                 break;
         }
     }
 
-    /**
-     * The content provider for the enum values table viewer.
-     */
+    /** The content provider for the <tt>enumValuesTableViewer</tt>. */
     private class EnumValuesContentProvider implements IStructuredContentProvider {
 
-        /**
-         * {@inheritDoc}
-         */
         public Object[] getElements(Object inputElement) {
             return enumValueContainer.getEnumValues().toArray();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void dispose() {
-
+            // Nothing to do.
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+            // Nothing to do.
         }
 
     }
 
-    /**
-     * The label provider for the enum values table viewer.
-     */
+    /** The label provider for the <tt>enumValuesTableViewer</tt>. */
     private class EnumValuesLabelProvider implements ITableLabelProvider {
 
         /** Image for validation errors. */
         private final Image errorImage = IpsPlugin.getDefault().getImage("ovr16/error_co.gif"); //$NON-NLS-1$
 
-        /**
-         * {@inheritDoc}
-         */
         public Image getColumnImage(Object element, int columnIndex) {
-            // Test for errors
+            // Test for errors.
             if (hasErrorsAt((IEnumValue)element, columnIndex)) {
                 return errorImage;
             }
-
             return null;
         }
 
         /**
-         * Returns <code>true</code> if the given enum value validation detects an error at the
-         * given columnIndex, <code>false</code> otherwise.
+         * Returns <tt>true</tt> if the validation of the given <tt>IEnumValue</tt> detects an error
+         * at the given columnIndex, <tt>false</tt> otherwise.
          */
         private boolean hasErrorsAt(IEnumValue enumValue, int columnIndex) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
-
-            // Don't validate if the indicated column does not exist
+            // Don't validate if the indicated column does not exist.
             if (enumAttributeValues.size() <= columnIndex) {
                 return false;
             }
@@ -707,24 +722,20 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public String getColumnText(Object element, int columnIndex) {
-            // There need to be at least one column to be able to obtain label information
+            // There need to be at least one column to be able to obtain label information.
             if (columnNames.size() > 0) {
                 IEnumValue enumValue = (IEnumValue)element;
 
-                // For each requested column there must already be an enum attribute value
+                // For each requested column there must already be an EnumAttributeValue.
                 List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
                 if (enumAttributeValues.size() - 1 >= columnIndex) {
 
                     IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
-
                     /*
-                     * Return text formatted by the ips datatype formatter if the referenced enum
-                     * attribute can be found and so the datatype of the value is known. Return the
-                     * value directly if the enum attribute cannot be found.
+                     * Return text formatted by the IPS DatatypeFormatter if the referenced
+                     * EnumAttribute can be found and so the datatype of the value is known. Return
+                     * the value directly if the EnumAttribute cannot be found.
                      */
                     String columnValue = enumAttributeValue.getValue();
                     IEnumAttribute enumAttribute = null;
@@ -738,7 +749,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     }
 
                     try {
-                        // Format value properly
+                        // Format value properly.
                         String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
                         if (valueDatatype instanceof EnumTypeDatatypeAdapter) {
@@ -757,51 +768,36 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void addListener(ILabelProviderListener listener) {
-
+            // Nothing to do.
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void dispose() {
-
+            // Nothing to do.
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public boolean isLabelProperty(Object element, String property) {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void removeListener(ILabelProviderListener listener) {
-
+            // Nothing to do.
         }
 
     }
 
-    /**
-     * The cell modifier for the enum values table viewer.
-     */
+    /** The cell modifier for the <tt>enumValuesTableViewer</tt>. */
     private class EnumCellModifier implements ICellModifier {
 
         /**
          * {@inheritDoc}
+         * <p>
+         * Returns <tt>true</tt>.
          */
         public boolean canModify(Object element, String property) {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public Object getValue(Object element, String property) {
             if (element instanceof IEnumValue) {
                 IEnumValue enumValue = (IEnumValue)element;
@@ -815,9 +811,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void modify(Object element, String property, Object value) {
             IEnumValue enumValue = null;
             if (element instanceof IEnumValue) {
@@ -838,15 +831,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     }
 
-    /*
-     * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows at the
+    /**
+     * Listener that reacts to <tt>SelectionChangedEvent</tt>s by deleting all empty rows at the
      * bottom of the table.
      */
     private class RowDeletor implements ISelectionChangedListener {
 
-        /**
-         * {@inheritDoc}
-         */
         public void selectionChanged(SelectionChangedEvent event) {
             removeRedundantRows();
         }
@@ -875,11 +865,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         /**
-         * Checks whether a row (enum value) is empty or not. Returns <code>true</code> if all the
-         * given row's values (columns) contain a whitespace string.
+         * Checks whether a row (<tt>IEnumValue</tt>) is empty or not. Returns <tt>true</tt> if all
+         * the given row's values (columns) contain a whitespace string.
          * <p>
-         * <code>null</code> is treated as content. Thus a row that contains <code>null</code>
-         * values is not empty.
+         * <tt>null</tt> is treated as content. Thus a row that contains <tt>null</tt> values is not
+         * empty.
          */
         private boolean isRowEmpty(IEnumValue enumValue) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
@@ -889,8 +879,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 if (value == null) {
                     continue;
                 }
-                // TODO pk 10-07-2009: this is not really correct. We actually need an
-                // empty-string-representation-value
+                /*
+                 * TODO pk 10-07-2009: this is not really correct. We actually need an
+                 * empty-string-representation-value
+                 */
                 if (!(value.trim().equals(""))) {
                     allValuesEmpty = false;
                     break;
