@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,8 +26,9 @@ import org.faktorips.devtools.core.ui.team.compare.CompareViewerContentProvider;
 import org.faktorips.devtools.core.ui.team.compare.CompareViewerLineStyleListener;
 
 /**
- * A viewer for comparing productcomponents. Displays the structural differences between the productcomponents in a tree.
- * Displays detailed differences based on the text representation of both productcomponents similarly to the JavaMergeViewer.
+ * A viewer for comparing productcomponents. Displays the structural differences between the
+ * productcomponents in a tree. Displays detailed differences based on the text representation of
+ * both productcomponents similarly to the JavaMergeViewer.
  * 
  * @author Stefan Widmaier
  */
@@ -35,8 +36,8 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
 
     /**
      * Creates a <code>ProductCmptCompareViewer</code> using the given parent as parent composite
-     * and the given <code>CompareConfiguration</code>. A
-     * <code>CompareViewerContentProvider</code> is used as a content provider.
+     * and the given <code>CompareConfiguration</code>. A <code>CompareViewerContentProvider</code>
+     * is used as a content provider.
      * 
      * @param parent
      * @param cc
@@ -45,9 +46,10 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
         super(parent, cc);
         setContentProvider(new CompareViewerContentProvider(cc));
 
-        /* Sets the textfont to be used in this compare viewer. 
-         * Cannot be called in configureTextViewer() as the TextMergeViewer sets the font in its 
-         * constructor, after configureTextViewer() is called .
+        /*
+         * Sets the textfont to be used in this compare viewer. Cannot be called in
+         * configureTextViewer() as the TextMergeViewer sets the font in its constructor, after
+         * configureTextViewer() is called .
          */
         Font defaultFont = JFaceResources.getDefaultFont();
         FontData[] data = defaultFont.getFontData();
@@ -60,8 +62,7 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
 
     /**
      * Adds a <code>CompareViewerLineStyleListener</code> to the given <code>TextViewer</code> for
-     * token highlighting.
-     * {@inheritDoc}
+     * token highlighting. {@inheritDoc}
      */
     protected void configureTextViewer(TextViewer textViewer) {
         CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener((SourceViewer)textViewer);

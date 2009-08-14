@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,40 +24,37 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
  * Creates a structure of <code>ProductCmptCompareItems</code> that is used for comparing
- * <code>ProductCmpt</code>s.
- * {@inheritDoc}
+ * <code>ProductCmpt</code>s. {@inheritDoc}
  * 
  * @author Stefan Widmaier
  */
-public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
+public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
 
     public ProductCmptCompareItemCreator() {
         super();
     }
 
     /**
-     * Returns the title for the structure-differences viewer.
-     * {@inheritDoc}
+     * Returns the title for the structure-differences viewer. {@inheritDoc}
      */
     public String getName() {
         return Messages.ProductCmptCompareItemCreator_StructureViewer_title;
     }
 
-
     /**
      * Creates a structure/tree of <code>ProductCmptCompareItem</code>s from the given
      * <code>IIpsSrcFile</code> to represent an <code>IProductCmpt</code>. The
      * <code>IIpsSrcFile</code>, the <code>IProductCmpt</code>, its
-     * <code>IProductCmptGeneration</code>s and all contained <code>IComfigElement</code>s and
-     * <code>IRelation</code>s are represented by a <code>TableContentsCompareItem</code>.
+     * <code>IProductCmptGeneration</code>s and all contained <code>IConfigElement</code>s and
+     * <code>IRelation</code>s are represented by a <code>ProductCmptCompareItem</code>.
      * <p>
-     * The returned <code>TableContentsCompareItem</code> is the root of the created structure and
+     * The returned <code>ProductCmptCompareItem</code> is the root of the created structure and
      * contains the given <code>IIpsSrcFile</code>. It has exactly one child representing (and
      * referencing) the <code>IProductCmpt</code> contained in the srcfile. This
-     * <code>ProductCmptCompareItem</code> has a child for each generation the productcomponent posesses.
-     * Each generation-compareitem contains multiple <code>ProductCmptCompareItem</code>s
-     * representing the attributes (<code>IComfigElement</code>) and relations (<code>IRelation</code>)
-     * of the productcomponent (in the current generation).
+     * <code>ProductCmptCompareItem</code> has a child for each generation the productcomponent
+     * posesses. Each generation-compareitem contains multiple <code>ProductCmptCompareItem</code>s
+     * representing the attributes (<code>IConfigElement</code>) and relations (
+     * <code>IRelation</code>) of the productcomponent (in the current generation).
      * 
      * {@inheritDoc}
      */
@@ -85,6 +82,5 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
         }
         return null;
     }
-
 
 }
