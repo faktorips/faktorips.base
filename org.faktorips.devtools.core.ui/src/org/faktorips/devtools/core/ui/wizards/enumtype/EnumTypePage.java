@@ -57,13 +57,16 @@ public class EnumTypePage extends IpsObjectPage {
     /** The image for the wizard page. */
     private final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
 
-    /** The text field to choose the supertype for the new enum type. */
+    /** The text field to choose the supertype for the new <tt>IEnumType</tt>. */
     private TextButtonField supertypeField;
 
-    /** The checkbox field to mark the new enum type as being abstract. */
+    /** The checkbox field to mark the new <tt>IEnumType</tt> as being abstract. */
     private CheckboxField isAbstractField;
 
-    /** The checkbox field to mark the new enum type that its values are defined in the model. */
+    /**
+     * The checkbox field to mark the new <tt>IEnumType</tt> that its values are defined in the
+     * model.
+     */
     private CheckboxField valuesDeferredToContentField;
 
     /** The checkbox field to check if an id attribute should be created by the wizard. */
@@ -79,35 +82,32 @@ public class EnumTypePage extends IpsObjectPage {
     private Text nameAttributeNameField;
 
     /**
-     * The text field to specify the package for the enum content (only enabled if the values are
-     * not part of the model and the enum type is not abstract).
+     * The text field to specify qualified name for <tt>IEnumContent</tt> (only enabled if the
+     * values are not part of the model and the <tt>IEnumType</tt> is not abstract).
      */
-    private TextField enumContentPackageSpecificationField;
+    private TextField enumContentQualifiedNameField;
 
     /**
-     * Creates the enum type page.
+     * Creates the <tt>EnumTypePage</tt>.
      * 
-     * @param selection
+     * @param selection Active user selection.
      */
     public EnumTypePage(IStructuredSelection selection) {
         super(IpsObjectType.ENUM_TYPE, selection, Messages.Page_Title);
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(PAGE_IMAGE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
 
-        // Supertype.
-        toolkit.createFormLabel(nameComposite, Messages.Fields_SuperEnumType + ':');
+        // Create supertype field.
+        toolkit.createFormLabel(nameComposite, Messages.Fields_SuperEnumType);
         IpsObjectRefControl superTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite, true);
         supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
 
-        // Abstract.
+        // Create abstract field.
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
@@ -166,31 +166,25 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     /**
-     * Enables or disables the <code>rootPackageSpecificationControl</code> and the
-     * <code>enumContentPackageSpecificationField</code> depending on the values of the
-     * <code>isAbstractField</code> and <code>containingValuesField</code>.
+     * Enables or disables the <tt>rootPackageSpecificationControl</tt> and the
+     * <tt>enumContentQualifiedNameField</tt> depending on the values of the
+     * <tt>isAbstractField</tt> and <tt>containingValuesField</tt>.
      */
     private void enableEnumContentControls() {
         boolean isAbstract = (Boolean)isAbstractField.getValue();
         boolean valuesDeferredToContent = (Boolean)valuesDeferredToContentField.getValue();
         if (isAbstract) {
-            enumContentPackageSpecificationField.getTextControl().setEnabled(false);
+            enumContentQualifiedNameField.getTextControl().setEnabled(false);
         } else {
-            enumContentPackageSpecificationField.getTextControl().setEnabled(valuesDeferredToContent);
+            enumContentQualifiedNameField.getTextControl().setEnabled(valuesDeferredToContent);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean useAdditionalComposite() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillAdditionalComposite(Composite additionalComposite, UIToolkit toolkit) {
         // Set the layout.
@@ -212,45 +206,45 @@ public class EnumTypePage extends IpsObjectPage {
             }
         });
 
-        // Name specification for product side enum content.
-        toolkit.createFormLabel(additionalComposite, Messages.Fields_PackageSpecification + ':');
+        // Qualified name for product side enumeration content.
+        toolkit.createFormLabel(additionalComposite, Messages.Fields_EnumContentQualifiedName);
         Text text = toolkit.createText(additionalComposite);
-        enumContentPackageSpecificationField = new TextField(text);
-        enumContentPackageSpecificationField.getTextControl().setEnabled(false);
-        enumContentPackageSpecificationField.addChangeListener(this);
+        enumContentQualifiedNameField = new TextField(text);
+        enumContentQualifiedNameField.getTextControl().setEnabled(false);
+        enumContentQualifiedNameField.addChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void packageChanged() {
         updateEnumContentName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void nameChanged() {
         updateEnumContentName();
     }
 
     /**
-     * Updates the <tt>enumContentPackageSpecificationField</tt> so that it reflects the current
-     * package and name of the enum type.
+     * Updates the <tt>enumContentQualifiedNameField</tt> so that it reflects the current package
+     * and name of the <tt>IEnumType</tt>.
      */
     private void updateEnumContentName() {
+        // Do only if the checkbox is not active yet to not destroy any user input.
+        if (valuesDeferredToContentField.getCheckbox().isChecked()) {
+            return;
+        }
+
         String pack = getPackage();
         String name = getIpsObjectName();
+        String point = "";
         if (pack.length() > 0 && name.length() > 0) {
-            enumContentPackageSpecificationField.setText(pack + '.' + name);
+            point = ".";
+        } else {
+            pack = "";
         }
+        enumContentQualifiedNameField.setText(pack + point + name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -262,9 +256,6 @@ public class EnumTypePage extends IpsObjectPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IEnumType newEnumType = (IEnumType)newIpsObject;
@@ -273,9 +264,9 @@ public class EnumTypePage extends IpsObjectPage {
         newEnumType.setAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setContainingValues(!(Boolean)valuesDeferredToContentField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
-        newEnumType.setEnumContentName(enumContentPackageSpecificationField.getText());
+        newEnumType.setEnumContentName(enumContentQualifiedNameField.getText());
 
-        // Inherit enum attributes from supertype hierarchy.
+        // Inherit EnumAttributes from supertype hierarchy.
         newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(newEnumType.getIpsProject()));
 
         /*
@@ -310,9 +301,6 @@ public class EnumTypePage extends IpsObjectPage {
         newEnumType.getIpsSrcFile().markAsDirty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validatePageExtension() throws CoreException {
         super.validatePageExtension();
@@ -320,16 +308,16 @@ public class EnumTypePage extends IpsObjectPage {
         MessageList validationMessages = new MessageList();
         IIpsProject ipsProject = null;
 
-        // Validate super enum type.
+        // Validate super enumeration type.
         String superTypeFieldText = supertypeField.getText();
         ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
         if (!(superTypeFieldText.equals("")) && ipsProject != null) { //$NON-NLS-1$
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
         }
 
-        // Validate enum content package fragment specification.
+        // Validate qualified enumeration content name.
         EnumTypeValidations.validateEnumContentName(validationMessages, null, (Boolean)isAbstractField.getValue(),
-                valuesDeferredToContentField.getCheckbox().isChecked(), enumContentPackageSpecificationField.getText());
+                valuesDeferredToContentField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
 
         // Display the first error message if any.
         if (validationMessages.getNoOfMessages() > 0) {

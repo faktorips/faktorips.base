@@ -32,7 +32,7 @@ public class Messages extends NLS {
     public static String Fields_SuperEnumType;
     public static String Fields_Abstract;
     public static String Fields_ContainingValues;
-    public static String Fields_PackageSpecification;
+    public static String Fields_EnumContentQualifiedName;
 
     static {
         // initialize resource bundle
