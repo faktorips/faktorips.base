@@ -109,7 +109,7 @@ public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation
                      * We now need to find out which enumeration attribute was marked as literal
                      * name. Because this functionality was removed from Faktor-IPS we try it the
                      * XML way. The literal name property was inherited however so we need to also
-                     * search the supertype hierarchy.
+                     * search the supertype hierarchy. This won't work cross-project however.
                      */
                     String oldLiteralAttributeName = "";
                     List<IEnumType> searchedTypes = new ArrayList<IEnumType>(5);
