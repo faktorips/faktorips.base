@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -54,8 +55,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     /**
      * Creates a new <code>EnumAttributeValue</code>.
      * 
-     * @param parent The enum value this enum attribute value belongs to.
-     * @param id A unique id for this enum attribute value.
+     * @param parent The <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
+     * @param id A unique ID for this <tt>IEnumAttributeValue</tt>.
      * 
      * @throws CoreException If an error occurs while initializing the object.
      */
@@ -216,13 +217,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Validations necessary if this enum attribute value refers to an enum attribute that is used
-     * as literal name.
+     * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to an
+     * <tt>IEnumAttribute</tt> that is used as literal name.
      */
     private void validateLiteralNameEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
             throws CoreException {
 
-        // The identifier enum attribute value must be java conform.
+        // A literal name EnumAttributeValue must be java conform.
         if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
             String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, value);
             Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
@@ -232,8 +233,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Validations necessary if this enum attribute value refers to a unique identifier enum
-     * attribute.
+     * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to a unique identifier
+     * <tt>IEnumAttribute</tt>.
      */
     private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
             throws CoreException {
@@ -241,7 +242,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         String text;
         Message validationMessage;
 
-        // The unique identifier enum attribute value must not be empty.
+        // A unique identifier EnumAttributeValue must not be empty.
         String uniqueIdentifierValue = getValue();
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
                 : uniqueIdentifierValue.length() == 0 || uniqueIdentifierValue.equals("<null>");
@@ -253,7 +254,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return;
         }
 
-        // The unique identifier enum attribute value must be unique.
+        // A unique identifier EnumAttributeValue must be truly unique.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
         List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl
@@ -268,7 +269,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
     }
 
-    /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
+    /**
+     * Returns whether this <tt>IEnumAttributeValue</tt> refers to a unique identifier
+     * <tt>IEnumAttribute</tt>.
+     */
     private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType)
             throws CoreException {
 
@@ -279,6 +283,15 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
     public IEnumValue getEnumValue() {
         return (IEnumValue)getParent();
+    }
+
+    public String getValueAsLiteralName() {
+        if (value == null) {
+            return null;
+        }
+        String retValue = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
+        retValue = retValue.replaceAll(" ", "_");
+        return retValue;
     }
 
 }

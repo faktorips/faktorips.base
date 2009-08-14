@@ -79,7 +79,7 @@ public abstract class IpsAction extends Action {
      * 
      * @param selectionProvider
      */
-    // TODO AW: the possibility to give null as selection provider would be good ...
+    // TODO AW: The possibility to give null as selection provider would be good ...
     public IpsAction(ISelectionProvider selectionProvider) {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {
@@ -112,8 +112,8 @@ public abstract class IpsAction extends Action {
      * ips object.
      */
     private List<Object> mapIpsSrcFilesToIpsObjects(IStructuredSelection selection) {
-        List<Object> selectedIpsObjects = new ArrayList<Object>(((IStructuredSelection)selection).size());
-        for (Iterator<Object> iter = ((IStructuredSelection)selection).iterator(); iter.hasNext();) {
+        List<Object> selectedIpsObjects = new ArrayList<Object>((selection).size());
+        for (Iterator<Object> iter = (selection).iterator(); iter.hasNext();) {
             Object select = iter.next();
             if (select instanceof IIpsSrcFile) {
                 try {
@@ -141,7 +141,7 @@ public abstract class IpsAction extends Action {
             ipsObjects.add(getIpsObjectForSelection(i.next()));
         }
 
-        return (IIpsObject[])ipsObjects.toArray(new IIpsObject[ipsObjects.size()]);
+        return ipsObjects.toArray(new IIpsObject[ipsObjects.size()]);
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class IpsAction extends Action {
                 ipsSrcFiles.add(ipsSrcFile);
             }
         }
-        return (IIpsSrcFile[])ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
+        return ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
     }
 
     /**
@@ -267,7 +267,7 @@ public abstract class IpsAction extends Action {
             // avoid reading IpsSrcFile in getIpsObjectForSelection()
             return (IIpsSrcFile)selected;
         } else if (selected instanceof IpsSrcFileProvider) {
-        	return ((IpsSrcFileProvider)selected).getIpsSrcFile();
+            return ((IpsSrcFileProvider)selected).getIpsSrcFile();
         }
 
         IIpsObject ipsObject = getIpsObjectForSelection(selected);
@@ -310,7 +310,7 @@ public abstract class IpsAction extends Action {
             resultList.add(TextTransfer.getInstance());
         }
         Transfer[] result = new Transfer[resultList.size()];
-        return (Transfer[])resultList.toArray(result);
+        return resultList.toArray(result);
     }
 
     /**
@@ -325,7 +325,7 @@ public abstract class IpsAction extends Action {
         // add copied resources
         if (resourceItems.size() > 0) {
             IResource[] res = new IResource[resourceItems.size()];
-            result.add((IResource[])resourceItems.toArray(res));
+            result.add(resourceItems.toArray(res));
         }
         // add copied text
         result.addAll(stringItems);

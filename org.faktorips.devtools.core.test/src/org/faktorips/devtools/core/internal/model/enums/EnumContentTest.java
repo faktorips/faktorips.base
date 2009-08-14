@@ -78,7 +78,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     public void testValidateEnumType() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test enum type missing
+        // Test EnumType missing.
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("");
         MessageList validationMessageList = genderEnumContent.validate(ipsProject);
@@ -86,7 +86,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        // Test enum type does not exist
+        // Test EnumType does not exist.
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("FooBar");
         validationMessageList = genderEnumContent.validate(ipsProject);
@@ -95,7 +95,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        // Test values are part of type
+        // Test values are part of type.
         ipsModel.clearValidationCache();
         genderEnumType.setContainingValues(true);
         validationMessageList = genderEnumContent.validate(ipsProject);
@@ -103,7 +103,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE));
         genderEnumType.setContainingValues(false);
 
-        // Test enum type is abstract
+        // Test EnumType is abstract.
         ipsModel.clearValidationCache();
         genderEnumType.setAbstract(true);
         validationMessageList = genderEnumContent.validate(ipsProject);
@@ -125,8 +125,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         enumContent.setEnumType(genderEnumType.getQualifiedName());
         MessageList validationMessageList = enumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT));
+        assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT));
     }
 
     public void testDependsOn() throws CoreException {
@@ -147,11 +146,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
         assertEquals(3, genderEnumContent.getReferencedEnumAttributesCount());
     }
-    
-    /**
-     * test the findMetaClass method
-     * @throws CoreException
-     */
+
     public void testFindMetaClass() throws CoreException {
         IEnumType type = newEnumType(ipsProject, "EnumType");
         EnumContent enumContent = newEnumContent(type, "enumContent");
@@ -159,6 +154,11 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         IIpsSrcFile typeSrcFile = enumContent.findMetaClassSrcFile(ipsProject);
         assertEquals(type.getIpsSrcFile(), typeSrcFile);
     }
-    
+
+    public void testContainsDifferenceToModel() throws CoreException {
+        assertFalse(genderEnumContent.containsDifferenceToModel(ipsProject));
+        genderEnumType.newEnumAttribute();
+        assertTrue(genderEnumContent.containsDifferenceToModel(ipsProject));
+    }
 
 }

@@ -213,7 +213,7 @@ public class BindingContext {
 
         return field;
     }
-    
+
     public void bindContent(ComboViewer comboViewer, Object object, String propertyName) {
         bindContent(new ComboViewerField(comboViewer), object, propertyName);
     }
@@ -336,7 +336,7 @@ public class BindingContext {
      * Removes all bindings for the given control.
      */
     /*
-     * TODO AW: it would be nice to have this more fine granular - remove enabledState binding,
+     * TODO AW: It would be nice to have this more fine granular - remove enabledState binding,
      * content binding etc.
      */
     public void removeBindings(Control control) {
@@ -347,7 +347,7 @@ public class BindingContext {
             }
         }
 
-        for (Iterator<FieldPropertyMapping> it = this.mappings.iterator(); it.hasNext();) {
+        for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
             FieldPropertyMapping binding = it.next();
             if (binding.getField().getControl() == control) {
                 it.remove();
@@ -367,8 +367,9 @@ public class BindingContext {
         Set<Object> disposedPmos = new HashSet<Object>();
         for (Iterator<FieldPropertyMapping> it = mappingsCopy.iterator(); it.hasNext();) {
             FieldPropertyMapping mapping = it.next();
-            if (mapping.getField().removeChangeListener(listener))
+            if (mapping.getField().removeChangeListener(listener)) {
                 ;
+            }
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
             }
@@ -376,11 +377,11 @@ public class BindingContext {
         }
 
         // defensive copy to avoid concurrent
-        List<ControlPropertyBinding> controlsCopy = new ArrayList<ControlPropertyBinding>(this.controlBindings);
+        List<ControlPropertyBinding> controlsCopy = new ArrayList<ControlPropertyBinding>(controlBindings);
 
         // modification exceptions
         for (Iterator<ControlPropertyBinding> it = controlsCopy.iterator(); it.hasNext();) {
-            ControlPropertyBinding mapping = (ControlPropertyBinding)it.next();
+            ControlPropertyBinding mapping = it.next();
             disposeObjectIfNeccessary(disposedPmos, mapping);
         }
     }
@@ -544,7 +545,7 @@ public class BindingContext {
             if (i > 0) {
                 sb.append(", "); //$NON-NLS-1$
             }
-            IIpsObject ipsObject = (IIpsObject)ipsObjects.get(i);
+            IIpsObject ipsObject = ipsObjects.get(i);
             sb.append(ipsObject.getName());
         }
         sb.append(']');

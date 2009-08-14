@@ -56,7 +56,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Provides a static method that performs the migration to version 2.3 featuring new
- * <tt>IEnumType</tt> ips objects.
+ * <tt>IEnumType</tt> IPS objects.
  * 
  * @author Alexander Weickmann
  * 
@@ -70,24 +70,24 @@ public class Migration2_2_to2_3 {
     }
 
     /**
-     * Creates new, abstract <code>IEnumType</code>s for all <tt>ITableStructure</tt>s that have
-     * been declared to be enumeration structures. The old <tt>ITableStructure</tt>s will not be
-     * deleted however because this would result in <tt>NullPointerException</tt>s when an
+     * Creates new, abstract <tt>IEnumType</tt>s for all <tt>ITableStructure</tt>s that have been
+     * declared to be enumeration structures. The old <tt>ITableStructure</tt>s will not be deleted
+     * however because this would result in <tt>NullPointerException</tt>s when an
      * <tt>ITableContents</tt> in another project is based upon an <tt>ITableStructure</tt> already
      * deleted. Clients need to delete the <tt>ITableStructure</tt>s themselves after the migration
      * was performed.
      * <p>
      * Also, all <tt>ITableContents</tt> that are built upon an <tt>ITableStructure</tt> will become
-     * <code>IEnumType</code>s containing the enum values. The referenced table structure will be
-     * the super enum type.
+     * <code>IEnumType</code>s containing the enumeration values. The referenced table structure
+     * will be the super enumeration type.
      * 
-     * @param ipsProject The ips project to migrate to version 2.3.
+     * @param ipsProject The IPS project to migrate to version 2.3.
      * @param monitor The progress monitor to use to show progress to the user or <tt>null</tt> if
      *            none is available.
      * 
      * @throws CoreException If an error occurs while searching for the <tt>ITableStructure</tt> or
-     *             <tt>ITableContents</tt> ips objects or while creating the new <tt>IEnumType</tt>
-     *             ips objects.
+     *             <tt>ITableContents</tt> IPS objects or while creating the new <tt>IEnumType</tt>
+     *             IPS objects.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public static void migrate(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
@@ -96,7 +96,7 @@ public class Migration2_2_to2_3 {
         List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allIpsSrcFiles);
 
-        // Find all enum type table structures.
+        // Find all enumeration type table structures.
         List<ITableStructure> enumTableStructures = new ArrayList<ITableStructure>();
         for (IIpsSrcFile currentIpsSrcFile : allIpsSrcFiles) {
             if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE)) {
@@ -107,7 +107,7 @@ public class Migration2_2_to2_3 {
             }
         }
 
-        // Find all table contents that refer to enum type table structures.
+        // Find all table contents that refer to enumeration type table structures.
         List<ITableContents> enumTableContents = new ArrayList<ITableContents>();
         for (IIpsSrcFile currentIpsSrcFile : allIpsSrcFiles) {
             if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
@@ -128,7 +128,7 @@ public class Migration2_2_to2_3 {
             monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size());
         }
 
-        // Add enum types for the table structures and replace the table contents.
+        // Add enumeration types for the table structures and replace the table contents.
         addForTableStructures(enumTableStructures, monitor);
         replaceTableContents(enumTableContents, ipsProject, monitor);
 
@@ -214,16 +214,17 @@ public class Migration2_2_to2_3 {
 
     }
 
-    /** Adds new enum types for the given enum table structures. */
+    /** Adds new <tt>IEnumType</tt>s for the given enumeration table structures. */
     private static void addForTableStructures(List<ITableStructure> enumTableStructures, IProgressMonitor monitor)
             throws CoreException {
 
         /*
-         * Create a new enum type object for each of the found enum type table structures and delete
-         * the old table structures.
+         * Create a new EnumType object for each of the found enumeration type table structures. Do
+         * not delete the old table structures however (must be done manually by the users after the
+         * migration).
          */
         for (ITableStructure currentTableStructure : enumTableStructures) {
-            // Create the new enum type.
+            // Create the new enumeration type.
             IIpsSrcFile newFile = currentTableStructure.getIpsPackageFragment().createIpsFile(IpsObjectType.ENUM_TYPE,
                     currentTableStructure.getName(), true, null);
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
@@ -231,7 +232,7 @@ public class Migration2_2_to2_3 {
             newEnumType.setContainingValues(false);
             newEnumType.setDescription(currentTableStructure.getDescription());
 
-            // Create enum attributes.
+            // Create enumeration attributes.
             // 1. key is the id, 2. key is the name.
             IUniqueKey[] uniqueKeys = currentTableStructure.getUniqueKeys();
             String id = uniqueKeys[0].getKeyItemAt(0).getName();
@@ -261,19 +262,19 @@ public class Migration2_2_to2_3 {
     }
 
     /**
-     * Replaces the given table contents referring to enum table structures with new enum types
-     * containing the enum values.
+     * Replaces the given table contents referring to enumeration table structures with new
+     * <tt>IEnumType</tt>s containing the <tt>IEnumValue</tt>s.
      */
     private static void replaceTableContents(List<ITableContents> enumTableContents,
             IIpsProject ipsProject,
             IProgressMonitor monitor) throws CoreException {
 
         /*
-         * Create a new enum type object for each of the found table contents and delete the old
+         * Create a new EnumType object for each of the found table contents and delete the old
          * table contents.
          */
         for (ITableContents currentTableContents : enumTableContents) {
-            // Create the new enum content.
+            // Create the new EnumType, extend from old table structure (new abstract EnumType).
             IIpsSrcFile newFile = currentTableContents.getIpsPackageFragment().createIpsFile(IpsObjectType.ENUM_TYPE,
                     currentTableContents.getName(), true, null);
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
@@ -281,21 +282,41 @@ public class Migration2_2_to2_3 {
             newEnumType.setAbstract(false);
             newEnumType.setContainingValues(true);
 
-            // Inherit the enum attributes.
+            // Inherit the EnumAttributes.
             newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(ipsProject));
 
             // Create new literal name attribute.
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
             IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
-            literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+            if (nameAttribute != null) {
+                literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+            }
 
-            // Create the enum values.
+            // Create the enumeration values.
             for (IRow currentRow : ((ITableContentsGeneration)currentTableContents.getFirstGeneration()).getRows()) {
                 IEnumValue newEnumValue = newEnumType.newEnumValue();
                 List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
                 for (int i = 0; i < enumAttributeValues.size(); i++) {
                     IEnumAttributeValue currentEnumAttributeValue = enumAttributeValues.get(i);
-                    currentEnumAttributeValue.setValue(currentRow.getValue(i));
+                    String value = "";
+                    if (i == enumAttributeValues.size() - 1) {
+                        /*
+                         * The last enumeration attribute value is the literal name attribute value.
+                         * For this, we obtain the value from the name attribute. If not known the
+                         * literal name values will be empty (should theoretically not happen).
+                         */
+                        if (nameAttribute != null) {
+                            IEnumAttributeValue attributeValue = newEnumValue.findEnumAttributeValue(ipsProject,
+                                    nameAttribute);
+                            // Theoretically not possible to be null.
+                            if (attributeValue != null) {
+                                value = attributeValue.getValueAsLiteralName();
+                            }
+                        }
+                    } else {
+                        value = currentRow.getValue(i);
+                    }
+                    currentEnumAttributeValue.setValue(value);
                 }
             }
 

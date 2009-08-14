@@ -26,6 +26,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -172,14 +173,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
-    /**
-     * Returns the title that is shown on every page.
-     */
+    /** Returns the title that is shown on every page. */
     protected abstract String getUniformPageTitle();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         if (TRACE) {
@@ -211,7 +207,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          * For what ever reason they made setTitle deprecated. This method does something different
          * than the offered alternatives.
          */
-        // TODO AW: what does it do different?
+        // TODO AW: What does it do different?
         // setPartName(title);
         // setContentDescription(title);
         setTitle(title);
@@ -272,9 +268,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPages() {
         super.createPages();
@@ -285,9 +278,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     final protected void addPages() {
         if (TRACE) {
             logMethodStarted("addPages"); //$NON-NLS-1$
@@ -385,9 +376,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
@@ -407,9 +395,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void pageChange(int newPageIndex) {
         if (TRACE) {
@@ -531,9 +516,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * {@link #computeDataChangeableState()}.
      */
     final protected void setDataChangeable(boolean changeable) {
-        this.contentChangeable = Boolean.valueOf(changeable);
+        contentChangeable = Boolean.valueOf(changeable);
         if (getIpsSrcFile() != null) {
-            this.setTitleImage(errorTickupdater.getDecoratedImage());
+            setTitleImage(errorTickupdater.getDecoratedImage());
         }
     }
 
@@ -586,17 +571,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDirty() {
         return dirty;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void doSave(IProgressMonitor monitor) {
         try {
             ipsSrcFile.save(true, monitor);
@@ -607,16 +587,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         setDirty(ipsSrcFile.isDirty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void doSaveAs() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isSaveAsAllowed() {
         return false;
     }
@@ -636,7 +612,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         if (!ipsSrcFile.exists()) {
-            this.close(false);
+            close(false);
         }
 
         if (TRACE) {
@@ -784,7 +760,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
 
             Dialog dialog = createDialogToFixDifferencesToModel();
-            if (dialog.open() == Dialog.OK) {
+            if (dialog.open() == Window.OK) {
                 if (TRACE) {
                     log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
                 }
@@ -840,9 +816,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return selectionProviderDispatcher;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void dispose() {
         super.dispose();
@@ -1048,7 +1021,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             if (correspondingResource != null) {
                 for (int i = 0; i < changedResources.length; i++) {
                     if (changedResources[i].equals(correspondingResource)) {
-                        updateEditorImage(changedResources[i]);
+                        updateEditorImage();
                     }
                 }
             }
@@ -1064,8 +1037,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsSrcFile());
         }
 
-        // TODO AW: parameter is not used by this method, save to remove?
-        private void updateEditorImage(IResource changedResources) {
+        private void updateEditorImage() {
             Image image = getDecoratedImage();
             postImageChange(image);
         }

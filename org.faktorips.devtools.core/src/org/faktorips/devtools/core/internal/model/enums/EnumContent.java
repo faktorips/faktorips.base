@@ -44,22 +44,23 @@ import org.w3c.dom.Element;
  */
 public class EnumContent extends EnumValueContainer implements IEnumContent {
 
-    /** The enum type this enum values is build upon. */
+    /** The <tt>IEnumType</tt> this <tt>IEnumContent</tt> is build upon. */
     private String enumType;
 
     /**
-     * The number of enum attributes to be referenced by enum attribute values.
+     * The number of <tt>IEnumAttribute</tt>s to be referenced by <tt>IEnumAttributeValue</tt>s.
      * <p>
-     * This number will become invalid when a new enum attribute is added to the referenced enum
-     * type or an enum attribute is deleted from the referenced enum type. The whole enum content is
-     * invalid then and needs to be fixed by the user.
+     * This number will become invalid when a new <tt>IEnumAttribute</tt> is added to the referenced
+     * <tt>IEnumType</tt> or an <tt>IEnumAttribute</tt> is deleted from the referenced
+     * <tt>IEnumType</tt>. The whole <tt>IEnumContent</tt> is invalid then and needs to be fixed by
+     * the user.
      */
     private int enumAttributesCount;
 
     /**
      * Creates a new <code>EnumContent</code>.
      * 
-     * @param file The ips source file in which this enum content will be stored in.
+     * @param file The IPS source file in which this <tt>IEnumContent</tt> will be stored in.
      */
     public EnumContent(IIpsSrcFile file) {
         super(file);
@@ -160,29 +161,28 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             EnumContentValidations.validateEnumContentName(list, this, findEnumType(ipsProject), getQualifiedName());
         }
 
-        validateReferencedEnumAttributesCount(list, this, ipsProject);
+        validateReferencedEnumAttributesCount(list, ipsProject);
     }
 
     /**
-     * Validates the number of referenced enum attributes. This number is invalid if it does not
-     * correspond to the number of enum attributes in the referenced enum type.
+     * Validates the number of referenced <tt>IEnumAttribute</tt>s. This number is invalid if it
+     * does not correspond to the number of <tt>IEnumAttribute</tt>s stored in the referenced
+     * <tt>IEnumType</tt> (without counting literal name attributes).
      */
-    private void validateReferencedEnumAttributesCount(MessageList validationMessageList,
-            IEnumContent enumContent,
-            IIpsProject ipsProject) throws CoreException {
+    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IIpsProject ipsProject)
+            throws CoreException {
 
-        IEnumType enumType = enumContent.findEnumType(ipsProject);
+        IEnumType enumType = findEnumType(ipsProject);
         if (enumType == null) {
             return;
         }
 
-        if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != enumContent
-                .getReferencedEnumAttributesCount()) {
+        if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getReferencedEnumAttributesCount()) {
             String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
                     .getQualifiedName());
             Message validationMessage = new Message(
                     IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(enumContent,
+                    new ObjectProperty[] { new ObjectProperty(this,
                             IEnumContent.PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT) });
             validationMessageList.add(validationMessage);
         }
@@ -203,13 +203,25 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns <tt>true</tt> if the number of referenced enumeration attributes does not correspond
+     * to the number of enumeration attributes stored in the base enumeration type (without counting
+     * literal name attributes).
+     * <p>
+     * Returns <tt>false</tt> if the numbers match or the base enumeration type could not be found.
+     */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        // TODO AW: Auto-generated method stub
-        return false;
+        IEnumType enumType = findEnumType(ipsProject);
+        if (enumType == null) {
+            return false;
+        }
+        return enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getReferencedEnumAttributesCount();
     }
 
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        // TODO AW: Auto-generated method stub
+        // TODO AW: What shall we do here?
     }
 
     public String getMetaClass() {

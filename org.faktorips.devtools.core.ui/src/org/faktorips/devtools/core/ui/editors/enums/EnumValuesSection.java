@@ -58,7 +58,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -218,7 +217,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         toolBarManager.add(moveEnumValueUpAction);
         toolBarManager.add(moveEnumValueDownAction);
 
-        // TODO AW: align the toolbar at the right of the section title bar (not so easy).
+        // TODO AW: Align the toolbar at the right of the section title bar (not so easy).
         toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
         // Update the toolbar with the new information.
@@ -493,13 +492,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     try {
                         IEnumAttributeValue providerAttributeValue = enumValue.findEnumAttributeValue(ipsProject,
                                 defaultValueProviderAttribute);
-                        String value = providerAttributeValue.getValue();
+                        String value = providerAttributeValue.getValueAsLiteralName();
                         if (value != null) {
                             if (value.length() > 0) {
-                                // TODO AW: The next two lines should better be moved to core.
-                                value = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
-                                value = value.replaceAll(" ", "_");
-
                                 textControl.setText(value);
                             }
                         }

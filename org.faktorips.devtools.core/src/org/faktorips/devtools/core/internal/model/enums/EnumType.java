@@ -637,14 +637,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleEnumAttributeDeletion(index);
         }
 
-        // TODO broadcast changes
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         deleteEnumAttributeValues(enumAttribute, getEnumValues());
         enumAttribute.delete();
         objectHasChanged();
 
-        // TODO broadcast changes
+        // TODO AW: Broadcasting changes
         // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
     }
 

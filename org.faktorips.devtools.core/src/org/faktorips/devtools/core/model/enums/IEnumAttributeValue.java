@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IEnumAttributeValue extends IIpsObjectPart {
 
-    /** The xml tag for this ips object part. */
+    /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
 
     /** Name of the <code>value</code> property. */
@@ -42,52 +42,63 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value of this enum attribute value does not
-     * correspond to the datatype defined in the enum attribute being referenced.
+     * Validation message code to indicate that the value of this <tt>IEnumAttributeValue</tt> does
+     * not correspond to the datatype defined in the <tt>IEnumAttribute</tt> being referenced.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute value is refering a unique
-     * identifier enum attribute but is empty.
+     * Validation message code to indicate that this <tt>IEnumAttributeValue</tt> is referring a
+     * unique identifier <tt>IEnumAttribute</tt> but its value is empty.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
             + "EnumAttributeValueUniqueIdentifierValueEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that that this enum attribute value is refering a unique
-     * identifier enum attribute but its value is not unique.
+     * Validation message code to indicate that that this <tt>IEnumAttributeValue</tt> is referring
+     * a unique identifier <tt>IEnumAttribute</tt> but its value is not unique.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
             + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that that this enum attribute value is refering the
-     * literal name enum attribute but is not java conform.
+     * Validation message code to indicate that that this <tt>IEnumAttributeValue</tt> is referring
+     * a <tt>IEnumLiteralNameAttribute</tt> but its value is not java conform.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM = MSGCODE_PREFIX
             + "EnumAttributeValueLiteralNameNotJavaConform"; //$NON-NLS-1$
 
     /**
-     * Searches and returns the enum attribute this enum attribute value refers to. Returns
-     * <code>null</code> if none could be found.
+     * Searches and returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> refers to.
+     * Returns <code>null</code> if none could be found.
      * <p>
-     * Also returns <code>null</code> if the number of enum attributes in the referenced enum type
-     * does not correspond to the number of enum attribute values in the enum value containing this
-     * enum attribute value.
+     * Also returns <code>null</code> if the number of <tt>IEnumAttribute</tt>s in the referenced
+     * <tt>IEnumType</tt> does not correspond to the number of <tt>IEnumAttributeValue</tt>s in the
+     * <tt>IEnumValue</tt> containing this <tt>IEnumAttributeValue</tt>.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the
-     *            referenced enum attribute. This is not necessarily the project this enum attribute
-     *            is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the
+     *            referenced <tt>IEnumAttribute</tt>. This is not necessarily the project this
+     *            <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the
-     *             referenced enum attribute.
+     * @throws CoreException If an error occurs while searching the given IPS project for the
+     *             referenced <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 
-    /** Returns the value as <tt>String</tt>. */
+    /**
+     * Returns the value as <tt>String</tt> and transformed to a valid literal name.
+     * <p>
+     * This could be a programming language dependent implementation in the future but for now all
+     * letters will be transformed to upper case letters and all spaces will be transformed to
+     * underscores.
+     * <p>
+     * Returns <tt>null</tt> if the value of this <tt>IEnumAttributeValue</tt> is <tt>null</tt>.
+     */
+    public String getValueAsLiteralName();
+
+    /** Returns the value as <tt>String</tt>. Can also be <tt>null</tt>. */
     public String getValue();
 
     /**

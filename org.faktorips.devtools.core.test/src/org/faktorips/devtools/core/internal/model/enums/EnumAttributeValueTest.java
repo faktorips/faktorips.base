@@ -75,7 +75,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
-        // Get first enum attribute value of the first enum value
+        // Get first EnumAttributeValue of the first EnumValue.
         Element firstEnumValue = XmlUtil.getFirstElement(xmlElement, IEnumValue.XML_TAG);
         Element descriptionElement = XmlUtil.getFirstElement(firstEnumValue, DescriptionHelper.XML_ELEMENT_NAME);
         assertNull(descriptionElement);
@@ -156,7 +156,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         IIpsModel ipsModel = getIpsModel();
 
-        // Test value parsable with datatype integer
+        // Test value parsable with datatype Integer.
         ipsModel.clearValidationCache();
         integerNewAttributeValue.setValue("fooBar");
         MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
@@ -165,7 +165,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
         integerNewAttributeValue.setValue("4");
 
-        // Test value parsable with datatype boolean
+        // Test value parsable with datatype Boolean.
         ipsModel.clearValidationCache();
         booleanNewAttributeValue.setValue("fooBar");
         validationMessageList = booleanNewAttributeValue.validate(ipsProject);
@@ -229,6 +229,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
+    }
+
+    public void testGetValueAsLiteralName() {
+        IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
+        testValue.setValue("foo bar");
+        assertEquals("FOO_BAR", testValue.getValueAsLiteralName());
+        testValue.setValue(null);
+        assertNull(testValue.getValueAsLiteralName());
     }
 
 }

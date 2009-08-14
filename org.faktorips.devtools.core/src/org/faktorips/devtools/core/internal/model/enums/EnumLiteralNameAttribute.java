@@ -88,8 +88,11 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
 
     /** Validates the <tt>defaultValueProviderAttribute</tt> property. */
     private void validateDefaultValueProviderAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // Pass validation if no provider is specified.
-        if (defaultValueProviderAttribute.length() == 0) {
+        /*
+         * Pass validation if no provider is specified or if the parent enumeration type does
+         * currently not need this literal name attribute.
+         */
+        if (defaultValueProviderAttribute.length() == 0 || !(getEnumType().needsToUseEnumLiteralNameAttribute())) {
             return;
         }
 
