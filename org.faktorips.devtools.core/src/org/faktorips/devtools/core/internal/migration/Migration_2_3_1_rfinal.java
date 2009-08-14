@@ -89,100 +89,106 @@ public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation
             if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
                 IEnumType currentEnumType = (IEnumType)currentIpsSrcFile.getIpsObject();
                 /*
-                 * We do not ask here whether the enumeration type even needs an enumeration literal
-                 * name attribute. We will create them for just all enumeration types even if they
-                 * are abstract or do not contain enumeration values. We do this because the
-                 * enumeration types may also have enumeration values stored that are only
-                 * considered 'out of use'. These enumeration values should also get their literal
-                 * names.
+                 * Perform the following operations if the current enumeration type needs an
+                 * enumeration literal name attribute (that means it is not abstract and does
+                 * contain values) or if the enumeration type contains any enumeration values (so
+                 * enumeration values that are considered 'out of use' get their literal names,
+                 * too).
                  */
-                /*
-                 * It could be that the new literal name attributes already exist. This is the case
-                 * if the user migrates a project that's version is less than 2.3.0.rfinal. The
-                 * Migration2_2_to_2_3 will be started before in this case which already creates
-                 * literal name attributes. So we have to check for this before creating the literal
-                 * name attribute.
-                 */
-                if (!(currentEnumType.containsEnumLiteralNameAttribute())) {
-                    IEnumLiteralNameAttribute literalNameAttribute = currentEnumType.newEnumLiteralNameAttribute();
+                if (currentEnumType.needsToUseEnumLiteralNameAttribute() || currentEnumType.getEnumValues().size() > 0) {
                     /*
-                     * We now need to find out which enumeration attribute was marked as literal
-                     * name. Because this functionality was removed from Faktor-IPS we try it the
-                     * XML way. The literal name property was inherited however so we need to also
-                     * search the supertype hierarchy. This won't work cross-project however.
+                     * It could be that the new literal name attributes already exist. This is the
+                     * case if the user migrates a project that's version is less than 2.3.0.rfinal.
+                     * The Migration2_2_to_2_3 will be started before in this case which already
+                     * creates literal name attributes. So we have to check for this before creating
+                     * the literal name attribute.
                      */
-                    String oldLiteralAttributeName = "";
-                    List<IEnumType> searchedTypes = new ArrayList<IEnumType>(5);
-                    searchedTypes.add(currentEnumType);
-                    searchedTypes.addAll(currentEnumType.findAllSuperEnumTypes(ipsProject));
-                    for (IEnumType currentSearchedEnumType : searchedTypes) {
-                        InputStream is = currentSearchedEnumType.getIpsSrcFile().getContentFromEnclosingResource();
-                        DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
-                        Document doc;
-                        try {
-                            doc = builder.parse(is);
-                        } catch (IOException e) {
-                            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                    "IO error while parsing input file.", e));
-                        } catch (SAXException e) {
-                            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                    "SAX error while parsing input file.", e));
-                        }
-                        Element rootElement = doc.getDocumentElement();
-                        NodeList children = rootElement.getChildNodes();
-                        for (int i = 0; i < children.getLength(); i++) {
-                            Node currentItem = children.item(i);
-                            if (currentItem.getNodeName().equals(IEnumAttribute.XML_TAG)) {
-                                NamedNodeMap attributes = currentItem.getAttributes();
-                                Node literalNameNode = attributes.getNamedItem("literalName");
-                                // Theoretically not possible to be null.
-                                if (literalNameNode == null) {
-                                    continue;
-                                }
-                                Boolean literalNameBoolean = Boolean.parseBoolean(literalNameNode.getTextContent());
-                                if (literalNameBoolean.booleanValue()) {
-                                    Node nameNode = attributes.getNamedItem("name");
+                    if (!(currentEnumType.containsEnumLiteralNameAttribute())) {
+                        IEnumLiteralNameAttribute literalNameAttribute = currentEnumType.newEnumLiteralNameAttribute();
+                        /*
+                         * We now need to find out which enumeration attribute was marked as literal
+                         * name. Because this functionality was removed from Faktor-IPS we try it
+                         * the XML way. The literal name property was inherited however so we need
+                         * to also search the supertype hierarchy. This won't work cross-project
+                         * however.
+                         */
+                        String oldLiteralAttributeName = "";
+                        List<IEnumType> searchedTypes = new ArrayList<IEnumType>(5);
+                        searchedTypes.add(currentEnumType);
+                        searchedTypes.addAll(currentEnumType.findAllSuperEnumTypes(ipsProject));
+                        for (IEnumType currentSearchedEnumType : searchedTypes) {
+                            InputStream is = currentSearchedEnumType.getIpsSrcFile().getContentFromEnclosingResource();
+                            DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                            Document doc;
+                            try {
+                                doc = builder.parse(is);
+                            } catch (IOException e) {
+                                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                                        "IO error while parsing input file.", e));
+                            } catch (SAXException e) {
+                                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                                        "SAX error while parsing input file.", e));
+                            }
+                            Element rootElement = doc.getDocumentElement();
+                            NodeList children = rootElement.getChildNodes();
+                            for (int i = 0; i < children.getLength(); i++) {
+                                Node currentItem = children.item(i);
+                                if (currentItem.getNodeName().equals(IEnumAttribute.XML_TAG)) {
+                                    NamedNodeMap attributes = currentItem.getAttributes();
+                                    Node literalNameNode = attributes.getNamedItem("literalName");
                                     // Theoretically not possible to be null.
-                                    if (nameNode != null) {
-                                        oldLiteralAttributeName = nameNode.getTextContent();
+                                    if (literalNameNode == null) {
+                                        continue;
                                     }
-                                    break;
+                                    Boolean literalNameBoolean = Boolean.parseBoolean(literalNameNode.getTextContent());
+                                    if (literalNameBoolean.booleanValue()) {
+                                        Node nameNode = attributes.getNamedItem("name");
+                                        // Theoretically not possible to be null.
+                                        if (nameNode != null) {
+                                            oldLiteralAttributeName = nameNode.getTextContent();
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    /*
-                     * If we could obtain the name of the enumeration attribute that was used as
-                     * literal name we can now correctly set the default value provider attribute.
-                     * If we could not find it we set the default value provider to the name
-                     * attribute. If even this fails there won't be a default provider which is not
-                     * a tragedy however.
-                     */
-                    if (oldLiteralAttributeName.length() > 0) {
-                        literalNameAttribute.setDefaultValueProviderAttribute(oldLiteralAttributeName);
-                    } else {
-                        IEnumAttribute nameAttribute = currentEnumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
-                        if (nameAttribute != null) {
-                            literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+                        /*
+                         * If we could obtain the name of the enumeration attribute that was used as
+                         * literal name we can now correctly set the default value provider
+                         * attribute. If we could not find it we set the default value provider to
+                         * the name attribute. If even this fails there won't be a default provider
+                         * which is not a tragedy however.
+                         */
+                        if (oldLiteralAttributeName.length() > 0) {
+                            literalNameAttribute.setDefaultValueProviderAttribute(oldLiteralAttributeName);
+                        } else {
+                            IEnumAttribute nameAttribute = currentEnumType
+                                    .findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
+                            if (nameAttribute != null) {
+                                literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+                            }
                         }
-                    }
-                    /*
-                     * Now go over all enumeration values that are stored in this enumeration type.
-                     * For each enumeration value we need to set the value of the EnumAttributeValue
-                     * referencing the EnumLiteralNameAttribute. The value is derived from the
-                     * default provider. If none is available we do not set the value.
-                     */
-                    for (IEnumValue currentEnumValue : currentEnumType.getEnumValues()) {
-                        IEnumAttribute defaultProviderAttribute = currentEnumType
-                                .getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
-                                        .getDefaultValueProviderAttribute());
-                        if (defaultProviderAttribute != null) {
-                            List<IEnumAttributeValue> enumAttributeValues = currentEnumValue.getEnumAttributeValues();
-                            IEnumAttributeValue literalNameAttributeValue = enumAttributeValues.get(currentEnumType
-                                    .getIndexOfEnumAttribute(literalNameAttribute));
-                            IEnumAttributeValue defaultProviderattributeValue = enumAttributeValues.get(currentEnumType
-                                    .getIndexOfEnumAttribute(defaultProviderAttribute));
-                            literalNameAttributeValue.setValue(defaultProviderattributeValue.getValueAsLiteralName());
+                        /*
+                         * Now go over all enumeration values that are stored in this enumeration
+                         * type. For each enumeration value we need to set the value of the
+                         * EnumAttributeValue referencing the EnumLiteralNameAttribute. The value is
+                         * derived from the default provider. If none is available we do not set the
+                         * value.
+                         */
+                        for (IEnumValue currentEnumValue : currentEnumType.getEnumValues()) {
+                            IEnumAttribute defaultProviderAttribute = currentEnumType
+                                    .getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
+                                            .getDefaultValueProviderAttribute());
+                            if (defaultProviderAttribute != null) {
+                                List<IEnumAttributeValue> enumAttributeValues = currentEnumValue
+                                        .getEnumAttributeValues();
+                                IEnumAttributeValue literalNameAttributeValue = enumAttributeValues.get(currentEnumType
+                                        .getIndexOfEnumAttribute(literalNameAttribute));
+                                IEnumAttributeValue defaultProviderattributeValue = enumAttributeValues
+                                        .get(currentEnumType.getIndexOfEnumAttribute(defaultProviderAttribute));
+                                literalNameAttributeValue.setValue(defaultProviderattributeValue
+                                        .getValueAsLiteralName());
+                            }
                         }
                     }
                 }
