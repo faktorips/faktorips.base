@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,10 +38,11 @@ import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
 
 /**
- * EnumValueSetEditControl provides the possibility of editing the values of an EnumValueEnumSet. It consists of a table
- * control and 4 buttons to add, remove or change the order of vales of the EnumValueEnumSet. The control modifies the
- * EnumValueEnumSet and makes no temporary copy of it. To implement undo operation, the EnumValueEnumSet must be stored localy
- * before calling EnumValueSetEditControl For "live" evaluation a valueSetOwner must be passed to the control.
+ * EnumValueSetEditControl provides the possibility of editing the values of an EnumValueEnumSet. It
+ * consists of a table control and 4 buttons to add, remove or change the order of vales of the
+ * EnumValueEnumSet. The control modifies the EnumValueEnumSet and makes no temporary copy of it. To
+ * implement undo operation, the EnumValueEnumSet must be stored localy before calling
+ * EnumValueSetEditControl For "live" evaluation a valueSetOwner must be passed to the control.
  */
 public class EnumValueSetEditControl extends EditTableControl {
 
@@ -49,25 +50,26 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     private TableElementValidator tableElementValidator;
 
-    
     /**
-     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
-     * wrong type, a new EnumValueEnumSet is created
+     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
+     * value set is of the wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator, String label) {
+    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent,
+            TableElementValidator tableElementValidator, String label) {
         super(valueSet, parent, SWT.NONE, label);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
         this.tableElementValidator = tableElementValidator;
         new MessageService(getTableViewer());
     }
-    
+
     /**
-     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
-     * wrong type, a new EnumValueEnumSet is created. Labels the control with default-text ("Values") in english.
+     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
+     * value set is of the wrong type, a new EnumValueEnumSet is created. Labels the control with
+     * default-text ("Values") in english.
      */
     public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
-    	this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
+        this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
     }
 
     protected void initModelObject(Object modelObject) {
@@ -85,6 +87,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createContentProvider()
      */
     protected IStructuredContentProvider createContentProvider() {
@@ -93,6 +96,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createLabelProvider()
      */
     protected ILabelProvider createLabelProvider() {
@@ -101,6 +105,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createTableColumns(org.eclipse.swt.widgets.TableContentsGeneration)
      */
     protected void createTableColumns(Table table) {
@@ -110,6 +115,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
      */
     protected String[] getColumnPropertyNames() {
@@ -126,6 +132,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellEditors()
      */
     protected UnfocusableTextCellEditor[] createCellEditors() {
@@ -137,6 +144,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellModifier()
      */
     protected ICellModifier createCellModifier() {
@@ -145,6 +153,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden IMethod.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
      */
     public Object addElement() {
@@ -155,6 +164,7 @@ public class EnumValueSetEditControl extends EditTableControl {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#removeElement(int)
      */
     public void removeElement(int index) {
@@ -247,19 +257,19 @@ public class EnumValueSetEditControl extends EditTableControl {
         }
 
         String getValueName() {
-        	String name = (String)valueSet.getValue(index);
-        	if (name == null) {
-        		name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        	}
+            String name = (String)valueSet.getValue(index);
+            if (name == null) {
+                name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            }
             return name;
         }
 
         void setValueName(String newName) {
-        	if (newName.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-        		valueSet.setValue(index, null);
-        	} else {
-        		valueSet.setValue(index, newName);
-        	}
+            if (newName.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                valueSet.setValue(index, null);
+            } else {
+                valueSet.setValue(index, newName);
+            }
         }
 
         public String toString() {
@@ -289,4 +299,5 @@ public class EnumValueSetEditControl extends EditTableControl {
         }
 
     }
+
 }

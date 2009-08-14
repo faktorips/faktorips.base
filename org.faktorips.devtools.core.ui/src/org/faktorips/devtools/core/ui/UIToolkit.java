@@ -732,4 +732,24 @@ public class UIToolkit {
             formToolkit.dispose();
         }
     }
+
+    /**
+     * If the given Control has a {@link GridData} as LayoutData, the vertical span is set to the
+     * given value (vSpan). Has no effect otherwise.
+     */
+    public void setHorizontalSpan(Control control, int vSpan) {
+        if (control.getLayoutData() instanceof GridData) {
+            ((GridData)control.getLayoutData()).horizontalSpan = vSpan;
+        }
+    }
+
+    /**
+     * If the given Control has a {@link GridData} as LayoutData, the width-hint is set to the
+     * given value (width). Has no effect otherwise.
+     */
+    public void setWidthHint(Control control, int width) {
+        if (control.getLayoutData() instanceof GridData) {
+            ((GridData)control.getLayoutData()).widthHint = width;
+        }
+    }
 }

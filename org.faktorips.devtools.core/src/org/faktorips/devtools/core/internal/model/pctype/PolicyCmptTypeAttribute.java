@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -57,7 +57,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private IValueSet valueSet;
     private boolean overwrites = false;
     private String computationMethodSignature = ""; //$NON-NLS-1$
-    
+
     /**
      * Creates a new attribute.
      * 
@@ -81,11 +81,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
         IType supertype = getPolicyCmptType().findSupertype(ipsProject);
-        if (supertype==null) {
+        if (supertype == null) {
             return null;
         }
         IAttribute candidate = supertype.findAttribute(name, ipsProject);
-        if (candidate==this) {
+        if (candidate == this) {
             return null; // can happen if we have a cycle in the type hierarchy!
         }
         return (IPolicyCmptTypeAttribute)candidate;
@@ -105,12 +105,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public IValidationRule findValueSetRule(IIpsProject ipsProject) {
         IValidationRule[] rules = getPolicyCmptType().getRules();
-        
+
         for (int i = 0; i < rules.length; i++) {
             String[] attributes = rules[i].getValidatedAttributes();
             for (int j = 0; j < attributes.length; j++) {
-                if (attributes[j].equals(getName()) && 
-                    rules[i].isCheckValueAgainstValueSetRule()) {
+                if (attributes[j].equals(getName()) && rules[i].isCheckValueAgainstValueSetRule()) {
                     return rules[i];
                 }
             }
@@ -121,9 +120,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public IValidationRule createValueSetRule(){
+    public IValidationRule createValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
-        if(rule != null){
+        if (rule != null) {
             return rule;
         }
         rule = getPolicyCmptType().newRule();
@@ -135,17 +134,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         rule.setValidatedAttrSpecifiedInSrc(false);
         return rule;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public void deleteValueSetRule(){
+    public void deleteValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
-        if(rule != null){
+        if (rule != null) {
             rule.delete();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -166,7 +165,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public boolean isDerived() {
         return getAttributeType().isDerived();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -175,7 +174,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             return null;
         }
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
-        if (productCmptType==null) {
+        if (productCmptType == null) {
             return null;
         }
         return (IProductCmptTypeMethod)productCmptType.findMethod(computationMethodSignature, ipsProject);
@@ -194,7 +193,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
         productRelevant = newValue;
-        if (oldValue!=newValue && !newValue) {
+        if (oldValue != newValue && !newValue) {
             computationMethodSignature = ""; //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
@@ -203,6 +202,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
@@ -217,7 +217,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueSet = type.newValueSet(this, getNextPartId());
         objectHasChanged();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -235,7 +235,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getAttributeType() == AttributeType.CHANGEABLE) {
             return ConfigElementType.POLICY_ATTRIBUTE;
         }
-        if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+        if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
+                || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
             return null;
         }
         throw new RuntimeException("Unknown AttributeType!"); //$NON-NLS-1$
@@ -249,17 +250,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (isProductRelevant()) {
             return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
         } else {
-        	return IpsPlugin.getDefault().getImage(baseImageName);
+            return IpsPlugin.getDefault().getImage(baseImageName);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getComputationMethodSignature() {
         return computationMethodSignature;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -272,6 +273,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
@@ -282,24 +284,28 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
-                String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing, getName());
-                result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+                String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
+                        getName());
+                result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this,
+                        PROPERTY_COMPUTATION_METHOD_SIGNATURE));
             } else {
                 IMethod computationMethod = findComputationMethod(ipsProject);
-                if (computationMethod==null) {
+                if (computationMethod == null) {
                     String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
-                    result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+                    result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this,
+                            PROPERTY_COMPUTATION_METHOD_SIGNATURE));
                 } else {
                     ValueDatatype attributeDataype = findDatatype(ipsProject);
-                    if (attributeDataype!=null && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
+                    if (attributeDataype != null
+                            && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
                         String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
-                        result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text, Message.ERROR, this, 
-                                new String[]{PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE}));
+                        result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text, Message.ERROR,
+                                this, new String[] { PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE }));
                     }
                 }
             }
         }
-        
+
         IPolicyCmptTypeAttribute superAttr = findOverwrittenAttribute(ipsProject);
         if (overwrites) {
             if (superAttr == null) {
@@ -310,7 +316,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this, new String[] { PROPERTY_ATTRIBUTE_TYPE })); 
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this,
+                            new String[] { PROPERTY_ATTRIBUTE_TYPE }));
                 }
             }
         }
@@ -319,6 +326,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -326,6 +334,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
@@ -337,6 +346,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
@@ -355,6 +365,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reAddPart(IIpsObjectPart part) {
         valueSet = (IValueSet)part;
     }
@@ -362,6 +373,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
@@ -373,6 +385,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsElement[] getChildren() {
         if (valueSet != null) {
             return new IIpsElement[] { valueSet };
@@ -425,6 +438,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reinitPartCollections() {
         // nothing to do
     }
@@ -432,6 +446,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
@@ -449,32 +464,29 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public String getProposalMsgCodeForValueSetRule() {
         return NLS.bind(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
     }
-    
-    
+
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyName() {
         if (productRelevant) {
             return name;
         }
-        return "";  //$NON-NLS-1$
+        return ""; //$NON-NLS-1$
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyDatatype() {
         return getDatatype();
     }
+
 }

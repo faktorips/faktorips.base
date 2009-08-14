@@ -171,6 +171,16 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_tooltipActivateValidationRule;
     public static String AttributeEditDialog_validationRuleTitle;
+    public static String AttributeEditDialog_ValuesetDefinition_ModelConfiguration;
+
+    public static String AttributeEditDialog_ValuesetDefinition_ProductConfiguration;
+
+    public static String AttributeEditDialog_ValuesetDefinition_SubsetOfModelInProductConfiguration;
+
+    public static String AttributeEditDialog_ValuesetDefinitionGroupTitle;
+
+    public static String AttributeEditDialog_ValuesetGroupTitle;
+
     public static String AttributeEditDialog_valuesetTitle;
     
 	public static String RuleEditDialog_attrTitle;

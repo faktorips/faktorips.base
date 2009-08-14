@@ -24,8 +24,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -85,7 +85,7 @@ public class DefaultsAndRangesSection extends IpsSection {
      * Creates a new section to edit ranges and default-values.
      */
     public DefaultsAndRangesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         initControls();
@@ -95,6 +95,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
         layout.marginHeight = 2;
@@ -148,14 +149,40 @@ public class DefaultsAndRangesSection extends IpsSection {
             uiMasterController.add(controller);
             createEditControlForDefaultValue(element, datatype, controller);
             IValueSet valueSet = element.getValueSet();
-            if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-                createEditControlsForEnumeration(element, valueSet, controller);
-            } else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
-                createEditControlsForRange(valueSet, controller);
-            }
+            createEditControlForValueSet(element, controller, valueSet);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void createEditControlForValueSet(IConfigElement element,
+            IpsObjectUIController controller,
+            IValueSet valueSet) throws CoreException {
+        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
+        IValueSet attrValueSet = attribute == null ? null : attribute.getValueSet();
+        if (attrValueSet != null && attrValueSet.isAbstract()) {
+            createEditControlsForAbstractValueSet(element, valueSet, controller);
+        } else if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+            createEditControlsForEnumeration(element, valueSet, controller);
+        } else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
+            createEditControlsForRange(valueSet, controller);
+        }
+    }
+
+    private void createEditControlsForAbstractValueSet(IConfigElement element,
+            IValueSet valueSet,
+            IpsObjectUIController controller) {
+        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
+        EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
+        evc.setDataChangeable(isDataChangeable());
+        evc.setText(valueSet.toShortString());
+        PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
+        controller.add(ptbf, element, IConfigElement.PROPERTY_VALUE_SET);
+        GridData data = (GridData)evc.getLayoutData();
+        data.widthHint = UIToolkit.DEFAULT_WIDTH;
+        addFocusControl(evc.getTextControl());
+        editControls.add(evc);
     }
 
     private void createEditControlForDefaultValue(IConfigElement element,
@@ -169,6 +196,8 @@ public class DefaultsAndRangesSection extends IpsSection {
         }
 
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
+        IPolicyCmptTypeAttribute policyAttribute = element.findPcTypeAttribute(element.getIpsProject());
+        IValueSet policyValueSet = policyAttribute == null ? null : policyAttribute.getValueSet();
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
         EditField field = null;
@@ -179,6 +208,21 @@ public class DefaultsAndRangesSection extends IpsSection {
             EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)dataType;
             field = ctrlFactory.createEditField(toolkit, rootPane, new EnumTypeDatatypeAdapter(adapter.getEnumType(),
                     null), element.getValueSet(), generation.getIpsProject());
+        }
+        // else if(){
+        // field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(),
+        // generation
+        // .getIpsProject());
+        // }
+        else if (policyValueSet != null && policyValueSet.isAbstract()) {
+            /*
+             * For an abstract allValues-Valueset on the policyAttribute the editField must be used
+             * for all kinds of valuesets. Thus the configured valueset (on the configelement) is
+             * not used to create the Editfield (its type may change over time). Instead the
+             * policyattributes valueset is used.
+             */
+            field = ctrlFactory
+                    .createEditField(toolkit, rootPane, dataType, policyValueSet, generation.getIpsProject());
         } else {
             field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(), generation
                     .getIpsProject());
@@ -195,7 +239,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         // we can modify the content of the value set.
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
-        EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, this.getShell(), controller);
+        EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
         evc.setDataChangeable(isDataChangeable());
         evc.setText(valueSet.toShortString());
         PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
@@ -203,7 +247,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         GridData data = (GridData)evc.getLayoutData();
         data.widthHint = UIToolkit.DEFAULT_WIDTH;
         addFocusControl(evc.getTextControl());
-        this.editControls.add(evc);
+        editControls.add(evc);
     }
 
     private void createEditControlsForRange(IValueSet valueSet, IpsObjectUIController controller) {
@@ -242,13 +286,13 @@ public class DefaultsAndRangesSection extends IpsSection {
             initTextField(step, 50);
         }
 
-        this.editControls.add(lower);
-        this.editControls.add(upper);
-        this.editControls.add(step);
+        editControls.add(lower);
+        editControls.add(upper);
+        editControls.add(step);
 
-        controller.add(upper, (IRangeValueSet)valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
-        controller.add(lower, (IRangeValueSet)valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
-        controller.add(step, (IRangeValueSet)valueSet, IRangeValueSet.PROPERTY_STEP);
+        controller.add(upper, valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
+        controller.add(lower, valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
+        controller.add(step, valueSet, IRangeValueSet.PROPERTY_STEP);
     }
 
     private void initTextField(Text text, int widthHint) {
@@ -257,12 +301,13 @@ public class DefaultsAndRangesSection extends IpsSection {
         text.setLayoutData(gd);
 
         addFocusControl(text);
-        this.editControls.add(text);
+        editControls.add(text);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void performRefresh() {
         uiMasterController.updateUI();
     }

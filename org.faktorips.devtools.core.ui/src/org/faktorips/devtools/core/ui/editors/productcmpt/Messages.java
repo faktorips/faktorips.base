@@ -62,6 +62,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_Attribute;
 
+    public static String ProductCmptCompareItem_Formula;
+
     public static String ProductCmptCompareItem_Relation;
 
     public static String ProductCmptCompareItem_RelationCardinalityOther_maximum;

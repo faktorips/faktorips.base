@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -53,22 +53,22 @@ import org.w3c.dom.Element;
  */
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-	final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
+    final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
-	private ConfigElementType type = ConfigElementType.POLICY_ATTRIBUTE;
+    private ConfigElementType type = ConfigElementType.POLICY_ATTRIBUTE;
 
-	private String pcTypeAttribute = ""; //$NON-NLS-1$
+    private String pcTypeAttribute = ""; //$NON-NLS-1$
 
-	private IValueSet valueSet;
+    private IValueSet valueSet;
 
-	private String value = ""; //$NON-NLS-1$
+    private String value = ""; //$NON-NLS-1$
 
     private List formulaTestCases = new ArrayList(0);
-    
-	public ConfigElement(ProductCmptGeneration parent, int id) {
-		super(parent, id);
-		valueSet = new AllValuesValueSet(this, getNextPartId());
-	}
+
+    public ConfigElement(ProductCmptGeneration parent, int id) {
+        super(parent, id);
+        valueSet = new AllValuesValueSet(this, getNextPartId());
+    }
 
     public ConfigElement(ProductCmptGeneration parent, int id, String pcTypeAttribute) {
         super(parent, id);
@@ -77,42 +77,42 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	public IProductCmpt getProductCmpt() {
-		return (IProductCmpt) getParent().getParent();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmptGeneration getProductCmptGeneration() {
-		return (IProductCmptGeneration) getParent();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ConfigElementType getType() {
-		return type;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setType(ConfigElementType newType) {
-		ConfigElementType oldType = type;
-		type = newType;
-		valueChanged(oldType, newType);
-	}
+     * {@inheritDoc}
+     */
+    public IProductCmpt getProductCmpt() {
+        return (IProductCmpt)getParent().getParent();
+    }
 
     /**
      * {@inheritDoc}
      */
-	public String getPropertyName() {
+    public IProductCmptGeneration getProductCmptGeneration() {
+        return (IProductCmptGeneration)getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ConfigElementType getType() {
+        return type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setType(ConfigElementType newType) {
+        ConfigElementType oldType = type;
+        type = newType;
+        valueChanged(oldType, newType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
         return pcTypeAttribute;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -136,116 +136,121 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     /**
      * {@inheritDoc}
-	 */
-	public String getPolicyCmptTypeAttribute() {
-		return pcTypeAttribute;
-	}
+     */
+    public String getPolicyCmptTypeAttribute() {
+        return pcTypeAttribute;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setPolicyCmptTypeAttribute(String newName) {
-		String oldName = pcTypeAttribute;
-		pcTypeAttribute = newName;
-		name = pcTypeAttribute;
-		valueChanged(oldName, pcTypeAttribute);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValue(String newValue) {
-		String oldValue = value;
-		value = newValue;
-		valueChanged(oldValue, value);
-	}
-
-	/**
-     * {@inheritDoc}
-	 */
-	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
-	}
-
-	/**
-     * {@inheritDoc}
-	 */
-	public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
-		IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
-		if (pcType == null) {
-			return null;
-		}
-        return pcType.findPolicyCmptTypeAttribute(pcTypeAttribute, ipsProject);
-	}
-    
     /**
      * {@inheritDoc}
      */
-	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+    public void setPolicyCmptTypeAttribute(String newName) {
+        String oldName = pcTypeAttribute;
+        pcTypeAttribute = newName;
+        name = pcTypeAttribute;
+        valueChanged(oldName, pcTypeAttribute);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValue(String newValue) {
+        String oldValue = value;
+        value = newValue;
+        valueChanged(oldValue, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
+        if (pcType == null) {
+            return null;
+        }
+        return pcType.findPolicyCmptTypeAttribute(pcTypeAttribute, ipsProject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
-        if (a!=null) {
+        if (a != null) {
             return a.findDatatype(ipsProject);
         }
         return null;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-		super.validateThis(list, ipsProject);
-		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
-		if (attribute == null) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
+        if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType(ipsProject);
-            if (policyCmptType==null) {
+            if (policyCmptType == null) {
                 String text = NLS.bind(Messages.ConfigElement_policyCmptTypeNotFound, pcTypeAttribute);
-                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
+                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
+                        PROPERTY_VALUE));
             } else {
-                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptType.getName());
-                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
+                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptType
+                        .getName());
+                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
+                        PROPERTY_VALUE));
             }
-		} else {
-    		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
-    				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-    			validateValue(attribute, ipsProject, list);
-    		}
+        } else {
+            if (attribute.getAttributeType() == AttributeType.CHANGEABLE
+                    || attribute.getAttributeType() == AttributeType.CONSTANT) {
+                validateValue(attribute, ipsProject, list);
+            }
         }
-	}
+    }
 
-	private void validateValue(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject, MessageList list)
-			throws CoreException {
-		
-		ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
-		if (valueDatatype == null) {
-			if (!StringUtils.isEmpty(value)) {
-				String text = Messages.ConfigElement_msgUndknownDatatype;
-				list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
-						PROPERTY_VALUE));
-			}
-			return;
-		}
-		try {
-			if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
-				String text = Messages.ConfigElement_msgInvalidDatatype;
-				list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
-						PROPERTY_VALUE));
-				return;
-			}
-		} catch (Exception e) {
-			throw new CoreException(new IpsStatus(e));
-		}
+    private void validateValue(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject, MessageList list)
+            throws CoreException {
 
-		if (!valueDatatype.isParsable(value)) {
-		    addNotParsableMessage(value, valueDatatype, list);
-		}
-		
+        ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
+        if (valueDatatype == null) {
+            if (!StringUtils.isEmpty(value)) {
+                String text = Messages.ConfigElement_msgUndknownDatatype;
+                list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
+                        PROPERTY_VALUE));
+            }
+            return;
+        }
+        try {
+            if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
+                String text = Messages.ConfigElement_msgInvalidDatatype;
+                list
+                        .add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
+                                PROPERTY_VALUE));
+                return;
+            }
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+
+        if (!valueDatatype.isParsable(value)) {
+            addNotParsableMessage(value, valueDatatype, list);
+        }
+
         IValueSet modelValueSet = attribute.getValueSet();
         if (modelValueSet.validate(ipsProject).containsErrorMsg()) {
             String text = Messages.ConfigElement_msgInvalidAttributeValueset;
@@ -253,108 +258,112 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
 
-        if (this.type == ConfigElementType.POLICY_ATTRIBUTE && 
-                ( ! modelValueSet.containsValueSet(valueSet) || 
-                  ! modelValueSet.getValueSetType().equals(valueSet.getValueSetType()))) {
+        if (type == ConfigElementType.POLICY_ATTRIBUTE && !valueSet.isDetailSpecificationOf(modelValueSet)) {
             // model value set contains not the value set defined in the config element
-            // or different value set types 
-            String text; 
-            if (!modelValueSet.getValueSetType().equals(valueSet.getValueSetType())) {
-                text = NLS.bind(Messages.ConfigElement_msgTypeMismatch,
-                        new String[] { valueSet.toShortString(), modelValueSet.toShortString() });
+            // or different value set types
+            String text;
+            if (!valueSet.isDetailSpecificationOf(modelValueSet)) {
+                text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] { valueSet.toShortString(),
+                        modelValueSet.toShortString() });
             } else {
                 text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
                         .toShortString());
             }
-            // determine invalid property (usage e.g. to display problem marker on correct ui control)
-            String[] invalidProperties = null; 
+            // determine invalid property (usage e.g. to display problem marker on correct ui
+            // control)
+            String[] invalidProperties = null;
             Object obj = valueSet;
-            if (valueSet instanceof IEnumValueSet){
-                invalidProperties = new String[]{IEnumValueSet.PROPERTY_VALUES};
+            if (valueSet instanceof IEnumValueSet) {
+                invalidProperties = new String[] { IEnumValueSet.PROPERTY_VALUES };
             } else if (valueSet instanceof IRangeValueSet) {
-                invalidProperties = new String[]{IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND};
+                invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND,
+                        IRangeValueSet.PROPERTY_UPPERBOUND };
             } else {
                 // AllValueSet or unknown
                 obj = this;
-                invalidProperties = new String[]{PROPERTY_VALUE};
+                invalidProperties = new String[] { PROPERTY_VALUE };
             }
-            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj, invalidProperties));
+            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj,
+                    invalidProperties));
         }
 
-		if (StringUtils.isNotEmpty(value)) {
-			// validate valueset containment. If the type of this element
-			// is PRODUCT_ATTRIBUTE, we do not validate against the
-			// valueset of this element but against the valueset of
-			// the attribute this element is based on. This is because an
-			// element
-			// of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
-			// but the valueset can not be changed for this type of config
-			// element.
-			if (this.type == ConfigElementType.POLICY_ATTRIBUTE) {
-				if (!valueSet.containsValue(value)) {
-					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
+        if (StringUtils.isNotEmpty(value)) {
+            // validate valueset containment. If the type of this element
+            // is PRODUCT_ATTRIBUTE, we do not validate against the
+            // valueset of this element but against the valueset of
+            // the attribute this element is based on. This is because an
+            // element
+            // of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
+            // but the valueset can not be changed for this type of config
+            // element.
+            if (type == ConfigElementType.POLICY_ATTRIBUTE) {
+                if (!valueSet.containsValue(value)) {
+                    list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
                             Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
-				}
-			} else if (!modelValueSet.containsValue(value)) { // PRODUCT_ATTRIBUTE
-				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                        Messages.ConfigElement_valueIsNotInTheValueSetDefinedInTheModel, value), Message.ERROR, this, PROPERTY_VALUE));
-			}
-		}
-	}
-    
-	private void addNotParsableMessage(String value, ValueDatatype valueDatatype, MessageList msgList){
+                }
+            } else if (!modelValueSet.containsValue(value)) { // PRODUCT_ATTRIBUTE
+                list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
+                        Messages.ConfigElement_valueIsNotInTheValueSetDefinedInTheModel, value), Message.ERROR, this,
+                        PROPERTY_VALUE));
+            }
+        }
+    }
+
+    private void addNotParsableMessage(String value, ValueDatatype valueDatatype, MessageList msgList) {
         String valueInMsg = value;
-        if (value==null) {
+        if (value == null) {
             valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        } else if (value.equals("")){ //$NON-NLS-1$
+        } else if (value.equals("")) { //$NON-NLS-1$
             valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
         }
         String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
-        msgList.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
-                PROPERTY_VALUE));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public IValueSet getValueSet() {
-		return valueSet;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValueSetType(ValueSetType type) {
-		IValueSet oldset = valueSet;
-		valueSet = type.newValueSet(this, getNextPartId());
-		valueChanged(oldset, valueSet);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValueSetCopy(IValueSet source) {
-		IValueSet oldset = valueSet;
-		valueSet = source.copy(this, getNextPartId());
-		valueChanged(oldset, valueSet);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Element createElement(Document doc) {
-		return doc.createElement(TAG_NAME);
-	}
+        msgList.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE));
+    }
 
     /**
      * {@inheritDoc}
      */
+    public IValueSet getValueSet() {
+        return valueSet;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValueSetType(ValueSetType type) {
+        IValueSet oldset = valueSet;
+        valueSet = type.newValueSet(this, getNextPartId());
+        valueChanged(oldset, valueSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValueSetCopy(IValueSet source) {
+        IValueSet oldset = valueSet;
+        valueSet = source.copy(this, getNextPartId());
+        valueChanged(oldset, valueSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(TAG_NAME);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void reinitPartCollections() {
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
@@ -362,87 +371,95 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
-            this.valueSet = null;
+            valueSet = null;
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
-	protected void initPropertiesFromXml(Element element, Integer id) {
-		super.initPropertiesFromXml(element, id);
-		type = ConfigElementType.getConfigElementType(element
-				.getAttribute(PROPERTY_TYPE));
-		
-		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
-		
-		pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
-		name = pcTypeAttribute;
-	}
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        type = ConfigElementType.getConfigElementType(element.getAttribute(PROPERTY_TYPE));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void propertiesToXml(Element element) {
-		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_TYPE, type.getId());
-		element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
-		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-	}
+        value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
+        pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
+        name = pcTypeAttribute;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsElement[] getChildren() {
-        List childrenList = new ArrayList((valueSet!=null?1:0) + formulaTestCases.size());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_TYPE, type.getId());
+        element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
+        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IIpsElement[] getChildren() {
+        List childrenList = new ArrayList((valueSet != null ? 1 : 0) + formulaTestCases.size());
         if (valueSet != null) {
             childrenList.add(valueSet);
-		}
+        }
         childrenList.addAll(formulaTestCases);
-        return (IIpsElement[]) childrenList.toArray(new IIpsElement[0]);
+        return (IIpsElement[])childrenList.toArray(new IIpsElement[0]);
     }
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected IIpsObjectPart newPart(Element partEl, int id) {
         String xmlTagName = partEl.getNodeName();
-    	if (ValueSet.XML_TAG.equals(xmlTagName)) {
-    		valueSet = ValueSetType.newValueSet(partEl, this, id);
-    		return valueSet;
-        } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)){
+        if (ValueSet.XML_TAG.equals(xmlTagName)) {
+            valueSet = ValueSetType.newValueSet(partEl, this, id);
+            return valueSet;
+        } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)) {
             // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
         }
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ValueDatatype getValueDatatype() {
-		try {
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getValueDatatype() {
+        try {
             // TODO v2 - signature getValueDatatype() is wrong!
             return findValueDatatype(getIpsProject());
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
 
-		return null;
-	}
+        return null;
+    }
+
+    public boolean isValueSetUpdateable() {
+        return true;
+    }
 }

@@ -27,10 +27,12 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -80,8 +82,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     public AttributeEditDialog(IProductCmptTypeAttribute productCmptTypeAttribute, Shell parentShell) {
         super(productCmptTypeAttribute, parentShell, Messages.AttributeEditDialog_title, true);
 
-        this.attribute = productCmptTypeAttribute;
-        this.ipsProject = attribute.getIpsProject();
+        attribute = productCmptTypeAttribute;
+        ipsProject = attribute.getIpsProject();
 
         try {
             currentDatatype = productCmptTypeAttribute.findDatatype(ipsProject);
@@ -96,6 +98,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         folder = (TabFolder)parent;
 
@@ -116,18 +119,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
         Text nameText = uiToolkit.createText(workArea);
         nameText.setFocus();
-        bindingContext.bindContent(nameText, attribute, IProductCmptTypeAttribute.PROPERTY_NAME);
+        bindingContext.bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        bindingContext.bindContent(datatypeControl, attribute, IProductCmptTypeAttribute.PROPERTY_DATATYPE);
+        bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
-        bindingContext.bindContent(modifierCombo, attribute, IProductCmptTypeAttribute.PROPERTY_MODIFIER, Modifier
-                .getEnumType());
+        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
@@ -168,14 +170,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
                 currentDatatype, null, ipsProject);
-        if(defaultValueField instanceof EnumTypeDatatypeField){
+        if (defaultValueField instanceof EnumTypeDatatypeField) {
             ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
         }
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
 
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
-        bindingContext.bindContent(defaultValueField, attribute, IProductCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
+        bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
     /**

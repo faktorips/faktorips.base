@@ -77,7 +77,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     @SuppressWarnings("unchecked")
     private Constructor<IpsObjectPart> getConstructor(Class<? extends IpsObjectPart> clazz) {
-        Constructor<IpsObjectPart>[] constructors = clazz.getConstructors();
+        Constructor<IpsObjectPart>[] constructors = (Constructor<IpsObjectPart>[])clazz.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
             if (params.length != 2) {
@@ -85,10 +85,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             }
             if (params[1].equals(Integer.TYPE)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
-                    return (Constructor<IpsObjectPart>)constructors[i];
+                    return constructors[i];
                 }
                 if (IIpsObject.class.isAssignableFrom(params[0])) {
-                    return (Constructor<IpsObjectPart>)constructors[i];
+                    return constructors[i];
                 }
             }
         }
@@ -266,6 +266,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return newIndexes;
     }
 
+    @Override
     public String toString() {
         return "Part collection for " + partsBaseClass.getName(); //$NON-NLS-1$
     }

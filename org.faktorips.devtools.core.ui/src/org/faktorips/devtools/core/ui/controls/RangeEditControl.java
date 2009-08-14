@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,10 +33,11 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
 /**
- * A composite that consits of three textfields for input. if there is a uicontroller supplied it is used to establish a
- * mapping between the modell object and the control which represents the object property.
+ * A composite that consits of three textfields for input. if there is a uicontroller supplied it is
+ * used to establish a mapping between the modell object and the control which represents the object
+ * property.
  */
-public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess{
+public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess {
     private UIToolkit uiToolkit;
 
     // lower and button controls
@@ -49,10 +50,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private TextField stepfield;
     private IpsObjectUIController uiController;
     private Checkbox containsNullCB;
-	private CheckboxField containsNullField;
-    
+    private CheckboxField containsNullField;
+
     private boolean dataChangeable;
-    
 
     /**
      */
@@ -60,7 +60,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         super(parent, SWT.NONE);
         this.range = range;
         this.uiToolkit = toolkit;
-        
+
         setLayout();
         Group group = createRangeGroup(uiToolkit);
         Composite workArea = createWorkArea(uiToolkit, group);
@@ -71,9 +71,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         } else {
             this.uiController = new IpsObjectUIController((IIpsObjectPart)range.getParent());
         }
-        connectToModel();        
+        connectToModel();
     }
-    
+
     private void setLayout() {
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
@@ -98,7 +98,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
             layoutWorkArea.marginHeight = 0;
             layoutWorkArea.marginWidth = 0;
             layoutWorkArea.horizontalSpacing = 12; // this is important for the diplayed icons !!
-    
+
         } else {
             workArea = toolkit.getFormToolkit().createComposite(parent);
             layoutWorkArea.marginHeight = 3;
@@ -113,19 +113,20 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
         lower = toolkit.createText(workArea);
         lower.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
-        
-        toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);        
+
+        toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);
         upper = toolkit.createText(workArea);
         upper.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
-        
-        toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);        
+
+        toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);
         step = toolkit.createText(workArea);
         step.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
-        
-    	toolkit.createLabel(workArea, NLS.bind(Messages.RangeEditControl_labelIncludeNull, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
-    	containsNullCB = toolkit.createCheckbox(workArea);
 
-    	if (toolkit.getFormToolkit() != null) {
+        toolkit.createLabel(workArea, NLS.bind(Messages.RangeEditControl_labelIncludeNull, IpsPlugin.getDefault()
+                .getIpsPreferences().getNullPresentation()));
+        containsNullCB = toolkit.createCheckbox(workArea);
+
+        if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().paintBordersFor(workArea);
             toolkit.getFormToolkit().adapt(workArea);
         }
@@ -135,7 +136,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         upperfield = new TextField(upper);
         lowerfield = new TextField(lower);
         stepfield = new TextField(step);
-    	containsNullField = new CheckboxField(containsNullCB);
+        containsNullField = new CheckboxField(containsNullCB);
         uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
         uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
@@ -202,6 +203,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        upper.setEnabled(enabled);
+        lower.setEnabled(enabled);
+        step.setEnabled(enabled);
     }
 
     /**
@@ -216,10 +220,10 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
-        
+
         uiToolkit.setDataChangeable(lower, changeable);
         uiToolkit.setDataChangeable(upper, changeable);
         uiToolkit.setDataChangeable(step, changeable);
-        uiToolkit.setDataChangeable(containsNullCB, changeable);        
+        uiToolkit.setDataChangeable(containsNullCB, changeable);
     }
 }
