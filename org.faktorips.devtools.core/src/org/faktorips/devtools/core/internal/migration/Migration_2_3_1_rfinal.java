@@ -108,7 +108,8 @@ public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation
                     /*
                      * We now need to find out which enumeration attribute was marked as literal
                      * name. Because this functionality was removed from Faktor-IPS we try it the
-                     * XML way.
+                     * XML way. The literal name property was inherited however so this won't be
+                     * successful most time.
                      */
                     InputStream is = currentIpsSrcFile.getContentFromEnclosingResource();
                     DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
