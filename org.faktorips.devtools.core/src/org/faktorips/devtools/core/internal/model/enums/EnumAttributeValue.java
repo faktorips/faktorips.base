@@ -120,7 +120,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return null;
         }
 
-        // Check number of EnumAttributeValues matching number of EnumAttributes
+        // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
         boolean includeLiteralNames = valueContainer instanceof IEnumType;
         int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames);
@@ -150,8 +150,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         this.value = value;
 
         /*
-         * Update unique identifier validation cache if this enum attribute value refers to a unique
-         * enum attribute.
+         * Update unique identifier validation cache if this EnumAttributeValue refers to a unique
+         * EnumAttribute.
          */
         IEnumValue enumValue = getEnumValue();
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)enumValue.getEnumValueContainer();
@@ -189,8 +189,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         ValueDatatype valueDatatype = enumAttribute.findDatatype(ipsProject);
         if (valueDatatype != null) {
             if (!(valueDatatype.isParsable(value))) {
-                String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, enumAttribute.getName(),
-                        valueDatatype.getName());
+                String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, value, valueDatatype.getName());
                 Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text, Message.ERROR,
                         this, PROPERTY_VALUE);
                 list.add(validationMessage);
@@ -225,7 +224,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // The identifier enum attribute value must be java conform.
         if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
-            String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, enumAttribute.getName());
+            String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, value);
             Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
                     Message.ERROR, this, PROPERTY_VALUE);
             list.add(validationMessage);
@@ -247,7 +246,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
                 : uniqueIdentifierValue.length() == 0 || uniqueIdentifierValue.equals("<null>");
         if (uniqueIdentifierValueMissing) {
-            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueEmpty, enumAttribute.getName());
+            text = Messages.EnumAttributeValue_UniqueIdentifierValueEmpty;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
                     Message.ERROR, this, PROPERTY_VALUE);
             list.add(validationMessage);
@@ -261,7 +260,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 .getValidationCacheListForUniqueIdentifier(enumType.getIndexOfEnumAttribute(enumAttribute), getValue());
         if (cachedAttributeValues != null) {
             if (cachedAttributeValues.size() > 1) {
-                text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
+                text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, value);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
                         Message.ERROR, this, PROPERTY_VALUE);
                 list.add(validationMessage);
