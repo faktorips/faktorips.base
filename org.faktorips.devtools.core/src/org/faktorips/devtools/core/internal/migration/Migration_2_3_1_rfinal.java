@@ -108,41 +108,46 @@ public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation
                     /*
                      * We now need to find out which enumeration attribute was marked as literal
                      * name. Because this functionality was removed from Faktor-IPS we try it the
-                     * XML way. The literal name property was inherited however so this won't be
-                     * successful most time.
+                     * XML way. The literal name property was inherited however so we need to also
+                     * search the supertype hierarchy.
                      */
-                    InputStream is = currentIpsSrcFile.getContentFromEnclosingResource();
-                    DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
-                    Document doc;
-                    try {
-                        doc = builder.parse(is);
-                    } catch (IOException e) {
-                        throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                "IO error while parsing input file.", e));
-                    } catch (SAXException e) {
-                        throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                "SAX error while parsing input file.", e));
-                    }
-                    Element rootElement = doc.getDocumentElement();
-                    NodeList children = rootElement.getChildNodes();
                     String oldLiteralAttributeName = "";
-                    for (int i = 0; i < children.getLength(); i++) {
-                        Node currentItem = children.item(i);
-                        if (currentItem.getNodeName().equals(IEnumAttribute.XML_TAG)) {
-                            NamedNodeMap attributes = currentItem.getAttributes();
-                            Node literalNameNode = attributes.getNamedItem("literalName");
-                            // Theoretically not possible to be null.
-                            if (literalNameNode == null) {
-                                continue;
-                            }
-                            Boolean literalNameBoolean = Boolean.parseBoolean(literalNameNode.getTextContent());
-                            if (literalNameBoolean.booleanValue()) {
-                                Node nameNode = attributes.getNamedItem("name");
+                    List<IEnumType> searchedTypes = new ArrayList<IEnumType>(5);
+                    searchedTypes.add(currentEnumType);
+                    searchedTypes.addAll(currentEnumType.findAllSuperEnumTypes(ipsProject));
+                    for (IEnumType currentSearchedEnumType : searchedTypes) {
+                        InputStream is = currentSearchedEnumType.getIpsSrcFile().getContentFromEnclosingResource();
+                        DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                        Document doc;
+                        try {
+                            doc = builder.parse(is);
+                        } catch (IOException e) {
+                            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                                    "IO error while parsing input file.", e));
+                        } catch (SAXException e) {
+                            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                                    "SAX error while parsing input file.", e));
+                        }
+                        Element rootElement = doc.getDocumentElement();
+                        NodeList children = rootElement.getChildNodes();
+                        for (int i = 0; i < children.getLength(); i++) {
+                            Node currentItem = children.item(i);
+                            if (currentItem.getNodeName().equals(IEnumAttribute.XML_TAG)) {
+                                NamedNodeMap attributes = currentItem.getAttributes();
+                                Node literalNameNode = attributes.getNamedItem("literalName");
                                 // Theoretically not possible to be null.
-                                if (nameNode != null) {
-                                    oldLiteralAttributeName = nameNode.getTextContent();
+                                if (literalNameNode == null) {
+                                    continue;
                                 }
-                                break;
+                                Boolean literalNameBoolean = Boolean.parseBoolean(literalNameNode.getTextContent());
+                                if (literalNameBoolean.booleanValue()) {
+                                    Node nameNode = attributes.getNamedItem("name");
+                                    // Theoretically not possible to be null.
+                                    if (nameNode != null) {
+                                        oldLiteralAttributeName = nameNode.getTextContent();
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }
