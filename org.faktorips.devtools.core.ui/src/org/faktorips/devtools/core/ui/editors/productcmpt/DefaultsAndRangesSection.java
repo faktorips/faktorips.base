@@ -173,7 +173,7 @@ public class DefaultsAndRangesSection extends IpsSection {
             IValueSet valueSet,
             IpsObjectUIController controller) {
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
+        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
         EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
         evc.setDataChangeable(isDataChangeable());
         evc.setText(valueSet.toShortString());
@@ -238,7 +238,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         // only if the value set defined in the model is not an all values value set
         // we can modify the content of the value set.
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
+        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
         EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
         evc.setDataChangeable(isDataChangeable());
         evc.setText(valueSet.toShortString());
