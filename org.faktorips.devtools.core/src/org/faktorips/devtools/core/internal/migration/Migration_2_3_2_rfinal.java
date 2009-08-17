@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Migration from version 2.3.1.rfinal to version 2.4.0.rc1.
+ * Migration from version 2.3.2.rfinal to version 2.4.0.rc1.
  * 
  * @author Alexander Weickmann
  */
