@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -233,38 +234,40 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      */
     private void filterDatatypes() {
         IEnumType parentEnumType = enumAttribute.getEnumType();
+        IIpsProject ipsProject = parentEnumType.getIpsProject();
         List<Datatype> disallowedDatatypes = new ArrayList<Datatype>();
 
-        // Disallow parent enum type.
+        // Disallow parent EnumType.
         disallowedDatatypes.add(new EnumTypeDatatypeAdapter(parentEnumType, null));
-
-        // Disallow sub enum types of the parent enum type.
+        
+        // Go once over all EnumTypeDatatypeAdapters.
         try {
-            for (IEnumType subTypes : parentEnumType.findAllSubEnumTypes(parentEnumType.getIpsProject())) {
-                disallowedDatatypes.add(new EnumTypeDatatypeAdapter(subTypes, null));
+            for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
+                if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
+                    EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
+                    IEnumType enumType = adapter.getEnumType();
+                    
+                    // Continue if it is the parent EnumType that we have already disallowed.
+                    if (enumType.equals(parentEnumType)) {
+                        continue;
+                    }
+                    
+                    // Disallow if it is not containing values while the parent EnumType does.
+                    if (parentEnumType.isContainingValues()) {
+                        if (!(enumType.isContainingValues())) {
+                            disallowedDatatypes.add(adapter);
+                            continue;
+                        }
+                    }
+                    
+                    // Disallow if it is a subtype of the parent EnumType.
+                    if (enumType.findAllSuperEnumTypes(ipsProject).contains(parentEnumType)) {
+                        disallowedDatatypes.add(adapter);
+                    }
+                }
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
-        }
-
-        // Disallow enum types not containing values if parent enum type does contain values.
-        if (parentEnumType.isContainingValues()) {
-            try {
-                Datatype[] datatypes = parentEnumType.getIpsProject().findDatatypes(true, false);
-                for (Datatype currentDatatype : datatypes) {
-                    if (currentDatatype instanceof EnumTypeDatatypeAdapter) {
-                        EnumTypeDatatypeAdapter enumDatatypeAdapter = (EnumTypeDatatypeAdapter)currentDatatype;
-                        IEnumType enumDatatype = enumDatatypeAdapter.getEnumType();
-                        if (!(enumDatatype.isContainingValues())) {
-                            if (!(disallowedDatatypes.contains(currentDatatype))) {
-                                disallowedDatatypes.add(currentDatatype);
-                            }
-                        }
-                    }
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
         }
 
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);

@@ -176,10 +176,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
         if (list.getNoOfMessages() == 0) {
-            EnumContentValidations.validateEnumContentName(list, this, findEnumType(ipsProject), getQualifiedName());
+            IEnumType referencedEnumType = findEnumType(ipsProject);
+            EnumContentValidations.validateEnumContentName(list, this, referencedEnumType, getQualifiedName());
+            validateReferencedEnumAttributesCount(list, this, referencedEnumType, ipsProject);
         }
-
-        validateReferencedEnumAttributesCount(list, this, ipsProject);
     }
 
     /**
@@ -187,13 +187,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * correspond to the number of enum attributes in the referenced enum type.
      */
     private void validateReferencedEnumAttributesCount(MessageList validationMessageList,
-            IEnumContent enumContent,
+            IEnumContent enumContent, IEnumType enumType,
             IIpsProject ipsProject) throws CoreException {
-
-        IEnumType enumType = enumContent.findEnumType(ipsProject);
-        if (enumType == null) {
-            return;
-        }
 
         if (enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
             String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType

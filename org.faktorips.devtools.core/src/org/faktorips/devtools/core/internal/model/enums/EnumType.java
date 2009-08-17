@@ -229,6 +229,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
+        // TODO - BROADCASTING CHANGES -
         ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enum attribute.
@@ -239,7 +240,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             currentEnumValue.newEnumAttributeValue();
         }
 
+        // TODO - BROADCASTING CHANGES -
         ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        
         objectHasChanged();
 
         return newEnumAttribute;
@@ -340,8 +343,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // TODO AW: Broadcasting changes
-        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
@@ -358,8 +361,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleMoveEnumAttributeForUniqueIdentifierValidationCache(indexToMove, up);
         }
 
-        // TODO AW: Broadcasting changes
-        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
 
         if (newIndex[0] != indexToMove) {
             objectHasChanged();
@@ -772,15 +775,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleEnumAttributeDeletion(index);
         }
 
-        // TODO broadcast changes
-        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         deleteEnumAttributeValues(enumAttribute, getEnumValues());
         enumAttribute.delete();
-        objectHasChanged();
 
-        // TODO broadcast changes
-        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+
+        objectHasChanged();
     }
 
     /**
@@ -789,6 +793,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
         for (IEnumValue currentEnumValue : enumValues) {
+            // FIXME AW: Must delete EnumValue if no EnumAttributeValues are remaining.
             int index = getIndexOfEnumAttribute(enumAttribute);
             currentEnumValue.getEnumAttributeValues().get(index).delete();
         }
@@ -930,26 +935,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         } else {
             return new IDependency[0];
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException {
-        ArgumentCheck.notNull(ipsProject);
-
-        List<IEnumType> subEnumTypes = new ArrayList<IEnumType>();
-        List<IEnumType> allEnumTypes = ipsProject.findEnumTypes(true, true);
-        for (IEnumType currentEnumType : allEnumTypes) {
-            if (!(currentEnumType.hasSuperEnumType())) {
-                continue;
-            }
-            if (currentEnumType.findAllSuperEnumTypes(ipsProject).contains(this)) {
-                subEnumTypes.add(currentEnumType);
-            }
-        }
-
-        return subEnumTypes;
     }
 
     /**

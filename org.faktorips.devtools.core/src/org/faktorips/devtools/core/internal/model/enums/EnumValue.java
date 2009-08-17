@@ -176,10 +176,10 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         IEnumType enumType = getEnumValueContainer().findEnumType(ipsProject);
         ArgumentCheck.isTrue(enumAttribute.getEnumType() == enumType);
 
-        for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
+        for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues.getBackingList()) {
             IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute(ipsProject);
             if (currentReferencedEnumAttribute != null) {
-                if (currentReferencedEnumAttribute.getName().equals(enumAttribute.getName())) {
+                if (currentReferencedEnumAttribute.equals(enumAttribute)) {
                     return currentEnumAttributeValue;
                 }
             }

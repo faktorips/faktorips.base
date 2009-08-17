@@ -871,25 +871,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertFalse(resultList.contains(enum3.getIpsSrcFile()));
     }
 
-    public void testFindAllSubEnumTypes() throws CoreException {
-        IEnumType subEnumType = newEnumType(ipsProject, "SubEnum");
-        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        IEnumType subSubEnumType = newEnumType(ipsProject, "SubSubEnum");
-        subSubEnumType.setSuperEnumType(subEnumType.getQualifiedName());
-
-        List<IEnumType> subsOfGenderEnumType = genderEnumType.findAllSubEnumTypes(ipsProject);
-        assertEquals(2, subsOfGenderEnumType.size());
-        assertTrue(subsOfGenderEnumType.contains(subEnumType));
-        assertTrue(subsOfGenderEnumType.contains(subSubEnumType));
-
-        List<IEnumType> subsOfSubEnumType = subEnumType.findAllSubEnumTypes(ipsProject);
-        assertEquals(1, subsOfSubEnumType.size());
-        assertTrue(subsOfSubEnumType.contains(subSubEnumType));
-
-        List<IEnumType> subsOfSubSubEnumType = subSubEnumType.findAllSubEnumTypes(ipsProject);
-        assertEquals(0, subsOfSubSubEnumType.size());
-    }
-
     public void testFindIsUsedAsIdInFaktorIpsUiAttribute() throws Exception {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);

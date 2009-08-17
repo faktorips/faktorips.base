@@ -15,7 +15,8 @@ package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.enums.Messages;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -114,8 +115,8 @@ public abstract class EnumContentValidations {
         }
 
         // Enum type exists?
-        IEnumType enumTypeRef = ipsProject.findEnumType(enumTypeQualifiedName);
-        if (enumTypeRef == null) {
+        IIpsSrcFile enumSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumTypeQualifiedName);
+        if (enumSrcFile == null) {
             text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
                     Message.ERROR, objectProperties));
@@ -123,6 +124,7 @@ public abstract class EnumContentValidations {
         }
 
         // Values are part of model?
+        IEnumType enumTypeRef = (IEnumType)enumSrcFile.getIpsObject();
         if (enumTypeRef.isContainingValues()) {
             text = NLS.bind(Messages.EnumContent_ValuesArePartOfType, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE, text,

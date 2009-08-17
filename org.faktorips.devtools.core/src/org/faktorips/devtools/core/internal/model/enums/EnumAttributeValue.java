@@ -236,11 +236,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         if (cacheInitialized) {
             if (isUniqueIdentifierEnumAttributeValue()) {
-                validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
+                validateUniqueIdentifierEnumAttributeValue(list, enumAttribute, ipsProject);
                 if (list.getNoOfMessages() == 0) {
                     Boolean literalName = enumAttribute.findIsLiteralName(ipsProject);
                     if (literalName == null ? false : literalName.booleanValue()) {
-                        validateLiteralNameEnumAttributeValue(list, ipsProject);
+                        validateLiteralNameEnumAttributeValue(list, enumAttribute, ipsProject);
                     }
                 }
             }
@@ -252,8 +252,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this enum attribute value refers to an enum attribute that is used
      * as literal name.
      */
-    private void validateLiteralNameEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
+    private void validateLiteralNameEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
 
@@ -270,10 +269,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this enum attribute value refers to a unique identifier enum
      * attribute.
      */
-    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject)
+    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute, IIpsProject ipsProject)
             throws CoreException {
 
-        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         String text;
         Message validationMessage;
 

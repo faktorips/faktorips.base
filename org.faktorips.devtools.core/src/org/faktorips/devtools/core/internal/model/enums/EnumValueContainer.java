@@ -145,8 +145,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        // TODO pk 16-06-2009 activate when bug #1439 is fixed
-         ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enumeration value.
         IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
@@ -156,8 +156,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
             newEnumValue.newEnumAttributeValue();
         }
-        // TODO pk 16-06-2009 activate when bug #1439 is fixed
-         ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
 
         return newEnumValue;
