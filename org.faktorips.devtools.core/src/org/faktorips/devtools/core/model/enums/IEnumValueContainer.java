@@ -88,21 +88,21 @@ public interface IEnumValueContainer extends IIpsObject {
     public int getEnumValuesCount();
 
     /**
-     * Moves the given enum value one position up / down in the containing list and returns its new
-     * index.
-     * <p>
-     * If the given enum value is already the first / last enum value then nothing will be done.
+     * Moves the given <tt>IEnumValue</tt>s up or down by 1 and returns the their new positions.
+     * This operation assures that there aren't any <tt>ContentChangeEvent</tt>s fired while moving
+     * the individual <tt>IEnumValue</tt>s. Instead, a <tt>WHOLE_CONTENT_CHANGED</tt> event will be
+     * fired after every <tt>IEnumValue</tt>s has been moved.
      * 
-     * @param enumValue The enum value to move.
+     * @param enumValuesToMove A list containing the <tt>IEnumValue</tt>s that shall be moved.
      * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
      *            ).
      * 
-     * @throws CoreException If an error occurs while moving the enum value.
-     * @throws NullPointerException If <code>enumValue</code> is <code>null</code>.
-     * @throws NoSuchElementException If the given enum value is not contained in this enum value
-     *             container.
+     * @throws CoreException If an error occurs while moving the <tt>IEnumValue</tt>s.
+     * @throws NullPointerException If <code>enumValuesToMove</code> is <code>null</code>.
+     * @throws NoSuchElementException If any of the given <tt>IEnumValue</tt>s is not part of this
+     *             <tt>IEnumValueContainer</tt>.
      */
-    public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException;
+    public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException;
 
     /**
      * Returns the index of the given enum value in the containing list.
@@ -119,5 +119,22 @@ public interface IEnumValueContainer extends IIpsObject {
 
     /** Clears the unique identifier validation cache. */
     public void clearUniqueIdentifierValidationCache();
+
+    /**
+     * Deletes the given <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. This operation
+     * assures that no <tt>ContentChangeEvent</tt>s are fired during the deletion of the individual
+     * <tt>IEnumValue</tt>s. Instead a <tt>WHOLE_CONTENT_CHANGED</tt> event will be fired after
+     * every <tt>IEnumValue</tt> has been deleted.
+     * <p>
+     * Returns <tt>true</tt> if any <tt>IEnumValue</tt>s were deleted, <tt>false</tt> if not
+     * (following the behavior of the Java collections here).
+     * 
+     * @param enumValuesToDelete A list containing all <tt>IEnumValue</tt>s that should be deleted
+     *            from this <tt>IEnumValueContainer</tt>.
+     * 
+     * @throws NoSuchElementException If the given list contains an <tt>IEnumValue</tt> that is
+     *             not part of this <tt>IEnumValueContainer</tt>.
+     */
+    public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete);
 
 }

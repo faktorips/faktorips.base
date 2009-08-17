@@ -90,29 +90,17 @@ public class DeleteEnumValueAction extends Action {
         
         // Obtain the index of the last selected enum value
         IEnumValueContainer enumValueContainer = lastSelectedEnumValue.getEnumValueContainer();
+        int lastIndex = enumValueContainer.getIndexOfEnumValue(lastSelectedEnumValue);
         List<IEnumValue> enumValuesList = enumValueContainer.getEnumValues();
 
-        int lastIndex = 0;
-        for (int i = 0; i < enumValuesList.size(); i++) {
-            IEnumValue currentEnumValue = enumValuesList.get(i);
-            if (currentEnumValue.equals(lastSelectedEnumValue)) {
-                lastIndex = i;
-                break;
-            }
-        }
-
         // Set the new selection if possible
-        if (enumValuesList.size() > lastIndex + 1) {
+        if (enumValueContainer.getEnumValuesCount() > lastIndex + 1) {
             IStructuredSelection newSelection = new StructuredSelection(enumValuesList.get(lastIndex + 1));
             enumValuesTableViewer.setSelection(newSelection, true);
         }
 
         // Delete the previously selected enum values now
-        for (IEnumValue currentEnumValue : enumValuesToDelete) {
-            currentEnumValue.delete();
-        }
-
-        enumValuesTableViewer.refresh(true);
+        enumValueContainer.deleteEnumValues(enumValuesToDelete);
     }
 
 }

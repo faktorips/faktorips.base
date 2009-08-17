@@ -209,11 +209,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         toolBarManager.add(moveEnumValueUpAction);
         toolBarManager.add(moveEnumValueDownAction);
 
-        // TODO aw: align the toolbar at the right of the section title bar
-        toolbar.setLocation(220, toolbar.getLocation().y + 1);
-
         // Update the toolbar with the new information
         toolBarManager.update(true);
+        
+        // Aligns the toolbar to the right.
+        section.setTextClient(toolbar);
     }
 
     /**
