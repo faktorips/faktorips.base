@@ -18,16 +18,20 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
+/**
+ * Dialog that enables the user to select <tt>IPolicyCmptTypeAttribute</tt>s to overwrite.
+ * 
+ * @author Alexander Weickmann
+ */
 public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog {
 
     /**
-     * Creates a new dialog to select candidates for overwriting.
+     * Creates a new dialog to select candidates for overwriting attributes.
      * 
      * @param pcType The type to get the candidates for overwriting from.
      * @param parent The shell to show this dialog in.
@@ -39,34 +43,47 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
     }
 
-    /**
-     * Returns the methods the user has selected to override.
-     */
+    /** Returns the attributes the user has selected to override. */
     public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
-        List attributes = new ArrayList();
+        List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         Object[] checked = getResult();
         for (int i = 0; i < checked.length; i++) {
             if (checked[i] instanceof IPolicyCmptTypeAttribute) {
-                attributes.add(checked[i]);
+                IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)checked[i];
+                attributes.add(attr);
             }
         }
-        return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
+        return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
     }
 
+    /** Provides the <tt>IPolicyCmptTypeAttribute</tt>s available for selection. */
     private static class CandidatesContentProvider extends SelectSupertypeHierarchyPartsDialog.PartsContentProvider {
 
+        /**
+         * Creates the <tt>CandiatesContentProvider</tt>.
+         * 
+         * @param pcType The <tt>IPolicyCmptType</tt> the <tt>IPolicyCmptTypeAttribute</tt>s
+         *            available for selection are from.
+         */
         CandidatesContentProvider(IPolicyCmptType pcType) {
             super(pcType);
         }
 
+        @Override
         public IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
             IPolicyCmptType pcType = (IPolicyCmptType)ipsObject;
             try {
                 return pcType.findOverrideAttributeCandidates(pcType.getIpsProject());
             } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return new IIpsObjectPart[0];
+                throw new RuntimeException(e);
             }
         }
+
+        @Override
+        protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
+            IPolicyCmptType pcType = (IPolicyCmptType)ipsObject;
+            return pcType.getSupertypeHierarchy().getAllSupertypes(pcType);
+        }
+
     }
 }
