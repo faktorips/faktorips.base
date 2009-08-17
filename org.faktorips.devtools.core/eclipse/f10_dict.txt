@@ -34,6 +34,8 @@ Cornelius
 Dirmeier
 Juergen
 Niedernhuber
+Datentyp
+Tabelleninhalt
 der
 die
 und
