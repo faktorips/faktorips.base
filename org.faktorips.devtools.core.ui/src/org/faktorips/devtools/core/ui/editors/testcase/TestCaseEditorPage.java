@@ -79,5 +79,9 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
     
     public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
         section.removeDetailAreaRedrawListener(listener);
+    }
+
+    public void refreshInclStructuralChanges() {
+        section.refreshTreeAndDetailArea();
     } 
 }

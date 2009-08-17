@@ -155,5 +155,10 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     
     public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
         editorPage.removeDetailAreaRedrawListener(listener);
+    }
+
+    @Override
+    protected void refreshInclStructuralChanges() {
+        editorPage.refreshInclStructuralChanges();
     }     
 }

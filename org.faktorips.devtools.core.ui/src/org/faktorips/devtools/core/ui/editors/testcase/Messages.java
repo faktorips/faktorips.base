@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,47 +19,47 @@ import org.eclipse.osgi.util.NLS;
  * @author Joerg Ortmann
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.testcase.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.testcase.messages"; //$NON-NLS-1$
 
-	private Messages() {
-	}
+    private Messages() {
+    }
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String TestCaseEditor_Title;
-	public static String TestCaseEditor_Title_Failure;
-	public static String TestCaseEditor_Title_Error;
-	public static String TestCaseEditor_Title_Success;
-	public static String TestCaseEditor_Combined_SectionTitle;
-	public static String TestCaseEditor_Combined_Description;
-	public static String TestCaseSection_ButtonAdd;
-	public static String TestCaseSection_ButtonRemove;
-	public static String TestCaseSection_ButtonProductCmpt;
+    public static String TestCaseEditor_Title;
+    public static String TestCaseEditor_Title_Failure;
+    public static String TestCaseEditor_Title_Error;
+    public static String TestCaseEditor_Title_Success;
+    public static String TestCaseEditor_Combined_SectionTitle;
+    public static String TestCaseEditor_Combined_Description;
+    public static String TestCaseSection_ButtonAdd;
+    public static String TestCaseSection_ButtonRemove;
+    public static String TestCaseSection_ChangeProductCmpt;
     public static String TestCaseSection_DialogOverwriteWithDefault_Text;
     public static String TestCaseSection_DialogOverwriteWithDefault_Title;
-	public static String TestCaseSection_Error_CreatingAssociation;
-	public static String TestCaseSection_DialogSelectProductCmpt_Title;
-	public static String TestCaseSection_DialogSelectProductCmpt_Description;
-	public static String TestCaseSection_DialogSelectTestAssociation_Title;
-	public static String TestCaseSection_DialogSelectTestAssociation_Description;
+    public static String TestCaseSection_Error_CreatingAssociation;
+    public static String TestCaseSection_DialogSelectProductCmpt_Title;
+    public static String TestCaseSection_DialogSelectProductCmpt_Description;
+    public static String TestCaseSection_DialogSelectTestAssociation_Title;
+    public static String TestCaseSection_DialogSelectTestAssociation_Description;
     public static String TestCaseSection_Menu_Down;
     public static String TestCaseSection_Menu_OpenInNewEditor;
     public static String TestCaseSection_Menu_Up;
     public static String TestCaseSection_MessageDialog_TextInfoTestNotExecuted;
     public static String TestCaseSection_MessageDialog_TitleInfoTestNotExecuted;
     public static String TestCaseSection_StatusMessage_FieldNotFound;
-	public static String TestPolicyCmptSelectionDialog_Title;
-	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
-	public static String TestPolicyCmptSelectionDialog_Description;
-	public static String TestPolicyCmptSelectionDialog_Error_WrongType;
-	public static String TestCaseSection_FailureFormat_FailureIn;
-	public static String TestCaseSection_FailureFormat_Actual;
-	public static String TestCaseSection_FailureFormat_Expected;
-	public static String TestCaseSection_FailureFormat_Attribute;
-	public static String TestCaseSection_FailureFormat_Object;
+    public static String TestPolicyCmptSelectionDialog_Title;
+    public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
+    public static String TestPolicyCmptSelectionDialog_Description;
+    public static String TestPolicyCmptSelectionDialog_Error_WrongType;
+    public static String TestCaseSection_FailureFormat_FailureIn;
+    public static String TestCaseSection_FailureFormat_Actual;
+    public static String TestCaseSection_FailureFormat_Expected;
+    public static String TestCaseSection_FailureFormat_Attribute;
+    public static String TestCaseSection_FailureFormat_Object;
     public static String TestCaseSection_FailureFormat_Message;
     public static String TestCaseSection_FilterInput;
     public static String TestCaseSection_FilterInput_ToolTip;
