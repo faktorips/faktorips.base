@@ -76,14 +76,11 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        IIpsSrcFile[] enumTypeSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
-
-        for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
-            if (currentIpsSrcFile.getIpsObject().getQualifiedName().equals(enumType)) {
-                return (IEnumType)currentIpsSrcFile.getIpsObject();
-            }
+        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumType);
+        if(ipsSrcFile != null && ipsSrcFile.exists()){
+            return (IEnumType)ipsSrcFile.getIpsObject();
         }
-
+        
         return null;
     }
 
@@ -158,10 +155,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
         if (list.getNoOfMessages() == 0) {
-            EnumContentValidations.validateEnumContentName(list, this, findEnumType(ipsProject), getQualifiedName());
+            IEnumType referencedEnumType = findEnumType(ipsProject);
+            EnumContentValidations.validateEnumContentName(list, this, referencedEnumType, getQualifiedName());
+            validateReferencedEnumAttributesCount(list, referencedEnumType, ipsProject);
         }
-
-        validateReferencedEnumAttributesCount(list, ipsProject);
     }
 
     /**
@@ -169,13 +166,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * does not correspond to the number of <tt>IEnumAttribute</tt>s stored in the referenced
      * <tt>IEnumType</tt> (without counting literal name attributes).
      */
-    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IIpsProject ipsProject)
+    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumType enumType, IIpsProject ipsProject)
             throws CoreException {
-
-        IEnumType enumType = findEnumType(ipsProject);
-        if (enumType == null) {
-            return;
-        }
 
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getReferencedEnumAttributesCount()) {
             String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType

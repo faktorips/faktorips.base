@@ -254,9 +254,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
          * it).
          */
         if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter adaptedEnumType = (EnumTypeDatatypeAdapter)ipsDatatype;
-            List<IEnumType> subEnumTypes = enumType.findAllSubEnumTypes(ipsProject);
-            if (adaptedEnumType.getEnumType().equals(enumType) || subEnumTypes.contains(adaptedEnumType.getEnumType())) {
+            EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)ipsDatatype;
+            IEnumType adaptedEnumType = adapter.getEnumType();
+            if (adaptedEnumType.equals(enumType) || adaptedEnumType.findAllSuperEnumTypes(ipsProject).contains(enumType)) {
                 text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS,
                         text, Message.ERROR, this, PROPERTY_DATATYPE);

@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -134,8 +135,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        // TODO pk 16-06-2009 activate when bug #1439 is fixed
-        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enumeration value.
         IEnumValue newEnumValue = (IEnumValue)newPart(EnumValue.class);
@@ -149,8 +150,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             newEnumValue.newEnumAttributeValue();
         }
 
-        // TODO pk 16-06-2009 activate when bug #1439 is fixed
-        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
 
         return newEnumValue;
@@ -160,14 +162,33 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return enumValues.size();
     }
 
-    public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
-        ArgumentCheck.notNull(enumValue);
-
-        int index = enumValues.indexOf(enumValue);
-        if (index == -1) {
-            throw new NoSuchElementException();
+    public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException {
+        ArgumentCheck.notNull(enumValuesToMove);
+        int numberToMove = enumValuesToMove.size();
+        if (numberToMove == 0) {
+            return new int[0];
         }
-        return enumValues.moveParts(new int[] { index }, up)[0];
+
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
+        int[] indizes = new int[numberToMove];
+        for (int i = 0; i < numberToMove; i++) {
+            IEnumValue currentEnumValue = enumValuesToMove.get(i);
+            int index = getIndexOfEnumValue(currentEnumValue);
+            if (index == -1) {
+                throw new NoSuchElementException();
+            }
+            indizes[i] = index;
+        }
+        indizes = enumValues.moveParts(indizes, up);
+
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+
+        objectHasChanged();
+
+        return indizes;
     }
 
     public int getIndexOfEnumValue(IEnumValue enumValue) {
@@ -417,6 +438,32 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     public void initFromXml(Element element) {
         super.initFromXml(element);
         clearUniqueIdentifierValidationCache();
+    }
+
+    public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete) {
+        if (enumValuesToDelete == null) {
+            return false;
+        }
+
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
+        boolean changed = false;
+        for (IEnumValue currentEnumValue : enumValuesToDelete) {
+            if (!(enumValues.contains(currentEnumValue))) {
+                throw new NoSuchElementException();
+            }
+            currentEnumValue.delete();
+            changed = true;
+        }
+
+        // TODO - BROADCASTING CHANGES -
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+
+        if (changed) {
+            objectHasChanged();
+        }
+        return changed;
     }
 
 }

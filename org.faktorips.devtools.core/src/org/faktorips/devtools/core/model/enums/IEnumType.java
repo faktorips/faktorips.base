@@ -521,18 +521,6 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException;
 
     /**
-     * Searches the given ips project for enum types that are subclasses of this enum type and
-     * returns them in a list.
-     * <p>
-     * If none could be found an empty list will be returned, so it never returns <code>null</code>.
-     * 
-     * @throws CoreException If an error occurs while searching the given ips project for enum
-     *             types.
-     * @throws NullPointerException If <code>ipsProject<code> is <code>null</code>.
-     */
-    public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns whether an enum attribute with the given name exists in this enum type.
      * <p>
      * The check does <strong>not</strong> include the copies from the supertype hierarchy.

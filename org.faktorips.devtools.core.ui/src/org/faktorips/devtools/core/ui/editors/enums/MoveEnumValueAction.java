@@ -107,28 +107,17 @@ public class MoveEnumValueAction extends Action {
             // ----------------------------------------
 
             IEnumValue firstSelectedEnumValue = enumValuesToMove.get(0);
-            // Obtain the index of the first selected enum value
-            int index = 0;
-            for (int i = 0; i < allEnumValues.size(); i++) {
-                IEnumValue currentEnumValue = allEnumValues.get(i);
-                if (currentEnumValue.equals(firstSelectedEnumValue)) {
-                    index = i;
-                    break;
-                }
-            }
-
+            int index = enumValueContainer.getIndexOfEnumValue(firstSelectedEnumValue);
             // If the the first selected enum value is the first item we do not move at all
             if (index == 0) {
                 return;
             }
 
             // Perform moving starting with first selected enum value
-            for (IEnumValue currentEnumValue : enumValuesToMove) {
-                try {
-                    enumValueContainer.moveEnumValue(currentEnumValue, true);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                enumValueContainer.moveEnumValues(enumValuesToMove, true);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
 
         } else {
@@ -136,29 +125,22 @@ public class MoveEnumValueAction extends Action {
             // ----------------------------------------
 
             IEnumValue lastSelectedEnumValue = enumValuesToMove.get(enumValuesToMove.size() - 1);
-            // Obtain the index of the last selected enum value
-            int index = allEnumValues.size() - 1;
-            for (int i = 0; i < allEnumValues.size(); i++) {
-                IEnumValue currentEnumValue = allEnumValues.get(i);
-                if (currentEnumValue.equals(lastSelectedEnumValue)) {
-                    index = i;
-                    break;
-                }
-            }
-
+            int index = enumValueContainer.getIndexOfEnumValue(lastSelectedEnumValue);
             // If the the last selected enum value is the last item we do not move at all
             if (index == allEnumValues.size() - 1) {
                 return;
             }
 
             // Perform moving starting with last selected enum value
-            for (int i = enumValuesToMove.size() - 1; i >= 0; i--) {
-                IEnumValue currentEnumValue = enumValuesToMove.get(i);
-                try {
-                    enumValueContainer.moveEnumValue(currentEnumValue, false);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+            int numberToMove = enumValuesToMove.size();
+            List<IEnumValue> orderedValues = new ArrayList<IEnumValue>(numberToMove);
+            for (int i = numberToMove - 1; i >= 0; i--) {
+                orderedValues.add(enumValuesToMove.get(i));
+            }
+            try {
+                enumValueContainer.moveEnumValues(orderedValues, false);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
         }
 

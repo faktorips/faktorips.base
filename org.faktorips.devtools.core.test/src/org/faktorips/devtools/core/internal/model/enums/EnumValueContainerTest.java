@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -56,9 +60,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumType.getEnumValuesCount());
     }
 
-    public void testMoveEnumValueUp() throws CoreException {
+    public void testMoveEnumValuesUp() throws CoreException {
         try {
-            genderEnumContent.moveEnumValue(null, true);
+            genderEnumContent.moveEnumValues(null, true);
             fail();
         } catch (NullPointerException e) {
         }
@@ -69,30 +73,32 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(1));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
 
-        int newIndex;
-        newIndex = genderEnumContent.moveEnumValue(newEnumValue, true);
-        assertEquals(1, newIndex);
+        List<IEnumValue> moveList = new ArrayList<IEnumValue>(1);
+        moveList.add(newEnumValue);
+        int[] newIndizes;
+        newIndizes = genderEnumContent.moveEnumValues(moveList, true);
+        assertEquals(1, newIndizes[0]);
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(0));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(2));
 
-        newIndex = genderEnumContent.moveEnumValue(newEnumValue, true);
-        assertEquals(0, newIndex);
+        newIndizes = genderEnumContent.moveEnumValues(moveList, true);
+        assertEquals(0, newIndizes[0]);
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(0));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(2));
 
         // Nothing must change if the enum value is the first one already
-        newIndex = genderEnumContent.moveEnumValue(newEnumValue, true);
-        assertEquals(0, newIndex);
+        newIndizes = genderEnumContent.moveEnumValues(moveList, true);
+        assertEquals(0, newIndizes[0]);
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(0));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(2));
     }
 
-    public void testMoveEnumValueDown() throws CoreException {
+    public void testMoveEnumValuesDown() throws CoreException {
         try {
-            genderEnumContent.moveEnumValue(null, false);
+            genderEnumContent.moveEnumValues(null, false);
             fail();
         } catch (NullPointerException e) {
         }
@@ -103,22 +109,24 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(1));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
 
-        int newIndex;
-        newIndex = genderEnumContent.moveEnumValue(genderEnumValueMale, false);
-        assertEquals(1, newIndex);
+        List<IEnumValue> moveList = new ArrayList<IEnumValue>(1);
+        moveList.add(genderEnumValueMale);
+        int[] newIndizes;
+        newIndizes = genderEnumContent.moveEnumValues(moveList, false);
+        assertEquals(1, newIndizes[0]);
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(0));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(1));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
 
-        newIndex = genderEnumContent.moveEnumValue(genderEnumValueMale, false);
-        assertEquals(2, newIndex);
+        newIndizes = genderEnumContent.moveEnumValues(moveList, false);
+        assertEquals(2, newIndizes[0]);
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(0));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(2));
 
         // Nothing must change if the enum value is the last one already
-        newIndex = genderEnumContent.moveEnumValue(genderEnumValueMale, false);
-        assertEquals(2, newIndex);
+        newIndizes = genderEnumContent.moveEnumValues(moveList, false);
+        assertEquals(2, newIndizes[0]);
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(0));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(2));
@@ -128,7 +136,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
         assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
 
-        genderEnumContent.moveEnumValue(genderEnumValueFemale, true);
+        List<IEnumValue> moveList = new ArrayList<IEnumValue>(1);
+        moveList.add(genderEnumValueFemale);
+        genderEnumContent.moveEnumValues(moveList, true);
         assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
     }
@@ -189,6 +199,18 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         paymentMode.deleteEnumAttributeWithValues(newUnique);
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
+    }
+
+    public void testDeleteEnumValues() {
+        assertFalse(genderEnumContent.deleteEnumValues(null));
+        assertTrue(genderEnumContent.deleteEnumValues(genderEnumContent.getEnumValues()));
+        assertEquals(0, genderEnumContent.getEnumValuesCount());
+
+        try {
+            genderEnumContent.deleteEnumValues(paymentMode.getEnumValues());
+            fail();
+        } catch (NoSuchElementException e) {
+        }
     }
 
     public void _testUniqueIdentifierValidationPerformance() throws CoreException {
