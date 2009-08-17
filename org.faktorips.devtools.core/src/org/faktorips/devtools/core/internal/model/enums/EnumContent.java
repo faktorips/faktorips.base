@@ -81,11 +81,9 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        IIpsSrcFile[] enumTypeSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
-        for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
-            if (currentIpsSrcFile.getIpsObject().getQualifiedName().equals(enumType)) {
-                return (IEnumType)currentIpsSrcFile.getIpsObject();
-            }
+        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumType);
+        if(ipsSrcFile != null && ipsSrcFile.exists()){
+            return (IEnumType)ipsSrcFile.getIpsObject();
         }
 
         return null;

@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -145,7 +146,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         // TODO pk 16-06-2009 activate when bug #1439 is fixed
-        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+         ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enumeration value.
         IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
@@ -156,7 +157,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             newEnumValue.newEnumAttributeValue();
         }
         // TODO pk 16-06-2009 activate when bug #1439 is fixed
-        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+         ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
 
         return newEnumValue;

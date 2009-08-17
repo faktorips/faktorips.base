@@ -21,6 +21,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -228,7 +229,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enum attribute.
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
@@ -238,7 +239,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             currentEnumValue.newEnumAttributeValue();
         }
 
-        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         objectHasChanged();
 
         return newEnumAttribute;
@@ -258,6 +259,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public int getEnumAttributesCount(boolean includeInherited) {
         if (includeInherited) {
+            //TODO Performance
             return getEnumAttributesIncludeSupertypeCopies().size();
         } else {
             return getEnumAttributes().size();
@@ -487,14 +489,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
+        List<IEnumAttribute> enumAttributes = getEnumAttributesIncludeSupertypeCopies();
         // Validate literal name attribute.
-        validateLiteralNameAttribute(list, ipsProject);
+        validateLiteralNameAttribute(list, enumAttributes, ipsProject);
 
         // Validate id attribute.
-        validateUsedAsIdInFaktorIpsUiAttribute(list, ipsProject);
+        validateUsedAsIdInFaktorIpsUiAttribute(list, enumAttributes, ipsProject);
 
         // Validate name attribute.
-        validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
+        validateUsedAsNameInFaktorIpsUiAttribute(list, enumAttributes, ipsProject);
 
         // Validate enum content package fragment.
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), !isContainingValues(),
@@ -552,7 +555,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the given enum type is abstract the validation will succeed even if there is no literal
      * name attribute.
      */
-    private void validateLiteralNameAttribute(MessageList validationMessageList, IIpsProject ipsProject)
+    private void validateLiteralNameAttribute(MessageList validationMessageList, List<IEnumAttribute> enumAttributes, IIpsProject ipsProject)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
@@ -563,7 +566,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         boolean literalNameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             Boolean literalName = currentEnumAttribute.findIsLiteralName(ipsProject);
             if (literalName == null) {
                 continue;
@@ -589,7 +592,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the given enum type is abstract the validation will succeed even if there is no such enum
      * attribute.
      */
-    private void validateUsedAsIdInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject)
+    private void validateUsedAsIdInFaktorIpsUiAttribute(MessageList validationMessageList, List<IEnumAttribute> enumAttributes, IIpsProject ipsProject)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
@@ -600,7 +603,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         boolean idAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             Boolean usedAsIdInFaktorIpsUi = currentEnumAttribute.findIsIdentifier(ipsProject);
             if (usedAsIdInFaktorIpsUi == null) {
                 continue;
@@ -626,7 +629,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the given enum type is abstract the validation will succeed even if there is no such enum
      * attribute.
      */
-    private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject)
+    private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, List<IEnumAttribute> enumAttributes, IIpsProject ipsProject)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
@@ -637,7 +640,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         boolean nameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             Boolean usedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
             if (usedAsNameInFaktorIpsUi == null) {
                 continue;
@@ -698,14 +701,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        IIpsSrcFile[] enumTypeSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
-        for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
-            IEnumType currentEnumType = (IEnumType)currentIpsSrcFile.getIpsObject();
-            if (currentEnumType.getQualifiedName().equals(superEnumType)) {
-                return currentEnumType;
-            }
+        IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, superEnumType);
+        if(enumTypeSrcFile != null && enumTypeSrcFile.exists()){
+            return (IEnumType)enumTypeSrcFile.getIpsObject();
         }
-
         return null;
     }
 
