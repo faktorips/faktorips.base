@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,10 +33,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -68,12 +70,12 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 public class TestCaseDetailArea {
     // UI toolkit for creating the controls
     private UIToolkit toolkit;
-    
+
     // Contains the content provider of the test policy component object
     private TestCaseContentProvider contentProvider;
 
     private IIpsProject ipsProject;
-    
+
     // Contains all edit sections the key is the name of the correspondin test parameter
     private HashMap sectionControls = new HashMap();
 
@@ -88,7 +90,7 @@ public class TestCaseDetailArea {
     private HashMap failureDetailCache = new HashMap();
     // Contains all fixed fields (actual value stored as expected value)
     private List fixedFieldsCache = new ArrayList();
-    
+
     // Contains the mapping between the edit field and model objects
     private HashMap editField2ModelObject = new HashMap();
 
@@ -108,7 +110,6 @@ public class TestCaseDetailArea {
 
     private BindingContext bindingContext;
 
-    
     /*
      * Mouse listener class to select the section if the mouse button is clicked
      */
@@ -153,11 +154,12 @@ public class TestCaseDetailArea {
         }
     }
 
-    public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection section, BindingContext bindingContext) {
+    public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection section,
+            BindingContext bindingContext) {
         this.toolkit = toolkit;
         this.contentProvider = contentProvider;
-        this.ipsProject = contentProvider.getTestCase().getIpsProject();
-        this.testCaseSection = section;
+        ipsProject = contentProvider.getTestCase().getIpsProject();
+        testCaseSection = section;
         this.bindingContext = bindingContext;
     }
 
@@ -196,8 +198,8 @@ public class TestCaseDetailArea {
     /**
      * Creates the main detail area.
      */
-    public void createInitialDetailArea(Composite parent, String title) {
-        Section detailsSection = toolkit.getFormToolkit().createSection(parent, Section.TITLE_BAR);
+    public Section createInitialDetailArea(Composite parent, String title) {
+        Section detailsSection = toolkit.getFormToolkit().createSection(parent, ExpandableComposite.TITLE_BAR);
         detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         detailsSection.setText(title);
         detailsArea = toolkit.createComposite(detailsSection);
@@ -208,16 +210,17 @@ public class TestCaseDetailArea {
         detailLayout.marginWidth = 0;
         detailLayout.marginHeight = 0;
         detailsArea.setLayout(detailLayout);
+        return detailsSection;
     }
 
-    public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener){
+    public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
         testCaseDetailAreaRedrawListener.add(listener);
     }
-    
-    public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener){
+
+    public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
         testCaseDetailAreaRedrawListener.remove(listener);
     }
-    
+
     private void notifyListener(List testObjects) {
         try {
             for (Iterator iter = testCaseDetailAreaRedrawListener.iterator(); iter.hasNext();) {
@@ -228,14 +231,14 @@ public class TestCaseDetailArea {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
+
     /**
      * Creates the details for the given test objects.
      */
     public void createTestObjectSections(List testObjects) {
         try {
             notifyListener(testObjects);
-            
+
             for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
                 ITestObject testObject = (ITestObject)iter.next();
                 if (testObject instanceof ITestValue) {
@@ -249,8 +252,8 @@ public class TestCaseDetailArea {
                     createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
                 }
             }
-            
-            if (!testCaseSection.isDataChangeable()){
+
+            if (!testCaseSection.isDataChangeable()) {
                 toolkit.setDataChangeable(detailsArea, false);
             }
         } catch (CoreException e) {
@@ -274,8 +277,9 @@ public class TestCaseDetailArea {
         if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) || (testCaseSection
                 .getContentProvider().isInput() && testPolicyCmpt.isInput()))) {
             // check if the parameter wasn't found
-            // if the parameter not exists then the type couldn't be determined, therefore display the content in any case
-            if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject) != null){
+            // if the parameter not exists then the type couldn't be determined, therefore display
+            // the content in any case
+            if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject) != null) {
                 return;
             }
         }
@@ -294,14 +298,14 @@ public class TestCaseDetailArea {
 
         // create text edit fields for each attribute
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
-        boolean firstEditField = true; 
+        boolean firstEditField = true;
         for (int i = 0; i < testAttributeValues.length; i++) {
             final ITestAttributeValue attributeValue = testAttributeValues[i];
             // Create the edit field only if the content provider provides the type of the test
             // attribute object
             if (testCaseSection.getContentProvider().isCombined()
-                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute(ipsProject))
-                    || testCaseSection.getContentProvider().isExpectedResult()
+                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i]
+                            .isInputAttribute(ipsProject)) || testCaseSection.getContentProvider().isExpectedResult()
                     && testAttributeValues[i].isExpextedResultAttribute(ipsProject)) {
                 EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
@@ -327,23 +331,24 @@ public class TestCaseDetailArea {
         // get the ctrlFactory to create the edit field
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
-        
+
         try {
             ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
-            if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()){
+            if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
                 // the attribute is an extension attribute
                 datatype = testAttribute.findDatatype(ipsProject);
                 ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             } else {
                 IAttribute attribute = attributeValue.findAttribute(ipsProject);
-                if (attribute != null){
+                if (attribute != null) {
                     datatype = attribute.findDatatype(ipsProject);
                     ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-                } else { 
-                    if (StringUtils.isNotEmpty(attributeValue.getValue())){
-                        ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+                } else {
+                    if (StringUtils.isNotEmpty(attributeValue.getValue())) {
+                        ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
                     } else {
-                        // if the attribute wasn't found and no value is stored then no controls will be displayed
+                        // if the attribute wasn't found and no value is stored then no controls
+                        // will be displayed
                         // maybe this attributes are not available in subtype test policy cmpt's
                         return null;
                     }
@@ -352,9 +357,9 @@ public class TestCaseDetailArea {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        
-        if (ctrlFactory == null){
-            ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+
+        if (ctrlFactory == null) {
+            ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
         }
 
         Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
@@ -366,7 +371,7 @@ public class TestCaseDetailArea {
         } catch (Exception e) {
             // ignore exception
         }
-        
+
         // store the edit field
         String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
         putEditField(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
@@ -393,7 +398,7 @@ public class TestCaseDetailArea {
                 testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureLastTestRun, false);
             }
         }
-        
+
         addBindingFor(editField, attributeValue, ITestAttributeValue.PROPERTY_VALUE);
 
         return editField;
@@ -407,8 +412,8 @@ public class TestCaseDetailArea {
     }
 
     /*
-     * Creates the section for a link of type association.<br> Create a hyperlink if the
-     * realtion exists is in the current test case or create a label with the test link target.
+     * Creates the section for a link of type association.<br> Create a hyperlink if the realtion
+     * exists is in the current test case or create a label with the test link target.
      */
     private void createLinkSectionAssociation(final ITestPolicyCmptLink currLink, Composite details) {
         String uniquePath = testCaseSection.getUniqueKey(currLink);
@@ -436,6 +441,7 @@ public class TestCaseDetailArea {
             Hyperlink linkHyperlink = toolkit.getFormToolkit().createHyperlink(hyperlinkArea,
                     TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()), SWT.WRAP);
             linkHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+                @Override
                 public void linkActivated(HyperlinkEvent e) {
                     try {
                         testCaseSection.selectInTreeByObject(currLink.findTarget(), true);
@@ -454,7 +460,7 @@ public class TestCaseDetailArea {
                 }
             });
             String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
-            String hyperLinklabel = hyperLinkPath; //$NON-NLS-1$
+            String hyperLinklabel = hyperLinkPath;
             if (hyperLinklabel.length() > 60) {
                 hyperLinklabel = hyperLinkPath.substring(0, 27);
                 hyperLinklabel += "..."; //$NON-NLS-1$
@@ -464,13 +470,11 @@ public class TestCaseDetailArea {
             addSectionSelectionListeners(null, label, currLink);
         } else {
             // target not found in current test case
-            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currLink
-                    .getTarget()));
+            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath
+                    .unqualifiedName(currLink.getTarget()));
             addSectionSelectionListeners(null, label, currLink);
-            label = toolkit
-                    .createLabel(
-                            hyperlinkArea,
-                            " ("    + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
+            label = toolkit.createLabel(hyperlinkArea,
+                    " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
             addSectionSelectionListeners(null, label, currLink);
         }
     }
@@ -547,6 +551,7 @@ public class TestCaseDetailArea {
         addBindingFor(editField, testValue, ITestValue.PROPERTY_VALUE);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
+            @Override
             public void focusGained(FocusEvent e) {
                 testCaseSection.selectTestObjectInTree(testValue);
             }
@@ -596,6 +601,7 @@ public class TestCaseDetailArea {
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
+            @Override
             public void focusGained(FocusEvent e) {
                 testCaseSection.selectInTreeByObject(rule);
             }
@@ -688,14 +694,14 @@ public class TestCaseDetailArea {
     /**
      * Packs the detail area.
      */
-    public void pack(){
+    public void pack() {
         dynamicArea.pack();
     }
-    
+
     /**
      * Mark the test attribute value field or test value field - which is identified by the given
-     * key - as failure.
-     * Returns <code>true</code> if the field was found otherwise <code>false</code>.
+     * key - as failure. Returns <code>true</code> if the field was found otherwise
+     * <code>false</code>.
      * 
      * @param failureDetails2
      */
@@ -708,7 +714,7 @@ public class TestCaseDetailArea {
             editField = getEditField(TestCaseSection.VALUESECTION + editFieldUniqueKey);
         }
         if (editField != null) {
-            if (fixedFieldsCache.contains(editFieldUniqueKey)){
+            if (fixedFieldsCache.contains(editFieldUniqueKey)) {
                 testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureMessage, false);
             } else {
                 testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
@@ -718,7 +724,7 @@ public class TestCaseDetailArea {
         return false;
     }
 
-    void setFocusOnEditField(String editFieldUniqueKey){
+    void setFocusOnEditField(String editFieldUniqueKey) {
         EditField editField = getEditField(editFieldUniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
@@ -728,13 +734,12 @@ public class TestCaseDetailArea {
             editField.getControl().setFocus();
         }
     }
-    
-    
+
     /**
      * Stores the given actual value as expected result.
      */
     boolean storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
-        if (! testCaseSection.isDataChangeable()){
+        if (!testCaseSection.isDataChangeable()) {
             return false;
         }
         EditField editField = getEditField(editFieldUniqueKey);
@@ -771,7 +776,7 @@ public class TestCaseDetailArea {
     public void resetTestRun(boolean clearFixedValueState) {
         failureMessageCache.clear();
         failureDetailCache.clear();
-        if (clearFixedValueState){
+        if (clearFixedValueState) {
             fixedFieldsCache.clear();
         }
     }
@@ -782,11 +787,13 @@ public class TestCaseDetailArea {
     private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
         if (editField != null) {
             editField.getControl().addFocusListener(new FocusAdapter() {
+                @Override
                 public void focusGained(FocusEvent e) {
-                    if (object instanceof ITestPolicyCmpt)
+                    if (object instanceof ITestPolicyCmpt) {
                         testCaseSection.selectInTreeByObject((ITestPolicyCmpt)object, false);
-                    else if (object instanceof ITestPolicyCmptLink)
+                    } else if (object instanceof ITestPolicyCmptLink) {
                         testCaseSection.selectInTreeByObject((ITestPolicyCmptLink)object, false);
+                    }
                 }
             });
             editField.getControl().addMouseListener(new SectionSelectMouseListener(object));
@@ -795,7 +802,7 @@ public class TestCaseDetailArea {
             label.addMouseListener(new SectionSelectMouseListener(object));
         }
     }
-    
+
     /*
      * Remove binding of all controls
      */
@@ -814,11 +821,11 @@ public class TestCaseDetailArea {
         bindingContext.bindContent(editField, object, property);
         allBindedControls.add(editField.getControl());
     }
-    
+
     /*
      * Stores the edit field which is identified by the given unique key.
      */
-    private void putEditField(String key, EditField editField){
+    private void putEditField(String key, EditField editField) {
         allEditFieldsCache.put(key.toUpperCase(), editField);
     }
 

@@ -69,7 +69,7 @@ public class Messages extends NLS {
     public static String TestCaseSection_FilterCombined_ToolTip;
     public static String TestCaseSection_ToolBar_FlatStructure;
     public static String TestCaseSection_ToolBar_RunTest;
-    public static String TestCaseSection_ToolBar_WithoutAssociation;
+    public static String TestCaseSection_ToolBar_ShowAssociations;
     public static String TestCaseEditor_Combined_Title;
     public static String TestCaseLabelProvider_undefined;
     public static String TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;

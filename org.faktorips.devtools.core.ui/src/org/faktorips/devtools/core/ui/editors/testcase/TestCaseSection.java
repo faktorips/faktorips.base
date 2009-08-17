@@ -30,6 +30,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -72,6 +73,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -1002,12 +1004,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
 
-        // MenuManager manager = new MenuManager();
-        // manager.setRemoveAllWhenShown(false);
-        // manager.add(new AddAction());
-        // Menu menuBar = manager.createMenuBar(new Decorations(structureSection.getShell(),
-        // SWT.POP_UP));
-        // structureSection.setMenu(menuBar);
+        createStructureSectionToolbar(structureSection);
 
         Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
         structureComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -1050,7 +1047,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // Details section
         testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this, bindingContext);
-        testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
+        Section detailAreaSection = testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
+
+        createDetailAreaSectionToolbar(detailAreaSection);
 
         // Initialize the previous selected objects as empty list
         prevTestObjects = new ArrayList<Object>();
@@ -1061,22 +1060,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         refreshTree();
     }
 
-    /**
-     * Creates the tool bar actions.
-     */
-    private void configureToolBar() {
-        // Toolbar item show without association
-        actionAssociation = new Action("withoutAssociation", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
-            @Override
-            public void run() {
-                showAssociationsClicked();
-            }
-        };
-        actionAssociation.setChecked(false);
-        actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_WithoutAssociation);
-        actionAssociation.setImageDescriptor(IpsUIPlugin.getDefault()
-                .getImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
-
+    private void createDetailAreaSectionToolbar(Section detailAreaSection) {
         // Toolbar item show all
         actionAll = new Action("structureAll", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
             @Override
@@ -1087,7 +1071,36 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         actionAll.setChecked(false);
         actionAll.setToolTipText(Messages.TestCaseSection_ToolBar_FlatStructure);
         actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        ToolBar toolbar = toolBarManager.createControl(detailAreaSection);
+        toolBarManager.add(actionAll);
+        toolBarManager.update(true);
+        detailAreaSection.setTextClient(toolbar);
+    }
 
+    private void createStructureSectionToolbar(Section structureSection) {
+        // Toolbar item show without association
+        actionAssociation = new Action("withoutAssociation", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
+            @Override
+            public void run() {
+                showAssociationsClicked();
+            }
+        };
+        actionAssociation.setChecked(true); // default is show associations
+        actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
+        actionAssociation.setImageDescriptor(IpsUIPlugin.getDefault()
+                .getImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        ToolBar toolbar = toolBarManager.createControl(structureSection);
+        toolBarManager.add(actionAssociation);
+        toolBarManager.update(true);
+        structureSection.setTextClient(toolbar);
+    }
+
+    /**
+     * Creates the tool bar actions.
+     */
+    private void configureToolBar() {
         // Toolbar item run and store expected result
         actionRunAndStoreExpectedResult = new Action("runAndStoreExpectedResult", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
             @Override
@@ -1124,10 +1137,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // Add actions for fitering the content type
         addContentTypeAction();
-
-        form.getToolBarManager().add(new Separator());
-        form.getToolBarManager().add(actionAssociation);
-        form.getToolBarManager().add(actionAll);
 
         form.getToolBarManager().add(new Separator());
         form.getToolBarManager().add(actionRunAndStoreExpectedResult);
@@ -3046,7 +3055,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
             // init menu state
             actionAll.setChecked(showAll);
-            actionAssociation.setChecked(contentProvider.isWithoutAssociations());
+            actionAssociation.setChecked(!contentProvider.isWithoutAssociations());
             for (int i = 0; i < toggleContentTypeActions.length; i++) {
                 if (i == contentProvider.getContentType()) {
                     toggleContentTypeActions[i].setChecked(true);
