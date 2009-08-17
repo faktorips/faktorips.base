@@ -56,8 +56,6 @@ import org.faktorips.runtime.test.IpsTestResult;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Generates a Java source file for a test case type.
@@ -161,7 +159,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         buildMemberVariables(mainSection.getMemberVarBuilder(), testCaseType);
         buildConstructor(mainSection.getConstructorBuilder());
         buildSuperMethodImplementation(mainSection.getMethodBuilder(), testCaseType);
-        buildHelperMethods(mainSection.getMethodBuilder());
         mainSection.getMethodBuilder().append(xmlCallbackBuilder.getFragment());
     }
 
@@ -524,24 +521,37 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             }
             ITestValueParameter policyTypeParam = valueParams[i];
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
-
-            body.appendln("value = getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
+            body.append("value = ");
+            body.appendClassName(XmlUtil.class);
+            body.appendln(".getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
             body.append(variablePrefix + StringUtils.capitalize(policyTypeParam.getName()) + " = ");
             body.append(dataTypeHelper.newInstanceFromExpression("value"));
             body.appendln(";");
         }
     }
 
-    /*
-     * Generates the body for the initInputFromXml method.<br> For each test rule parameter in the
-     * given list. <p> Example (one rule): <p> <pre> erwartetVerletztRegeln = new ArrayList();
-     * erwartetNichtVerletztRegeln = new ArrayList(); List rules = getElementsFromNode(element,
-     * "Regeln", "testrule"); for (Iterator iter = rules.iterator(); iter.hasNext();) { Element
-     * ruleElement = (Element)iter.next(); String violationType =
-     * ruleElement.getAttribute("violationType"); String messageCode =
-     * ruleElement.getAttribute("validationRuleMessageCode"); if ("violated".equals(violationType)){
-     * erwartetVerletztRegeln.add(messageCode); } else if ("notViolated".equals(violationType)){
-     * erwartetNichtVerletztRegeln.add(messageCode); } } </pre>
+    /**
+     * Generates the body for the initInputFromXml method.<br>
+     * For each test rule parameter in the given list.
+     * <p>
+     * Example (one rule):
+     * <p>
+     * 
+     * <pre>
+     * erwartetVerletztRegeln = new ArrayList();
+     * erwartetNichtVerletztRegeln = new ArrayList();
+     * List rules = getElementsFromNode(element, &quot;Regeln&quot;, &quot;testrule&quot;);
+     * for (Iterator iter = rules.iterator(); iter.hasNext();) {
+     *     Element ruleElement = (Element)iter.next();
+     *     String violationType = ruleElement.getAttribute(&quot;violationType&quot;);
+     *     String messageCode = ruleElement.getAttribute(&quot;validationRuleMessageCode&quot;);
+     *     if (&quot;violated&quot;.equals(violationType)) {
+     *         erwartetVerletztRegeln.add(messageCode);
+     *     } else if (&quot;notViolated&quot;.equals(violationType)) {
+     *         erwartetNichtVerletztRegeln.add(messageCode);
+     *     }
+     * }
+     * </pre>
      */
     private void buildInitForTestRuleParameter(JavaCodeFragment body,
             ITestRuleParameter[] ruleParams,
@@ -581,7 +591,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             }
             body.append(" ");
             body.append(ruleListName);
-            body.append(" = getElementsFromNode(element, \"");
+            body.append(" = ");
+            body.appendClassName(XmlUtil.class);
+            body.append(".getElementsFromNode(element, \"");
             body.append(ruleParams[i].getName());
             body.appendln("\", \"type\", \"testrule\");");
             body.append("for (");
@@ -733,80 +745,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 MessageList.class.getName(), IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
 
-    protected void buildHelperMethods(JavaCodeFragmentBuilder codeBuilder) {
-        buildHelperMethodGetValueFromNode(codeBuilder);
-        buildHelperMethodGetElementsFromNode(codeBuilder);
-    }
-
-    /*
-     * Generates helper method for getting the value from a node. <p> Example: <p> <pre> private
-     * String getValueFromNode(Element elem, String nodeName){ String value = null; Element el =
-     * XmlUtil.getFirstElement(elem, nodeName); if (el != null){ Node child = el.getFirstChild();
-     * value = child!=null? child.getNodeValue():null; } return value; } </pre>
-     */
-    protected void buildHelperMethodGetValueFromNode(JavaCodeFragmentBuilder codeBuilder) {
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendln("String value = null;");
-        body.appendClassName(Node.class);
-        body.append(" el = ");
-        body.appendClassName(XmlUtil.class);
-        body.appendln(".getFirstElement(elem, nodeName);");
-        body.appendln("if (el != null){");
-        body.appendln("Node child = el.getFirstChild();");
-        body.appendln("value = child!=null? child.getNodeValue():null;");
-        body.appendln("}");
-        body.appendln("return value;");
-        codeBuilder.method(Modifier.PUBLIC, String.class.getName(), "getValueFromNode", new String[] { "elem",
-                "nodeName" }, new String[] { Element.class.getName(), String.class.getName() }, body, "",
-                ANNOTATION_GENERATED);
-    }
-
-    /*
-     * Generates helper method for getting specific elements from a node. <p> Example: <p> <pre>
-     * private List getElementsFromNode(Element elem, String nodeName, String attributeName, String
-     * attributeValue) { List result = new ArrayList(); NodeList nl = elem.getChildNodes(); for (int
-     * i=0, max=nl.getLength(); i<max; i++) { if (!(nl.item(i) instanceof Element)) { continue; }
-     * Element el = (Element)nl.item(i); String typeAttr = el.getAttribute(attributeName); if
-     * (attributeValue.equals(typeAttr) && el.getNodeName().equals(nodeName)) { result.add(el); } }
-     * return result; }
-     */
-    protected void buildHelperMethodGetElementsFromNode(JavaCodeFragmentBuilder codeBuilder) {
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendClassName(List.class.getName());
-        if (isUseTypesafeCollections()) {
-            body.append("<");
-            body.appendClassName(Element.class.getName());
-            body.append(">");
-        }
-        body.append(" result = new ");
-        body.appendClassName(ArrayList.class.getName());
-        if (isUseTypesafeCollections()) {
-            body.append("<");
-            body.appendClassName(Element.class.getName());
-            body.append(">");
-        }
-        body.appendln("();");
-        body.appendClassName(NodeList.class.getName());
-        body.appendln(" nl = elem.getChildNodes();");
-        body.appendln("for (int i=0, max=nl.getLength(); i<max; i++) {");
-        body.append("if (!(nl.item(i) instanceof ");
-        body.appendClassName(Element.class.getName());
-        body.appendln(")){");
-        body.appendln("continue;");
-        body.appendln("}");
-        body.appendln("Element el = (Element)nl.item(i);");
-        body.appendln("String typeAttr = el.getAttribute(attributeName);");
-        body.appendln("if (attributeValue.equals(typeAttr) && el.getNodeName().equals(nodeName)) {");
-        body.appendln("result.add(el);");
-        body.appendln("}}");
-        body.appendln("return result;");
-        codeBuilder.method(Modifier.PUBLIC, isUseTypesafeCollections() ? List.class.getName() + "<"
-                + Element.class.getName() + ">" : List.class.getName(), "getElementsFromNode", new String[] { "elem",
-                "nodeName", "attributeName", "attributeValue" }, new String[] { Element.class.getName(),
-                String.class.getName(), String.class.getName(), String.class.getName() }, body, "",
-                ANNOTATION_GENERATED);
-    }
-    
     /*
      * Generate XML callback classes for each root policy cmpt type parameter containing at least
      * one extension attribute.

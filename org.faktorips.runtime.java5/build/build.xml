@@ -99,7 +99,7 @@
 	</target>
 	
 	<!-- build all jars -->
-	<target name="buildAllsJars" depends="buildjar,buildsrcjar,buildclientjar,buildclientsrcjar"/>
+	<target name="buildAllsJars" depends="buildjar,buildsrcjar,buildclientjar,buildclientsrcjar" description="build all jars"/>
 
 	
 </project>

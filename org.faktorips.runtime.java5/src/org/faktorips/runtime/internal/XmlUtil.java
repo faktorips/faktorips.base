@@ -13,6 +13,9 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -123,6 +126,49 @@ public class XmlUtil {
         return null;
     }
 
+    /**
+     * Returns the value of the first element with the given node name, starts searching by the
+     * given Element
+     * 
+     * @param elem The first element (root or parent) element the search begins
+     * @param nodeName The name searching for
+     */
+    public final static String getValueFromNode(Element elem, String nodeName) {
+        String value = null;
+        Node el = getFirstElement(elem, nodeName);
+        if (el != null) {
+            Node child = el.getFirstChild();
+            value = child != null ? child.getNodeValue() : null;
+        }
+        return value;
+    }
+
+    /**
+     * Returns a list of element's with the following criteria:
+     * <ul>
+     * <li>the node name must be equals to the given node name
+     * <li>the node must contain an attribute with the attribute name
+     * <li>the value of the attribute (with the given name) must be equal to the given value
+     * </ul>
+     */
+    public static final List<Element> getElementsFromNode(Element elem, String nodeName,
+            String attributeName, String attributeValue) {
+        List<Element> result = new ArrayList<Element>();
+        NodeList nl = elem.getChildNodes();
+        for (int i = 0, max = nl.getLength(); i < max; i++) {
+            if (!(nl.item(i) instanceof Element)) {
+                continue;
+            }
+            Element el = (Element) nl.item(i);
+            String typeAttr = el.getAttribute(attributeName);
+            if (attributeValue.equals(typeAttr)
+                    && el.getNodeName().equals(nodeName)) {
+                result.add(el);
+            }
+        }
+        return result;
+    }
+    
     private XmlUtil() {
     }
 
