@@ -790,4 +790,4 @@ else
   createAndAddLicensePdf $WORKINGDIR/archives_features
 fi
 
-echo 'OK: release build $BUILD_VERSION successful'
+echo 'OK: release build ${BUILD_VERSION} successful'
