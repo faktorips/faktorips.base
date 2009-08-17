@@ -79,9 +79,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private Composite workArea;
 
     /**
-     * Keeps the last value of the literal name property. This ContentsChangedListener adjusts the value of
-     * the property according to the model value. It is necessary to keep the last state of the property
-     * to determine which property has changed when the contents changed event is fired. 
+     * Keeps the last value of the literal name property. This ContentsChangedListener adjusts the
+     * value of the property according to the model value. It is necessary to keep the last state of
+     * the property to determine which property has changed when the contents changed event is
+     * fired.
      */
     private boolean literalNamePropertyValue;
 
@@ -160,13 +161,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         return control;
     }
 
-    private GridData createLayoutData(){
+    private GridData createLayoutData() {
         GridData gridData = new GridData();
         gridData.horizontalIndent = 4;
         gridData.horizontalAlignment = SWT.LEFT;
         return gridData;
     }
-    
+
     /** Creates the ui fields. */
     private void createFields() {
         // Name.
@@ -189,7 +190,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         layoutData.horizontalAlignment = SWT.FILL;
         layoutData.widthHint = 320;
         layoutData.minimumWidth = 320;
-        
+
         label.getParent().setLayoutData(layoutData);
         identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
         identifierCheckbox.setLayoutData(createLayoutData());
@@ -197,28 +198,28 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Literal name
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
         label.getParent().setLayoutData(layoutData);
-        
+
         literalNameCheckbox = uiToolkit.createCheckbox(marginComposite);
         literalNameCheckbox.setLayoutData(createLayoutData());
-        
+
         // display name.
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
         label.getParent().setLayoutData(layoutData);
-        
+
         displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
         displayNameCheckbox.setLayoutData(createLayoutData());
-        
+
         // Unique
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
         label.getParent().setLayoutData(layoutData);
-        
+
         uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
         uniqueCheckbox.setLayoutData(createLayoutData());
-        
+
         // Inherited.
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
         label.getParent().setLayoutData(layoutData);
-        
+
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         inheritedCheckbox.setLayoutData(createLayoutData());
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
@@ -239,19 +240,19 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Disallow parent EnumType.
         disallowedDatatypes.add(new EnumTypeDatatypeAdapter(parentEnumType, null));
-        
+
         // Go once over all EnumTypeDatatypeAdapters.
         try {
             for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
                 if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
                     EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
                     IEnumType enumType = adapter.getEnumType();
-                    
+
                     // Continue if it is the parent EnumType that we have already disallowed.
                     if (enumType.equals(parentEnumType)) {
                         continue;
                     }
-                    
+
                     // Disallow if it is not containing values while the parent EnumType does.
                     if (parentEnumType.isContainingValues()) {
                         if (!(enumType.isContainingValues())) {
@@ -259,10 +260,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                             continue;
                         }
                     }
-                    
+
                     // Disallow if it is a subtype of the parent EnumType.
-                    if (enumType.findAllSuperEnumTypes(ipsProject).contains(parentEnumType)) {
-                        disallowedDatatypes.add(adapter);
+                    if (enumType.hasSuperEnumType()) {
+                        if (enumType.findAllSuperEnumTypes(ipsProject).contains(parentEnumType)) {
+                            disallowedDatatypes.add(adapter);
+                        }
                     }
                 }
             }
@@ -289,10 +292,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             bindingContext.bindContent(nameText, enumAttribute, IEnumAttribute.PROPERTY_NAME);
             bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
             bindingContext.bindContent(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
-            bindingContext.bindContent(uniqueCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_UNIQUE);
-            bindingContext.bindContent(identifierCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_IDENTIFIER);
+            bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
+            bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
             bindingContext.bindContent(displayNameCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         } else {
@@ -304,13 +305,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             bindingContext.removeBindings(displayNameCheckbox);
             bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
-                    false);
+            bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
-                    false);
-            bindingContext.bindEnabled(displayNameCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_INHERITED, false);
+            bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+            bindingContext.bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
 
             // Obtain the properties from the super enum attribute.
             try {
@@ -360,21 +358,21 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 bindAndSetContentDependendOnInheritedProperty(changedEnumAttribute);
                 inheritedProperty = !inheritedProperty;
             }
-            if(literalNamePropertyValue != enumAttribute.isLiteralName()){
+            if (literalNamePropertyValue != enumAttribute.isLiteralName()) {
                 literalNamePropertyValue = enumAttribute.isLiteralName();
-                if(literalNamePropertyValue){
+                if (literalNamePropertyValue) {
                     changedEnumAttribute.setUnique(true);
                 }
             }
-            if(displayNamePropertyValue != enumAttribute.isUsedAsNameInFaktorIpsUi()){
+            if (displayNamePropertyValue != enumAttribute.isUsedAsNameInFaktorIpsUi()) {
                 displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
-                if(displayNamePropertyValue){
+                if (displayNamePropertyValue) {
                     changedEnumAttribute.setUnique(true);
                 }
             }
-            if(identifierPropertyValue != enumAttribute.isIdentifier()){
+            if (identifierPropertyValue != enumAttribute.isIdentifier()) {
                 identifierPropertyValue = enumAttribute.isIdentifier();
-                if(identifierPropertyValue){
+                if (identifierPropertyValue) {
                     changedEnumAttribute.setUnique(true);
                 }
             }
