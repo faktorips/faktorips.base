@@ -156,7 +156,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         IIpsModel ipsModel = getIpsModel();
 
-        // Test value parsable with datatype Integer.
+        // Test value parsable with data type Integer.
         ipsModel.clearValidationCache();
         integerNewAttributeValue.setValue("fooBar");
         MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
@@ -165,7 +165,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
         integerNewAttributeValue.setValue("4");
 
-        // Test value parsable with datatype Boolean.
+        // Test value parsable with data type Boolean.
         ipsModel.clearValidationCache();
         booleanNewAttributeValue.setValue("fooBar");
         validationMessageList = booleanNewAttributeValue.validate(ipsProject);

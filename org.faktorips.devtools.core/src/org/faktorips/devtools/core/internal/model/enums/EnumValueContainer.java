@@ -38,8 +38,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumValueContainer</code>, see the corresponding interface for more
- * details.
+ * Implementation of <tt>IEnumValueContainer</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValueContainer
  * 
@@ -57,7 +56,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * associates them with a list of <tt>IEnumAttributeValue</tt>s. This list is intended to be
      * used to validate unique identifiers. Each entry of the outer map stands for another unique
      * identifier. The number that is used as the key for each unique identifier is meant to be the
-     * number of the enum attribute being the unique identifier.
+     * index of the <tt>IEnumAttribute</tt> being the unique identifier.
      */
     private Map<Integer, Map<String, List<IEnumAttributeValue>>> uniqueIdentifierValidationCache;
 
@@ -65,7 +64,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     private boolean uniqueIdentifierValidationCacheInitialized;
 
     /**
-     * Creates a new <code>EnumValueContainer</code>.
+     * Creates a new <tt>EnumValueContainer</tt>.
      * 
      * @param file The IPS source file in which this IPS object will be stored in.
      */
@@ -227,17 +226,18 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     /**
-     * Returns whether the unique identifier validation cache contains a mapping for the given enum
-     * attribute index.
+     * Returns whether the unique identifier validation cache contains a mapping for the given
+     * unique <tt>IEnumAttribute</tt> identified by it's index.
      */
     boolean containsValidationCacheUniqueIdentifier(int uniqueEnumAttributeIndex) {
         return uniqueIdentifierValidationCache.containsKey(new Integer(uniqueEnumAttributeIndex));
     }
 
     /**
-     * Handles the deletion of enum attributes in respect to the unique identifier validation cache.
+     * Handles the deletion of <tt>IEnumAttribute</tt>s in respect to the unique identifier
+     * validation cache.
      * 
-     * @param enumAttributeIndex The index of the deleted enum attribute.
+     * @param enumAttributeIndex The index of the deleted <tt>IEnumAttribute</tt>.
      */
     void handleEnumAttributeDeletion(int enumAttributeIndex) {
         // All keys that are a higher number then the index must be decremented by 1.
@@ -262,9 +262,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * <p>
      * If the given <tt>uniqueIdentifier</tt> is <tt>null</tt> this operation will do nothing.
      * 
-     * @param uniqueEnumAttributeIndex The index of the unique identifier enum attribute.
+     * @param uniqueEnumAttributeIndex The index of the unique identifier <tt>IEnumAttribute</tt>.
      * @param uniqueIdentifier The value that is the unique identifier.
-     * @param enumAttributeValue The enum attribute value that stores the entry.
+     * @param enumAttributeValue The <tt>IEnumAttributeValue</tt> that stores the entry.
      * 
      * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
      * @throws IllegalArgumentException If there is no unique identifier in the validation cache
@@ -295,15 +295,15 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     /**
      * Removes a unique identifier from the validation cache. If the map for the given unique
-     * identifier value is empty after the operation (contains no enum attribute values anymore), it
-     * will be removed from the cache, too.
+     * identifier value is empty after the operation (contains no <tt>IEnumAttributeValue</tt>s
+     * anymore), it will be removed from the cache, too.
      * <p>
      * This operation does nothing if the given <tt>uniqueIdentifier</tt> is <tt>null</tt> or there
      * is no such unique stored in the cache.
      * 
-     * @param uniqueEnumAttributeIndex The index of the unique identifier enum attribute.
+     * @param uniqueEnumAttributeIndex The index of the unique identifier <tt>IEnumAttribute</tt>.
      * @param uniqueIdentifier The value that is the unique identifier.
-     * @param enumAttributeValue The enum attribute value that stores the entry.
+     * @param enumAttributeValue The <tt>IEnumAttributeValue</tt> that stores the entry.
      * 
      * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
      */
@@ -371,10 +371,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     /**
      * Returns the list from the unique identifier validation cache corresponding to the given
-     * unique identifier value for the given unique identifier identified by the given enum
-     * attribute index.
+     * unique identifier value for the given unique identifier (given as index of the corresponding
+     * <tt>IEnumAttribute</tt>).
      * 
-     * @param enumAttributeIndex The index of the enum attribute.
+     * @param enumAttributeIndex The index of the <tt>IEnumAttribute</tt>.
      * @param uniqueIdentifierValue The value of the unique identifier.
      * 
      * @throws NullPointerException If <tt>uniqueIdentifierValue</tt> is <tt>null</tt>.
@@ -389,16 +389,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     /**
-     * Handles the movement of enum attributes in respect to the unique identifier validation cache.
+     * Handles the movement of <tt>IEnumAttribute</tt>s in respect to the unique identifier
+     * validation cache.
      * 
-     * @param index The index identifying the moved enum attribute.
-     * @param up Flag indicating whether the enum attribute was moved up or down.
+     * @param enumAttributeIndex The index identifying the moved <tt>IEnumAttribute</tt>.
+     * @param up Flag indicating whether the <tt>IEnumAttribute</tt> was moved up or down.
      */
-    void handleMoveEnumAttributeForUniqueIdentifierValidationCache(int index, boolean up) {
+    void handleMoveEnumAttributeForUniqueIdentifierValidationCache(int enumAttributeIndex, boolean up) {
         int modification = up ? -1 : 1;
-        int otherAffectedIndex = index + modification;
+        int otherAffectedIndex = enumAttributeIndex + modification;
 
-        Integer key = new Integer(index);
+        Integer key = new Integer(enumAttributeIndex);
         Integer otherKey = new Integer(otherAffectedIndex);
         Map<String, List<IEnumAttributeValue>> keyMap = uniqueIdentifierValidationCache.get(key);
         Map<String, List<IEnumAttributeValue>> otherKeyMap = uniqueIdentifierValidationCache.get(otherKey);
@@ -417,7 +418,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             removeUniqueIdentifierFromValidationCache(otherKey);
         }
         if (keyAffected) {
-            uniqueIdentifierValidationCache.put(new Integer(index + modification), keyMap);
+            uniqueIdentifierValidationCache.put(new Integer(enumAttributeIndex + modification), keyMap);
         }
         if (otherKeyAffected) {
             uniqueIdentifierValidationCache.put(new Integer(otherAffectedIndex - modification), otherKeyMap);
@@ -451,7 +452,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         boolean changed = false;
         for (IEnumValue currentEnumValue : enumValuesToDelete) {
             if (!(enumValues.contains(currentEnumValue))) {
-                throw new NoSuchElementException();
+                continue;
             }
             currentEnumValue.delete();
             changed = true;

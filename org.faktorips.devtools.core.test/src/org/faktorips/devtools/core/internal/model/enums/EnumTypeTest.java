@@ -365,7 +365,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(1));
         assertEquals(valueId, newEnumValue.getEnumAttributeValues().get(2));
 
-        // Nothing must change if the enum attribute is the last one already
+        // Nothing must change if the EnumAttribute is the last one already.
         newIndex = genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         assertEquals(2, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes(true).get(0));
@@ -417,11 +417,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testDeleteEnumAttributeWithValues() throws CoreException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
-        try {
-            genderEnumType.deleteEnumAttributeWithValues(newEnumAttribute);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        assertFalse(genderEnumType.deleteEnumAttributeWithValues(newEnumAttribute));
+        assertEquals(2, genderEnumType.getEnumAttributesCount(false));
 
         IEnumValue modelValue = genderEnumType.newEnumValue();
 
@@ -433,16 +430,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, enumAttributeValues.size());
         assertEquals(1, modelValue.getEnumAttributeValues().size());
 
-        try {
-            genderEnumType.deleteEnumAttributeWithValues(null);
-        } catch (NullPointerException e) {
-        }
-
-        try {
-            genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        assertFalse(genderEnumType.deleteEnumAttributeWithValues(null));
+        assertFalse(genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId));
 
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
         assertEquals(0, genderEnumType.getEnumAttributes(true).size());
@@ -497,7 +486,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY));
 
-        // Test abstract super enum type to be valid despite missing inherited attribute
+        // Test abstract super EnumType to be valid despite missing inherited attribute.
         ipsModel.clearValidationCache();
         assertTrue(superEnumType.isValid());
 
@@ -724,8 +713,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testIsSubEnumTypeOrSelf() throws CoreException {
-        // the method isSubEnumTypeOrSelf only checks for self and calls isSubEnumTypeOf
-        // so only the "self-case" have to be tested
+        /*
+         * The method isSubEnumTypeOrSelf only checks for self and calls isSubEnumTypeOf so only the
+         * "self-case" have to be tested.
+         */
         IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
 
         assertFalse(rootEnumType.isSubEnumTypeOrSelf(null, null));
@@ -775,7 +766,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType
                 .findInheritEnumAttributeCandidates(ipsProject);
-        // Inherit one manually, this one needs to be skipped by the method later
+        // Inherit one manually, this one needs to be skipped by the method later.
         IEnumAttribute inheritedId = subEnumType.newEnumAttribute();
         inheritedId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         inheritedId.setInherited(true);

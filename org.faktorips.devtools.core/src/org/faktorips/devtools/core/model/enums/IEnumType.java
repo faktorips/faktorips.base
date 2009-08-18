@@ -436,17 +436,21 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException;
 
     /**
-     * Deletes the given enum attribute and all the <code>EnumAttributeValue</code> objects
-     * <strong>that are defined in the enum type itself</strong> refering to it.
+     * Deletes the given <tt>IEnumAttribute</tt> and all the <tt>EnumAttributeValue</tt>s
+     * <strong>that are defined in the <tt>IEnumType</tt> itself</strong> referring to it.
      * <p>
      * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
+     * <p>
+     * Nothing will happen if <tt>null</tt> or an <tt>IEnumAttribute</tt> that is not part of this
+     * <tt>IEnumType</tt> is given.
+     * <p>
+     * Will return <tt>true</tt> if the <tt>IEnumAttribute</tt> was deleted from this
+     * <tt>IEnumType</tt>, <tt>false</tt> if not (following the behavior of the Java collections
+     * here).
      * 
-     * @param enumAttribute The enum attribute to delete.
-     * 
-     * @throws IllegalArgumentException If the given enum attribute is not part of this enum type.
-     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to delete.
      */
-    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute);
+    public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute);
 
     /**
      * Returns whether this enum type has a super enum type.

@@ -44,7 +44,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumType</code>, see the corresponding interface for more details.
+ * Implementation of <tt>IEnumType</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -75,7 +75,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private boolean isAbstract;
 
     /**
-     * Creates a new <code>EnumType</code>.
+     * Creates a new <tt>EnumType</tt>.
      * 
      * @param file The IPS source file in which this <tt>IEnumType</tt> will be stored in.
      */
@@ -306,10 +306,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
-        // Move the enum attribute.
+        // Move the EnumAttribute.
         int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
 
-        // Move the enum attribute values of the enum values of this enum type.
+        // Move the EnumAttributeValues of the EnumValues of this EnumType.
         if (newIndex[0] != indexToMove) {
             moveEnumAttributeValues(indexToMove, getEnumValues(), up);
         }
@@ -363,8 +363,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Searches and returns the <tt>IEnumAttribute</tt> with the given name or <code>null</code> if
-     * none exists. It can be specified whether to include inherited <tt>IEnumAttribute</tt>s.
+     * Searches and returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if none
+     * exists. It can be specified whether to include inherited <tt>IEnumAttribute</tt>s.
      */
     private IEnumAttribute getEnumAttribute(String name, boolean includeInherited) {
         List<IEnumAttribute> enumAttributesToSearch;
@@ -623,10 +623,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    // TODO AW: Could we not override delete here instead of making this a new operation?
-    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) {
-        ArgumentCheck.notNull(enumAttribute);
-        ArgumentCheck.isTrue(enumAttributes.contains(enumAttribute));
+    public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) {
+        if (enumAttribute == null) {
+            return false;
+        }
+        if (!(enumAttributes.contains(enumAttribute))) {
+            return false;
+        }
 
         // Update unique identifier validation cache if necessary.
         if (isUniqueIdentifierValidationCacheInitialized()) {
@@ -645,6 +648,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
 
         objectHasChanged();
+
+        return true;
     }
 
     /**
@@ -744,7 +749,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                         + " is not part of the supertype hierarchy.");
             }
 
-            // Every check passed, inherit enum attribute.
+            // Every check passed, inherit the EnumAttribute.
             IEnumAttribute newEnumAttribute = newEnumAttribute();
             newEnumAttribute.setName(currentSuperEnumAttributeName);
             newEnumAttribute.setInherited(true);

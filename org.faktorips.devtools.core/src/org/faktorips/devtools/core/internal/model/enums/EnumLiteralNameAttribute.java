@@ -27,8 +27,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumLiteralNameAttribute</code>, see the corresponding interface for
- * more details.
+ * Implementation of <tt>IEnumLiteralNameAttribute</tt>, see the corresponding interface for more
+ * details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute
  * 
@@ -45,8 +45,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     private String defaultValueProviderAttribute;
 
     /**
-     * Creates a new <code>EnumLiteralNameAttribute</code> with a default name and of datatype
-     * <tt>String</tt>.
+     * Creates a new <tt>EnumLiteralNameAttribute</tt>.
      * 
      * @param parent The <tt>IEnumType</tt> this <tt>IEnumLiteralNameAttribute</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumLiteralNameAttribute</tt>.
@@ -110,7 +109,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
             return;
         }
 
-        // The provider attribute must be of datatype String.
+        // The provider attribute must be of data type String.
         IEnumAttribute providerAttribute = enumType
                 .getEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute);
         Datatype datatype = providerAttribute.findDatatype(getIpsProject());

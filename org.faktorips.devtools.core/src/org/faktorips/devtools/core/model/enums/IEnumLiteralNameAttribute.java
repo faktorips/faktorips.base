@@ -20,15 +20,10 @@ package org.faktorips.devtools.core.model.enums;
  * The value of this attribute specifies the name of the enumeration literal that will be used in
  * the generated source code.
  * <p>
- * The <tt>IEnumLiteralNameAttribute</tt> refers to another enum attribute being its provider for a
- * default value. The value will be transformed a little bit to fit the java conventions about
- * enumeration literals.
+ * The <tt>IEnumLiteralNameAttribute</tt> can refer to another <tt>IEnumAttribute</tt> being its
+ * provider for a default value.
  * <p>
- * Example: Imagine an enumeration type called <i>Genders</i> with an enum attribute <i>label</i>.
- * For an enum value the value for the label might be <i>male</i>. If this enum attribute would be
- * chosen as the default literal provider the enumeration literal would be <i>MALE</i>.
- * <p>
- * <tt>IEnumLiteralNameAttribute</tt>s are always of datatype <tt>String</tt> and <tt>unique</tt>.
+ * <tt>IEnumLiteralNameAttribute</tt>s are always of data type <tt>String</tt> and <tt>unique</tt>.
  * 
  * @author Alexander Weickmann
  * 
@@ -57,7 +52,7 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
 
     /**
      * Validation message code to indicate that the chosen default value provider attribute is not
-     * of datatype <tt>String</tt>.
+     * of data type <tt>String</tt>.
      */
     public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeNotOfDatatypeString"; //$NON-NLS-1$
@@ -72,16 +67,17 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
     /**
      * Sets the default value provider attribute.
      * 
-     * @param defaultValueProviderAttributeName The unqualified name of the enum attribute that
-     *            shall be used as default value provider for the enumeration literals.
+     * @param defaultValueProviderAttributeName The unqualified name of the <tt>IEnumAttribute</tt>
+     *            that shall be used as default value provider attribute for the enumeration
+     *            literals.
      * 
      * @throws NullPointerException If <tt>defaultValueProviderAttributeName</tt> is <tt>null</tt>.
      */
     public void setDefaultValueProviderAttribute(String defaultValueProviderAttributeName);
 
     /**
-     * Returns the name of the enum attribute currently being used as default value provider for
-     * enumeration literals.
+     * Returns the name of the <tt>IEnumAttribute</tt> currently being used as default value
+     * provider attribute for enumeration literals.
      */
     public String getDefaultValueProviderAttribute();
 

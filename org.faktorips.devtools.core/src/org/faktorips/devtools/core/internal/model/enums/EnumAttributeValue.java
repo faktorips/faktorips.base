@@ -17,9 +17,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -38,8 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more
- * details.
+ * Implementation of <tt>IEnumAttributeValue</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumAttributeValue
  * 
@@ -53,7 +54,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private String value;
 
     /**
-     * Creates a new <code>EnumAttributeValue</code>.
+     * Creates a new <tt>EnumAttributeValue</tt>.
      * 
      * @param parent The <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttributeValue</tt>.
@@ -224,7 +225,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             throws CoreException {
 
         // A literal name EnumAttributeValue must be java conform.
-        if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
+        String complianceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        if (!(JavaConventions.validateIdentifier(value, sourceLevel, complianceLevel).isOK())) {
             String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, value);
             Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
                     Message.ERROR, this, PROPERTY_VALUE);
@@ -245,7 +248,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         // A unique identifier EnumAttributeValue must not be empty.
         String uniqueIdentifierValue = getValue();
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
-                : uniqueIdentifierValue.length() == 0 || uniqueIdentifierValue.equals("<null>");
+                : uniqueIdentifierValue.length() == 0
+                        || uniqueIdentifierValue.equals(IpsPlugin.getDefault().getIpsPreferences()
+                                .getNullPresentation());
         if (uniqueIdentifierValueMissing) {
             text = Messages.EnumAttributeValue_UniqueIdentifierValueEmpty;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,

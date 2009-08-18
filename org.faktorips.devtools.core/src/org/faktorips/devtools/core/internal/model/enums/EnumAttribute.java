@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -176,15 +179,26 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         Message validationMessage;
         List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes(true);
 
-        // Check for name missing
-        if (name.equals("")) { //$NON-NLS-1$
+        // Check for name missing.
+        if (name.length() == 0) {
             text = Messages.EnumAttribute_NameMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING, text, Message.ERROR, this,
                     PROPERTY_NAME);
             list.add(validationMessage);
+        } else {
+            // Check for valid java field name.
+            String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+            IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+            if (!status.isOK()) {
+                text = NLS.bind(Messages.EnumAttribute_NameNotAValidFieldName, name);
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME, text,
+                        Message.ERROR, this, PROPERTY_NAME);
+                list.add(validationMessage);
+            }
         }
 
-        // Check for other attributes with the same name
+        // Check for other attributes with the same name.
         int numberEnumAttributesThisName = 0;
         for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
             if (currentEnumAttribute.getName().equals(name)) {
@@ -200,14 +214,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the <code>datatype</code> property. */
+    /** Validates the <tt>datatype</tt> property. */
     private void validateDatatype(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
         IEnumType enumType = getEnumType();
         Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
 
-        // The datatype must be specified.
+        // The data type must be specified.
         if (datatype.equals("")) { //$NON-NLS-1$
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
@@ -216,7 +230,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // The datatype must exist.
+        // The data type must exist.
         if (ipsDatatype == null) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
@@ -225,7 +239,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // The datatype may not be primitive.
+        // The data type may not be primitive.
         if (ipsDatatype.isPrimitive()) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeIsPrimitive, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
@@ -233,7 +247,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             list.add(validationMessage);
         }
 
-        // The datatype may not be void.
+        // The data type may not be void.
         if (ipsDatatype.isVoid()) {
             text = Messages.EnumAttribute_DatatypeIsVoid;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID, text, Message.ERROR, this,
@@ -241,7 +255,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             list.add(validationMessage);
         }
 
-        // The datatype may not be abstract.
+        // The data type may not be abstract.
         if (ipsDatatype.isAbstract()) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeIsAbstract, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT, text, Message.ERROR, this,
@@ -250,13 +264,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         /*
-         * The datatype must not be the EnumType that contains this EnumAttribute (or subclasses of
+         * The data type must not be the EnumType that contains this EnumAttribute (or subclasses of
          * it).
          */
         if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)ipsDatatype;
             IEnumType adaptedEnumType = adapter.getEnumType();
-            if (adaptedEnumType.equals(enumType) || adaptedEnumType.findAllSuperEnumTypes(ipsProject).contains(enumType)) {
+            if (adaptedEnumType.equals(enumType)
+                    || adaptedEnumType.findAllSuperEnumTypes(ipsProject).contains(enumType)) {
                 text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS,
                         text, Message.ERROR, this, PROPERTY_DATATYPE);
@@ -265,7 +280,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         /*
-         * The datatype may not be an enumeration that does not contain values if the EnumType this
+         * The data type may not be an enumeration that does not contain values if the EnumType this
          * EnumAttribute belongs to does contain values.
          */
         if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
@@ -282,7 +297,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the <code>inherited</code> property. */
+    /** Validates the <tt>inherited</tt> property. */
     private void validateInherited(MessageList list, IIpsProject ipsProject) throws CoreException {
         // Check existence in supertype hierarchy if this EnumAttribute is inherited.
         if (inherited) {
@@ -338,7 +353,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * Returns the original <tt>IEnumAttribute</tt> this <tt>IEnumAttribute</tt> is a copy of (if
      * this <tt>IEnumAttribute</tt> is inherited).
      * <p>
-     * Returns <code>null</code> if this <tt>IEnumAttribute</tt> is not inherited or the super
+     * Returns <tt>null</tt> if this <tt>IEnumAttribute</tt> is not inherited or the super
      * <tt>IEnumAttribute</tt> cannot be found.
      */
     private IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {

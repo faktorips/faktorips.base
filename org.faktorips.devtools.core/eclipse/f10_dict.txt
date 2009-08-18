@@ -1,4 +1,5 @@
 subtype
+supertype
 Faktor-IPS
 Jan
 Ortmann

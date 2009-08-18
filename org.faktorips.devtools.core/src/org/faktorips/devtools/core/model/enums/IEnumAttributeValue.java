@@ -43,7 +43,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that the value of this <tt>IEnumAttributeValue</tt> does
-     * not correspond to the datatype defined in the <tt>IEnumAttribute</tt> being referenced.
+     * not correspond to the data type defined in the <tt>IEnumAttribute</tt> being referenced.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
@@ -71,9 +71,9 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /**
      * Searches and returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> refers to.
-     * Returns <code>null</code> if none could be found.
+     * Returns <tt>null</tt> if none could be found.
      * <p>
-     * Also returns <code>null</code> if the number of <tt>IEnumAttribute</tt>s in the referenced
+     * Also returns <tt>null</tt> if the number of <tt>IEnumAttribute</tt>s in the referenced
      * <tt>IEnumType</tt> does not correspond to the number of <tt>IEnumAttributeValue</tt>s in the
      * <tt>IEnumValue</tt> containing this <tt>IEnumAttributeValue</tt>.
      * 
@@ -83,7 +83,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs while searching the given IPS project for the
      *             referenced <tt>IEnumAttribute</tt>.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 

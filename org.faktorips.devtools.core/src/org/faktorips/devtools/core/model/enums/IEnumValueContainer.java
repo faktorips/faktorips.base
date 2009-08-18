@@ -21,11 +21,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * <code>EnumValueContainer</code> is the supertype for <code>EnumType</code> and
- * <code>EnumContent</code>.
+ * <tt>EnumValueContainer</tt> is the supertype for <tt>EnumType</tt> and <tt>EnumContent</tt>.
  * <p>
- * In Faktor-IPS the values of an enum can be defined directly in the enum type itself or separate
- * from it in an enum content.
+ * In Faktor-IPS the values of an enumeration can be defined directly in the <tt>IEnumType</tt>
+ * itself or separate from it in an <tt>IEnumContent</tt>.
  * 
  * @author Alexander Weickmann
  * 
@@ -34,16 +33,18 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public interface IEnumValueContainer extends IIpsObject {
 
     /**
-     * Returns a list containing all enum values that belong to this enum value container.
+     * Returns a list containing all <tt>IEnumValue</tt>s that belong to this
+     * <tt>IEnumValueContainer</tt>.
      */
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Returns the {@link IEnumValue} for the provided value of the identifier attribute.
+     * Returns the <tt>IEnumValue</tt> for the provided value of the identifier attribute.
      * <p>
-     * This method can only be applied to {@link IEnumValueContainer} that contain there own values.
-     * Especially this doesn't hold true for {@link IEnumType}s which delegate the content to a
-     * {@link IEnumContent}. For those cases <code>null</code> will be returned by this method.
+     * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain there own
+     * values. Especially this doesn't hold true for <tt>IEnumType</tt>s which delegate their
+     * content to a separate <tt>IEnumContent</tt>. For those cases <tt>null</tt> will be returned
+     * by this method.
      * <p>
      * Returns <tt>null</tt> if no <tt>IEnumValue</tt> could be found for the given identifier
      * attribute value or if the referenced <tt>IEnumType</tt> could not be found.
@@ -53,42 +54,41 @@ public interface IEnumValueContainer extends IIpsObject {
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Creates a new {@link List} and collects the values of the enumeration attribute that is
-     * marked as the identifier attribute of all enumeration values of this container and returns
-     * it.
+     * Creates a new list and collects the values of the enumeration attribute that is marked as the
+     * identifier attribute of all enumeration values of this container and returns it.
      * 
-     * @param ipsProject used as the starting point to search for enumeration type if necessary
-     * @return the list of enumeration attribute values of the identifier attribute. An empty list
-     *         will be returned if now values are found.
+     * @param ipsProject The IPS project used as the starting point to search for the enumeration
+     *            type if necessary.
      */
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject);
 
     /**
-     * Creates and returns a new enum value that has as many enum attribute values as the
-     * corresponding enum type has attributes.
+     * Creates and returns a new <tt>IEnumValue</tt> that has as many <tt>IEnumAttributeValue</tt>s
+     * as the corresponding <tt>IEnumType</tt> has <tt>IEnumAttribute</tt>s.
      * <p>
-     * If the enum type referenced by this enum value container cannot be found then no enum value
-     * will be created and <code>null</code> will be returned.
+     * If the <tt>IEnumType</tt> referenced by this <tt>IEnumValueContainer</tt> cannot be found
+     * then no <tt>IEnumValue</tt> will be created and <tt>null</tt> will be returned.
      * 
-     * @throws CoreException If an error occurs while searching for the enum type.
+     * @throws CoreException If an error occurs while searching for the referenced
+     *             <tt>IEnumType</tt> (in case this <tt>IEnumValueContainer</tt> is an
+     *             <tt>IEnumContent</tt>.
      */
     public IEnumValue newEnumValue() throws CoreException;
 
     /**
-     * Returns a reference to the enum type or <code>null</code> if no enum type can be found.
+     * Returns a reference to the <tt>IEnumType</tt> or <tt>null</tt> if no <tt>IEnumType</tt> can
+     * be found.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search. This is not
-     *            necessarily the project this enum attribute is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search. This is not
+     *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the enum
-     *             type.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given IPS project for the
+     *             referenced <tt>IEnumType</tt>.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException;
 
-    /**
-     * Returns how many enum values this enum value container currently contains.
-     */
+    /** Returns how many <tt>IEnumValue</tt>s this <tt>IEnumValueContainer</tt> currently contains. */
     public int getEnumValuesCount();
 
     /**
@@ -109,16 +109,17 @@ public interface IEnumValueContainer extends IIpsObject {
     public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException;
 
     /**
-     * Returns the index of the given enum value in the containing list.
+     * Returns the index of the given <tt>IEnumValue</tt>.
      * 
-     * @param enumValue The enum value to obtain its index for.
+     * @param enumValue The <tt>IEnumValue</tt> to obtain its index for.
      * 
-     * @throws NoSuchElementException If there is no such enum value in this enum value container.
-     * @throws NullPointerException If <code>enumValue</code> is <code>null</code>.
+     * @throws NoSuchElementException If there is no such <tt>IEnumValue</tt> in this
+     *             <tt>IEnumValueContainer</tt>.
+     * @throws NullPointerException If <tt>enumValue</tt> is <tt>null</tt>.
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
 
-    /** Deletes all enum values from this enum value container. */
+    /** Deletes all <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. */
     public void clear();
 
     /** Clears the unique identifier validation cache. */
@@ -130,14 +131,14 @@ public interface IEnumValueContainer extends IIpsObject {
      * <tt>IEnumValue</tt>s. Instead a <tt>WHOLE_CONTENT_CHANGED</tt> event will be fired after
      * every <tt>IEnumValue</tt> has been deleted.
      * <p>
+     * If <tt>null</tt> is given nothing will happen. If an <tt>IEnumValue</tt> is not part of this
+     * <tt>IEnumValueContainer</tt> the <tt>IEnumValue</tt> will be skipped.
+     * <p>
      * Returns <tt>true</tt> if any <tt>IEnumValue</tt>s were deleted, <tt>false</tt> if not
      * (following the behavior of the Java collections here).
      * 
      * @param enumValuesToDelete A list containing all <tt>IEnumValue</tt>s that should be deleted
      *            from this <tt>IEnumValueContainer</tt>.
-     * 
-     * @throws NoSuchElementException If the given list contains an <tt>IEnumValue</tt> that is
-     *             not part of this <tt>IEnumValueContainer</tt>.
      */
     public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete);
 

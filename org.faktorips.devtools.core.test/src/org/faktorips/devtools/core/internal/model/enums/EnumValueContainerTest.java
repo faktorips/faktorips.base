@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -124,7 +123,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(1));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(2));
 
-        // Nothing must change if the enum value is the last one already
+        // Nothing must change if the EnumValue is the last one already.
         newIndizes = genderEnumContent.moveEnumValues(moveList, false);
         assertEquals(2, newIndizes[0]);
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(0));
@@ -163,12 +162,12 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
 
-        // Test working for enum value deletion.
+        // Test working for EnumValue deletion.
         testValue2.delete();
         getIpsModel().clearValidationCache();
         assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
 
-        // Test working for enum value addition.
+        // Test working for EnumValue addition.
         testValue2 = paymentMode.newEnumValue();
         testValue2.setEnumAttributeValue(0, "MONTHLY");
         testValue2.setEnumAttributeValue(1, "P1");
@@ -189,28 +188,23 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         testValue2.setEnumAttributeValue(2, "annually");
         testValue2.setEnumAttributeValue(3, "otherUniqueValue");
 
-        // Test working for enum attribute movement.
+        // Test working for EnumAttribute movement.
         paymentMode.moveEnumAttribute(newUnique, true);
         testValue2.setEnumAttributeValue(3, "monthly");
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
 
-        // Test working for enum attribute deletion.
+        // Test working for EnumAttribute deletion.
         paymentMode.deleteEnumAttributeWithValues(newUnique);
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
     }
 
     public void testDeleteEnumValues() {
+        assertFalse(genderEnumContent.deleteEnumValues(paymentMode.getEnumValues()));
         assertFalse(genderEnumContent.deleteEnumValues(null));
         assertTrue(genderEnumContent.deleteEnumValues(genderEnumContent.getEnumValues()));
         assertEquals(0, genderEnumContent.getEnumValuesCount());
-
-        try {
-            genderEnumContent.deleteEnumValues(paymentMode.getEnumValues());
-            fail();
-        } catch (NoSuchElementException e) {
-        }
     }
 
     public void _testUniqueIdentifierValidationPerformance() throws CoreException {
@@ -228,7 +222,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         nameAttribute.setUsedAsNameInFaktorIpsUi(true);
         nameAttribute.setUnique(true);
 
-        // Create 15 further enum attributes, each 2nd one a unique.
+        // Create 15 further EnumAttributes, each 2nd one a unique.
         for (int i = 1; i <= 15; i++) {
             IEnumAttribute enumAttribute = hugeEnumType.newEnumAttribute();
             enumAttribute.setName("testAttribute" + i);
@@ -236,7 +230,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
             enumAttribute.setUnique(i % 2 == 0);
         }
 
-        // Create 7500 enum values all having the same values.
+        // Create 7500 EnumValues all having the same values.
         System.out.println("Creating enum values ...");
         for (int i = 1; i <= 7500; i++) {
             IEnumValue enumValue = hugeEnumType.newEnumValue();

@@ -34,7 +34,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumContent</code>, see the corresponding interface for more details.
+ * Implementation of <tt>IEnumContent</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
@@ -58,7 +58,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     private int enumAttributesCount;
 
     /**
-     * Creates a new <code>EnumContent</code>.
+     * Creates a new <tt>EnumContent</tt>.
      * 
      * @param file The IPS source file in which this <tt>IEnumContent</tt> will be stored in.
      */
@@ -77,10 +77,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         ArgumentCheck.notNull(ipsProject);
 
         IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumType);
-        if(ipsSrcFile != null && ipsSrcFile.exists()){
+        if (ipsSrcFile != null && ipsSrcFile.exists()) {
             return (IEnumType)ipsSrcFile.getIpsObject();
         }
-        
+
         return null;
     }
 
@@ -166,8 +166,9 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * does not correspond to the number of <tt>IEnumAttribute</tt>s stored in the referenced
      * <tt>IEnumType</tt> (without counting literal name attributes).
      */
-    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumType enumType, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateReferencedEnumAttributesCount(MessageList validationMessageList,
+            IEnumType enumType,
+            IIpsProject ipsProject) throws CoreException {
 
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getReferencedEnumAttributesCount()) {
             String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType

@@ -79,7 +79,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST));
 
-        // Test default value provider attribute not of datatype String.
+        // Test default value provider attribute not of data type String.
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("invalidProviderAttribute");
         invalidProviderAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
