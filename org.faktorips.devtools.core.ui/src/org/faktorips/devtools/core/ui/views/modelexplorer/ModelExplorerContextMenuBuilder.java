@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
+import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
@@ -212,6 +213,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createIpsEditSortOrderAction(manager, selected);
         createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         createIpsArchiveAction(manager, selected);
+        createMissingEnumContentsAction(manager, selected);
+
         // Menus with sub menus.
         createRefactorMenu(manager, selected);
         manager.add(new Separator());
@@ -460,6 +463,12 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 manager.add(EnumImportExportAction.createEnumExportAction(viewSite.getShell(), treeViewer));
                 manager.add(new Separator());
             }
+        }
+    }
+
+    protected void createMissingEnumContentsAction(IMenuManager manager, Object selected) {
+        if (selected instanceof IIpsProject) {
+            manager.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
         }
     }
 

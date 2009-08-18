@@ -180,9 +180,12 @@ public class Messages extends NLS {
     public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow4;
     public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow5;
     public static String ChangeWorkingDateAction_labelEditRecentGenerations;
-    
-	public static String ShowInstanceAction_descriptionForTypes;
-	public static String ShowInstanceAction_nameForTypes;
-	public static String ShowInstanceAction_descriptionForInstances;
-	public static String ShowInstanceAction_nameForInstances;
+
+    public static String ShowInstanceAction_descriptionForTypes;
+    public static String ShowInstanceAction_nameForTypes;
+    public static String ShowInstanceAction_descriptionForInstances;
+    public static String ShowInstanceAction_nameForInstances;
+
+    public static String CreateMissingEnumContentsAction_text;
+
 }

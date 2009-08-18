@@ -31,6 +31,13 @@ public class Messages extends NLS {
     public static String Page_Title;
     public static String Fields_EnumType;
 
+    public static String CreateMissingEnumContentsWizard_title;
+    public static String CreateMissingEnumContentsWizard_labelOperation;
+    public static String SelectEnumContentsPage_title;
+    public static String SelectEnumContentsPage_prompt;
+    public static String SelectEnumContentsPage_buttonSelectAll;
+    public static String SelectEnumContentsPage_buttonDeselectAll;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

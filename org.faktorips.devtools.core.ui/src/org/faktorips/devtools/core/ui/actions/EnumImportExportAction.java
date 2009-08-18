@@ -111,14 +111,14 @@ public class EnumImportExportAction extends IpsAction {
     protected void initImportAction() {
         setText(Messages.EnumImportExportAction_importActionTitle);
         setToolTipText(Messages.EnumImportExportAction_importActionTooltip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("import_wiz.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Import.gif")); //$NON-NLS-1$
         isImport = true;
     }
 
     protected void initExportAction() {
         setText(Messages.EnumImportExportAction_exportActionTitle);
         setToolTipText(Messages.EnumImportExportAction_exportActionTooltip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("export_wiz.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Export.gif")); //$NON-NLS-1$
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final IIpsObject enumIpsObject) {

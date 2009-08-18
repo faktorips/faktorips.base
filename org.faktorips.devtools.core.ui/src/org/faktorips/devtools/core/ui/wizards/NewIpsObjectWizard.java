@@ -53,12 +53,14 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     private AbstractIpsObjectNewWizardPage objectPage;
 
     public NewIpsObjectWizard() {
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.png")); //$NON-NLS-1$
+        setNeedsProgressMonitor(false);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addPages() {
         try {
             objectPage = createFirstPage(selection);
@@ -78,6 +80,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
      * finishWhenThisPageIsComplete() method of one of the pages returns true this method returns
      * true.
      */
+    @Override
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         IWizardPage[] pages = getPages();
@@ -119,6 +122,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
         IWorkspaceRunnable op = new IWorkspaceRunnable() {
@@ -134,7 +138,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                         AbstractIpsObjectNewWizardPage page = (AbstractIpsObjectNewWizardPage)pages[i];
                         if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
-                            if(srcFile == null){
+                            if (srcFile == null) {
                                 IpsPlugin.logAndShowErrorDialog(new IpsStatus("Unable to create the IPS Source File."));
                             }
                             ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
@@ -153,8 +157,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         try {
             ISchedulingRule rule = null;
             Job job = Job.getJobManager().currentJob();
-            if (job != null)
+            if (job != null) {
                 rule = job.getRule();
+            }
             IRunnableWithProgress runnable = null;
             if (rule != null) {
                 runnable = new WorkbenchRunnableAdapter(op, rule);
@@ -202,6 +207,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
      * Overrides the super class method and registers this wizard as an IPageChangedListener on the
      * provided IWizardContainer if it implements the IPageChangeProvider interface.
      */
+    @Override
     public void setContainer(IWizardContainer wizardContainer) {
         super.setContainer(wizardContainer);
         if (wizardContainer instanceof IPageChangeProvider) {

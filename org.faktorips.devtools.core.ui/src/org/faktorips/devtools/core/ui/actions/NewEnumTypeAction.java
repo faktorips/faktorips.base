@@ -19,13 +19,13 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction;
 
 /**
- * Opens the wizard for creating a new enum type.
+ * Opens the wizard for creating a new <tt>IEnumType</tt>.
  * 
  * @author Alexander Weickmann
  */
 public class NewEnumTypeAction extends Action {
 
-    // The image for the action
+    /** The image for the action. */
     private final String IMAGE = "NewEnumType.gif"; //$NON-NLS-1$
 
     private IWorkbenchWindow window;
@@ -43,9 +43,6 @@ public class NewEnumTypeAction extends Action {
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenNewEnumTypeWizardAction action = new OpenNewEnumTypeWizardAction();
