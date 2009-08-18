@@ -1114,9 +1114,9 @@
                 <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
                 <jvmarg arg="-Xms124m"/>
                 <jvmarg arg="-Xmx512m"/>
-                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="checkoutdir" value="checkout_branch_2_3"/>
                 <property name="cvsTag" value="v2_3_patches"/>
-                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
             </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
@@ -1161,6 +1161,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->
@@ -1448,9 +1453,9 @@
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
                 <jvmarg arg="-Dprg=cruise.integrationtest"/>
-                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="checkoutdir" value="checkout_branch_2_3"/>
                 <property name="cvsTag" value="v2_3_patches"/>
-                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
             </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
@@ -1495,6 +1500,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->
@@ -1512,9 +1522,9 @@
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
                 <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
-                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="checkoutdir" value="checkout_branch_2_3"/>
                 <property name="cvsTag" value="v2_3_patches"/>
-                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
             </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
@@ -1559,6 +1569,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->

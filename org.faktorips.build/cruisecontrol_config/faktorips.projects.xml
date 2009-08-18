@@ -264,9 +264,9 @@
             <jvmarg arg="-Xms124m"/>
             <jvmarg arg="-Xmx512m"/>
             <!-- property for the ant build script -->
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_3"/>
             <property name="cvsTag" value="v2_3_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
                 <cvs module="org.faktorips.util"/>
@@ -361,9 +361,9 @@
             testmerge="*Test.xml" scheduleintervall="300"
             cvstag="v2_3_patches">
             <jvmarg arg="-Dprg=cruise.integrationtest"/>
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_3"/>
             <property name="cvsTag" value="v2_3_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>            
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_3_patches"/>
 <!-- TODO to receive emails add cvs projects -->
@@ -378,9 +378,9 @@
             testmerge="*Test.xml" scheduleintervall="300"
             cvstag="v2_3_patches">
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_3"/>
             <property name="cvsTag" value="v2_3_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>             
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>             
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_3_patches"/>
             </depends>         
@@ -530,6 +530,52 @@ TODO bbv und msgp
                     <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
                 </antpublisher>
         </publisher>
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.v2_3_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+                </antpublisher>
+        </publisher>
+
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.java5.v2_3_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+                </antpublisher>
+        </publisher>
+        
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.pluginbuilder.v2_3_patches" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_3"/>
+                </antpublisher>
+        </publisher>
+                
     </publishers>
     
 </faktoripscruisecontrol>
