@@ -1110,7 +1110,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionRunAndStoreExpectedResult.setToolTipText(Messages.TestCaseSection_Action_RunTestAndStoreExpectedResults);
         actionRunAndStoreExpectedResult.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
-                "TestCaseRunAndStoreExpResult.gif")); //$NON-NLS-1$
+                "TestCaseRunAndStoreExpResult.png")); //$NON-NLS-1$
         // enable run test case functionality only if a toc file exists for this test case
         try {
             actionRunAndStoreExpectedResult.setEnabled(getTocFilePackage() != null);
