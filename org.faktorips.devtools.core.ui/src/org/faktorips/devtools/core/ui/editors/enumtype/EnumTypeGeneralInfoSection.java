@@ -67,6 +67,9 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The UI control for the <code>enumContentPackageFragment</code> property */
     private TextField enumContentNameControl;
 
+    /** Tracks the setting of the flag for the UI. */
+    private boolean valuesArePartOfModelTracker;
+
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
      * 
@@ -128,7 +131,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         // Values are part of model.
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
-        valuesArePartOfModelCheckbox.setEnabled(!enumType.isAbstract());
+        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+        valuesArePartOfModelTracker = enumType.isContainingValues();
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // EnumContent specification.
@@ -137,7 +141,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         enumContentNameControl = new TextField(text);
         enumContentNameControl.getTextControl()
                 .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
-
         bindingContext.bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
         // Register controls for focus handling.
@@ -175,6 +178,19 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 // Here is no "break;" by intention!
 
             case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                /*
+                 * Initialize enumeration content field if none has been specified yet and the
+                 * values are not part of the model.
+                 */
+                if (valuesArePartOfModelTracker != enumType.isContainingValues()) {
+                    valuesArePartOfModelTracker = !valuesArePartOfModelTracker;
+                    if (!(enumType.isContainingValues())) {
+                        if (enumContentNameControl.getText().length() == 0) {
+                            enumContentNameControl.setText(enumType.getQualifiedName());
+                        }
+                    }
+                }
+
                 /*
                  * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs
                  * one.

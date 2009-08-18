@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
@@ -28,6 +29,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard;
 import org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard;
 
@@ -51,9 +54,26 @@ public class EnumImportExportAction extends IpsAction {
         this.shell = shell;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public static EnumImportExportAction createEnumImportAction(Shell shell, ISelectionProvider selectionProvider) {
+        EnumImportExportAction enumImportExportAction = new EnumImportExportAction(shell, selectionProvider);
+        enumImportExportAction.initImportAction();
+        return enumImportExportAction;
+    }
+
+    public static EnumImportExportAction createEnumExportAction(Shell shell, ISelectionProvider selectionProvider) {
+        EnumImportExportAction enumImportExportAction = new EnumImportExportAction(shell, selectionProvider);
+        enumImportExportAction.initExportAction();
+        return enumImportExportAction;
+    }
+
+    public static EnumImportExportAction createEnumImportAction(Shell shell, ITableContents tableContents) {
+        return createEnumImportAction(shell, tableContents);
+    }
+
+    public static EnumImportExportAction createEnumExportAction(Shell shell, ITableContents tableContents) {
+        return createEnumExportAction(shell, tableContents);
+    }
+
     @Override
     public void run(IStructuredSelection selection) {
         runInternal(selection);
@@ -85,20 +105,20 @@ public class EnumImportExportAction extends IpsAction {
 
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
-        return dialog.open() == WizardDialog.OK;
+        return dialog.open() == Window.OK;
     }
 
     protected void initImportAction() {
         setText(Messages.EnumImportExportAction_importActionTitle);
         setToolTipText(Messages.EnumImportExportAction_importActionTooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportEnum.gif")); //$NON-NLS-1$
-        this.isImport = true;
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("import_wiz.gif")); //$NON-NLS-1$
+        isImport = true;
     }
 
     protected void initExportAction() {
         setText(Messages.EnumImportExportAction_exportActionTitle);
         setToolTipText(Messages.EnumImportExportAction_exportActionTooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportEnum.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("export_wiz.gif")); //$NON-NLS-1$
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final IIpsObject enumIpsObject) {

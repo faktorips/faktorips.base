@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
@@ -27,6 +28,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
@@ -35,7 +37,9 @@ import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
  * Action that opens the wizard for importing or exporting TableContents.
  */
 public class TableImportExportAction extends IpsAction {
+
     private Shell shell;
+
     private boolean isImport;
 
     private static class SimpleSelectionProvider implements ISelectionProvider {
@@ -92,19 +96,17 @@ public class TableImportExportAction extends IpsAction {
     protected void initImportAction() {
         setText(Messages.TableImportExportAction_importActionTitle);
         setToolTipText(Messages.TableImportExportAction_importActionTooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
-        this.isImport = true;
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("import_wiz.gif")); //$NON-NLS-1$
+        isImport = true;
     }
 
     protected void initExportAction() {
         setText(Messages.TableImportExportAction_exportActionTitle);
         setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("export_wiz.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void run(IStructuredSelection selection) {
         runInternal(selection);
     }
@@ -135,7 +137,7 @@ public class TableImportExportAction extends IpsAction {
 
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
-        return dialog.open() == WizardDialog.OK;
+        return dialog.open() == Window.OK;
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final ITableContents tableContents) {
