@@ -141,7 +141,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     }
 
     @Override
-    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className) throws Exception {
+    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className, IRuntimeRepository repository) throws Exception {
         // TODO Auto-generated method stub
         return null;
     }
