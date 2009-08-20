@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,9 +28,7 @@ public interface IValueSetOwner extends IValueDatatypeProvider {
     public IValueSet getValueSet();
 
     /**
-     * Sets the type of the value set defining the values valid for this attribute.
-     * If the type of the current value set is the same as the new type, the attribute
-     * remains unchanged. 
+     * Sets the type of the value set.
      */
     public void setValueSetType(ValueSetType type);
 
@@ -38,5 +36,5 @@ public interface IValueSetOwner extends IValueDatatypeProvider {
      * Returns <code>true</code> if the value set owned by this owner is updateabled.
      */
     public boolean isValueSetUpdateable();
-    
+
 }
