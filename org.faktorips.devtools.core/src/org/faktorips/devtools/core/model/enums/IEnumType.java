@@ -561,7 +561,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <p>
      * This is the case if the <tt>IEnumType</tt> is not abstract and does contain values.
      */
-    public boolean needsToUseEnumLiteralNameAttribute();
+    public boolean isUseEnumLiteralNameAttribute();
 
     /** Returns the number of <tt>IEnumLiteralNameAttribute</tt>s this <tt>IEnumType</tt> contains. */
     public int getEnumLiteralNameAttributesCount();

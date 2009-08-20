@@ -119,7 +119,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
         int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType
-                .needsToUseEnumLiteralNameAttribute());
+                .isUseEnumLiteralNameAttribute());
         for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {

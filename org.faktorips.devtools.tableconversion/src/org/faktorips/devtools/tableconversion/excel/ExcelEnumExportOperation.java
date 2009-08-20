@@ -136,7 +136,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         List<IEnumAttribute> enumAttributes = structure
                 .getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
         Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(structure
-                .needsToUseEnumLiteralNameAttribute())];
+                .isUseEnumLiteralNameAttribute())];
         for (int i = 0; i < datatypes.length; i++) {
             datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }

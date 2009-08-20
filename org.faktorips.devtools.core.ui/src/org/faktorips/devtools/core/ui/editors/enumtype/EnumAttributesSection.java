@@ -93,7 +93,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    boolean includeLiteralName = enumType.needsToUseEnumLiteralNameAttribute();
+                    boolean includeLiteralName = enumType.isUseEnumLiteralNameAttribute();
                     return enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName).toArray();
                 }
 
@@ -138,7 +138,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all enum values if there are no more enum attributes.
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.needsToUseEnumLiteralNameAttribute()) == 0) {
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isUseEnumLiteralNameAttribute()) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
