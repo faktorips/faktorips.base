@@ -61,7 +61,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The UI checkbox for the <code>valuesArePartOfModelCheckbox</code> property. */
+    /** The UI check box for the <code>valuesArePartOfModelCheckbox</code> property. */
     private Checkbox valuesArePartOfModelCheckbox;
 
     /** The UI control for the <code>enumContentPackageFragment</code> property */
@@ -195,7 +195,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                  * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs
                  * one.
                  */
-                if (enumType.needsToUseEnumLiteralNameAttribute()) {
+                if (enumType.isUseEnumLiteralNameAttribute()) {
                     if (!(enumType.containsEnumLiteralNameAttribute())) {
                         try {
                             IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType
