@@ -178,9 +178,9 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             setTargetFolderBasedOnSelection(sourceFolderField);
             sourceFolderField.addChangeListener(this);
             targetSourceFolderControl.setFocus();
-            toolkit.createVerticalSpacer(pageControl, 5);
+            toolkit.createVerticalSpacer(pageControl, 1);
             toolkit.createHorizonzalLine(pageControl);
-            toolkit.createVerticalSpacer(pageControl, 5);
+            toolkit.createVerticalSpacer(pageControl, 2);
         }
 
         /** Creates and configures the tree viewer widget in the center of the wizard page. */
