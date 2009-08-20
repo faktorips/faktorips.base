@@ -35,8 +35,11 @@ public class Messages extends NLS {
     public static String CreateMissingEnumContentsWizard_labelOperation;
     public static String SelectEnumContentsPage_title;
     public static String SelectEnumContentsPage_prompt;
+    public static String SelectEnumContentsPage_labelTargetSourceFolder;
     public static String SelectEnumContentsPage_buttonSelectAll;
     public static String SelectEnumContentsPage_buttonDeselectAll;
+    public static String SelectEnumContentsPage_msgTargetSourceFolderNotSpecified;
+    public static String SelectEnumContentsPage_msgTargetSourceFolderDoesNotExist;
 
     static {
         // initialize resource bundle

@@ -11,18 +11,20 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.wizards.enumcontent.CreateMissingEnumContentsWizard;
 
 /**
  * This action opens up a wizard that enables the user to create missing <tt>IEnumContent</tt>s.
@@ -31,40 +33,43 @@ import org.faktorips.devtools.core.ui.wizards.enumcontent.CreateMissingEnumConte
  * 
  * @since 2.4
  */
-public class CreateMissingEnumContentsAction extends IpsAction {
+public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionDelegate {
 
     private IWorkbenchWindow workbenchWindow;
 
-    public CreateMissingEnumContentsAction(ISelectionProvider selectionProvider, IWorkbenchWindow workbenchWindow) {
-        super(selectionProvider);
-        this.workbenchWindow = workbenchWindow;
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("CreateMissingEnumContents.gif")); //$NON-NLS-1$
-        setText(Messages.CreateMissingEnumContentsAction_text);
+    /** The preselected <tt>IIpsElement</tt>. */
+    private IIpsElement preselectedIpsElement;
+
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        workbenchWindow = targetPart.getSite().getWorkbenchWindow();
     }
 
-    @Override
-    public void run(IStructuredSelection selection) {
+    public void run(IAction action) {
+        CreateMissingEnumContentsWizard wizard = new CreateMissingEnumContentsWizard(preselectedIpsElement);
+        wizard.open(workbenchWindow.getShell());
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
             return;
         }
 
-        IIpsElement preselectedIpsElement = null;
         if (selection instanceof IStructuredSelection) {
-            IStructuredSelection sel = selection;
+            IStructuredSelection sel = (IStructuredSelection)selection;
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
                     preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsProject(
                             ((IJavaProject)selected).getProject());
                     break;
-                } else if (selected instanceof IIpsElement) {
-                    preselectedIpsElement = (IIpsElement)selected;
+                } else if (selected instanceof IResource) {
+                    IResource resource = (IResource)selected;
+                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource)
+                            .getIpsProject();
                     break;
                 }
             }
         }
-        CreateMissingEnumContentsWizard wizard = new CreateMissingEnumContentsWizard(preselectedIpsElement);
-        wizard.open(workbenchWindow.getShell());
     }
 
 }

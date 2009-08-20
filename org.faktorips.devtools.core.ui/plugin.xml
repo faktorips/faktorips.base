@@ -344,7 +344,38 @@
                visible="true"/>
       </perspectiveExtension>
    </extension>
-   <extension point="org.eclipse.ui.popupMenus">  
+   <extension point="org.eclipse.ui.popupMenus">
+        <objectContribution
+              id="createMissingEnumContents"
+              objectClass="org.eclipse.core.runtime.IAdaptable">
+           <menu
+                 id="faktorIPSMenu"
+                 label="%faktorIPSMenu"
+                 path="additions">
+              <separator
+                    name="faktorIpsGroup">
+              </separator>
+           </menu>
+           <visibility>
+              <or>
+                 <objectClass
+                       name="org.eclipse.jdt.core.IJavaProject">
+                 </objectClass>
+                 <objectClass
+                       name="org.eclipse.core.resources.IResource">
+                 </objectClass>
+              </or>
+           </visibility>
+           <action
+                 class="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenCreateMissingEnumContentsWizardAction"
+                 enablesFor="*"
+                 icon="icons/CreateMissingEnumContents.gif"
+                 id="createMissingEnumContentsAction"
+                 label="%createMissingEnumContentsAction"
+                 menubarPath="faktorIPSMenu/faktorIpsGroup"
+                 tooltip="%createMissingEnumContentsAction.tooltip">
+           </action>
+        </objectContribution>  
 		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>

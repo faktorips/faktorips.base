@@ -467,7 +467,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createMissingEnumContentsAction(IMenuManager manager, Object selected) {
-        if (selected instanceof IIpsProject) {
+        if (selected instanceof IIpsElement) {
             manager.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
         }
     }
