@@ -20,11 +20,9 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -50,9 +48,10 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj = (IpsProject)newIpsProject("TestProject");
+        IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
@@ -71,7 +70,6 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         // order
         configElement2 = generation1.newConfigElement();
         configElement2.setPolicyCmptTypeAttribute("configElement2");
-        configElement2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         configElement2.setValueSetType(ValueSetType.ENUM);
         configElement3 = generation1.newAttributeValue();
         configElement3.setAttribute("configElement3");

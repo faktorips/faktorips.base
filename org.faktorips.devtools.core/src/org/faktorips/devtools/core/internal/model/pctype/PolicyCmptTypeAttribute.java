@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
@@ -223,23 +222,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public boolean isValueSetUpdateable() {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ConfigElementType getConfigElementType() {
-        if (!isProductRelevant()) {
-            return null;
-        }
-        if (getAttributeType() == AttributeType.CHANGEABLE) {
-            return ConfigElementType.POLICY_ATTRIBUTE;
-        }
-        if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
-                || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
-            return null;
-        }
-        throw new RuntimeException("Unknown AttributeType!"); //$NON-NLS-1$
     }
 
     /**

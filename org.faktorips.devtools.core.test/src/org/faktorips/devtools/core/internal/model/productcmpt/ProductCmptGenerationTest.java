@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,13 +20,13 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -47,7 +47,6 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
@@ -58,58 +57,59 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IIpsProject ipsProject;
-    
+
     private IPolicyCmptType targetPolicyType;
     private IProductCmptType targetProductType;
     private IProductCmptTypeAssociation association;
     private IProductCmpt target;
-    
+
+    @Override
     public void setUp() throws Exception {
         super.setUp();
-        
-        ipsProject =  newIpsProject("TestProject");
+
+        ipsProject = newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-        
+
         targetPolicyType = newPolicyAndProductCmptType(ipsProject, "TargetPolicyType", "TargetProductType");
         targetProductType = targetPolicyType.findProductCmptType(ipsProject);
         target = newProductCmpt(targetProductType, "TargetProduct");
-        
+
         association = productCmptType.newProductCmptTypeAssociation();
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTarget(targetProductType.getQualifiedName());
         association.setTargetRoleSingular("testRelationProductSide");
         association.setTargetRolePlural("testRelationsProductSide");
     }
-    
+
     public void testGetAttributeValue() {
         IAttributeValue value1 = generation.newAttributeValue();
         value1.setAttribute("a1");
         IAttributeValue value2 = generation.newAttributeValue();
         value2.setAttribute("a2");
-        
+
         assertEquals(value1, generation.getAttributeValue("a1"));
         assertEquals(value2, generation.getAttributeValue("a2"));
-        
+
         assertNull(generation.getAttributeValue("unknwon"));
         assertNull(generation.getAttributeValue(null));
     }
-    
+
     public void testGetFormula() {
         IFormula formula1 = generation.newFormula();
         formula1.setFormulaSignature("f1");
         IFormula formula2 = generation.newFormula();
         formula2.setFormulaSignature("f2");
-        
+
         assertEquals(formula1, generation.getFormula("f1"));
         assertEquals(formula2, generation.getFormula("f2"));
-        
+
         assertNull(generation.getFormula("unknwon"));
         assertNull(generation.getFormula(null));
     }
-    
+
     public void testGetPropertyValue() {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("a1");
@@ -119,7 +119,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute policyAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttr.setName("policyAttribute");
         policyAttr.setProductRelevant(true);
-        
+
         IAttributeValue value = generation.newAttributeValue();
         value.setAttribute("a1");
         IFormula formula = generation.newFormula();
@@ -128,7 +128,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         contentUsage.setStructureUsage("RateTable");
         IConfigElement element = generation.newConfigElement();
         element.setPolicyCmptTypeAttribute("policyAttribute");
-        
+
         assertEquals(value, generation.getPropertyValue(attribute));
         assertEquals(formula, generation.getPropertyValue(signature));
         assertEquals(contentUsage, generation.getPropertyValue(structureUsage));
@@ -139,21 +139,21 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("Calc");
         IFormula formula = generation.newFormula(signature);
         assertEquals("Calc", formula.getFormulaSignature());
-        
+
         formula = generation.newFormula(null);
         assertEquals("", formula.getFormulaSignature());
     }
-    
+
     public void testNewTableContentUsage_TableStructure() {
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setRoleName("RateTable");
-        ITableContentUsage contentUsage  = generation.newTableContentUsage(structureUsage);
+        ITableContentUsage contentUsage = generation.newTableContentUsage(structureUsage);
         assertEquals("RateTable", contentUsage.getStructureUsage());
-        
-        contentUsage  = generation.newTableContentUsage(null);
+
+        contentUsage = generation.newTableContentUsage(null);
         assertEquals("", contentUsage.getStructureUsage());
     }
-    
+
     public void testNewAttributeValue_Attribute() {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("premium");
@@ -161,12 +161,12 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IAttributeValue value = generation.newAttributeValue(attribute);
         assertEquals("123", value.getValue());
         assertEquals("premium", value.getAttribute());
-        
+
         value = generation.newAttributeValue(null);
         assertEquals("", value.getValue());
         assertEquals("", value.getAttribute());
     }
-    
+
     public void testNewConfigElement_PolicyAttribute() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("a1");
@@ -176,7 +176,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
         range.setLowerBound("1");
         range.setUpperBound("42");
-        
+
         IConfigElement el = generation.newConfigElement(attribute);
         assertEquals("a1", el.getPolicyCmptTypeAttribute());
         assertEquals("10", el.getValue());
@@ -184,7 +184,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals("1", range.getLowerBound());
         assertEquals("42", range.getUpperBound());
     }
-    
+
     public void testGetPropertyValues() {
         IAttributeValue value1 = generation.newAttributeValue();
         IFormula formula1 = generation.newFormula();
@@ -196,11 +196,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce2 = generation.newConfigElement();
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
-        
+
         IPropertyValue[] values = generation.getPropertyValues(ProdDefPropertyType.VALUE);
         assertEquals(1, values.length);
         assertEquals(value1, values[0]);
-        
+
         values = generation.getPropertyValues(ProdDefPropertyType.FORMULA);
         assertEquals(2, values.length);
         assertEquals(formula1, values[0]);
@@ -219,13 +219,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(ce3, values[2]);
         assertEquals(ce4, values[3]);
     }
-    
+
     public void testNewLink() {
         IProductCmptLink link = generation.newLink("coverage");
         assertEquals(generation, link.getParent());
         assertEquals(1, generation.getNumOfLinks());
         assertEquals(link, generation.getLinks()[0]);
-        
+
         IProductCmptLink link2 = generation.newLink("covergae");
         assertEquals(generation, link2.getParent());
         assertEquals(2, generation.getNumOfLinks());
@@ -247,7 +247,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newAttributeValue();
         Element element = generation.toXml(newDocument());
-        
+
         IProductCmptGeneration copy = new ProductCmptGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
@@ -259,77 +259,75 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         generation.initFromXml(getTestDocument().getDocumentElement());
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
-        
+
         IAttributeValue[] attrValues = generation.getAttributeValues();
         assertEquals(1, attrValues.length);
 
         IConfigElement[] configElements = generation.getConfigElements();
         assertEquals(1, configElements.length);
-        
+
         IProductCmptLink[] relations = generation.getLinks();
         assertEquals(1, relations.length);
-        
+
         IFormula[] formulas = generation.getFormulas();
         assertEquals(1, formulas.length);
     }
 
-
-    
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
-        
+
         generation.newLink(association.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
-        
+
         generation.newLink(association).setTarget(target.getQualifiedName());
-        
+
         ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
-    
+
     public void testValidateNotEnoughRelations() throws Exception {
         association.setMinCardinality(1);
         association.setMaxCardinality(2);
 
         MessageList ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
-        
+
         generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
-        
+
         generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
     }
-    
+
     public void testValidateTooManyRelations() throws Exception {
         association.setMinCardinality(0);
         association.setMaxCardinality(1);
 
         MessageList ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
-        
+
         generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
-        
+
         generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
     }
-    
-    public void testValidateAttributeWithMissingConfigElement() throws Exception{        
+
+    public void testValidateAttributeWithMissingConfigElement() throws Exception {
         IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
         MessageList msgList = gen.validate(ipsProject);
         assertTrue(msgList.isEmpty());
-        
+
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setProductRelevant(true);
-        attribute.setName("test");        
+        attribute.setName("test");
         msgList = gen.validate(ipsProject);
         assertFalse(msgList.isEmpty());
         assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT));
@@ -338,12 +336,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testCanCreateValidRelation() throws Exception {
         assertFalse(generation.canCreateValidLink(null, null, ipsProject));
         assertFalse(generation.canCreateValidLink(productCmpt, null, ipsProject));
-        
+
         assertTrue(generation.canCreateValidLink(target, "testRelationProductSide", ipsProject));
     }
-    
+
     /**
      * test for bug #829
+     * 
      * @throws Exception
      */
     public void testCanCreateValidRelation_RelationDefinedInSupertypeHierarchyOfSourceType() throws Exception {
@@ -352,20 +351,19 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptType subProductCmptType = subpolicyCmptType.findProductCmptType(ipsProject);
         subpolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
         subProductCmptType.setSupertype(productCmptType.getQualifiedName());
-        
+
         IProductCmpt productCmpt2 = newProductCmpt(subProductCmptType, "TestProduct2");
         IProductCmptGeneration generation2 = productCmpt2.getProductCmptGeneration(0);
 
         assertTrue(generation2.canCreateValidLink(target, "testRelationProductSide", ipsProject));
     }
-    
-    
-    public void testGetChildren() throws CoreException  {
+
+    public void testGetChildren() throws CoreException {
         IConfigElement element = generation.newConfigElement();
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
         IFormula formula = generation.newFormula();
-        
+
         IIpsElement[] children = generation.getChildren();
         assertEquals(4, children.length);
         assertSame(element, children[0]);
@@ -373,10 +371,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertSame(formula, children[2]);
         assertSame(link, children[3]);
     }
-    
+
     public void testGetConfigElements() {
         assertEquals(0, generation.getNumOfConfigElements());
-        
+
         IConfigElement ce1 = generation.newConfigElement();
         assertEquals(ce1, generation.getConfigElements()[0]);
 
@@ -388,28 +386,26 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testGetConfigElements_Type() {
         IConfigElement ce1 = generation.newConfigElement();
         IConfigElement ce2 = generation.newConfigElement();
-        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        
-        IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
+
+        IConfigElement[] elements = generation.getConfigElements();
         assertEquals(2, elements.length);
         assertEquals(ce1, elements[0]);
         assertEquals(ce2, elements[1]);
     }
-    
+
     public void testGetConfigElement_AttributeName() {
         generation.newConfigElement();
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPolicyCmptTypeAttribute("a2");
-        
+
         assertEquals(ce2, generation.getConfigElement("a2"));
         assertNull(generation.getConfigElement("unkown"));
-        
+
     }
 
     public void testGetNumOfConfigElements() {
         assertEquals(0, generation.getNumOfConfigElements());
-        
+
         generation.newConfigElement();
         assertEquals(1, generation.getNumOfConfigElements());
 
@@ -442,7 +438,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptLink r1 = generation.newLink("coverage");
         generation.newLink("risk");
         IProductCmptLink r3 = generation.newLink("coverage");
-        
+
         IProductCmptLink[] relations = generation.getLinks("coverage");
         assertEquals(2, relations.length);
         assertEquals(r1, relations[0]);
@@ -454,7 +450,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     public void testGetNumOfLinks() {
         assertEquals(0, generation.getNumOfLinks());
-        
+
         generation.newLink("coverage");
         assertEquals(1, generation.getNumOfLinks());
 
@@ -467,30 +463,29 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         MessageList ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
     }
-    
 
     public void testNewPart() {
-    	try {
-    		assertTrue(productCmpt.newPart(ConfigElement.class) instanceof IConfigElement);
-    		assertTrue(productCmpt.newPart(PolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
-    		
-    		productCmpt.newPart(Object.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            assertTrue(productCmpt.newPart(ConfigElement.class) instanceof IConfigElement);
+            assertTrue(productCmpt.newPart(PolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
+
+            productCmpt.newPart(Object.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     public void testValidateValidFrom() throws Exception {
         generation.getProductCmpt().setValidTo(new GregorianCalendar(2000, 10, 1));
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
-        
+
         MessageList ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
-        
+        assertNotNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+
         generation.setValidFrom(new GregorianCalendar(2000, 9, 1));
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
+        assertNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
@@ -502,11 +497,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(1);
         IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.getGeneration(0);
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
-        
+
         MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
-        // assert that there is no validation error if the optional constraint 
+        // assert that there is no validation error if the optional constraint
         // "referencedProductComponentsAreValidOnThisGenerationsValidFromDate" is turned off
         IIpsProjectProperties oldProps = ipsProject.getProperties();
         IIpsProjectProperties newProps = new IpsProjectProperties(ipsProject, (IpsProjectProperties)oldProps);
@@ -514,9 +509,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(newProps);
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
-        ipsProject.getProperties().setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        ipsProject.getProperties()
+                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
-        
+
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
@@ -525,5 +521,5 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
     }
-    
+
 }

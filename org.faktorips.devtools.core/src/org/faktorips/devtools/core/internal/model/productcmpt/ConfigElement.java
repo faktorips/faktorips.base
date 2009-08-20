@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -54,8 +53,6 @@ import org.w3c.dom.Element;
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
-
-    private ConfigElementType type = ConfigElementType.POLICY_ATTRIBUTE;
 
     private String pcTypeAttribute = ""; //$NON-NLS-1$
 
@@ -88,22 +85,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      */
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ConfigElementType getType() {
-        return type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setType(ConfigElementType newType) {
-        ConfigElementType oldType = type;
-        type = newType;
-        valueChanged(oldType, newType);
     }
 
     /**
@@ -258,7 +239,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
 
-        if (type == ConfigElementType.POLICY_ATTRIBUTE && !valueSet.isDetailSpecificationOf(modelValueSet)) {
+        if (!valueSet.isDetailSpecificationOf(modelValueSet)) {
             // model value set contains not the value set defined in the config element
             // or different value set types
             String text;
@@ -288,23 +269,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
 
         if (StringUtils.isNotEmpty(value)) {
-            // validate valueset containment. If the type of this element
-            // is PRODUCT_ATTRIBUTE, we do not validate against the
-            // valueset of this element but against the valueset of
-            // the attribute this element is based on. This is because an
-            // element
-            // of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
-            // but the valueset can not be changed for this type of config
-            // element.
-            if (type == ConfigElementType.POLICY_ATTRIBUTE) {
-                if (!valueSet.containsValue(value)) {
-                    list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                            Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
-                }
-            } else if (!modelValueSet.containsValue(value)) { // PRODUCT_ATTRIBUTE
+            if (!valueSet.containsValue(value)) {
                 list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                        Messages.ConfigElement_valueIsNotInTheValueSetDefinedInTheModel, value), Message.ERROR, this,
-                        PROPERTY_VALUE));
+                        Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
             }
         }
     }
@@ -390,7 +357,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        type = ConfigElementType.getConfigElementType(element.getAttribute(PROPERTY_TYPE));
 
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 
@@ -404,7 +370,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TYPE, type.getId());
         element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }

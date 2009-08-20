@@ -25,7 +25,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -37,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -72,7 +70,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
         configElement = generation.newConfigElement();
         productCmpt.getIpsSrcFile().save(true, null);
-        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[] { TestEnumType.class });
+        newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 
     public void testFindPcTypeAttribute() throws CoreException {
@@ -108,7 +106,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     public void testValidate_UnknownDatatypeValue() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("1");
         ce.setPolicyCmptTypeAttribute("valueTest");
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
@@ -128,7 +125,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     public void testValidate_ValueNotParsable() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("1");
         ce.setPolicyCmptTypeAttribute("valueTest");
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
@@ -173,7 +169,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         values.get(2).setValue("an");
 
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("a");
         ce.setPolicyCmptTypeAttribute("valueTest");
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
@@ -203,7 +198,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         valueSet.setUpperBound("b");
 
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("1");
         ce.setPolicyCmptTypeAttribute("valueTest");
         ce.setValueSetCopy(valueSet);
@@ -244,7 +238,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         vdlist.add(datatype);
 
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
 
         InvalidDatatypeHelper idh = new InvalidDatatypeHelper();
@@ -259,7 +253,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     public void testValidate_ValueNotInValueset() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("1");
         ce.setPolicyCmptTypeAttribute("valueTest");
         ce.setValueSetType(ValueSetType.RANGE);
@@ -300,7 +293,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         attr.setDatatype("Decimal");
 
         IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce.setValue("12");
         ce.setPolicyCmptTypeAttribute("valueTest");
         ce.setValueSetCopy(valueSet);
@@ -366,8 +358,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
 
     public void testInitFromXml() {
-        Document doc = this.getTestDocument();
-        configElement.initFromXml((Element)doc.getDocumentElement());
+        Document doc = getTestDocument();
+        configElement.initFromXml(doc.getDocumentElement());
         assertEquals(42, configElement.getId());
         assertEquals("sumInsured", configElement.getPolicyCmptTypeAttribute());
         assertEquals("10", configElement.getValue());
@@ -382,7 +374,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
      */
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
-        cfgElement.setType(ConfigElementType.POLICY_ATTRIBUTE);
         cfgElement.setValue("value");
         cfgElement.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet valueSet = (IRangeValueSet)cfgElement.getValueSet();

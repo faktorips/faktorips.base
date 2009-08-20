@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -37,19 +36,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-
 /**
  *
  */
 public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
-    
+
     private IIpsPackageFragmentRoot ipsRootFolder;
     private IIpsPackageFragment ipsFolder;
     private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IPolicyCmptTypeAttribute attribute;
     private IIpsProject ipsProject;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
@@ -59,7 +58,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
         attribute = pcType.newPolicyCmptTypeAttribute();
     }
-    
+
     public void testValidateComputationMethodHasDifferentDatatype() throws CoreException {
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
         pcType.setConfigurableByProductCmptType(true);
@@ -71,18 +70,19 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("premium");
         attribute.setComputationMethodSignature(method.getSignatureString());
         attribute.setProductRelevant(true);
-        
+
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         method.setDatatype(Datatype.STRING.getQualifiedName());
-        
+
         MessageList result = attribute.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
-        
+        assertNotNull(result
+                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
+
         method.setDatatype(attribute.getDatatype());
         result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
     }
-    
+
     public void testValidateComputationMethodNotSpecified() throws CoreException {
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
@@ -91,22 +91,21 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
-        
+
         attribute.setComputationMethodSignature("calc()");
         result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
     }
-    
-    
+
     public void testValidateComputationMethodDoesNotExist() throws CoreException {
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
         attribute.setComputationMethodSignature("");
         attribute.setProductRelevant(true);
-        
+
         MessageList result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
-        
+
         attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
         result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
@@ -123,91 +122,78 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
     }
-    
+
     public void testFindComputationMethodSignature() throws CoreException {
         assertNull(attribute.findComputationMethod(ipsProject));
-        
+
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
         attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
-        
+
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
         pcType.setConfigurableByProductCmptType(true);
         pcType.setProductCmptType(productType.getQualifiedName());
         assertNull(attribute.findComputationMethod(ipsProject));
-        
+
         IMethod method = productType.newMethod();
         method.setName("calcPremium");
         assertNull(attribute.findComputationMethod(ipsProject));
-        
+
         method.newParameter("TestPolicy", "policy");
 
         assertEquals(method, attribute.findComputationMethod(ipsProject));
     }
-    
+
     public void testComputationMethodSignature() {
-        testPropertyAccessReadWrite(PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE, attribute, "calcThis");
+        testPropertyAccessReadWrite(PolicyCmptTypeAttribute.class,
+                IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE, attribute, "calcThis");
     }
-    
+
     public void testFindOverwrittenAttribute() throws CoreException {
         attribute.setName("a");
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
         IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
-        
+
         assertNull(attribute.findOverwrittenAttribute(ipsProject));
-        
+
         IPolicyCmptTypeAttribute aInSupertype = supersupertype.newPolicyCmptTypeAttribute();
         aInSupertype.setName("a");
-        
+
         assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
-        
+
         // cycle in type hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
 
         aInSupertype.delete();
-        assertNull(attribute.findOverwrittenAttribute(ipsProject)); // this should not return a itself!
+        assertNull(attribute.findOverwrittenAttribute(ipsProject)); // this should not return a
+                                                                    // itself!
     }
-    
-    public void testGetConfigElementType() {
-        attribute.setProductRelevant(false);
-        assertNull(attribute.getConfigElementType());
-        
-        attribute.setProductRelevant(true);
-        attribute.setAttributeType(AttributeType.CHANGEABLE);
-        assertEquals(ConfigElementType.POLICY_ATTRIBUTE, attribute.getConfigElementType());
 
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        assertNull(attribute.getConfigElementType());
-        
-        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-        assertNull(attribute.getConfigElementType());
-    }
-    
     public void testRemove() {
         attribute.delete();
         assertEquals(0, pcType.getPolicyCmptTypeAttributes().length);
         assertTrue(ipsSrcFile.isDirty());
     }
-    
+
     public void testSetDatatype() {
         attribute.setDatatype("Money");
         assertEquals("Money", attribute.getDatatype());
         assertTrue(ipsSrcFile.isDirty());
     }
-    
+
     public void testSetComputed() {
         attribute.setProductRelevant(true);
         assertEquals(true, attribute.isProductRelevant());
         assertTrue(ipsSrcFile.isDirty());
     }
-    
+
     public void testInitFromXml() {
-        Document doc = this.getTestDocument();
-        Element root =(Element)doc.getDocumentElement();
-        NodeList nl =root.getElementsByTagName("Attribute");
+        Document doc = getTestDocument();
+        Element root = doc.getDocumentElement();
+        NodeList nl = root.getElementsByTagName("Attribute");
         attribute.initFromXml((Element)nl.item(0));
         assertEquals(42, attribute.getId());
         assertEquals("premium", attribute.getName());
@@ -218,12 +204,12 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("42EUR", attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertFalse(attribute.isOverwrite());
-        
+
         attribute.initFromXml((Element)nl.item(1));
         assertEquals(2, attribute.getId());
         assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
-        assertEquals(EnumValueSet.class,attribute.getValueSet().getClass());
+        assertEquals(EnumValueSet.class, attribute.getValueSet().getClass());
 
         attribute.initFromXml((Element)nl.item(2));
         assertTrue(attribute.isOverwrite());
@@ -233,7 +219,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
      * Class under test for Element toXml(Document)
      */
     public void testToXml() {
-        attribute = pcType.newPolicyCmptTypeAttribute();  // => id=1 as this is the type's 2 attribute
+        attribute = pcType.newPolicyCmptTypeAttribute(); // => id=1 as this is the type's 2
+                                                         // attribute
         attribute.setName("age");
         attribute.setDatatype("decimal");
         attribute.setComputationMethodSignature("computePremium");
@@ -246,8 +233,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         set.setLowerBound("unten");
         set.setUpperBound("oben");
         set.setStep("step");
-        Element element = attribute.toXml(this.newDocument());
-        
+        Element element = attribute.toXml(newDocument());
+
         IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
@@ -258,9 +245,9 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertFalse(copy.isOverwrite());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
         assertEquals("18", copy.getDefaultValue());
-        assertEquals("unten",((IRangeValueSet)copy.getValueSet()).getLowerBound());
-        assertEquals("oben",((IRangeValueSet)copy.getValueSet()).getUpperBound());
-        assertEquals("step",((IRangeValueSet)copy.getValueSet()).getStep());
+        assertEquals("unten", ((IRangeValueSet)copy.getValueSet()).getLowerBound());
+        assertEquals("oben", ((IRangeValueSet)copy.getValueSet()).getUpperBound());
+        assertEquals("step", ((IRangeValueSet)copy.getValueSet()).getStep());
 
         // Nun ein Attribut mit GenericEnumvalueset testen.
         attribute.setName("age");
@@ -273,8 +260,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         set2.addValue("a");
         set2.addValue("b");
         set2.addValue("x");
-        
-        element = attribute.toXml(this.newDocument());
+
+        element = attribute.toXml(newDocument());
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals("age", attribute.getName());
@@ -282,60 +269,63 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isProductRelevant());
         assertEquals(AttributeType.CONSTANT, attribute.getAttributeType());
         assertEquals("18", attribute.getDefaultValue());
-        String [] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
+        String[] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);
-        
+
         // and now an attribute which overwrites
         attribute.setOverwrite(true);
-        element = attribute.toXml(this.newDocument());
+        element = attribute.toXml(newDocument());
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertTrue(attribute.isOverwrite());
     }
-    
+
     /**
-     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			attribute.newPart(PolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            attribute.newPart(PolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     public void testValidate_productRelevant() throws Exception {
-    	pcType.setConfigurableByProductCmptType(true);
-    	attribute.setProductRelevant(true);
-    	
-    	MessageList ml = attribute.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
-    	
-    	pcType.setConfigurableByProductCmptType(false);
-    	ml = attribute.validate(ipsProject);
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+
+        pcType.setConfigurableByProductCmptType(false);
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
     public void testValidate_nothingToOverwrite() throws Exception {
-    	attribute.setName("name");
+        attribute.setName("name");
 
-    	MessageList ml = attribute.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
-    	
-    	attribute.setOverwrite(true);
-    	ml = attribute.validate(ipsProject);
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
-    	
-    	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
-    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
-    	superAttr.setName("name");
-    	pcType.setSupertype(supertype.getQualifiedName());
-    	
-    	ml = attribute.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+
+        attribute.setOverwrite(true);
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
+        IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
+        superAttr.setName("name");
+        pcType.setSupertype(supertype.getQualifiedName());
+
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
     public void testValidate_OverwrittenAttributeHasDifferentType() throws Exception {
@@ -343,24 +333,22 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setDatatype("String");
         attribute.setOverwrite(true);
         attribute.setAttributeType(AttributeType.CHANGEABLE);
-        
+
         MessageList ml = attribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
-        
+
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
         pcType.setSupertype(supertype.getQualifiedName());
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
         superAttr.setName("name");
         superAttr.setDatatype("String");
         superAttr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        
+
         ml = attribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
-        
+
         attribute.setAttributeType(superAttr.getAttributeType());
         ml = attribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
     }
 }
-
-    

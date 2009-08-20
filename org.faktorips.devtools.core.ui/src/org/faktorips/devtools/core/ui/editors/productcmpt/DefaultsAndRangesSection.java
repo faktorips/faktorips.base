@@ -31,7 +31,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
@@ -123,7 +122,7 @@ public class DefaultsAndRangesSection extends IpsSection {
      */
     private void createEditControls() {
         uiMasterController = new CompositeUIController();
-        IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
+        IConfigElement[] elements = generation.getConfigElements();
         Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
                 .getIpsProject()));
         if (elements.length == 0) {

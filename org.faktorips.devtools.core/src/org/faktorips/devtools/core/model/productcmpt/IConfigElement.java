@@ -96,16 +96,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**
-     * Returns this element's type.
-     */
-    public ConfigElementType getType();
-
-    /**
-     * Sets this element's type.
-     */
-    public void setType(ConfigElementType newType);
-
-    /**
      * Returns the name of the product component type's attribute this element is based on.
      */
     public String getPolicyCmptTypeAttribute();

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -131,12 +130,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * Returns <code>true</code> if this attribute is derived, otherwise <code>false</code>.
      */
     public boolean isDerived();
-
-    /**
-     * Returns the type of the product configuration element this attribute defines. Returns
-     * <code>null</code> if this attribute is not product relevant.
-     */
-    public ConfigElementType getConfigElementType();
 
     /**
      * Returns true if this attribute is product relevant, that means the product developer can
