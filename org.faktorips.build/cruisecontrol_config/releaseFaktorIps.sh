@@ -34,6 +34,11 @@
 #           -resultDir             : publish directory
 #           -updatesiteDir         : updatesite directory
 #
+# hiden parameter:
+# ----------------
+#           -forceBuild            : force build, no resource limit check  
+#           -forceTaggingCvs       : force tagging projects (no assert if the release already exists)
+#
 # additional functionality
 #-------------------------
 #           -createBranch          : to create a branch, the latest head stand will be branched by default (see -branchRootTag)
@@ -79,6 +84,7 @@ SKIPTAGCVS=false
 NOCVS=false
 CREATE_BRANCH=false
 FORCE_BUILD=false
+FORCE_TAGCVS=false
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -250,6 +256,7 @@ parseArgs()
 	  -skipTest)      RUNTESTS=false ;;
 	  -skipPublish)   SKIPPUBLISH=true ;;
 	  -skipTaggingCvs) SKIPTAGCVS=true ;;
+	  -forceTaggingCvs) FORCE_TAGCVS=true ;;
 	  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
 	  -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
 	  -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
@@ -427,6 +434,9 @@ showParameter()
   echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
   echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
   echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
+  if [ "$FORCE_TAGCVS" = "true" ] ; then
+    echo -e "  -forceTaggingCvs : Force tag cvs projects \e[31mWARNING: the previous release will be overwritten!\e[0m"
+  fi
   echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
   if [ -n "$BRANCH" ] ; then
     echo -e "  -useBranch       : Build using cvs branch \e[32m$BRANCH\e[0m"
@@ -535,7 +545,7 @@ tagProjects()
 
   # c) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
-  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
+  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
     tagProject $FETCH_TAG $project $BRANCH
   done
 }
@@ -621,7 +631,7 @@ checkAndCreateReleaseProperty()
   
   # assert new release property 
   #    - if release property already exists then tagging Cvs is not allowed, must be deleted manually
-  if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
+  if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" -a ! "$FORCE_TAGCVS" = "true" ] ; then
     echo "=> Cancel build: tagging is not allowed if the release already exists!"
     echo "   Please use -skipTaggingCvs or remove the release.properties in the pluginbuilder project and try again."
     echo "   Existing file: "$RELEASE_PROPERTIES
