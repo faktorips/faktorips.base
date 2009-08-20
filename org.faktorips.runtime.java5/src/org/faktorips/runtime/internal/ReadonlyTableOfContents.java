@@ -122,7 +122,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             return;
         }
         if (entry.isEnumXmlAdapterTocEntry()) {
-            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), entry);
             return;
         }
         throw new IllegalArgumentException("Unknown entry type " + entry);

@@ -390,13 +390,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 	/**
 	 * {@inheritDoc}
 	 */
-    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(){
+    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository){
         if(!enumXmlAdapters.isEmpty()){
             return enumXmlAdapters;
         }
         for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
-            	enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName()));
+            	enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName(), repository));
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create an XmlAdapter for the enumeration: " + tocEntry.getImplementationClassName(), e);
             }
@@ -409,12 +409,12 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      * @throws Exception can occur while localizing the xml adapter class and creating the instance
      */
     @SuppressWarnings("unchecked")
-    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className) throws Exception {
+    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className, IRuntimeRepository repository) throws Exception {
         Class<XmlAdapter<String, IEnumValue>> xmlAdapterClass = (Class<XmlAdapter<String, IEnumValue>>)getClassLoader()
                 .loadClass(className);
         Constructor<XmlAdapter<String, IEnumValue>> constructor = xmlAdapterClass
                 .getConstructor(IRuntimeRepository.class);
-        XmlAdapter<String, IEnumValue> instance = constructor.newInstance(this);
+        XmlAdapter<String, IEnumValue> instance = constructor.newInstance(repository);
         return instance;
     }
 }

@@ -277,7 +277,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             throw new NullPointerException();
         }
         this.cl = cl;
-        this.tocResourcePath = tocResource;
+        tocResourcePath = tocResource;
         this.docBuilder = docBuilder;
         reload();
     }
@@ -285,6 +285,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     public ClassLoader getClassLoader() {
         return cl;
     }
@@ -292,6 +293,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     protected AbstractReadonlyTableOfContents loadTableOfContents() {
         InputStream is = null;
         Document doc;
@@ -325,6 +327,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         List<TocEntryObject> entries = toc.getProductCmptTocEntries();
@@ -340,6 +343,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         ProductComponent productCmpt;
@@ -356,6 +360,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         return productCmpt;
     }
 
+    @Override
     protected <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
 
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
@@ -374,10 +379,10 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
         try {
-            Constructor<T>[] constructors =  clazz.getDeclaredConstructors();
+            Constructor<T>[] constructors = clazz.getDeclaredConstructors();
             Constructor<T> constructor = null;
             for (Constructor<T> currentConstructor : constructors) {
-                if((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0){
+                if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
                     if (parameterTypes.length == 2 && parameterTypes[0] == List.class
                             && parameterTypes[1] == IRuntimeRepository.class) {
@@ -403,6 +408,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntry) {
         ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
         if (productCmpt == null) {
@@ -446,6 +452,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     protected ITable createTable(TocEntryObject tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         Table table;
@@ -481,6 +488,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         IpsTestCaseBase test;

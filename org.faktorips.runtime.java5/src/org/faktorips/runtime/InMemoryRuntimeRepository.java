@@ -404,7 +404,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
     
     @Override
-    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters() {
+    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         return enumXmlAdapters;
     }
 
