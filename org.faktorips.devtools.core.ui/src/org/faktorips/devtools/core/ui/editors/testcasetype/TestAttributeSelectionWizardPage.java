@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.KeyEvent;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * Wizard page to select one or more policy cmpt type attributes.
@@ -50,20 +52,19 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  */
 public class TestAttributeSelectionWizardPage extends WizardPage {
     private static final String PAGE_ID = "TestAttributeSelectionWizardPage"; //$NON-NLS-1$
-    
+
     private NewTestAttributeWizard wizard;
 
     private Text fFilterText = null;
     private String fFilter = null;
     protected FilteredList fFilteredList;
-    
-    
+
     private boolean fIsMultipleSelection = true;
     private boolean fMatchEmptyString = true;
     private boolean fAllowDuplicates = true;
     private boolean fIgnoreCase = true;
     private boolean showSubtypes;
-    
+
     private ILabelProvider fRenderer;
 
     private int fWidth = 60;
@@ -71,19 +72,20 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
     private Checkbox checkbox;
 
-
     private ITypeHierarchy typeHierarchy;
     private IPolicyCmptType policyCmptType;
     private ITypeHierarchy subtypeHierarchy;
 
     protected TestAttributeSelectionWizardPage(NewTestAttributeWizard wizard, boolean showSubtypes) {
         super(PAGE_ID, Messages.TestAttributeSelectionWizardPage_wizardPageTitle, null);
-        setDescription(Messages.TestAttributeSelectionWizardPage_wizardPageDescription);
-        
+
         this.wizard = wizard;
         this.showSubtypes = showSubtypes;
-        
+
         ITestPolicyCmptTypeParameter parameter = wizard.geTestPolicyCmptTypeParameter();
+        String description = NLS.bind(Messages.TestAttributeSelectionWizardPage_wizardPageDescription, QNameUtil
+                .getUnqualifiedName(parameter.getPolicyCmptType()));
+        setDescription(description);
         try {
             policyCmptType = parameter.findPolicyCmptType(wizard.getIpsProjekt());
         } catch (CoreException e) {
@@ -95,23 +97,24 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
         Composite group = uiToolkit.createGridComposite(parent, 1, true, true);
-//        GridLayout layout = new GridLayout();
-//        layout.marginHeight = 10;
-//        layout.marginWidth = 10;
-//        group.setLayout(layout);
+        // GridLayout layout = new GridLayout();
+        // layout.marginHeight = 10;
+        // layout.marginWidth = 10;
+        // group.setLayout(layout);
 
         createFilterText(group);
         createFilteredList(group);
-        
-        checkbox = uiToolkit.createCheckbox(group, Messages.AttributeElementListSelectionDialog_ShowAttributesOfSubclasses);
+
+        checkbox = uiToolkit.createCheckbox(group,
+                Messages.AttributeElementListSelectionDialog_ShowAttributesOfSubclasses);
         checkbox.setBackground(group.getBackground());
         checkbox.getButton().setBackground(group.getBackground());
         checkbox.setChecked(showSubtypes);
-        
+
         CheckboxField field = new CheckboxField(checkbox);
-        field.addChangeListener(new ValueChangeListener(){
+        field.addChangeListener(new ValueChangeListener() {
             public void valueChanged(final FieldValueChangedEvent e) {
-                Runnable runnable = new Runnable(){
+                Runnable runnable = new Runnable() {
                     public void run() {
                         try {
                             showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
@@ -125,17 +128,17 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 BusyIndicator.showWhile(TestAttributeSelectionWizardPage.this.getShell().getDisplay(), runnable);
             }
         });
-        
+
         setControl(group);
-        
+
         try {
             init(policyCmptType);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
-    private IPolicyCmptTypeAttribute[] getElements() throws CoreException{
+
+    private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List attributesInDialog = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
@@ -157,39 +160,39 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 }
             }
         }
-        return (IPolicyCmptTypeAttribute[]) attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog.size()]);
+        return (IPolicyCmptTypeAttribute[])attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog
+                .size()]);
     }
-    
+
     /*
      * Only changeable or derived or computed attributes are allowed
      */
-    private boolean isAllowedAttribute(IPolicyCmptTypeAttribute attribute){
+    private boolean isAllowedAttribute(IPolicyCmptTypeAttribute attribute) {
         return attribute.isChangeable() || attribute.isDerived();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void setListElements(Object[] elements) {
         Assert.isNotNull(fFilteredList);
         // init the label provider
-        AttributeLabelProvider attrLabelProvider = (AttributeLabelProvider) fFilteredList.getLabelProvider();
+        AttributeLabelProvider attrLabelProvider = (AttributeLabelProvider)fFilteredList.getLabelProvider();
         attrLabelProvider.setShowPolicyCmptTypeName(showSubtypes);
         fFilteredList.setElements(elements);
         deselectAll();
     }
-    
+
     /**
      * Creates a filtered list.
+     * 
      * @param parent the parent composite.
      * @return returns the filtered list widget.
      */
     protected FilteredList createFilteredList(Composite parent) {
-        int flags = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
-                | (fIsMultipleSelection ? SWT.MULTI : SWT.SINGLE);
+        int flags = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | (fIsMultipleSelection ? SWT.MULTI : SWT.SINGLE);
 
-        FilteredList list = new FilteredList(parent, flags, fRenderer,
-                fIgnoreCase, fAllowDuplicates, fMatchEmptyString);
+        FilteredList list = new FilteredList(parent, flags, fRenderer, fIgnoreCase, fAllowDuplicates, fMatchEmptyString);
 
         GridData data = new GridData();
         data.widthHint = convertWidthInCharsToPixels(fWidth);
@@ -206,6 +209,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
             public void widgetDefaultSelected(SelectionEvent e) {
                 getContainer().updateButtons();
             }
+
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -213,7 +217,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         fFilteredList = list;
 
         return list;
-    }    
+    }
 
     protected Text createFilterText(Composite parent) {
         Text text = new Text(parent, SWT.BORDER);
@@ -251,13 +255,13 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         return text;
     }
 
-    private void init(IPolicyCmptType policyCmptType) throws CoreException{
+    private void init(IPolicyCmptType policyCmptType) throws CoreException {
         typeHierarchy = policyCmptType.getSupertypeHierarchy();
 
         AttributeLabelProvider attrLabelProvider = new AttributeLabelProvider();
         attrLabelProvider.setShowPolicyCmptTypeName(showSubtypes);
         fFilteredList.setLabelProvider(attrLabelProvider);
-     
+
         fFilteredList.setElements(getElements());
         fFilteredList.setSelection((int[])null);
     }
@@ -283,7 +287,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
      */
     public boolean isValid() {
         setErrorMessage(null);
-        if (getSelection().length == 0){
+        if (getSelection().length == 0) {
             setErrorMessage(Messages.TestAttributeSelectionWizardPage_errorMessageNothingSelected);
             return false;
         }

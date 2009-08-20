@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,27 +14,29 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
- * Wizard page shows the to be created type of the test attribute. 
- * The type could be a test attribute which is based on a policy cmpt type attribute or 
- * a test attribute which is not based on a policy cmpt type attribute.
+ * Wizard page shows the to be created type of the test attribute. The type could be a test
+ * attribute which is based on a policy cmpt type attribute or a test attribute which is not based
+ * on a policy cmpt type attribute.
  * 
  * @author Joerg Ortmann
  */
 public class NewTestAttributeWizardPage extends WizardPage {
     private static final String PAGE_ID = "NewTestAttributeWizardPage"; //$NON-NLS-1$
     private NewTestAttributeWizard wizard;
-    
+
     private Button modelTestAttributeBtn;
     private Button nonModelTestAttributeBtn;
-    
+
     protected NewTestAttributeWizardPage(NewTestAttributeWizard wizard) {
         super(PAGE_ID, Messages.NewTestAttributeWizardPage_wizardPageTitle, null);
         setDescription(Messages.NewTestAttributeWizardPage_wizardPageDescription);
@@ -49,27 +51,30 @@ public class NewTestAttributeWizardPage extends WizardPage {
         layout.marginHeight = 10;
         layout.marginWidth = 10;
         group.setLayout(layout);
-        
+
         Composite c = uiToolkit.createLabelEditColumnComposite(group);
-        
+
         // create radio buttons
         KindOfTestAttributeSelectionListener listener = new KindOfTestAttributeSelectionListener();
-        
-        modelTestAttributeBtn = uiToolkit.createRadioButton(c, Messages.NewTestAttributeWizardPage_radioBtnLabelBasedOnPolicyCmptTypeAttr);
+
+        String typeName = QNameUtil.getUnqualifiedName(wizard.geTestPolicyCmptTypeParameter().getDatatype());
+        String text = NLS.bind(Messages.NewTestAttributeWizardPage_radioBtnLabelBasedOnPolicyCmptTypeAttr, typeName);
+        modelTestAttributeBtn = uiToolkit.createRadioButton(c, text);
         modelTestAttributeBtn.addSelectionListener(listener);
-        
+
         uiToolkit.createVerticalSpacer(c, 1);
-        
-        nonModelTestAttributeBtn = uiToolkit.createRadioButton(c, Messages.NewTestAttributeWizardPage_radioBtnLabelNotBasedOnPolicyCmptTypeAttr);
+
+        text = NLS.bind(Messages.NewTestAttributeWizardPage_radioBtnLabelNotBasedOnPolicyCmptTypeAttr, typeName);
+        nonModelTestAttributeBtn = uiToolkit.createRadioButton(c, text);
         nonModelTestAttributeBtn.addSelectionListener(listener);
-        
+
         setControl(group);
     }
 
     public boolean isBasedOnPolicyCmptTypeAttributes() {
         return modelTestAttributeBtn.getSelection();
     }
-    
+
     /**
      * Listener for the radio buttons.
      */
@@ -78,7 +83,7 @@ public class NewTestAttributeWizardPage extends WizardPage {
          * {@inheritDoc}
          */
         public void widgetSelected(SelectionEvent e) {
-                wizard.kindOfTestAttrHasChanged();
+            wizard.kindOfTestAttrHasChanged();
         }
 
         /**
@@ -87,5 +92,5 @@ public class NewTestAttributeWizardPage extends WizardPage {
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
-    }    
+    }
 }
