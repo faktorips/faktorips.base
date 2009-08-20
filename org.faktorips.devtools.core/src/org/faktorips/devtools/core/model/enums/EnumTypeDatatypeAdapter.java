@@ -307,4 +307,5 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     public int hashCode() {
         return enumType.hashCode();
     }
+
 }

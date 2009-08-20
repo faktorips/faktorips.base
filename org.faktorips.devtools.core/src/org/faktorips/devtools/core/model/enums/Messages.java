@@ -15,10 +15,6 @@ package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.osgi.util.NLS;
 
-/*
- * 
- * @author Alexander Weickmann
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.enums.messages"; //$NON-NLS-1$
@@ -36,7 +32,6 @@ public class Messages extends NLS {
     public static String EnumContent_EnumContentNameNotCorrect;
 
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 

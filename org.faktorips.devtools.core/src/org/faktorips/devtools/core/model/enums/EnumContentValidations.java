@@ -24,8 +24,8 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <code>IEnumContent</code> that are also used
- * in the creation wizard where the model object doesn't exist at the point of validation.
+ * A class that contains validations of the model class <tt>IEnumContent</tt> that are also used in
+ * the creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
@@ -36,20 +36,20 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class EnumContentValidations {
 
     /**
-     * Validates whether the given qualified name of an enumeration content is equal to the
-     * enumeration content name that is specified in provided enumeration type. Therefore it is
-     * assumed that the provided enumeration type is the corresponding one for the enumeration
-     * content in question.
+     * Validates whether the given qualified name of an <tt>IEnumContent</tt> is equal to the
+     * enumeration content name that is specified in provided <tt>IEnumType</tt>. Therefore it is
+     * assumed that the provided <tt>IEnumType</tt> is the corresponding one for the
+     * <tt>IEnumContent</tt> in question.
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The enumeration content object can be specified if available. If so it is
-     *            added to the message object in case the check fails.
-     * @param enumType the corresponding enumeration type
-     * @param enumContentName The qualified name of the enumeration content that is validated by
+     * @param enumContent The <tt>IEnumContent</tt> object can be specified if available. If so it
+     *            is added to the message object in case the check fails.
+     * @param enumType The corresponding <tt>IEnumType</tt>.
+     * @param enumContentName The qualified name of the <tt>IEnumContent</tt> that is validated by
      *            this method.
      * 
-     * @throws NullPointerException If <code>validationMessageList</code>, <code>enumType</code> or
-     *             <code>enumContentPackageFragmentQualifiedName</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>validationMessageList</tt>, <tt>enumType</tt> or
+     *             <tt>enumContentPackageFragmentQualifiedName</tt> is <tt>null</tt>.
      */
     public static void validateEnumContentName(MessageList validationMessageList,
             IEnumContent enumContent,
@@ -73,27 +73,27 @@ public abstract class EnumContentValidations {
     }
 
     /**
-     * Validates the enum type property of the given enum content.
+     * Validates the <tt>enumType</tt> property of the given <tt>IEnumContent</tt>.
      * <p>
      * Appropriate validation messages will be added to the given message list if:
      * <ul>
-     * <li>The qualified name of the enum type equals an empty string (enum type is missing)
-     * <li>The enum type is specified but does not exist
-     * <li>The enum type does exist but its values are defined in the model
-     * <li>The enum type does exist but is abstract
+     * <li>The qualified name of the <tt>IEnumType</tt> equals an empty string (<tt>IEnumType</tt>
+     * is missing).
+     * <li>The <tt>IEnumType</tt> is specified but does not exist.
+     * <li>The <tt>IEnumType</tt> does exist but its values are defined in the model.
+     * <li>The <tt>IEnumType</tt> does exist but is abstract.
      * </ul>
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The enum content that might be invalid or <code>null</code> if that
+     * @param enumContent The <tt>IEnumContent</tt> that might be invalid or <tt>null</tt> if that
      *            information cannot be supported.
-     * @param enumTypeQualifiedName The qualified name of the enum type this enum content is based
-     *            upon.
-     * @param ipsProject The ips object path of this ips project will be searched.
+     * @param enumTypeQualifiedName The qualified name of the <tt>IEnumType</tt> the
+     *            <tt>IEnumContent</tt> is based upon.
+     * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreException If an error occurs while searching for the enum type.
-     * @throws NullPointerException If <code>validationMessageList</code>,
-     *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is
-     *             <code>null</code>.
+     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>.
+     * @throws NullPointerException If <tt>validationMessageList</tt>,
+     *             <tt>enumTypeQualifiedName</tt> or <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public static void validateEnumType(MessageList validationMessageList,
             IEnumContent enumContent,
@@ -106,7 +106,7 @@ public abstract class EnumContentValidations {
         ObjectProperty[] objectProperties = (enumContent != null) ? new ObjectProperty[] { new ObjectProperty(
                 enumContent, IEnumContent.PROPERTY_ENUM_TYPE) } : new ObjectProperty[0];
 
-        // Enum type missing?
+        // EnumType missing?
         if (enumTypeQualifiedName.equals("")) {
             text = Messages.EnumContent_EnumTypeMissing;
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text,
@@ -114,7 +114,7 @@ public abstract class EnumContentValidations {
             return;
         }
 
-        // Enum type exists?
+        // EnumType exists?
         IIpsSrcFile enumSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumTypeQualifiedName);
         if (enumSrcFile == null) {
             text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
@@ -131,7 +131,7 @@ public abstract class EnumContentValidations {
                     Message.ERROR, objectProperties));
         }
 
-        // Enum type abstract?
+        // EnumType abstract?
         if (enumTypeRef.isAbstract()) {
             text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,

@@ -27,8 +27,8 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <code>IEnumType</code> that are also used in
- * the creation wizard where the model object doesn't exist at the point of validation.
+ * A class that contains validations of the model class <tt>IEnumType</tt> that are also used in the
+ * creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -39,23 +39,21 @@ import org.faktorips.util.message.ObjectProperty;
 public class EnumTypeValidations {
 
     /**
-     * Validates whether the given super enum type exists in the ips object path of the given ips
-     * project and that super enum type is abstract.
+     * Validates whether the given super <tt>IEnumType</tt> exists in the IPS object path of the
+     * given IPS project and that super <tt>IEnumType</tt> is abstract.
      * <p>
      * Adds validation messages to the given message list.
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumType The enum type that might be invalid or <code>null</code> if that information
-     *            cannot be supported.
-     * @param superEnumTypeQualifiedName The qualified name of the super enum type.
-     * @param ipsProject The ips object path of this ips project will be searched.
+     * @param enumType The <tt>IEnumType</tt> that might be invalid or <tt>null</tt> if that
+     *            information cannot be supported.
+     * @param superEnumTypeQualifiedName The qualified name of the super <tt>IEnumType</tt>.
+     * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreException If an error occurs while searching for the super enum type.
-     * @throws IllegalArgumentException If <code>superEnumTypeQualifiedName</code> is an empty
-     *             string.
-     * @throws NullPointerException If <code>validationMessageList</code>,
-     *             <code>superEnumTypeQualifiedName</code> or <code>ipsProject</code> is
-     *             <code>null</code>.
+     * @throws CoreException If an error occurs while searching for the super <tt>IEnumType</tt>.
+     * @throws IllegalArgumentException If <tt>superEnumTypeQualifiedName</tt> is an empty string.
+     * @throws NullPointerException If <tt>validationMessageList</tt>,
+     *             <tt>superEnumTypeQualifiedName</tt> or <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public static void validateSuperEnumType(MessageList validationMessageList,
             IEnumType enumType,
@@ -65,7 +63,7 @@ public class EnumTypeValidations {
         ArgumentCheck.notNull(new Object[] { validationMessageList, superEnumTypeQualifiedName, ipsProject });
         ArgumentCheck.isTrue(!(superEnumTypeQualifiedName.equals(""))); //$NON-NLS-1$
 
-        // Super enum type exists?
+        // Super EnumType exists?
         IEnumType superEnumType = ipsProject.findEnumType(superEnumTypeQualifiedName);
         if (superEnumType == null) {
             String text = NLS.bind(Messages.EnumType_SupertypeDoesNotExist, superEnumTypeQualifiedName);
@@ -79,7 +77,7 @@ public class EnumTypeValidations {
             return;
         }
 
-        // Super enum type abstract?
+        // Super EnumType abstract?
         if (!(superEnumType.isAbstract())) {
             String text = NLS.bind(Messages.EnumType_SupertypeIsNotAbstract, superEnumType.getQualifiedName());
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT, text, Message.ERROR,
@@ -92,7 +90,7 @@ public class EnumTypeValidations {
      * Checks is the super type hierarchy of this enumeration type is valid. Therefore this method
      * checks if a cycle exists in the type hierarchy, if there is an enumeration type in the
      * hierarchy for which the super type cannot be found and if there exists a super type that is
-     * not abstract. Last is a constraint specific to faktor ips enumerations.
+     * not abstract. Last is a constraint specific to Faktor-IPS enumerations.
      * 
      * @param msgList The message list where messages are added to in cases of failing validations.
      * @param enumType The enumeration type that is validated.
@@ -144,8 +142,8 @@ public class EnumTypeValidations {
      * @param enumContentName The qualified name of the enumeration content of the enumeration type
      *            that is validated
      * 
-     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentName</tt> is
-     *             <tt>null</tt>.
+     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentName</tt> is <tt>null</tt>
+     *             .
      */
     public static void validateEnumContentName(MessageList msgList,
             IEnumType enumType,
@@ -155,12 +153,12 @@ public class EnumTypeValidations {
 
         ArgumentCheck.notNull(new Object[] { msgList, enumContentName });
 
-        // Package specification should not be empty if this enum type does not contain values.
+        // Name should not be empty if the EnumType defers it's values and is not abstract.
         if (valuesDeferredToContent && !enumTypeIsAbstract) {
             if (enumContentName.equals("")) {
                 String text = Messages.EnumType_EnumContentNameEmpty;
-                Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text,
-                        Message.ERROR, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text, Message.ERROR,
+                        enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
                                 IEnumType.PROPERTY_ENUM_CONTENT_NAME) } : new ObjectProperty[0]);
                 msgList.add(message);
             }
