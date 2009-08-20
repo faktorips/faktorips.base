@@ -59,17 +59,26 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, literalNameAttribute.validate(ipsProject).getNoOfMessages());
     }
 
+    public void testValidateIsNeeded() throws CoreException {
+        paymentMode.setAbstract(true);
+        MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED));
+
+        paymentMode.setAbstract(false);
+        paymentMode.setContainingValues(false);
+        getIpsModel().clearValidationCache();
+        validationMessageList = literalNameAttribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED));
+    }
+
     public void testValidateDefaultValueProviderAttribute() throws CoreException {
         // Test pass validation if no default value provider attribute specified.
         literalNameAttribute.setDefaultValueProviderAttribute("");
         assertTrue(literalNameAttribute.isValid());
-
-        // Test pass validation if literal name attribute currently not needed.
-        literalNameAttribute.setDefaultValueProviderAttribute("xyz");
-        paymentMode.setAbstract(true);
-        getIpsModel().clearValidationCache();
-        assertTrue(literalNameAttribute.isValid());
-        paymentMode.setAbstract(false);
 
         // Test not existing default value provider attribute.
         literalNameAttribute.setDefaultValueProviderAttribute("foo");

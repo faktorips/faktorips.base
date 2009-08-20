@@ -40,11 +40,11 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * 
- * The general info section for the <code>EnumTypeEditor</code> provides UI controls to edit the
+ * The general info section for the <tt>EnumTypeEditor</tt> provides UI controls to edit the
  * <em>superEnumType</em> property, the <em>abstract</em> property and the
  * <em>valuesArePartOfModel</em> property of an <code>IEnumType</code>.
  * <p>
- * It is part of the <code>EnumTypeStructurePage</code>.
+ * It is part of the <tt>EnumTypeStructurePage</tt>.
  * 
  * @see EnumTypeEditor
  * @see EnumTypeStructurePage
@@ -67,8 +67,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The UI control for the <code>enumContentPackageFragment</code> property */
     private TextField enumContentNameControl;
 
-    /** Tracks the setting of the flag for the UI. */
-    private boolean valuesArePartOfModelTracker;
+    /** The <tt>EnumTypeEditorPage</tt> this section belongs to. */
+    private EnumTypeEditorPage enumTypeEditorPage;
 
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
@@ -79,10 +79,13 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
      * 
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
-    public EnumTypeGeneralInfoSection(final IEnumType enumType, Composite parent, UIToolkit toolkit) {
+    public EnumTypeGeneralInfoSection(EnumTypeEditorPage enumTypeEditorPage, final IEnumType enumType,
+            Composite parent, UIToolkit toolkit) {
+
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumType);
 
+        this.enumTypeEditorPage = enumTypeEditorPage;
         this.enumType = enumType;
         extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
 
@@ -132,7 +135,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        valuesArePartOfModelTracker = enumType.isContainingValues();
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // EnumContent specification.
@@ -182,14 +184,11 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                  * Initialize enumeration content field if none has been specified yet and the
                  * values are not part of the model.
                  */
-                if (valuesArePartOfModelTracker != enumType.isContainingValues()) {
-                    valuesArePartOfModelTracker = !valuesArePartOfModelTracker;
-                    if (!(enumType.isContainingValues())) {
-                        if (enumContentNameControl.getText().length() == 0) {
-                            enumContentNameControl.setText(enumType.getQualifiedName());
-                        }
-                    }
+                if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
+                    enumContentNameControl.setText(enumType.getQualifiedName());
                 }
+                enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
+                        .isUsingEnumLiteralNameAttribute()));
 
                 /*
                  * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs

@@ -20,9 +20,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 
 /**
- * The <code>EnumTypeStructurePage</code> provides controls to edit the properties and the
- * attributes of an <code>IEnumType</code> and is intended to be used with the
- * <code>EnumTypeEditor</code>.
+ * The <tt>EnumTypeStructurePage</tt> provides controls to edit the properties and the attributes of
+ * an <tt>IEnumType</tt> and is intended to be used with the <tt>EnumTypeEditor</tt>.
  * 
  * @see EnumTypeEditor
  * 
@@ -33,11 +32,11 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 public class EnumTypeStructurePage extends EnumTypeEditorPage {
 
     /**
-     * Creates a new <code>EnumTypeStructurePage</code>.
+     * Creates a new <tt>EnumTypeStructurePage</tt>.
      * 
-     * @param editor The <code>EnumTypeEditor</code> this page belongs to.
-     * @param splittedStructure If this flag is set to <code>true</code> the enum values table won't
-     *            be part of the page.
+     * @param editor The <tt>EnumTypeEditor</tt> this page belongs to.
+     * @param splittedStructure If this flag is set to <tt>true</tt> the enumeration values table
+     *            won't be part of the page.
      */
     public EnumTypeStructurePage(EnumTypeEditor editor, boolean splittedStructure) {
         super(editor, editor.getEnumType(), splittedStructure, Messages.EnumTypeStructurePage_title);
@@ -48,13 +47,9 @@ public class EnumTypeStructurePage extends EnumTypeEditorPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_HORIZONTAL);
-
         enumAttributesSection = new EnumAttributesSection(enumType, members, toolkit);
         try {
             enumValuesSection = new EnumValuesSection(enumType, parentContainer, toolkit);
@@ -63,21 +58,15 @@ public class EnumTypeStructurePage extends EnumTypeEditorPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
         enumAttributesSection = new EnumAttributesSection(enumType, parentContainer, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        new EnumTypeGeneralInfoSection(enumType, parentContainer, toolkit);
-
+        new EnumTypeGeneralInfoSection(this, enumType, parentContainer, toolkit);
         createToolbarActions();
     }
+
 }

@@ -45,6 +45,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
+    /** The UI composite for the section. */
+    EnumAttributesComposite enumAttributesComposite;
+
     /**
      * Creates a new <tt>EnumAttributesSection</tt> containing the <tt>IEnumAttribute</tt>s of the
      * given <tt>IEnumType</tt>.
@@ -59,7 +62,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new EnumAttributesComposite((IEnumType)getIpsObject(), parent, toolkit);
+        enumAttributesComposite = new EnumAttributesComposite((IEnumType)getIpsObject(), parent, toolkit);
+        return enumAttributesComposite;
     }
 
     /**
@@ -67,7 +71,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * these attributes in a dialog, to create new attributes, move attributes and to delete
      * attributes.
      */
-    private class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
+    class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
         /** The <tt>IEnumType</tt> being edited by the editor. */
         private IEnumType enumType;
@@ -185,7 +189,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          * <p>
          * Disables the "Delete" - Button if the selected <tt>IIpsObjectPart</tt> is an
-         * <tt>IEnumLiteralNameAttribute</tt>.
+         * <tt>IEnumLiteralNameAttribute</tt> while the <tt>IEnumType</tt> is needing to use it.
          */
         public void selectionChanged(SelectionChangedEvent event) {
             setCanDelete(true);

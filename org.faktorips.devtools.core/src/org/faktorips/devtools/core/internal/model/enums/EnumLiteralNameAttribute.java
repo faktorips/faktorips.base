@@ -82,29 +82,40 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        validateDefaultValueProviderAttribute(list, ipsProject);
+        validateIsNeeded(list, ipsProject);
+        if (list.getNoOfMessages() == 0) {
+            validateDefaultValueProviderAttribute(list, ipsProject);
+        }
+    }
+
+    /**
+     * Validates whether this <tt>IEnumLiteralNameAttribute</tt> is needed by the <tt>IEnumType</tt>
+     * it belongs to.
+     */
+    private void validateIsNeeded(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IEnumType enumType = getEnumType();
+        if (!(enumType.isUsingEnumLiteralNameAttribute())) {
+            String text = Messages.EnumLiteralNameAttribute_NotNeeded;
+            Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED, text, Message.ERROR, this);
+            list.add(msg);
+        }
     }
 
     /** Validates the <tt>defaultValueProviderAttribute</tt> property. */
     private void validateDefaultValueProviderAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-        /*
-         * Pass validation if no provider is specified or if the parent enumeration type does
-         * currently not need this literal name attribute.
-         */
-        if (defaultValueProviderAttribute.length() == 0 || !(getEnumType().isUsingEnumLiteralNameAttribute())) {
+        // Pass validation if no provider is specified.
+        if (defaultValueProviderAttribute.length() == 0) {
             return;
         }
-
-        String text;
-        Message msg;
 
         // The provider attribute must exist in the parent EnumType.
         IEnumType enumType = getEnumType();
         if (!(enumType.containsEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute))) {
-            text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist,
+            String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist,
                     defaultValueProviderAttribute);
-            msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST,
-                    text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
+            Message msg = new Message(
+                    MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST, text,
+                    Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
             list.add(msg);
             return;
         }
@@ -115,9 +126,10 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         Datatype datatype = providerAttribute.findDatatype(getIpsProject());
         if (datatype != null) {
             if (!(datatype.equals(Datatype.STRING))) {
-                text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotOfDatatypeString,
+                String text = NLS.bind(
+                        Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotOfDatatypeString,
                         defaultValueProviderAttribute);
-                msg = new Message(
+                Message msg = new Message(
                         MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING,
                         text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
                 list.add(msg);
@@ -128,10 +140,11 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         Boolean uniqueBoolean = providerAttribute.findIsUnique(ipsProject);
         if (uniqueBoolean != null) {
             if (!(uniqueBoolean.booleanValue())) {
-                text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotUnique,
+                String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotUnique,
                         defaultValueProviderAttribute);
-                msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE,
-                        text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
+                Message msg = new Message(
+                        MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE, text,
+                        Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
                 list.add(msg);
             }
         }

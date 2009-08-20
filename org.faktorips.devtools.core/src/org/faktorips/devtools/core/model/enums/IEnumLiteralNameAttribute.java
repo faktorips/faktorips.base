@@ -65,6 +65,13 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeNotUnique"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this <tt>IEnumLiteralNameAttribute</tt> is not
+     * required by the <tt>IEnumType</tt> it belongs to and therefore should be deleted.
+     */
+    public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED = MSGCODE_PREFIX
+            + "EnumLiteralNameAttributeAttributeNotNeeded"; //$NON-NLS-1$
+
+    /**
      * Sets the default value provider attribute.
      * 
      * @param defaultValueProviderAttributeName The unqualified name of the <tt>IEnumAttribute</tt>
