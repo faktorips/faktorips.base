@@ -416,13 +416,13 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                         for (IEnumType currentEnumType : findEnumTypesNeedingEnumContent(targetProject)) {
                             String enumContentName = currentEnumType.getEnumContentName();
                             String currentPackageFragment = StringUtil.getPackageName(enumContentName);
+                            List<IEnumType> list = treeStructure.get(currentPackageFragment);
+                            if (list == null) {
+                                list = new ArrayList<IEnumType>();
+                            }
+                            list.add(currentEnumType);
+                            treeStructure.put(currentPackageFragment, list);
                             if (!(elements.contains(currentPackageFragment))) {
-                                List<IEnumType> list = treeStructure.get(currentPackageFragment);
-                                if (list == null) {
-                                    list = new ArrayList<IEnumType>();
-                                }
-                                list.add(currentEnumType);
-                                treeStructure.put(currentPackageFragment, list);
                                 elements.add(currentPackageFragment);
                             }
                         }
