@@ -34,8 +34,8 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The ui section for the enum type structure page that contains the enum attributes of the enum
- * type to be edited.
+ * The UI section for the <tt>EnumTypeStructurePage</tt> that contains the <tt>IEnumAttribute</tt>s
+ * of the <tt>IEnumType</tt> to be edited.
  * 
  * @see EnumTypeStructurePage
  * 
@@ -46,12 +46,12 @@ import org.faktorips.util.ArgumentCheck;
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     /**
-     * Creates a new <code>EnumAttributesSection</code> containing the enum attributes of the given
-     * enum type.
+     * Creates a new <tt>EnumAttributesSection</tt> containing the <tt>IEnumAttribute</tt>s of the
+     * given <tt>IEnumType</tt>.
      * 
-     * @param enumType The enum type to show the enum attributes from.
-     * @param parent The parent ui composite.
-     * @param toolkit The ui toolkit that shall be used to create ui elements.
+     * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s from.
+     * @param parent The parent UI composite.
+     * @param toolkit The UI toolkit that shall be used to create UI elements.
      */
     public EnumAttributesSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
@@ -63,23 +63,24 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     }
 
     /**
-     * A composite that shows an enum type's attributes in a viewer and allows to edit these
-     * attributes in a dialog, to create new attributes, move attributes and to delete attributes.
+     * A composite that shows an <tt>IEnumType</tt>'s attributes in a viewer and allows to edit
+     * these attributes in a dialog, to create new attributes, move attributes and to delete
+     * attributes.
      */
     private class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
-        /** The enum type being edited by the editor. */
+        /** The <tt>IEnumType</tt> being edited by the editor. */
         private IEnumType enumType;
 
         /**
-         * Creates a new <code>EnumAttributesComposite</code> based upon the attributes of the given
-         * enum type.
+         * Creates a new <tt>EnumAttributesComposite</tt> based upon the attributes of the given
+         * <tt>IEnumType</tt>.
          * 
-         * @param enumType The enum type to show the attributes of.
-         * @param parent The parent ui composite.
-         * @param toolkit The ui toolkit to create new ui elements with.
+         * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s of.
+         * @param parent The parent UI composite.
+         * @param toolkit The UI toolkit to create new UI elements with.
          * 
-         * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
+         * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
          */
         public EnumAttributesComposite(IEnumType enumType, Composite parent, UIToolkit toolkit) {
             super(enumType, parent, toolkit);
@@ -93,8 +94,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    boolean includeLiteralName = enumType.isUseEnumLiteralNameAttribute();
-                    return enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName).toArray();
+                    return enumType.getEnumAttributesIncludeSupertypeCopies(true).toArray();
                 }
 
                 public void dispose() {
@@ -119,7 +119,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
             /*
              * If this is the first attribute to be created and the values are being defined in the
-             * enum type then make sure that there will be one enum value available for editing.
+             * EnumType then make sure that there will be one EnumValue available for editing.
              */
             if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
                 if (enumType.isContainingValues() && !(enumType.isAbstract())) {
@@ -137,8 +137,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
-            // Delete all enum values if there are no more enum attributes.
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isUseEnumLiteralNameAttribute()) == 0) {
+            // Delete all EnumValues if there are no more EnumAttributes.
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isUsingEnumLiteralNameAttribute()) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
@@ -163,7 +163,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             super.createButtons(buttons, toolkit);
-
             createButtonSpace(buttons, toolkit);
 
             // TODO AW: out commented for release 2.3.0rfinal
@@ -190,14 +189,14 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          */
         public void selectionChanged(SelectionChangedEvent event) {
             setCanDelete(true);
-            if (getSelectedPart() instanceof IEnumLiteralNameAttribute) {
+            if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isUsingEnumLiteralNameAttribute()) {
                 setCanDelete(false);
             }
         }
 
         /**
-         * Opens a dialog enabling the user to inherit enum attributes from the supertype hierarchy
-         * in a comfortable way.
+         * Opens a dialog enabling the user to inherit <tt>IEnumAttribute</tt>s from the supertype
+         * hierarchy in a comfortable way.
          */
         // TODO AW: out commented for release 2.3.0.rfinal
         /*

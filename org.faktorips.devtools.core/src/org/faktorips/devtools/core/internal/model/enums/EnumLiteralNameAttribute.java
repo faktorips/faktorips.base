@@ -91,7 +91,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
          * Pass validation if no provider is specified or if the parent enumeration type does
          * currently not need this literal name attribute.
          */
-        if (defaultValueProviderAttribute.length() == 0 || !(getEnumType().isUseEnumLiteralNameAttribute())) {
+        if (defaultValueProviderAttribute.length() == 0 || !(getEnumType().isUsingEnumLiteralNameAttribute())) {
             return;
         }
 

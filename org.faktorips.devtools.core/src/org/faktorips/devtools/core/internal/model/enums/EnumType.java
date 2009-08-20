@@ -840,7 +840,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public boolean isUseEnumLiteralNameAttribute() {
+    public boolean isUsingEnumLiteralNameAttribute() {
         return !isAbstract && containingValues;
     }
 

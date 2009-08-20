@@ -195,7 +195,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                  * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs
                  * one.
                  */
-                if (enumType.isUseEnumLiteralNameAttribute()) {
+                if (enumType.isUsingEnumLiteralNameAttribute()) {
                     if (!(enumType.containsEnumLiteralNameAttribute())) {
                         try {
                             IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType
