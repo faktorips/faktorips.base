@@ -331,11 +331,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
-        int index = enumAttributes.indexOf(enumAttribute);
-        if (index >= 0) {
-            return index;
-        }
-        throw new NoSuchElementException();
+        return enumAttributes.indexOf(enumAttribute);
     }
 
     /**
@@ -655,12 +651,21 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * Deletes all <tt>IEnumAttributeValue</tt>s in the given <tt>IEnumValue</tt>s that refer to the
      * given <tt>IEnumAttribute</tt>.
+     * <p>
+     * If no <tt>IEnumAttributeValue</tt>s remain in the given <tt>IEnumValue</tt>s they will be
+     * deleted, too.
      */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
+        boolean deleteEnumValues = false;
         for (IEnumValue currentEnumValue : enumValues) {
-            // FIXME AW: Must delete EnumValue if no EnumAttributeValues are remaining.
             int index = getIndexOfEnumAttribute(enumAttribute);
             currentEnumValue.getEnumAttributeValues().get(index).delete();
+            deleteEnumValues = currentEnumValue.getEnumAttributeValuesCount() == 0;
+        }
+        if (deleteEnumValues) {
+            for (int i = 0; i < enumValues.size(); i++) {
+                enumValues.get(i).delete();
+            }
         }
     }
 

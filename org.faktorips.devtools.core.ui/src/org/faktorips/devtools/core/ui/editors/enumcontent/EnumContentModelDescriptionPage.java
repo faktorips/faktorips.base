@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The model description page to display when an enum content editor is active.
+ * The model description page to display when an <tt>EnumContentEditor</tt> is active.
  * 
  * @see EnumCopntentEditor
  * 
@@ -38,15 +38,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage implements ContentsChangeListener {
 
-    /** The enum content to display a description for. */
+    /** The <tt>IEnumContent</tt> to display a description for. */
     private IEnumContent enumContent;
 
     /**
-     * Creates the <code>EnumContentModelDescriptionPage</code>.
+     * Creates the <tt>EnumContentModelDescriptionPage</tt>.
      * 
-     * @throws CoreException If an error occurs while searching for the enum type referenced by the
-     *             enum content.
-     * @throws NullPointerException If <code>editor</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>
+     *             referenced by the <tt>IEnumContent</tt>.
+     * @throws NullPointerException If <tt>editor</tt> is <tt>null</tt>.
      */
     public EnumContentModelDescriptionPage(EnumContentEditor editor) throws CoreException {
         super();
@@ -61,15 +61,14 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
 
     /**
      * Sets the current data.
-     * 
      * <ul>
-     * <li>Sets the title to the name of the enum content.
-     * <li>Creates a description item for each enum attribute of the enum type referenced by the
-     * enum content.
+     * <li>Sets the title to the name of the <tt>IEnumContent</tt>.
+     * <li>Creates a description item for each <tt>IEnumAttribute</tt> of the <tt>IEnumType</tt>
+     * referenced by the <tt>IEnumContent</tt>.
      * </ul>
      * 
-     * @throws CoreException If an error occurs while searching for the enum type referenced by the
-     *             enum content.
+     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>
+     *             referenced by the <tt>IEnumContent</tt>.
      */
     private void setDescriptionData() throws CoreException {
         setTitle(enumContent.getName());
@@ -91,15 +90,11 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         setDescriptionItems(descriptionItems);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void contentsChanged(ContentChangeEvent event) {
         /*
-         * Return if the changed ips src file was not the ips src file of the enum type referenced
-         * by the enum content or the ips src file of the enum content itself.
+         * Return if the changed IIpsSrcFile was not the IIpsSrcFile of the EnumType referenced by
+         * the EnumContent or the IIpsSrcFile of the EnumContent itself.
          */
-
         IEnumType enumType = null;
         try {
             enumType = enumContent.findEnumType(enumContent.getIpsProject());
@@ -120,12 +115,10 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         super.dispose();
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
     }
+
 }

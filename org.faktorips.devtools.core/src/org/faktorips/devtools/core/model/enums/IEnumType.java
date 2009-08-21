@@ -21,25 +21,27 @@ import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * An enum type represents the structure of an enum in the Faktor-IPS model.
+ * An <tt>IEnumType</tt> represents the structure of an enumeration in the Faktor-IPS model.
  * <p>
- * It contains several enum attributes where each enum attribute represents a property of the enum.
+ * It contains several <tt>IEnumAttribute</tt>s where each <tt>IEnumAttribute</tt> represents a
+ * property of the enumeration.
  * <p>
- * For example there may be an enum type <code>Gender</code> with the enum attributes
- * <code>id</code> and <code>name</code>.
+ * For example there may be an <tt>IEnumType</tt> <tt>Gender</tt> with the <tt>IEnumAttribute</tt>s
+ * <tt>id</tt> and <tt>name</tt>.
  * <p>
- * Instances of an enum are represented by enum values. In the above example there would be two enum
- * values:
+ * Instances of an enumeration are represented by <tt>IEnumValue</tt>s. In the above example there
+ * would be two <tt>IEnumValue</tt>s:
  * <ul>
  * <li>id: m, name: male</li>
  * <li>id: w, name: female</li>
  * </ul>
  * <p>
- * Enum values can be defined directly in the <code>IEnumType</code> itself or separate from it as
- * product content (<code>IEnumContent</code>).
+ * <tt>IEnumValue</tt>s can be defined directly in the <tt>IEnumType</tt> itself or separate from it
+ * as product content (<tt>IEnumContent</tt>).
  * <p>
- * There must exist exactly one enum literal name attribute that will be used to identify the
- * respective enum values in the generated source code.
+ * There must exist exactly one <tt>IEnumLiteralNameAttribute</tt> that will be used to identify the
+ * respective <tt>IEnumValue</tt>s in the generated source code if the values are defined directly
+ * in the <tt>IEnumType</tt>.
  * 
  * @see IEnumContent
  * 
@@ -49,29 +51,35 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
-    /** The xml tag for this ips object. */
+    /** The XML tag for this IPS object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
 
-    /** Name of the <code>superEnumType</code> property. */
+    /** Name of the <tt>superEnumType</tt> property. */
     public final static String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
 
-    /** Name of the <code>abstract</code> property. */
+    /** Name of the <tt>abstract</tt> property. */
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    /** Name of the <code>containingValues</code> property. */
+    /** Name of the <tt>containingValues</tt> property. */
     public final static String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
-    /** Name of the <code>enumContentPackageFragment</code> property. */
+    /** Name of the <tt>enumContentPackageFragment</tt> property. */
     public final static String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the supertype of this enum type does not exist. */
+    /**
+     * Validation message code to indicate that the supertype of this <tt>IEnumType</tt> does not
+     * exist.
+     */
     public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the supertype of this enum type is not abstract. */
+    /**
+     * Validation message code to indicate that the supertype of this <tt>IEnumType</tt> is not
+     * abstract.
+     */
     public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
             + "EnumTypeSupertypeIsNotAbstract"; //$NON-NLS-1$
 
@@ -82,12 +90,15 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public final static String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumTypeNotInheritedAttributesInSupertypeHierarchy"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that this enum type has no literal name attribute. */
+    /**
+     * Validation message code to indicate that this <tt>IEnumType</tt> has no
+     * <tt>IEnumLiteralNameAttribute</tt>.
+     */
     public final static String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum type has multiple
+     * Validation message code to indicate that this <tt>IEnumType</tt> has multiple
      * <tt>IEnumLiteralNameAttribute</tt>s.
      */
     public final static String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
@@ -108,82 +119,86 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum type does not contain any enum attribute
-     * being marked to be used as ID in the Faktor-IPS UI while not being abstract.
+     * Validation message code to indicate that this <tt>IEnumType</tt> does not contain any
+     * <tt>IEnumAttribute</tt> being marked to be used as (default) identifier while not being
+     * abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum type does not contain any enum attribute
-     * being marked to be used as name in the Faktor-IPS UI while not being abstract.
+     * Validation message code to indicate that this <tt>IEnumType</tt> does not contain any
+     * <tt>IEnumAttribute</tt> being marked to be used as name in the Faktor-IPS UI while not being
+     * abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the enum content package fragment is empty. */
+    /**
+     * Validation message code to indicate that the name specification of the <tt>IEnumContent</tt>
+     * is empty while this <tt>IEnumType</tt> delegates it's enumeration values.
+     */
     public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
             + "EnumTypeEnumContentNameEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the enum type stores enum values even tough it does
-     * not contain values or is abstract.
+     * Validation message code to indicate that the <tt>IEnumType</tt> stores <tt>IEnumValue</tt>s
+     * even tough it delegates the values or is abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
-    /** Returns the package fragment a referencing enum content must be stored in. */
+    /** Returns the qualified name a referencing <tt>IEnumContent</tt> needs to have. */
     public String getEnumContentName();
 
     /**
-     * Sets the package fragment a referencing enum content must be stored in.
+     * Sets the qualified name a referencing <tt>IEnumContent</tt> must have.
      * 
-     * @param packageFragmentQualifiedName The qualified name of the package fragment a referencing
-     *            enum content must be stored in.
+     * @param name The qualified name a referencing <tt>IEnumContent</tt> must be have.
      * 
-     * @throws NullPointerException If <code>packageFragmentQualifiedName</code> is
-     *             <code>null</code>.
+     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
      */
     public void setEnumContentName(String name);
 
     /**
-     * Returns the qualified name of the super enum type of this enum type.
+     * Returns the qualified name of the super enumeration type of this <tt>IEnumType</tt>.
      * <p>
-     * An empty string will be returned if this enum type does not have a super enum type.
+     * An empty <tt>String</tt> will be returned if this <tt>IEnumType</tt> does not have a super
+     * enumeration type.
      */
     public String getSuperEnumType();
 
     /**
-     * Sets the super enum type for this enum type.
+     * Sets the super enumeration type for this <tt>IEnumType</tt>.
      * 
-     * @param superEnumTypeQualifiedName The qualified name of the super enum type or an empty
-     *            string if there shall be no super enum type.
+     * @param superEnumTypeQualifiedName The qualified name of the super enumeration type or an
+     *            empty <tt>String</tt> if there shall be no super enumeration type.
      * 
-     * @throws NullPointerException If <code>superEnumTypeQualifiedName</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>superEnumTypeQualifiedName</tt> is <tt>null</tt>.
      */
     public void setSuperEnumType(String superEnumTypeQualifiedName);
 
     /**
-     * Returns <code>true</code> if this enum type is a sub enum type of the given super enum type
-     * candidate, returns <code>false</code> otherwise. Returns <code>false</code> if super enum
-     * type candidate is <code>null</code>.
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is a sub enumeration type of the given super
+     * enumeration type candidate, <tt>false</tt> otherwise. Returns also <tt>false</tt> if the
+     * super enumeration type candidate is <tt>null</tt>.
      * 
-     * @param superEnumTypeCandidate The type which is the possibly a super enum type of this enum
-     *            type
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param superEnumTypeCandidate The type which is the possibly a super enumeration type of this
+     *            <tt>IEnumType</tt>.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching the type hierarchy.
+     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
     public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns <code>true</code> if this enum type is a sub enum type of the given candidate, or if
-     * the candidate is the same. Returns <code>false</code> otherwise. Returns <code>false</code>
-     * if candidate is <code>null</code>.
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is a sub enumeration type of the given
+     * candidate, or if the candidate is the same. Returns <tt>false</tt> otherwise. Returns also
+     * <tt>false</tt> if candidate is <tt>null</tt>.
      * 
-     * @param superEnumTypeCandidate The enum type which is the possibly a super enum type of this
-     *            enum type
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param superEnumTypeCandidate The <tt>IEnumType</tt> which is the possibly a super
+     *            enumeration type of this <tt>IEnumType</tt>.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
@@ -191,47 +206,50 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Searches and returns the super enum type of this enum type if any is specified.
+     * Searches and returns the super enumeration type of this <tt>IEnumType</tt> if any is
+     * specified.
      * <p>
-     * Returns <code>null</code> if no super enum type is specified.
+     * Returns <tt>null</tt> if no super enumeration type is specified.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum type. This is not necessarily the project this enum attribute is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration type. This is not necessarily the project this <tt>IEnumType</tt> is
+     *            part of.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum type.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given IPS project for the super
+     *             enumeration type.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Sets the abstract property for this enum type.
+     * Sets the abstract property for this <tt>IEnumType</tt>.
      * 
-     * @param isAbstract Flag indicating whether this enum type shall be abstract (<code>true</code>
-     *            ) or not (<code>false</code>).
+     * @param isAbstract Flag indicating whether this <tt>IEnumType</tt> shall be abstract (
+     *            <tt>true</tt>) or not (<tt>false</tt>).
      */
     public void setAbstract(boolean isAbstract);
 
     /**
-     * Returns <code>true</code> if the values for this enum type are defined in the enum type
-     * itself.
+     * Returns <tt>true</tt> if the values for this <tt>IEnumType</tt> are defined in the
+     * <tt>IEnumType</tt> itself.
      */
     public boolean isContainingValues();
 
     /**
-     * Allows to set the property whether the values for this enum type will be defined in the enum
-     * type itself.
+     * Sets whether the values for this <tt>IEnumType</tt> will be defined in the <tt>IEnumType</tt>
+     * itself.
      * 
-     * @param containingValues Flag indicating whether the values for this enum type will be defined
-     *            in the enum type itself.
+     * @param containingValues Flag indicating whether the values for this <tt>IEnumType</tt> will
+     *            be defined in the <tt>IEnumType</tt> itself.
      */
     public void setContainingValues(boolean containingValues);
 
     /**
-     * Returns a list containing all enum attributes that belong to this enum type.
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * .
      * <p>
-     * Enum attributes that are inherited from the supertype hierarchy are <strong>not</strong>
-     * included.
+     * <tt>IEnumAttribute</tt>s that are inherited from the supertype hierarchy are
+     * <strong>not</strong> included.
      * 
      * @see #getEnumAttributesIncludeSupertypeCopies()
      * @see #findAllEnumAttributesIncludeSupertypeOriginals()
@@ -242,16 +260,16 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName);
 
     /**
-     * Returns a list containing all enum attributes that belong to this enum type
-     * <strong>plus</strong> all enum attributes that have been inherited from the supertype
-     * hierarchy (these are not the original enum attributes defined in the respective supertypes
-     * but copies created based upon the originals).
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that have been inherited from the
+     * supertype hierarchy (these are not the original <tt>IEnumAttribute</tt>s defined in the
+     * respective supertypes but copies created based upon the originals).
      * <p>
-     * If the original enum attributes defined in the respective supertypes are needed use
-     * <code>findAllEnumAttributesIncludeSupertypeOriginals()</code>.
+     * If the original <tt>IEnumAttribute</tt>s defined in the respective supertypes are needed use
+     * <tt>findAllEnumAttributesIncludeSupertypeOriginals(boolean, IIpsProject)</tt>.
      * 
-     * @see #getEnumAttributes()
-     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
+     * @see #getEnumAttributes(boolean)
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals(boolean, IIpsProject)
      * 
      * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
      *            will be contained in the returned list.
@@ -259,140 +277,144 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
-     * Returns a list containing all enum attributes that belong to this enum type
-     * <strong>plus</strong> all enum attributes that belong to supertypes of this enum type.
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that belong to supertypes of this
+     * <tt>IEnumType</tt>.
      * <p>
-     * Copies created due to inheritation are <strong>not</strong> included.
+     * Copies created due to inheritance are <strong>not</strong> included.
      * 
-     * @see #getEnumAttributes()
-     * @see #getEnumAttributesIncludeSupertypeCopies()
+     * @see #getEnumAttributes(boolean)
+     * @see #getEnumAttributesIncludeSupertypeCopies(boolean)
      * 
      * @param includeLiteralName If this flag is <tt>true</tt> all
      *            <tt>IEnumLiteralNameAttribute</tt>s will be contained in the returned list.
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration types. This is not necessarily the project this <tt>IEnumType</tt> is
+     *            part of.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum types.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given IPS project for the super
+     *             enumeration types.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(boolean includeLiteralName,
             IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Looks up the enumeration attribute for which the isIdentifier property is <code>true</code>
-     * and returns it. If none is found <code>null</code> will be returned.
+     * Looks up the enumeration attribute for which the <tt>identifier</tt> property is
+     * <tt>true</tt> and returns it. If none is found <tt>null</tt> will be returned.
      * 
-     * @param ipsProject used for look up in the supertype hierarchy if necessary
-     * @throws CoreException if an exception occurs during the look up
+     * @param ipsProject The IPS project used for look up in the supertype hierarchy if necessary.
+     * @throws CoreException If an exception occurs during the look up.
      */
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Looks up the enumeration attribute for which the isUsedAsNameInFaktorIpsUi is true.
-     * <code>null</code> is returned if none is found.
+     * Looks up the enumeration attribute for which the <tt>isUsedAsNameInFaktorIpsUi</tt> is
+     * <tt>true</tt>. Returns <tt>null</tt> if none is found.
      * 
-     * @param ipsProject The ips project used for look up in the supertype hierarchy if necessary.
+     * @param ipsProject The IPS project used for look up in the supertype hierarchy if necessary.
      * 
      * @throws CoreException If an exception occurs during the look up.
      */
     public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the index of the given <tt>IEnumAttribute</tt>.
+     * Returns the index of the given <tt>IEnumAttribute</tt> or -1 if the given
+     * <tt>IEnumAttribute</tt> does not exist in this <tt>IEnumType</tt>.
      * <p>
-     * Be careful: If the given enum attribute is an original from the supertype hierarchy, for
-     * which this enum type only stores a copy, the element won't be found and an exception is
-     * thrown.
+     * Be careful: If the given <tt>IEnumAttribute</tt> is an original from the supertype hierarchy,
+     * for which this <tt>IEnumType</tt> only stores a copy, the element won't be found!
      * 
-     * @param enumAttribute The enum attribute to obtain its index for.
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain its index for.
      * 
-     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
-     * @throws NoSuchElementException If there is no such enum attribute in this enum type.
+     * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
      */
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
 
     /**
-     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
-     * attribute with the given name in this enum type.
+     * Returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if there is no
+     * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt>.
      * <p>
-     * Inherited enum attributes are <strong>not</strong> included in the search.
+     * Inherited <tt>IEnumAttribute</tt>s are <strong>not</strong> included in the search.
      * 
      * @see #getEnumAttributeIncludeSupertypeCopies(String)
-     * @see #findEnumAttributeIncludeSupertypeOriginals(String)
+     * @see #findEnumAttributeIncludeSupertypeOriginals(IIpsProject, String)
      * 
-     * @param name The name of the enum attribute to obtain.
+     * @param name The name of the <tt>IEnumAttribute</tt> to obtain.
      * 
-     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
      */
     public IEnumAttribute getEnumAttribute(String name);
 
     /**
-     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
-     * attribute with the given name in this enum type.
+     * Returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if there is no
+     * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt>.
      * <p>
-     * Inherited enum attributes <strong>are</strong> included in the search. Note that in this
-     * context an inherited enum attribute is just a copy refering to the original enum attribute
-     * defined in the respective super enum type.
+     * Inherited <tt>IEnumAttribute</tt>s <strong>are</strong> included in the search. Note that in
+     * this context an inherited <tt>IEnumAttribute</tt> is just a copy referring to the original
+     * <tt>IEnumAttribute</tt> defined in the respective super enumeration type.
      * 
-     * @see #getEnumAttributes()
-     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
+     * @see #getEnumAttributes(boolean)
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals(boolean, IIpsProject)
      * 
-     * @param name The name of the enum attribute to obtain.
+     * @param name The name of the <tt>IEnumAttribute</tt> to obtain.
      * 
-     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
      */
     public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name);
 
     /**
-     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
-     * attribute with the given name in this enum type or in the supertype hierarchy.
+     * Returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if there is no
+     * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt> or in the supertype
+     * hierarchy.
      * <p>
-     * Note that enum attributes <strong>defined in super enum types are included</strong> in the
-     * search and <strong>copies</strong> created due to inheritation <strong>are ignored</strong>.
+     * Note that <tt>IEnumAttribute</tt>s <strong>defined in super enumeration types are
+     * included</strong> in the search and <strong>copies</strong> created due to inheritance
+     * <strong>are ignored</strong>.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum types. This is not necessarily the project this enum attribute is part of.
-     * @param name The name of the enum attribute to obtain.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration types. This is not necessarily the project this <tt>IEnumType</tt> is
+     *            part of.
+     * @param name The name of the <tt>IEnumAttribute</tt> to obtain.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum types.
-     * @throws NullPointerException If <code>ipsProject</code> or <code>name</code> is
-     *             <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given IPS project for the super
+     *             enumeration types.
+     * @throws NullPointerException If <tt>ipsProject</tt> or <tt>name</tt> is <tt>null</tt>.
      */
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
             throws CoreException;
 
     /**
-     * Creates a new enum attribute and returns a reference to it.
+     * Creates a new <tt>IEnumAttribute</tt> and returns a reference to it.
      * <p>
-     * Note that for all enum values <strong>that are defined directly in this enum type</strong>
-     * new <code>EnumAttributeValue</code> objects will be created (these will also be moved to
-     * their right position).
+     * Note that for all <tt>IEnumValue</tt>s <strong>that are defined directly in this
+     * <tt>IEnumType</tt></strong> new <tt>IEnumAttributeValue</tt>s will be created (these will
+     * also be moved to their right positions).
      * <p>
-     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
+     * Fires a <tt>WHOLE_CONTENT_CHANGED</tt> event.
      * 
-     * @throws CoreException If an error occurs while creating the new enum attribute.
+     * @throws CoreException If an error occurs while creating the new <tt>IEnumAttribute</tt>.
      */
     public IEnumAttribute newEnumAttribute() throws CoreException;
 
     /**
      * Creates a new <tt>IEnumLiteralNameAttribute</tt> and returns a reference to it. The attribute
-     * will already have a default name and be of datatype <tt>String</tt>.
+     * will already have a default name and be of data type <tt>String</tt>.
      * <p>
-     * Note that for all enum values <strong>that are defined directly in this enum type</strong>
-     * new <code>EnumAttributeValue</code> objects will be created.
+     * Note that for all <tt>IEnumValue</tt>s <strong>that are defined directly in this
+     * <tt>IEnumType</tt></strong> new <tt>IEnumAttributeValue</tt>s will be created.
      * <p>
-     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
+     * Fires a <tt>WHOLE_CONTENT_CHANGED</tt> event.
      * 
-     * @throws CoreException If an error occurs while creating the new enum attribute.
+     * @throws CoreException If an error occurs while creating the new
+     *             <tt>IEnumLiteralNameAttribute</tt>.
      */
     public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException;
 
     /**
-     * Returns how many enum attributes are currently part of this enum type.
+     * Returns how many <tt>IEnumAttribute</tt>s are currently part of this <tt>IEnumType</tt>.
      * <p>
-     * This operation does <strong>not</strong> inherited enum attributes.
+     * This operation does <strong>not</strong> inherited <tt>IEnumAttribute</tt>s.
      * 
      * @see #getEnumAttributesCountIncludeSupertypeCopies(boolean)
      * 
@@ -402,9 +424,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public int getEnumAttributesCount(boolean includeLiteralName);
 
     /**
-     * Returns how many enum attributes are currently part of this enum type.
+     * Returns how many <tt>IEnumAttribute</tt>s are currently part of this <tt>IEnumType</tt>.
      * <p>
-     * this operation <strong>does</tt> count inherited enum attributes.
+     * this operation <strong>does</strong> count inherited <tt>IEnumAttribute</tt>s.
      * 
      * @see #getEnumAttributesCount(boolean)
      * 
@@ -414,24 +436,23 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
-     * Moves the given enum attribute one position up or down in the containing list and returns its
-     * new index.
+     * Moves the given <tt>IEnumAttribute</tt> one position up or down and returns its new index.
      * <p>
-     * If the given enum attribute is already the first / last enum attribute then nothing will be
-     * done.
+     * If the given <tt>IEnumAttribute</tt> is already the first / last <tt>IEnumAttribute</tt> then
+     * nothing will be done.
      * <p>
-     * Note that all referencing enum attribute values <strong>that are defined in this enum
-     * type</strong> will also be moved one position up / down in their containing list.
+     * Note that all referencing <tt>IEnumAttributeValues</tt> <strong>that are defined in this
+     * <tt>IEnumType</tt></strong> will also be moved one position up / down.
      * <p>
-     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event if moving was performed.
+     * Fires a <tt>WHOLE_CONTENT_CHANGED</tt> event if moving was performed.
      * 
-     * @param enumAttribute The enum attribute to move.
-     * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
-     *            ).
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to move.
+     * @param up Flag indicating whether to move up (<tt>true</tt>) or down (<tt>false</tt>).
      * 
-     * @throws CoreException If an error occurs while moving the enum attribute.
-     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
-     * @throws NoSuchElementException If the given enum attribute is not a part of this enum type.
+     * @throws CoreException If an error occurs while moving the <tt>IEnumAttribute</tt>.
+     * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
+     * @throws NoSuchElementException If the given <tt>IEnumAttribute</tt> is not a part of this
+     *             <tt>IEnumType</tt>.
      */
     public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException;
 
@@ -452,55 +473,54 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      */
     public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute);
 
-    /**
-     * Returns whether this enum type has a super enum type.
-     */
+    /** Returns whether this <tt>IEnumType</tt> has a super enumeration type. */
     public boolean hasSuperEnumType();
 
-    /**
-     * Returns if this enumeration type is abstract.
-     */
+    /** Returns if this <tt>IEnumType</tt> is abstract. */
     public boolean isAbstract();
 
     /**
-     * Searches all enum types in the supertype hierarchy this enum type is a subtype of and returns
-     * them in a list (the enum type the operation is called upon is not included in the list).
+     * Searches all <tt>IEnumType</tt>s in the supertype hierarchy this <tt>IEnumType</tt> is a
+     * subtype of and returns them in a list (the <tt>IEnumType</tt> the operation is called upon is
+     * not included in the list).
      * <p>
      * It is possible that a cycle is detected in the supertype hierarchy. In this case the returned
-     * list will contain all super enum types up to the point where the cycle was found.
+     * list will contain all super enumeration types up to the point where the cycle was found.
      * <p>
-     * Never returns <code>null</code>.
+     * Never returns <tt>null</tt>.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration types. This is not necessarily the project this
+     *            <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum types.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given IPS project for the super
+     *             enumeration types.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns a list containing all enum attributes from the supertype hierarchy that have not yet
-     * been inherited by this enum type.
+     * Returns a list containing all <tt>IEnumAttribute</tt>s from the supertype hierarchy that have
+     * not yet been inherited by this <tt>IEnumType</tt>.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration types. This is not necessarily the project this
+     *            <tt>IEnumAttribute</tt> is part of.
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy for the not
-     *             inherited enum attributes.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     *             inherited <tt>IEnumAttribute</tt>s.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns a list containing all enum attributes that are unique. Attributes inherited from the
-     * supertype hierarchy are also scanned (only their copies will be returned however).
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that are unique. Attributes inherited
+     * from the supertype hierarchy are also scanned (only their copies will be returned however).
      * 
      * @param includeLiteralName If this flag is <tt>true</tt> the
      *            <tt>IEnumLiteralNameAttribute</tt>s of this <tt>IEnumType</tt> will be contained
-     *            in the returned list (<em>those of the super enum types not</em>).
-     * @param ipsProject The ips project which ips object path is used for the search.
+     *            in the returned list (<em>those of the super enumeration types not</em>).
+     * @param ipsProject The IPS project which IPS object path is used for the search.
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
@@ -509,40 +529,44 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
             throws CoreException;
 
     /**
-     * Creates and returns new enum attributes in this enum type inheriting the given enum
-     * attributes.
+     * Creates and returns new <tt>IEnumAttribute</tt>s in this <tt>IEnumType</tt> inheriting the
+     * given <tt>IEnumAttribute</tt>s from the supertype hierarchy.
      * <p>
-     * If any of the given super enum attributes is already inherited by this enum type it will be
-     * skipped.
+     * If any of the given super enumeration attributes is already inherited by this
+     * <tt>IEnumType</tt> it will be skipped.
      * 
-     * @param superEnumAttributes The enum attributes from the supertype hierarchy to inherit by
-     *            this enum type.
+     * @param superEnumAttributes The <tt>IEnumAttribute</tt>s from the supertype hierarchy to
+     *            inherit by this <tt>IEnumType</tt>.
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy.
-     * @throws IllegalArgumentException If any of the given enum attributes is not part of the
-     *             supertype hierarchy of this enum type.
+     * @throws IllegalArgumentException If any of the given <tt>IEnumAttribute</tt>s is not part of
+     *             the supertype hierarchy of this <tt>IEnumType</tt>.
      */
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException;
 
     /**
-     * Returns whether an enum attribute with the given name exists in this enum type.
+     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
+     * <tt>IEnumType</tt>.
      * <p>
      * The check does <strong>not</strong> include the copies from the supertype hierarchy.
      * 
      * @see #containsEnumAttributeIncludeSupertypeCopies(String)
      * 
-     * @param attributeName The name of the enum attribute to check for existence in this enum type.
+     * @param attributeName The name of the <tt>IEnumAttribute</tt> to check for existence in this
+     *            <tt>IEnumType</tt>.
      */
     public boolean containsEnumAttribute(String attributeName);
 
     /**
-     * Returns whether an enum attribute with the given name exists in this enum type.
+     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
+     * <tt>IEnumType</tt>.
      * <p>
      * The check <strong>does</strong> include the copies from the supertype hierarchy.
      * 
      * @see #containsEnumAttribute(String)
      * 
-     * @param attributeName The name of the enum attribute to check for existence in this enum type.
+     * @param attributeName The name of the <tt>IEnumAttribute</tt> to check for existence in this
+     *            <tt>IEnumType</tt>.
      */
     public boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName);
 
@@ -552,7 +576,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      */
     public IEnumLiteralNameAttribute getEnumLiteralNameAttribute();
 
-    /** Returns <tt>true</tt> if this enum type currently has an enum literal name attribute. */
+    /**
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> currently has an
+     * <tt>IEnumLiteralNameAttribute</tt>.
+     */
     public boolean containsEnumLiteralNameAttribute();
 
     /**

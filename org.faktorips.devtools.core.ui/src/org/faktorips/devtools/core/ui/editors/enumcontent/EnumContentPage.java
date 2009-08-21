@@ -31,12 +31,13 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * The <code>EnumContentPage</code> shows general information about an <code>IEnumContent</code> and
+ * The <tt>EnumContentPage</tt> shows general information about an <tt>IEnumContent</tt> and
  * provides controls to edit, import and export its values. It is intended to be used with the
- * <code>EnumContentEditor</code>.
+ * <tt>EnumContentEditor</tt>.
  * <p>
- * This page is a listener for changes in the ips model: If the enum type the edited enum content is
- * built upon changes the enabled states of the toolbar buttons will be updated.
+ * This page is a listener for changes in the IPS model: If the <tt>IEnumType</tt> the edited
+ * <tt>IEnumContent</tt> is built upon changes the enabled states of the tool bar buttons will be
+ * updated.
  * 
  * @see EnumContentEditor
  * 
@@ -46,21 +47,25 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public class EnumContentPage extends TypeEditorStructurePage implements ContentsChangeListener {
 
-    /** The enum content the enum content editor this page belongs to is currently editing. */
+    /**
+     * The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> this page belongs to is currently
+     * editing.
+     */
     private IEnumContent enumContent;
 
-    /** The action to open a <code>FixEnumContentWizard</code>. */
+    /** The action to open a <tt>FixEnumContentWizard</tt>. */
     private IAction openFixEnumTypeDialogAction;
 
     private EnumImportExportActionInEditor importAction;
+
     private EnumImportExportActionInEditor exportAction;
 
     EnumValuesSection enumValuesSection;
 
     /**
-     * Creates a new <code>EnumContentPage</code>.
+     * Creates a new <tt>EnumContentPage</tt>.
      * 
-     * @param editor The <code>EnumContentEditor</code> this page belongs to.
+     * @param editor The <tt>EnumContentEditor</tt> this page belongs to.
      */
     public EnumContentPage(EnumContentEditor editor) {
         super(editor, false, Messages.EnumContentValuesPage_title);
@@ -89,7 +94,6 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         createToolbar();
 
         new EnumContentGeneralInfoSection(this, enumContent, parentContainer, toolkit);
-
         try {
             enumValuesSection = new EnumValuesSection(enumContent, parentContainer, toolkit);
         } catch (CoreException e) {
@@ -97,7 +101,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         }
     }
 
-    /** Creates the actions for the toolbar. */
+    /** Creates the actions for the tool bar. */
     private void createToolbarActions() {
         openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(this, enumContent, getSite().getShell());
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, true);
@@ -105,7 +109,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     }
 
-    /** Creates the toolbar of this page. */
+    /** Creates the tool bar of this page. */
     private void createToolbar() {
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(openFixEnumTypeDialogAction);
@@ -117,16 +121,16 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     }
 
     /**
-     * Updates the enabled states of the toolbar.
+     * Updates the enabled states of the tool bar.
      * <p>
-     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the enum type the enum
-     * content to edit is built upon
+     * The <tt>OpenFixEnumContentWizardAction</tt> will be enabled if the <tt>IEnumType</tt> the
+     * <tt>IEnumContent</tt> to edit is built upon
      * <ul>
-     * <li>does not exist or is missing
-     * <li>is abstract
-     * <li>defines its values in the model
-     * <li>defines not the exact number of enum attributes as there are columns in the enum values
-     * table of the <code>EnumValuesSection</code>
+     * <li>does not exist or is missing.
+     * <li>is abstract.
+     * <li>defines its values in the model.
+     * <li>defines not the exact number of <tt>IEnumAttribute</tt>s as there are columns in the
+     * enumeration values table of the <tt>EnumValuesSection</tt>.
      * </ul>
      */
     private void updateToolbarActionsEnabledStates() {
@@ -160,7 +164,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // nothing to do
+
     }
 
     public void contentsChanged(ContentChangeEvent event) {
@@ -172,8 +176,8 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         }
 
         /*
-         * Return if the content changed was not the enum content to be edited or the referenced
-         * enum type.
+         * Return if the content changed was not the EnumContent to be edited or the referenced
+         * EnumType.
          */
         IIpsSrcFile changedIpsSrcFile = event.getIpsSrcFile();
         if (!(changedIpsSrcFile.equals(enumContent.getIpsSrcFile()))) {
@@ -187,7 +191,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
 
-    /** Executes the enum import operation and refreshes the view. */
+    /** Executes the <tt>EnumImportExportOperation</tt> and refreshes the view. */
     private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
@@ -205,6 +209,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
                 enumValuesSection.refresh();
             }
         }
+
     }
 
 }

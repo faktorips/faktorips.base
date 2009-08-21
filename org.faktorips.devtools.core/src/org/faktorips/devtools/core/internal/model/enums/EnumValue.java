@@ -200,11 +200,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
-        int index = enumAttributeValues.indexOf(enumAttributeValue);
-        if (index >= 0) {
-            return index;
-        }
-        throw new NoSuchElementException();
+        return enumAttributeValues.indexOf(enumAttributeValue);
     }
 
     @Override

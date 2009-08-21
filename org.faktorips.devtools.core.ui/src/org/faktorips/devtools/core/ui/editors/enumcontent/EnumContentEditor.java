@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
 /**
- * The Faktor-IPS editor to edit <code>IEnumContent</code> objects with.
+ * The Faktor-IPS editor to edit <tt>IEnumContent</tt> objects with.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
@@ -31,48 +31,31 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  */
 public class EnumContentEditor extends TypeEditor implements IModelDescriptionSupport {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new EnumContentPage(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new EnumContentPage(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return Messages.EnumContentEditor_title + getIpsObject().getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean hasDescriptionPage() {
         return false;
     }
 
-    /**
-     * Returns the enum content this editor is currently editing.
-     */
+    /** Returns the <tt>IEnumContent</tt> this editor is currently editing. */
     IEnumContent getEnumContent() {
         return (IEnumContent)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPage createModelDescriptionPage() throws CoreException {
         return new EnumContentModelDescriptionPage(this);
     }

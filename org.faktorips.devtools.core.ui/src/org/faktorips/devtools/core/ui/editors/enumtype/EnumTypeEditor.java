@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 /**
- * The Faktor-IPS editor to edit <code>IEnumType</code> objects with.
+ * The Faktor-IPS editor to edit <tt>IEnumType</tt> objects with.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -28,17 +28,11 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
  */
 public class EnumTypeEditor extends TypeEditor {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new EnumTypeStructurePage(this, false));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new EnumTypeStructurePage(this, false));
@@ -46,17 +40,12 @@ public class EnumTypeEditor extends TypeEditor {
         // addPage(new EnumTypeValuesPage(this, true));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return Messages.EnumTypeEditor_title + getIpsObject().getName();
     }
 
-    /**
-     * Returns the enum type this editor is currently editing.
-     */
+    /** Returns the <tt>IEnumType</tt> this editor is currently editing. */
     IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
     }

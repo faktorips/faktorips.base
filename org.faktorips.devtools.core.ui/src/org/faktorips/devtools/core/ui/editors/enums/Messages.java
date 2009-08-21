@@ -15,10 +15,6 @@ package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.osgi.util.NLS;
 
-/*
- * 
- * @author Alexander Weickmann
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.enums.messages"; //$NON-NLS-1$
@@ -32,12 +28,15 @@ public class Messages extends NLS {
     public static String EnumValuesSection_tooltipMoveEnumValueUp;
     public static String EnumValuesSection_labelMoveEnumValueDown;
     public static String EnumValuesSection_tooltipMoveEnumValueDown;
+    public static String EnumValuesSection_labelLockAndSync;
+    public static String EnumValuesSection_tooltipLockAndSync;
+    public static String EnumValuesSection_labelResetLiteralNames;
+    public static String EnumValuesSection_tooltipResetLiteralNames;
     public static String EnumValuesSection_defaultColumnName;
     public static String EnumValuesSection_titleEnumValueCreationNotPossible;
     public static String EnumValuesSection_msgEnumValueCreationNotPossibleDueToNotFoundEnumType;
 
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 

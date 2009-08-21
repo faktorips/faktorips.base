@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <code>EnumValuesSection</code> for deleting enum values.
+ * This action is used by the <tt>EnumValuesSection</tt> for deleting <tt>IEnumValue</tt>s.
  * 
  * @see EnumValuesSection
  * 
@@ -40,20 +40,18 @@ public class DeleteEnumValueAction extends Action {
     /** The name of the image for the action. */
     private final String IMAGE_NAME = "Delete.gif";
 
-    /** The enum values table viewer linking the enum values ui table widget with the model data. */
+    /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
     /**
-     * Creates a new <code>DeleteEnumValueAction</code>.
+     * Creates a new <tt>DeleteEnumValueAction</tt>.
      * 
-     * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
-     *            widget with the model data.
+     * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
      * 
-     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> is <tt>null</tt>.
      */
     public DeleteEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
-
         ArgumentCheck.notNull(enumValuesTableViewer);
 
         this.enumValuesTableViewer = enumValuesTableViewer;
@@ -63,9 +61,6 @@ public class DeleteEnumValueAction extends Action {
         setToolTipText(Messages.EnumValuesSection_tooltipDeleteValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         IStructuredSelection selection = (IStructuredSelection)enumValuesTableViewer.getSelection();
@@ -73,7 +68,7 @@ public class DeleteEnumValueAction extends Action {
             return;
         }
 
-        // Determine enum values to delete and obtain the last selected item
+        // Determine EnumValues to delete and obtain the last selected item.
         @SuppressWarnings("unchecked")
         Iterator<IEnumValue> selectedEnumValues = selection.iterator();
         List<IEnumValue> enumValuesToDelete = new ArrayList<IEnumValue>();
@@ -87,19 +82,19 @@ public class DeleteEnumValueAction extends Action {
         if (lastSelectedEnumValue == null) {
             return;
         }
-        
-        // Obtain the index of the last selected enum value
+
+        // Obtain the index of the last selected EnumValue.
         IEnumValueContainer enumValueContainer = lastSelectedEnumValue.getEnumValueContainer();
         int lastIndex = enumValueContainer.getIndexOfEnumValue(lastSelectedEnumValue);
         List<IEnumValue> enumValuesList = enumValueContainer.getEnumValues();
 
-        // Set the new selection if possible
+        // Set the new selection to the item below the last selected item if possible.
         if (enumValueContainer.getEnumValuesCount() > lastIndex + 1) {
             IStructuredSelection newSelection = new StructuredSelection(enumValuesList.get(lastIndex + 1));
             enumValuesTableViewer.setSelection(newSelection, true);
         }
 
-        // Delete the previously selected enum values now
+        // Delete the previously selected EnumValues now.
         enumValueContainer.deleteEnumValues(enumValuesToDelete);
     }
 

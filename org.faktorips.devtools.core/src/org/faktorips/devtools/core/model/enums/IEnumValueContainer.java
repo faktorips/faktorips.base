@@ -109,12 +109,11 @@ public interface IEnumValueContainer extends IIpsObject {
     public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException;
 
     /**
-     * Returns the index of the given <tt>IEnumValue</tt>.
+     * Returns the index of the given <tt>IEnumValue</tt> or -1 if the given <tt>IEnumValue</tt>
+     * does not exist in this <tt>IEnumValueContainer</tt>.
      * 
      * @param enumValue The <tt>IEnumValue</tt> to obtain its index for.
      * 
-     * @throws NoSuchElementException If there is no such <tt>IEnumValue</tt> in this
-     *             <tt>IEnumValueContainer</tt>.
      * @throws NullPointerException If <tt>enumValue</tt> is <tt>null</tt>.
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);

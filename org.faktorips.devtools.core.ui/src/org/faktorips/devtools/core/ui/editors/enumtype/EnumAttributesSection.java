@@ -102,11 +102,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                 }
 
                 public void dispose() {
-                    // Nothing to do.
+
                 }
 
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                    // Nothing to do.
+
                 }
 
             };

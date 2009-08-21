@@ -140,6 +140,8 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         genderEnumContent.moveEnumValues(moveList, true);
         assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
+
+        assertEquals(-1, genderEnumContent.getIndexOfEnumValue(paymentMode.getEnumValues().get(0)));
     }
 
     public void testClear() {

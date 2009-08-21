@@ -42,7 +42,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * The general info section for the <tt>EnumTypeEditor</tt> provides UI controls to edit the
  * <em>superEnumType</em> property, the <em>abstract</em> property and the
- * <em>valuesArePartOfModel</em> property of an <code>IEnumType</code>.
+ * <em>valuesArePartOfModel</em> property of an <tt>IEnumType</tt>.
  * <p>
  * It is part of the <tt>EnumTypeStructurePage</tt>.
  * 
@@ -61,23 +61,23 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The UI check box for the <code>valuesArePartOfModelCheckbox</code> property. */
+    /** The UI check box for the <tt>valuesArePartOfModelCheckbox</tt> property. */
     private Checkbox valuesArePartOfModelCheckbox;
 
-    /** The UI control for the <code>enumContentPackageFragment</code> property */
+    /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
 
     /** The <tt>EnumTypeEditorPage</tt> this section belongs to. */
     private EnumTypeEditorPage enumTypeEditorPage;
 
     /**
-     * Creates a new <code>EnumTypeGeneralInfoSection</code>.
+     * Creates a new <tt>EnumTypeGeneralInfoSection</tt>.
      * 
      * @param enumType The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> is currently editing.
      * @param parent The parent UI composite to attach this info section to.
      * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
-     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
      */
     public EnumTypeGeneralInfoSection(EnumTypeEditorPage enumTypeEditorPage, final IEnumType enumType,
             Composite parent, UIToolkit toolkit) {

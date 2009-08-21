@@ -1,5 +1,6 @@
 subtype
 supertype
+supertypes
 deselect
 Faktor-IPS
 Jan

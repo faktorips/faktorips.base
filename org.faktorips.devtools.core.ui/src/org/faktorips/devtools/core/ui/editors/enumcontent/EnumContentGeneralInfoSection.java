@@ -33,8 +33,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The general info section for the enum content editor. It shows the enum type the enum content to
- * edit is built upon and provides navigation to the enum type.
+ * The general info section for the <tt>EnumContentEditor</tt>. It shows the <tt>IEnumType</tt> the
+ * <tt>IEnumContent</tt> to edit is built upon and provides navigation to this <tt>IEnumType</tt>.
  * 
  * @see EnumContentEditor
  * 
@@ -44,20 +44,22 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumContentGeneralInfoSection extends IpsSection {
 
-    /** The enum content the editor is currently editing. */
+    /** The <tt>IEnumContent</tt> the editor is currently editing. */
     private IEnumContent enumContent;
 
+    /** The wizard page of the <tt>EnumContentEditor</tt>. */
     private EnumContentPage enumContentPage;
 
     /**
-     * Creates a new <code>EnumContentGeneralInfoSection</code> using the specified parameters.
+     * Creates a new <tt>EnumContentGeneralInfoSection</tt> using the specified parameters.
      * 
-     * @param enumContentPage
-     * @param enumContent The enum content the enum content editor is currently editing.
-     * @param parent The parent ui composite to attach this info section to.
-     * @param toolkit The ui toolkit to be used to create new ui elements.
+     * @param enumContentPage The wizard page of the <tt>EnumContentEditor</tt>.
+     * @param enumContent The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> is currently
+     *            editing.
+     * @param parent The parent UI composite to attach this info section to.
+     * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
-     * @throws NullPointerException If <code>enumContent</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>enumContent</tt> is <tt>null</tt>.
      */
     public EnumContentGeneralInfoSection(EnumContentPage enumContentPage, IEnumContent enumContent, Composite parent,
             UIToolkit toolkit) {
@@ -71,9 +73,6 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         setText(Messages.EnumContentGeneralInfoSection_title);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
@@ -84,11 +83,10 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             link.addHyperlinkListener(new HyperlinkAdapter() {
                 @Override
                 public void linkActivated(HyperlinkEvent event) {
-                    // If the setting has been changed while the editor was opened
+                    // If the setting has been changed while the editor was opened.
                     if (!(IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode())) {
                         return;
                     }
-
                     IEnumType enumType;
                     try {
                         enumType = enumContent.findEnumType(enumContent.getIpsProject());
@@ -108,13 +106,9 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         bindingContext.bindContent(enumTypeLabel, enumContent, IEnumContent.PROPERTY_ENUM_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
-
         IIpsProject ipsProject = enumContent.getIpsProject();
         try {
             MessageList validationMessages = enumContent.validate(ipsProject);

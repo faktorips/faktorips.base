@@ -192,12 +192,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     public int getIndexOfEnumValue(IEnumValue enumValue) {
         ArgumentCheck.notNull(enumValue);
-
-        int index = enumValues.indexOf(enumValue);
-        if (index >= 0) {
-            return index;
-        }
-        throw new NoSuchElementException();
+        return enumValues.indexOf(enumValue);
     }
 
     public void clear() {

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Opens a <code>FixEnumContentWizard</code>.
+ * Opens a <tt>FixEnumContentWizard</tt>.
  * 
  * @see FixEnumContentWizard
  * 
@@ -35,7 +35,7 @@ public class OpenFixEnumContentWizardAction extends Action {
     /** The name of the image for the action. */
     private final String IMAGE_NAME = "BrokenEnum.gif";
 
-    /** The enum content to fix. */
+    /** The <tt>IEnumContent</tt> to fix. */
     private IEnumContent enumContent;
 
     /** The parent shell. */
@@ -45,19 +45,19 @@ public class OpenFixEnumContentWizardAction extends Action {
     private IpsObjectEditorPage editorPage;
 
     /**
-     * Creates a new <code>OpenFixEnumContentWizardAction</code>.
+     * Creates a new <tt>OpenFixEnumContentWizardAction</tt>.
      * 
-     * @param editorPage The IpsObjectEditorPage that requested the operation or <tt>null</tt> (the
-     *            page will be refreshed after the operation was performed if given).
-     * @param enumContent The enum content to fix.
+     * @param editorPage The <tt>IpsObjectEditorPage</tt> that requested the operation or
+     *            <tt>null</tt> (the page will be refreshed after the operation was performed if
+     *            given).
+     * @param enumContent The <tt>IEnumContent</tt> to fix.
      * @param parentShell The parent shell.
      * 
-     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is
-     *             <code>null</code>.
+     * @throws NullPointerException If <tt>enumContent</tt> or <tt>parentShell</tt> is <tt>null</tt>
+     *             .
      */
     public OpenFixEnumContentWizardAction(IpsObjectEditorPage editorPage, IEnumContent enumContent, Shell parentShell) {
         super();
-
         ArgumentCheck.notNull(new Object[] { enumContent, parentShell });
 
         this.enumContent = enumContent;
@@ -69,9 +69,6 @@ public class OpenFixEnumContentWizardAction extends Action {
         setToolTipText(Messages.EnumContentPage_tooltipOpenFixEnumTypeDialog);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         FixEnumContentWizard wizard = new FixEnumContentWizard(enumContent);

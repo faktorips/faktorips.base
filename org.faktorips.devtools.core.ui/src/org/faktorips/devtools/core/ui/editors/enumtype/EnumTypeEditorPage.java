@@ -26,10 +26,10 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
+ * Base page for <tt>IEnumType</tt> editors providing controls to edit its properties and
  * attributes.
  * <p>
- * This class also adds controls to import an export enum values.
+ * This class also adds controls to import an export <tt>IEnumValue<7tt>s.
  * 
  * @see EnumTypeEditor
  * 
@@ -39,24 +39,32 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
 
-    /** The enum type the enum type editor this page belongs to is currently editing. */
+    /**
+     * The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> this page belongs to is currently editing.
+     */
     IEnumType enumType;
 
-    /** Attributes section show the enum attributes. */
+    /** Attributes section to show the <tt>IEnumAttribute</tt>s. */
     EnumAttributesSection enumAttributesSection;
 
-    /** Values section showing the enumType */
+    /** Values section showing the <tt>IEnumValue</tt>s. */
     EnumValuesSection enumValuesSection;
 
-    /** Action to import enum values into the opened enum type from an external file. */
+    /**
+     * Action to import <tt>IEnumValue</tt>s into the opened <tt>IEnumType</tt> from an external
+     * file.
+     */
     private EnumImportExportActionInEditor importAction;
 
-    /** Action to export the enum values of the opened enum type into an external file. */
+    /**
+     * Action to export the <tt>IEnumValue</tt>s of the opened <tt>IEnumType</tt> to an external
+     * file.
+     */
     private EnumImportExportActionInEditor exportAction;
 
     /**
-     * Listener responsible for toggling the import/export actions and to refresh the enum
-     * attributes section on page change.
+     * Listener responsible for toggling the import/export actions and to refresh the
+     * <tt>EnumAttributesSection</tt> on page change.
      */
     protected ContentsChangeListener changeListener;
 
@@ -95,7 +103,10 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
         updateToolbarActionEnabledStates();
     }
 
-    /** Enable the import and export operation if the enum type contains values and is not abstract. */
+    /**
+     * Enable the import and export operation if the <tt>IEnumType</tt> contains values and is not
+     * abstract.
+     */
     protected void updateToolbarActionEnabledStates() {
         boolean enableImportExportActions = enumType.isContainingValues() && !(enumType.isAbstract());
         if (importAction != null) {
@@ -107,10 +118,11 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
     }
 
     /**
-     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update
-     * the view after the operation is completed.
+     * Extend <tt>EnumImportExportAction</tt> in order to react to import operations and update the
+     * view after the operation is completed.
      */
     class EnumImportExportActionInEditor extends EnumImportExportAction {
+
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
             super(shell, enumValueContainer);
             if (isImport) {
@@ -120,9 +132,6 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {

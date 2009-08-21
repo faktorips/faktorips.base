@@ -437,6 +437,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumType.getEnumAttributes(true).size());
         assertEquals(2, genderEnumValueMale.getEnumAttributeValues().size());
         assertEquals(0, modelValue.getEnumAttributeValues().size());
+        assertEquals(0, genderEnumType.getEnumValuesCount());
     }
 
     public void testValidateThis() throws CoreException {
@@ -446,13 +447,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testValidateSuperEnumType() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test super enum type does not exit
+        // Test super enumeration type does not exit.
         genderEnumType.setSuperEnumType("FooBar");
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST));
 
-        // Test super enum type is not abstract
+        // Test super enumeration type is not abstract.
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
         ipsModel.clearValidationCache();
@@ -486,7 +487,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY));
 
-        // Test abstract super EnumType to be valid despite missing inherited attribute.
+        // Test abstract super enumeration type to be valid despite missing inherited attribute.
         ipsModel.clearValidationCache();
         assertTrue(superEnumType.isValid());
 
@@ -591,6 +592,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
         assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
         assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
+
+        assertEquals(-1, genderEnumType.getIndexOfEnumAttribute(paymentMode.getEnumAttributes(false).get(0)));
     }
 
     public void testHasSuperEnumType() throws CoreException {

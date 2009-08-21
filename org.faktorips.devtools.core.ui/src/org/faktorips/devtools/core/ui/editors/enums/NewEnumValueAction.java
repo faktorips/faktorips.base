@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <code>EnumValuesSection</code> for adding new enum values.
+ * This action is used by the <tt>EnumValuesSection</tt> for creating new <tt>IEnumValue</tt>s.
  * 
  * @see EnumValuesSection
  * 
@@ -40,14 +40,15 @@ public class NewEnumValueAction extends Action {
     /** The name of the image for the action. */
     private final String IMAGE_NAME = "InsertRowAfter.gif";
 
-    /**
-     * The enum values table viewer linking the enumeration values UI table widget with the model
-     * data.
-     */
+    /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
     /**
-     * Creates a new <code>NewEnumValueAction</code>.
+     * Creates a new <tt>NewEnumValueAction</tt>.
+     * 
+     * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
+     * 
+     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> is <tt>null</tt>.
      */
     public NewEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
@@ -60,9 +61,6 @@ public class NewEnumValueAction extends Action {
         setToolTipText(Messages.EnumValuesSection_tooltipNewValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         // Do nothing if there are no columns yet.
@@ -78,6 +76,7 @@ public class NewEnumValueAction extends Action {
             throw new RuntimeException(e);
         }
 
+        // TODO AW: Do not enable the action at all in the first place, usability!
         /*
          * Show dialog to the user if the enumeration value could not be created. This can only
          * happen, when the enumValueContainer is an enumeration content and the referenced
