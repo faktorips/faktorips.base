@@ -75,14 +75,6 @@ public class TableImportExportAction extends IpsAction {
         return tableImportExportAction;
     }
 
-    public static TableImportExportAction createTableImportAction(Shell shell, ITableContents tableContents) {
-        return createTableImportAction(shell, tableContents);
-    }
-
-    public static TableImportExportAction createTableExportAction(Shell shell, ITableContents tableContents) {
-        return createTableExportAction(shell, tableContents);
-    }
-
     protected TableImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;

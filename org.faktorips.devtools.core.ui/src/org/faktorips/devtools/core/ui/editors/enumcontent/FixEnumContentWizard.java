@@ -338,7 +338,7 @@ public class FixEnumContentWizard extends Wizard {
      */
     private void moveAttributeValues() {
         /*
-         * The column order as requested by the user and decremented where nevessary (due to deleted
+         * The column order as requested by the user and decremented where necessary (due to deleted
          * EnumAttributeValues).
          */
         int[] decrementedColumnOrder = computeDecrementedColumnOrder();
@@ -361,8 +361,8 @@ public class FixEnumContentWizard extends Wizard {
                 }
 
                 /*
-                 * Moving is necessary if the position specified in the column order does not
-                 * correspond to the index of the current EnumAttribute + 1.
+                 * Moving is necessary if the position specified in the decremented column order
+                 * does not correspond to the index of the current EnumAttribute + 1.
                  */
                 if (currentPosition != currentEnumAttributeIndex + 1) {
                     int requestedColumnIndex = currentPosition;
@@ -377,11 +377,6 @@ public class FixEnumContentWizard extends Wizard {
                             currentEnumAttributeValueIndex = i;
                             break;
                         }
-                    }
-
-                    // Should theoretically never happen but just to be safe.
-                    if (currentEnumAttributeValueIndex == -1) {
-                        throw new RuntimeException();
                     }
 
                     /*

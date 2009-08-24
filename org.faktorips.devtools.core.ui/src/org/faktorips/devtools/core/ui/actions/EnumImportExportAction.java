@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard;
 import org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard;
@@ -64,14 +63,6 @@ public class EnumImportExportAction extends IpsAction {
         EnumImportExportAction enumImportExportAction = new EnumImportExportAction(shell, selectionProvider);
         enumImportExportAction.initExportAction();
         return enumImportExportAction;
-    }
-
-    public static EnumImportExportAction createEnumImportAction(Shell shell, ITableContents tableContents) {
-        return createEnumImportAction(shell, tableContents);
-    }
-
-    public static EnumImportExportAction createEnumExportAction(Shell shell, ITableContents tableContents) {
-        return createEnumExportAction(shell, tableContents);
     }
 
     @Override
