@@ -50,6 +50,9 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     /** The wizard page of the <tt>EnumContentEditor</tt>. */
     private EnumContentPage enumContentPage;
 
+    /** The label showing the base <tt>IEnumType</tt>. */
+    Label enumTypeLabel;
+
     /**
      * Creates a new <tt>EnumContentGeneralInfoSection</tt> using the specified parameters.
      * 
@@ -102,7 +105,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             toolkit.createLabel(composite, Messages.EnumContentGeneralInfoSection_linkEnumType);
         }
 
-        Label enumTypeLabel = toolkit.createLabel(composite, enumContent.getEnumType());
+        enumTypeLabel = toolkit.createLabel(composite, enumContent.getEnumType());
         bindingContext.bindContent(enumTypeLabel, enumContent, IEnumContent.PROPERTY_ENUM_TYPE);
     }
 
@@ -120,6 +123,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+        enumTypeLabel.pack();
     }
 
 }

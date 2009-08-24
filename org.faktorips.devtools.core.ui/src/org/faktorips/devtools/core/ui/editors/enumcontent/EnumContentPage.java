@@ -60,6 +60,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     private EnumImportExportActionInEditor exportAction;
 
+    /** Values section showing the <tt>IEnumValue</tt>s. */
     EnumValuesSection enumValuesSection;
 
     /**
@@ -172,7 +173,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
             }
         }
 
-        EnumContentPage.this.updateToolbarActionsEnabledStates();
+        updateToolbarActionsEnabledStates();
     }
 
     /** Executes the <tt>EnumImportExportOperation</tt> and refreshes the view. */
