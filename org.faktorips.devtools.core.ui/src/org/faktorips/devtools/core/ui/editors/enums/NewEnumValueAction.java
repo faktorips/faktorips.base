@@ -15,13 +15,7 @@ package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -68,30 +62,11 @@ public class NewEnumValueAction extends Action {
             return;
         }
 
-        final IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
-        IEnumValue newEnumValue = null;
+        IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
         try {
-            newEnumValue = enumValueContainer.newEnumValue();
+            enumValueContainer.newEnumValue();
         } catch (CoreException e) {
             throw new RuntimeException(e);
-        }
-
-        // TODO AW: Do not enable the action at all in the first place, usability!
-        /*
-         * Show dialog to the user if the enumeration value could not be created. This can only
-         * happen, when the enumValueContainer is an enumeration content and the referenced
-         * enumeration type could not be found.
-         */
-        if (newEnumValue == null) {
-            Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
-            display.asyncExec(new Runnable() {
-                public void run() {
-                    MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                            Messages.EnumValuesSection_titleEnumValueCreationNotPossible, NLS.bind(
-                                    Messages.EnumValuesSection_msgEnumValueCreationNotPossibleDueToNotFoundEnumType,
-                                    ((IEnumContent)enumValueContainer).getEnumType()));
-                }
-            });
         }
 
         enumValuesTableViewer.refresh(true);

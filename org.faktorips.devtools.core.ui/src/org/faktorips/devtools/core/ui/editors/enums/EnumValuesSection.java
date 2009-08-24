@@ -260,17 +260,24 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * <tt>IEnumType</tt> defines its values in the model or not. The <tt>enumValuesTable</tt> will
      * also be disabled if the <tt>IEnumType</tt> is abstract.
      */
-    private void updateEnabledStates(IEnumType enumType) {
+    private void updateEnabledStates(IEnumType enumType) throws CoreException {
         boolean valuesArePartOfModel = (enumType != null) ? enumType.isContainingValues() : false;
         boolean isAbstract = (enumType != null) ? enumType.isAbstract() : false;
 
         if (enumValueContainer instanceof IEnumType) {
-            newEnumValueAction.setEnabled(valuesArePartOfModel && !(isAbstract));
-            deleteEnumValueAction.setEnabled(valuesArePartOfModel && !(isAbstract));
-            moveEnumValueUpAction.setEnabled(valuesArePartOfModel && !(isAbstract));
-            moveEnumValueDownAction.setEnabled(valuesArePartOfModel && !(isAbstract));
-            enumValuesTable.setEnabled(valuesArePartOfModel && !(isAbstract));
-            getSectionControl().setEnabled(valuesArePartOfModel && !(isAbstract));
+            boolean enabled = valuesArePartOfModel && !(isAbstract);
+            newEnumValueAction.setEnabled(enabled);
+            deleteEnumValueAction.setEnabled(enabled);
+            moveEnumValueUpAction.setEnabled(enabled);
+            moveEnumValueDownAction.setEnabled(enabled);
+            enumValuesTable.setEnabled(enabled);
+            getSectionControl().setEnabled(enabled);
+
+        } else if (enumValueContainer instanceof IEnumContent) {
+            IEnumContent enumContent = (IEnumContent)enumValueContainer;
+            boolean enabled = !(enumContent.isFixToModelRequired());
+            newEnumValueAction.setEnabled(enabled);
+            deleteEnumValueAction.setEnabled(enabled);
         }
     }
 
@@ -648,6 +655,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                             if (referencedEnumType != null) {
                                 reinit(referencedEnumType);
                             }
+                            updateEnabledStates(null);
                         }
                     }
                 } catch (CoreException e) {
