@@ -60,19 +60,19 @@ public class EnumTypePage extends IpsObjectPage {
     /** The text field to choose the supertype for the new <tt>IEnumType</tt>. */
     private TextButtonField supertypeField;
 
-    /** The checkbox field to mark the new <tt>IEnumType</tt> as being abstract. */
+    /** The check box field to mark the new <tt>IEnumType</tt> as being abstract. */
     private CheckboxField isAbstractField;
 
     /**
-     * The checkbox field to mark the new <tt>IEnumType</tt> that its values are defined in the
+     * The check box field to mark the new <tt>IEnumType</tt> that its values are defined in the
      * model.
      */
     private CheckboxField valuesDeferredToContentField;
 
-    /** The checkbox field to check if an id attribute should be created by the wizard. */
+    /** The check box field to check if an id attribute should be created by the wizard. */
     private CheckboxField createIdAttributeField;
 
-    /** The checkbox field to check if a name attribute should be created by the wizard. */
+    /** The check box field to check if a name attribute should be created by the wizard. */
     private CheckboxField createNameAttributeField;
 
     /** This text field is used to specify the name of the id attribute to be created. */
@@ -229,7 +229,7 @@ public class EnumTypePage extends IpsObjectPage {
      * and name of the <tt>IEnumType</tt>.
      */
     private void updateEnumContentName() {
-        // Do only if the checkbox is not active yet to not destroy any user input.
+        // Do only if the check box is not active yet to not destroy any user input.
         if (valuesDeferredToContentField.getCheckbox().isChecked()) {
             return;
         }
@@ -338,4 +338,5 @@ public class EnumTypePage extends IpsObjectPage {
             setMessage(msg.getText(), msgLevel);
         }
     }
+
 }

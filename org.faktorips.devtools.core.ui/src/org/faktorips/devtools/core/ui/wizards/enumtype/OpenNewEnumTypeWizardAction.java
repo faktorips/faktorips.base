@@ -17,7 +17,7 @@ import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 /**
- * This action is responsible for opening a <code>NewEnumTypeWizard</code>.
+ * This action is responsible for opening a <tt>NewEnumTypeWizard</tt>.
  * 
  * @see NewEnumTypeWizard
  * 
@@ -27,19 +27,13 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
  */
 public class OpenNewEnumTypeWizardAction extends OpenNewWizardAction {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public INewWizard createWizard() {
         return new NewEnumTypeWizard();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void dispose() {
-        // Nothing to do
+
     }
 
 }

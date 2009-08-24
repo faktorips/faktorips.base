@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
 /**
- * A wizard responsible for the creation of a new <code>IEnumType</code>.
+ * A wizard responsible for the creation of a new <tt>IEnumType</tt>.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -28,9 +28,6 @@ import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
  */
 public class NewEnumTypeWizard extends NewIpsObjectWizard {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws Exception {
         return new EnumTypePage(selection);
