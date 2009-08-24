@@ -139,4 +139,5 @@ public class MoveEnumValueAction extends Action {
 
         enumValuesTableViewer.refresh(true);
     }
+
 }

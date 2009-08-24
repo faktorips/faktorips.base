@@ -20,7 +20,6 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumtype.messages"; //$NON-NLS-1$
 
     public static String EnumTypePage_labelIdAttribute;
-
     public static String EnumTypePage_labelNameAttribute;
 
     public static String Page_Title;

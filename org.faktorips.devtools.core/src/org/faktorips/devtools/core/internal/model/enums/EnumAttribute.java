@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumAttribute</code>, see the corresponding interface for more details.
+ * Implementation of <tt>IEnumAttribute</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumAttribute
  * 
@@ -78,7 +78,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected boolean usedAsNameInFaktorIpsUi;
 
     /**
-     * Creates a new <code>EnumAttribute</code>.
+     * Creates a new <tt>EnumAttribute</tt>.
      * 
      * @param parent The <tt>IEnumType</tt> this <tt>IEnumAttribute</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttribute</tt>.

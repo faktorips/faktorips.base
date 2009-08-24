@@ -19,16 +19,17 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * A specialization of <code>HierarchyVisitor</code> for <code>IEnumType</code>.
+ * A specialization of <tt>HierarchyVisitor</tt> for <tt>IEnumType</tt>.
  * 
  * @author Peter Kuntz
  */
 public abstract class EnumTypeHierachyVisitor extends HierarchyVisitor<IEnumType> {
 
     /**
-     * Creates a new <code>EnumTypeHierachyVisitor</code>.
+     * Creates a new <tt>EnumTypeHierachyVisitor</tt>.
      * 
-     * @param ipsProject The ips project which ips object path is used to search for enum types.
+     * @param ipsProject The IPS project which IPS object path is used to search for
+     *            <tt>IEnumType</tt>s.
      */
     public EnumTypeHierachyVisitor(IIpsProject ipsProject) {
         super(ipsProject);

@@ -53,9 +53,7 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         ArgumentCheck.notNull(editor);
 
         enumContent = editor.getEnumContent();
-
         setDescriptionData();
-
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
 

@@ -35,7 +35,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
 
-    /** Name of the <code>value</code> property. */
+    /** Name of the <tt>value</tt> property. */
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
