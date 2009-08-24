@@ -44,7 +44,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The wizard page for the <code>NewEnumTypeWizard</code>.
+ * The wizard page for the <tt>NewEnumTypeWizard</tt>.
  * 
  * @see NewEnumTypeWizard
  * 

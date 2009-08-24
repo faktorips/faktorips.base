@@ -62,23 +62,29 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     /** The image for the wizard page. */
     private final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
 
-    /** The text field to choose the enum type on which the new enum content shall be based upon. */
+    /**
+     * The text field to choose the <tt>IEnumType</tt> on which the new <tt>IEnumContent</tt> shall
+     * be based upon.
+     */
     private TextButtonField enumTypeField;
 
     private TextButtonField sourceFolderField;
 
     private IpsPckFragmentRootRefControl sourceFolderControl;
 
-    // true if the input is validated and errors are displayed in the messes area.
+    /**
+     * Flag that is <tt>true</tt> if the input is validated and errors are displayed in the messages
+     * area.
+     */
     protected boolean validateInput = true;
 
-    // page control as defined by the wizard page class
+    /** Page control as defined by the wizard page class. */
     private Composite pageControl;
 
     private IEnumContent createdEnumContent;
 
     /**
-     * Creates the enum content page.
+     * Creates the <tt>EnumContentPage</tt>.
      * 
      * @param selection If a selection is provided default values for some fields can be derived
      *            from that.
@@ -89,9 +95,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -114,7 +118,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         sourceFolderField = new TextButtonField(sourceFolderControl);
         sourceFolderField.addChangeListener(this);
 
-        // Enum type
+        // EnumType.
         toolkit.createFormLabel(locationComposite, Messages.Fields_EnumType + ':');
         IpsObjectRefControl enumTypeControl = toolkit.createEnumTypeRefControl(null, locationComposite, false);
         enumTypeField = new TextButtonField(enumTypeControl);
@@ -123,9 +127,6 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return pageControl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
         if (selectedResource == null) {
@@ -143,9 +144,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
@@ -154,9 +153,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return sourceFolderField.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void setDefaultFocus() {
         if (StringUtils.isEmpty(getSourceFolder())) {
             sourceFolderControl.setFocus();
@@ -167,9 +164,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return sourceFolderControl.getIpsPckFragmentRoot();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IEnumType enumType = getEnumType();
         if (enumType != null) {
@@ -194,9 +189,6 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
@@ -264,17 +256,15 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     /**
-     * Returns the selected enum type which defines the structure for the enum content to be
-     * created.
-     * 
-     * @return An <code>IEnumType</code> instance, or null if it could not be determined.
+     * Returns the selected <tt>IEnumType</tt> which defines the structure for the
+     * <tt>IEnumContent</tt> to be created.
      */
     public IEnumType getEnumType() {
         try {
             IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
             return (IEnumType)root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
         } catch (CoreException e) {
-            // page controls are currently invalid, return null
+            // Page controls are currently invalid, return null.
             return null;
         }
     }
@@ -287,15 +277,11 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return createdEnumContent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();
         }
-
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) { // Don't validate during control creating!
             try {
                 validatePage();
             } catch (CoreException coreEx) {
@@ -306,9 +292,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         updatePageComplete();
     }
 
-    /**
-     * The method validates the package.
-     */
+    /** Validates the package. */
     private void validateSourceRoot() {
         IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         if (root != null) {
@@ -330,17 +314,11 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean canCreateIpsSrcFile() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getIpsObjectName() {
         IEnumType enumType = getEnumType();
@@ -358,17 +336,11 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_CONTENT;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
         IEnumType enumType = getEnumType();
@@ -389,10 +361,12 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     /**
      * {@inheritDoc}
+     * <p>
+     * Not used.
      */
     @Override
     protected void setIpsPackageFragment(IIpsPackageFragment pack) {
-        // Not used
+
     }
 
 }
