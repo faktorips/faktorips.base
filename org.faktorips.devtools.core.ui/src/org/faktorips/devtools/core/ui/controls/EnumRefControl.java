@@ -25,32 +25,32 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * A control for choosing enum types and enum contents.
+ * A control for choosing <tt>IEnumType</tt>s and <tt>IEnumContent</tt>s.
  * <p>
  * The control is configured by the constructor for a specific IPS project and whether to hide
- * abstract enum types or enum types that contain no values.
+ * abstract <tt>IEnumType</tt>s or <tt>IEnumType</tt>s that contain no values.
  * 
- * @author Roman Grutza
+ * @author Roman Grutza, Alexander Weickmann
  * 
  * @since 2.3
  */
 public class EnumRefControl extends IpsObjectRefControl {
 
-    /** Flag indicating whether to hide abstract enum types. */
+    /** Flag indicating whether to hide abstract <tt>IEnumType</tt>s. */
     private boolean hideAbstract;
 
-    /** Flag indicating whether to hide enum types that are not containing values. */
+    /** Flag indicating whether to hide <tt>IEnumType</tt>s that are not containing values. */
     private boolean hideNotContainingValues;
 
     /**
      * Creates a new <tt>EnumRefControl</tt>.
      * 
-     * @param project The IPS project to search for enum types and enum contents.
+     * @param project The IPS project to search for <tt>IEnumType</tt>s and <tt>IEnumContent</tt>s.
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit to create UI elements with.
-     * @param hideAbstract Flag indicating whether to hide abstract enum types.
-     * @param hideNotContainingValues Flag indicating whether to hide enum types that are not
-     *            containing values.
+     * @param hideAbstract Flag indicating whether to hide abstract <tt>IEnumType</tt>s.
+     * @param hideNotContainingValues Flag indicating whether to hide <tt>IEnumType</tt>s that are
+     *            not containing values.
      */
     public EnumRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, boolean hideAbstract,
             boolean hideNotContainingValues) {
@@ -60,9 +60,6 @@ public class EnumRefControl extends IpsObjectRefControl {
         this.hideNotContainingValues = hideNotContainingValues;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {
@@ -86,19 +83,21 @@ public class EnumRefControl extends IpsObjectRefControl {
         for (int i = 0; i < types.length; i++) {
             result[i + contents.length] = types[i];
         }
+
         return result;
     }
 
     /**
-     * Returns the currently selected enum type or enum content. Returns <tt>null</tt> if no such
-     * enum type or enum content exists.
+     * Returns the currently selected <tt>IEnumType</tt> or <tt>IEnumContent</tt>. Returns
+     * <tt>null</tt> if no such <tt>IEnumType</tt> or <tt>IEnumContent</tt> exists.
      * 
-     * @param priorContent This flag is only relevant if an enum type and an enum content with the
-     *            same qualified name exist. If this flag <tt>true</tt> the enum content will be
-     *            returned, else the enum type.
+     * @param priorContent This flag is only relevant if an <tt>IEnumType</tt> and an
+     *            <tt>IEnumContent</tt> with the same qualified name exist. In this scenario, if
+     *            this flag <tt>true</tt> the <tt>IEnumContent</tt> will be returned, else the
+     *            <tt>IEnumType</tt>.
      * 
-     * @throws CoreException If an error occurs while searching for the selected enum type or enum
-     *             content.
+     * @throws CoreException If an error occurs while searching for the selected <tt>IEnumType</tt>
+     *             or <tt>IEnumContent</tt>.
      */
     public IEnumValueContainer findEnum(boolean priorContent) throws CoreException {
         IpsObjectType firstType = priorContent ? IpsObjectType.ENUM_CONTENT : IpsObjectType.ENUM_TYPE;
