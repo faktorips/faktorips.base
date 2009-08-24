@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -44,6 +45,10 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (NullPointerException e) {
         }
+
+        genderEnumContent.setEnumType(paymentMode.getQualifiedName());
+        assertEquals(paymentMode.getQualifiedName(), genderEnumContent.getEnumType());
+        assertEquals(2, genderEnumContent.getReferencedEnumAttributesCount());
     }
 
     public void testGetIpsObjectType() {
@@ -65,10 +70,12 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumContent.PROPERTY_ENUM_TYPE));
+        assertEquals("Id, Name", xmlElement.getAttribute(IEnumContent.PROPERTY_REFERENCED_ENUM_ATTRIBUTES));
 
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumContent.getEnumType());
+        assertEquals("Id, Name", loadedEnumContent.getReferencedEnumAttributes());
     }
 
     public void testValidateThis() throws CoreException {
@@ -120,6 +127,22 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID));
     }
 
+    public void testValidateReferencedEnumAttributeNames() throws CoreException {
+        genderEnumAttributeId.setName("foo");
+        MessageList validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID));
+    }
+
+    public void testValidateReferencedEnumAttributeOrdering() throws CoreException {
+        genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
+        MessageList validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID));
+    }
+
     public void testValidatePackage() throws CoreException {
         IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
         enumContent.setEnumType(genderEnumType.getQualifiedName());
@@ -157,8 +180,52 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     public void testContainsDifferenceToModel() throws CoreException {
         assertFalse(genderEnumContent.containsDifferenceToModel(ipsProject));
-        genderEnumType.newEnumAttribute();
-        assertTrue(genderEnumContent.containsDifferenceToModel(ipsProject));
+    }
+
+    public void testIsFixToModelRequired() throws CoreException {
+        assertFalse(genderEnumContent.isFixToModelRequired());
+        genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumType.moveEnumAttribute(genderEnumAttributeId, true);
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        genderEnumAttributeId.setName("foo");
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumAttributeId.setName("Id");
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        IEnumAttribute newAttribute = genderEnumType.newEnumAttribute();
+        newAttribute.setName("new");
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        newAttribute.delete();
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        genderEnumType.setAbstract(true);
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumType.setAbstract(false);
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        genderEnumType.setContainingValues(true);
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumType.setContainingValues(false);
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        genderEnumContent.setEnumType("foo");
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+        assertFalse(genderEnumContent.isFixToModelRequired());
+
+        genderEnumContent.setEnumType("");
+        assertTrue(genderEnumContent.isFixToModelRequired());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+        assertFalse(genderEnumContent.isFixToModelRequired());
+    }
+
+    public void testGetReferencedEnumAttributeNames() {
+        List<String> names = genderEnumContent.getReferencedEnumAttributeNames();
+        assertEquals(2, names.size());
+        assertEquals("Id", names.get(0));
+        assertEquals("Name", names.get(1));
     }
 
 }

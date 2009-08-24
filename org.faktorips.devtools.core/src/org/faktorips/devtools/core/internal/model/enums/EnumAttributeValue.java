@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -183,8 +184,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
-        if (enumType.isAbstract() || (!(enumType.isContainingValues()) && enumValueContainer instanceof IEnumType)) {
-            return;
+        if (enumValueContainer instanceof IEnumType) {
+            if (enumType.isAbstract() || !(enumType.isContainingValues())) {
+                return;
+            }
+        }
+        if (enumValueContainer instanceof IEnumContent) {
+            IEnumContent enumContent = (IEnumContent)enumValueContainer;
+            if (enumContent.isFixToModelRequired()) {
+                return;
+            }
         }
 
         // Value parsable?

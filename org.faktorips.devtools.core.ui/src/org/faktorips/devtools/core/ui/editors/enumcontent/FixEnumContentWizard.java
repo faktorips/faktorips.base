@@ -44,13 +44,16 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 
 /**
- * This wizard is available trough the <code>EnumContentEditor</code> when the
- * <code>IEnumContent</code> to edit does not refer to a valid <code>IEnumType</code> or the number
- * of referenced enum attributes that is stored in the <code>IEnumContent</code> does not correspond
- * to the number of enum attributes defined in the referenced <code>IEnumType</code>.
+ * This wizard is available trough the <tt>EnumContentEditor</tt> if the <tt>IEnumContent</tt> to
+ * edit does not refer to a valid <tt>IEnumType</tt>, if the number of referenced
+ * <tt>IEnumAttribute</tt>s that is stored in the <tt>IEnumContent</tt> does not correspond to the
+ * number of <tt>IEnumAttribute</tt>s defined in the referenced <tt>IEnumType</tt> or if the
+ * ordering of the <tt>IEnumAttributeValue</tt>s needs to be changed because the ordering of the
+ * referenced <tt>IEnumAttribute</tt>s has changed.
  * <p>
- * On the first page the wizard lets the user select a valid <code>IEnumType</code> to refer to. The
- * second page provides comfortable assignment of enum attributes to existing enum attribute values.
+ * On the first page the wizard asks the user to select a valid <tt>IEnumType</tt> to refer to. The
+ * second page provides comfortable assignment of <tt>IEnumAttribute</tt>s to existing
+ * <tt>IEnumAttributeValue</tt>s.
  * 
  * @see EnumContentEditor
  * 
@@ -63,25 +66,25 @@ public class FixEnumContentWizard extends Wizard {
     /** The image for this wizard. */
     private final String IMAGE = "wizards/BrokenEnumWizard.png";
 
-    /** The <code>IEnumContent</code> to fix. */
+    /** The <tt>IEnumContent</tt> to fix. */
     private IEnumContent enumContent;
 
-    /** The new enum type that has been chosen. */
+    /** The new <tt>IEnumType</tt> that has been chosen. */
     private IEnumType newEnumType;
 
-    /** The ui toolkit to create new ui elements with. */
+    /** The UI toolkit to create new UI elements with. */
     private UIToolkit uiToolkit;
 
-    /** The wizard page to choose a new enum type. */
+    /** The wizard page to choose a new <tt>IEnumType</tt>. */
     private ChooseEnumTypePage chooseEnumTypePage;
 
-    /** The wizard page to assign enum attributes. */
+    /** The wizard page to assign <tt>IEnumAttribute</tt>s to <tt>IEnumAttributeValue</tt>s. */
     private AssignEnumAttributesPage assignEnumAttributesPage;
 
     /**
-     * Creates a new <code>FixEnumContentWizard</code>.
+     * Creates a new <tt>FixEnumContentWizard</tt>.
      * 
-     * @param enumContent The <code>IEnumContent</code> to fix.
+     * @param enumContent The <tt>IEnumContent</tt> to fix.
      */
     public FixEnumContentWizard(IEnumContent enumContent) {
         this.enumContent = enumContent;
@@ -92,17 +95,11 @@ public class FixEnumContentWizard extends Wizard {
         setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean needsPreviousAndNextButtons() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         chooseEnumTypePage = new ChooseEnumTypePage();
@@ -111,12 +108,9 @@ public class FixEnumContentWizard extends Wizard {
         addPage(assignEnumAttributesPage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
-        // If not all columns have been assigned the user must confirm deletion
+        // If not all columns have been assigned the user must confirm deletion.
         boolean confirmed = true;
         int numberNotAssignedColumns = assignEnumAttributesPage.getCurrentlyNotAssignedColumns().size();
         if (numberNotAssignedColumns > 0) {
@@ -132,10 +126,6 @@ public class FixEnumContentWizard extends Wizard {
         if (confirmed) {
             try {
                 IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-
-                    /**
-                     * {@inheritDoc}
-                     */
                     public void run(IProgressMonitor monitor) throws CoreException {
                         deleteObsoleteEnumAttributeValues();
                         createNewEnumAttributeValues();
@@ -143,7 +133,6 @@ public class FixEnumContentWizard extends Wizard {
                         enumContent.setEnumType(newEnumType.getQualifiedName());
                         enumContent.clearUniqueIdentifierValidationCache();
                     }
-
                 };
                 enumContent.getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
             } catch (CoreException e) {
@@ -155,12 +144,12 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     /**
-     * Deletes all existing enum attribute values that are no longer needed according to the not
-     * assigned columns of the <code>AssignEnumAttributesPage</code> from every enum value of this
-     * enum content .
+     * Deletes all existing <tt>IEnumAttributeValue</tt>s that are no longer needed according to the
+     * not assigned columns of the <tt>AssignEnumAttributesPage</tt> from every <tt>IEnumValue</tt>
+     * of this <tt>IEnumContent</tt>.
      */
     private void deleteObsoleteEnumAttributeValues() {
-        // Collect all obsolete enum attribute values to delete
+        // Collect all obsolete EnumAttributeValues to delete.
         List<Integer> notAssignedColumns = assignEnumAttributesPage.getCurrentlyNotAssignedColumns();
         List<IEnumAttributeValue> enumAttributeValuesToDelete = new ArrayList<IEnumAttributeValue>();
         for (Integer currentNotAssignedColumn : notAssignedColumns) {
@@ -170,16 +159,16 @@ public class FixEnumContentWizard extends Wizard {
             }
         }
 
-        // Delete all the collected enum attribute values
+        // Delete all the collected EnumAttributeValues.
         for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValuesToDelete) {
             currentEnumAttributeValue.delete();
         }
     }
 
     /**
-     * Creates new enum attribute values on every enum value of the enum content for every new
-     * column that has been added according to the column order of the
-     * <code>AssignEnumAttributesPage</code>.
+     * Creates new <tt>IEnumAttributeValue</tt>s on every <tt>IEnumValue</tt> of the
+     * <tt>IEnumContent</tt> for every new column that has been added according to the column order
+     * of the <tt>AssignEnumAttributesPage</tt>.
      */
     private void createNewEnumAttributeValues() throws CoreException {
         int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
@@ -222,9 +211,9 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     /**
-     * Returns the order of the enum attribute values as it is after deleting obsolete enum
-     * attribute values and creating new enum attribute values. A zero represents an enum attribute
-     * value that has been newly created.
+     * Returns the order of the <tt>IEnumAttributeValue</tt>s as it is after deleting obsolete
+     * <tt>IEnumAttributeValue</tt>s and creating new <tt>IEnumAttributeValue</tt>s. A zero
+     * represents an <tt>IEnumAttributeValue</tt> that has been newly created.
      */
     private int[] computeEnumAttributeValuesOrder(int[] decrementedColumnOrder) {
         int[] enumAttributeValuesOrder = new int[decrementedColumnOrder.length];
@@ -233,8 +222,8 @@ public class FixEnumContentWizard extends Wizard {
             int currentColumnNumber = i + 1;
             /*
              * Set the current position to a 0 if the current column number is higher than the
-             * number of enum attributes referenced in the enum content (this means that for the
-             * current column number there must be a new enum attribute value).
+             * number of EnumAttributes referenced in the EnumContent (this means that for the
+             * current column number there must be a new EnumAttributeValue).
              * 
              * Also set the current position to 0 if the current column is not contained in the
              * decremented column order.
@@ -251,18 +240,18 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     /**
-     * Moves the enum attribute values in each enum value according to the column order of the
-     * <code>AssignEnumAttributesPage</code>.
+     * Moves <tt>IEnumAttributeValue</tt>s in each <tt>IEnumValue</tt> according to the column order
+     * of the <tt>AssignEnumAttributesPage</tt>.
      * <p>
      * Because this algorithm is rather complicated here is an example how it works:
      * <p>
      * The user requested the following column order: 0 0 0 4 5 6<br />
-     * Every zero represents a new column (and therefore enum attribute value) that has been created
-     * earlier.
+     * Every zero represents a new column (and therefore <tt>IEnumAttributeValue</tt>) that has been
+     * created earlier.
      * <p>
      * Because column 1 2 3 are not requested they have been deleted earlier. Due to this deletion
      * the requested column order must be decremented accordingly, because by deleting the first 3
-     * enum attribute values the last 3 are now the first 3.
+     * <tt>IEnumAttributeValue</tt>s the last 3 are now the first 3.
      * <p>
      * So the decremented column order is: 0 0 0 1 2 3<br />
      * Remember that the columns 1 2 3 were formally the columns 4 5 6.
@@ -281,7 +270,6 @@ public class FixEnumContentWizard extends Wizard {
      * </p>
      * 
      * <table>
-     * 
      * <tr>
      * <th>attribute number
      * <th>requested decremented column order
@@ -344,32 +332,26 @@ public class FixEnumContentWizard extends Wizard {
      * <td>3
      * <td>3
      * </tr>
-     * 
      * </table>
      */
     private void moveAttributeValues() {
         /*
-         * The column order as requested by the user and decremented where neccessary (due to
-         * deleted enum attribute values).
+         * The column order as requested by the user and decremented where nevessary (due to deleted
+         * EnumAttributeValues).
          */
         int[] decrementedColumnOrder = computeDecrementedColumnOrder();
 
-        // Tracking of the enum attribute values order
+        // Tracking of the EnumAttributeValues ordering.
         int[] enumAttributeValuesOrder = computeEnumAttributeValuesOrder(decrementedColumnOrder.clone());
 
-        /*
-         * The algorithm repeats as long as the orders do not correspond. This might not be the
-         * fastest way to do it tough. Maybe with a more intelligent algorithm one could save the
-         * outer loop.
-         */
+        // The algorithm repeats as long as the orders do not correspond.
         while (!(Arrays.equals(decrementedColumnOrder, enumAttributeValuesOrder))) {
 
-            // For each enum attribute we want to get the right enum attribute value into place
+            // For each EnumAttribute we want to get the right EnumAttributeValue into place.
             for (int currentEnumAttributeIndex = 0; currentEnumAttributeIndex < decrementedColumnOrder.length; currentEnumAttributeIndex++) {
                 int currentPosition = decrementedColumnOrder[currentEnumAttributeIndex];
-
                 /*
-                 * The newly created enum attribute values will get to their right positions by
+                 * The newly created EnumAttributeValues will get to their right positions by
                  * themselves over time.
                  */
                 if (currentPosition == 0) {
@@ -377,15 +359,15 @@ public class FixEnumContentWizard extends Wizard {
                 }
 
                 /*
-                 * Moving neccessary if the position specified in the column order does not
-                 * correspond to the current enum attribute index + 1.
+                 * Moving is necessary if the position specified in the column order does not
+                 * correspond to the index of the current EnumAttribute + 1.
                  */
                 if (currentPosition != currentEnumAttributeIndex + 1) {
                     int requestedColumnIndex = currentPosition;
                     /*
-                     * Look up the correct index of the enum attribute value in the tracking of the
-                     * enum attribute values order. This is neccessary because when moving enum
-                     * attribute values the indexes change.
+                     * Look up the correct index of the EnumAttributeValue in the tracking of the
+                     * EnumAttributeValues order. This is necessary because when moving
+                     * EnumAttributeValues the indexes change.
                      */
                     int currentEnumAttributeValueIndex = -1;
                     for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
@@ -395,36 +377,37 @@ public class FixEnumContentWizard extends Wizard {
                         }
                     }
 
-                    // Should theoretically never happen but just to be safe
+                    // Should theoretically never happen but just to be safe.
                     if (currentEnumAttributeValueIndex == -1) {
                         throw new RuntimeException();
                     }
 
                     /*
-                     * Move up if an enum attribute value with a higher number than the current enum
-                     * attribute index + 1 shall be moved, else move down. This rule works always
-                     * with this algorithm.
+                     * Move up if an EnumAttributeValue with a higher number than the index of the
+                     * current EnumAttribute + 1 shall be moved, else move down. This rule works
+                     * always with this algorithm.
                      * 
-                     * The proof on the example of a higher number is: The corresponding enum
-                     * attribute value starts further down in the list. So it must be moved upwards.
-                     * It can't obtain a position higher in the list than the current enum attribute
-                     * index + 1 tough because moving will stop when it reaches this position.
+                     * The proof on the example of a higher number is: The corresponding
+                     * EnumAttributeValue starts further down in the list. So it must be moved
+                     * upwards. It can't obtain a position higher in the list than the index of the
+                     * current EnumAttribute + 1 tough because moving will stop when it reaches this
+                     * position.
                      */
                     boolean up = (currentPosition > currentEnumAttributeIndex + 1) ? true : false;
 
-                    // Move the enum attribute values in all enum values of the enum content
+                    // Move the EnumAttributeValues in all EnumValues of the EnumContent.
                     boolean enumAttributeValuesOrderTracked = false;
                     for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
                         IEnumAttributeValue enumAttributeValueToMove = currentEnumValue.getEnumAttributeValues().get(
                                 currentEnumAttributeValueIndex);
                         /*
-                         * Move as long by 1 as the index of the enum attribute value does not
-                         * correspond to the index of the enum attribute.
+                         * Move as long by 1 as the index of the EnumAttributeValue does not
+                         * correspond to the index of the EnumAttribute.
                          */
                         int moveIndex = currentEnumAttributeValueIndex;
                         while (moveIndex != currentEnumAttributeIndex) {
                             moveIndex = currentEnumValue.moveEnumAttributeValue(enumAttributeValueToMove, up);
-                            // Track enum attribute values order, swap entries
+                            // Track EnumAttributeValues order, swap entries.
                             if (!enumAttributeValuesOrderTracked) {
                                 int modifierToOldIndex = (up) ? 1 : -1;
                                 int temp = enumAttributeValuesOrder[moveIndex + modifierToOldIndex];
@@ -434,8 +417,8 @@ public class FixEnumContentWizard extends Wizard {
                         }
 
                         /*
-                         * Do not track the enum attribute values order again while moving the enum
-                         * attributes of the other enum values. This would break everything.
+                         * Do not track the EnumAttributeValues order again while moving the
+                         * EnumAttributes of the other EnumValues. This would break everything.
                          */
                         enumAttributeValuesOrderTracked = true;
                     }
@@ -444,34 +427,25 @@ public class FixEnumContentWizard extends Wizard {
         }
     }
 
-    /** The wizard page that lets the user choose a new enum type. */
+    /** The wizard page that lets the user choose a new <tt>IEnumType</tt>. */
     private class ChooseEnumTypePage extends WizardPage {
 
-        /**
-         * Creates a new <code>ChooseEnumTypePage</code>.
-         */
+        /** Creates the <tt>ChooseEnumTypePage</tt>. */
         private ChooseEnumTypePage() {
             super(Messages.FixEnumContentWizard_chooseEnumTypePageTitle);
-
+            setTitle(Messages.FixEnumContentWizard_chooseEnumTypePageTitle);
             setPageComplete(false);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void createControl(Composite parent) {
             Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
             workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-            // Choose enum type control
+            // Choose EnumType control.
             uiToolkit.createFormLabel(workArea, Messages.FixEnumContentWizard_labelNewEnumType);
             final IpsObjectRefControl enumTypeRefControl = uiToolkit.createEnumTypeRefControl(enumContent
                     .getIpsProject(), workArea, false);
             enumTypeRefControl.getTextControl().addModifyListener(new ModifyListener() {
-
-                /**
-                 * {@inheritDoc}
-                 */
                 public void modifyText(ModifyEvent event) {
                     try {
                         enumTypeModified(enumTypeRefControl);
@@ -479,7 +453,6 @@ public class FixEnumContentWizard extends Wizard {
                         throw new RuntimeException(e);
                     }
                 }
-
             });
 
             try {
@@ -498,8 +471,8 @@ public class FixEnumContentWizard extends Wizard {
         }
 
         /**
-         * Update the wizards message area and check for page complete when the enum type field has
-         * been modified.
+         * Update the wizards message area and check for page complete when the field to choose an
+         * <tt>IEnumType</tt> has been modified.
          */
         private void enumTypeModified(IpsObjectRefControl enumTypeRefControl) throws CoreException {
             setMessage(Messages.FixEnumContentWizard_msgChooseEnumType);
@@ -529,25 +502,30 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     /**
-     * The wizard page that lets the user comfortably assign enum attributes of the chosen enum
-     * type.
+     * The wizard page that lets the user comfortably assign <tt>IEnumAttribute</tt>s of the chosen
+     * <tt>IEnumType</tt> to <tt>IEnumAttributeValue</tt>s of the <tt>IEnumContent</tt> to edit.
      */
     private class AssignEnumAttributesPage extends WizardPage {
 
         /** All available columns. */
         private List<String> availableColumns;
 
-        /** Array containing a combo box for each enum attribute of the chosen new enum type. */
+        /**
+         * Array containing a <tt>Combo</tt> for each <tt>IEnumAttribute</tt> of the chosen new
+         * <tt>IEnumType</tt>.
+         */
         private Combo[] combos;
 
-        /** Array containing a label for each enum attribute of the chosen new enum type. */
+        /**
+         * Array containing a label for each <tt>IEnumAttribute</tt> of the chosen new
+         * <tt>IEnumType</tt>.
+         */
         private Label[] labels;
 
-        /**
-         * Creates a new <code>AssignEnumAttributesPage</code>.
-         */
+        /** Creates the <tt>AssignEnumAttributesPage</tt>. */
         private AssignEnumAttributesPage() {
             super(Messages.FixEnumContentWizard_assignEnumAttributesPageTitle);
+            setTitle(Messages.FixEnumContentWizard_assignEnumAttributesPageTitle);
 
             availableColumns = new ArrayList<String>();
             availableColumns.add(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn);
@@ -558,15 +536,10 @@ public class FixEnumContentWizard extends Wizard {
             setPageComplete(false);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void createControl(Composite parent) {
             ScrolledComposite scrolledControl = new ScrolledComposite(parent, SWT.V_SCROLL);
             setControl(scrolledControl);
-
             refreshControl();
-
             setMessage(Messages.FixEnumContentWizard_msgAssignEnumAttributes);
         }
 
@@ -576,7 +549,7 @@ public class FixEnumContentWizard extends Wizard {
                 return;
             }
 
-            // Dispose old widgets first if existing
+            // Dispose old widgets first if existing.
             if (combos != null) {
                 for (Combo currentCombo : combos) {
                     currentCombo.dispose();
@@ -588,7 +561,7 @@ public class FixEnumContentWizard extends Wizard {
                 }
             }
 
-            // Recreate control
+            // Recreate control.
             ScrolledComposite scrolledControl = (ScrolledComposite)getControl();
             Composite parent = scrolledControl.getParent();
             scrolledControl.dispose();
@@ -598,7 +571,7 @@ public class FixEnumContentWizard extends Wizard {
             Composite contents = uiToolkit.createLabelEditColumnComposite(attributesGroup);
             contents.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-            // Create the widgets
+            // Create the widgets.
             int numberEnumAttributes = newEnumType.getEnumAttributesCountIncludeSupertypeCopies(false);
             combos = new Combo[numberEnumAttributes];
             labels = new Label[numberEnumAttributes];
@@ -611,14 +584,9 @@ public class FixEnumContentWizard extends Wizard {
                     String listItem = (j == 0) ? "" : " - ";
                     combos[i].add(listItem + availableColumns.get(j));
                     combos[i].addModifyListener(new ModifyListener() {
-
-                        /**
-                         * {@inheritDoc}
-                         */
                         public void modifyText(ModifyEvent event) {
                             combosModified();
                         }
-
                     });
                 }
             }
@@ -633,8 +601,8 @@ public class FixEnumContentWizard extends Wizard {
         }
 
         /**
-         * Update the wizards message area and check for page complete when any combo has been
-         * modified.
+         * Update the wizards message area and check for page complete when any <tt>Combo</tt> has
+         * been modified.
          */
         private void combosModified() {
             setMessage(Messages.FixEnumContentWizard_msgAssignEnumAttributes);
@@ -651,7 +619,7 @@ public class FixEnumContentWizard extends Wizard {
                     break;
 
                 } else {
-                    // Columns may not be assigned more often than once
+                    // Columns may not be assigned more often than once.
                     if (chosenColumns.contains(currentComboText)) {
                         if (!(currentComboText
                                 .equals(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn))) {
@@ -671,9 +639,9 @@ public class FixEnumContentWizard extends Wizard {
         }
 
         /**
-         * Returns a list containing all column numbers that are currently not assigned to enum
-         * attributes (beginning with 1). An empty list will be returned if all columns are
-         * assigned, <code>null</code> is never returned.
+         * Returns a list containing all column numbers that are currently not assigned to
+         * <tt>IEnumAttribute</tt>s (beginning with 1). An empty list will be returned if all
+         * columns are assigned, <tt>null</tt> is never returned.
          */
         public List<Integer> getCurrentlyNotAssignedColumns() {
             List<Integer> currentlyNotAssignedColumns = new ArrayList<Integer>();
@@ -705,7 +673,6 @@ public class FixEnumContentWizard extends Wizard {
          */
         public int[] getColumnOrder() {
             int[] columnOrder = new int[combos.length];
-
             for (int i = 0; i < combos.length; i++) {
                 Combo currentCombo = combos[i];
                 for (int j = 0; j < availableColumns.size(); j++) {
@@ -715,7 +682,6 @@ public class FixEnumContentWizard extends Wizard {
                     }
                 }
             }
-
             return columnOrder;
         }
 

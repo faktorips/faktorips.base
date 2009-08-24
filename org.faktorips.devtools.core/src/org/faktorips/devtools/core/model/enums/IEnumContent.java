@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.enums;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 
@@ -37,8 +39,8 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     /** Name of the <tt>enumType</tt> property. */
     public final static String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
 
-    /** Name of the <tt>referencedEnumAttributesCount</tt> property. */
-    public final static String PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT = "referencedEnumAttributesCount"; //$NON-NLS-1$
+    /** Name of the <tt>referencedEnumAttributes</tt> property. */
+    public final static String PROPERTY_REFERENCED_ENUM_ATTRIBUTES = "referencedEnumAttributes"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
@@ -80,6 +82,22 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
             + "EnumContentReferencedEnumAttributesCountInvalid"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the names of the referenced <tt>IEnumAttribute</tt>s
+     * as stored in this <tt>IEnumContent</tt> do not match the names of the <tt>IEnumAttribute</tt>
+     * s as defined in the base <tt>IEnumType</tt>.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID = MSGCODE_PREFIX
+            + "EnumContentReferencedEnumAttributeNamesInvalid"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the ordering of the referenced
+     * <tt>IEnumAttribute</tt>s as stored in this <tt>IEnumContent</tt> does not match the ordering
+     * of the <tt>IEnumAttribute</tt>s as defined in the base <tt>IEnumType</tt>.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID = MSGCODE_PREFIX
+            + "EnumContentReferencedEnumAttributeOrderingInvalid"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the package fragment this <tt>IEnumContent</tt> is
      * stored in is not correct due to the specification in the referenced <tt>IEnumType</tt>.
      */
@@ -88,9 +106,9 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     /**
      * Sets the <tt>IEnumType</tt> this <tt>IEnumContent</tt> is based upon.
      * <p>
-     * If the new <tt>IEnumType</tt> can be found then the number of referenced
-     * <tt>IEnumAttribute</tt>s will be updated to match the number of <tt>IEnumAttribute</tt>s of
-     * the new <tt>IEnumType</tt>.
+     * If the new <tt>IEnumType</tt> can be found then the list of referenced
+     * <tt>IEnumAttribute</tt>s will be updated to match the <tt>IEnumAttribute</tt>s of the new
+     * <tt>IEnumType</tt>.
      * 
      * @param enumType The qualified name of the <tt>IEnumType</tt> this <tt>IEnumContent</tt> shall
      *            be based upon.
@@ -101,7 +119,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     public void setEnumType(String enumType) throws CoreException;
 
     /**
-     * Returns the number of <tt>IEnumAttribute</tt>s that are to be referenced by this
+     * Returns the number of <tt>IEnumAttribute</tt>s that are currently referenced by this
      * <tt>IEnumContent</tt>.
      */
     public int getReferencedEnumAttributesCount();
@@ -111,5 +129,27 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * upon.
      */
     public String getEnumType();
+
+    /**
+     * Returns a <tt>String</tt> containing the names of all <tt>IEnumAttribute</tt>s that are
+     * currently referenced by this <tt>IEnumContent</tt>, separated with ', '.
+     */
+    public String getReferencedEnumAttributes();
+
+    /**
+     * Returns <tt>true</tt> if this <tt>IEnumContent</tt> is inconsistent with the model and needs
+     * to be fixed by the user therefore, <tt>false</tt> otherwise.
+     * <p>
+     * The validation will be started to obtain this information.
+     * 
+     * @throws CoreException If an error occurs during the validation.
+     */
+    public boolean isFixToModelRequired() throws CoreException;
+
+    /**
+     * Returns a list containing the names of all referenced <tt>IEnumAttribute</tt>s as stored in
+     * this <tt>IEnumType</tt>.
+     */
+    public List<String> getReferencedEnumAttributeNames();
 
 }

@@ -46,14 +46,17 @@ import org.w3c.dom.Element;
  */
 public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
-    /** Collection containing all enum attribute values that belong to this enum value object. */
+    /**
+     * Collection containing all <tt>IEnumAttributeValue</tt>s that belong to this
+     * <tt>IEnumValue</tt>.
+     */
     private IpsObjectPartCollection<IEnumAttributeValue> enumAttributeValues;
 
     /**
      * Creates a new <tt>EnumValue</tt>.
      * 
-     * @param parent The enum value container this enum value belongs to.
-     * @param id A unique id for this enum value.
+     * @param parent The <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> belongs to.
+     * @param id A unique ID for this <tt>IEnumValue</tt>.
      */
     public EnumValue(IEnumValueContainer parent, int id) {
         super(parent, id);

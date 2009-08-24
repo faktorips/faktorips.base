@@ -54,7 +54,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     private IEnumContent enumContent;
 
     /** The action to open a <tt>FixEnumContentWizard</tt>. */
-    private IAction openFixEnumTypeDialogAction;
+    private IAction openFixEnumContentDialogAction;
 
     private EnumImportExportActionInEditor importAction;
 
@@ -103,7 +103,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     /** Creates the actions for the tool bar. */
     private void createToolbarActions() {
-        openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(this, enumContent, getSite().getShell());
+        openFixEnumContentDialogAction = new OpenFixEnumContentWizardAction(this, enumContent, getSite().getShell());
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, true);
         exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, false);
 
@@ -112,7 +112,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /** Creates the tool bar of this page. */
     private void createToolbar() {
         ScrolledForm form = getManagedForm().getForm();
-        form.getToolBarManager().add(openFixEnumTypeDialogAction);
+        form.getToolBarManager().add(openFixEnumContentDialogAction);
         form.getToolBarManager().add(importAction);
         form.getToolBarManager().add(exportAction);
 
@@ -129,37 +129,21 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      * <li>does not exist or is missing.
      * <li>is abstract.
      * <li>defines its values in the model.
-     * <li>defines not the exact number of <tt>IEnumAttribute</tt>s as there are columns in the
-     * enumeration values table of the <tt>EnumValuesSection</tt>.
+     * <li>defines not the exact number of <tt>IEnumAttribute</tt>s as there are
+     * <tt>IEnumAttributeValue</tt>s in the <tt>IEnumContent</tt> to edit.
+     * <li>defines not the same enumeration attribute names as stored in the <tt>IEnumContent</tt>
+     * to edit.
+     * <li>defines not the same ordering of <tt>IEnumAttribute</tt>s as stored in the
+     * <tt>IEnumContent</tt> to edit.
      * </ul>
      */
     private void updateToolbarActionsEnabledStates() {
-        boolean enableOpenFixEnumTypeDialogAction = false;
-
-        String enumTypeQualifiedName = enumContent.getEnumType();
-        if (enumTypeQualifiedName.equals("")) {
-            enableOpenFixEnumTypeDialogAction = true;
-        } else {
-            IEnumType enumType;
-            try {
-                enumType = enumContent.findEnumType(enumContent.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-
-            if (enumType == null) {
-                enableOpenFixEnumTypeDialogAction = true;
-            } else {
-                if (enumType.isAbstract()
-                        || enumType.isContainingValues()
-                        || enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != enumContent
-                                .getReferencedEnumAttributesCount()) {
-                    enableOpenFixEnumTypeDialogAction = true;
-                }
-            }
+        try {
+            boolean enableOpenFixEnumTypeDialogAction = enumContent.isFixToModelRequired();
+            openFixEnumContentDialogAction.setEnabled(enableOpenFixEnumTypeDialogAction);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-
-        openFixEnumTypeDialogAction.setEnabled(enableOpenFixEnumTypeDialogAction);
     }
 
     @Override

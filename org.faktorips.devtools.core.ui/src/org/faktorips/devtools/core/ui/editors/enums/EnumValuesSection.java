@@ -31,7 +31,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -330,21 +329,16 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         if (enumValueContainer instanceof IEnumContent) {
             IEnumContent enumContent = (IEnumContent)enumValueContainer;
             IEnumType referencedEnumType = enumValueContainer.findEnumType(ipsProject);
+            List<String> attributeNames = enumContent.getReferencedEnumAttributeNames();
             for (int i = 0; i < enumContent.getReferencedEnumAttributesCount(); i++) {
-                String columnName;
                 Boolean identifierBoolean = null;
-                boolean obtainNamesFromAttributes = (referencedEnumType == null) ? false : referencedEnumType
-                        .getEnumAttributesCountIncludeSupertypeCopies(false) == enumContent
-                        .getReferencedEnumAttributesCount();
-                if (obtainNamesFromAttributes) {
+                if (!(enumContent.isFixToModelRequired())) {
                     IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(
                             false).get(i);
-                    columnName = currentEnumAttribute.getName();
                     identifierBoolean = currentEnumAttribute.findIsUnique(ipsProject);
-                } else {
-                    columnName = NLS.bind(Messages.EnumValuesSection_defaultColumnName, i + 1);
                 }
-                addTableColumn(columnName, (identifierBoolean == null) ? false : identifierBoolean.booleanValue());
+                addTableColumn(attributeNames.get(i), (identifierBoolean == null) ? false : identifierBoolean
+                        .booleanValue());
             }
 
         } else {

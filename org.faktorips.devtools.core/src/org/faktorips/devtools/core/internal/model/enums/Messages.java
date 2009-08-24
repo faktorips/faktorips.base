@@ -61,6 +61,8 @@ public class Messages extends NLS {
     public static String EnumType_MultipleLiteralNameAttributes;
 
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
+    public static String EnumContent_ReferencedEnumAttributeNamesInvalid;
+    public static String EnumContent_ReferencedEnumAttributesOrderingInvalid;
 
     static {
         // initialize resource bundle
