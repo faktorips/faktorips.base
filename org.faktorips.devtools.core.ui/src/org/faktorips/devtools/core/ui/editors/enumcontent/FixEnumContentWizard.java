@@ -351,12 +351,12 @@ public class FixEnumContentWizard extends Wizard {
 
             // For each EnumAttribute we want to get the right EnumAttributeValue into place.
             for (int currentEnumAttributeIndex = 0; currentEnumAttributeIndex < decrementedColumnOrder.length; currentEnumAttributeIndex++) {
-                int currentPosition = decrementedColumnOrder[currentEnumAttributeIndex];
+                int desiredPosition = decrementedColumnOrder[currentEnumAttributeIndex];
                 /*
                  * The newly created EnumAttributeValues will get to their right positions by
                  * themselves over time.
                  */
-                if (currentPosition == 0) {
+                if (desiredPosition == 0) {
                     continue;
                 }
 
@@ -364,20 +364,14 @@ public class FixEnumContentWizard extends Wizard {
                  * Moving is necessary if the position specified in the decremented column order
                  * does not correspond to the index of the current EnumAttribute + 1.
                  */
-                if (currentPosition != currentEnumAttributeIndex + 1) {
-                    int requestedColumnIndex = currentPosition;
+                if (desiredPosition != currentEnumAttributeIndex + 1) {
                     /*
                      * Look up the correct index of the EnumAttributeValue in the tracking of the
                      * EnumAttributeValues order. This is necessary because when moving
                      * EnumAttributeValues the indexes change.
                      */
-                    int currentEnumAttributeValueIndex = -1;
-                    for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
-                        if (enumAttributeValuesOrder[i] == requestedColumnIndex) {
-                            currentEnumAttributeValueIndex = i;
-                            break;
-                        }
-                    }
+                    int currentEnumAttributeValueIndex = getEnumAttributeValueIndex(desiredPosition,
+                            enumAttributeValuesOrder);
 
                     /*
                      * Move up if an EnumAttributeValue with a higher number than the index of the
@@ -390,38 +384,73 @@ public class FixEnumContentWizard extends Wizard {
                      * current EnumAttribute + 1 tough because moving will stop when it reaches this
                      * position.
                      */
-                    boolean up = (currentPosition > currentEnumAttributeIndex + 1) ? true : false;
+                    boolean up = (desiredPosition > currentEnumAttributeIndex + 1) ? true : false;
 
-                    // Move the EnumAttributeValues in all EnumValues of the EnumContent.
-                    boolean enumAttributeValuesOrderTracked = false;
-                    for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
-                        IEnumAttributeValue enumAttributeValueToMove = currentEnumValue.getEnumAttributeValues().get(
-                                currentEnumAttributeValueIndex);
-                        /*
-                         * Move as long by 1 as the index of the EnumAttributeValue does not
-                         * correspond to the index of the EnumAttribute.
-                         */
-                        int moveIndex = currentEnumAttributeValueIndex;
-                        while (moveIndex != currentEnumAttributeIndex) {
-                            moveIndex = currentEnumValue.moveEnumAttributeValue(enumAttributeValueToMove, up);
-                            // Track EnumAttributeValues order, swap entries.
-                            if (!enumAttributeValuesOrderTracked) {
-                                int modifierToOldIndex = (up) ? 1 : -1;
-                                int temp = enumAttributeValuesOrder[moveIndex + modifierToOldIndex];
-                                enumAttributeValuesOrder[moveIndex + modifierToOldIndex] = enumAttributeValuesOrder[moveIndex];
-                                enumAttributeValuesOrder[moveIndex] = temp;
-                            }
-                        }
-
-                        /*
-                         * Do not track the EnumAttributeValues order again while moving the
-                         * EnumAttributes of the other EnumValues. This would break everything.
-                         */
-                        enumAttributeValuesOrderTracked = true;
-                    }
+                    // Move the EnumAttributeValues of all EnumValues of the EnumContent.
+                    enumAttributeValuesOrder = moveAttributeValues(currentEnumAttributeValueIndex,
+                            currentEnumAttributeIndex, enumAttributeValuesOrder, up);
                 }
             }
         }
+    }
+
+    /**
+     * Returns the current index of the <tt>IEnumAttributeValue</tt> to the given requested column
+     * index.
+     * <p>
+     * Example: The user wants the current second column (<tt>IEnumAttributeValue</tt>) to be the
+     * 4th one after the fix operation. The requested column index would be 3, the returned index 1
+     * (if no moving has already been done during the fix operation).
+     */
+    private int getEnumAttributeValueIndex(int requestedColumnIndex, int[] enumAttributeValuesOrder) {
+        int currentEnumAttributeValueIndex = -1;
+        for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
+            if (enumAttributeValuesOrder[i] == requestedColumnIndex) {
+                currentEnumAttributeValueIndex = i;
+                break;
+            }
+        }
+        return currentEnumAttributeValueIndex;
+    }
+
+    /**
+     * Moves the <tt>IEnumAttributeValue</tt> identified by it's index in each <tt>IEnumValue</tt>
+     * of the <tt>IEnumContent</tt> until it reaches the position of the given
+     * <tt>enumAttributeIndex</tt>.
+     */
+    private int[] moveAttributeValues(int enumAttributeValueIndex,
+            int enumAttributeIndex,
+            int[] enumAttributeValuesOrder,
+            boolean up) {
+
+        boolean enumAttributeValuesOrderTracked = false;
+        for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
+            IEnumAttributeValue enumAttributeValueToMove = currentEnumValue.getEnumAttributeValues().get(
+                    enumAttributeValueIndex);
+            /*
+             * Move as long by 1 as the index of the EnumAttributeValue does not correspond to the
+             * index of the EnumAttribute.
+             */
+            int moveIndex = enumAttributeValueIndex;
+            while (moveIndex != enumAttributeIndex) {
+                moveIndex = currentEnumValue.moveEnumAttributeValue(enumAttributeValueToMove, up);
+                // Track EnumAttributeValues order, swap entries.
+                if (!enumAttributeValuesOrderTracked) {
+                    int modifierToOldIndex = (up) ? 1 : -1;
+                    int temp = enumAttributeValuesOrder[moveIndex + modifierToOldIndex];
+                    enumAttributeValuesOrder[moveIndex + modifierToOldIndex] = enumAttributeValuesOrder[moveIndex];
+                    enumAttributeValuesOrder[moveIndex] = temp;
+                }
+            }
+
+            /*
+             * Do not track the EnumAttributeValues order again while moving the EnumAttributes of
+             * the other EnumValues. This would break everything.
+             */
+            enumAttributeValuesOrderTracked = true;
+        }
+
+        return enumAttributeValuesOrder;
     }
 
     /** The wizard page that lets the user choose a new <tt>IEnumType</tt>. */
