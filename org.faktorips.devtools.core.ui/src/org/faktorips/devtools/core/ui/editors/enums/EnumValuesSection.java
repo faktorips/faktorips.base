@@ -443,10 +443,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         // Obtain information about enumeration attributes needed later.
         List<IEnumAttribute> enumAttributes = new ArrayList<IEnumAttribute>();
         IEnumAttribute defaultValueProviderAttribute = null;
-        IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+        IEnumLiteralNameAttribute literalNameAttribute = null;
         if (enumType != null) {
             boolean includeLiteralNameAttributes = enumValueContainer instanceof IEnumType;
             enumAttributes.addAll(enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralNameAttributes));
+            literalNameAttribute = enumType.getEnumLiteralNameAttribute();
             if (literalNameAttribute != null) {
                 defaultValueProviderAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
                         .getDefaultValueProviderAttribute());
