@@ -44,8 +44,6 @@ public class Messages extends NLS {
     public static String EnumContentPage_labelOpenFixEnumTypeDialog;
     public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
 
-    public static String DefaultColumnName;
-
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }

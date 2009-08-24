@@ -529,8 +529,9 @@ public class FixEnumContentWizard extends Wizard {
 
             availableColumns = new ArrayList<String>();
             availableColumns.add(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn);
+            List<String> referencedAttributeNames = enumContent.getReferencedEnumAttributeNames();
             for (int i = 0; i < enumContent.getReferencedEnumAttributesCount(); i++) {
-                availableColumns.add(NLS.bind(Messages.DefaultColumnName, i + 1));
+                availableColumns.add(referencedAttributeNames.get(i));
             }
 
             setPageComplete(false);
@@ -610,27 +611,36 @@ public class FixEnumContentWizard extends Wizard {
             boolean pageComplete = true;
             List<String> chosenColumns = new ArrayList<String>();
             for (Combo currentCombo : combos) {
-
                 String currentComboText = currentCombo.getText();
-                if (currentComboText.equals("")) {
+                if (currentComboText.length() == 0) {
                     setMessage(Messages.FixEnumContentWizard_assignEnumAttributesAttributeNotAssigned,
                             IMessageProvider.ERROR);
                     pageComplete = false;
-                    break;
 
                 } else {
                     // Columns may not be assigned more often than once.
                     if (chosenColumns.contains(currentComboText)) {
                         if (!(currentComboText
                                 .equals(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn))) {
-
                             setMessage(Messages.FixEnumContentWizard_assignEnumAttributesDuplicateColumnAssigned,
                                     IMessageProvider.ERROR);
                             pageComplete = false;
                             break;
                         }
                     } else {
-                        chosenColumns.add(currentComboText);
+                        if (currentComboText.length() > 0) {
+                            chosenColumns.add(currentComboText);
+                        }
+                    }
+                }
+            }
+
+            // If all columns have been assigned, fill all remaining automatically for the user.
+            if (getCurrentlyNotAssignedColumns().size() == 0) {
+                pageComplete = true;
+                for (Combo currentCombo : combos) {
+                    if (currentCombo.getText().length() == 0) {
+                        currentCombo.setText(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn);
                     }
                 }
             }
@@ -647,10 +657,11 @@ public class FixEnumContentWizard extends Wizard {
             List<Integer> currentlyNotAssignedColumns = new ArrayList<Integer>();
             List<String> assignedColumnNames = new ArrayList<String>(availableColumns.size());
             for (Combo currentCombo : combos) {
-                String currentColumnName = currentCombo.getText().substring(3);
-                if (currentColumnName.equals(Messages.DefaultColumnName)) {
+                String comboText = currentCombo.getText();
+                if (comboText.length() == 0) {
                     continue;
                 }
+                String currentColumnName = comboText.substring(3);
                 if (!(assignedColumnNames.contains(currentColumnName))) {
                     assignedColumnNames.add(currentColumnName);
                 }

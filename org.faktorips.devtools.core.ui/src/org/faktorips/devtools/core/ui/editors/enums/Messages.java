@@ -32,7 +32,6 @@ public class Messages extends NLS {
     public static String EnumValuesSection_tooltipLockAndSync;
     public static String EnumValuesSection_labelResetLiteralNames;
     public static String EnumValuesSection_tooltipResetLiteralNames;
-    public static String EnumValuesSection_defaultColumnName;
     public static String EnumValuesSection_titleEnumValueCreationNotPossible;
     public static String EnumValuesSection_msgEnumValueCreationNotPossibleDueToNotFoundEnumType;
 
