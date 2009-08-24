@@ -30,6 +30,7 @@ public class Messages extends NLS {
     public static String FixEnumContentWizard_chooseEnumTypePageTitle;
     public static String FixEnumContentWizard_chosenEnumTypeAbstract;
     public static String FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel;
+    public static String FixEnumContentWizard_chosenEnumTypeEmpty;
     public static String FixEnumContentWizard_chosenEnumTypeDoesNotExist;
     public static String FixEnumContentWizard_msgAssignEnumAttributes;
     public static String FixEnumContentWizard_assignEnumAttributesPageTitle;

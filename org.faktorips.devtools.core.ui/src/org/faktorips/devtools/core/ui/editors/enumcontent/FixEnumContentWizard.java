@@ -480,23 +480,31 @@ public class FixEnumContentWizard extends Wizard {
             String text = enumTypeRefControl.getText();
             newEnumType = enumContent.getIpsProject().findEnumType(text);
 
-            boolean pageComplete = false;
-            if (newEnumType != null) {
-                if (!(newEnumType.isAbstract()) && !(newEnumType.isContainingValues())) {
-                    pageComplete = true;
-                    assignEnumAttributesPage.refreshControl();
-                }
-                if (newEnumType.isAbstract()) {
-                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract, IMessageProvider.ERROR);
-                }
-                if (newEnumType.isContainingValues()) {
-                    setMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel, IMessageProvider.ERROR);
-                }
+            setErrorMessage(null);
+            boolean pageComplete = true;
+            if (text.length() == 0) {
+                setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeEmpty);
+                pageComplete = false;
             } else {
-                setMessage(Messages.FixEnumContentWizard_chosenEnumTypeDoesNotExist, IMessageProvider.ERROR);
+                if (newEnumType == null) {
+                    setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeDoesNotExist);
+                    pageComplete = false;
+                } else {
+                    if (newEnumType.isAbstract()) {
+                        setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract);
+                        pageComplete = false;
+                    }
+                    if (newEnumType.isContainingValues()) {
+                        setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel);
+                        pageComplete = false;
+                    }
+                }
             }
 
             setPageComplete(pageComplete);
+            if (pageComplete) {
+                assignEnumAttributesPage.refreshControl();
+            }
         }
 
     }
