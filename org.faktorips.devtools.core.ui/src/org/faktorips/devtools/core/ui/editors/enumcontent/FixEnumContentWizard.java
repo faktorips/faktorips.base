@@ -129,7 +129,9 @@ public class FixEnumContentWizard extends Wizard {
                     public void run(IProgressMonitor monitor) throws CoreException {
                         deleteObsoleteEnumAttributeValues();
                         createNewEnumAttributeValues();
-                        moveAttributeValues();
+                        if (enumContent.getEnumValuesCount() > 0) {
+                            moveAttributeValues();
+                        }
                         enumContent.setEnumType(newEnumType.getQualifiedName());
                         enumContent.clearUniqueIdentifierValidationCache();
                     }
