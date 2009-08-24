@@ -185,7 +185,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         });
 
-        toggleLockAndSyncLiteralNames();
+        if (enumValueContainer instanceof IEnumType) {
+            toggleLockAndSyncLiteralNames();
+        }
     }
 
     /** Toggles the 'Lock and Synchronize Literal Names' option. */
