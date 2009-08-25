@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 
 /**
- * This IPS object type is used when the values for a Faktor-IPS enumeration shall not be defined
- * directly in the <tt>IEnumType</tt> itself but separate from it as product content.
+ * An <tt>IEnumContent</tt> is used when the values for a Faktor-IPS enumeration shall not be
+ * defined directly in the <tt>IEnumType</tt> itself but separate from it as product content.
  * <p>
  * An <tt>IEnumContent</tt> always refers to a specific <tt>IEnumType</tt> which defines the
  * structure of the enumeration.
@@ -38,9 +38,6 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
 
     /** Name of the <tt>enumType</tt> property. */
     public final static String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
-
-    /** Name of the <tt>referencedEnumAttributes</tt> property. */
-    public final static String PROPERTY_REFERENCED_ENUM_ATTRIBUTES = "referencedEnumAttributes"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
@@ -106,9 +103,8 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     /**
      * Sets the <tt>IEnumType</tt> this <tt>IEnumContent</tt> is based upon.
      * <p>
-     * If the new <tt>IEnumType</tt> can be found then the list of referenced
-     * <tt>IEnumAttribute</tt>s will be updated to match the <tt>IEnumAttribute</tt>s of the new
-     * <tt>IEnumType</tt>.
+     * If the new <tt>IEnumType</tt> can be found then the <tt>IEnumAttributeReference</tt>s will be
+     * updated to match the <tt>IEnumAttribute</tt>s of the new <tt>IEnumType</tt>.
      * 
      * @param enumType The qualified name of the <tt>IEnumType</tt> this <tt>IEnumContent</tt> shall
      *            be based upon.
@@ -119,26 +115,14 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     public void setEnumType(String enumType) throws CoreException;
 
     /**
-     * Returns the number of <tt>IEnumAttribute</tt>s that are currently referenced by this
-     * <tt>IEnumContent</tt>.
-     */
-    public int getReferencedEnumAttributesCount();
-
-    /**
      * Returns the qualified name of the <tt>IEnumType</tt> this <tt>IEnumContent</tt> is based
      * upon.
      */
     public String getEnumType();
 
     /**
-     * Returns a <tt>String</tt> containing the names of all <tt>IEnumAttribute</tt>s that are
-     * currently referenced by this <tt>IEnumContent</tt>, separated with ', '.
-     */
-    public String getReferencedEnumAttributes();
-
-    /**
      * Returns <tt>true</tt> if this <tt>IEnumContent</tt> is inconsistent with the model and needs
-     * to be fixed by the user therefore, <tt>false</tt> otherwise.
+     * to be fixed by the user, <tt>false</tt> otherwise.
      * <p>
      * The validation will be started to obtain this information.
      * 
@@ -147,9 +131,17 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     public boolean isFixToModelRequired() throws CoreException;
 
     /**
-     * Returns a list containing the names of all referenced <tt>IEnumAttribute</tt>s as stored in
-     * this <tt>IEnumType</tt>.
+     * Returns a list containing all <tt>IEnumAttributeReference</tt>s that belong to this
+     * <tt>IEnumContent</tt>.
+     * <p>
+     * Returns an empty list if there are none, never returns <tt>null</tt>.
      */
-    public List<String> getReferencedEnumAttributeNames();
+    public List<IEnumAttributeReference> getEnumAttributeReferences();
+
+    /**
+     * Returns the number of <tt>IEnumAttribute</tt>s that are currently referenced by this
+     * <tt>IEnumContent</tt>.
+     */
+    public int getEnumAttributeReferencesCount();
 
 }

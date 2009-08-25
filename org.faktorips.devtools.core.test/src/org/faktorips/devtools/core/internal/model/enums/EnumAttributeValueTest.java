@@ -82,9 +82,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         Element firstValue = XmlUtil.getFirstElement(firstEnumValue, IEnumAttributeValue.XML_TAG);
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, firstValue.getTextContent());
-        assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
+        assertEquals(5, xmlElement.getChildNodes().getLength());
 
-        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
+        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumContent");
         loadedEnumContent.initFromXml(xmlElement);
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValues()
                 .get(0).getValue());

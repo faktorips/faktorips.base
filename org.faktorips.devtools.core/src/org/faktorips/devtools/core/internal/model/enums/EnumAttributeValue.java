@@ -55,7 +55,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private String value;
 
     /**
-     * Creates a new <tt>EnumAttributeValue</tt>.
+     * Creates a new <tt>IEnumAttributeValue</tt>.
      * 
      * @param parent The <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttributeValue</tt>.

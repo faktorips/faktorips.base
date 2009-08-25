@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.wizards.enumcontent.FixEnumContentWizard;
 import org.faktorips.util.ArgumentCheck;
 
 /**

@@ -75,7 +75,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private boolean isAbstract;
 
     /**
-     * Creates a new <tt>EnumType</tt>.
+     * Creates a new <tt>IEnumType</tt>.
      * 
      * @param file The IPS source file in which this <tt>IEnumType</tt> will be stored in.
      */

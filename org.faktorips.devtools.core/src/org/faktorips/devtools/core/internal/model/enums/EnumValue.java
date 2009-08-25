@@ -53,7 +53,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     private IpsObjectPartCollection<IEnumAttributeValue> enumAttributeValues;
 
     /**
-     * Creates a new <tt>EnumValue</tt>.
+     * Creates a new <tt>IEnumValue</tt>.
      * 
      * @param parent The <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumValue</tt>.
@@ -128,7 +128,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             numberNeeded = containerType.getEnumAttributesCountIncludeSupertypeCopies(true);
         } else {
             IEnumContent contentType = (IEnumContent)enumValueContainer;
-            numberNeeded = contentType.getReferencedEnumAttributesCount();
+            numberNeeded = contentType.getEnumAttributeReferencesCount();
         }
         if (numberNeeded != getEnumAttributeValuesCount()) {
             String text = Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;

@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * For more information about how <tt>IEnumAttribute</tt>s relate to the entire Faktor-IPS
  * enumeration concept please read the documentation of <tt>IEnumType</tt>.
  * 
- * @see org.faktorips.devtools.core.model.enums.IEnumType
+ * @see IEnumType
  * 
  * @author Alexander Weickmann
  * 
@@ -178,7 +178,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @param name The new name for this <tt>IEnumAttribute</tt>.
      * 
-     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
      */
     public void setName(String name);
 

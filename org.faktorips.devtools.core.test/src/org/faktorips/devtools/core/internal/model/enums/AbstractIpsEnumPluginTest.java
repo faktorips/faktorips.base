@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  * There is a gender <tt>IEnumType</tt>, the values are stored separated from the <tt>IEnumType</tt>
  * in a gender <tt>IEnumContent</tt>.
  * <p>
- * The payment mode <tt>IEnumType</tt> stores its values directly
+ * The payment mode <tt>IEnumType</tt> stores its values directly.
  * <p>
  * Utility methods and helpful string constants are provided.
  * 

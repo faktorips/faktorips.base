@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.enumcontent;
+package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -42,6 +43,8 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
+import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
+import org.faktorips.devtools.core.ui.editors.enumcontent.Messages;
 
 /**
  * This wizard is available trough the <tt>EnumContentEditor</tt> if the <tt>IEnumContent</tt> to
@@ -230,7 +233,7 @@ public class FixEnumContentWizard extends Wizard {
              * Also set the current position to 0 if the current column is not contained in the
              * decremented column order.
              */
-            if (currentColumnNumber > enumContent.getReferencedEnumAttributesCount()
+            if (currentColumnNumber > enumContent.getEnumAttributeReferencesCount()
                     || Arrays.binarySearch(decrementedColumnOrder, currentColumnNumber) < 0) {
                 enumAttributeValuesOrder[i] = 0;
             } else {
@@ -563,9 +566,9 @@ public class FixEnumContentWizard extends Wizard {
 
             availableColumns = new ArrayList<String>();
             availableColumns.add(Messages.FixEnumContentWizard_assignEnumAttributesCreateNewColumn);
-            List<String> referencedAttributeNames = enumContent.getReferencedEnumAttributeNames();
-            for (int i = 0; i < enumContent.getReferencedEnumAttributesCount(); i++) {
-                availableColumns.add(referencedAttributeNames.get(i));
+            List<IEnumAttributeReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
+            for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
+                availableColumns.add(enumAttributeReferences.get(i).getName());
             }
 
             setPageComplete(false);
@@ -728,6 +731,22 @@ public class FixEnumContentWizard extends Wizard {
                 }
             }
             return columnOrder;
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Assures that the first <tt>Combo</tt> of the <tt>AssignEnumAttributesPage</tt> has focus
+         * when making the page visible.
+         */
+        @Override
+        public void setVisible(boolean visible) {
+            super.setVisible(visible);
+            if (visible) {
+                if (combos.length > 0) {
+                    combos[0].setFocus();
+                }
+            }
         }
 
     }

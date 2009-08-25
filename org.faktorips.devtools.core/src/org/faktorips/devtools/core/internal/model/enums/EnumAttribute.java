@@ -78,7 +78,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected boolean usedAsNameInFaktorIpsUi;
 
     /**
-     * Creates a new <tt>EnumAttribute</tt>.
+     * Creates a new <tt>IEnumAttribute</tt>.
      * 
      * @param parent The <tt>IEnumType</tt> this <tt>IEnumAttribute</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttribute</tt>.
@@ -174,10 +174,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <code>name</code> property. */
-    private void validateName(MessageList list, IIpsProject ipsProject) {
+    private void validateName(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
-        List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes(true);
 
         // Check for name missing.
         if (name.length() == 0) {
@@ -200,7 +199,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // Check for other attributes with the same name.
         int numberEnumAttributesThisName = 0;
-        for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
+        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributesIncludeSupertypeOriginals(true,
+                ipsProject)) {
             if (currentEnumAttribute.getName().equals(name)) {
                 numberEnumAttributesThisName++;
             }
