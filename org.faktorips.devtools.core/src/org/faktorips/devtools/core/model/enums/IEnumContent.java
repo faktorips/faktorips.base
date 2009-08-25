@@ -123,8 +123,6 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     /**
      * Returns <tt>true</tt> if this <tt>IEnumContent</tt> is inconsistent with the model and needs
      * to be fixed by the user, <tt>false</tt> otherwise.
-     * <p>
-     * The validation will be started to obtain this information.
      * 
      * @throws CoreException If an error occurs during the validation.
      */

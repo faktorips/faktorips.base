@@ -167,36 +167,33 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             return;
         }
 
-        switch (event.getEventType()) {
-            case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                try {
-                    IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
+        try {
+            IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
+
+            switch (event.getEventType()) {
+                case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
                     valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
                     enumContentNameControl.getTextControl().setEnabled(
                             !(enumType.isAbstract()) && !(enumType.isContainingValues()));
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-                // Here is no "break;" by intention!
+                    // Here is no "break;" by intention!
 
-            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                /*
-                 * Initialize enumeration content field if none has been specified yet and the
-                 * values are not part of the model.
-                 */
-                if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
-                    enumContentNameControl.setText(enumType.getQualifiedName());
-                }
-                enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
-                        .isUsingEnumLiteralNameAttribute()));
+                case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                    /*
+                     * Initialize enumeration content field if none has been specified yet and the
+                     * values are not part of the model.
+                     */
+                    if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
+                        enumContentNameControl.setText(enumType.getQualifiedName());
+                    }
+                    enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
+                            .isCapableOfContainingValues()));
 
-                /*
-                 * Create an EnumLiteralNameAttribute if the EnumType does not have one but needs
-                 * one.
-                 */
-                if (enumType.isUsingEnumLiteralNameAttribute()) {
-                    if (!(enumType.containsEnumLiteralNameAttribute())) {
-                        try {
+                    /*
+                     * Create an EnumLiteralNameAttribute if the EnumType does not have one but
+                     * needs one.
+                     */
+                    if (enumType.isCapableOfContainingValues()) {
+                        if (!(enumType.containsEnumLiteralNameAttribute())) {
                             IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType
                                     .newEnumLiteralNameAttribute();
                             IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType
@@ -204,12 +201,13 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                             if (nameAttribute != null) {
                                 newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
                             }
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
+
                         }
                     }
-                }
-                break;
+                    break;
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
     }
 

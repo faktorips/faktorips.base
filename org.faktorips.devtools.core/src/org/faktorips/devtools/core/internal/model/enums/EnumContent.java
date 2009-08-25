@@ -294,6 +294,16 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return getEnumType();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns <tt>true</tt> if the referenced base <tt>IEnumType</tt> can be found and if this
+     * <tt>IEnumContent</tt> is consistent with this base <tt>IEnumType</tt>.
+     */
+    public boolean isCapableOfContainingValues() throws CoreException {
+        return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
+    }
+
     public boolean isFixToModelRequired() throws CoreException {
         MessageList validationList = new MessageList();
         validateThis(validationList, getIpsProject());

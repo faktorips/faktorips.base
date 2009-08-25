@@ -141,4 +141,12 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete);
 
+    /**
+     * Returns whether this <tt>IEnumValueContainer</tt> is currently capable of holding
+     * <tt>IEnumValue</tt>s (<tt>true</tt>) or not (<tt>false</tt>).
+     * 
+     * @throws CoreException May throw this exception at any time.
+     */
+    public boolean isCapableOfContainingValues() throws CoreException;
+
 }

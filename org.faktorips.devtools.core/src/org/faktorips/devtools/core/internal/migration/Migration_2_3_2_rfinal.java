@@ -116,7 +116,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
          * enumeration type contains any enumeration values (so enumeration values that are
          * considered 'out of use' get their literal names, too).
          */
-        if (enumType.isUsingEnumLiteralNameAttribute() || enumType.getEnumValues().size() > 0) {
+        if (enumType.isCapableOfContainingValues() || enumType.getEnumValues().size() > 0) {
             /*
              * It could be that the new literal name attributes already exist. This is the case if
              * the user migrates a project that's version is less than 2.3.0.rfinal. The

@@ -94,7 +94,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     private void validateIsNeeded(MessageList list, IIpsProject ipsProject) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(enumType.isUsingEnumLiteralNameAttribute())) {
+        if (!(enumType.isCapableOfContainingValues())) {
             String text = Messages.EnumLiteralNameAttribute_NotNeeded;
             Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED, text, Message.ERROR, this);
             list.add(msg);

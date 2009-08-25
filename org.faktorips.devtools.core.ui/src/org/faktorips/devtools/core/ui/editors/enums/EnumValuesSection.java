@@ -151,12 +151,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private boolean enumTypeEditing;
 
     /**
-     * The base <tt>IEnumType</tt> referenced by the <tt>IEnumContent</tt> to edit, <tt>null</tt> if
-     * an <tt>IEnumType</tt> is being edited or if the base <tt>IEnumType</tt> could not be found.
-     */
-    private IEnumType referencedBaseEnumType;
-
-    /**
      * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
      * <tt>IEnumValueContainer</tt>.
      * 
@@ -179,8 +173,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         ipsProject = enumValueContainer.getIpsProject();
         columnNames = new ArrayList<String>(4);
         enumTypeEditing = enumValueContainer instanceof IEnumType;
-        referencedBaseEnumType = enumTypeEditing ? (IEnumType)enumValueContainer : enumValueContainer
-                .findEnumType(ipsProject);
 
         initControls();
         createActions();
@@ -189,9 +181,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         setText(Messages.EnumValuesSection_title);
 
         updateEnabledStates();
-        if (sectionEnabled()) {
-            toggleLockAndSyncLiteralNames();
-        }
+        toggleLockAndSyncLiteralNames();
 
         registerAsChangeListenerToEnumValueContainer();
     }
@@ -210,8 +200,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Toggles the 'Lock and Synchronize Literal Names' option. */
-    void toggleLockAndSyncLiteralNames() {
-        if (!enumTypeEditing) {
+    void toggleLockAndSyncLiteralNames() throws CoreException {
+        if (!enumTypeEditing || (!enumValueContainer.isCapableOfContainingValues())) {
             return;
         }
 
@@ -276,7 +266,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     /** Updates the enabled states of the <tt>enumValuesTable</tt> and its actions. */
     private void updateEnabledStates() throws CoreException {
-        boolean enabled = sectionEnabled();
+        boolean enabled = enumValueContainer.isCapableOfContainingValues();
         if (enumTypeEditing) {
             newEnumValueAction.setEnabled(enabled);
             deleteEnumValueAction.setEnabled(enabled);
@@ -288,24 +278,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         } else {
             newEnumValueAction.setEnabled(enabled);
             deleteEnumValueAction.setEnabled(enabled);
-        }
-    }
-
-    /**
-     * Returns whether the section and the tool bar buttons shall be enabled (
-     * <tt>true</tt) or not (<tt>false</tt>).
-     * <p>
-     * This information is based upon the fact whether this <tt>EnumValuesSection</tt> is used to
-     * edit an <tt>IEnumType</tt> or for an <tt>IEnumContent</tt> and upon the properties of the
-     * edited object.
-     */
-    private boolean sectionEnabled() throws CoreException {
-        if (enumTypeEditing) {
-            IEnumType enumType = (IEnumType)enumValueContainer;
-            return enumType.isContainingValues() && !(enumType.isAbstract());
-        } else {
-            IEnumContent enumContent = (IEnumContent)enumValueContainer;
-            return (referencedBaseEnumType == null) ? false : !(enumContent.isFixToModelRequired());
         }
     }
 

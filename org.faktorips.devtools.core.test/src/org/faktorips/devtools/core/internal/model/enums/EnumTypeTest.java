@@ -973,4 +973,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, paymentMode.getEnumLiteralNameAttributesCount());
     }
 
+    public void testIsCapableOfContainingValues() throws CoreException {
+        assertFalse(genderEnumType.isCapableOfContainingValues());
+        genderEnumType.setAbstract(true);
+        genderEnumType.setContainingValues(true);
+        assertFalse(genderEnumType.isCapableOfContainingValues());
+        genderEnumType.setAbstract(false);
+        assertTrue(genderEnumType.isCapableOfContainingValues());
+    }
+
 }

@@ -845,7 +845,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public boolean isUsingEnumLiteralNameAttribute() {
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract and is configured to contain
+     * values.
+     */
+    public boolean isCapableOfContainingValues() {
         return !isAbstract && containingValues;
     }
 

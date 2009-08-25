@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -55,7 +56,11 @@ public class LockAndSyncLiteralNameAction extends Action {
 
     @Override
     public void run() {
-        enumValuesSection.toggleLockAndSyncLiteralNames();
+        try {
+            enumValuesSection.toggleLockAndSyncLiteralNames();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

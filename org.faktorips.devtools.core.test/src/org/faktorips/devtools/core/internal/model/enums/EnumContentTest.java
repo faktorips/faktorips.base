@@ -227,4 +227,10 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, references.get(1).getName());
     }
 
+    public void testIsCapableOfContainingValues() throws CoreException {
+        assertTrue(genderEnumContent.isCapableOfContainingValues());
+        genderEnumContent.setEnumType("foo");
+        assertFalse(genderEnumContent.isCapableOfContainingValues());
+    }
+
 }

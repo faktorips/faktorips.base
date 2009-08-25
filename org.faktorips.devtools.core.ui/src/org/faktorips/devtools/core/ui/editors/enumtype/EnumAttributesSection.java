@@ -142,7 +142,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all EnumValues if there are no more EnumAttributes.
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isUsingEnumLiteralNameAttribute()) == 0) {
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isCapableOfContainingValues()) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
@@ -192,9 +192,13 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * <tt>IEnumLiteralNameAttribute</tt> while the <tt>IEnumType</tt> is needing to use it.
          */
         public void selectionChanged(SelectionChangedEvent event) {
-            setCanDelete(true);
-            if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isUsingEnumLiteralNameAttribute()) {
-                setCanDelete(false);
+            try {
+                setCanDelete(true);
+                if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isCapableOfContainingValues()) {
+                    setCanDelete(false);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
         }
 
