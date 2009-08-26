@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -99,7 +97,6 @@ public abstract class TableCellEditor extends CellEditor {
         skippedColumns = new ArrayList<Integer>(tableViewer.getTable().getItemCount());
 
         initKeyListener();
-        initFocusListener();
         initTraverseListener();
     }
 
@@ -138,15 +135,19 @@ public abstract class TableCellEditor extends CellEditor {
         control.addTraverseListener(new TraverseListener() {
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_ESCAPE) {
+                    fireApplyEditorValue();
                     deactivate();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_RETURN) {
+                    fireApplyEditorValue();
                     editNextRow();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_TAB_NEXT) {
+                    fireApplyEditorValue();
                     editNextColumn();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
+                    fireApplyEditorValue();
                     editPreviousColumn();
                     e.doit = false;
                 }
@@ -168,33 +169,15 @@ public abstract class TableCellEditor extends CellEditor {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.ARROW_DOWN) {
+                    fireApplyEditorValue();
                     editNextRow();
                     e.doit = false;
                 } else if (e.keyCode == SWT.ARROW_UP) {
+                    fireApplyEditorValue();
                     editPreviousRow();
                     e.doit = false;
                 }
             }
-        });
-    }
-
-    /**
-     * Initializes a <tt>FocusListener</tt> for this <tt>CellEditor</tt>'s control. This listener is
-     * responsible for firing the <tt>applyEditorValue</tt> event when the focus has been lost.
-     */
-    protected void initFocusListener() {
-        control.addFocusListener(new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            public void focusLost(FocusEvent e) {
-                if (!(skippedColumns.contains(columnIndex))) {
-                    fireApplyEditorValue();
-                }
-            }
-
         });
     }
 
@@ -247,7 +230,6 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editNextColumn() {
         if (isAtNewColumn() && isAtNewRow()) {
-            saveCurrentValue();
             appendTableRow();
         }
         editCell((isAtNewColumn() ? getNextRow() : getCurrentRow()), getNextColumn());
@@ -349,6 +331,7 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editCell(int rowIndex, int columnIndex) {
         if (columnIndex != this.columnIndex || rowIndex != getCurrentRow()) {
+            saveCurrentValue();
             tableViewer.editElement(tableViewer.getElementAt(rowIndex), columnIndex);
         }
     }
