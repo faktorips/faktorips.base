@@ -231,12 +231,12 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }
 
-    public void testGetValueAsLiteralName() {
+    public void testSetValueAsLiteralName() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
-        testValue.setValue("foo bar");
-        assertEquals("FOO_BAR", testValue.getValueAsLiteralName());
-        testValue.setValue(null);
-        assertNull(testValue.getValueAsLiteralName());
+        testValue.setValueAsLiteralName("foo bar");
+        assertEquals("FOO_BAR", testValue.getValue());
+        testValue.setValueAsLiteralName(null);
+        assertNull(testValue.getValue());
     }
 
 }

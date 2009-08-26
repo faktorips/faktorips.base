@@ -87,17 +87,6 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 
-    /**
-     * Returns the value as <tt>String</tt> and transformed to a valid literal name.
-     * <p>
-     * This could be a programming language dependent implementation in the future but for now all
-     * letters will be transformed to upper case letters and all spaces will be transformed to
-     * underscores.
-     * <p>
-     * Returns <tt>null</tt> if the value of this <tt>IEnumAttributeValue</tt> is <tt>null</tt>.
-     */
-    public String getValueAsLiteralName();
-
     /** Returns the value as <tt>String</tt>. Can also be <tt>null</tt>. */
     public String getValue();
 
@@ -107,6 +96,18 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * @param value The new value. May also be <tt>null</tt>.
      */
     public void setValue(String value);
+
+    /**
+     * Sets the actual value, transformed to a valid literal name.
+     * <p>
+     * This could be a programming language dependent implementation in the future but for now all
+     * letters will be transformed to upper case letters and all spaces will be transformed to
+     * underscores.
+     * 
+     * @param value The new value. May also be <tt>null</tt>. Will be transformed to a valid literal
+     *            name.
+     */
+    public void setValueAsLiteralName(String value);
 
     /**
      * Returns the <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.

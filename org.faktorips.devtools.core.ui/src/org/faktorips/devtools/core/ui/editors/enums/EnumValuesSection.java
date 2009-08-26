@@ -23,6 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,7 +43,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
@@ -209,6 +209,41 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
         if (lockAndSynchronizeLiteralNames) {
             resetLiteralNamesAction.run();
+        }
+        updateSkippedColumns();
+    }
+
+    private void updateSkippedColumns() {
+        final CellEditor[] cellEditors = enumValuesTableViewer.getCellEditors();
+        if (cellEditors == null) {
+            return;
+        }
+
+        IEnumType enumType = (IEnumType)enumValueContainer;
+        // TODO AW: REFACTOR - provide getIndexOfEnumLiteralNameAttribute() in IEnumType.
+        final int literalNameIndex = enumType.getIndexOfEnumAttribute(enumType.getEnumLiteralNameAttribute());
+        if (lockAndSynchronizeLiteralNames) {
+            for (CellEditor cellEditor : cellEditors) {
+                ((TableCellEditor)cellEditor).addSkippedColumnIndex(literalNameIndex);
+            }
+            if (cellEditors.length - 1 < literalNameIndex) {
+                return;
+            }
+            cellEditors[literalNameIndex].getControl().addFocusListener(new FocusListener() {
+                public void focusGained(FocusEvent e) {
+                    if (lockAndSynchronizeLiteralNames) {
+                        cellEditors[literalNameIndex].deactivate();
+                    }
+                }
+
+                public void focusLost(FocusEvent e) {
+
+                }
+            });
+        } else {
+            for (CellEditor cellEditor : cellEditors) {
+                ((TableCellEditor)cellEditor).removeSkippedColumnIndex(literalNameIndex);
+            }
         }
     }
 
@@ -441,6 +476,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         CellEditor[] cellEditors = createCellEditors(enumType, columnNamesArray);
         enumValuesTableViewer.setCellEditors(cellEditors);
+        updateSkippedColumns();
         enumValuesTableViewer.refresh();
     }
 
@@ -499,44 +535,50 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * filling the field with the default value for the literal name obtained from the default value
      * provider attribute.
      */
-    private void addDefaultProviderListenerToCellEditor(CellEditor defaultProviderCellEditor,
+    private void addDefaultProviderListenerToCellEditor(final CellEditor defaultProviderCellEditor,
             final int defaultValueProviderAttributeIndex,
             final int literalNameAttributeIndex) {
 
-        final Control defaultValueProviderControl = defaultProviderCellEditor.getControl();
-        defaultValueProviderControl.addFocusListener(new FocusListener() {
+        defaultProviderCellEditor.addListener(new ICellEditorListener() {
 
-            public void focusGained(FocusEvent event) {
-
-            }
-
-            public void focusLost(FocusEvent event) {
+            public void applyEditorValue() {
                 // Default provider control must be a text control if valid.
-                if (!(defaultValueProviderControl instanceof Text)) {
+                if (!(defaultProviderCellEditor.getControl() instanceof Text)) {
                     return;
                 }
 
                 int rowNumber = enumValuesTable.getSelectionIndex();
+                if (enumValueContainer.getEnumValuesCount() - 1 < rowNumber || rowNumber == -1) {
+                    return;
+                }
                 IEnumValue enumValue = enumValueContainer.getEnumValues().get(rowNumber);
                 List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
-                IEnumAttributeValue providerAttributeValue = enumAttributeValues
-                        .get(defaultValueProviderAttributeIndex);
-                String value = providerAttributeValue.getValueAsLiteralName();
-                if (value != null) {
-                    if (value.length() > 0
-                            && !(value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()))) {
-                        IEnumAttributeValue literalNameAttributeValue = enumAttributeValues
-                                .get(literalNameAttributeIndex);
-                        String existingLiteral = literalNameAttributeValue.getValue();
-                        if ((existingLiteral == null) ? true : existingLiteral.length() == 0
-                                || existingLiteral.equals(IpsPlugin.getDefault().getIpsPreferences()
-                                        .getNullPresentation()) || lockAndSynchronizeLiteralNames) {
-                            literalNameAttributeValue.setValue(value);
-                            enumValuesTableViewer.refresh();
+
+                String value = ((Text)defaultProviderCellEditor.getControl()).getText();
+                if (value == null ? false : value.length() > 0) {
+                    IEnumAttributeValue literalNameAttributeValue = enumAttributeValues.get(literalNameAttributeIndex);
+                    String existingLiteral = literalNameAttributeValue.getValue();
+                    if ((existingLiteral == null) ? true : existingLiteral.length() == 0
+                            || existingLiteral.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())
+                            || lockAndSynchronizeLiteralNames) {
+                        if (value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                            literalNameAttributeValue.setValue(null);
+                        } else {
+                            literalNameAttributeValue.setValueAsLiteralName(value);
                         }
+                        enumValuesTableViewer.refresh();
                     }
                 }
             }
+
+            public void cancelEditor() {
+
+            }
+
+            public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+
+            }
+
         });
     }
 
@@ -902,8 +944,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
          * Checks whether a row (<tt>IEnumValue</tt>) is empty or not. Returns <tt>true</tt> if all
          * the given row's values (columns) contain a whitespace string.
          * <p>
-         * <tt>null</tt> is treated as content. Thus a row that contains <tt>null</tt> values is not
-         * empty.
+         * The value <tt>null</tt> is treated as content. Thus a row that contains <tt>null</tt>
+         * values is not empty.
          */
         private boolean isRowEmpty(IEnumValue enumValue) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();

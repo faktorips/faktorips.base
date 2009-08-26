@@ -2,6 +2,9 @@ subtype
 supertype
 supertypes
 deselect
+combo
+deactivate
+deactivates
 Faktor-IPS
 Jan
 Ortmann

@@ -202,7 +202,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
                                 .getIndexOfEnumAttribute(literalNameAttribute));
                         IEnumAttributeValue defaultProviderattributeValue = enumAttributeValues.get(enumType
                                 .getIndexOfEnumAttribute(defaultProviderAttribute));
-                        literalNameAttributeValue.setValue(defaultProviderattributeValue.getValueAsLiteralName());
+                        literalNameAttributeValue.setValueAsLiteralName(defaultProviderattributeValue.getValue());
                     }
                 }
             }

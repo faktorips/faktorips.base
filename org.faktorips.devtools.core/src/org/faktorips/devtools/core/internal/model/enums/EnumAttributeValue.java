@@ -299,13 +299,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         return (IEnumValue)getParent();
     }
 
-    public String getValueAsLiteralName() {
-        if (value == null) {
-            return null;
-        }
-        String retValue = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
-        retValue = retValue.replaceAll(" ", "_");
-        return retValue;
+    public void setValueAsLiteralName(String value) {
+        String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
+        val = val.replaceAll(" ", "_");
+        setValue(val);
     }
 
 }

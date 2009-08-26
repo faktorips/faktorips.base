@@ -85,9 +85,9 @@ public class ResetLiteralNamesAction extends Action {
         for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
             String defaultValue = (indexDefaultProvider == -1) ? IpsPlugin.getDefault().getIpsPreferences()
-                    .getNullPresentation() : attributeValues.get(indexDefaultProvider).getValueAsLiteralName();
+                    .getNullPresentation() : attributeValues.get(indexDefaultProvider).getValue();
             IEnumAttributeValue literalNameAttributeValue = attributeValues.get(indexLiteralName);
-            literalNameAttributeValue.setValue(defaultValue);
+            literalNameAttributeValue.setValueAsLiteralName(defaultValue);
         }
 
         enumValuesTableViewer.refresh();

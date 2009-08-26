@@ -173,7 +173,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         validateInherited(list, ipsProject);
     }
 
-    /** Validates the <code>name</code> property. */
+    /** Validates the <tt>name</tt> property. */
     private void validateName(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
