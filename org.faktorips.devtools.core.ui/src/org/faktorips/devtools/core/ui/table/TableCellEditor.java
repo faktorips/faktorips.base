@@ -205,6 +205,7 @@ public abstract class TableCellEditor extends CellEditor {
             }
         }
         rowIndex = requestRow(rowIndex);
+        saveCurrentValue();
         editCell(rowIndex, nextColumnIndex);
     }
 
@@ -235,6 +236,7 @@ public abstract class TableCellEditor extends CellEditor {
                 rowIndex--;
             }
         }
+        saveCurrentValue();
         editCell(rowIndex, previousColumnIndex);
     }
 
