@@ -100,6 +100,7 @@ public abstract class TableCellEditor extends CellEditor {
      * This method is never called, since the super-constructor is not used to create this cell
      * editor. Returns the control given at instanciation. {@inheritDoc}
      */
+    @Override
     protected Control createControl(Composite parent) {
         return control;
     }
@@ -140,8 +141,6 @@ public abstract class TableCellEditor extends CellEditor {
                     editNextRow();
                 } else if (e.keyCode == SWT.ARROW_UP) {
                     editPreviousRow();
-                } else {
-
                 }
             }
         });
@@ -162,6 +161,7 @@ public abstract class TableCellEditor extends CellEditor {
     private void editNextRow() {
         int nextRow = tableViewer.getTable().getSelectionIndex() + 1;
         nextRow = requestRow(nextRow);
+        saveCurrentValue();
         editCell(nextRow, columnIndex);
     }
 
@@ -214,12 +214,10 @@ public abstract class TableCellEditor extends CellEditor {
         if (columnIndex < properties.length) {
             Table table = tableViewer.getTable();
             tableViewer.getCellModifier().modify(table.getItem(table.getSelectionIndex()),
-                    (String) tableViewer.getColumnProperties()[columnIndex],
-                    getValue());
+                    (String)tableViewer.getColumnProperties()[columnIndex], getValue());
         }
     }
 
-    
     /**
      * Edits the previous column relative to the column this celleditor is used for. If there is no
      * previous column (celleditor in first column), the last cell of the previous row is edited. If
@@ -346,7 +344,7 @@ public abstract class TableCellEditor extends CellEditor {
      * @param appendRows
      */
     public void setRowCreating(boolean appendRows) {
-        this.rowCreating = appendRows;
+        rowCreating = appendRows;
     }
 
     /**
@@ -356,8 +354,9 @@ public abstract class TableCellEditor extends CellEditor {
      */
     @Override
     public void deactivate() {
-        if (control != null && !control.isDisposed())
+        if (control != null && !control.isDisposed()) {
             control.setVisible(false);
+        }
     }
 
     /**
