@@ -459,7 +459,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
-        TableCellEditor[] cellEditors = new TableCellEditor[columnNames.length];
+        CellEditor[] cellEditors = new CellEditor[columnNames.length];
         for (int i = 0; i < cellEditors.length; i++) {
             /*
              * If an EnumContent is being edited while in an invalid state every cell will be
@@ -499,7 +499,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * filling the field with the default value for the literal name obtained from the default value
      * provider attribute.
      */
-    private void addDefaultProviderListenerToCellEditor(TableCellEditor defaultProviderCellEditor,
+    private void addDefaultProviderListenerToCellEditor(CellEditor defaultProviderCellEditor,
             final int defaultValueProviderAttributeIndex,
             final int literalNameAttributeIndex) {
 
@@ -521,10 +521,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
                 IEnumAttributeValue providerAttributeValue = enumAttributeValues
                         .get(defaultValueProviderAttributeIndex);
-                providerAttributeValue.setValue(((Text)defaultValueProviderControl).getText());
                 String value = providerAttributeValue.getValueAsLiteralName();
                 if (value != null) {
-                    if (value.length() > 0) {
+                    if (value.length() > 0
+                            && !(value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()))) {
                         IEnumAttributeValue literalNameAttributeValue = enumAttributeValues
                                 .get(literalNameAttributeIndex);
                         String existingLiteral = literalNameAttributeValue.getValue();
