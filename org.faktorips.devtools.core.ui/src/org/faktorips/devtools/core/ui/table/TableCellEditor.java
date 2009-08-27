@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -62,13 +64,20 @@ public abstract class TableCellEditor extends CellEditor {
      * Flag that is <tt>true</tt> if this <tt>CellEditor</tt> creates new rows if requested and
      * deletes empty rows at the bottom of the table, false otherwise (default).
      */
-    private boolean rowCreating = false;
+    private boolean rowCreating;
 
     /**
-     * A list containing the indexes of all columns that shall be skipped when navigating trough the
+     * A list containing the indices of all columns that shall be skipped when navigating trough the
      * table.
      */
     private List<Integer> skippedColumns;
+
+    /**
+     * A flag indicating whether navigating trough the table caused the selection to move to another
+     * row. If this happened the <tt>FocusListener</tt> that normally fires the
+     * <tt>applyEditorValue</tt> event does not fire the event but resets the flag.
+     */
+    private boolean rowChanged;
 
     /**
      * Constructs a <tt>TableCellEditor</tt> that is used in the given <tt>TableViewer</tt>. The
@@ -97,6 +106,7 @@ public abstract class TableCellEditor extends CellEditor {
         skippedColumns = new ArrayList<Integer>(tableViewer.getTable().getItemCount());
 
         initKeyListener();
+        initFocusListener();
         initTraverseListener();
     }
 
@@ -135,19 +145,15 @@ public abstract class TableCellEditor extends CellEditor {
         control.addTraverseListener(new TraverseListener() {
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_ESCAPE) {
-                    fireApplyEditorValue();
                     deactivate();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_RETURN) {
-                    fireApplyEditorValue();
                     editNextRow();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_TAB_NEXT) {
-                    fireApplyEditorValue();
                     editNextColumn();
                     e.doit = false;
                 } else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
-                    fireApplyEditorValue();
                     editPreviousColumn();
                     e.doit = false;
                 }
@@ -169,13 +175,38 @@ public abstract class TableCellEditor extends CellEditor {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.ARROW_DOWN) {
-                    fireApplyEditorValue();
                     editNextRow();
                     e.doit = false;
                 } else if (e.keyCode == SWT.ARROW_UP) {
-                    fireApplyEditorValue();
                     editPreviousRow();
                     e.doit = false;
+                }
+            }
+        });
+    }
+
+    /**
+     * Initializes a <tt>FocusListener</tt> for this <tt>CellEditor</tt>'s control. This listener is
+     * responsible for firing the <tt>applyEditorValue</tt> event when focus is lost.
+     * <p>
+     * The event won't be fired if the action that was responsible caused the selection to be in
+     * another row. In this case the event was fired earlier to make sure that the event is fired
+     * before the selection changed.
+     */
+    protected void initFocusListener() {
+        control.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                if (!(skippedColumns.contains(columnIndex))) {
+                    rowChanged = false;
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                // Skipped columns do not fire the event.
+                if (!(skippedColumns.contains(columnIndex))) {
+                    if (!rowChanged) {
+                        fireApplyEditorValue();
+                    }
                 }
             }
         });
@@ -186,6 +217,8 @@ public abstract class TableCellEditor extends CellEditor {
      * <tt>TableCellEditor</tt> is used in. Does nothing if the first row of the table is selected.
      */
     private void editPreviousRow() {
+        rowChanged = true;
+        fireApplyEditorValue();
         editCell(getPreviousRow(), columnIndex);
     }
 
@@ -196,7 +229,13 @@ public abstract class TableCellEditor extends CellEditor {
      * cell of the table).
      */
     private void editPreviousColumn() {
-        editCell((getPreviousColumn() > columnIndex ? getPreviousRow() : getCurrentRow()), getPreviousColumn());
+        if (getPreviousColumn() > columnIndex) {
+            rowChanged = true;
+            fireApplyEditorValue();
+            editCell(getPreviousRow(), getPreviousColumn());
+        } else {
+            editCell(getCurrentRow(), getPreviousColumn());
+        }
     }
 
     /**
@@ -210,6 +249,8 @@ public abstract class TableCellEditor extends CellEditor {
      * </ul>
      */
     private void editNextRow() {
+        rowChanged = true;
+        fireApplyEditorValue();
         if (getNextRow() != getCurrentRow() && isAtNewRow()) {
             appendTableRow();
         }
@@ -229,10 +270,15 @@ public abstract class TableCellEditor extends CellEditor {
      * 
      */
     private void editNextColumn() {
-        if (isAtNewColumn() && isAtNewRow()) {
-            appendTableRow();
+        if (isAtNewColumn()) {
+            rowChanged = true;
+            fireApplyEditorValue();
+            if (isAtNewRow()) {
+                appendTableRow();
+            }
+            editCell(getNextRow(), getNextColumn());
         }
-        editCell((isAtNewColumn() ? getNextRow() : getCurrentRow()), getNextColumn());
+        editCell(getCurrentRow(), getNextColumn());
     }
 
     /**
@@ -331,7 +377,6 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editCell(int rowIndex, int columnIndex) {
         if (columnIndex != this.columnIndex || rowIndex != getCurrentRow()) {
-            saveCurrentValue();
             tableViewer.editElement(tableViewer.getElementAt(rowIndex), columnIndex);
         }
     }
@@ -405,6 +450,7 @@ public abstract class TableCellEditor extends CellEditor {
     public void deactivate() {
         if (control != null && !(control.isDisposed())) {
             control.setVisible(false);
+            saveCurrentValue();
         }
     }
 
