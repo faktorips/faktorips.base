@@ -496,4 +496,12 @@ public abstract class TableCellEditor extends CellEditor {
         return skippedColumns.remove(new Integer(columnIndex));
     }
 
+    /**
+     * Clears the skipped columns causing any columns that are currently being skipped to be no
+     * longer skipped.
+     */
+    public void clearSkippedColumns() {
+        skippedColumns.clear();
+    }
+
 }

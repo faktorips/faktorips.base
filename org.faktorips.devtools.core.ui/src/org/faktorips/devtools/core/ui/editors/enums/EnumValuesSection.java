@@ -221,8 +221,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         IEnumType enumType = (IEnumType)enumValueContainer;
         // TODO AW: REFACTOR - provide getIndexOfEnumLiteralNameAttribute() in IEnumType.
-        final int literalNameIndex = enumType.getIndexOfEnumAttribute(enumType.getEnumLiteralNameAttribute());
         if (lockAndSynchronizeLiteralNames) {
+            IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+            if (literalNameAttribute == null) {
+                return;
+            }
+            final int literalNameIndex = enumType.getIndexOfEnumAttribute(literalNameAttribute);
             for (CellEditor cellEditor : cellEditors) {
                 ((TableCellEditor)cellEditor).addSkippedColumnIndex(literalNameIndex);
             }
@@ -242,7 +246,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             });
         } else {
             for (CellEditor cellEditor : cellEditors) {
-                ((TableCellEditor)cellEditor).removeSkippedColumnIndex(literalNameIndex);
+                ((TableCellEditor)cellEditor).clearSkippedColumns();
             }
         }
     }
