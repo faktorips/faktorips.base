@@ -181,10 +181,6 @@ public abstract class TableCellEditor extends CellEditor {
     /**
      * Initializes a <tt>FocusListener</tt> for this <tt>CellEditor</tt>'s control. This listener is
      * responsible for firing the <tt>applyEditorValue</tt> event when focus is lost.
-     * <p>
-     * The event won't be fired if the action that was responsible caused the selection to be in
-     * another row. In this case the event was fired earlier to make sure that the event is fired
-     * before the selection changed.
      */
     protected void initFocusListener() {
         control.addFocusListener(new FocusListener() {
