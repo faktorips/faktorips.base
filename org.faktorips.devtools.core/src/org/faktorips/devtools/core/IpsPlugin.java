@@ -162,6 +162,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * This method is called upon plug-in activation
      */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         preferences = new IpsPreferences(getPreferenceStore());
@@ -182,6 +183,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * This method is called when the plug-in is stopped
      */
+    @Override
     public void stop(BundleContext context) throws Exception {
         super.stop(context);
         ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
@@ -270,7 +272,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     private ImageDescriptorRegistry getImageDescriptorRegistry() {
         // must use lazy initialization, as the current display is not necessarily
         // available when the plugin is started.
-        if (this.imageDescriptorRegistry == null) {
+        if (imageDescriptorRegistry == null) {
             imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
         }
         return imageDescriptorRegistry;
@@ -408,8 +410,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the ips test runner.
      */
     public IIpsTestRunner getIpsTestRunner() {
-        if (ipsTestRunner == null)
+        if (ipsTestRunner == null) {
             ipsTestRunner = IpsTestRunner.getDefault();
+        }
 
         return ipsTestRunner;
     }
@@ -432,6 +435,10 @@ public class IpsPlugin extends AbstractUIPlugin {
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         List<ITableFormat> result = new ArrayList<ITableFormat>();
         for (int i = 0; i < elements.length; i++) {
+            // TODO CSV: skipped for 2.4.0rc1
+            if (i == 1) {
+                continue;
+            }
             try {
                 ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 initExternalTableFormat(format, elements[i]);
@@ -440,7 +447,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                 log(e);
             }
         }
-        externalTableFormats = (ITableFormat[])result.toArray(new ITableFormat[result.size()]);
+        externalTableFormats = result.toArray(new ITableFormat[result.size()]);
     }
 
     /**
@@ -525,8 +532,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                     }
                 }
             }
-            loggingFrameworkConnectors = (IIpsLoggingFrameworkConnector[])builders
-                    .toArray(new IIpsLoggingFrameworkConnector[builders.size()]);
+            loggingFrameworkConnectors = builders.toArray(new IIpsLoggingFrameworkConnector[builders.size()]);
         }
         return loggingFrameworkConnectors;
     }
@@ -560,7 +566,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                     }
                 }
             }
-            flFunctionResolvers = (IFunctionResolverFactory[])flFunctionResolverFactoryList
+            flFunctionResolvers = flFunctionResolverFactoryList
                     .toArray(new IFunctionResolverFactory[flFunctionResolverFactoryList.size()]);
         }
         return flFunctionResolvers;
@@ -586,8 +592,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                     log(e);
                 }
             }
-            featureVersionManagers = (IIpsFeatureVersionManager[])result.toArray(new IIpsFeatureVersionManager[result
-                    .size()]);
+            featureVersionManagers = result.toArray(new IIpsFeatureVersionManager[result.size()]);
             if (featureVersionManagers.length == 0) {
                 featureVersionManagers = new IIpsFeatureVersionManager[] { EmptyIpsFeatureVersionManager.INSTANCE };
             }
