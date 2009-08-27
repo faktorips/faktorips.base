@@ -300,6 +300,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     public void setValueAsLiteralName(String value) {
+        if (value == null) {
+            setValue(null);
+            return;
+        }
+
         String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
         val = val.replaceAll(" ", "_");
         setValue(val);
