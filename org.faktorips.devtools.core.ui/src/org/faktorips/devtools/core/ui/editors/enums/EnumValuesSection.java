@@ -476,7 +476,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         CellEditor[] cellEditors = createCellEditors(enumType, columnNamesArray);
         enumValuesTableViewer.setCellEditors(cellEditors);
-        updateSkippedColumns();
+        if (enumTypeEditing) {
+            updateSkippedColumns();
+        }
         enumValuesTableViewer.refresh();
     }
 
