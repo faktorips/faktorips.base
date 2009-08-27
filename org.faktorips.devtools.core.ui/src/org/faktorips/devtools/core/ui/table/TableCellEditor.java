@@ -73,13 +73,6 @@ public abstract class TableCellEditor extends CellEditor {
     private List<Integer> skippedColumns;
 
     /**
-     * A flag indicating whether navigating trough the table caused the selection to move to another
-     * row. If this happened the <tt>FocusListener</tt> that normally fires the
-     * <tt>applyEditorValue</tt> event does not fire the event but resets the flag.
-     */
-    private boolean rowChanged;
-
-    /**
      * Constructs a <tt>TableCellEditor</tt> that is used in the given <tt>TableViewer</tt>. The
      * given control is displayed when a cell is edited. The given <tt>columnIndex</tt> indicates in
      * which column of the table this editor is used.
@@ -196,17 +189,13 @@ public abstract class TableCellEditor extends CellEditor {
     protected void initFocusListener() {
         control.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
-                if (!(skippedColumns.contains(columnIndex))) {
-                    rowChanged = false;
-                }
+
             }
 
             public void focusLost(FocusEvent e) {
                 // Skipped columns do not fire the event.
                 if (!(skippedColumns.contains(columnIndex))) {
-                    if (!rowChanged) {
-                        fireApplyEditorValue();
-                    }
+                    fireApplyEditorValue();
                 }
             }
         });
@@ -217,7 +206,6 @@ public abstract class TableCellEditor extends CellEditor {
      * <tt>TableCellEditor</tt> is used in. Does nothing if the first row of the table is selected.
      */
     private void editPreviousRow() {
-        rowChanged = true;
         fireApplyEditorValue();
         editCell(getPreviousRow(), columnIndex);
     }
@@ -230,7 +218,6 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editPreviousColumn() {
         if (getPreviousColumn() > columnIndex) {
-            rowChanged = true;
             fireApplyEditorValue();
             editCell(getPreviousRow(), getPreviousColumn());
         } else {
@@ -249,7 +236,6 @@ public abstract class TableCellEditor extends CellEditor {
      * </ul>
      */
     private void editNextRow() {
-        rowChanged = true;
         fireApplyEditorValue();
         if (getNextRow() != getCurrentRow() && isAtNewRow()) {
             appendTableRow();
@@ -271,7 +257,6 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editNextColumn() {
         if (isAtNewColumn()) {
-            rowChanged = true;
             fireApplyEditorValue();
             if (isAtNewRow()) {
                 appendTableRow();
