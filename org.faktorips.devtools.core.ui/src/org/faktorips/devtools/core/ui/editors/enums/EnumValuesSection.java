@@ -102,7 +102,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
 
-    /** The image to show for columns that contain the identifier value. */
+    /** The image to show for columns that contain unique identifier values. */
     private final static Image UNIQUE_IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
 
     /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
@@ -181,7 +181,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         setText(Messages.EnumValuesSection_title);
 
         updateEnabledStates();
-        toggleLockAndSyncLiteralNames();
+
+        if (isLockAndSyncLiteralNamesPossible()) {
+            toggleLockAndSyncLiteralNames();
+        }
 
         registerAsChangeListenerToEnumValueContainer();
     }
@@ -199,12 +202,20 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         });
     }
 
-    /** Toggles the 'Lock and Synchronize Literal Names' option. */
-    void toggleLockAndSyncLiteralNames() throws CoreException {
-        if (!enumTypeEditing || (!enumValueContainer.isCapableOfContainingValues())) {
-            return;
+    /**
+     * Returns <tt>true</tt> if it is possible to lock and synchronize literal names. This is the
+     * case if an <tt>IEnumType</tt> is being edited that is capable of holding <tt>IEnumValue</tt>
+     * s. Returns <tt>false</tt> otherwise.
+     */
+    private boolean isLockAndSyncLiteralNamesPossible() throws CoreException {
+        if (enumTypeEditing && enumValueContainer.isCapableOfContainingValues()) {
+            return true;
         }
+        return false;
+    }
 
+    /** Toggles the 'Lock and Synchronize Literal Names' option. */
+    void toggleLockAndSyncLiteralNames() {
         lockAndSynchronizeLiteralNames = !lockAndSynchronizeLiteralNames;
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
         if (lockAndSynchronizeLiteralNames) {
@@ -215,9 +226,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     private void updateSkippedColumns() {
         final CellEditor[] cellEditors = enumValuesTableViewer.getCellEditors();
-        if (cellEditors == null) {
-            return;
-        }
 
         IEnumType enumType = (IEnumType)enumValueContainer;
         // TODO AW: REFACTOR - provide getIndexOfEnumLiteralNameAttribute() in IEnumType.
@@ -303,9 +311,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         section.setTextClient(toolbar); // Aligns the tool bar to the right.
     }
 
-    /** Updates the enabled states of the <tt>enumValuesTable</tt> and its actions. */
+    /** Updates the enabled states of the table and the tool bar actions. */
     private void updateEnabledStates() throws CoreException {
         boolean enabled = enumValueContainer.isCapableOfContainingValues();
+        newEnumValueAction.setEnabled(enabled);
+        deleteEnumValueAction.setEnabled(enabled);
         if (enumTypeEditing) {
             newEnumValueAction.setEnabled(enabled);
             deleteEnumValueAction.setEnabled(enabled);
@@ -314,9 +324,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             lockAndSyncLiteralNameAction.setEnabled(enabled);
             enumValuesTable.setEnabled(enabled);
             getSectionControl().setEnabled(enabled);
-        } else {
-            newEnumValueAction.setEnabled(enabled);
-            deleteEnumValueAction.setEnabled(enabled);
         }
     }
 

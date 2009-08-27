@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -56,11 +55,11 @@ public class LockAndSyncLiteralNameAction extends Action {
 
     @Override
     public void run() {
-        try {
-            enumValuesSection.toggleLockAndSyncLiteralNames();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        /*
+         * We do not check here for isLockAndSyncLiteralNamesPossible() because the action won't be
+         * enabled and therefore can't be executed if this is not the case.
+         */
+        enumValuesSection.toggleLockAndSyncLiteralNames();
     }
 
 }
