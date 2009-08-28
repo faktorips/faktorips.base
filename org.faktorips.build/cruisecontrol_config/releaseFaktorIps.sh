@@ -363,7 +363,7 @@ doAsserts()
     #assert version number "micro" only used in branch
     #  if taging is skipped then it is not necessary to specify a branch
     MICRO_VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\3/g")
-    if [ "$SKIPTAGCVS" = "true" ] ; then 
+    if [ ! "$SKIPTAGCVS" = "true" ] ; then 
 	    if [  -n "$BRANCH" ] ; then
 	      # branch
 	      if [ "$MICRO_VERSION" = "0" ] ; then
