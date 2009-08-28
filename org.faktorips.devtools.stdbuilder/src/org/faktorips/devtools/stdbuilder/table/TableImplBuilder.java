@@ -441,10 +441,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.addImport(List.class.getName());
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
-        if(isUseTypesafeCollections()){
+        if (isUseTypesafeCollections()) {
             codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
         }
-        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, "addRow", new String[] { "values", "productRepository" }, new Class[] { List.class, IRuntimeRepository.class});
+        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, "addRow",
+                new String[] { "values", "productRepository" }, new Class[] { List.class, IRuntimeRepository.class });
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
@@ -534,8 +535,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody = createInitKeyMapsMethodBody(keys);
         }
         appendOverrideAnnotation(codeBuilder, false);
-        //TODO pk 12-08-2009: why is here a check agains <???
-        if(isUseTypesafeCollections()&&methodBody.getSourcecode().indexOf("<")>0){
+        // TODO pk 12-08-2009: why is here a check agains <???
+        if (isUseTypesafeCollections() && methodBody.getSourcecode().indexOf("<") > 0) {
             codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
         }
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
@@ -862,7 +863,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
-        codeBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" }, new Class[] { Object.class });
+        codeBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" },
+                new Class[] { Object.class });
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
@@ -875,12 +877,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
-        codeBuilder.annotation(ANNOTATION_GENERATED);
         codeBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0]);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
-        codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0], methodBody,
-                getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createFindMethodWithNullValueRow(String methodName,
