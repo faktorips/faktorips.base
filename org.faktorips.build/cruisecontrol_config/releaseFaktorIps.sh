@@ -361,23 +361,26 @@ doAsserts()
     fi
     
     #assert version number "micro" only used in branch
+    #  if taging is skipped then it is not necessary to specify a branch
     MICRO_VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\3/g")
-    if [  -n "$BRANCH" ] ; then
-      # branch
-      if [ "$MICRO_VERSION" = "0" ] ; then
-        echo 'Error: if using a branch then the micro number must be greater than 0! Micro version used: '$MICRO_VERSION
-        echo 'Please choose a differt number or remove the option -useBranch'
-        echo '  '
-        exit 1
-      fi
-    else 
-      # head
-      if [ "$MICRO_VERSION" != "0" ] ; then
-        echo 'Error: if using head then the micro number must be 0! Micro version used: '$MICRO_VERSION
-        echo 'Please choose a different number or specify a branch using: -useBranch <Branchname>'
-        echo '  '
-        exit 1
-      fi
+    if [ "$SKIPTAGCVS" = "true" ] ; then 
+	    if [  -n "$BRANCH" ] ; then
+	      # branch
+	      if [ "$MICRO_VERSION" = "0" ] ; then
+	        echo 'Error: if using a branch then the micro number must be greater than 0! Micro version used: '$MICRO_VERSION
+	        echo 'Please choose a differt number or remove the option -useBranch'
+	        echo '  '
+	        exit 1
+	      fi
+	    else 
+	      # head
+	      if [ "$MICRO_VERSION" != "0" ] ; then
+	        echo 'Error: if using head then the micro number must be 0! Micro version used: '$MICRO_VERSION
+	        echo 'Please choose a different number or specify a branch using: -useBranch <Branchname>'
+	        echo '  '
+	        exit 1
+	      fi
+	    fi
     fi 
 }
 
