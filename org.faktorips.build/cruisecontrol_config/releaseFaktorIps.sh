@@ -366,6 +366,7 @@ doAsserts()
       # branch
       if [ "$MICRO_VERSION" = "0" ] ; then
         echo 'Error: if using a branch then the micro number must be greater than 0! Micro version used: '$MICRO_VERSION
+        echo 'Please choose a differt number or remove the option -useBranch'
         echo '  '
         exit 1
       fi
@@ -373,6 +374,7 @@ doAsserts()
       # head
       if [ "$MICRO_VERSION" != "0" ] ; then
         echo 'Error: if using head then the micro number must be 0! Micro version used: '$MICRO_VERSION
+        echo 'Please choose a different number or specify a branch using: -useBranch <Branchname>'
         echo '  '
         exit 1
       fi
