@@ -88,8 +88,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        this.pageRoot = formBody;
+        pageRoot = formBody;
         this.toolkit = toolkit;
 
         // create a stack for easy update the view by disposing the old top of
@@ -106,12 +107,14 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private void createNavigationButtons() {
         gotoPreviousGenerationAction = new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
+            @Override
             protected IIpsObjectGeneration getGeneration() {
                 return generationPropertiesPage.getActiveGeneration().getPreviousByValidDate();
             }
         };
 
         gotoNextGenerationAction = new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
+            @Override
             protected IIpsObjectGeneration getGeneration() {
                 return generationPropertiesPage.getActiveGeneration().getNextByValidDate();
             }
@@ -151,6 +154,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             }
         }
 
+        @Override
         public void run() {
             BusyIndicator.showWhile(pageRoot.getDisplay(), new Runnable() {
                 public void run() {
@@ -277,6 +281,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
     }

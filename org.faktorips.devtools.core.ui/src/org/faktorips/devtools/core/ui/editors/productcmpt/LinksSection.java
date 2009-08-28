@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -56,10 +57,9 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -72,6 +72,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -154,7 +155,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * @param toolkit The ui-toolkit to support drawing.
      */
     public LinksSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         this.site = site;
@@ -167,6 +168,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         Composite relationRootPane = toolkit.createComposite(client);
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
@@ -190,6 +192,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
             Tree tree = toolkit.getFormToolkit().createTree(relationRootPane, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
             GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            layoutData.heightHint = 100;
+            layoutData.widthHint = 50;
             tree.setLayoutData(layoutData);
 
             LinksLabelProvider labelProvider = new LinksLabelProvider();
@@ -204,13 +208,14 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                     TextTransfer.getInstance() }, new DropListener());
             treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, new DragListener(
                     treeViewer));
-            treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+            treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
             treeViewer.expandAll();
 
             final LinkSectionMessageCueLabelProvider msgCueLp = new LinkSectionMessageCueLabelProvider(labelProvider,
                     generation.getIpsProject());
             treeViewer.setLabelProvider(msgCueLp);
             new TreeMessageHoverService(treeViewer) {
+                @Override
                 protected MessageList getMessagesFor(Object element) throws CoreException {
                     return msgCueLp.getMessages(element);
                 }
@@ -238,6 +243,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     private void registerOpenLinkListener() {
         MouseAdapter adapter = new MouseAdapter() {
+            @Override
             public void mouseDown(MouseEvent e) {
                 // the following conditions must be fit fulfilled to open
                 // the item in a new editor:
@@ -316,6 +322,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void performRefresh() {
         if (generationDirty && treeViewer != null) {
             treeViewer.refresh();
@@ -439,8 +446,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         void addMinMaxFields(IProductCmptLink link) {
             cardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
             cardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
-            uiController.add(cardMinField, link, PolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-            uiController.add(cardMaxField, link, PolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+            uiController.add(cardMinField, link, IAssociation.PROPERTY_MIN_CARDINALITY);
+            uiController.add(cardMaxField, link, IAssociation.PROPERTY_MAX_CARDINALITY);
         }
     }
 
@@ -716,9 +723,9 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             }
             dialog.setDataChangeable(isDataChangeable());
             int rc = dialog.open();
-            if (rc == Dialog.CANCEL) {
+            if (rc == Window.CANCEL) {
                 file.setMemento(memento);
-            } else if (rc == Dialog.OK) {
+            } else if (rc == Window.OK) {
                 refresh();
             }
         } catch (CoreException e) {
@@ -732,6 +739,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * 
      * {@inheritDoc}
      */
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (treeViewer == null) {
@@ -740,7 +748,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
 
         if (enabled) {
-            treeViewer.getTree().setMenu(this.treePopup);
+            treeViewer.getTree().setMenu(treePopup);
         } else {
             treeViewer.getTree().setMenu(emptyMenu);
         }
@@ -768,9 +776,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * {@inheritDoc}
          */
+        @Override
         public MessageList getMessages(Object element) throws CoreException {
             if (element instanceof String) {
-                return generation.validate(generation.getIpsProject()).getMessagesFor((String)element);
+                return generation.validate(generation.getIpsProject()).getMessagesFor(element);
             }
             return super.getMessages(element);
         }
@@ -787,6 +796,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             if (selected instanceof IProductCmptLink) {
@@ -798,6 +808,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IProductCmptLink);
@@ -815,6 +826,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IProductCmptLink);
@@ -823,6 +835,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             if (selected instanceof IProductCmptLink) {
@@ -857,12 +870,13 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
          * Keeps track of structural changes of relations of the current product component
          * generation. {@inheritDoc}
          */
+        @Override
         public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
             // the generationDirty flag is only necessary because of a buggy behaviour when the
             // the generation of the product component editor has changed. The pages a created newly
             // in this case and I don't exactly what then happens... (pk). It desperately asks for
             // refactoring
-            if (!event.getIpsSrcFile().equals(LinksSection.this.generation.getIpsObject().getIpsSrcFile())) {
+            if (!event.getIpsSrcFile().equals(generation.getIpsObject().getIpsSrcFile())) {
                 return;
             }
             try {
@@ -872,9 +886,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                 }
 
                 IProductCmpt cmpt = (IProductCmpt)obj;
-                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(LinksSection.this.generation
-                        .getValidFrom());
-                if (LinksSection.this.generation.equals(gen)) {
+                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(generation.getValidFrom());
+                if (generation.equals(gen)) {
                     generationDirty = true;
                 }
             } catch (CoreException e) {
