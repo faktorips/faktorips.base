@@ -13,25 +13,46 @@
 
 package org.faktorips.runtime.internal;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.SAXException;
-
 import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
 
 public class EnumSaxHandlerTest extends TestCase {
 
-    public void testCorrectContent() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream(
-                EnumSaxHandlerTest.class.getName().replace('.', '/') + ".xml");
-        EnumSaxHandler handler = new EnumSaxHandler();
+    private InputStream is;
+    private SAXParser saxParser;
+    private EnumSaxHandler handler;
+    
+    
+    public void setUp() throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser saxParser = factory.newSAXParser();
+        saxParser = factory.newSAXParser();
+        handler = new EnumSaxHandler();
+    }
+    
+    public void tearDown(){
+        if(is != null){
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+    
+    private InputStream createInputStream(String extension) {
+        return EnumSaxHandlerTest.class.getClassLoader().getResourceAsStream(
+                EnumSaxHandlerTest.class.getName().replace('.', '/') + (extension != null ? extension : ".xml"));
+    }
+    
+    public void testCorrectContent() throws Exception {
+        is = createInputStream(null);
         saxParser.parse(is, handler);
         List<List<String>> enumValueList = handler.getEnumValueList();
         assertEquals(3, enumValueList.size());
@@ -47,16 +68,29 @@ public class EnumSaxHandlerTest extends TestCase {
     }
 
     public void testWrongContent() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream(
-                EnumSaxHandlerTest.class.getName().replace('.', '/') + "Wrong.xml");
-        EnumSaxHandler handler = new EnumSaxHandler();
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser saxParser = factory.newSAXParser();
-        try{
+        is = createInputStream("Wrong.xml");
+        try {
             saxParser.parse(is, handler);
             fail("Exception expected because of wrong content.");
-        } catch(SAXException e){
+        } catch (SAXException e) {
         }
+    }
 
+    /**
+     * Tests if the handler works correctly if the characters() method will be called multiple times
+     * for a tag content. This happens for example if the value within a tag contains carriage
+     * return characters.
+     * 
+     * @throws Exception
+     */
+    public void testCRContent() throws Exception {
+        is = createInputStream("WithCRContent.xml");
+        saxParser.parse(is, handler);
+        List<List<String>> enumValueList = handler.getEnumValueList();
+        assertEquals(1, enumValueList.size());
+        List<String> values = enumValueList.get(0);
+        assertEquals(1, values.size());
+        String value = values.get(0);
+        assertEquals("a\rb\rc", value);
     }
 }
