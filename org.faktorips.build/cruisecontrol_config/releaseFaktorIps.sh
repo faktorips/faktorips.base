@@ -153,7 +153,7 @@ getFetchTagVersion ()
  export VERSION_QUALIFIER=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
  export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
  export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
-# not supported by eclipse build files?
+# release numbers withput qualifierer are not supported by eclipse build files (e.g. 1.0.0)?
 # if [ "$FETCH_TAG" = "$INPUT_VERSION" ] ; then
 #   # maybe without qualifier
 #   export VERSION_QUALIFIER="NONE"
@@ -359,6 +359,24 @@ doAsserts()
       echo '  '
       exit 1
     fi
+    
+    #assert version number "micro" only used in branch
+    MICRO_VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\3/g")
+    if [  -n "$BRANCH" ] ; then
+      # branch
+      if [ "$MICRO_VERSION" = "0" ] ; then
+        echo 'Error: if using a branch then the micro number must be greater than 0! Micro version used: '$MICRO_VERSION
+        echo '  '
+        exit 1
+      fi
+    else 
+      # head
+      if [ "$MICRO_VERSION" != "0" ] ; then
+        echo 'Error: if using head then the micro number must be 0! Micro version used: '$MICRO_VERSION
+        echo '  '
+        exit 1
+      fi
+    fi 
 }
 
 assertValidParameters()
@@ -439,9 +457,18 @@ showParameter()
   fi
   echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
   if [ -n "$BRANCH" ] ; then
-    echo -e "  -useBranch       : Build using cvs branch \e[32m$BRANCH\e[0m"
+    if [ "$SKIPTAGCVS" = "true" ] ; then
+      # there is an assert wich checks this case
+      echo -e "  -useBranch       : use previous tagged sources (tag: \e[35m$FETCH_TAG\e[0m)"
+    else
+      echo -e "  -useBranch       : Build using cvs branch \e[32m$BRANCH\e[0m"
+    fi
   else
-    echo -e "  -useBranch       : None, use \e[35mHEAD\e[0m"
+    if [ "$SKIPTAGCVS" = "true" ] ; then
+      echo -e "  -useBranch       : use previous tagged sources (tag: \e[35m$FETCH_TAG\e[0m)"
+    else 
+      echo -e "  -useBranch       : None, use \e[35mHEAD\e[0m"
+    fi
   fi
   if [ -n "$BUILDPRODUCT" ] ; then
     echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
