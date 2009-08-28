@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -72,8 +72,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private final static String ADD_ROW_JAVADOC = "TABLE_IMPL_BUILDER_ADD_ROW_JAVADOC";
     private final static String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
 
-    // this method should be removed when the table generators are refactored to the new generator design (Jan)
-    public final static String getQualifiedClassName(IIpsSrcFile ipsSrcFile, IIpsArtefactBuilderSet builderSet) throws CoreException {
+    // this method should be removed when the table generators are refactored to the new generator
+    // design (Jan)
+    public final static String getQualifiedClassName(IIpsSrcFile ipsSrcFile, IIpsArtefactBuilderSet builderSet)
+            throws CoreException {
         String pack = builderSet.getPackage(DefaultBuilderSet.KIND_TABLE_IMPL, ipsSrcFile);
         String unqalifiedName = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
         return QNameUtil.concat(pack, unqalifiedName);
@@ -367,7 +369,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
                 new String[] { "repository", "qualifiedTableName" }, new String[] { IRuntimeRepository.class.getName(),
-                String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
+                        String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
                 ANNOTATION_GENERATED);
     }
 
@@ -413,8 +415,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             if (helper instanceof EnumTypeDatatypeHelper) {
                 EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
                 if (!enumHelper.getEnumType().isContainingValues()) {
-                    methodBody.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), valueName,
-                            new JavaCodeFragment("productRepository")));
+                    methodBody.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
+                            enumHelper.getEnumType(), valueName, new JavaCodeFragment("productRepository")));
                 } else {
                     methodBody.append(helper.newInstanceFromExpression(valueName));
                 }
@@ -503,7 +505,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private JavaCodeFragment buildAddKeyFragment(String combinedKeyName, String keyClassName, String[] keyItems)
-    throws CoreException {
+            throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append(StringUtils.uncapitalize(combinedKeyName));
         methodBody.append("Map.put(new ");
@@ -620,8 +622,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     } else {
                         String paramName = range == null ? rangeParameterNames[j] : range.getColumnRangeType()
                                 .isOneColumnFrom() ? range.getFromColumn() : range.getToColumn();
-                                getMapSecondParameter.add("row.get" + StringUtils.capitalize(paramName) + "()");
-                                getMapThirdParameter.add(null);
+                        getMapSecondParameter.add("row.get" + StringUtils.capitalize(paramName) + "()");
+                        getMapThirdParameter.add(null);
                     }
                 }
                 for (int j = 1; j < getMapFirstParameter.size(); j++) {
@@ -783,7 +785,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createHashKeyClass(String hashKeyClassName, String[] keyNames, String[] keyItemTypes)
-    throws CoreException {
+            throws CoreException {
 
         TypeSection innerClassBody = createInnerClassSection();
         innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC),
@@ -815,7 +817,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder)
-    throws CoreException {
+            throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
         for (int i = 0; i < keyNames.length; i++) {
@@ -866,11 +868,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder)
-    throws CoreException {
+            throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
+        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.annotation(ANNOTATION_GENERATED);
         codeBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0]);
@@ -910,7 +913,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private void generateFindMethodParameterCheckingBlock(JavaCodeFragment methodBody,
             String methodName,
             String[] parameterNames,
-            String keyClassName, boolean useNullValueRow) throws CoreException {
+            String keyClassName,
+            boolean useNullValueRow) throws CoreException {
         if (parameterNames.length > 0) {
             methodBody.appendln("if (");
 
@@ -923,7 +927,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             }
             methodBody.append(")");
             methodBody.appendOpenBracket();
-            if(useNullValueRow){
+            if (useNullValueRow) {
                 generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, tableRowBuilder
                         .getQualifiedClassName(getIpsSrcFile())
                         + '.' + tableRowBuilder.getFieldNameForNullRow());
@@ -968,16 +972,17 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
                         rangeParameterNames.length);
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames,
-                                rangeParameterNames), useNullValueRow);
+                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, returnTypeName,
+                                returnVariableName, keyClassParameterNames, rangeParameterNames), useNullValueRow);
             } else {
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames), useNullValueRow);
+                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, returnTypeName,
+                                returnVariableName, keyClassParameterNames), useNullValueRow);
             }
         } else {
             generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames,
-                            parameterNames), useNullValueRow);
+                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, returnTypeName,
+                            returnVariableName, keyClassParameterNames, parameterNames), useNullValueRow);
         }
         methodBody.appendln(';');
         codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName, parameterNames, parameterTypes, methodBody,
@@ -996,7 +1001,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
         methodBody.appendln();
 
-        if(useNullValueRow){
+        if (useNullValueRow) {
             methodBody.append("if(");
             methodBody.append(returnVariableName);
             methodBody.append(" == null)");
@@ -1059,12 +1064,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fragment.append(' ');
         fragment.append(returnVariable);
         fragment.append(" = ");
-        if(!isUseTypesafeCollections()){
+        if (!isUseTypesafeCollections()) {
             fragment.append(" (");
             fragment.appendClassName(returnTypeName);
             fragment.append(") ");
         }
-        
+
         fragment.append(mapName);
         fragment.append(".get(");
         fragment.append(createKeyInstantiation(keyClassName, parameterNames));

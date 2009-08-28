@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnumContent enumType="Enum" referencedEnumAttributesCount="1">
+    <Description/>
+    <EnumValue id="0">
+        <EnumAttributeValue id="0" isNull="false">a&#13;b&#13;c</EnumAttributeValue>
+    </EnumValue>
+</EnumContent>
