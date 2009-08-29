@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>90</x><y>150</y><w>40</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-r2= 1</panel_attributes><additional_attributes>20;20;20;100</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>30</y><w>290</w><h>140</h></coordinates><panel_attributes>HausratVertrag
---
-plz : String
-/tarifzone : String
-zahlweise : Integer
-wohnflaeche : Integer
-/vorschlagVersSumme : Money
-versSumme : Money</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>20</x><y>250</y><w>160</w><h>30</h></coordinates><panel_attributes>HausratGrunddeckung</panel_attributes><additional_attributes/></element></umlet_diagram>
