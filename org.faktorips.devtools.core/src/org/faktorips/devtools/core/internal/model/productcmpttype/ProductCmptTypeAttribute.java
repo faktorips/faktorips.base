@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,6 +12,8 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
+
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
@@ -24,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
@@ -43,7 +46,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private IValueSet valueSet;
-    
+
     public ProductCmptTypeAttribute(IIpsObject parent, int id) {
         super(parent, id);
         valueSet = new AllValuesValueSet(this, getNextPartId());
@@ -52,6 +55,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -73,6 +77,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsElement[] getChildren() {
         if (valueSet != null) {
             return new IIpsElement[] { valueSet };
@@ -82,21 +87,19 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyName() {
         return name;
     }
-    
+
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.VALUE;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -105,8 +108,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyDatatype() {
         return getDatatype();
@@ -128,10 +130,17 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+    }
 
     /**
      * {@inheritDoc}
@@ -145,13 +154,21 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
      */
     public void setValueSetType(ValueSetType newType) {
         ArgumentCheck.notNull(newType);
-        if (newType==valueSet.getValueSetType()) {
+        if (newType == valueSet.getValueSetType()) {
             return;
         }
         valueSet = newType.newValueSet(this, getNextPartId());
         objectHasChanged();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValueSet changeValueSetType(ValueSetType newType) {
+        setValueSetType(newType);
+        return valueSet;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -171,6 +188,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reAddPart(IIpsObjectPart part) {
         valueSet = (IValueSet)part;
     }
@@ -178,6 +196,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
@@ -189,6 +208,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reinitPartCollections() {
         // nothing to do
     }
@@ -196,6 +216,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }

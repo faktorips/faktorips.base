@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -42,7 +44,8 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
-import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
+import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
+import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.message.MessageList;
 
@@ -68,7 +71,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private Composite defaultEditFieldPlaceholder;
     private EditField defaultValueField;
 
-    private ValueSetEditControl valueSetEditControl;
+    private ValueSetSpecificationControl valueSetEditControl;
 
     private ValueDatatype currentDatatype;
     private ValueSetType currentValueSetType;
@@ -111,7 +114,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         return folder;
     }
 
-    private Control createGeneralPage(TabFolder folder) {
+    private Control createGeneralPage(TabFolder folder) throws CoreException {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
@@ -145,7 +148,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Composite temp = uiToolkit.createGridComposite(c, 1, true, false);
         uiToolkit.createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
         uiToolkit.createVerticalSpacer(temp, 8);
-        valueSetEditControl = new ValueSetEditControl(temp, uiToolkit, uiController, attribute, new Validator(), true);
+        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
+        valueSetEditControl = new ValueSetSpecificationControl(temp, uiToolkit, uiController, attribute, valueSetTypes,
+                new Validator(), ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
         Object layoutData = valueSetEditControl.getLayoutData();
@@ -186,49 +191,38 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-
-        ValueDatatype newDatatype = null;
         try {
-            newDatatype = attribute.findDatatype(ipsProject);
+            ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
+            boolean enabled = newDatatype != null;
+            defaultValueField.getControl().setEnabled(enabled);
+            valueSetEditControl.setDataChangeable(enabled);
+            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
+                return;
+            }
+
+            currentDatatype = newDatatype;
+            if (defaultValueField != null) {
+                bindingContext.removeBindings(defaultValueField.getControl());
+                defaultValueField.getControl().dispose();
+            }
+
+            createDefaultValueEditField();
+            updateValueSetTypes();
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            throw new RuntimeException(e);
         }
 
-        boolean enabled = newDatatype != null;
-        defaultValueField.getControl().setEnabled(enabled);
-        valueSetEditControl.setDataChangeable(enabled);
-        if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-            return;
-        }
-
-        currentDatatype = newDatatype;
-        if (defaultValueField != null) {
-            bindingContext.removeBindings(defaultValueField.getControl());
-            defaultValueField.getControl().dispose();
-        }
-
-        createDefaultValueEditField();
-        updateValueSetTypes();
     }
 
-    private void updateValueSetTypes() {
+    private void updateValueSetTypes() throws CoreException {
         currentValueSetType = valueSetEditControl.getValueSetType();
-        ValueSetType[] types;
-
-        try {
-            types = ipsProject.getValueSetTypes(currentDatatype);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            types = new ValueSetType[] { ValueSetType.ALL_VALUES };
-        }
-
-        valueSetEditControl.setTypes(types, currentDatatype);
+        valueSetEditControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
         if (currentValueSetType != null) {
             /*
              * if the previous selction was a valid selection use this one as new selection in drop
              * down, otherwise the default (first one) is selected
              */
-            valueSetEditControl.selectValueSetType(currentValueSetType);
+            valueSetEditControl.setValueSetType(currentValueSetType);
         }
     }
 

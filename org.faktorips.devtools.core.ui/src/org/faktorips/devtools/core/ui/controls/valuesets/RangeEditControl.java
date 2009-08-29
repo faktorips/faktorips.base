@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -20,31 +20,38 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.ControlComposite;
+import org.faktorips.devtools.core.ui.controls.Messages;
 
 /**
- * A composite that consits of three textfields for input. if there is a uicontroller supplied it is
- * used to establish a mapping between the modell object and the control which represents the object
- * property.
+ * A composite that consits of three textfields for lower bound, upper bound and step. if there is a
+ * uicontroller supplied it is used to establish a mapping between the modell object and the control
+ * which represents the object property.
  */
-public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess {
+public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess,
+        IValueSetEditControl {
+
     private UIToolkit uiToolkit;
 
     // lower and button controls
     private Text lower;
     private Text upper;
     private Text step;
-    private RangeValueSet range;
+    private IRangeValueSet range;
     private TextField lowerfield;
     private TextField upperfield;
     private TextField stepfield;
@@ -54,15 +61,24 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     private boolean dataChangeable;
 
+    public RangeEditControl(Composite parent, UIToolkit toolkit, IRangeValueSet range, UIController uiController) {
+        this(parent, toolkit, range, uiController, false);
+    }
+
     /**
      */
-    public RangeEditControl(Composite parent, UIToolkit toolkit, RangeValueSet range, DefaultUIController uiController) {
+    public RangeEditControl(Composite parent, UIToolkit toolkit, IRangeValueSet range, UIController uiController,
+            boolean paintGroupAroundRangeControls) {
         super(parent, SWT.NONE);
         this.range = range;
-        this.uiToolkit = toolkit;
+        uiToolkit = toolkit;
 
         setLayout();
-        Group group = createRangeGroup(uiToolkit);
+        Composite group = this;
+        // TODO: Perhaps we can remove this in the future. Jan
+        if (paintGroupAroundRangeControls) {
+            group = createRangeGroup(uiToolkit);
+        }
         Composite workArea = createWorkArea(uiToolkit, group);
         createTextControls(uiToolkit, workArea);
 
@@ -75,8 +91,8 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     }
 
     private void setLayout() {
-        setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
-        GridLayout layout = new GridLayout(2, false);
+        setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 10;
         layout.marginWidth = 0;
         setLayout(layout);
@@ -84,9 +100,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     private Group createRangeGroup(UIToolkit toolkit) {
         Group group = toolkit.createGroup(this, Messages.RangeEditControl_titleRange);
-        GridLayout grouplayout = new GridLayout(1, false);
-        grouplayout.marginHeight = 10;
-        group.setLayout(grouplayout);
+        GridLayout layout = new GridLayout(1, false);
+        layout.marginHeight = 10;
+        group.setLayout(layout);
         return group;
     }
 
@@ -104,7 +120,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
             layoutWorkArea.marginHeight = 3;
             layoutWorkArea.marginWidth = 1;
         }
-        workArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+        // workArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END |
+        // GridData.FILL_HORIZONTAL));
+        workArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         workArea.setLayout(layoutWorkArea);
         return workArea;
     }
@@ -140,15 +158,39 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
         uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.add(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
         uiController.updateUI();
     }
 
-    public RangeValueSet getRange() {
+    public IRangeValueSet getRange() {
         return range;
     }
 
-    public void setValueSet(IValueSet valueSet) {
+    /**
+     * {@inheritDoc}
+     */
+    public ValueSetType getValueSetType() {
+        return ValueSetType.RANGE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+        return valueSet.isRange();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValueSet getValueSet() {
+        return range;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValueSet(IValueSet valueSet, ValueDatatype valueDatatype) {
         range = (RangeValueSet)valueSet;
         uiController.remove(upperfield);
         uiController.remove(lowerfield);
@@ -157,7 +199,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
         uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.add(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
         uiController.updateUI();
     }
 
@@ -197,10 +239,12 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         return upper;
     }
 
+    @Override
     public boolean setFocus() {
         return lower.setFocus();
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         upper.setEnabled(enabled);
@@ -219,7 +263,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        this.dataChangeable = changeable;
+        dataChangeable = changeable;
 
         uiToolkit.setDataChangeable(lower, changeable);
         uiToolkit.setDataChangeable(upper, changeable);

@@ -135,6 +135,12 @@ public interface Datatype extends Comparable {
     public boolean isValueDatatype();
 
     /**
+     * Returns <code>true</code> if this value datatype is an enum datatype. In this case the
+     * instance be be casted to {@link EnumDatatype}. Returns <code>false</code> otherwise.
+     */
+    public boolean isEnum();
+
+    /**
      * Returns the qualified Java class name that values of this datatype are instances of.
      */
     public String getJavaClassName();

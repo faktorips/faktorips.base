@@ -323,6 +323,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @deprecated use IIpsProjectProperties to change the project properties
      */
+    @Deprecated
     public void setCurrentArtefactBuilderSet(String id) throws CoreException;
 
     /**
@@ -335,6 +336,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @deprecated use IIpsProjectProperties to change the project properties
      */
+    @Deprecated
     public void setValueDatatypes(ValueDatatype[] types) throws CoreException;
 
     /**
@@ -521,6 +523,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProject#findIpsSrcFiles(IProductCmptType, boolean) due to better
      *             performance
      */
+    @Deprecated
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException;
 
     /**
@@ -534,6 +537,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProject#findAllIpsSrcFiles(IProductCmptType, boolean) due to better
      *             performance
      */
+    @Deprecated
     public void findAllIpsObjects(List<IIpsObject> result) throws CoreException;
 
     /**
@@ -568,6 +572,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProject#findIpsSrcFilesStartingWith(IProductCmptType, boolean) due to
      *             better performance
      */
+    @Deprecated
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
             throws CoreException;
 
@@ -592,6 +597,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProject#findAllProductCmptSrcFiles(IProductCmptType, boolean) due to
      *             better performance
      */
+    @Deprecated
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException;
 
@@ -764,7 +770,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an error occurs while retrieving the value set types, possible
      *             reasons are that the datatypes files can't be read or the xml can't be parsed.
      */
-    public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException;
+    public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws CoreException;
 
     /**
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If
@@ -801,6 +807,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated Use {@link org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties} to
      *             change the project properties.
      */
+    @Deprecated
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
 
     /**

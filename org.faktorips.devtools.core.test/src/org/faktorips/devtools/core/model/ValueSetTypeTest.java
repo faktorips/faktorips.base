@@ -25,13 +25,13 @@ public class ValueSetTypeTest extends TestCase {
     
     public void testGetValueSetType() {
         assertNull(ValueSetType.getValueSetType("unknown"));
-        assertEquals(ValueSetType.ALL_VALUES, ValueSetType.getValueSetType(ValueSetType.ALL_VALUES.getId()));
+        assertEquals(ValueSetType.UNRESTRICTED, ValueSetType.getValueSetType(ValueSetType.UNRESTRICTED.getId()));
     }
 
     public void testGetValueSetTypeByName() {
         assertNull(ValueSetType.getValueSetTypeByName("unknown"));
-        assertEquals(ValueSetType.ALL_VALUES, ValueSetType.getValueSetTypeByName(
-                ValueSetType.ALL_VALUES.getName()));
+        assertEquals(ValueSetType.UNRESTRICTED, ValueSetType.getValueSetTypeByName(
+                ValueSetType.UNRESTRICTED.getName()));
     }
 
     public void testGetValueSetTypes() {

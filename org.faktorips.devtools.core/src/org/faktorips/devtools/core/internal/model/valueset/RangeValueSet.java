@@ -235,6 +235,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (isAbstract()) {
             return true;
         }
+        if (subset.isAbstract()) {
+            return false;
+        }
 
         IRangeValueSet subRange = (IRangeValueSet)subset;
         boolean isSubset = true;
@@ -490,6 +493,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     @Override
     public String toString() {
+        if (isAbstract()) {
+            return super.toString() + "(abstract)";
+        }
         return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
@@ -573,15 +579,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public void setValuesOf(IValueSet target) {
-        if (!(target instanceof RangeValueSet)) {
-            throw new IllegalArgumentException("The given value set is not a range value set"); //$NON-NLS-1$
-        }
-        RangeValueSet set = (RangeValueSet)target;
+    @Override
+    public void copyPropertiesFrom(IValueSet source) {
+        RangeValueSet set = (RangeValueSet)source;
         lowerBound = set.lowerBound;
         upperBound = set.upperBound;
         step = set.step;
         containsNull = set.containsNull;
+        objectHasChanged();
     }
 
     /**

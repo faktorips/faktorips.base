@@ -162,7 +162,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException {
-        if (this.equals(candidate)) {
+        if (equals(candidate)) {
             return true;
         }
         return isSubtypeOf(candidate, project);
@@ -179,7 +179,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IAttribute getAttribute(String name) {
-        return (IAttribute)attributes.getPartByName(name);
+        return attributes.getPartByName(name);
     }
 
     /**
@@ -213,7 +213,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IAttribute newAttribute() {
-        return (IAttribute)attributes.newPart();
+        return attributes.newPart();
     }
 
     /**
@@ -260,15 +260,14 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
         finder.start(this);
-        return (IAssociation[])finder.getAssociationsFound().toArray(
-                new IAssociation[finder.getAssociationsFound().size()]);
+        return finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public IAssociation getAssociation(String name) {
-        return (IAssociation)associations.getPartByName(name);
+        return associations.getPartByName(name);
     }
 
     /**
@@ -280,7 +279,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         int size = associations.size();
         for (int i = 0; i < size; i++) {
-            IAssociation association = (IAssociation)associations.getPart(i);
+            IAssociation association = associations.getPart(i);
             if (roleNamePlural.equals(association.getTargetRolePlural())) {
                 return association;
             }
@@ -471,6 +470,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         supertype = element.getAttribute(PROPERTY_SUPERTYPE);
@@ -480,6 +480,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_SUPERTYPE, supertype);
@@ -489,6 +490,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         DuplicatePropertyNameValidator duplicateValidator = createDuplicatePropertyNameValidator(ipsProject);
@@ -508,7 +510,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].isAbstract()) {
                     String text = Messages.Type_msg_AbstractMissmatch;
-                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, PROPERTY_ABSTRACT));
                     break;
                 }
             }
@@ -590,6 +592,14 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     // Implementation of the Datatype interface.
+    public boolean isEnum() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
     public int compareTo(Object o) {
         return 0;
     }
@@ -616,8 +626,8 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected void dependsOn(Set<IDependency> dependencies) throws CoreException {
         if (hasSupertype()) {
-            dependencies.add(IpsObjectDependency.createSubtypeDependency(this.getQualifiedNameType(),
-                    new QualifiedNameType(getSupertype(), getIpsObjectType())));
+            dependencies.add(IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(), new QualifiedNameType(
+                    getSupertype(), getIpsObjectType())));
         }
         addQualifiedNameTypesForRelationTargets(dependencies);
         addAttributeDatatypeDependencies(dependencies);
@@ -635,7 +645,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             String datatype = attributes[i].getDatatype();
-            qualifiedNameTypes.add(new DatatypeDependency(this.getQualifiedNameType(), datatype));
+            qualifiedNameTypes.add(new DatatypeDependency(getQualifiedNameType(), datatype));
         }
     }
 
@@ -647,10 +657,10 @@ public abstract class Type extends BaseIpsObject implements IType {
             // this method is called recursively for the detail and so on. But this detail is not an
             // aggregate root and the recursion will terminate too early.
             if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
-                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(
-                        this.getQualifiedNameType(), new QualifiedNameType(targetQName, getIpsObjectType())));
+                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(getQualifiedNameType(),
+                        new QualifiedNameType(targetQName, getIpsObjectType())));
             } else {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(this.getQualifiedNameType(),
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                         new QualifiedNameType(targetQName, getIpsObjectType())));
             }
         }
@@ -667,6 +677,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             supertypes.add(currentType);
             return true;
@@ -690,6 +701,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             IMethod[] typeMethods = currentType.getMethods();
             for (int i = 0; i < typeMethods.length; i++) {
@@ -734,6 +746,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) {
             association = currentType.getAssociation(associationName);
             return association == null;
@@ -753,6 +766,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) {
             association = currentType.getAssociationByRoleNamePlural(associationName);
             return association == null;
@@ -779,6 +793,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) {
             IAssociation[] associations = currentType.getAssociationsForTarget(associationTarget);
             for (int i = 0; i < associations.length; i++) {
@@ -805,12 +820,13 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         public AttributeFinder(IIpsProject ipsProject, String attrName) {
             super(ipsProject);
-            this.attributeName = attrName;
+            attributeName = attrName;
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             attribute = currentType.getAttribute(attributeName);
             return attribute == null;
@@ -832,6 +848,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             method = currentType.getMethod(methodName, datatypes);
             return method == null;
@@ -851,6 +868,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             method = currentType.getMethod(signature);
             return method == null;
@@ -871,6 +889,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             // considers overridden methods
             for (IMethod method : currentType.getMethods()) {
@@ -901,6 +920,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAttribute[] lattributes = currentType.getAttributes();
             // considers overridden attributes
@@ -931,6 +951,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAssociation[] associations = currentType.getAssociations();
             for (int i = 0; i < associations.length; i++) {
@@ -974,6 +995,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             return subtype;
         }
 
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             if (currentType == supertypeCandidate) {
                 subtype = true;

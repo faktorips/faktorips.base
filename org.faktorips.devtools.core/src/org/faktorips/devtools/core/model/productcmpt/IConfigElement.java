@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import java.util.List;
+
 import javax.naming.OperationNotSupportedException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -121,6 +123,19 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
      * Returns the set of allowed values.
      */
     public IValueSet getValueSet();
+
+    /**
+     * Returns the value set types that are allowed for the element's value set. If the attribute's
+     * value set this config element configures is unrestricted, all value set types allowed by the
+     * project are returned. Otherwise the attribute's value set type is returned.
+     * 
+     * @throw CoreException if an error occurs.
+     * 
+     * @see IIpsProject#getValueSetTypes(ValueDatatype)
+     * @see IPolicyCmptTypeAttribute#getValueSet()
+     * @see IValueSet#isUnrestricted()
+     */
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets the type of the value set defining the values valid for this config element. If the type

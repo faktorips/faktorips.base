@@ -77,6 +77,13 @@ public class AnyDatatype implements Datatype {
     /**
      * {@inheritDoc}
      */
+    public boolean isEnum() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getJavaClassName() {
         return null;
     }

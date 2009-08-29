@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,39 +42,39 @@ import org.w3c.dom.Element;
 /**
  */
 public class EnumValueSetTest extends AbstractIpsPluginTest {
-    
+
     private DefaultEnumType gender;
-    
+
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
-    
+
     private IPolicyCmptTypeAttribute attr;
     private IConfigElement ce;
 
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
-    
 
+    @Override
     protected void setUp() throws Exception {
-    	super.setUp();
+        super.setUp();
         gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
         new DefaultEnumValue(gender, "male");
         new DefaultEnumValue(gender, "female");
-        
+
         ipsProject = super.newIpsProject("TestProject");
         policyCmptType = newPolicyCmptType(ipsProject, "test.Base");
         attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
-    
+
         productCmptType = newProductCmptType(ipsProject, "test.Product");
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        
+
         IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
         cmpt.setProductCmptType(productCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
-        
+
         ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("attr");
     }
@@ -89,80 +89,85 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertFalse(set.containsValue("15 EUR"));
         assertFalse(set.containsValue("abc"));
         assertFalse(set.containsValue(null));
-        
+
         set.addValue(null);
         assertTrue(set.containsValue(null));
-        
+
         MessageList list = new MessageList();
         set.containsValue("15 EUR", list, null, null);
         assertTrue(list.containsErrorMsg());
-        
+
         list.clear();
         set.containsValue("10 EUR", list, null, null);
         assertFalse(list.containsErrorMsg());
     }
-    
+
     public void testContainsValueInvalidSet() {
         EnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("1");
         MessageList list = new MessageList();
         set.containsValue("10 EUR", list, null, null);
-        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_CONTAINED));
-        
+        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+
         list.clear();
         set.addValue("10EUR");
         set.containsValue("10 EUR", list, null, null);
-        assertNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+        assertNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_CONTAINED));
     }
-    
+
     public void testContainsValueSet() throws Exception {
-    	EnumValueSet superset = new EnumValueSet(ce, 50);
-    	superset.addValue("1EUR");
-    	superset.addValue("2EUR");
-    	superset.addValue("3EUR");
-    	
-    	EnumValueSet subset = new EnumValueSet(ce, 100);
-    	assertTrue(superset.containsValueSet(subset));
-    	
-    	subset.addValue("1EUR");
-    	assertTrue(superset.containsValueSet(subset));
+        EnumValueSet superset = new EnumValueSet(ce, 50);
+        superset.addValue("1EUR");
+        superset.addValue("2EUR");
+        superset.addValue("3EUR");
 
-    	subset.addValue("2EUR");
-    	subset.addValue("3EUR");
-    	assertTrue(superset.containsValueSet(subset));
+        EnumValueSet subset = new EnumValueSet(ce, 100);
+        assertTrue(superset.containsValueSet(subset));
 
-    	MessageList list = new MessageList();
-    	superset.containsValueSet(subset, list, null, null);
-    	assertFalse(list.containsErrorMsg());
+        subset.addValue("1EUR");
+        assertTrue(superset.containsValueSet(subset));
 
-    	subset.addValue("4EUR");
-    	assertFalse(superset.containsValueSet(subset));
-    	
-    	list.clear();
-    	superset.containsValueSet(subset, list, null, null);
-    	assertTrue(list.containsErrorMsg());
+        subset.addValue("2EUR");
+        subset.addValue("3EUR");
+        assertTrue(superset.containsValueSet(subset));
 
-    	subset.removeValue("4EUR");
-    	subset.addValue(null);
-    	assertFalse(superset.containsValueSet(subset));
+        MessageList list = new MessageList();
+        superset.containsValueSet(subset, list, null, null);
+        assertFalse(list.containsErrorMsg());
 
-    	superset.addValue(null);
-    	assertTrue(superset.containsValueSet(subset));
-    	
+        subset.addValue("4EUR");
+        assertFalse(superset.containsValueSet(subset));
+
+        EnumValueSet abstractSet = new EnumValueSet(ce, 60);
+        abstractSet.setAbstract(true);
+        assertTrue(abstractSet.containsValueSet(subset));
+        assertFalse(subset.containsValueSet(abstractSet));
+
+        list.clear();
+        superset.containsValueSet(subset, list, null, null);
+        assertTrue(list.containsErrorMsg());
+
+        subset.removeValue("4EUR");
+        subset.addValue(null);
+        assertFalse(superset.containsValueSet(subset));
+
+        superset.addValue(null);
+        assertTrue(superset.containsValueSet(subset));
+
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
-        
-    	IConfigElement ce2 = generation.newConfigElement();
+
+        IConfigElement ce2 = generation.newConfigElement();
         ce2.setPolicyCmptTypeAttribute("attr2");
-        
-    	subset = new EnumValueSet(ce2, 50);
-    	subset.addValue("2EUR");
-    	
-    	list.clear();
-    	assertFalse(superset.containsValueSet(subset, list, null, null));
-    	assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_DATATYPES_NOT_MATCHING));
+
+        subset = new EnumValueSet(ce2, 50);
+        subset.addValue("2EUR");
+
+        list.clear();
+        assertFalse(superset.containsValueSet(subset, list, null, null));
+        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_DATATYPES_NOT_MATCHING));
     }
 
     public void testAddValue() {
@@ -219,7 +224,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
-        Element element = set.toXml(this.newDocument());
+        Element element = set.toXml(newDocument());
         IEnumValueSet set2 = new EnumValueSet(ce, 1);
         set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
@@ -248,69 +253,69 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         list = set.validate(ipsProject);
         assertEquals(2, list.getNoOfMessages());
         assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
-        
+
         list.clear();
         set.removeValue("2EUR");
         set.addValue(null);
         list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
-        
+
         set.addValue(null);
         list = set.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
-        
+
         set.removeValue(null);
-		Datatype[] vds = ipsProject.findDatatypes(true, false);
-		ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
-		vdlist.addAll(Arrays.asList(vds));
-		vdlist.add(new PrimitiveIntegerDatatype());
+        Datatype[] vds = ipsProject.findDatatypes(true, false);
+        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
+        vdlist.addAll(Arrays.asList(vds));
+        vdlist.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
-        
+
         IPolicyCmptTypeAttribute attr = ce.findPcTypeAttribute(ipsProject);
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 
         list.clear();
         list = set.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE));
-        
+        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_PARSABLE));
+
         set.removeValue(0);
         set.removeValue(0);
         set.addValue("1");
         set.addValue(null);
         list.clear();
         list = set.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED));
-        
+        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+
         // test with unkonwn datatype
         EnumValueSet set2 = new EnumValueSet(ce, 2);
         set2.addValue("1");
         set2.addValue("2");
         list = set2.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
-        
+
         ce.getProductCmpt().setProductCmptType("unkown");
         list = set2.validate(ipsProject);
         assertEquals(2, list.getNoOfMessages());
         MessageList messages = list.getMessagesFor(set2, IEnumValueSet.PROPERTY_VALUES);
         for (int i = 0; i < messages.getNoOfMessages(); i++) {
             assertEquals(Message.WARNING, messages.getMessage(i).getSeverity());
-            assertEquals(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
+            assertEquals(IValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
         }
     }
 
     public void testGetValues() {
         EnumValueSet set = new EnumValueSet(ce, 50);
         String[] values = set.getValues();
-    	
+
         assertEquals(0, values.length);
-        
-        set.addValue("1");        
+
+        set.addValue("1");
         values = set.getValues();
         assertEquals(1, values.length);
-        
+
         set.addValue(null);
         values = set.getValues();
         assertEquals(2, values.length);
@@ -318,33 +323,33 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     public void testGetContainsNull() {
         EnumValueSet set = new EnumValueSet(ce, 50);
-        
+
         assertFalse(set.getContainsNull());
-        
+
         set.setContainsNull(true);
         assertTrue(set.getContainsNull());
-        
+
         set.setContainsNull(false);
         assertFalse(set.getContainsNull());
-        
+
         set.addValue(null);
         assertTrue(set.getContainsNull());
     }
-    
+
     public void testSetContainsNull() {
         EnumValueSet set = new EnumValueSet(ce, 50);
-        
+
         assertFalse(set.getContainsNull());
-        
+
         set.setContainsNull(true);
-        
+
         assertTrue(set.getContainsNull());
         assertNull(set.getValue(0));
         assertEquals(1, set.size());
-        
+
         set.setContainsNull(false);
         assertFalse(set.getContainsNull());
         assertEquals(0, set.size());
-    	
+
     }
 }

@@ -178,7 +178,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     protected boolean isAllValuesValueSet() {
-        return ValueSetType.ALL_VALUES == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
+        return ValueSetType.UNRESTRICTED == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
     }
 
     /**

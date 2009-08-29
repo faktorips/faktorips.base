@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -30,21 +30,29 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.controls.EditTableControl;
+import org.faktorips.devtools.core.ui.controls.Messages;
+import org.faktorips.devtools.core.ui.controls.TableElementValidator;
+import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
 
 /**
- * EnumValueSetEditControl provides the possibility of editing the values of an EnumValueEnumSet. It
- * consists of a table control and 4 buttons to add, remove or change the order of vales of the
- * EnumValueEnumSet. The control modifies the EnumValueEnumSet and makes no temporary copy of it. To
- * implement undo operation, the EnumValueEnumSet must be stored localy before calling
- * EnumValueSetEditControl For "live" evaluation a valueSetOwner must be passed to the control.
+ * A control to define an enum value set by specifying the values in it.
+ * <p>
+ * It consists of a table control and 4 buttons to add, remove or change the order of vales of the
+ * values in the set. The control modifies the EnumValueEnumSet and makes no temporary copy of it.
+ * To implement undo operation, the EnumValueEnumSet must be stored localy before calling
+ * EnumValueSetEditControl. For "live" evaluation a valueSetOwner must be passed to the control.
  */
-public class EnumValueSetEditControl extends EditTableControl {
+public class EnumValueSetEditControl extends EditTableControl implements IValueSetEditControl {
 
     private IEnumValueSet valueSet;
 
@@ -72,6 +80,7 @@ public class EnumValueSetEditControl extends EditTableControl {
         this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
     }
 
+    @Override
     protected void initModelObject(Object modelObject) {
         valueSet = (EnumValueSet)modelObject;
     }
@@ -86,10 +95,39 @@ public class EnumValueSetEditControl extends EditTableControl {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public ValueSetType getValueSetType() {
+        return ValueSetType.ENUM;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+        return valueSet.isEnum() && !valueDatatype.isEnum();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValueSet getValueSet() {
+        return getEnumValueSet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
+        setEnumValueSet((IEnumValueSet)newSet);
+    }
+
+    /**
      * Overridden method.
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createContentProvider()
      */
+    @Override
     protected IStructuredContentProvider createContentProvider() {
         return new ContentProvider();
     }
@@ -99,6 +137,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createLabelProvider()
      */
+    @Override
     protected ILabelProvider createLabelProvider() {
         return new TableLabelProvider();
     }
@@ -108,6 +147,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createTableColumns(org.eclipse.swt.widgets.TableContentsGeneration)
      */
+    @Override
     protected void createTableColumns(Table table) {
         new TableColumn(table, SWT.NONE).setResizable(false);
         new TableColumn(table, SWT.NONE).setResizable(false);
@@ -118,6 +158,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
      */
+    @Override
     protected String[] getColumnPropertyNames() {
         return new String[] { Messages.EnumValueSetEditControl_colName_1, Messages.EnumValueSetEditControl_colName_2 };
     }
@@ -125,6 +166,7 @@ public class EnumValueSetEditControl extends EditTableControl {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
         layouter.addColumnData(new ColumnPixelData(10, false)); // message image
         layouter.addColumnData(new ColumnWeightData(100, true));
@@ -135,6 +177,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellEditors()
      */
+    @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
         editors[0] = null; // no editor for the message image column
@@ -147,6 +190,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellModifier()
      */
+    @Override
     protected ICellModifier createCellModifier() {
         return new CellModifier();
     }
@@ -156,6 +200,7 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
      */
+    @Override
     public Object addElement() {
         String newValue = ""; //$NON-NLS-1$
         valueSet.addValue(newValue);
@@ -167,14 +212,16 @@ public class EnumValueSetEditControl extends EditTableControl {
      * 
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#removeElement(int)
      */
+    @Override
     public void removeElement(int index) {
         valueSet.removeValue(index);
         getTableViewer().refresh();
     }
 
+    @Override
     protected void swapElements(int index1, int index2) {
-        String name1 = (String)valueSet.getValue(index1);
-        String name2 = (String)valueSet.getValue(index2);
+        String name1 = valueSet.getValue(index1);
+        String name2 = valueSet.getValue(index2);
         valueSet.setValue(index1, name2);
         valueSet.setValue(index2, name1);
     }
@@ -257,7 +304,7 @@ public class EnumValueSetEditControl extends EditTableControl {
         }
 
         String getValueName() {
-            String name = (String)valueSet.getValue(index);
+            String name = valueSet.getValue(index);
             if (name == null) {
                 name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }
@@ -272,14 +319,17 @@ public class EnumValueSetEditControl extends EditTableControl {
             }
         }
 
+        @Override
         public String toString() {
             return getValueName();
         }
 
+        @Override
         public int hashCode() {
             return index;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (!(o instanceof IndexValueWrapper)) {
                 return false;
@@ -294,6 +344,7 @@ public class EnumValueSetEditControl extends EditTableControl {
             super(viewer);
         }
 
+        @Override
         protected MessageList getMessagesFor(Object element) throws CoreException {
             return validate(element);
         }

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.valueset;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
@@ -32,9 +35,10 @@ import org.w3c.dom.Element;
 public class ValueSetType extends DefaultEnumValue {
 
     /**
-     * Defines the value set type specifying all values.
+     * Defines the value set type that does not restrict the values in the set. All values allowed
+     * by the datatype are allowed.
      */
-    public final static ValueSetType ALL_VALUES;
+    public final static ValueSetType UNRESTRICTED;
 
     /**
      * Defines the value set type range.
@@ -55,7 +59,7 @@ public class ValueSetType extends DefaultEnumValue {
 
     static {
         enumType = new DefaultEnumType("ValueSetType", ValueSetType.class); //$NON-NLS-1$
-        ALL_VALUES = new ValueSetType(enumType, "allValues", Messages.ValueSetType__allValues); //$NON-NLS-1$
+        UNRESTRICTED = new ValueSetType(enumType, "allValues", Messages.ValueSetType__allValues); //$NON-NLS-1$
         ENUM = new ValueSetType(enumType, "enum", Messages.ValueSetType_enumeration); //$NON-NLS-1$ 
         RANGE = new ValueSetType(enumType, "range", Messages.ValueSetType_range); //$NON-NLS-1$ 
     }
@@ -96,6 +100,18 @@ public class ValueSetType extends DefaultEnumValue {
         return types;
     }
 
+    /**
+     * Returns all value set types.
+     */
+    public final static List<ValueSetType> getValueSetTypesAsList() {
+        EnumValue[] values = getEnumType().getValues();
+        List<ValueSetType> types = new ArrayList<ValueSetType>();
+        for (int i = 0; i < values.length; i++) {
+            types.add((ValueSetType)values[i]);
+        }
+        return types;
+    }
+
     private ValueSetType(DefaultEnumType type, String id, String name) {
         super(type, id, name);
     }
@@ -104,7 +120,7 @@ public class ValueSetType extends DefaultEnumValue {
      * Creates a new value set of the type this method is invoked on.
      */
     public IValueSet newValueSet(IIpsObjectPart parent, int id) {
-        if (this == ALL_VALUES) {
+        if (this == UNRESTRICTED) {
             return new AllValuesValueSet(parent, id);
         } else if (this == ENUM) {
             return new EnumValueSet(parent, id);
@@ -136,27 +152,17 @@ public class ValueSetType extends DefaultEnumValue {
         }
         return null;
     }
-    //
-    // /**
-    // * Returns <code>false</code> if this and the given Valueset are {@link UnspecifiedValueSet}s
-    // as
-    // * an {@link UnspecifiedValueSet} is not a specification.
-    // * <p>
-    // * Returns <code>true</code> if this {@link ValueSetType} is {@link #UNSPECIFIED} and the
-    // given
-    // * valuset is not, as all other {@link ValueSetType}s are possible specifications of the
-    // * {@link UnspecifiedValueSet}.
-    // * <p>
-    // * For all other {@link ValueSetType}s this Method returns <code>true</code> if this
-    // * {@link ValueSetType} is equal to the given {@link ValueSetType}.
-    // *
-    // * @param otherValueSetType
-    // * @return
-    // */
-    // public boolean isDetailSpecificationOf(ValueSetType otherValueSetType) {
-    // if (this == UNSPECIFIED && otherValueSetType == UNSPECIFIED) {
-    // return false;
-    // }
-    // return otherValueSetType == UNSPECIFIED || this == otherValueSetType;
-    // }
+
+    public boolean isUnrestricted() {
+        return this == ValueSetType.UNRESTRICTED;
+    }
+
+    public boolean isRange() {
+        return this == ValueSetType.RANGE;
+    }
+
+    public boolean isEnum() {
+        return this == ValueSetType.ENUM;
+    }
+
 }

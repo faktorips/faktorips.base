@@ -13,9 +13,9 @@
 
 package org.faktorips.runtime;
 
-import org.faktorips.runtime.Message.Severity;
-
 import junit.framework.TestCase;
+
+import org.faktorips.runtime.Message.Severity;
 
 /**
  *

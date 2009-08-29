@@ -47,6 +47,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return datatype instanceof EnumTypeDatatypeAdapter;
     }
@@ -54,6 +55,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
@@ -61,7 +63,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             IIpsProject ipsProject) {
 
         Combo combo = toolkit.createCombo(parent);
-        if (valueSet instanceof IEnumValueSet) {
+        if (valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
         }
         EnumTypeDatatypeAdapter datatypeAdapter = (EnumTypeDatatypeAdapter)datatype;
@@ -71,6 +73,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
@@ -87,6 +90,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
      * a <code>Combo</code> control for the given <code>DataType</code>. In this case the Combo
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
+    @Override
     public TableCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             ValueSet valueSet,

@@ -53,6 +53,13 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public boolean isEnum() {
+        return true;
+    }
+
+    /**
      * Returns the IDs of the values of adapted enumeration type respectively the enumeration
      * content. The attribute value referring to the enumeration attribute marked as identifier is
      * considered to be the ID.

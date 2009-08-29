@@ -183,6 +183,19 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        IPolicyCmptTypeAttribute attribute = validateReferenceToAttribute(list, ipsProject);
+        if (attribute == null) {
+            return;
+        }
+        if (attribute.getAttributeType() == AttributeType.CHANGEABLE
+                || attribute.getAttributeType() == AttributeType.CONSTANT) {
+
+            validateValueAndValueSet(list, ipsProject, attribute);
+        }
+    }
+
+    private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType(ipsProject);
@@ -196,16 +209,22 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         PROPERTY_VALUE));
             }
-        } else {
-            if (attribute.getAttributeType() == AttributeType.CHANGEABLE
-                    || attribute.getAttributeType() == AttributeType.CONSTANT) {
-                validateValue(attribute, ipsProject, list);
-            }
+        }
+        return attribute;
+    }
+
+    private void validateValueAndValueSet(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
+            throws CoreException {
+        ValueDatatype valueDatatype = validateValueVsDatatype(attribute, ipsProject, list);
+        if (valueDatatype != null) {
+            validateValueVsValueSet(attribute, valueDatatype, ipsProject, list);
+            validateValueSetVsAttributeValueSet(attribute, valueDatatype, ipsProject, list);
         }
     }
 
-    private void validateValue(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject, MessageList list)
-            throws CoreException {
+    private ValueDatatype validateValueVsDatatype(IPolicyCmptTypeAttribute attribute,
+            IIpsProject ipsProject,
+            MessageList list) throws CoreException {
 
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         if (valueDatatype == null) {
@@ -214,7 +233,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
                         PROPERTY_VALUE));
             }
-            return;
+            return null;
         }
         try {
             if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
@@ -222,7 +241,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 list
                         .add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
                                 PROPERTY_VALUE));
-                return;
+                return null;
             }
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
@@ -230,7 +249,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         if (!valueDatatype.isParsable(value)) {
             addNotParsableMessage(value, valueDatatype, list);
+            return null;
         }
+        return valueDatatype;
+    }
+
+    private void validateValueSetVsAttributeValueSet(IPolicyCmptTypeAttribute attribute,
+            ValueDatatype valueDatatype,
+            IIpsProject ipsProject,
+            MessageList list) throws CoreException {
 
         IValueSet modelValueSet = attribute.getValueSet();
         if (modelValueSet.validate(ipsProject).containsErrorMsg()) {
@@ -238,35 +265,47 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             list.add(new Message(IConfigElement.MSGCODE_UNKNWON_VALUESET, text, Message.WARNING, this, PROPERTY_VALUE));
             return;
         }
-
-        if (!valueSet.isDetailSpecificationOf(modelValueSet)) {
-            // model value set contains not the value set defined in the config element
-            // or different value set types
-            String text;
-            if (!valueSet.isDetailSpecificationOf(modelValueSet)) {
-                text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] { valueSet.toShortString(),
-                        modelValueSet.toShortString() });
-            } else {
-                text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
-                        .toShortString());
-            }
-            // determine invalid property (usage e.g. to display problem marker on correct ui
-            // control)
-            String[] invalidProperties = null;
-            Object obj = valueSet;
-            if (valueSet instanceof IEnumValueSet) {
-                invalidProperties = new String[] { IEnumValueSet.PROPERTY_VALUES };
-            } else if (valueSet instanceof IRangeValueSet) {
-                invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND,
-                        IRangeValueSet.PROPERTY_UPPERBOUND };
-            } else {
-                // AllValueSet or unknown
-                obj = this;
-                invalidProperties = new String[] { PROPERTY_VALUE };
-            }
-            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj,
-                    invalidProperties));
+        if (valueSet.isAbstract()) {
+            String text = "Must specify a concrete set of values!";
+            list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET));
+            return;
         }
+        if (valueSet.isDetailedSpecificationOf(modelValueSet)) {
+            // situations like model value set is unrestricted, and this value set is a range
+            // are ok.
+            return;
+        }
+        String text;
+        if (!valueSet.getValueSetType().equals(modelValueSet.getValueSetType())) {
+            text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] { valueSet.toShortString(),
+                    modelValueSet.toShortString() });
+        } else if (!modelValueSet.containsValueSet(valueSet)) {
+            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
+                    .toShortString());
+        } else {
+            // This should never happen
+            text = "Unexpected difference between model and product configuration!";
+        }
+        // determine invalid property (usage e.g. to display problem marker on correct ui
+        // control)
+        String[] invalidProperties = null;
+        Object obj = valueSet;
+        if (valueSet instanceof IEnumValueSet) {
+            invalidProperties = new String[] { IEnumValueSet.PROPERTY_VALUES };
+        } else if (valueSet instanceof IRangeValueSet) {
+            invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND };
+        } else {
+            obj = this;
+            invalidProperties = new String[] { PROPERTY_VALUE };
+        }
+        list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj,
+                invalidProperties));
+    }
+
+    private void validateValueVsValueSet(IPolicyCmptTypeAttribute attribute,
+            ValueDatatype valueDatatype,
+            IIpsProject ipsProject,
+            MessageList list) throws CoreException {
 
         if (StringUtils.isNotEmpty(value)) {
             if (!valueSet.containsValue(value)) {
@@ -297,10 +336,34 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
+        if (attribute == null) {
+            return new ArrayList<ValueSetType>();
+        }
+        if (attribute.getValueSet().isUnrestricted()) {
+            return attribute.getAllowedValueSetTypes(ipsProject);
+        }
+        ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
+        types.add(attribute.getValueSet().getValueSetType());
+        return types;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setValueSetType(ValueSetType type) {
         IValueSet oldset = valueSet;
         valueSet = type.newValueSet(this, getNextPartId());
         valueChanged(oldset, valueSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValueSet changeValueSetType(ValueSetType newType) {
+        setValueSetType(newType);
+        return valueSet;
     }
 
     /**

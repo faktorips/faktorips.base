@@ -53,7 +53,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     protected Method toStringMethod;
 
     public GenericValueDatatype() {
-        
+
     }
 
     /**
@@ -150,7 +150,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * Sets if this datatype is an application of the NullObject pattern.
      */
     public void setNullObjectDefined(boolean flag) {
-        this.nullObjectDefined = flag;
+        nullObjectDefined = flag;
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * Sets the String identification of the special NullObject.
      */
     public void setNullObjectId(String specialNullValueId) {
-        this.nullObjectId = specialNullValueId;
+        nullObjectId = specialNullValueId;
     }
 
     public String getValueOfMethodName() {
@@ -311,6 +311,13 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    public boolean isEnum() {
+        return this instanceof EnumDatatype;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
         return StringUtil.unqualifiedName(qualifiedName);
     }
@@ -325,6 +332,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return getName().hashCode();
     }
@@ -332,6 +340,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -388,6 +397,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return qualifiedName;
     }
@@ -428,7 +438,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * {@inheritDoc}
      */
     public boolean supportsCompare() {
-        return Comparable.class.isAssignableFrom(this.getAdaptedClass());
+        return Comparable.class.isAssignableFrom(getAdaptedClass());
     }
 
     /**

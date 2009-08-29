@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -48,11 +49,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     public final static String XML_TAG = "ValueSet"; //$NON-NLS-1$
 
     /**
-     * Name of the isAbstract attribute in the xml presentation.
-     */
-    private static final String PROPERTY_ABSTRACT = "isAbstract";
-
-    /**
      * The type this value set is of.
      */
     private ValueSetType type;
@@ -60,7 +56,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     /**
      * Flag that defines this valueset as abstract
      */
-    private boolean isAbstract = false;
+    protected boolean abstractFlag = false;
 
     /**
      * Creates a new value set of the given type and with the given parent and id.
@@ -79,6 +75,168 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         }
         descriptionChangable = false;
         this.type = type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueSetType getValueSetType() {
+        return type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage("ValueSet.gif"); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(XML_TAG);
+    }
+
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
+        if (StringUtils.isNotEmpty(abstractString)) {
+            abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT));
+        } else {
+            /*
+             * Backwards-compatibility: if no attribute "abstract" is found, abstractFlag is assumed
+             * to be false. Valueset then acts exactly like a valueset up to version 2.3.x
+             */
+            abstractFlag = false;
+        }
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(abstractFlag));
+    }
+
+    /**
+     * @param original The value to use if available (might be <code>null</code>).
+     * @param alternative The value to use if the original value is <code>null</code>.
+     * 
+     * @return Either the original value (if not <code>null</code>) or the alternative string.
+     */
+    protected String getProperty(String original, String alternative) {
+        if (original == null) {
+            return alternative;
+        }
+        return original;
+    }
+
+    /**
+     * Returns the datatype this value set is based on or <code>null</code>, if the datatype is not
+     * provided by the parent or the datatype provided is not a <code>ValueDatatype</code>.
+     */
+    public ValueDatatype getValueDatatype() {
+        try {
+            return ((IValueDatatypeProvider)parent).getValueDatatype();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final void setValuesOf(IValueSet source) {
+        if (source == null) {
+            return;
+        }
+        if (!isUnrestricted()) {
+            abstractFlag = source.isAbstract();
+        }
+        if (getValueSetType().equals(source.getValueSetType())) {
+            copyPropertiesFrom(source);
+        }
+    }
+
+    protected abstract void copyPropertiesFrom(IValueSet source);
+
+    public void setAbstract(boolean isAbstract) {
+        if (isUnrestricted() && isAbstract) {
+            throw new RuntimeException("Can't set an unrestricted value set to abstract!");
+        }
+        boolean abstractOld = isAbstract();
+        abstractFlag = isAbstract;
+        valueChanged(abstractOld, isAbstract());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbstract() {
+        return abstractFlag;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
+        if (otherValueSet.isUnrestricted()) {
+            return true;
+        }
+        if (!getValueSetType().equals(otherValueSet.getValueSetType())) {
+            return false;
+        }
+        if (otherValueSet.isAbstract()) {
+            return true;
+        }
+        return otherValueSet.containsValueSet(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSameTypeOfValueSet(IValueSet other) {
+        if (other == null) {
+            return false;
+        }
+        return getValueSetType().equals(other.getValueSetType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUnrestricted() {
+        return getValueSetType() == ValueSetType.UNRESTRICTED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEnum() {
+        return getValueSetType() == ValueSetType.ENUM;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canBeUsedAsSupersetForAnotherEnumValueSet() {
+        return isEnum() && !isAbstract();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRange() {
+        return getValueSetType() == ValueSetType.RANGE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbstractAndNotUnrestricted() {
+        return !isUnrestricted() && isAbstract();
     }
 
     /**
@@ -124,99 +282,4 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         list.add(msg);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ValueSetType getValueSetType() {
-        return type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ValueSet.gif"); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Element createElement(Document doc) {
-        return doc.createElement(XML_TAG);
-    }
-
-    @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
-        super.initPropertiesFromXml(element, id);
-        String isAbstractString = element.getAttribute(PROPERTY_ABSTRACT);
-        if (isAbstractString != null) {
-            isAbstract = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT));
-        } else {
-            /*
-             * Backwards-compatibility: if no attribute "isAbstract" is found, isAbstract is assumed
-             * to be false. This valueset then acts exactly like a valueset of an older
-             * FIPS-Version.
-             */
-            isAbstract = false;
-        }
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(isAbstract));
-    }
-
-    /**
-     * @param original The value to use if available (might be <code>null</code>).
-     * @param alternative The value to use if the original value is <code>null</code>.
-     * 
-     * @return Either the original value (if not <code>null</code>) or the alternative string.
-     */
-    protected String getProperty(String original, String alternative) {
-        if (original == null) {
-            return alternative;
-        }
-        return original;
-    }
-
-    /**
-     * Returns the datatype this value set is based on or <code>null</code>, if the datatype is not
-     * provided by the parent or the datatype provided is not a <code>ValueDatatype</code>.
-     */
-    public ValueDatatype getValueDatatype() {
-        try {
-            return ((IValueDatatypeProvider)parent).getValueDatatype();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void setAbstract(boolean isAbstract) {
-        boolean abstractOld = isAbstract();
-        this.isAbstract = isAbstract;
-        valueChanged(abstractOld, isAbstract());
-    }
-
-    public boolean isAbstract() {
-        return isAbstract;
-    }
-
-    public boolean isDetailSpecificationOf(IValueSet policyValueSet) {
-        if (policyValueSet.isAbstract()) {
-            if (getValueSetType() == policyValueSet.getValueSetType()) {
-                return true;
-            } else {
-                // An abstract allValues valueset can be specified by all other ValuesetTypes
-                return policyValueSet.getValueSetType() == ValueSetType.ALL_VALUES;
-            }
-        } else if (policyValueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
-            // A concrete allValues/Unrestricted Valueset must be configured with an
-            // allValues/Unrestricted Valueset
-            return getValueSetType() == ValueSetType.ALL_VALUES;
-        } else {
-            return policyValueSet.containsValueSet(this);
-        }
-    }
 }

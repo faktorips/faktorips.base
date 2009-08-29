@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
  * @author Thorsten Guenther
  */
 public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
+
     public final static String XML_TAG = "AllValues"; //$NON-NLS-1$
 
     /**
@@ -43,7 +44,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
      *             <code>IValueDatatypeProvider</code>.
      */
     public AllValuesValueSet(IIpsObjectPart parent, int partId) {
-        super(ValueSetType.ALL_VALUES, parent, partId);
+        super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
     /**
@@ -56,8 +57,9 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return super.toString() + ":" + "AllValuesValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
+        return super.toString() + ":" + "UnrestrictedValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -118,7 +120,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
             return true;
         }
 
-        String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), this.toShortString());
+        String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), toShortString());
         addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, invalidProperty);
         return false;
     }
@@ -133,6 +135,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         // nothing more to do...
@@ -141,6 +144,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
@@ -158,7 +162,8 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
     /**
      * {@inheritDoc}
      */
-    public void setValuesOf(IValueSet target) {
+    @Override
+    public void copyPropertiesFrom(IValueSet target) {
         // nothing to do.
     }
 

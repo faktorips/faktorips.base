@@ -135,6 +135,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             }
         });
         table.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F2 && e.stateMask == SWT.NONE) {
                     editColumnOrNextPossible(0);
@@ -194,6 +195,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         });
         // support switching rows while editing:
         control.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
                     if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
@@ -204,15 +206,17 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                     }
                 }
 
-                if (e.stateMask != SWT.NONE)
+                if (e.stateMask != SWT.NONE) {
                     return;
+                }
 
                 switch (e.keyCode) {
                     case SWT.ARROW_DOWN:
                         e.doit = false;
                         int nextRow = table.getSelectionIndex() + 1;
-                        if (nextRow >= table.getItemCount())
+                        if (nextRow >= table.getItemCount()) {
                             break;
+                        }
                         table.setSelection(nextRow);
                         editColumnOrPrevPossible(editorColumn);
                         break;
@@ -220,8 +224,9 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                     case SWT.ARROW_UP:
                         e.doit = false;
                         int prevRow = table.getSelectionIndex() - 1;
-                        if (prevRow < 0)
+                        if (prevRow < 0) {
                             break;
+                        }
                         table.setSelection(prevRow);
                         editColumnOrPrevPossible(editorColumn);
                         break;
@@ -280,26 +285,30 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private void editColumnOrNextPossible(int column) {
         Object[] selected = getSelectedElements();
-        if (selected.length != 1)
+        if (selected.length != 1) {
             return;
+        }
         int nextColumn = column;
         do {
             tableViewer.editElement(selected[0], nextColumn);
-            if (tableViewer.isCellEditorActive())
+            if (tableViewer.isCellEditorActive()) {
                 return;
+            }
             nextColumn = nextColumn(nextColumn);
         } while (nextColumn != column);
     }
 
     private void editColumnOrPrevPossible(int column) {
         Object[] selected = getSelectedElements();
-        if (selected.length != 1)
+        if (selected.length != 1) {
             return;
+        }
         int prevColumn = column;
         do {
             tableViewer.editElement(selected[0], prevColumn);
-            if (tableViewer.isCellEditorActive())
+            if (tableViewer.isCellEditorActive()) {
                 return;
+            }
             prevColumn = prevColumn(prevColumn);
         } while (prevColumn != column);
     }
@@ -314,11 +323,13 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Object[] getSelectedElements() {
         ISelection selection = tableViewer.getSelection();
-        if (selection == null)
+        if (selection == null) {
             return new Object[0];
+        }
 
-        if (!(selection instanceof IStructuredSelection))
+        if (!(selection instanceof IStructuredSelection)) {
             return new Object[0];
+        }
 
         List selected = ((IStructuredSelection)selection).toList();
         return selected.toArray();
@@ -370,6 +381,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         button.setText("Add"); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 addElement();
                 tableViewer.refresh();
@@ -388,6 +400,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         button.setText("Remove"); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int[] indices = table.getSelectionIndices();
                 for (int i = indices.length - 1; i >= 0; i--) {
@@ -415,6 +428,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         button.setText(text);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (table.getSelectionCount() == 0) {
                     return;
@@ -480,7 +494,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     protected abstract void swapElements(int index1, int index2);
 
-    protected class UnfocusableTextCellEditor extends TextCellEditor {
+    public class UnfocusableTextCellEditor extends TextCellEditor {
         private Object fOriginalValue;
         SubjectControlContentAssistant fContentAssistant;
         private boolean fSaveNextModification;
@@ -489,6 +503,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             super(parent);
         }
 
+        @Override
         public void activate() {
             super.activate();
             fOriginalValue = doGetValue();
@@ -503,11 +518,13 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                     getProperty(property), newValue);
         }
 
+        @Override
         protected void focusLost() {
-            if (fContentAssistant != null && fContentAssistant.hasProposalPopupFocus())
+            if (fContentAssistant != null && fContentAssistant.hasProposalPopupFocus()) {
                 fSaveNextModification = true;
-            else
+            } else {
                 super.focusLost();
+            }
         }
 
         public void setContentAssistant(SubjectControlContentAssistant assistant, final int property) {
@@ -532,7 +549,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        this.dataChangeable = changeable;
+        dataChangeable = changeable;
         addButton.setEnabled(changeable);
         removeButton.setEnabled(changeable);
         downButton.setEnabled(changeable);

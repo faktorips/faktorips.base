@@ -93,7 +93,7 @@ public class UIToolkit {
             ((Button)c).setEnabled(changeable);
             return;
         }
-        // note: this has to definitly the last if statement as other controls might derive from
+        // note: this has to be the last if statement as other controls might derive from
         // composite
         if (c instanceof Composite) {
             Control[] children = ((Composite)c).getChildren();
@@ -269,7 +269,7 @@ public class UIToolkit {
      * Creates a new form label with margin.
      */
     public Label createFormLabel(Composite parent, String text) {
-        Composite c = this.createComposite(parent);
+        Composite c = createComposite(parent);
         c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END));
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
@@ -570,7 +570,7 @@ public class UIToolkit {
                         datatype, ids[i]);
                 nameList.add(formatedText);
             }
-            setComboValues(newCombo, (String[])nameList.toArray(new String[ids.length]));
+            setComboValues(newCombo, nameList.toArray(new String[ids.length]));
             return newCombo;
         }
         setComboValues(newCombo, datatype.getAllValueIds(true));
@@ -744,8 +744,8 @@ public class UIToolkit {
     }
 
     /**
-     * If the given Control has a {@link GridData} as LayoutData, the width-hint is set to the
-     * given value (width). Has no effect otherwise.
+     * If the given Control has a {@link GridData} as LayoutData, the width-hint is set to the given
+     * value (width). Has no effect otherwise.
      */
     public void setWidthHint(Control control, int width) {
         if (control.getLayoutData() instanceof GridData) {

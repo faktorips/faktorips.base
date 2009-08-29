@@ -46,7 +46,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public static final String XML_TAG = "Enum"; //$NON-NLS-1$    
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
-    private ArrayList elements = new ArrayList();
+    private ArrayList<String> elements = new ArrayList<String>();
 
     public EnumValueSet(IIpsObjectPart parent, int partId) {
         super(ValueSetType.ENUM, parent, partId);
@@ -56,7 +56,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public String[] getValues() {
-        return (String[])elements.toArray(new String[elements.size()]);
+        return elements.toArray(new String[elements.size()]);
     }
 
     /**
@@ -102,8 +102,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
 
-        for (Iterator it = elements.iterator(); it.hasNext();) {
-            String each = (String)it.next();
+        for (Iterator<String> it = elements.iterator(); it.hasNext();) {
+            String each = it.next();
             if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {
                 return true;
             }
@@ -152,24 +152,26 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
          */
         if (isAbstract()) {
             return true;
-        } else {
-            IEnumValueSet enumSubset = (IEnumValueSet)subset;
-            String[] subsetValues = enumSubset.getValues();
-
-            boolean contains = true;
-            MessageList dummy = new MessageList();
-            for (int i = 0; i < subsetValues.length && contains; i++) {
-                contains = this.containsValue(subsetValues[i], dummy, invalidObject, getProperty(invalidProperty,
-                        PROPERTY_VALUES));
-            }
-
-            if (!contains) {
-                String msg = NLS.bind(Messages.EnumValueSet_msgNotSubset, enumSubset.toShortString(), toShortString());
-                addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
-            }
-
-            return contains;
         }
+        if (subset.isAbstract()) {
+            return false; // this set is concrete
+        }
+        IEnumValueSet enumSubset = (IEnumValueSet)subset;
+        String[] subsetValues = enumSubset.getValues();
+
+        boolean contains = true;
+        MessageList dummy = new MessageList();
+        for (int i = 0; i < subsetValues.length && contains; i++) {
+            contains = this.containsValue(subsetValues[i], dummy, invalidObject, getProperty(invalidProperty,
+                    PROPERTY_VALUES));
+        }
+
+        if (!contains) {
+            String msg = NLS.bind(Messages.EnumValueSet_msgNotSubset, enumSubset.toShortString(), toShortString());
+            addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
+        }
+
+        return contains;
     }
 
     /**
@@ -207,14 +209,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public String getValue(int index) {
-        return (String)elements.get(index);
+        return elements.get(index);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(int index, String value) {
-        String oldValue = (String)elements.get(index);
+        String oldValue = elements.get(index);
         elements.set(index, value);
         valueChanged(oldValue, value);
     }
@@ -230,16 +232,16 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public String[] getValuesNotContained(IEnumValueSet otherSet) {
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         if (otherSet == null) {
-            return (String[])result.toArray(new String[result.size()]);
+            return result.toArray(new String[result.size()]);
         }
         for (int i = 0; i < otherSet.size(); i++) {
             if (!elements.contains(otherSet.getValue(i))) {
                 result.add(otherSet.getValue(i));
             }
         }
-        return (String[])result.toArray(new String[result.size()]);
+        return result.toArray(new String[result.size()]);
     }
 
     /**
@@ -251,7 +253,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
         int numOfValues = elements.size();
         for (int i = 0; i < numOfValues; i++) {
-            String value = (String)elements.get(i);
+            String value = elements.get(i);
             if (datatype == null) {
                 String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsableDatatypeUnknown, getNotNullValue(value));
                 list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, this, PROPERTY_VALUES));
@@ -262,10 +264,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             }
         }
         for (int i = 0; i < numOfValues - 1; i++) {
-            String valueOfi = (String)elements.get(i);
+            String valueOfi = elements.get(i);
 
             for (int j = i + 1; j < numOfValues; j++) {
-                String valueOfj = (String)elements.get(j);
+                String valueOfj = elements.get(j);
                 if ((valueOfj == null && valueOfi == null) || (valueOfi != null && valueOfi.equals(valueOfj))) {
                     String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(valueOfi));
                     list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, this, PROPERTY_VALUES));
@@ -305,15 +307,18 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public String toString() {
+        if (isAbstract()) {
+            return super.toString() + "(abstract)";
+        }
         return super.toString() + ":" + elements.toString(); //$NON-NLS-1$
     }
 
     public String toShortString() {
         ValueDatatype type = getValueDatatype();
         if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
-            List result = new ArrayList(elements.size());
-            for (Iterator iter = elements.iterator(); iter.hasNext();) {
-                String id = (String)iter.next();
+            List<String> result = new ArrayList<String>(elements.size());
+            for (Iterator<String> iter = elements.iterator(); iter.hasNext();) {
+                String id = iter.next();
                 String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                         .formatValue(type, id);
                 result.add(formatedEnumText);
@@ -347,10 +352,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG);
-        for (Iterator iter = elements.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = elements.iterator(); iter.hasNext();) {
             Element valueElement = doc.createElement(XML_VALUE);
             tagElement.appendChild(valueElement);
-            String value = (String)iter.next();
+            String value = iter.next();
             ValueToXmlHelper.addValueToElement(value, valueElement, "Data"); //$NON-NLS-1$
         }
         element.appendChild(tagElement);
@@ -361,9 +366,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public IValueSet copy(IIpsObjectPart parent, int id) {
         EnumValueSet retValue = new EnumValueSet(parent, id);
-
-        retValue.elements = new ArrayList(elements);
-
+        retValue.elements = new ArrayList<String>(elements);
         return retValue;
     }
 
@@ -380,17 +383,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public void setValuesOf(IValueSet target) {
-        if (!(target instanceof EnumValueSet)) {
-            throw new IllegalArgumentException("The given value set is not an enum value set"); //$NON-NLS-1$
-        }
-
-        if (target == this) {
-            return;
-        }
-
+    @Override
+    public void copyPropertiesFrom(IValueSet source) {
         elements.clear();
-        elements.addAll(((EnumValueSet)target).elements);
+        elements.addAll(((EnumValueSet)source).elements);
         objectHasChanged();
     }
 

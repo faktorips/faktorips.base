@@ -429,6 +429,10 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
             return null;
         }
 
+        public boolean isEnum() {
+            return false;
+        }
+
         public boolean isParsable(String value) {
             return true;
         }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,60 +17,66 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * Abstract super class for Datatype implementations.
- *   
+ * 
  * @author Jan Ortmann
  */
 public abstract class AbstractDatatype implements Datatype {
-    
+
     /**
      * {@inheritDoc}
      */
-    public MessageList checkReadyToUse(){
+    public MessageList checkReadyToUse() {
         return new MessageList();
     }
 
     /**
      * {@inheritDoc}
      */
-	public boolean isVoid() {
-		return false;
-	}
-	
+    public boolean isVoid() {
+        return false;
+    }
+
+    public boolean isEnum() {
+        return this instanceof EnumDatatype;
+    }
 
     /**
      * {@inheritDoc}
      */
-	public int hashCode() {
-	    return getName().hashCode();
-	}
-	
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
     /**
      * {@inheritDoc}
      */
-	public boolean equals(Object o) {
-		if (this==o) {
-			return true;
-		}
-		if (!(o instanceof Datatype)) {
-			return false;
-		}
-		return getQualifiedName().equals(((Datatype)o).getQualifiedName());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Datatype)) {
+            return false;
+        }
+        return getQualifiedName().equals(((Datatype)o).getQualifiedName());
+    }
 
-	/**
-	 * Returns the type's name. 
-	 */
-	public String toString() {
-		return getQualifiedName();
-	}
-	
-	/**
-	 * Compares the two type's alphabetically by their name.
-	 */
-	public int compareTo(Object o) {
-		Datatype type = (Datatype)o;
-		return getQualifiedName().compareTo(type.getQualifiedName());
-	}
+    /**
+     * Returns the type's name.
+     */
+    @Override
+    public String toString() {
+        return getQualifiedName();
+    }
+
+    /**
+     * Compares the two type's alphabetically by their name.
+     */
+    public int compareTo(Object o) {
+        Datatype type = (Datatype)o;
+        return getQualifiedName().compareTo(type.getQualifiedName());
+    }
 
     /**
      * {@inheritDoc}
@@ -79,5 +85,4 @@ public abstract class AbstractDatatype implements Datatype {
         return false;
     }
 
-    
 }

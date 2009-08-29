@@ -15,10 +15,10 @@ package org.faktorips.runtime.internal;
 
 import java.util.Locale;
 
+import junit.framework.TestCase;
+
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.values.Money;
-
-import junit.framework.TestCase;
 
 public class ValidationContextTest extends TestCase {
 

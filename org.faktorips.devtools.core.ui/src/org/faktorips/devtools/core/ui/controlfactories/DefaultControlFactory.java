@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,55 +33,68 @@ import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
- * A default factory that creates a simple text control for any value datatype if 
- * the given value set is not an enum value set. If the given value set is an enum value set
- * it create a combo box.
+ * A default factory that creates a combo box for none-abstract enum value sets and a simple text
+ * control in all other cases.
  * 
  * @author Joerg Ortmann
  */
 public class DefaultControlFactory extends ValueDatatypeControlFactory {
 
-	public DefaultControlFactory() {
-		super();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isFactoryFor(ValueDatatype datatype) {
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public EditField createEditField(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
-		
-		if (datatype != null && valueSet instanceof IEnumValueSet) {
-            Combo combo = toolkit.createCombo(parent);
-			return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
-		}
-		return new TextField(toolkit.createText(parent));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Control createControl(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
-
-		return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
-	}
+    public DefaultControlFactory() {
+        super();
+    }
 
     /**
-     * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given 
-     * columnIndex and a <code>Text</code> control. 
      * {@inheritDoc}
      */
-    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex, IIpsProject ipsProject) {
-        Text textControl= toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
+    @Override
+    public boolean isFactoryFor(ValueDatatype datatype) {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EditField createEditField(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+
+        if (datatype != null && valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
+            Combo combo = toolkit.createCombo(parent);
+            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+        }
+        return new TextField(toolkit.createText(parent));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Control createControl(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+
+        return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
+    }
+
+    /**
+     * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given
+     * columnIndex and a <code>Text</code> control. {@inheritDoc}
+     */
+    @Override
+    public TableCellEditor createCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            ValueSet valueSet,
+            TableViewer tableViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
         return new TextCellEditor(tableViewer, columnIndex, textControl);
     }
-    
+
 }

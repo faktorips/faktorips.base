@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.model.valueset;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.util.message.MessageList;
 
@@ -33,6 +32,7 @@ import org.faktorips.util.message.MessageList;
 public interface IValueSet extends IIpsObjectPart {
 
     public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -144,10 +144,10 @@ public interface IValueSet extends IIpsObjectPart {
     public IValueSet copy(IIpsObjectPart newParent, int id);
 
     /**
-     * Copy all values (not the parent or the id) of the given source to this value set.
-     * 
-     * @throws IllegalArgumentException if the given target is not the same type this method is
-     *             invoked.
+     * Copy all values including the abstract-flag -if applicable- (but not the parent or the id) of
+     * the given source to this value set. If this given source value set is of a different type,
+     * only the abstract flag is copied. If this value set is an ALL_VALUES value set, this method
+     * does nothing.
      */
     public void setValuesOf(IValueSet source);
 
@@ -175,42 +175,70 @@ public interface IValueSet extends IIpsObjectPart {
 
     /**
      * Marks this valueset as abstract. An abstract valueset does not define concrete values,
-     * instead it is a substitude/constraint for the type of allowed valueset.
-     * <p>
-     * Abstract valuesets can only defined within product-relevant {@link PolicyCmptTypeAttribute}s.
-     * <p>
-     * Although abstract valuesets define no concrete values they are treated as if they contained
-     * all possible values. In other words: they make no restriction on the allowed/contained
-     * values.
-     * 
-     * @param b
+     * instead it is a substitude/constraint for the type of allowed valueset. An unrestricted value
+     * set if also not abstract, as it defines all values of the underlying datatype as member of
+     * the set.
      */
     public void setAbstract(boolean b);
 
     /**
-     * Returns <code>true</code> if this Valueset is abstract, false otherwise.
+     * Returns <code>true</code> if this value set is abstract, <code>false</code> otherwise.
      * 
      * @param b
      */
     public boolean isAbstract();
 
     /**
-     * Returns <code>true</code> if this valueset is a valid specification of the given valuset.
-     * <p>
-     * If the given valueset is abstract, there are two possibilities:
-     * <ul>
-     * <li>the valuesettypes are equal -> true is returned as an abstract valueset contains all
-     * values and thus all valuesets of the same type.</li>
-     * <li>the valuesettypes differ -> <code>true</code> is returned only if the given Valueset is
-     * an allvalues-Valuest as all other valuesets are possible specifications of it.</li>
-     * </ul>
-     * <p>
-     * If the given valueset is not abstract the result of {@link #containsValueSet(IValueSet)} is
-     * returned.
-     * 
-     * @param modelValueSet
      * @return
      */
-    public boolean isDetailSpecificationOf(IValueSet modelValueSet);
+    public boolean isAbstractAndNotUnrestricted();
+
+    /**
+     * Returns <code>true</code> if this value set os of the same type as the given other value set.
+     * Returns <code>false</code> otherwise. Returns <code>false</code> if the other value set is
+     * <code>null</code>.
+     */
+    public boolean isSameTypeOfValueSet(IValueSet other);
+
+    /**
+     * Returns <code>true</code> if the value set is unrestricted. It contains all values defined by
+     * an underlying datatype.
+     */
+    public boolean isUnrestricted();
+
+    /**
+     * Returns <code>true</code> if the value set is a range, otherwise <code>false</code>.
+     */
+    public boolean isRange();
+
+    /**
+     * Returns <code>true</code> if the value set is an enumeration, otherwise <code>false</code>.
+     */
+    public boolean isEnum();
+
+    /**
+     * Returns <code>true</code> if this is a none-abstract enum value set. None-abstract enum value
+     * set can be used as supersets for other enum value sets. Returns <code>false</code> otherwise.
+     */
+    public boolean canBeUsedAsSupersetForAnotherEnumValueSet();
+
+    /**
+     * Returns <code>true</code> if this valueset is a more detailed specification of the given
+     * valuset or is the same specification.
+     * <p>
+     * If the valueset given as parameter is unrestricted, the method returns <code>true</code> as
+     * all other value sets are more detailed specifications (or if this value set is also
+     * unrestricted it is the same specification).
+     * <p>
+     * If the valueset given as parameter is restricted but has a differnt type, the method returns
+     * <code>false</code>. Otherwise, if the value sets are of the same type, there are two cases:
+     * <ul>
+     * <li>The given value set is abstract -> <code>true</code> is returned as an abstract valueset
+     * contains all values and thus all valuesets of the same type.</li>
+     * <li>The given value set is not abstract -> <code>true</code> is returned if this value set is
+     * a subset of the given value set.</li>
+     * </ul>
+     */
+    public boolean isDetailedSpecificationOf(IValueSet valueSet);
 
 }

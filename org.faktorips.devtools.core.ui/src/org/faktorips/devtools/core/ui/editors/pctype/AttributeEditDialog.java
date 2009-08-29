@@ -66,7 +66,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -75,10 +74,9 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
-import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
-import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
+import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
+import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -92,8 +90,6 @@ import org.faktorips.util.message.MessageList;
  */
 public class AttributeEditDialog extends IpsPartEditDialog2 {
 
-    private static final int LABEL_WIDTH_HINT = 95;
-
     // the attribute beeing edited.
     private IPolicyCmptTypeAttribute attribute;
 
@@ -105,8 +101,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private EditField defaultValueField;
 
-    private ValueSetEditControl valueSetEditControl;
-
+    private ValueSetSpecificationControl valueSetSpecificationControl;
     private DatatypeRefControl datatypeControl;
 
     private Label labelDefaultValue;
@@ -168,10 +163,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     // placeholder for the default edit field, the edit field for the default value depends on
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
-
-    private ComboField valueSetTypeField;
-
-    private ValueSetDefinitionRadioListener valueSetDefinitionRadioListener;
 
     /**
      * @param parentShell
@@ -286,6 +277,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(folder, 1, false);
         Group generelGroup = uiToolkit.createGroup(c, Messages.AttributeEditDialog_generalGroup);
         createGenerelGroupContent(generelGroup);
+        if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
+            configGroup = uiToolkit.createGroup(c, Messages.AttributeEditDialog_ConfigurationGroup);
+            createConfigGroupContent();
+        }
 
         return c;
     }
@@ -364,7 +359,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         if (attribute.isChangeable()) {
             Checkbox checkbox = uiToolkit.createCheckbox(area, Messages.AttributeEditDialog_defaultValueConfigured);
-            bindingContext.bindEnabled(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
             return;
         }
 
@@ -518,105 +513,40 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         return productCmptType;
     }
 
-    private Control createValueSetPage(TabFolder folder) {
+    private Control createValueSetPage(TabFolder folder) throws CoreException {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
-        createDefaultValueGroup(pageControl);
-        createValueSetGroup(pageControl);
-        // createDependencyGroup(configGroup);
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
+        labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
 
-        return pageControl;
-    }
-
-    private void createDefaultValueGroup(Composite parent) {
-        Composite defaultValueGroup = uiToolkit.createGridGroup(parent, Messages.AttributeEditDialog_labelDefaultValue,
-                2, false);
-        defaultValueGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        labelDefaultValue = uiToolkit
-                .createFormLabel(defaultValueGroup, Messages.AttributeEditDialog_labelDefaultValue);
-        uiToolkit.setWidthHint(labelDefaultValue, LABEL_WIDTH_HINT);
-
-        defaultEditFieldPlaceholder = uiToolkit.createComposite(defaultValueGroup);
+        defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
-    }
-
-    // private void createValueSetGroupNew(Composite parent) {
-    // configGroup = uiToolkit.createGridGroup(parent, "Valueset", 2, false);
-    // configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    // Checkbox constrainValueSetCheckbox = uiToolkit.createCheckbox(configGroup,
-    // "Constrain Valueset");
-    // uiToolkit.setHorizontalSpan(constrainValueSetCheckbox, 2);
-    // bindingContext.bindContent(constrainValueSetCheckbox, attributeWrapper,
-    // PolicyAttributeWrapper.PROPERTY_CONSTRAIN_VALUESET_MANUALLY);
-    //
-    // Label label = uiToolkit.createFormLabel(configGroup, "Value Set Type:");
-    // uiToolkit.setWidthHint(label, LABEL_WIDTH_HINT);
-    //
-    // Combo combo = uiToolkit.createCombo(configGroup);
-    // valueSetTypeField = new ComboField(combo);
-    // setValueSetTypesForCombo(ValueSetType.getValueSetTypes());
-    // valueSetTypeField.setValue(ValueSetType.ALL_VALUES.getName());
-    //
-    // bindingContext.bindEnabled(valueSetTypeField.getControl(), attributeWrapper,
-    // PolicyAttributeWrapper.PROPERTY_CONSTRAIN_VALUESET_MANUALLY);
-    // bindingContext.bindContent(valueSetTypeField, attributeWrapper,
-    // PolicyAttributeWrapper.PROPERTY_VALUESET_TYPE_BY_NAME);
-    // }
-
-    private void createValueSetGroup(Composite parent) {
-
-        configGroup = uiToolkit.createGroup(parent, Messages.AttributeEditDialog_ValuesetGroupTitle);
-        configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
-            createValueSetDefinitionGroup(configGroup);
-        }
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
-        valueSetEditControl = new ValueSetEditControl(configGroup, uiToolkit, uiController, attribute,
-                new PcTypeValidator(), true);
-        updateValueSetTypes();
+        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());;
+        valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, uiToolkit, uiController,
+                attribute, valueSetTypes, new PcTypeValidator(), ValueSetControlEditMode.ALL_KIND_OF_SETS);
+        updateAllowedValueSetTypes();
 
-        Object layoutData = valueSetEditControl.getLayoutData();
+        Object layoutData = valueSetSpecificationControl.getLayoutData();
         if (layoutData instanceof GridData) {
             // set the minimum height to show at least the maximum size of the selected
             // ValueSetEditControl
             GridData gd = (GridData)layoutData;
-            gd.heightHint = 340;
+            gd.heightHint = 300;
         }
+
         adjustLabelWidth();
-    }
-
-    private void createValueSetDefinitionGroup(Composite parent) {
-        RadiobuttonGroup radioGroup = uiToolkit.createRadiobuttonGroup(parent, SWT.NONE,
-                Messages.AttributeEditDialog_ValuesetDefinitionGroupTitle);
-        Composite constraintLocationGroup = radioGroup.getGroup();
-        constraintLocationGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        uiToolkit.setHorizontalSpan(constraintLocationGroup, 2);
-        Radiobutton modelConfig = radioGroup
-                .addRadiobutton(Messages.AttributeEditDialog_ValuesetDefinition_ModelConfiguration);
-        uiToolkit.setHorizontalSpan(modelConfig, 2);
-        Radiobutton productConfig = radioGroup
-                .addRadiobutton(Messages.AttributeEditDialog_ValuesetDefinition_ProductConfiguration);
-        uiToolkit.setHorizontalSpan(productConfig, 2);
-        Radiobutton subsetOfModelInProductConfig = radioGroup
-                .addRadiobutton(Messages.AttributeEditDialog_ValuesetDefinition_SubsetOfModelInProductConfiguration);
-        uiToolkit.setHorizontalSpan(subsetOfModelInProductConfig, 2);
-
-        // bindingContext.bindEnabled(subsetOfModelInProductConfig.getButton(), attribute,
-        // PolicyCmptTypeAttribute.PROPERTY_CONFIGURED_WITH_ALLVALUES_VALUESET, false);
-        valueSetDefinitionRadioListener = new ValueSetDefinitionRadioListener(modelConfig, productConfig,
-                subsetOfModelInProductConfig);
+        return pageControl;
     }
 
     private void adjustLabelWidth() {
-        if (valueSetEditControl == null) {
+        if (valueSetSpecificationControl == null) {
             return;
         }
-        Label valueSetTypeLabel = valueSetEditControl.getLabel();
+        Label valueSetTypeLabel = valueSetSpecificationControl.getValueSetTypeLabel();
         // sets the label width of the value set control label, so the control will be horizontal
         // aligned to the default value text
         // the offset of 7 is calculated by the corresponding composites horizontal spacing and
@@ -624,7 +554,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         int widthDefaultLabel = labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
         int widthValueSetTypeLabel = valueSetTypeLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
         if (widthDefaultLabel > widthValueSetTypeLabel) {
-            valueSetEditControl.setLabelWidthHint(widthDefaultLabel + 7);
+            valueSetSpecificationControl.setLabelWidthHint(widthDefaultLabel + 7);
         } else {
             Object ld = defaultValueField.getControl().getLayoutData();
             if (ld instanceof GridData) {
@@ -664,7 +594,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             IpsPlugin.log(e);
         }
         boolean enabled = newDatatype != null;
-        valueSetEditControl.setDataChangeable(enabled);
+        defaultValueField.getControl().setEnabled(enabled);
+        if (valueSetSpecificationControl != null) {
+            valueSetSpecificationControl
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            valueSetSpecificationControl.setDataChangeable(enabled);
+        }
         if (newDatatype == null || newDatatype.equals(currentDatatype)) {
             return;
         }
@@ -674,38 +610,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             defaultValueField.getControl().dispose();
         }
         createDefaultValueEditField();
-        defaultValueField.getControl().setEnabled(enabled);
-        updateValueSetTypes();
+        updateAllowedValueSetTypes();
     }
 
-    private void updateValueSetTypes() {
-        currentValueSetType = valueSetEditControl.getValueSetType();
-        ValueSetType[] types;
+    private void updateAllowedValueSetTypes() {
+        currentValueSetType = valueSetSpecificationControl.getValueSetType();
         try {
-            types = ipsProject.getValueSetTypes(currentDatatype);
+            valueSetSpecificationControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute
+                    .getIpsProject()));
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            types = new ValueSetType[] { ValueSetType.ALL_VALUES };
+            valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
         }
-        valueSetEditControl.setTypes(types, currentDatatype);
         if (currentValueSetType != null) {
             // if the previous selction was a valid selection use this one as new selection in drop
-            // down,
-            // otherwise the default (first one) is selected
-            valueSetEditControl.selectValueSetType(currentValueSetType);
-        }
-        if (attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) {
-            /*
-             * Ensure AllValues-Valueset has a correct state: abstract and not product relevant at
-             * the same time as well as not abstract and product relevant are not allowed.
-             */
-            // attribute.setProductRelevant(attribute.getValueSet().isAbstract());
-        }
-        if (valueSetDefinitionRadioListener != null) {
-            /*
-             * RadioListener may be null if the PolicyComponentType has no ProductCmptType
-             */
-            valueSetDefinitionRadioListener.updateState();
+            // down, otherwise the default (first one) is selected
+            valueSetSpecificationControl.setValueSetType(currentValueSetType);
         }
     }
 
@@ -868,69 +788,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), method
                     .getImage(), name, null, method.getDescription());
             result.add(proposal);
-        }
-
-    }
-
-    private class ValueSetDefinitionRadioListener implements SelectionListener {
-        private Radiobutton modelConfig;
-        private Radiobutton productConfig;
-        private Radiobutton subsetOfModelInProductConfig;
-
-        public ValueSetDefinitionRadioListener(Radiobutton mConfig, Radiobutton pConfig, Radiobutton subsetConfig) {
-            modelConfig = mConfig;
-            productConfig = pConfig;
-            subsetOfModelInProductConfig = subsetConfig;
-            productConfig.getButton().addSelectionListener(this);
-            modelConfig.getButton().addSelectionListener(this);
-            subsetOfModelInProductConfig.getButton().addSelectionListener(this);
-        }
-
-        public void updateState() {
-            modelConfig.setChecked(false);
-            productConfig.setChecked(false);
-            subsetOfModelInProductConfig.setChecked(false);
-
-            // if (attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) {
-            // /*
-            // * AllValues unterstuetzt keine SubsetConfig, daher muss fuer den StandardFall
-            // * (abstract=false) ModelConfig gewaehlt werden.
-            // */
-            // if (attribute.getValueSet().isAbstract()) {
-            // productConfig.setChecked(true);
-            // } else {
-            // modelConfig.setChecked(true);
-            // }
-            // } else
-            if (attribute.isProductRelevant()) {
-                if (attribute.getValueSet().isAbstract()) {
-                    productConfig.setChecked(true);
-                } else {
-                    subsetOfModelInProductConfig.setChecked(true);
-                }
-            } else {
-                modelConfig.setChecked(true);
-            }
-        }
-
-        public void widgetDefaultSelected(SelectionEvent e) {
-        }
-
-        public void widgetSelected(SelectionEvent e) {
-            if (e.widget == modelConfig.getButton()) {
-                // also changes the currently edited valueset
-                valueSetEditControl.allowSpecifyValueSetValues(true);
-                attribute.setProductRelevant(false);
-                // case false/false is invalid
-            } else if (e.widget == productConfig.getButton()) {
-                // also changes the currently edited valueset to abstract
-                valueSetEditControl.allowSpecifyValueSetValues(false);
-                attribute.setProductRelevant(true);
-            } else if (e.widget == subsetOfModelInProductConfig.getButton()) {
-                // also changes the currently edited valueset
-                valueSetEditControl.allowSpecifyValueSetValues(true);
-                attribute.setProductRelevant(true);
-            }
         }
 
     }

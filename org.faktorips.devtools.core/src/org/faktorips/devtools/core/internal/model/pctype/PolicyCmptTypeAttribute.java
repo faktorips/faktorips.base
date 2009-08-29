@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -209,12 +211,27 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setValueSetType(ValueSetType type) {
         if (valueSet != null && type == valueSet.getValueSetType()) {
             return;
         }
         valueSet = type.newValueSet(this, getNextPartId());
         objectHasChanged();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValueSet changeValueSetType(ValueSetType newType) {
+        setValueSetType(newType);
+        return valueSet;
     }
 
     /**

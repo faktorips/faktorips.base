@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -29,15 +30,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -49,7 +47,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Section to display and edit defaults and ranges of a product
+ * Section to display and edit defaults and value sets of a product component generation.
  * 
  * @author Thorsten Guenther
  */
@@ -68,7 +66,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     /**
      * List of controls displaying data (needed to enable/disable).
      */
-    private List editControls = new ArrayList();
+    private List<Control> editControls = new ArrayList<Control>();
 
     /**
      * Controller to handle update of ui and model automatically.
@@ -108,8 +106,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         this.toolkit = toolkit;
 
         // following line forces the paint listener to draw a light grey border
-        // around
-        // the text control. Can only be understood by looking at the
+        // around the text control. Can only be understood by looking at the
         // FormToolkit.PaintBorder class.
         rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(rootPane);
@@ -139,110 +136,68 @@ public class DefaultsAndRangesSection extends IpsSection {
 
     private void createEditControlsForElement(IConfigElement element) {
         try {
-            ValueDatatype datatype = element.findValueDatatype(element.getIpsProject());
+            IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
+            ValueDatatype datatype = (attribute == null) ? null : attribute.findDatatype(element.getIpsProject());
             if (datatype == null) {
                 // no datatype found - use string as default
                 datatype = Datatype.STRING;
             }
             IpsObjectUIController controller = new IpsObjectUIController(element);
             uiMasterController.add(controller);
-            createEditControlForDefaultValue(element, datatype, controller);
-            IValueSet valueSet = element.getValueSet();
-            createEditControlForValueSet(element, controller, valueSet);
+            createLabel(element, attribute);
+            createEditControlForDefaultValue(element, attribute, datatype, controller);
+            createEditControlForValueSet(element, attribute, controller);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createEditControlForValueSet(IConfigElement element,
-            IpsObjectUIController controller,
-            IValueSet valueSet) throws CoreException {
-        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
-        IValueSet attrValueSet = attribute == null ? null : attribute.getValueSet();
-        if (attrValueSet != null && attrValueSet.isAbstract()) {
-            createEditControlsForAbstractValueSet(element, valueSet, controller);
-        } else if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-            createEditControlsForEnumeration(element, valueSet, controller);
-        } else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
-            createEditControlsForRange(valueSet, controller);
-        }
-    }
-
-    private void createEditControlsForAbstractValueSet(IConfigElement element,
-            IValueSet valueSet,
-            IpsObjectUIController controller) {
-        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
-        EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
-        evc.setDataChangeable(isDataChangeable());
-        evc.setText(valueSet.toShortString());
-        PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
-        controller.add(ptbf, element, IConfigElement.PROPERTY_VALUE_SET);
-        GridData data = (GridData)evc.getLayoutData();
-        data.widthHint = UIToolkit.DEFAULT_WIDTH;
-        addFocusControl(evc.getTextControl());
-        editControls.add(evc);
-    }
-
-    private void createEditControlForDefaultValue(IConfigElement element,
-            ValueDatatype dataType,
-            IpsObjectUIController controller) throws CoreException {
+    private void createLabel(IConfigElement element, IPolicyCmptTypeAttribute attribute) throws CoreException {
         Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(element.getName()));
         // use the description of the attribute as tooltip
-        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
         if (attribute != null) {
             label.setToolTipText(attribute.getDescription());
         }
+    }
+
+    private void createEditControlForDefaultValue(IConfigElement element,
+            IPolicyCmptTypeAttribute attribute,
+            ValueDatatype datatype,
+            IpsObjectUIController controller) throws CoreException {
 
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
-        IPolicyCmptTypeAttribute policyAttribute = element.findPcTypeAttribute(element.getIpsProject());
-        IValueSet policyValueSet = policyAttribute == null ? null : policyAttribute.getValueSet();
-
-        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
-        EditField field = null;
-        // TODO pk 15-06-2009: as long as faktor ips doesn't support attribute value constraints the
-        // value set of
-        // enum types with separate enum contents cannot be restricted
-        if (dataType instanceof EnumTypeDatatypeAdapter && ((EnumTypeDatatypeAdapter)dataType).hasEnumContent()) {
-            EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)dataType;
-            field = ctrlFactory.createEditField(toolkit, rootPane, new EnumTypeDatatypeAdapter(adapter.getEnumType(),
-                    null), element.getValueSet(), generation.getIpsProject());
-        }
-        // else if(){
-        // field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(),
-        // generation
-        // .getIpsProject());
-        // }
-        else if (policyValueSet != null && policyValueSet.isAbstract()) {
-            /*
-             * For an abstract allValues-Valueset on the policyAttribute the editField must be used
-             * for all kinds of valuesets. Thus the configured valueset (on the configelement) is
-             * not used to create the Editfield (its type may change over time). Instead the
-             * policyattributes valueset is used.
-             */
-            field = ctrlFactory
-                    .createEditField(toolkit, rootPane, dataType, policyValueSet, generation.getIpsProject());
-        } else {
-            field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(), generation
-                    .getIpsProject());
-        }
+        IValueSet attrValueSet = attribute == null ? null : attribute.getValueSet();
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+        EditField field = ctrlFactory.createEditField(toolkit, rootPane, datatype, attrValueSet, generation
+                .getIpsProject());;
         addFocusControl(field.getControl());
         editControls.add(field.getControl());
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);
     }
 
-    private void createEditControlsForEnumeration(IConfigElement element,
-            IValueSet valueSet,
-            IpsObjectUIController controller) {
-        // only if the value set defined in the model is not an all values value set
-        // we can modify the content of the value set.
+    private void createEditControlForValueSet(IConfigElement element,
+            IPolicyCmptTypeAttribute attribute,
+            IpsObjectUIController controller) throws CoreException {
+
+        IValueSet attrValueSet = attribute == null ? null : attribute.getValueSet();
+        if (attrValueSet == null) {
+            return;
+        }
+        if (attrValueSet.isRange()) {
+            createEditControlsForRange(element.getValueSet(), controller);
+        } else {
+            createEditControlsForOtherThanRange(element, controller);
+        }
+    }
+
+    private void createEditControlsForOtherThanRange(IConfigElement element, IpsObjectUIController controller) {
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
-        EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, getShell(), controller);
+        AnyValueSetControl evc = new AnyValueSetControl(rootPane, toolkit, element, getShell(), controller);
         evc.setDataChangeable(isDataChangeable());
-        evc.setText(valueSet.toShortString());
+        evc.setText(element.getValueSet().toShortString());
         PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
-        controller.add(ptbf, valueSet, IEnumValueSet.PROPERTY_VALUES);
+        controller.add(ptbf, element, IConfigElement.PROPERTY_VALUE_SET);
         GridData data = (GridData)evc.getLayoutData();
         data.widthHint = UIToolkit.DEFAULT_WIDTH;
         addFocusControl(evc.getTextControl());

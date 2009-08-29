@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * <p>
  * Example:
  * <p>
- * Given two formulas, the positions of the corresponding formula signatures in the product component
- * type's list of formula signatures defines the order. 
+ * Given two formulas, the positions of the corresponding formula signatures in the product
+ * component type's list of formula signatures defines the order.
  * 
  * @author Jan Ortmann
  */
@@ -38,7 +38,7 @@ public class PropertyValueComparator implements Comparator {
 
     private IProductCmptType type;
     private Map propIndexMap = null;
-    
+
     public PropertyValueComparator(IProductCmptGeneration gen, IIpsProject ipsProject) {
         this(gen.getProductCmpt(), ipsProject);
     }
@@ -49,9 +49,10 @@ public class PropertyValueComparator implements Comparator {
 
     public PropertyValueComparator(String productCmptType, IIpsProject ipsProject) {
         try {
-            type = ipsProject.findProductCmptType(productCmptType); 
+            type = ipsProject.findProductCmptType(productCmptType);
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Error finding type for property comparator, type name = " + productCmptType, e)); //$NON-NLS-1$
+            IpsPlugin
+                    .log(new IpsStatus("Error finding type for property comparator, type name = " + productCmptType, e)); //$NON-NLS-1$
         }
         initPropIndexMap(ipsProject);
     }
@@ -60,10 +61,10 @@ public class PropertyValueComparator implements Comparator {
         this.type = type;
         initPropIndexMap(ipsProject);
     }
-    
+
     private void initPropIndexMap(IIpsProject ipsProject) {
         try {
-            if (type!=null) {
+            if (type != null) {
                 propIndexMap = new HashMap();
                 IProdDefProperty[] props = type.findProdDefProperties(ipsProject);
                 for (int i = 0; i < props.length; i++) {
@@ -74,7 +75,7 @@ public class PropertyValueComparator implements Comparator {
             IpsPlugin.log(new IpsStatus("Error initializing property comparator for type " + type, e)); //$NON-NLS-1$
         }
     }
-    
+
     public IProductCmptType getProductCmptType() {
         return type;
     }
@@ -86,20 +87,20 @@ public class PropertyValueComparator implements Comparator {
         IPropertyValue prop1 = (IPropertyValue)o1;
         IPropertyValue prop2 = (IPropertyValue)o2;
         int typeCompare = prop1.getPropertyType().compareTo(prop2.getPropertyType());
-        if (typeCompare!=0) {
+        if (typeCompare != 0) {
             return typeCompare;
         }
         return getIndex(prop1) - getIndex(prop2);
     }
-    
+
     private int getIndex(IPropertyValue prop) {
-        if (type==null) {
+        if (type == null) {
             return 0;
         }
         Integer index = (Integer)propIndexMap.get(prop.getPropertyName());
-        if (index==null) {
+        if (index == null) {
             return 0;
-        } 
+        }
         return index.intValue();
     }
 

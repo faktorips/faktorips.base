@@ -128,7 +128,10 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
-        if (!element.getValueSet().isDetailSpecificationOf(attribute.getValueSet())) {
+        if (attribute.getValueSet().isUnrestricted()) {
+            return;
+        }
+        if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
             new ValueSetMismatchEntry(this, attribute, element);
         }
     }
