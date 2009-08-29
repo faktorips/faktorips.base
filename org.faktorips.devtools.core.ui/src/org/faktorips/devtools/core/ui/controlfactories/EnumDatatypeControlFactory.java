@@ -48,6 +48,9 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      */
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
+        if (datatype == null) {
+            return false;
+        }
         return datatype.isEnum();
     }
 
