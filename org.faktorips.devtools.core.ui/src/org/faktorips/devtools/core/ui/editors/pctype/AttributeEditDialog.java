@@ -594,7 +594,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             IpsPlugin.log(e);
         }
         boolean enabled = newDatatype != null;
-        defaultValueField.getControl().setEnabled(enabled);
+        if (defaultValueField != null) {
+            defaultValueField.getControl().setEnabled(enabled);
+        }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
                     .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
