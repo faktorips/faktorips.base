@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
+import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -245,8 +246,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
-            Boolean unqiueBoolean = currentEnumAttribute.findIsUnique(ipsProject);
-            if ((unqiueBoolean == null) ? false : unqiueBoolean.booleanValue()) {
+            if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject)) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
             }
         }
@@ -332,6 +332,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
         return enumAttributes.indexOf(enumAttribute);
+    }
+
+    public int getIndexOfEnumLiteralNameAttribute() {
+        if (getEnumLiteralNameAttribute() == null) {
+            return -1;
+        }
+        return enumAttributes.indexOf(getEnumLiteralNameAttribute());
     }
 
     /**
@@ -595,11 +602,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
-            Boolean identifierBoolean = currentEnumAttribute.findIsIdentifier(ipsProject);
-            if (identifierBoolean == null) {
-                continue;
-            }
-            if (identifierBoolean) {
+            if (EnumUtil.findEnumAttributeIsIdentifier(currentEnumAttribute, ipsProject)) {
                 return currentEnumAttribute;
             }
         }
@@ -608,11 +611,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
-            Boolean displayNameBoolean = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
-            if (displayNameBoolean == null) {
-                continue;
-            }
-            if (displayNameBoolean) {
+            if (EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(currentEnumAttribute, ipsProject)) {
                 return currentEnumAttribute;
             }
         }
@@ -843,6 +842,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
         return null;
+    }
+
+    public boolean hasEnumLiteralNameAttribute() {
+        return getEnumLiteralNameAttribute() != null;
     }
 
     /**

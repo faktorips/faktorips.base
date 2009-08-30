@@ -118,7 +118,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
                     || validationMessages
                             .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
-                enumContentPage.enumValuesSection.reinit(null);
+                enumContentPage.enumValuesSection.reinit();
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);

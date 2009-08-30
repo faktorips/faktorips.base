@@ -92,7 +92,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             IEnumAttribute isIdentifierEnumAttribute = enumType.findIdentiferAttribute(ipsProject);
             if (isIdentifierEnumAttribute != null) {
                 for (IEnumValue enumValue : getEnumValues()) {
-                    IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, isIdentifierEnumAttribute);
+                    IEnumAttributeValue value = enumValue.getEnumAttributeValue(isIdentifierEnumAttribute);
                     if (value == null) {
                         break;
                     }
@@ -114,7 +114,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         IEnumType enumType = findEnumType(ipsProject);
         IEnumAttribute identifierAttribute = enumType.findIdentiferAttribute(ipsProject);
         for (IEnumValue enumValue : getEnumValues()) {
-            IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, identifierAttribute);
+            IEnumAttributeValue value = enumValue.getEnumAttributeValue(identifierAttribute);
             if (value == null) {
                 continue;
             }

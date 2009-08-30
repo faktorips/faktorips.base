@@ -142,7 +142,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID));
     }
 
-    public void testValidatePackage() throws CoreException {
+    public void testValidateName() throws CoreException {
         IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
         enumContent.setEnumType(genderEnumType.getQualifiedName());
         MessageList validationMessageList = enumContent.validate(ipsProject);

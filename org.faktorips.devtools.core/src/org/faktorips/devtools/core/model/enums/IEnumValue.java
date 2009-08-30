@@ -65,24 +65,21 @@ public interface IEnumValue extends IIpsObjectPart {
 
     /**
      * Searches and returns the <tt>IEnumAttributeValue</tt> that refers to the given
-     * <tt>IEnumAttribute</tt> of the <tt>IEnumType</tt> this <tt>IEnumValue</tt> refers to.
+     * <tt>IEnumAttribute</tt>.
      * <p>
-     * Returns <tt>null</tt> if none can be found, if the given <tt>IEnumAttribute</tt> does not
-     * exist in the referenced <tt>IEnumType</tt> or if the provided <tt>IEnumAttribute</tt> is
+     * Returns <tt>null</tt> if none can be found or if the provided <tt>IEnumAttribute</tt> is
      * <tt>null</tt>.
+     * <p>
+     * <strong>Important:</strong> For performance reasons this information is obtained trough the
+     * index of the provided <tt>IEnumAttribute</tt>. There is no check if the given
+     * <tt>IEnumAttribute</tt> really is part of the <tt>IEnumType</tt> referenced by the
+     * <tt>IEnumValueContainer</tt>. Clients have to care to only pass <tt>IEnumAttribute</tt>s that
+     * are really part of the referenced <tt>IEnumType</tt>.
      * 
-     * @param ipsProject The IPS project which IPS object path is used for the search of the
-     *            referenced <tt>IEnumType</tt>. This is not necessarily the project this
-     *            <tt>IEnumAttribute</tt> is part of.
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain the <tt>IEnumAttributeValue</tt>
      *            for.
-     * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the
-     *             referenced <tt>IEnumType</tt>.
-     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
-            throws CoreException;
+    public IEnumAttributeValue getEnumAttributeValue(IEnumAttribute enumAttribute);
 
     /**
      * Returns how many <tt>IEnumAttributeValue</tt>s this <tt>IEnumValue</tt> is currently
@@ -190,5 +187,12 @@ public interface IEnumValue extends IIpsObjectPart {
      * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
      */
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue);
+
+    /**
+     * Returns the <tt>IEnumAttributeValue</tt> referencing the first
+     * <tt>IEnumLiteralNameAttribute</tt> or <tt>null</tt> if there exists none or this
+     * <tt>IEnumValue</tt> is part of an <tt>IEnumContent</tt>.
+     */
+    public IEnumAttributeValue getLiteralNameAttributeValue();
 
 }

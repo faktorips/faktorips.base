@@ -109,7 +109,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
-    public void testValidateEnumContentPackageFragment() {
+    public void testValidateEnumContentName() {
         MessageList msgList = new MessageList();
         EnumTypeValidations.validateEnumContentName(msgList, paymentMode, false, true, "");
         assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));

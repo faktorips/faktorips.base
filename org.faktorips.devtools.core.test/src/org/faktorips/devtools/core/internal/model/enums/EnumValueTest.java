@@ -77,24 +77,17 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumContent, genderEnumValueMale.getEnumValueContainer());
     }
 
-    public void testFindEnumAttributeValue() throws CoreException {
-        try {
-            genderEnumValueMale.findEnumAttributeValue(null, null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+    public void testGetEnumAttributeValue() throws CoreException {
+        assertNull(genderEnumValueMale.getEnumAttributeValue(null));
 
-        assertNull(genderEnumValueMale.findEnumAttributeValue(ipsProject, null));
-        assertNull(genderEnumValueMale.findEnumAttributeValue(ipsProject, paymentMode.getEnumAttributes(true).get(0)));
-
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale.findEnumAttributeValue(
-                ipsProject, genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale
+                .getEnumAttributeValue(genderEnumAttributeId));
         assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(0), genderEnumValueFemale
-                .findEnumAttributeValue(ipsProject, genderEnumAttributeId));
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale.findEnumAttributeValue(
-                ipsProject, genderEnumAttributeName));
+                .getEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale
+                .getEnumAttributeValue(genderEnumAttributeName));
         assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1), genderEnumValueFemale
-                .findEnumAttributeValue(ipsProject, genderEnumAttributeName));
+                .getEnumAttributeValue(genderEnumAttributeName));
     }
 
     public void testSetEnumAttributeValueAttributeGiven() throws CoreException {
@@ -105,7 +98,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         }
 
         genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName, "foo");
-        assertEquals("foo", genderEnumValueMale.findEnumAttributeValue(ipsProject, genderEnumAttributeName).getValue());
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getValue());
     }
 
     public void testSetEnumAttributeValueAttributeNameGiven() throws CoreException {
@@ -116,7 +109,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         }
 
         genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName.getName(), "foo");
-        assertEquals("foo", genderEnumValueMale.findEnumAttributeValue(ipsProject, genderEnumAttributeName).getValue());
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getValue());
     }
 
     public void testSetEnumAttributeValueAttributeValueIndexGiven() {
@@ -141,6 +134,12 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(paymentMode
                 .findUniqueEnumAttributes(true, ipsProject), ipsProject);
         assertEquals(3, uniqueAttributeValues.size());
+    }
+
+    public void testGetLiteralNameAttributeValue() {
+        assertNull(genderEnumValueMale.getLiteralNameAttributeValue());
+        IEnumValue value = paymentMode.getEnumValues().get(0);
+        assertEquals("MONTHLY", value.getLiteralNameAttributeValue().getValue());
     }
 
 }

@@ -373,4 +373,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
      */
     public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns <tt>true</tt> if this <tt>IEnumAttribute</tt> is used by the first
+     * <tt>IEnumLiteralNameAttribute</tt> to obtain default literal names, <tt>false</tt> otherwise.
+     * <p>
+     * Returns <tt>false</tt> if there is no <tt>IEnumLiteralNameAttribute</tt>.
+     * <p>
+     * This information is only valid for the <tt>IEnumAttribute</tt> itself, not for copies created
+     * due to inheritance.
+     */
+    public boolean isLiteralNameDefaultValueProvider();
+
 }

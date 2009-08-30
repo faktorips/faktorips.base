@@ -596,6 +596,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(-1, genderEnumType.getIndexOfEnumAttribute(paymentMode.getEnumAttributes(false).get(0)));
     }
 
+    public void testGetIndexOfEnumLiteralNameAttribute() throws CoreException {
+        assertEquals(0, paymentMode.getIndexOfEnumLiteralNameAttribute());
+        paymentMode.moveEnumAttribute(paymentMode.getEnumLiteralNameAttribute(), false);
+        assertEquals(1, paymentMode.getIndexOfEnumLiteralNameAttribute());
+    }
+
+    public void testHasEnumLiteralNameAttribute() {
+        assertFalse(genderEnumType.hasEnumLiteralNameAttribute());
+        assertTrue(paymentMode.hasEnumLiteralNameAttribute());
+    }
+
     public void testHasSuperEnumType() throws CoreException {
         assertFalse(genderEnumType.hasSuperEnumType());
 

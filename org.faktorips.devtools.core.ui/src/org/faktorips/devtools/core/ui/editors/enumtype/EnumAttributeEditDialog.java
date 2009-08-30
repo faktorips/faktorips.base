@@ -31,6 +31,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -315,23 +316,16 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
             // Obtain the properties from the super EnumAttribute.
             try {
-                IIpsProject ipsProject = enumAttribute.getIpsProject();
                 String name = enumAttribute.getName();
-                Datatype datatype = enumAttribute.findDatatype(ipsProject);
-                Boolean uniqueIdentifier = enumAttribute.findIsUnique(ipsProject);
-                Boolean usedAsIdInFaktorIpsUi = enumAttribute.findIsIdentifier(ipsProject);
-                Boolean usedAsNameInFaktorIpsUi = enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
-                String datatypeString = (datatype == null) ? "" : datatype.getName();
-                boolean uniqueIdentifierBoolean = (uniqueIdentifier == null) ? false : uniqueIdentifier.booleanValue();
-                boolean usedAsIdInFaktorIpsUiBoolean = (usedAsIdInFaktorIpsUi == null) ? false : usedAsIdInFaktorIpsUi
-                        .booleanValue();
-                boolean usedAsNameInFaktorIpsUiBoolean = (usedAsNameInFaktorIpsUi == null) ? false
-                        : usedAsNameInFaktorIpsUi.booleanValue();
                 nameText.setText(name);
+                IIpsProject ipsProject = enumAttribute.getIpsProject();
+                Datatype datatype = enumAttribute.findDatatype(ipsProject);
+                String datatypeString = (datatype == null) ? "" : datatype.getName();
                 datatypeControl.setText(datatypeString);
-                uniqueCheckbox.setChecked(uniqueIdentifierBoolean);
-                identifierCheckbox.setChecked(usedAsIdInFaktorIpsUiBoolean);
-                displayNameCheckbox.setChecked(usedAsNameInFaktorIpsUiBoolean);
+                uniqueCheckbox.setChecked(EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject));
+                identifierCheckbox.setChecked(EnumUtil.findEnumAttributeIsIdentifier(enumAttribute, ipsProject));
+                displayNameCheckbox.setChecked(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(enumAttribute,
+                        ipsProject));
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

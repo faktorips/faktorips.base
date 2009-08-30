@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.util.message.MessageList;
@@ -157,7 +158,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     public void testGetValueName2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
-        enumType.newEnumLiteralNameAttribute();
+        IEnumLiteralNameAttribute literalNameAttribute = enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         assertNull(adapter.getValueName(null));
         assertNull(adapter.getValueName("a"));
@@ -174,6 +175,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
+        enumType.setContainingValues(false);
+        enumType.deleteEnumAttributeWithValues(literalNameAttribute);
         IEnumContent content = newEnumContent(enumType, "EnumContent");
         IEnumValue enumValue = content.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();

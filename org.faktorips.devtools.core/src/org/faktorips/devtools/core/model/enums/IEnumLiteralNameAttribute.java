@@ -85,6 +85,9 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
     /**
      * Returns the name of the <tt>IEnumAttribute</tt> currently being used as default value
      * provider attribute for enumeration literals.
+     * <p>
+     * Returns an empty <tt>String</tt> if there is no default value provider attribute and never
+     * returns <tt>null</tt>.
      */
     public String getDefaultValueProviderAttribute();
 

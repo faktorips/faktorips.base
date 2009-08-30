@@ -98,10 +98,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             return null;
         }
 
-        if (enumContent == null) {
-            if (!(enumType.isContainingValues())) {
-                return null;
-            }
+        if (enumContent == null && !(enumType.isContainingValues())) {
+            return null;
         }
 
         try {
@@ -112,7 +110,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             }
 
             IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
-            IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(ipsProject, displayNameAttribute);
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
             return enumAttributeValue.getValue();
 
         } catch (CoreException e) {

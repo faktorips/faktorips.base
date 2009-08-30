@@ -306,8 +306,7 @@ public class Migration2_2_to2_3 {
                          * literal name values will be empty (should theoretically not happen).
                          */
                         if (nameAttribute != null) {
-                            IEnumAttributeValue attributeValue = newEnumValue.findEnumAttributeValue(ipsProject,
-                                    nameAttribute);
+                            IEnumAttributeValue attributeValue = newEnumValue.getEnumAttributeValue(nameAttribute);
                             // Theoretically not possible to be null.
                             if (attributeValue != null) {
                                 value = attributeValue.getValue();

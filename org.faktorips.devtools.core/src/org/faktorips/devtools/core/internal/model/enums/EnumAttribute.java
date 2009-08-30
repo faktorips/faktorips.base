@@ -27,7 +27,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -145,16 +147,21 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
             }
 
-            boolean isUniqueIdentifier = findIsUnique(ipsProject);
-            if (isUniqueIdentifier && inherited) {
+            boolean isUniqueIdentifier = EnumUtil.findEnumAttributeIsUnique(this, ipsProject);
+            if (inherited && isUniqueIdentifier) {
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
-            } else if (isUniqueIdentifier) {
-                return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
-            } else if (inherited) {
-                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-            } else {
-                return IpsPlugin.getDefault().getImage(ICON);
             }
+
+            if (isUniqueIdentifier) {
+                return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
+            }
+
+            if (inherited) {
+                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
+            }
+
+            return IpsPlugin.getDefault().getImage(ICON);
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -463,6 +470,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         } else {
             return isUsedAsNameInFaktorIpsUi();
         }
+    }
+
+    public boolean isLiteralNameDefaultValueProvider() {
+        IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
+        return (literalNameAttribute == null) ? false : literalNameAttribute.getDefaultValueProviderAttribute().equals(
+                name);
     }
 
     private void validateDuplicateIndicator(MessageList list,

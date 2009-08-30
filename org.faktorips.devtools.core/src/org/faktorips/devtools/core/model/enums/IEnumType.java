@@ -332,6 +332,12 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
 
     /**
+     * Returns the index of the first <tt>IEnumLiteralNameAttribute</tt> or -1 if no
+     * <tt>IEnumLiteralNameAttribute</tt> exists in this <tt>IEnumType</tt>.
+     */
+    public int getIndexOfEnumLiteralNameAttribute();
+
+    /**
      * Returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if there is no
      * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt>.
      * <p>
@@ -575,6 +581,12 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>null</tt> if none exists.
      */
     public IEnumLiteralNameAttribute getEnumLiteralNameAttribute();
+
+    /**
+     * Returns whether this <tt>IEnumType</tt> currently has at least one
+     * <tt>IEnumLiteralNameAttribute</tt> (<tt>true</tt>) or not (<tt>false</tt>).
+     */
+    public boolean hasEnumLiteralNameAttribute();
 
     /**
      * Returns <tt>true</tt> if this <tt>IEnumType</tt> currently has an

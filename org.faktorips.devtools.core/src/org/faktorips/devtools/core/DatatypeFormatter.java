@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,30 +27,30 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.util.ArgumentCheck;
 
 public class DatatypeFormatter {
-    
+
     private IpsPreferences preferences;
-    
-    public DatatypeFormatter(IpsPreferences ipsPreferences){
+
+    public DatatypeFormatter(IpsPreferences ipsPreferences) {
         ArgumentCheck.notNull(ipsPreferences, this);
-        this.preferences = ipsPreferences;
+        preferences = ipsPreferences;
     }
-    
+
     /**
      * Formats the given value according to the user preferences.
-     *  
+     * 
      * @param datatype The datatype the value is a value of.
      * @param value The value as string
      * @return
-     * @throws CoreException 
+     * @throws CoreException
      * 
      * @see #ENUM_TYPE_DISPLAY
      * @see #NULL_REPRESENTATION_STRING
      */
     public String formatValue(ValueDatatype datatype, String value) {
-        if (value==null) {
+        if (value == null) {
             return preferences.getNullPresentation();
         }
-        if (datatype==null) {
+        if (datatype == null) {
             return value;
         }
         if (datatype instanceof EnumTypeDatatypeAdapter) {
@@ -67,15 +67,18 @@ public class DatatypeFormatter {
         }
         return value;
     }
-    
+
     /**
-     * Formats the provided id according to the user preferences. If the id isn't an id that identifies
-     * a value of the provided enum type or content the id will be returned unformatted. Also if the
-     * enum type is not defined properly in the model the provided id value will be returned unformatted.
-     *  
-     * @param enumType the enum type that defines the enumeration in which the provided id identifies a value 
-     * @param enumContent can be <code>null</code> and is only necessary if the enum type is one that doesn't contain values
-     * @param id the identifies a value of the provided enum type 
+     * Formats the provided id according to the user preferences. If the id isn't an id that
+     * identifies a value of the provided enum type or content the id will be returned unformatted.
+     * Also if the enum type is not defined properly in the model the provided id value will be
+     * returned unformatted.
+     * 
+     * @param enumType the enum type that defines the enumeration in which the provided id
+     *            identifies a value
+     * @param enumContent can be <code>null</code> and is only necessary if the enum type is one
+     *            that doesn't contain values
+     * @param id the identifies a value of the provided enum type
      * @return the formatted value
      */
     private String formatValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) {
@@ -103,47 +106,47 @@ public class DatatypeFormatter {
             throw new RuntimeException(e);
         }
     }
-    
-    private String getIdDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException{
-        
+
+    private String getIdDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
+
         IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
-        if(enumValue == null){
+        if (enumValue == null) {
             return null;
         }
         IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
-        if(enumAttribute == null){
+        if (enumAttribute == null) {
             return null;
         }
-        IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(enumType.getIpsProject(), enumAttribute);
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(enumAttribute);
         return enumAttributeValue.getValue();
     }
 
-    private String getNameDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException{
-        
-        //see if an enum value for the provided id exists if not null will be returned
+    private String getNameDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
+
+        // see if an enum value for the provided id exists if not null will be returned
         IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
-        if(enumValue == null){
+        if (enumValue == null) {
             return null;
         }
-        //see if a name representation for the id exists
+        // see if a name representation for the id exists
         IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
-        if(enumAttribute == null){
+        if (enumAttribute == null) {
             return null;
         }
-        IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(enumType.getIpsProject(), enumAttribute);
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(enumAttribute);
         return enumAttributeValue.getValue();
     }
-    
+
     private IEnumValue getEnumValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
         IEnumValueContainer valueContainer = datatypeAdapter.getEnumValueContainer();
         return valueContainer.findEnumValue(id, valueContainer.getIpsProject());
     }
-    
+
     /**
      * Formats the given value according to the user preferences.
-     *  
+     * 
      * @param datatype The datatype the value is a value of.
      * @param value The value as string
      * @return
@@ -163,34 +166,33 @@ public class DatatypeFormatter {
             return id;
         }
         String name = datatype.getValueName(id);
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
+        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             return name;
-        } 
+        }
     }
-    
+
     /**
-     * Returns the to be displayed text of an enumeration. 
-     * The property ENUM_TYPE_DISPLAY specifies how the name and id will be formated.
-     * E.g. display only id or only name, or display both.
+     * Returns the to be displayed text of an enumeration. The property ENUM_TYPE_DISPLAY specifies
+     * how the name and id will be formated. E.g. display only id or only name, or display both.
      */
-    public String getFormatedEnumText(String id, String name){
+    public String getFormatedEnumText(String id, String name) {
         EnumTypeDisplay enumTypeDisplay = preferences.getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
+        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)){
+        } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
             return name;
         } else {
             return id;
         }
     }
-    
-    public String getBooleanTrueDisplay(){
+
+    public String getBooleanTrueDisplay() {
         return Messages.DatatypeFormatter_booleanTrue;
     }
 
-    public String getBooleanFalseDisplay(){
+    public String getBooleanFalseDisplay() {
         return Messages.DatatypeFormatter_booleanFalse;
     }
 }

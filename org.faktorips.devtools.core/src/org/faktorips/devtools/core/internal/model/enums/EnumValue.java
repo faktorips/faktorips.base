@@ -147,29 +147,20 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return (IEnumValueContainer)getParent();
     }
 
-    public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
-            throws CoreException {
-
-        ArgumentCheck.notNull(ipsProject);
+    public IEnumAttributeValue getEnumAttributeValue(IEnumAttribute enumAttribute) {
         if (enumAttribute == null) {
             return null;
         }
-
-        for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues.getBackingList()) {
-            IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute(ipsProject);
-            if (currentReferencedEnumAttribute != null) {
-                if (currentReferencedEnumAttribute.equals(enumAttribute)) {
-                    return currentEnumAttributeValue;
-                }
-            }
+        int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute);
+        if (enumAttributeValues.size() - 1 < attributeIndex) {
+            return null;
         }
-
-        return null;
+        return enumAttributeValues.getPart(attributeIndex);
     }
 
     public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
-        findEnumAttributeValue(getIpsProject(), enumAttribute).setValue(value);
+        getEnumAttributeValue(enumAttribute).setValue(value);
     }
 
     public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException {
@@ -196,7 +187,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(uniqueEnumAttributes
                 .size());
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            uniqueAttributeValues.add(findEnumAttributeValue(ipsProject, currentUniqueAttribute));
+            uniqueAttributeValues.add(getEnumAttributeValue(currentUniqueAttribute));
         }
         return uniqueAttributeValues;
     }
@@ -233,6 +224,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         }
 
         super.delete();
+    }
+
+    public IEnumAttributeValue getLiteralNameAttributeValue() {
+        if (getEnumValueContainer() instanceof IEnumType) {
+            IEnumType enumType = (IEnumType)getEnumValueContainer();
+            return getEnumAttributeValue(enumType.getEnumLiteralNameAttribute());
+        }
+        return null;
     }
 
 }
