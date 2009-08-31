@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,6 +23,8 @@ package org.faktorips.codegen.dthelpers;
 public interface Java5ClassNames {
 
     public static final String ValuesetPackage = "org.faktorips.valueset";
+    public static final String ValueSet_UnqualifiedName = "ValueSet";
+    public static final String ValueSet_QualifiedName = ValuesetPackage + "." + ValueSet_UnqualifiedName;
     public static final String OrderedValueSet_UnqualifiedName = "OrderedValueSet";
     public static final String OrderedValueSet_QualifiedName = ValuesetPackage + "." + OrderedValueSet_UnqualifiedName;
     public static final String DefaultRange_UnqualifiedName = "DefaultRange";
@@ -35,7 +37,7 @@ public interface Java5ClassNames {
     public static final String RuntimePackageInternal = "org.faktorips.runtime.internal";
     public static final String ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName = "ReadOnlyBinaryRangeTree.KeyType";
     public static final String ReadOnlyBinaryRangeTreeKeyType_QualifiedName = RuntimePackageInternal + "."
-    + ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName;
+            + ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName;
     public static final String Link_UnqualifiedName = "ProductComponentLink";
     public static final String Link_QualifiedName = RuntimePackageInternal + "." + Link_UnqualifiedName;
 
