@@ -337,10 +337,24 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
-    public String getMethodNameGetAllowedValuesFor() throws CoreException {
+    /**
+     * Returns the name of the method to access an attribute's set of allowed ENUM values.
+     */
+    public String getMethodNameGetSetOfAllowedValues() {
+        String lookup = getLookupPrefixForMethodNameGetSetOfAllowedValues() + "_NAME";
         return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(attributeName)),
-                getDatatype());
+                getLocalizedText(lookup, StringUtils.capitalize(getAttributeName())),
+                valuesetDatatypeHelper.getDatatype());
+    }
+
+    protected String getLookupPrefixForMethodNameGetSetOfAllowedValues() {
+        if (getValueSet().isRange()) {
+            return "METHOD_GET_RANGE_FOR";
+        }
+        if (getValueSet().isEnum()) {
+            return "METHOD_GET_ALLOWED_VALUES_FOR";
+        }
+        throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
     public String getMethodNameGetRangeFor() throws CoreException {

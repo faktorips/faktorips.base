@@ -184,7 +184,7 @@ public class GenChangeableAttribute extends GenAttribute {
     // TODO can be deleted
     public void generateSignatureGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        String methodName = getMethodNameGetRangeFor(helper.getDatatype());
+        String methodName = getMethodNameGetSetOfAllowedValues();
         String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
         methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "context" },
                 new String[] { IValidationContext.class.getName() });
@@ -196,7 +196,7 @@ public class GenChangeableAttribute extends GenAttribute {
     // TODO can be deleted
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        String methodName = getMethodNameGetAllowedValuesFor(datatype);
+        String methodName = getMethodNameGetSetOfAllowedValues();
         methodsBuilder.signature(Modifier.PUBLIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
                         + datatype.getJavaClassName() + ">" : EnumValueSet.class.getName(), methodName,
@@ -208,49 +208,27 @@ public class GenChangeableAttribute extends GenAttribute {
      */
     public void generateSignatureGetSetOfAllowedValues(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        String methodName = getMethodNameGetSetOfAllowedValues(datatype);
+        String methodName = getMethodNameGetSetOfAllowedValues();
         methodsBuilder.signature(Modifier.PUBLIC, getJavaTypeForValueSet(getValueSet()), methodName,
                 new String[] { "context" }, new String[] { IValidationContext.class.getName() });
-    }
-
-    // TODO can be deleted
-    public String getMethodNameGetRangeFor(Datatype datatype) {
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(getAttributeName())), datatype);
-    }
-
-    /**
-     * Returns the name of the method to access an attribute's set of allowed ENUM values.
-     */
-    // TODO can be deleted
-    public String getMethodNameGetAllowedValuesFor(Datatype datatype) {
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getAttributeName())),
-                datatype);
-    }
-
-    /**
-     * Returns the name of the method to access an attribute's set of allowed ENUM values.
-     */
-    public String getMethodNameGetSetOfAllowedValues(Datatype datatype) {
-        String lookup = getLookupForMethodNameGetSetOfAllowedValues();
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText(lookup, StringUtils.capitalize(getAttributeName())), datatype);
-    }
-
-    private String getLookupForMethodNameGetSetOfAllowedValues() {
-        if (getValueSet().isRange()) {
-            return "METHOD_GET_RANGE_FOR_NAME";
-        }
-        if (getValueSet().isEnum()) {
-            return "METHOD_GET_ALLOWED_VALUES_FOR_NAME";
-        }
-        throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
     /**
      * Generates the method to access an attribute's set of allowed ENUM values.
      */
+    public void generateMethodGetSetOfAllowedValues(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+
+        String lookup = getLookupPrefixForMethodNameGetSetOfAllowedValues();
+        appendLocalizedJavaDoc(lookup, getAttributeName(), methodsBuilder);
+        generateSignatureGetSetOfAllowedValues(datatype, methodsBuilder);
+        methodsBuilder.append(';');
+    }
+
+    /**
+     * Generates the method to access an attribute's set of allowed ENUM values.
+     */
+    // TODO can be deleted
     public void generateMethodGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
@@ -258,6 +236,7 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append(';');
     }
 
+    // TODO can be deleted
     public void generateMethodGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
@@ -456,7 +435,7 @@ public class GenChangeableAttribute extends GenAttribute {
         body.append("return ");
         if (getPolicyCmptTypeAttribute().isProductRelevant() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
-            body.append(getMethodNameGetRangeFor(valuesetDatatypeHelper.getDatatype()));
+            body.append(getMethodNameGetSetOfAllowedValues());
             body.appendln("(context);");
         } else {
             if (attribute.isOverwrite()) {
@@ -499,7 +478,7 @@ public class GenChangeableAttribute extends GenAttribute {
         body.append("return ");
         if (!isUnrestrictedValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
-            body.append(getMethodNameGetAllowedValuesFor(valuesetDatatypeHelper.getDatatype()));
+            body.append(getMethodNameGetSetOfAllowedValues());
             body.appendln("(context);");
         } else {
             if (attribute.isOverwrite()) {

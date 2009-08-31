@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
@@ -54,6 +53,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (generatesInterface) {
@@ -64,6 +64,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -73,6 +74,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (!generatesInterface) {
@@ -138,10 +140,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             body.append('!');
 
             GenAttribute genAttribute = getGenPolicyCmptType().getGenerator(attr);
-            if (attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)) {
-                body.append(genAttribute.getMethodNameGetAllowedValuesFor());
-            } else if (attr.getValueSet().getValueSetType().equals(ValueSetType.RANGE)) {
-                body.append(genAttribute.getMethodNameGetRangeFor());
+            if (!attr.getValueSet().isUnrestricted()) {
+                body.append(genAttribute.getMethodNameGetSetOfAllowedValues());
             }
             body.append("(");
             body.append(parameterValidationContext);
@@ -196,7 +196,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-                getMethodNameExecRule(rule), new String[] {"ml", parameterValidationContext }, new String[] {
+                getMethodNameExecRule(rule), new String[] { "ml", parameterValidationContext }, new String[] {
                         MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc,
                 javaDocAnnotation);
     }
@@ -277,8 +277,9 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         String javaDoc = getLocalizedText("CREATE_MESSAGE_JAVADOC", rule.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                getMethodNameCreateMessageForRule(rule), (String[])methodParamNames.toArray(new String[methodParamNames.size()]), (String[])methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
-                JavaSourceFileBuilder.ANNOTATION_GENERATED);
+                getMethodNameCreateMessageForRule(rule), (String[])methodParamNames.toArray(new String[methodParamNames
+                        .size()]), (String[])methodParamTypes.toArray(new String[methodParamTypes.size()]), body,
+                javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties,
