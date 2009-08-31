@@ -180,18 +180,12 @@ public class GenChangeableAttribute extends GenAttribute {
         return getPolicyCmptTypeAttribute().getValueSet().isEnum();
     }
 
-    protected boolean isUnrestrictedSet() {
-        return getPolicyCmptTypeAttribute().getValueSet().isUnrestricted();
-    }
-
-    protected boolean isAllValuesValueSet() {
+    protected boolean isUnrestrictedValueSet() {
         return ValueSetType.UNRESTRICTED == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
     }
 
     /**
-     * Generates the signature for the method to access an attribute's set of allowed values.
-     * 
-     * @param datatype
+     * Generates the signature for the method to access an attribute's set of allowed ENUM values.
      */
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -202,12 +196,18 @@ public class GenChangeableAttribute extends GenAttribute {
                 new String[] { "context" }, new String[] { IValidationContext.class.getName() });
     }
 
+    /**
+     * Returns the name of the method to access an attribute's set of allowed ENUM values.
+     */
     public String getMethodNameGetAllowedValuesFor(Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(
                 getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils
                         .capitalize(getPolicyCmptTypeAttribute().getName())), datatype);
     }
 
+    /**
+     * Generates the method to access an attribute's set of allowed ENUM values.
+     */
     public void generateMethodGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
@@ -475,7 +475,7 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        if (!isAllValuesValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
+        if (!isUnrestrictedValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
             body.append(getMethodNameGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype()));
             body.appendln("(context);");
