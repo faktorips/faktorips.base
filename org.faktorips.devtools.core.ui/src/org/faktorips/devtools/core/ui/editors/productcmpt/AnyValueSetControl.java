@@ -39,16 +39,17 @@ import org.faktorips.util.memento.Memento;
  * provided. If the button is clicked, a special editor to define the values is opened.
  * 
  * @author Thorsten Guenther
+ * @auhtor Jan Ortmann
  */
 public class AnyValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-    // The config element which is based on the enum value set to modify.
+    // The config element that owns the value set being shown and edited
     private IConfigElement configElement;
 
     // The shell to details dialog within.
     private Shell shell;
 
-    // The controller to notify if detail modifiation has finished.
+    // The controller
     private IpsObjectUIController controller;
 
     // The state of the config element before opening the detail edit dialog. Used to handle the
@@ -59,13 +60,14 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     // cancel button properly
     private boolean dirty;
 
+    // true if the value set can be edited, false if it read-only.
     private boolean dataChangeable;
 
     /**
-     * Creates a new control to edit a value set.
+     * Creates a new control to show and edit the value set owned by the config element.
      * 
      * @param parent The parent composite to add this control to.
-     * @param toolkit The toolkit to use for the creation of the controls.
+     * @param toolkit The toolkit used to create controls.
      * @param configElement The config element that contains the value set.
      * @param shell The shell to open the details edit dialog within.
      * @param controller The controller to notify uppon changes to update the ui.

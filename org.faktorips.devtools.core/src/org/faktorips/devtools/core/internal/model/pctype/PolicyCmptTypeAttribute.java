@@ -312,7 +312,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
             } else {
-                superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
+                if (!valueSet.isDetailedSpecificationOf(superAttr.getValueSet())) {
+                    String text = "The value set defindes in this attribute must be a more detailed specification of the value set in the overridden attribute (but its not).";
+                    result.add(new Message("", text, Message.ERROR, this));
+                }
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
                     result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this,

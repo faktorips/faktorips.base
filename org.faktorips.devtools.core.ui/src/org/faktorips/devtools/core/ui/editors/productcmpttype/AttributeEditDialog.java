@@ -43,11 +43,9 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Dialog to edit a product cmpt type attribute.
@@ -150,7 +148,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         uiToolkit.createVerticalSpacer(temp, 8);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetEditControl = new ValueSetSpecificationControl(temp, uiToolkit, uiController, attribute, valueSetTypes,
-                new Validator(), ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
         Object layoutData = valueSetEditControl.getLayoutData();
@@ -223,22 +221,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
              * down, otherwise the default (first one) is selected
              */
             valueSetEditControl.setValueSetType(currentValueSetType);
-        }
-    }
-
-    private class Validator implements TableElementValidator {
-
-        public MessageList validate(String element) {
-            MessageList list;
-            try {
-                list = attribute.validate(attribute.getIpsProject());
-                // update the ui to set the current messages for all registered controls
-                bindingContext.updateUI();
-                return list.getMessagesFor(element);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return new MessageList();
-            }
         }
     }
 

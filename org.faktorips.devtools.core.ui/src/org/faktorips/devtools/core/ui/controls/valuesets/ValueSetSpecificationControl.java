@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -39,7 +40,6 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 
 /**
  * A control to edit a value set including it's type.
@@ -69,7 +69,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private UIToolkit toolkit;
     private DefaultUIController uiController;
-    private TableElementValidator tableElementValidator;
 
     private Label valueSetTypeLabel;
 
@@ -83,13 +82,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * EnumValueSetEditControl and RangeEditControl dynamically.
      */
     public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController,
-            IValueSetOwner valueSetOwner, List<ValueSetType> allowedValueSetTypes,
-            TableElementValidator tableElementValidator, ValueSetControlEditMode editMode) {
+            IValueSetOwner valueSetOwner, List<ValueSetType> allowedValueSetTypes, ValueSetControlEditMode editMode) {
         super(parent, SWT.NONE);
         this.valueSetOwner = valueSetOwner;
         this.toolkit = toolkit;
         this.uiController = uiController;
-        this.tableElementValidator = tableElementValidator;
         this.editMode = editMode;
 
         initControls(toolkit);
@@ -191,6 +188,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Control showControlForValueSet() {
         StackLayout layout = (StackLayout)valueSetArea.getLayout();
         layout.topControl = updateControlWithCurrentValueSetOrCreateNewIfNeccessary(valueSetArea);
+        // layout.topControl.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
         setDataChangeable(isDataChangeable()); // set data changeable state of controls
         return layout.topControl;
     }
@@ -205,12 +203,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
-            return valueSetEditControl;
+            return valueSetEditControl.getParent();
         }
         // Creates a new composite to edit the current value set
-        Composite group = createGroupAroundValueSet(valueSetArea, valueSet.getValueSetType().getName());
-        Control c = valueSetEditControlFactory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
-                tableElementValidator);
+        Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
+        Control c = valueSetEditControlFactory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
         c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         setValueSetEditControl(c);
         return group;
@@ -232,8 +229,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetEditControl = newValueSetEditControl;
     }
 
-    private Composite createGroupAroundValueSet(Composite parent, String title) {
-        Composite group = toolkit.createGroup(parent, title);
+    private Group createGroupAroundValueSet(Composite parent, String title) {
+        Group group = toolkit.createGroup(parent, title);
         GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 10;
         group.setLayout(layout);
@@ -270,7 +267,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetTypesCombo = toolkit.createCombo(this);
         valueSetTypesCombo.setText(getValueSetType().getName());
         valueSetTypeField = new ComboField(valueSetTypesCombo);
-        valueSetTypeField.addChangeListener(new TypeModifyListener());
+        valueSetTypeField.addChangeListener(new ValueSetTypeModifyListener());
 
         toolkit.setDataChangeable(valueSetTypesCombo, isDataChangeable());
     }
@@ -342,7 +339,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         setAllowedValueSetTypes(types);
     }
 
-    private class TypeModifyListener implements ValueChangeListener {
+    private class ValueSetTypeModifyListener implements ValueChangeListener {
         /**
          * {@inheritDoc}
          */

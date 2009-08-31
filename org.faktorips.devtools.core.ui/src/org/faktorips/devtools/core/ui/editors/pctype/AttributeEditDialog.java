@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
@@ -527,7 +526,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());;
         valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, uiToolkit, uiController,
-                attribute, valueSetTypes, new PcTypeValidator(), ValueSetControlEditMode.ALL_KIND_OF_SETS);
+                attribute, valueSetTypes, ValueSetControlEditMode.ALL_KIND_OF_SETS);
         updateAllowedValueSetTypes();
 
         Object layoutData = valueSetSpecificationControl.getLayoutData();
@@ -741,22 +740,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
         ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
         ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
-    }
-
-    private class PcTypeValidator implements TableElementValidator {
-
-        public MessageList validate(String element) {
-            MessageList list;
-            try {
-                list = attribute.validate(attribute.getIpsProject());
-                // update the ui to set the current messages for all registered controls
-                bindingContext.updateUI();
-                return list.getMessagesFor(element);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return new MessageList();
-            }
-        }
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

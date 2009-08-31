@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.Messages;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
@@ -47,27 +46,24 @@ import org.faktorips.util.message.MessageList;
 /**
  * A control to define an enum value set by specifying the values in it.
  * <p>
- * It consists of a table control and 4 buttons to add, remove or change the order of vales of the
- * values in the set. The control modifies the EnumValueEnumSet and makes no temporary copy of it.
- * To implement undo operation, the EnumValueEnumSet must be stored localy before calling
- * EnumValueSetEditControl. For "live" evaluation a valueSetOwner must be passed to the control.
+ * It consists of a table control and of buttons to add and remove values and to change the order of
+ * the values in the set. The control modifies the EnumValueSet and makes no temporary copy of it.
+ * To implement undo operation, the EnumValueSet must be stored localy before calling
+ * EnumValueSetEditControl.
  */
 public class EnumValueSetEditControl extends EditTableControl implements IValueSetEditControl {
 
+    // The value set being edited
     private IEnumValueSet valueSet;
-
-    private TableElementValidator tableElementValidator;
 
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
      * value set is of the wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent,
-            TableElementValidator tableElementValidator, String label) {
+    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, String label) {
         super(valueSet, parent, SWT.NONE, label);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
-        this.tableElementValidator = tableElementValidator;
         new MessageService(getTableViewer());
     }
 
@@ -76,8 +72,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
      * value set is of the wrong type, a new EnumValueEnumSet is created. Labels the control with
      * default-text ("Values") in english.
      */
-    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
-        this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
+    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent) {
+        this(valueSet, parent, Messages.EnumValueSetEditControl_titleValues);
     }
 
     @Override
@@ -208,9 +204,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#removeElement(int)
+     * {@inheritDoc}
      */
     @Override
     public void removeElement(int index) {
@@ -228,10 +222,10 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     private MessageList validate(Object element) throws CoreException {
         IndexValueWrapper wrapper = (IndexValueWrapper)element;
-        if (tableElementValidator != null) {
-            return tableElementValidator.validate(wrapper.getValueName());
+        if (valueSet == null) {
+            return new MessageList();
         }
-        return new MessageList();
+        return valueSet.validateValue(wrapper.index, valueSet.getIpsProject());
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {

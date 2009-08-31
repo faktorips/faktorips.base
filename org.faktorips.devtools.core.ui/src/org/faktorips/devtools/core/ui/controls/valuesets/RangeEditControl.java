@@ -18,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -42,8 +41,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
  * uicontroller supplied it is used to establish a mapping between the modell object and the control
  * which represents the object property.
  */
-public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess,
-        IValueSetEditControl {
+public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess, IValueSetEditControl {
 
     private UIToolkit uiToolkit;
 
@@ -62,24 +60,12 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private boolean dataChangeable;
 
     public RangeEditControl(Composite parent, UIToolkit toolkit, IRangeValueSet range, UIController uiController) {
-        this(parent, toolkit, range, uiController, false);
-    }
-
-    /**
-     */
-    public RangeEditControl(Composite parent, UIToolkit toolkit, IRangeValueSet range, UIController uiController,
-            boolean paintGroupAroundRangeControls) {
         super(parent, SWT.NONE);
         this.range = range;
         uiToolkit = toolkit;
 
         setLayout();
-        Composite group = this;
-        // TODO: Perhaps we can remove this in the future. Jan
-        if (paintGroupAroundRangeControls) {
-            group = createRangeGroup(uiToolkit);
-        }
-        Composite workArea = createWorkArea(uiToolkit, group);
+        Composite workArea = createWorkArea(uiToolkit, this);
         createTextControls(uiToolkit, workArea);
 
         if (uiController instanceof IpsObjectUIController) {
@@ -96,14 +82,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         layout.marginHeight = 10;
         layout.marginWidth = 0;
         setLayout(layout);
-    }
-
-    private Group createRangeGroup(UIToolkit toolkit) {
-        Group group = toolkit.createGroup(this, Messages.RangeEditControl_titleRange);
-        GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 10;
-        group.setLayout(layout);
-        return group;
     }
 
     private Composite createWorkArea(UIToolkit toolkit, Composite parent) {

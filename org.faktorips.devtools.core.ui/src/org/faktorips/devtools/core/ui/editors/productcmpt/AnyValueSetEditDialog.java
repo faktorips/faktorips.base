@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -40,8 +39,7 @@ import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
-import org.faktorips.devtools.core.ui.controls.valuesets.EnumValueSetChooser;
+import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
@@ -53,20 +51,21 @@ import org.faktorips.util.message.MessageList;
  */
 public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
+    // The config element that owns the value set being shown/edited.
     private IConfigElement configElement;
 
-    // edit fields
-    private DefaultEditField defaultValueField;
-
-    private boolean viewOnly;
-
-    private List<ValueSetType> allowedValuesSetTypes;
+    // The value datatype values in the value set are "instances" of.
     private ValueDatatype valueDatatype;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
+    // list of value set types the users can select
+    private List<ValueSetType> allowedValuesSetTypes;
+
+    // edit field for the default value
+    private DefaultEditField defaultValueField;
+
+    // true if the dialog is used to just display the value set, no editing is possible
+    private boolean viewOnly;
+
     public AnyValueSetEditDialog(IConfigElement configElement, ValueDatatype valueDatatype,
             List<ValueSetType> allowedTypes, Shell parentShell) {
         this(configElement, valueDatatype, allowedTypes, parentShell, false);
@@ -138,8 +137,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         vsEditComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         ((GridData)vsEditComposite.getLayoutData()).horizontalSpan = 2;
         ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(vsEditComposite, uiToolkit,
-                uiController, configElement, allowedValuesSetTypes, new Validator(),
-                ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                uiController, configElement, allowedValuesSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
         return vsEdit;
     }
@@ -153,7 +151,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
     }
 
-    class Chooser extends EnumValueSetChooser {
+    class Chooser extends EnumSubsetChooser {
 
         public Chooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
                 EnumDatatype type, DefaultUIController uiController) {
@@ -174,17 +172,4 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     }
 
-    private class Validator implements TableElementValidator {
-
-        public MessageList validate(String element) {
-            MessageList list;
-            try {
-                list = configElement.validate(configElement.getIpsProject());
-                return list.getMessagesFor(element);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return new MessageList();
-            }
-        }
-    }
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -174,17 +176,30 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
-        assertEquals(2, set.getValues().length);
+        set.addValue("one");
+        assertEquals(3, set.getValues().length);
         assertEquals("one", set.getValue(0));
+        assertEquals("two", set.getValue(1));
+        assertEquals("one", set.getValue(2));
     }
 
     public void testRemoveValue() {
         IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
-        assertEquals(2, set.getValues().length);
+        set.addValue("one");
+        assertEquals(3, set.getValues().length);
+
         set.removeValue(0);
+        assertEquals(2, set.getValues().length);
         assertEquals("two", set.getValue(0));
+
+        set.removeValue(0);
+        assertEquals(1, set.getValues().length);
+        assertEquals("one", set.getValue(0));
+
+        set.removeValue(0);
+        assertEquals(0, set.getValues().length);
     }
 
     public void testGetValue() {
@@ -192,6 +207,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
+
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
         assertEquals("two", set.getValue(2));
@@ -203,6 +219,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
+
         set.setValue(1, "anderstwo");
         assertEquals("anderstwo", set.getValue(1));
     }
@@ -246,25 +263,6 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         list = set.validate(ipsProject);
         assertEquals(1, list.getNoOfMessages());
 
-        assertFalse(list.getMessagesFor(set).isEmpty());
-        set.removeValue("2w");
-        set.addValue("2EUR");
-        list.clear();
-        list = set.validate(ipsProject);
-        assertEquals(2, list.getNoOfMessages());
-        assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
-
-        list.clear();
-        set.removeValue("2EUR");
-        set.addValue(null);
-        list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
-
-        set.addValue(null);
-        list = set.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
-
-        set.removeValue(null);
         Datatype[] vds = ipsProject.findDatatypes(true, false);
         ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
         vdlist.addAll(Arrays.asList(vds));
@@ -304,6 +302,70 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
             assertEquals(Message.WARNING, messages.getMessage(i).getSeverity());
             assertEquals(IValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
         }
+    }
+
+    public void testValidate_CheckDuplicates() throws CoreException {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        MessageList list = set.validate(ipsProject);
+        assertEquals(0, list.getNoOfMessages());
+
+        set.addValue("2EUR");
+        list = set.validate(ipsProject);
+        assertEquals(0, list.getNoOfMessages());
+
+        set.addValue("3EUR");
+        list = set.validate(ipsProject);
+        assertEquals(0, list.getNoOfMessages());
+
+        set.addValue("2EUR");
+        list = set.validate(ipsProject);
+        assertEquals(1, list.getNoOfMessages());
+        Message msg0 = list.getMessage(0);
+        assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
+        ObjectProperty[] ops = msg0.getInvalidObjectProperties();
+        assertEquals(2, ops.length);
+        assertEquals(0, ops[0].getIndex());
+        assertEquals(2, ops[1].getIndex());
+
+        set.addValue("2EUR");
+        list = set.validate(ipsProject);
+        assertEquals(1, list.getNoOfMessages());
+        msg0 = list.getMessage(0);
+        ops = msg0.getInvalidObjectProperties();
+        assertEquals(3, ops.length);
+
+        set.setValue(3, "4EUR");
+        list = set.validate(ipsProject);
+        assertEquals(1, list.getNoOfMessages());
+        msg0 = list.getMessage(0);
+        ops = msg0.getInvalidObjectProperties();
+        assertEquals(2, ops.length);
+    }
+
+    public void testValidateValue() throws CoreException {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("2EUR");
+        set.addValue("3EUR");
+        set.addValue("2EUR");
+
+        MessageList list = set.validateValue(0, ipsProject);
+        assertEquals(1, list.getNoOfMessages());
+        Message msg0 = list.getMessage(0);
+        assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
+        ObjectProperty[] ops = msg0.getInvalidObjectProperties();
+        assertEquals(1, ops.length);
+        assertEquals(0, ops[0].getIndex());
+
+        list = set.validateValue(1, ipsProject);
+        assertTrue(list.isEmpty());
+
+        list = set.validateValue(2, ipsProject);
+        assertEquals(1, list.getNoOfMessages());
+        msg0 = list.getMessage(0);
+        assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
+        ops = msg0.getInvalidObjectProperties();
+        assertEquals(1, ops.length);
+        assertEquals(2, ops[0].getIndex());
     }
 
     public void testGetValues() {

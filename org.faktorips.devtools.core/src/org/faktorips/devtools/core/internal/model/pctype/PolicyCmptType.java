@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -72,6 +73,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForMethods() {
         return new IpsObjectPartCollection(this, Method.class, IMethod.class, Method.XML_ELEMENT_NAME);
     }
@@ -79,6 +81,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForAssociations() {
         return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.class,
                 PolicyCmptTypeAssociation.TAG_NAME);
@@ -87,6 +90,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForAttributes() {
         return new IpsObjectPartCollection(this, PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.class,
                 PolicyCmptTypeAttribute.TAG_NAME);
@@ -313,6 +317,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
@@ -325,6 +330,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
@@ -336,6 +342,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
@@ -346,7 +353,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (isConfigurableByProductCmptType()) {
-            if (StringUtils.isEmpty(this.productCmptType)) {
+            if (StringUtils.isEmpty(productCmptType)) {
                 String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
                 list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
@@ -449,6 +456,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
             if (override == null) {
                 override = newPolicyCmptTypeAttribute();
+                override.setDatatype(attributes[i].getDatatype());
+                override.setProductRelevant(attributes[i].isProductRelevant());
                 override.setName(attributes[i].getName());
                 override.setDefaultValue(attributes[i].getDefaultValue());
                 override.setValueSetCopy(attributes[i].getValueSet());
@@ -463,6 +472,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IDependency[] dependsOn() throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
@@ -483,6 +493,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IPolicyCmptType currentType) {
             IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
@@ -515,6 +526,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IPolicyCmptType currentType) {
             for (IValidationRule validationRule : currentType.getRules()) {
                 if (validationRule == rule) {
@@ -522,7 +534,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 }
                 if (validationRule.getName().equals(rule.getName())) {
                     String text = "There exists another validation rule with the same name in this type or within the supertype hierarchy.";
-                    msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule, IValidationRule.PROPERTY_NAME));
+                    msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule,
+                            IIpsElement.PROPERTY_NAME));
                 }
             }
             for (IMethod method : currentType.getMethods()) {
@@ -531,12 +544,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                             .bind(
                                     "The name of this validation rule: {0} collides with the name of a method within this type or within the supertype hierarchy.",
                                     rule.getName());
-                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text, Message.ERROR, rule, IValidationRule.PROPERTY_NAME));
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text,
+                            Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
                 }
             }
             return true;
         }
 
     }
-    
+
 }

@@ -40,7 +40,7 @@ import org.faktorips.values.ObjectUtil;
  * 
  * @author Thorsten Guenther
  */
-public class EnumValueSetChooser extends ListChooser implements IValueSetEditControl {
+public class EnumSubsetChooser extends ListChooser implements IValueSetEditControl {
 
     /**
      * The value set to modify
@@ -79,7 +79,7 @@ public class EnumValueSetChooser extends ListChooser implements IValueSetEditCon
      * @param datatype
      * @param uiController
      */
-    public EnumValueSetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet target, EnumDatatype datatype,
+    public EnumSubsetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet target, EnumDatatype datatype,
             UIController uiController) {
         this(parent, toolkit, null, target, datatype, uiController);
     }
@@ -94,7 +94,7 @@ public class EnumValueSetChooser extends ListChooser implements IValueSetEditCon
      * @param target The target-valueset (the one to add the values to).
      * @param uiController The controller to notify upon change
      */
-    public EnumValueSetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
+    public EnumSubsetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
             ValueDatatype datatype, UIController uiController) {
         super(parent, toolkit);
         targetValueSet = target;

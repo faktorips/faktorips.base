@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controls.valuesets.EnumValueSetChooser;
+import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -99,7 +99,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
     }
 
     private Composite createEnumValueSetChooser(Composite workArea) {
-        EnumValueSetChooser chooser = new Chooser(workArea);
+        EnumSubsetChooser chooser = new Chooser(workArea);
         chooser.setSourceLabel(Messages.DefaultsAndRangesEditDialog_additionalValuesDefinedInModel);
         chooser.setTargetLabel(Messages.DefaultsAndRangesEditDialog_valueDefinedInProductCmpt);
         return chooser;
@@ -114,7 +114,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
     }
 
-    class Chooser extends EnumValueSetChooser {
+    class Chooser extends EnumSubsetChooser {
 
         public Chooser(Composite parent) {
             super(parent, uiToolkit, source, (IEnumValueSet)configElement.getValueSet(), valueDatatype, uiController);

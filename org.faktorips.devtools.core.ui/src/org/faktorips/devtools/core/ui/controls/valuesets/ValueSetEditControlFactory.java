@@ -13,15 +13,18 @@
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
+import org.faktorips.util.ArgumentCheck;
 
 public class ValueSetEditControlFactory {
 
@@ -43,20 +46,49 @@ public class ValueSetEditControlFactory {
             ValueDatatype valueDatatype,
             Composite parent,
             UIToolkit toolkit,
-            UIController uiController,
+            UIController uiController) {
 
-            TableElementValidator validator) {
         if (valueSet.isRange() && !valueSet.isAbstract()) {
-            return new RangeEditControl(parent, toolkit, (IRangeValueSet)valueSet, uiController, false);
+            return new RangeEditControl(parent, toolkit, (IRangeValueSet)valueSet, uiController);
         }
         if (valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
             if (valueDatatype.isEnum()) {
-                return new EnumValueSetChooser(parent, toolkit, null, enumValueSet, valueDatatype, uiController);
+                return new EnumSubsetChooser(parent, toolkit, null, enumValueSet, valueDatatype, uiController);
             }
-            return new EnumValueSetEditControl(enumValueSet, parent, validator);
+            return new EnumValueSetEditControl(enumValueSet, parent);
         }
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype "
                 + valueDatatype);
+    }
+
+    class EmptyComposite extends Composite implements IValueSetEditControl {
+
+        private IValueSet valueSet;
+
+        public EmptyComposite(IValueSet valueSet, Composite parent) {
+            super(parent, SWT.NONE);
+            setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            ArgumentCheck.isTrue(valueSet.isAbstract() || valueSet.isUnrestricted());
+            this.valueSet = valueSet;
+        }
+
+        public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+            return valueSet.isAbstract() || valueSet.isUnrestricted();
+        }
+
+        public IValueSet getValueSet() {
+            return valueSet;
+        }
+
+        public ValueSetType getValueSetType() {
+            return valueSet.getValueSetType();
+        }
+
+        public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
+            ArgumentCheck.isTrue(newSet.isAbstract() || newSet.isUnrestricted());
+            valueSet = newSet;
+        }
+
     }
 }

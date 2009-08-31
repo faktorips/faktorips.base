@@ -19,6 +19,8 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * Marks an object as being validatable.
+ * 
+ * @author Jan Ortmann
  */
 public interface Validatable {
 
@@ -53,7 +55,8 @@ public interface Validatable {
      * Validates the object and all of it's parts.
      * </p>
      * <p>
-     * Note that validations will be cached. The validation cache can be cleared trough the IpsModel.
+     * Note that validations will be cached. The validation cache can be cleared trough the
+     * IpsModel.
      * </p>
      * 
      * @see org.faktorips.devtools.core.model.IIpsModel#clearValidationCache()
