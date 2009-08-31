@@ -18,6 +18,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -68,10 +70,14 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
     protected IEnumType paymentMode;
 
+    protected ContentsChangeCounter contentsChangeCounter;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("EnumTestProject");
+        contentsChangeCounter = new ContentsChangeCounter();
+        getIpsModel().addChangeListener(contentsChangeCounter);
         createGenderEnum();
         initGenderEnumValues();
         createPaymentModeEnum();
@@ -155,4 +161,20 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         assertEquals(1, validationMessageList.getNoOfMessages());
     }
 
+    public class ContentsChangeCounter implements ContentsChangeListener {
+
+        private int counter = 0;
+
+        public int getCounts() {
+            return counter;
+        }
+
+        public void reset() {
+            counter = 0;
+        }
+
+        public void contentsChanged(ContentChangeEvent event) {
+            counter++;
+        }
+    }
 }

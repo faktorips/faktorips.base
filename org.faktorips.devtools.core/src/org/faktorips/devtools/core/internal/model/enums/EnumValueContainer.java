@@ -127,67 +127,78 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     public IEnumValue newEnumValue() throws CoreException {
-        IEnumType enumType = findEnumType(getIpsProject());
+        final IEnumType enumType = findEnumType(getIpsProject());
 
         // Creation not possible if enumeration type can't be found.
         if (enumType == null) {
             return null;
         }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        return executeModificationsWithSingleEvent(new SingleEventModification<IEnumValue>() {
 
-        // Create new enumeration value.
-        IEnumValue newEnumValue = (IEnumValue)newPart(EnumValue.class);
+            IEnumValue newEnumValue;
 
-        /*
-         * Add as many enumeration attribute values as there are enumeration attributes in the
-         * enumeration type.
-         */
-        boolean includeLiteralNames = this instanceof IEnumType;
-        for (int i = 0; i < enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames); i++) {
-            newEnumValue.newEnumAttributeValue();
-        }
+            @Override
+            public boolean execute() throws CoreException {
+                // Create new enumeration value.
+                newEnumValue = (IEnumValue)newPart(EnumValue.class);
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+                /*
+                 * Add as many enumeration attribute values as there are enumeration attributes in
+                 * the enumeration type.
+                 */
+                boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
+                for (int i = 0; i < enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames); i++) {
+                    newEnumValue.newEnumAttributeValue();
+                }
+                return true;
+            }
 
-        objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
+            @Override
+            public IEnumValue getResult() {
+                return newEnumValue;
+            }
 
-        return newEnumValue;
+            @Override
+            public ContentChangeEvent modificationEvent() {
+                return ContentChangeEvent.newPartAddedEvent(newEnumValue);
+            }
+        });
     }
 
     public int getEnumValuesCount() {
         return enumValues.size();
     }
 
-    public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException {
+    public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) throws CoreException {
         ArgumentCheck.notNull(enumValuesToMove);
-        int numberToMove = enumValuesToMove.size();
+        final int numberToMove = enumValuesToMove.size();
         if (numberToMove == 0) {
             return new int[0];
         }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        return executeModificationsWithSingleEvent(new SingleEventModification<int[]>() {
+            int[] indizes = new int[numberToMove];
 
-        int[] indizes = new int[numberToMove];
-        for (int i = 0; i < numberToMove; i++) {
-            IEnumValue currentEnumValue = enumValuesToMove.get(i);
-            int index = getIndexOfEnumValue(currentEnumValue);
-            if (index == -1) {
-                throw new NoSuchElementException();
+            @Override
+            public boolean execute() throws CoreException {
+                for (int i = 0; i < numberToMove; i++) {
+                    IEnumValue currentEnumValue = enumValuesToMove.get(i);
+                    int index = getIndexOfEnumValue(currentEnumValue);
+                    if (index == -1) {
+                        throw new NoSuchElementException();
+                    }
+                    indizes[i] = index;
+                }
+                indizes = enumValues.moveParts(indizes, up);
+                return true;
             }
-            indizes[i] = index;
-        }
-        indizes = enumValues.moveParts(indizes, up);
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-
-        objectHasChanged();
-
-        return indizes;
+            @Override
+            public int[] getResult() {
+                return indizes;
+            }
+        });
     }
 
     public int getIndexOfEnumValue(IEnumValue enumValue) {

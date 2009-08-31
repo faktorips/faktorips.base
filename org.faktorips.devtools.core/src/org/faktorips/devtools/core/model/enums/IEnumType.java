@@ -475,9 +475,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>IEnumType</tt>, <tt>false</tt> if not (following the behavior of the Java collections
      * here).
      * 
+     * @throws CoreException If an error occurs while searching the given IPS project for the super
+     *             enumeration types.
      * @param enumAttribute The <tt>IEnumAttribute</tt> to delete.
      */
-    public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute);
+    public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 
     /** Returns whether this <tt>IEnumType</tt> has a super enumeration type. */
     public boolean hasSuperEnumType();

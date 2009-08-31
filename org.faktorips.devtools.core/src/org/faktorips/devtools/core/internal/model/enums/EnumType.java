@@ -22,7 +22,6 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -210,22 +209,28 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return literalNameAttribute;
     }
 
-    private IEnumAttribute createNewEnumAttribute(Class<? extends IEnumAttribute> attributeClass) throws CoreException {
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+    private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass)
+            throws CoreException {
+        return executeModificationsWithSingleEvent(new SingleEventModification<IEnumAttribute>() {
 
-        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
+            IEnumAttribute newEnumAttribute;
 
-        // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
-        for (IEnumValue currentEnumValue : getEnumValues()) {
-            currentEnumValue.newEnumAttributeValue();
-        }
+            @Override
+            public boolean execute() throws CoreException {
+                newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+                // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
+                for (IEnumValue currentEnumValue : getEnumValues()) {
+                    currentEnumValue.newEnumAttributeValue();
+                }
+                return true;
+            }
 
-        objectHasChanged();
-        return newEnumAttribute;
+            @Override
+            public IEnumAttribute getResult() {
+                return newEnumAttribute;
+            }
+        });
     }
 
     public IEnumType findEnumType(IIpsProject ipsProject) {
@@ -284,7 +289,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
-    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
+    public int moveEnumAttribute(final IEnumAttribute enumAttribute, final boolean up) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         if (enumAttribute.getEnumType() != this) {
             throw new NoSuchElementException();
@@ -301,32 +306,36 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        return executeModificationsWithSingleEvent(new SingleEventModification<Integer>() {
+            int[] newIndex = {};
 
-        int indexToMove = getIndexOfEnumAttribute(enumAttribute);
+            @Override
+            public boolean execute() throws CoreException {
+                int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
-        // Move the EnumAttribute.
-        int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
+                // Move the EnumAttribute.
+                newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
 
-        // Move the EnumAttributeValues of the EnumValues of this EnumType.
-        if (newIndex[0] != indexToMove) {
-            moveEnumAttributeValues(indexToMove, getEnumValues(), up);
-        }
+                // Move the EnumAttributeValues of the EnumValues of this EnumType.
+                if (newIndex[0] != indexToMove) {
+                    moveEnumAttributeValues(indexToMove, getEnumValues(), up);
+                }
 
-        // Update unique identifier validation cache.
-        if (isUniqueIdentifierValidationCacheInitialized()) {
-            handleMoveEnumAttributeForUniqueIdentifierValidationCache(indexToMove, up);
-        }
+                // Update unique identifier validation cache.
+                if (isUniqueIdentifierValidationCacheInitialized()) {
+                    handleMoveEnumAttributeForUniqueIdentifierValidationCache(indexToMove, up);
+                }
+                if (newIndex[0] != indexToMove) {
+                    return true;
+                }
+                return false;
+            }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-
-        if (newIndex[0] != indexToMove) {
-            objectHasChanged();
-        }
-
-        return newIndex[0];
+            @Override
+            public Integer getResult() {
+                return newIndex[0];
+            }
+        });
     }
 
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
@@ -618,7 +627,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) {
+    public boolean deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         if (enumAttribute == null) {
             return false;
         }
@@ -633,17 +642,20 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleEnumAttributeDeletion(index);
         }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        executeModificationsWithSingleEvent(new SingleEventModification<Object>() {
 
-        deleteEnumAttributeValues(enumAttribute, getEnumValues());
-        enumAttribute.delete();
+            @Override
+            public boolean execute() throws CoreException {
+                deleteEnumAttributeValues(enumAttribute, getEnumValues());
+                enumAttribute.delete();
+                return true;
+            }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-
-        objectHasChanged();
-
+            @Override
+            public Object getResult() {
+                return null;
+            }
+        });
         return true;
     }
 

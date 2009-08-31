@@ -45,7 +45,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
             value.setValue(null);
         }
 
+        contentsChangeCounter.reset();
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
+        assertEquals(1, contentsChangeCounter.getCounts());
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
         assertEquals(3, newEnumValue.getEnumAttributeValuesCount());
         assertNull(newEnumValue.getEnumAttributeValues().get(2).getValue());
@@ -75,7 +77,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         List<IEnumValue> moveList = new ArrayList<IEnumValue>(1);
         moveList.add(newEnumValue);
         int[] newIndizes;
+        contentsChangeCounter.reset();
         newIndizes = genderEnumContent.moveEnumValues(moveList, true);
+        assertEquals(1, contentsChangeCounter.getCounts());
         assertEquals(1, newIndizes[0]);
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(0));
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(1));
@@ -257,5 +261,4 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         millisDifference = System.currentTimeMillis() - millisBefore;
         System.out.println("Second validation took " + millisDifference / 1000 + " seconds.");
     }
-
 }

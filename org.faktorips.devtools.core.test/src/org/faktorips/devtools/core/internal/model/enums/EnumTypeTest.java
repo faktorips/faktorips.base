@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -214,7 +216,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testNewEnumAttribute() throws CoreException {
         IEnumValue newPaymentMode = paymentMode.newEnumValue();
+        contentsChangeCounter.reset();
         IEnumAttribute description = paymentMode.newEnumAttribute();
+        assertEquals(1, contentsChangeCounter.getCounts());
         description.setName("description");
         description.setDatatype(Datatype.STRING.getQualifiedName());
 
@@ -281,7 +285,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(2));
 
         int newIndex;
+        contentsChangeCounter.reset();
         newIndex = genderEnumType.moveEnumAttribute(newEnumAttribute, true);
+        assertEquals(1, contentsChangeCounter.getCounts());
         assertEquals(1, newIndex);
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes(true).get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes(true).get(1));
@@ -422,7 +428,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumValue modelValue = genderEnumType.newEnumValue();
 
+        contentsChangeCounter.reset();
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
+        assertEquals(1, contentsChangeCounter.getCounts());
         List<IEnumAttribute> enumAttributes = genderEnumType.getEnumAttributes(true);
         assertEquals(1, enumAttributes.size());
         assertEquals(genderEnumAttributeName, enumAttributes.get(0));
@@ -993,4 +1001,20 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isCapableOfContainingValues());
     }
 
+    public class ContentsChangeCounter implements ContentsChangeListener {
+
+        private int counter = 0;
+
+        public int getCounts() {
+            return counter;
+        }
+
+        public void reset() {
+            counter = 0;
+        }
+
+        public void contentsChanged(ContentChangeEvent event) {
+            counter++;
+        }
+    }
 }
