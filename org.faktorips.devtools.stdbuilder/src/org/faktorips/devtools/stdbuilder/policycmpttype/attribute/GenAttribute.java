@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -27,11 +28,14 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.valueset.EnumValueSet;
 
 /**
  * Abstract code generator for an attribute.
@@ -47,9 +51,9 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     protected IAttribute attribute;
     protected String attributeName;
     protected DatatypeHelper datatypeHelper;
+    protected DatatypeHelper valuesetDatatypeHelper;
     protected String staticConstantPropertyName;
     protected String memberVarName;
-
 
     public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a, LOCALIZED_STRINGS);
@@ -59,10 +63,12 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         if (datatypeHelper == null) {
             throw new NullPointerException("No datatype helper found for " + a);
         }
+        valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), datatypeHelper);
         staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
         memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
 
+    @Override
     public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
             throws CoreException {
         if (generatesInterface && !getPolicyCmptTypeAttribute().getModifier().isPublished()) {
@@ -73,6 +79,10 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
 
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)attribute;
+    }
+
+    public String getAttributeName() {
+        return attributeName;
     }
 
     protected IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
@@ -160,7 +170,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     protected void generateGetterInterface(JavaCodeFragmentBuilder builder) throws CoreException {
         String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>"
                 + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-        
+
         String[] replacements = new String[] { attributeName, description };
         appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, builder);
         generateGetterSignature(builder);
@@ -187,9 +197,9 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     }
 
     /**
-     * Returns <code>true</code> if a member variable is required to the type of attribute. This
-     * is currently the case for changeable attributes and attributes that are derived by an
-     * explicit method call.
+     * Returns <code>true</code> if a member variable is required to the type of attribute. This is
+     * currently the case for changeable attributes and attributes that are derived by an explicit
+     * method call.
      */
     public boolean isMemberVariableRequired() {
         return (getPolicyCmptTypeAttribute().isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwritten();
@@ -228,8 +238,8 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         if (datatypeHelper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)datatypeHelper;
             if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expr,
-                        repositoryExpression));
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
+                        enumHelper.getEnumType(), expr, repositoryExpression));
                 builder.appendln(";");
                 builder.appendln("}");
                 return;
@@ -289,13 +299,42 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
                 .getName()));
     }
 
-    public String getFieldNameRangeFor() {
-        return getLocalizedText("FIELD_RANGE_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
+    protected IValueSet getValueSet() {
+        return getPolicyCmptTypeAttribute().getValueSet();
     }
 
-    public String getFieldNameAllowedValuesFor() {
-        return getLocalizedText("FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute()
-                .getName()));
+    /**
+     * Returns the fully qualified name of the Java type that represents the given value set in the
+     * generated code.
+     */
+    protected String getJavaTypeForValueSet(IValueSet valueSet) {
+        if (valueSet.isRange()) {
+            return valuesetDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections());
+        }
+        if (valueSet.isEnum()) {
+            if (isUseTypesafeCollections()) {
+                return Java5ClassNames.OrderedValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName()
+                        + '>';
+            } else {
+                return EnumValueSet.class.getName();
+            }
+        }
+        throw new RuntimeException("Can't handle value set " + valueSet);
+    }
+
+    public String getFieldNameForSetOfAllowedValues() {
+        String lookup = getLookupPrefixForFieldSetOfAllowedValues() + "_NAME";
+        return getLocalizedText(lookup, StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
+    }
+
+    protected String getLookupPrefixForFieldSetOfAllowedValues() {
+        if (getValueSet().isRange()) {
+            return "FIELD_RANGE_FOR";
+        }
+        if (getValueSet().isEnum()) {
+            return "FIELD_ALLOWED_VALUES_FOR";
+        }
+        throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
     public String getMethodNameGetAllowedValuesFor() throws CoreException {

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -79,6 +79,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * 
      * {@inheritDoc}
      */
+    @Override
     protected int getClassModifier() throws CoreException {
         int modifier = super.getClassModifier();
         if ((modifier & Modifier.ABSTRACT) > 0) {
@@ -92,6 +93,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName() + generationAbb);
@@ -100,6 +102,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean generatesInterface() {
         return false;
     }
@@ -107,6 +110,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getSuperclass() throws CoreException {
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
         if (supertype != null) {
@@ -119,6 +123,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
         return new String[] { ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
@@ -128,6 +133,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(), builder);
@@ -136,6 +142,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder);
         builder.append("public ");
@@ -152,6 +159,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -280,8 +288,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (helper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
             if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), "value",
-                        new JavaCodeFragment("getRepository()")));
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
+                        enumHelper.getEnumType(), "value", new JavaCodeFragment("getRepository()")));
                 builder.appendln(";");
                 return;
             }
@@ -301,7 +309,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.append(" range = ");
             frag.appendClassName(ValueToXmlHelper.class);
             frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
-            frag.append(attribute.getFieldNameRangeFor());
+            frag.append(attribute.getFieldNameForSetOfAllowedValues());
             frag.append(" = ");
             JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
                     new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
@@ -337,7 +345,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
             frag.appendln(");");
             frag.appendCloseBracket();
-            frag.append(attribute.getFieldNameAllowedValuesFor());
+            frag.append(attribute.getFieldNameForSetOfAllowedValues());
             frag.append(" = ");
             frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
                     "values.containsNull()"), isUseTypesafeCollections()));
@@ -534,6 +542,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
+    @Override
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
@@ -547,17 +556,20 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(tsu);
+        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getGenerator(tsu);
         generator.generate(false, getIpsProject(), getMainTypeSection());
-        
+
     }
 
     public String getTableStructureUsageRoleName(ITableStructureUsage tsu) throws CoreException {
-        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(tsu);
+        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getGenerator(tsu);
         return generator.getMemberVarName();
     }
 

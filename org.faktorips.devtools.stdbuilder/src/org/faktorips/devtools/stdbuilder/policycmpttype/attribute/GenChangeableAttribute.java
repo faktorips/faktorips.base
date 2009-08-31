@@ -46,15 +46,9 @@ import org.faktorips.valueset.EnumValueSet;
  */
 public class GenChangeableAttribute extends GenAttribute {
 
-    // if the attribute's datatype is a primitive type, this datatype is the wrapper datatype for
-    // the primitive
-    // otherwise its the attribute's original datatype.
-    protected DatatypeHelper wrapperDatatypeHelper;
-
     public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isChangeable());
-        wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), datatypeHelper);
     }
 
     /**
@@ -118,11 +112,11 @@ public class GenChangeableAttribute extends GenAttribute {
         IRangeValueSet range = (IRangeValueSet)getPolicyCmptTypeAttribute().getValueSet();
         JavaCodeFragment containsNullFrag = new JavaCodeFragment();
         containsNullFrag.append(range.getContainsNull());
-        JavaCodeFragment frag = wrapperDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
+        JavaCodeFragment frag = valuesetDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
                 createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag,
                 isUseTypesafeCollections());
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, wrapperDatatypeHelper
+                | java.lang.reflect.Modifier.STATIC, valuesetDatatypeHelper
                 .getRangeJavaClassName(isUseTypesafeCollections()), getFieldNameMaxRange(), frag);
     }
 
@@ -149,11 +143,11 @@ public class GenChangeableAttribute extends GenAttribute {
         if (getDatatype().isPrimitive()) {
             containsNull = false;
         }
-        frag = wrapperDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, isUseTypesafeCollections());
+        frag = valuesetDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, isUseTypesafeCollections());
         builder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
                 | java.lang.reflect.Modifier.STATIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
-                        + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
+                        + valuesetDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
                 getFieldNameMaxAllowedValues(), frag);
     }
 
@@ -165,10 +159,10 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment frag = new JavaCodeFragment();
         if (StringUtils.isEmpty(bound)) {
             frag.append('(');
-            frag.appendClassName(wrapperDatatypeHelper.getJavaClassName());
+            frag.appendClassName(valuesetDatatypeHelper.getJavaClassName());
             frag.append(')');
         }
-        frag.append(wrapperDatatypeHelper.newInstance(bound));
+        frag.append(valuesetDatatypeHelper.newInstance(bound));
         return frag;
     }
 
@@ -185,8 +179,21 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     /**
+     * Generates the signature for the method to access an attribute's allowed RANGE of values.
+     */
+    // TODO can be deleted
+    public void generateSignatureGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String methodName = getMethodNameGetRangeFor(helper.getDatatype());
+        String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
+        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "context" },
+                new String[] { IValidationContext.class.getName() });
+    }
+
+    /**
      * Generates the signature for the method to access an attribute's set of allowed ENUM values.
      */
+    // TODO can be deleted
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String methodName = getMethodNameGetAllowedValuesFor(datatype);
@@ -197,12 +204,48 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     /**
+     * Generates the signature for the method to access an attribute's set of allowed ENUM values.
+     */
+    public void generateSignatureGetSetOfAllowedValues(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String methodName = getMethodNameGetSetOfAllowedValues(datatype);
+        methodsBuilder.signature(Modifier.PUBLIC, getJavaTypeForValueSet(getValueSet()), methodName,
+                new String[] { "context" }, new String[] { IValidationContext.class.getName() });
+    }
+
+    // TODO can be deleted
+    public String getMethodNameGetRangeFor(Datatype datatype) {
+        return getJavaNamingConvention().getGetterMethodName(
+                getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(getAttributeName())), datatype);
+    }
+
+    /**
      * Returns the name of the method to access an attribute's set of allowed ENUM values.
      */
+    // TODO can be deleted
     public String getMethodNameGetAllowedValuesFor(Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils
-                        .capitalize(getPolicyCmptTypeAttribute().getName())), datatype);
+                getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getAttributeName())),
+                datatype);
+    }
+
+    /**
+     * Returns the name of the method to access an attribute's set of allowed ENUM values.
+     */
+    public String getMethodNameGetSetOfAllowedValues(Datatype datatype) {
+        String lookup = getLookupForMethodNameGetSetOfAllowedValues();
+        return getJavaNamingConvention().getGetterMethodName(
+                getLocalizedText(lookup, StringUtils.capitalize(getAttributeName())), datatype);
+    }
+
+    private String getLookupForMethodNameGetSetOfAllowedValues() {
+        if (getValueSet().isRange()) {
+            return "METHOD_GET_RANGE_FOR_NAME";
+        }
+        if (getValueSet().isEnum()) {
+            return "METHOD_GET_ALLOWED_VALUES_FOR_NAME";
+        }
+        throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
     /**
@@ -215,25 +258,11 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append(';');
     }
 
-    public String getMethodNameGetRangeFor(Datatype datatype) {
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute()
-                        .getName())), datatype);
-    }
-
     public void generateMethodGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
         generateSignatureGetRangeFor(helper, methodsBuilder);
         methodsBuilder.append(';');
-    }
-
-    public void generateSignatureGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String methodName = getMethodNameGetRangeFor(helper.getDatatype());
-        String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
-        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "context" },
-                new String[] { IValidationContext.class.getName() });
     }
 
     /**
@@ -286,12 +315,8 @@ public class GenChangeableAttribute extends GenAttribute {
 
             // if the datatype is a primitive datatype the datatypehelper will be switched to
             // the helper of the wrapper type
-            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
-            if (isRangeValueSet()) {
-                generateFieldRangeFor(wrapperDatatypeHelper, builder);
-            } else if (isEnumValueSet()) {
-                generateFieldAllowedValuesFor(builder);
-            }
+            valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
+            generateFieldForTheAllowedSetOfValues(builder);
         }
     }
 
@@ -321,9 +346,9 @@ public class GenChangeableAttribute extends GenAttribute {
             generateGetterInterface(builder);
             generateSetterInterface(builder);
             if (isRangeValueSet()) {
-                generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
+                generateMethodGetRangeFor(valuesetDatatypeHelper, builder);
             } else if (isEnumValueSet()) {
-                generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
+                generateMethodGetAllowedValuesFor(valuesetDatatypeHelper.getDatatype(), builder);
             }
         }
     }
@@ -339,13 +364,10 @@ public class GenChangeableAttribute extends GenAttribute {
         if (!generatesInterface) {
             generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
 
-            // if the datatype is a primitive datatype the datatypehelper will be switched to the
-            // helper of the wrapper type
-            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
             if (isRangeValueSet()) {
-                generateMethodGetRangeForProd(wrapperDatatypeHelper, builder);
+                generateMethodGetRangeForProductCmptType(valuesetDatatypeHelper, builder);
             } else if (isEnumValueSet()) {
-                generateMethodGetAllowedEnumValuesForProd(wrapperDatatypeHelper.getDatatype(), builder);
+                generateMethodGetAllowedEnumValuesForProductCmptType(valuesetDatatypeHelper.getDatatype(), builder);
             }
         }
 
@@ -354,11 +376,11 @@ public class GenChangeableAttribute extends GenAttribute {
 
             // if the datatype is a primitive datatype the datatypehelper will be switched to the
             // helper of the wrapper type
-            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
+            valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
             if (isEnumValueSet()) {
-                generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
+                generateMethodGetAllowedValuesFor(valuesetDatatypeHelper.getDatatype(), builder);
             } else if (isRangeValueSet()) {
-                generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
+                generateMethodGetRangeFor(valuesetDatatypeHelper, builder);
             }
         }
     }
@@ -428,13 +450,13 @@ public class GenChangeableAttribute extends GenAttribute {
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
             appendOverrideAnnotation(methodBuilder, false);
         }
-        generateSignatureGetRangeFor(wrapperDatatypeHelper, methodBuilder);
+        generateSignatureGetRangeFor(valuesetDatatypeHelper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
         if (getPolicyCmptTypeAttribute().isProductRelevant() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
-            body.append(getMethodNameGetRangeFor(wrapperDatatypeHelper.getDatatype()));
+            body.append(getMethodNameGetRangeFor(valuesetDatatypeHelper.getDatatype()));
             body.appendln("(context);");
         } else {
             if (attribute.isOverwrite()) {
@@ -471,13 +493,13 @@ public class GenChangeableAttribute extends GenAttribute {
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
             appendOverrideAnnotation(methodBuilder, false);
         }
-        generateSignatureGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), methodBuilder);
+        generateSignatureGetAllowedValuesFor(valuesetDatatypeHelper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
         if (!isUnrestrictedValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
-            body.append(getMethodNameGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype()));
+            body.append(getMethodNameGetAllowedValuesFor(valuesetDatatypeHelper.getDatatype()));
             body.appendln("(context);");
         } else {
             if (attribute.isOverwrite()) {
@@ -491,7 +513,8 @@ public class GenChangeableAttribute extends GenAttribute {
         methodBuilder.append(body);
     }
 
-    private void generateMethodGetRangeForProd(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
+    // TODO kann geloescht werden
+    private void generateMethodGetRangeForProductCmptType(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
@@ -501,14 +524,19 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        body.append(getFieldNameRangeFor());
+        body.append(getFieldNameForSetOfAllowedValues());
         body.appendln(';');
         body.appendCloseBracket();
         methodsBuilder.append(body);
     }
 
-    private void generateMethodGetAllowedEnumValuesForProd(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    /**
+     * Gnerates a product component type's method that returns the set of allowed values for an
+     * attribute
+     */
+    // TODO kann geloescht werden
+    private void generateMethodGetAllowedEnumValuesForProductCmptType(Datatype datatype,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
             appendOverrideAnnotation(methodsBuilder, false);
@@ -517,24 +545,40 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        body.append(getFieldNameAllowedValuesFor());
+        body.append(getFieldNameForSetOfAllowedValues());
         body.appendln(';');
         body.appendCloseBracket();
         methodsBuilder.append(body);
     }
 
-    private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder) {
-        appendLocalizedJavaDoc("FIELD_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(isUseTypesafeCollections()),
-                getFieldNameRangeFor());
+    /**
+     * Gnerates a product component type's method that returns the set of allowed values for an
+     * attribute
+     */
+    private void generateMethodGetSetOfAllowedValuesForProductCmptType(Datatype datatype,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (getPolicyCmptTypeAttribute().isOverwrite()) {
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
+        generateSignatureGetSetOfAllowedValues(datatype, methodsBuilder);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendOpenBracket();
+        body.append("return ");
+        body.append(getFieldNameForSetOfAllowedValues());
+        body.appendln(';');
+        body.appendCloseBracket();
+        methodsBuilder.append(body);
     }
 
-    private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder) {
-        appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE,
-                isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
-                        + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
-                getFieldNameAllowedValuesFor());
+    private void generateFieldForTheAllowedSetOfValues(JavaCodeFragmentBuilder memberVarBuilder) {
+        if (getValueSet().isUnrestricted()) {
+            return; // TODO
+        }
+        String lookup = getLookupPrefixForFieldSetOfAllowedValues();
+        appendLocalizedJavaDoc(lookup, getAttributeName(), memberVarBuilder);
+        String fieldType = getJavaTypeForValueSet(getValueSet());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, fieldType, getFieldNameForSetOfAllowedValues());
     }
 
     /**
