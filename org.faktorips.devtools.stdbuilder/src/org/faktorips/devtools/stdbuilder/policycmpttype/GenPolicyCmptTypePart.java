@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -36,10 +37,15 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
     public GenPolicyCmptType getGenPolicyCmptType() {
         return genPolicyCmptType;
     }
-    
+
+    public StandardBuilderSet getBuilderSet() {
+        return genPolicyCmptType.getBuilderSet();
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Locale getLanguageUsedInGeneratedSourceCode() {
         return genPolicyCmptType.getLanguageUsedInGeneratedSourceCode();
     }
@@ -63,8 +69,8 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
     protected boolean isUseTypesafeCollections() {
         return getGenPolicyCmptType().getBuilderSet().isUseTypesafeCollections();
     }
-    
+
     protected boolean isGenerateJaxbSupport() {
-    	return getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport();
+        return getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport();
     }
 }

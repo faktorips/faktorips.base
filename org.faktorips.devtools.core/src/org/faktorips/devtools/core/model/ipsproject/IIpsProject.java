@@ -773,6 +773,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws CoreException;
 
     /**
+     * Returns <code>true</code> if the given value set type is available for the given value
+     * datatype. Returns <code>false</code> otherwise. Returns <code>false</code> if datatype of
+     * valueSetType are <code>null</code>.
+     */
+    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException;
+
+    /**
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If
      * no IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is
      * returned.

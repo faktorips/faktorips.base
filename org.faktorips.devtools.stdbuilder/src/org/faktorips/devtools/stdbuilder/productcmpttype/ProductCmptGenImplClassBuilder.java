@@ -26,6 +26,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -56,6 +57,7 @@ import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.Element;
 
 /**
@@ -285,73 +287,113 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append(".getValueFromElement(configElement, \"Value\");");
         builder.append(memberVar);
         builder.append(" = ");
+        builder.append(getCodeToGetValueFromExpression(helper, "value"));
+        builder.appendln(";");
+    }
+
+    private JavaCodeFragment getCodeToGetValueFromExpression(DatatypeHelper helper, String expression)
+            throws CoreException {
         if (helper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
-            if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
-                        enumHelper.getEnumType(), "value", new JavaCodeFragment("getRepository()")));
-                builder.appendln(";");
-                return;
+            IEnumType enumType = enumHelper.getEnumType();
+            if (!enumType.isContainingValues()) {
+                return enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumType, expression,
+                        new JavaCodeFragment("getRepository()"));
             }
         }
-        builder.append(helper.newInstanceFromExpression("value"));
-        builder.appendln(";");
+        return helper.newInstanceFromExpression(expression);
     }
 
     private void generateExtractValueSetFromXml(GenAttribute attribute,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder builder) throws CoreException {
+
         ValueSetType valueSetType = attribute.getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
         JavaCodeFragment frag = new JavaCodeFragment();
         helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), helper);
-        if (ValueSetType.RANGE.equals(valueSetType)) {
-            frag.appendClassName(Range.class);
-            frag.append(" range = ");
-            frag.appendClassName(ValueToXmlHelper.class);
-            frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
-            frag.append(attribute.getFieldNameForSetOfAllowedValues());
-            frag.append(" = ");
-            JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
-                    new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
-                    new JavaCodeFragment("range.containsNull()"), isUseTypesafeCollections());
-            if (newRangeInstanceFrag == null) {
-                throw new CoreException(new IpsStatus("The " + helper + " for the datatype "
-                        + helper.getDatatype().getName() + " doesn't support ranges."));
-            }
-            frag.append(newRangeInstanceFrag);
-            frag.appendln(";");
-        } else if (ValueSetType.ENUM.equals(valueSetType)) {
-            frag.appendClassName(EnumValues.class);
-            frag.append(" values = ");
-            frag.appendClassName(ValueToXmlHelper.class);
-            frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
-            frag.appendClassName(ArrayList.class);
-            if (isUseTypesafeCollections()) {
-                frag.append("<");
-                frag.appendClassName(helper.getJavaClassName());
-                frag.append(">");
-            }
-            frag.append(" enumValues = new ");
-            frag.appendClassName(ArrayList.class);
-            if (isUseTypesafeCollections()) {
-                frag.append("<");
-                frag.appendClassName(helper.getJavaClassName());
-                frag.append(">");
-            }
-            frag.append("();");
-            frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
-            frag.appendOpenBracket();
-            frag.append("enumValues.add(");
-            frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
-            frag.appendln(");");
-            frag.appendCloseBracket();
-            frag.append(attribute.getFieldNameForSetOfAllowedValues());
-            frag.append(" = ");
-            frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
-                    "values.containsNull()"), isUseTypesafeCollections()));
-            frag.appendln(";");
+        if (valueSetType.isRange()) {
+            generateExtractRangeFromXml(attribute, helper, frag);
+        } else if (valueSetType.isEnum()) {
+            generateExtractEnumSetFromXml(attribute, helper, frag);
+        } else if (valueSetType.isUnrestricted()) {
+            generateExtractAnyValueSetFromXml(attribute, helper, frag);
         }
         builder.append(frag);
+    }
+
+    private void generateExtractAnyValueSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
+            throws CoreException {
+        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(" = new ");
+        frag.appendClassName(UnrestrictedValueSet.class);
+        if (isUseTypesafeCollections()) {
+            frag.append("<");
+            frag.appendClassName(helper.getJavaClassName());
+            frag.append(">");
+        }
+        frag.append("();");
+        generateExtractEnumSetFromXml(attribute, helper, frag);
+        if (getIpsProject().isValueSetTypeApplicable(attribute.getDatatype(), ValueSetType.RANGE)) {
+            generateExtractRangeFromXml(attribute, helper, frag);
+        }
+    }
+
+    private void generateExtractEnumSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
+            throws CoreException {
+        frag.appendClassName(EnumValues.class);
+        frag.append(" values = ");
+        frag.appendClassName(ValueToXmlHelper.class);
+        frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
+        frag.append("if (values != null)");
+        frag.appendOpenBracket();
+        frag.appendClassName(ArrayList.class);
+        if (isUseTypesafeCollections()) {
+            frag.append("<");
+            frag.appendClassName(helper.getJavaClassName());
+            frag.append(">");
+        }
+        frag.append(" enumValues = new ");
+        frag.appendClassName(ArrayList.class);
+        if (isUseTypesafeCollections()) {
+            frag.append("<");
+            frag.appendClassName(helper.getJavaClassName());
+            frag.append(">");
+        }
+        frag.append("();");
+        frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
+        frag.appendOpenBracket();
+        frag.append("enumValues.add(");
+        frag.append(getCodeToGetValueFromExpression(helper, "values.getValue(i)"));
+        frag.appendln(");");
+        frag.appendCloseBracket();
+        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(" = ");
+        frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
+                "values.containsNull()"), isUseTypesafeCollections()));
+        frag.appendln(";");
+        frag.appendCloseBracket();
+    }
+
+    private void generateExtractRangeFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
+            throws CoreException {
+        frag.appendClassName(Range.class);
+        frag.append(" range = ");
+        frag.appendClassName(ValueToXmlHelper.class);
+        frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
+        frag.append("if (range != null)");
+        frag.appendOpenBracket();
+        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(" = ");
+        JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
+                new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
+                new JavaCodeFragment("range.containsNull()"), isUseTypesafeCollections());
+        if (newRangeInstanceFrag == null) {
+            throw new CoreException(new IpsStatus("The " + helper + " for the datatype "
+                    + helper.getDatatype().getName() + " doesn't support ranges."));
+        }
+        frag.append(newRangeInstanceFrag);
+        frag.appendln(";");
+        frag.appendCloseBracket();
     }
 
     /**
@@ -576,6 +618,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -586,6 +629,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -595,6 +639,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation association,
             List implAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -615,6 +660,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IProductCmptType type) {
             IProductCmptTypeMethod[] methods = type.getProductCmptTypeMethods();
             for (int i = 0; i < methods.length; i++) {

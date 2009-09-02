@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.EnumValueSet;
+import org.faktorips.valueset.ValueSet;
 
 /**
  * Abstract code generator for an attribute.
@@ -79,6 +80,19 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
 
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)attribute;
+    }
+
+    public GenAttribute getGeneratorForOverwrittenAttribute() throws CoreException {
+        if (!attribute.isOverwrite()) {
+            return null;
+        }
+        IPolicyCmptTypeAttribute overwritten = getPolicyCmptTypeAttribute().findOverwrittenAttribute(
+                attribute.getIpsProject());
+        if (overwritten == null) {
+            return null;
+        }
+        GenPolicyCmptType typeGenerator = new GenPolicyCmptType(overwritten.getPolicyCmptType(), getBuilderSet());
+        return typeGenerator.getGenerator(overwritten);
     }
 
     public String getAttributeName() {
@@ -308,6 +322,13 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
      * generated code.
      */
     protected String getJavaTypeForValueSet(IValueSet valueSet) {
+        if (valueSet.isUnrestricted()) {
+            if (isUseTypesafeCollections()) {
+                return Java5ClassNames.ValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName() + '>';
+            } else {
+                return ValueSet.class.getName();
+            }
+        }
         if (valueSet.isRange()) {
             return valuesetDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections());
         }
@@ -334,6 +355,9 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         if (getValueSet().isEnum()) {
             return "FIELD_ALLOWED_VALUES_FOR";
         }
+        if (getValueSet().isUnrestricted()) {
+            return "FIELD_SET_OF_ALLOWED_VALUES_FOR";
+        }
         throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
@@ -353,6 +377,9 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         }
         if (getValueSet().isEnum()) {
             return "METHOD_GET_ALLOWED_VALUES_FOR";
+        }
+        if (getValueSet().isUnrestricted()) {
+            return "METHOD_GET_SET_OF_ALLOWED_VALUES_FOR";
         }
         throw new RuntimeException("Can't handle value set " + getValueSet());
     }

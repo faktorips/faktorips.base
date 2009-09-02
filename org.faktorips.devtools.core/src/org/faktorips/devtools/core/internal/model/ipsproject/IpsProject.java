@@ -1438,6 +1438,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
+    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException {
+        if (datatype == null || valueSetType == null) {
+            return false;
+        }
+        List<ValueSetType> types = getValueSetTypes(datatype);
+        for (ValueSetType vsType : types) {
+            if (vsType.equals(valueSetType)) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException {
 
