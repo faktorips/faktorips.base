@@ -260,7 +260,7 @@ public class UIToolkit {
                 newLabel.setText(text);
             }
         }
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }
@@ -270,7 +270,7 @@ public class UIToolkit {
      */
     public Label createFormLabel(Composite parent, String text) {
         Composite c = createComposite(parent);
-        c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END));
+        c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
@@ -278,7 +278,7 @@ public class UIToolkit {
         layout.marginWidth = 0;
         c.setLayout(layout);
         Label newLabel = this.createLabel(c, text);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }
@@ -323,7 +323,7 @@ public class UIToolkit {
             throw new RuntimeException(
                     "Hyperlinks are only available for forms, use createLinks or createLinkOrHyperlink instead."); //$NON-NLS-1$
         }
-        newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END));
+        newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         return newLink;
     }
 
@@ -533,7 +533,7 @@ public class UIToolkit {
      */
     public Combo createCombo(Composite parent) {
         Combo newCombo = new Combo(parent, SWT.READ_ONLY);
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
         gridData.widthHint = DEFAULT_WIDTH;
         newCombo.setLayoutData(gridData);
         return newCombo;
@@ -557,7 +557,6 @@ public class UIToolkit {
      * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The
      * formatting is done based on the user's preferences.
      * 
-     * @see org.faktorips.devtools.core.IpsPreferences#formatValue(EnumDatatype, String)
      * @see org.faktorips.devtools.core.IpsPreferences#getEnumTypeDisplay()
      */
     public Combo createCombo(Composite parent, EnumDatatype datatype) {

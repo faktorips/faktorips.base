@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
@@ -47,11 +47,11 @@ import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.Messages;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.LabelField;
+import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -214,8 +214,8 @@ public class BindingContext {
         return field;
     }
 
-    public void bindContent(ComboViewer comboViewer, Object object, String propertyName) {
-        bindContent(new ComboViewerField(comboViewer), object, propertyName);
+    public void bindContent(StructuredViewer viewer, Object object, String propertyName) {
+        bindContent(new StructuredViewerField(viewer), object, propertyName);
     }
 
     /**
@@ -245,7 +245,7 @@ public class BindingContext {
         if (!expectedType.isAssignableFrom(property.getPropertyType())) {
             throw new IllegalArgumentException(
                     "Expected property " + property.getName() + " to be of type " + expectedType //$NON-NLS-1$ //$NON-NLS-2$
-                            + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
+                            + ", but is of type " + property.getPropertyType());
         }
     }
 
@@ -253,14 +253,14 @@ public class BindingContext {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < expectedTypes.length; i++) {
             if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
+                buffer.append(", ");
             }
             buffer.append(expectedTypes[i]);
         }
 
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
+                        + ", but is expected to of one of the types " + buffer.toString());
     }
 
     /**
@@ -452,7 +452,7 @@ public class BindingContext {
             try {
                 binding.updateUI();
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
+                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding));
             }
         }
 
@@ -472,7 +472,7 @@ public class BindingContext {
                         mapping.setPropertyValue();
                     } catch (Exception ex) {
                         IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex));
                     }
                 }
             }
@@ -500,7 +500,7 @@ public class BindingContext {
                             mapping.setControlValue();
                         } catch (Exception ex) {
                             IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                                    + " of object " + mapping.getObject(), ex));
                         }
                     }
                 }
@@ -525,7 +525,7 @@ public class BindingContext {
                         mapping.setControlValue();
                     } catch (Exception ex) {
                         IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex));
                     }
                 }
             }
@@ -543,7 +543,7 @@ public class BindingContext {
         StringBuffer sb = new StringBuffer("Ctx["); //$NON-NLS-1$
         for (int i = 0; i < ipsObjects.size(); i++) {
             if (i > 0) {
-                sb.append(", "); //$NON-NLS-1$
+                sb.append(", ");
             }
             IIpsObject ipsObject = ipsObjects.get(i);
             sb.append(ipsObject.getName());

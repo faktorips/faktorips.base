@@ -42,15 +42,6 @@ public class ModelExplorerConfiguration {
     private HashSet<Class<?>> allowedResourceTypes = new HashSet<Class<?>>();
 
     /**
-     * Constructs a default ModelExplorerConfiguration that allows all structural IpsElements that
-     * need to be displayed. The created instance allows types: <code>IpsProject</code>,
-     * <code>IpsPackageFragmentRoot</code> and <code>IpsPackageFragment</code>.
-     */
-    /*
-     * private ModelExplorerConfiguration() { this(new Class[0], new Class[0]); }
-     */
-
-    /**
      * Constructs a ModelExplorerConfiguration that allows the given list of IpsElement types and
      * the given list of resource-types. <code>IpsProject</code>,
      * <code>IpsPackageFragmentRoot</code> and <code>IpsPackageFragment</code> are allowed by
