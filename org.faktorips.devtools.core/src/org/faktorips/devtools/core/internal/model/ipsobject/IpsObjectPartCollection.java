@@ -44,7 +44,13 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     private IpsObjectPartContainer parent;
     private String xmlTag;
+    // TODO CD die partsBaseClass muss von Typ T oder darunter sein
+    // Beispiel: T ist IEnumAttribute --> partsBaseClass = EnumAttribute.class
+    // --> ? extends T
     private Class<? extends IpsObjectPart> partsBaseClass;
+    // TODO CD das Interface muss von Typ T oder darüber sein
+    // Beispiel: T ist BusinessFunction --> partsPublishedInterface = IBusinessFunction.class
+    // --> ? super T
     private Class<? extends IIpsObjectPart> partsPublishedInterface;
 
     private List<T> parts = new ArrayList<T>();
@@ -76,7 +82,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     @SuppressWarnings("unchecked")
-    private Constructor<IpsObjectPart> getConstructor(Class<? extends IIpsObjectPart> clazz) {
+    private Constructor<IpsObjectPart> getConstructor(Class<? extends IpsObjectPart> clazz) {
         Constructor<IpsObjectPart>[] constructors = clazz.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
@@ -87,6 +93,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
                     return constructors[i];
                 }
+                // TODO CD unreachable because IIpsObject extends IIpsObjectPartContainer
                 if (IIpsObject.class.isAssignableFrom(params[0])) {
                     return constructors[i];
                 }
@@ -210,7 +217,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * 
      * @param clazz
      */
-    public T newPart(Class<? extends IIpsObjectPart> clazz) {
+    public T newPart(Class<? extends IpsObjectPart> clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
             T newPart = newPartInternal(parent.getNextPartId(), getConstructor(clazz));
             return newPart;
