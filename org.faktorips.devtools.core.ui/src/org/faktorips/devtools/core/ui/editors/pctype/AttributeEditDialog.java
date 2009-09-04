@@ -513,7 +513,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
-        labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
+        labelDefaultValue = uiToolkit.createLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
 
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
@@ -542,19 +542,18 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (valueSetSpecificationControl == null) {
             return;
         }
-        Label valueSetTypeLabel = valueSetSpecificationControl.getValueSetTypeLabel();
         // sets the label width of the value set control label, so the control will be horizontal
         // aligned to the default value text
         // the offset of 7 is calculated by the corresponding composites horizontal spacing and
         // margins
         int widthDefaultLabel = labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-        int widthValueSetTypeLabel = valueSetTypeLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        int widthValueSetTypeLabel = valueSetSpecificationControl.getPreferredLabelWidth();
         if (widthDefaultLabel > widthValueSetTypeLabel) {
-            valueSetSpecificationControl.setLabelWidthHint(widthDefaultLabel + 7);
+            valueSetSpecificationControl.setLabelWidthHint(widthDefaultLabel);
         } else {
-            Object ld = defaultValueField.getControl().getLayoutData();
+            Object ld = labelDefaultValue.getLayoutData();
             if (ld instanceof GridData) {
-                ((GridData)ld).widthHint = widthValueSetTypeLabel - 7;
+                ((GridData)ld).widthHint = widthValueSetTypeLabel;
                 labelDefaultValue.setLayoutData(ld);
             }
         }

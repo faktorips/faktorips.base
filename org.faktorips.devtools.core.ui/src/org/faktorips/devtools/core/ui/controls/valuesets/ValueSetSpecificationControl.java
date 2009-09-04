@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
 
 /**
- * A control to edit a value set including it's type.
+ * A control to specify a value set including it's type.
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
@@ -73,6 +73,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Label valueSetTypeLabel;
 
     private boolean dataChangeable;
+    private Label concreteValueSetLabel;
 
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
@@ -95,41 +96,29 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private void initControls(UIToolkit toolkit) {
         initLayout();
-        Composite parentArea = createParentArea(toolkit);
 
-        createValueSetTypesCombo(toolkit, parentArea);
-        createConcreteValueSetCheckbox(toolkit, parentArea);
+        Composite twoColumnArea = toolkit.createLabelEditColumnComposite(this);
+        createValueSetTypesCombo(toolkit, twoColumnArea);
+        createConcreteValueSetCheckbox(toolkit, twoColumnArea);
 
-        valueSetArea = createValueSetArea(toolkit, parentArea);
+        toolkit.createVerticalSpacer(this, 5);
+        createValueSetArea(toolkit, this);
         showControlForValueSet();
-        if (toolkit.getFormToolkit() != null) {
-            toolkit.getFormToolkit().adapt(this); // has to be done after the text control is
-            // created!
-        }
     }
 
-    private Composite createParentArea(UIToolkit toolkit) {
-        Composite parentArea;
-        if (toolkit.getFormToolkit() == null) {
-            parentArea = this;
-        } else {
-            parentArea = toolkit.getFormToolkit().createComposite(this);
-            GridLayout formAreaLayout = new GridLayout(1, false);
-            formAreaLayout.marginHeight = 3;
-            formAreaLayout.marginWidth = 1;
-            parentArea.setLayout(formAreaLayout);
-        }
-        parentArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
-        return parentArea;
+    private void initLayout() {
+        GridLayout mainAreaLayout = new GridLayout(1, false);
+        mainAreaLayout.marginHeight = 0;
+        mainAreaLayout.marginWidth = 0;
+        setLayout(mainAreaLayout);
+        setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
     }
 
-    private Composite createValueSetArea(UIToolkit toolkit, Composite parentArea) {
-        Composite valueArea = toolkit.createComposite(parentArea);
-        GridData stackData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
-        stackData.horizontalSpan = 2;
-        valueArea.setLayoutData(stackData);
-        valueArea.setLayout(new StackLayout());
-        return valueArea;
+    private void createValueSetArea(UIToolkit toolkit, Composite parent) {
+        valueSetArea = toolkit.createComposite(parent);
+        GridData stackData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        valueSetArea.setLayoutData(stackData);
+        valueSetArea.setLayout(new StackLayout());
     }
 
     /**
@@ -189,7 +178,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Control showControlForValueSet() {
         StackLayout layout = (StackLayout)valueSetArea.getLayout();
         layout.topControl = updateControlWithCurrentValueSetOrCreateNewIfNeccessary(valueSetArea);
-        // layout.topControl.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
         setDataChangeable(isDataChangeable()); // set data changeable state of controls
         return layout.topControl;
     }
@@ -209,7 +197,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         Control c = valueSetEditControlFactory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
-        c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+        c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
         setValueSetEditControl(c);
         return group;
     }
@@ -235,14 +223,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 3;
         group.setLayout(layout);
+        GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        group.setLayoutData(labelGridData);
         return group;
     }
 
-    private void initLayout() {
-        GridLayout mainAreaLayout = new GridLayout(2, false);
-        mainAreaLayout.marginHeight = 0;
-        mainAreaLayout.marginWidth = 0;
-        setLayout(mainAreaLayout);
+    public int getPreferredLabelWidth() {
+        int width1 = valueSetTypeLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        if (concreteValueSetLabel == null) {
+            return width1;
+        }
+        int width2 = concreteValueSetLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        return Math.max(width1, width2);
     }
 
     /**
@@ -254,6 +246,12 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (layoutData instanceof GridData) {
             ((GridData)layoutData).widthHint = widthHint;
         }
+        if (concreteValueSetLabel != null) {
+            layoutData = concreteValueSetLabel.getLayoutData();
+            if (layoutData instanceof GridData) {
+                ((GridData)layoutData).widthHint = widthHint;
+            }
+        }
     }
 
     public Label getValueSetTypeLabel() {
@@ -261,11 +259,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     private void createValueSetTypesCombo(UIToolkit toolkit, Composite parentArea) {
-        valueSetTypeLabel = toolkit.createFormLabel(this, Messages.ValueSetEditControl_labelType);
-        GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-        valueSetTypeLabel.setLayoutData(labelGridData);
+        valueSetTypeLabel = toolkit.createLabel(parentArea, Messages.ValueSetEditControl_labelType);
 
-        valueSetTypesCombo = toolkit.createCombo(this);
+        valueSetTypesCombo = toolkit.createCombo(parentArea);
         valueSetTypesCombo.setText(getValueSetType().getName());
         valueSetTypeField = new ComboField(valueSetTypesCombo);
         valueSetTypeField.addChangeListener(new ValueSetTypeModifyListener());
@@ -277,7 +273,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (!editMode.canDefineAbstractSets()) {
             return; // the user has no choice, so need to create a checkbox
         }
-        toolkit.createLabel(parent, "Specify Bounds/Values:");
+        concreteValueSetLabel = toolkit.createLabel(parent, "Specify Bounds/Values:");
         concreteValueSetCheckbox = toolkit.createCheckbox(parent);
         concreteValueSetField = new CheckboxField(concreteValueSetCheckbox);
         updateConcreteValueSetCheckbox();
