@@ -1321,7 +1321,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 IPolicyCmptTypeAssociation modelAssociation = null;
                 if (association.getParentTestPolicyCmpt() == null) {
-                    actionEnableState.addEnable = true;
+                    actionEnableState.addEnable = isNoTestPolicyCmptExistsFor(association);
                     actionEnableState.removeEnable = false;
                 } else if (association != null) {
                     modelAssociation = association.findAssociation(association.getParentTestPolicyCmpt()
@@ -1347,7 +1347,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
                 // root elements couldn't be deleted
-                actionEnableState.removeEnable = !((ITestPolicyCmpt)selection).isRoot();
+                actionEnableState.removeEnable = true;
                 // root elements couldn't be deleted
                 actionEnableState.moveEnable = !((ITestPolicyCmpt)selection).isRoot();
                 if (param != null) {
@@ -1378,6 +1378,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         return actionEnableState;
+    }
+
+    private boolean isNoTestPolicyCmptExistsFor(TestCaseTypeAssociation association) throws CoreException {
+        ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+        for (int i = 0; i < testPolicyCmpts.length; i++) {
+            if (association.getName().equals(testPolicyCmpts[i].getTestParameterName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1685,12 +1695,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreException {
         String[] selectedTargetsQualifiedNames = null;
         boolean chooseProductCmpts = false;
+        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
         if (associationType.getParentTestPolicyCmpt() == null) {
-            // FIXME Joerg besser eigenes Knotenelement welches immer sichtbar ist?
-            ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).fixMissingRootTestPolicyCmpt(associationType
-                    .getTestPolicyCmptTypeParam());
-            changeProductCmpt(testPolicyCmpt);
+            // root element
+            ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).fixMissingRootTestPolicyCmpt(testPolicyCmptTypeParam);
+            if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
+                changeProductCmpt(testPolicyCmpt);
+            }
             refreshTreeAndDetailArea();
+            selectInTreeByObject(testPolicyCmpt, true);
             return;
         } else if (associationType.isRequiresProductCmpt()) {
             // target requires a product cmpt
@@ -1713,13 +1726,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
             }
 
-            selectedTargetsQualifiedNames = selectProductCmptsDialog(associationType.getTestPolicyCmptTypeParam(),
-                    associationType.getParentTestPolicyCmpt(), true);
+            selectedTargetsQualifiedNames = selectProductCmptsDialog(testPolicyCmptTypeParam, associationType
+                    .getParentTestPolicyCmpt(), true);
         } else {
             // target doesn't requires a product cmpt
             chooseProductCmpts = false;
-            selectedTargetsQualifiedNames = selectPolicyCmptTypeDialog(associationType.getTestPolicyCmptTypeParam(),
-                    associationType.getParentTestPolicyCmpt(), true);
+            selectedTargetsQualifiedNames = selectPolicyCmptTypeDialog(testPolicyCmptTypeParam, associationType
+                    .getParentTestPolicyCmpt(), true);
         }
         if (selectedTargetsQualifiedNames == null) {
             // maybe cancel pressed in the dialog
