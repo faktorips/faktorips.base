@@ -102,8 +102,6 @@ public class TestCaseTypeAssociation implements Validatable {
 
     /**
      * Returns the association object which is related by the test association type.
-     * 
-     * @param ipsProject TODO
      */
     public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
         return testPolicyCmptTypeParameter.findAssociation(ipsProject);
@@ -133,8 +131,6 @@ public class TestCaseTypeAssociation implements Validatable {
     /**
      * Returns the name of the policy component type which is related by the test association
      * parameter.
-     * 
-     * @param ipsProject TODO
      */
     public String getPolicyCmptTypeTarget(IIpsProject ipsProject) throws CoreException {
         return findAssociation(ipsProject).getTarget();

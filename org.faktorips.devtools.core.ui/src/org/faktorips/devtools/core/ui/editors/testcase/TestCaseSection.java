@@ -86,6 +86,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -142,8 +143,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     static final int REFRESH_INTERVAL = 400;
 
     // The tree view which displays all test policy components and test values which are available
-    // in
-    // this test
+    // in this test
     private TreeViewer treeViewer;
 
     // Contains the test case which is displayed in this section
@@ -1320,7 +1320,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             TestCaseTypeAssociation association = (TestCaseTypeAssociation)selection;
             try {
                 IPolicyCmptTypeAssociation modelAssociation = null;
-                if (association != null) {
+                if (association.getParentTestPolicyCmpt() == null) {
+                    actionEnableState.addEnable = true;
+                    actionEnableState.removeEnable = false;
+                } else if (association != null) {
                     modelAssociation = association.findAssociation(association.getParentTestPolicyCmpt()
                             .getIpsProject());
                 }
@@ -1682,7 +1685,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreException {
         String[] selectedTargetsQualifiedNames = null;
         boolean chooseProductCmpts = false;
-        if (associationType.isRequiresProductCmpt()) {
+        if (associationType.getParentTestPolicyCmpt() == null) {
+            // FIXME Joerg besser eigenes Knotenelement welches immer sichtbar ist?
+            ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).fixMissingRootTestPolicyCmpt(associationType
+                    .getTestPolicyCmptTypeParam());
+            changeProductCmpt(testPolicyCmpt);
+            refreshTreeAndDetailArea();
+            return;
+        } else if (associationType.isRequiresProductCmpt()) {
             // target requires a product cmpt
             chooseProductCmpts = true;
 
@@ -1874,54 +1884,56 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
 
+    private void changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+        ITestPolicyCmptTypeParameter testTypeParam;
+        try {
+            testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
+        } catch (CoreException e) {
+            // ignored, the validation shows the unknown type failure message
+            return;
+        }
+        String productCmptQualifiedNames[] = null;
+        if (testTypeParam.isRequiresProductCmpt()) {
+            IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
+            if (policyCmptType == null) {
+                // policy cmpt type not found, this is a validation error
+                return;
+            }
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+            if (productCmptType == null) {
+                // policy cmpt type not found, this is a validation error
+                return;
+            }
+            productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt
+                    .getParentTestPolicyCmpt(), false);
+            if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
+                // chancel
+                return;
+            }
+        }
+        testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
+        // reset the stored policy cmpt type, because the policy cmpt type can now
+        // be searched using the product cmpt
+        testPolicyCmpt.setPolicyCmptType(""); //$NON-NLS-1$
+        testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil
+                .unqualifiedName(productCmptQualifiedNames[0])));
+
+        boolean updateTestAttrValuesWithDefault = MessageDialog.openQuestion(getShell(),
+                Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
+                Messages.TestCaseSection_DialogOverwriteWithDefault_Text);
+        if (updateTestAttrValuesWithDefault) {
+            testPolicyCmpt.updateDefaultTestAttributeValues();
+        }
+
+        refreshTreeAndDetailArea();
+    }
+
     private void changeProductCmpt() throws CoreException {
         ISelection selection = treeViewer.getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
             if (selectedObj instanceof ITestPolicyCmpt) {
-                ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)selectedObj;
-                ITestPolicyCmptTypeParameter testTypeParam;
-                try {
-                    testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
-                } catch (CoreException e) {
-                    // ignored, the validation shows the unknown type failure message
-                    return;
-                }
-                String productCmptQualifiedNames[] = null;
-                if (testTypeParam.isRequiresProductCmpt()) {
-                    IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
-                    if (policyCmptType == null) {
-                        // policy cmpt type not found, this is a validation error
-                        return;
-                    }
-                    IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType
-                            .getIpsProject());
-                    if (productCmptType == null) {
-                        // policy cmpt type not found, this is a validation error
-                        return;
-                    }
-                    productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt
-                            .getParentTestPolicyCmpt(), false);
-                    if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
-                        // chancel
-                        return;
-                    }
-                }
-                testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
-                // reset the stored policy cmpt type, because the policy cmpt type can now
-                // be searched using the product cmpt
-                testPolicyCmpt.setPolicyCmptType(""); //$NON-NLS-1$
-                testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil
-                        .unqualifiedName(productCmptQualifiedNames[0])));
-
-                boolean updateTestAttrValuesWithDefault = MessageDialog.openQuestion(getShell(),
-                        Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
-                        Messages.TestCaseSection_DialogOverwriteWithDefault_Text);
-                if (updateTestAttrValuesWithDefault) {
-                    testPolicyCmpt.updateDefaultTestAttributeValues();
-                }
-
-                refreshTreeAndDetailArea();
+                changeProductCmpt((ITestPolicyCmpt)selectedObj);
                 treeViewer.setSelection(selection);
             }
         }
