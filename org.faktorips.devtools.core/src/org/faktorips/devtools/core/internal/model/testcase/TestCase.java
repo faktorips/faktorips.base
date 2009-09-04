@@ -55,7 +55,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.ArgumentCheck;
@@ -287,7 +286,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(testCaseType)) {
+        if (StringUtils.isEmpty(testCaseType) || ipsProject == null) {
             return null;
         }
         return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
@@ -481,13 +480,6 @@ public class TestCase extends IpsObject implements ITestCase {
         ITestParameter[] testParameters = testCaseType.getTestParameters();
         for (int i = 0; i < testParameters.length; i++) {
             List oldObjectsToTestParam = (List)oldTestObject.get(testParameters[i]);
-            if (oldObjectsToTestParam == null && !(testParameters[i] instanceof ITestRuleParameter)) {
-                // throw runtime exception for non test rule parameter only, because the rule params
-                // could
-                // be added by the test case
-                throw new RuntimeException(
-                        "Test objects not found for test parameter: " + testParameters[i].getName() + "!"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
             // add all elements without a test parameter to the end
             if (oldObjectsToTestParam != null) {
                 newTestObjectOrder.addAll(oldObjectsToTestParam);

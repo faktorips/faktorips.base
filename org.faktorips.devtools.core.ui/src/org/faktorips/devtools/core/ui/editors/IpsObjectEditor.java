@@ -347,6 +347,18 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         try {
             if (getIpsSrcFile().isContentParsable() == pagesForParsableSrcFileShown) {
+                // no recreating (remove and add) of pages necessary because:
+                // a) the source file isn't parsable and wasn't parsable before
+                // b) the source file is parsable and was parsable before
+
+                // if the source file is parsable then a refresh with structural changes is
+                // necessary for all editors which shows a dynamic structures inside
+                // (editors which overwrites the corresponding method e.g. ProductcmptEditor or
+                // TestCaseEditor)
+                if (getIpsSrcFile().isContentParsable()) {
+                    refreshInclStructuralChanges();
+                }
+
                 return;
             }
 
@@ -675,14 +687,16 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                             log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
                         }
                         getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
-                        updatePageStructure();
+                        // TODO Joerg? automatisch durch IpsObject contentsChanged(), sonst 2 mal
+                        // gibt es eine Situation wo kein Event kommt, aber updatePageStructure
+                        // notwendig ware?
+                        // updatePageStructure();
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     dontLoadChanges = true;
                 }
-
             }
 
             if (TRACE) {

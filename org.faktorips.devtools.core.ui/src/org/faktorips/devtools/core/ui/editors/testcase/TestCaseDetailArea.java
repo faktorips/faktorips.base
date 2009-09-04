@@ -269,7 +269,7 @@ public class TestCaseDetailArea {
      * @throws CoreException
      */
     private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) throws CoreException {
-        if (testPolicyCmpt == null) {
+        if (testPolicyCmpt == null || details.isDisposed()) {
             return;
         }
         String uniqueKey = testCaseSection.getUniqueKey(testPolicyCmpt);
@@ -643,7 +643,9 @@ public class TestCaseDetailArea {
      * Create a bordered composite
      */
     private Composite createBorderComposite(Composite parent) {
-
+        if (parent.isDisposed()) {
+            return null;
+        }
         Composite c1 = toolkit.createLabelEditColumnComposite(parent);
         c1.setLayoutData(new GridData(GridData.FILL_BOTH));
         c1.setLayout(new GridLayout(1, true));
@@ -676,6 +678,10 @@ public class TestCaseDetailArea {
      * Clears the detail area.
      */
     public void clearDetailArea() {
+        if (detailsArea.isDisposed()) {
+            return;
+        }
+
         if (dynamicArea != null) {
             dynamicArea.dispose();
         }
