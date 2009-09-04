@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -81,6 +82,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.enums.EnumValue;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -124,56 +126,56 @@ import org.faktorips.util.message.MessageList;
  */
 public class TestCaseTypeSection extends IpsSection {
     private Image empytImage;
-    
+
     private HashMap cachedProblemImageDescriptors = new HashMap();
-    
+
     // The editing test case type
     private ITestCaseType testCaseType;
-    
+
     // The label provider for the test case type
     private TestCaseTypeLabelProvider labelProvider;
-    
+
     // UI toolkit for creating the controls
     private UIToolkit toolkit;
 
     // The treeview which displays all test policy cmpt type params which are available in this test
     private TreeViewer treeViewer;
-    
+
     // Title of the test case type tree structure section
     private String sectionTreeStructureTitle;
-    
+
     // Title of the test case type details section
     private String sectionDetailsTitle;
-    
+
     // Buttons
-    //   belongs to tree structure
+    // belongs to tree structure
     private Button addParameterButton;
     private Button removeButton;
     private Button moveUpButton;
     private Button moveDownButton;
-    
+
     // The form which contains this section
     private ScrolledForm form;
-    
+
     // The detail area will be used to render the dynamically created detail controls
     private Composite parentOfdetailsArea;
     private Composite detailsArea;
 
     // The previous selected parameter
     private ITestParameter prevSelectedTestParam;
-    
+
     private boolean showAll = false;
-    
+
     // Indicates that the tree is refreshing
     private boolean isTreeRefreshing = false;
-    
+
     // Contains the currently selected object in the detail area
     private IIpsObjectPart currSelectedDetailObject;
-    
+
     // Container for the attribute ui controllers
-    //  used to update the attribute edit fields if the test case type changed,
-    //  thus if the type of a test policy cmpt type param changed the attribute will
-    //  show the correct validation result
+    // used to update the attribute edit fields if the test case type changed,
+    // thus if the type of a test policy cmpt type param changed the attribute will
+    // show the correct validation result
     private List attributeControllers = new ArrayList();
 
     // Object cache for the detail area
@@ -191,7 +193,7 @@ public class TestCaseTypeSection extends IpsSection {
         private ExpandableComposite attributeExpandable;
         private IpsObjectUIController uiControllerAttributeDescription = null;
         private boolean manualTriggered = false;
-        
+
         /**
          * Creates the attribute detail area
          */
@@ -211,24 +213,24 @@ public class TestCaseTypeSection extends IpsSection {
                 public void expansionStateChanging(ExpansionEvent e) {
                 }
             });
-            
+
             attributesDetails = toolkit.createLabelEditColumnComposite(attributeExpandable);
             attributeExpandable.setClient(attributesDetails);
-            
+
             attributesDetails.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-            
+
             // details of the selected test attribute
-            
+
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelPolicyCmptType);
             attributesPolicyCmptType = toolkit.createText(attributesDetails);
             toolkit.setDataChangeable(attributesPolicyCmptType, false);
-            
+
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelDescription);
             toolkit.createVerticalSpacer(attributesDetails, 1);
             attributesDescription = toolkit.createMultilineText(attributesDetails);
             gd = (GridData)attributesDescription.getLayoutData();
             gd.horizontalSpan = 2;
-            
+
             attributesDescriptionField = new TextField(attributesDescription);
         }
 
@@ -237,35 +239,36 @@ public class TestCaseTypeSection extends IpsSection {
          */
         public void updateDetailAttributeArea(ITestAttribute selectedAttribute) {
             try {
-                if (!manualTriggered){
+                if (!manualTriggered) {
                     attributeExpandable.setExpanded(true);
                     redrawForm();
                 }
-                
-                if (uiControllerAttributeDescription != null){
+
+                if (uiControllerAttributeDescription != null) {
                     uiControllerAttributeDescription.remove(attributesDescriptionField);
                 }
-                
-                uiControllerAttributeDescription = createUIController(selectedAttribute);
-                uiControllerAttributeDescription.add(attributesDescriptionField, ITestAttribute.PROPERTY_DESCRIPTION);
 
-                if (selectedAttribute.isBasedOnModelAttribute()){
+                uiControllerAttributeDescription = createUIController(selectedAttribute);
+                uiControllerAttributeDescription.add(attributesDescriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
+
+                if (selectedAttribute.isBasedOnModelAttribute()) {
                     attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
                 } else {
-                    attributesPolicyCmptType.setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
+                    attributesPolicyCmptType
+                            .setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
                 }
-                
+
                 uiControllerAttributeDescription.updateUI();
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
-    
+
     /*
      * Object cache to store several object to render the ui
      */
-    private class SectionDetailObjectCache{
+    private class SectionDetailObjectCache {
         // Containers for all sections and their objects
         private HashMap sections = new HashMap();
         private HashMap sectionObjects = new HashMap();
@@ -274,11 +277,11 @@ public class TestCaseTypeSection extends IpsSection {
         private HashMap sectionButtons = new HashMap();
         private HashMap attributeTableViewers = new HashMap();
         private HashMap attributeDetailsMap = new HashMap();
-        
+
         /*
          * Returns the key identifier for the given object
          */
-        private Integer getKeyFor(IIpsObjectPart object){
+        private Integer getKeyFor(IIpsObjectPart object) {
             return new Integer(System.identityHashCode(object));
         }
 
@@ -318,14 +321,15 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public Section getSection(IIpsObjectPart mainSectionObject) {
-            if (mainSectionObject instanceof ITestAttribute)
-                mainSectionObject = (IIpsObjectPart) ((ITestAttribute) mainSectionObject).getParent();
-            
-            return (Section) sections.get(getKeyFor(mainSectionObject));
+            if (mainSectionObject instanceof ITestAttribute) {
+                mainSectionObject = (IIpsObjectPart)((ITestAttribute)mainSectionObject).getParent();
+            }
+
+            return (Section)sections.get(getKeyFor(mainSectionObject));
         }
 
         public IIpsObjectPart getObject(IIpsObjectPart object) {
-            return (IIpsObjectPart) sectionObjects.get(getKeyFor(object));
+            return (IIpsObjectPart)sectionObjects.get(getKeyFor(object));
         }
 
         public Collection getAllSections() {
@@ -333,18 +337,19 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public EditField getSectionFirstEditField(Object selected) {
-            return (EditField) sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
+            return (EditField)sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
         }
 
         public Integer getIdxFromAttribute(ITestAttribute testAttribute) {
-            return (Integer) attributeIdx.get(getKeyFor(testAttribute));
+            return (Integer)attributeIdx.get(getKeyFor(testAttribute));
         }
 
-        public ITestAttribute getAttributeByIndex(Integer idx){
+        public ITestAttribute getAttributeByIndex(Integer idx) {
             for (Iterator iter = attributeIdx.keySet().iterator(); iter.hasNext();) {
                 Integer key = (Integer)iter.next();
-                if (idx.equals(attributeIdx.get(key)))
-                    return (ITestAttribute) getObjectByKey(key);
+                if (idx.equals(attributeIdx.get(key))) {
+                    return (ITestAttribute)getObjectByKey(key);
+                }
             }
             return null;
         }
@@ -354,11 +359,11 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public Section getSectionByKey(Integer key) {
-            return (Section) sections.get(key);
+            return (Section)sections.get(key);
         }
 
         public Object getObjectByKey(Integer key) {
-            return (IIpsObjectPart) sectionObjects.get(key);
+            return sectionObjects.get(key);
         }
 
         public Collection getAllSectionButtons() {
@@ -368,38 +373,38 @@ public class TestCaseTypeSection extends IpsSection {
         public void putAttributeTable(ITestParameter testParam, TableViewer attributeTableViewer) {
             attributeTableViewers.put(getKeyFor(testParam), attributeTableViewer);
         }
-        
-        public TableViewer getAttributeTable(ITestParameter testParam){
-            return (TableViewer) attributeTableViewers.get(getKeyFor(testParam));
+
+        public TableViewer getAttributeTable(ITestParameter testParam) {
+            return (TableViewer)attributeTableViewers.get(getKeyFor(testParam));
         }
-        
-        public Collection getAllAttributeTable(){
+
+        public Collection getAllAttributeTable() {
             return attributeTableViewers.values();
         }
-        
-        public void putAttributeDetails(ITestParameter testParam, AttributeDetails attributeDetails){
+
+        public void putAttributeDetails(ITestParameter testParam, AttributeDetails attributeDetails) {
             attributeDetailsMap.put(getKeyFor(testParam), attributeDetails);
         }
-        
-        public AttributeDetails getAttributeDetails(ITestParameter testParam){
-            return (AttributeDetails) attributeDetailsMap.get(getKeyFor(testParam));
-        }        
-        
-        public Collection getAllAttributeDetails(){
+
+        public AttributeDetails getAttributeDetails(ITestParameter testParam) {
+            return (AttributeDetails)attributeDetailsMap.get(getKeyFor(testParam));
+        }
+
+        public Collection getAllAttributeDetails() {
             return attributeDetailsMap.values();
         }
     }
-    
+
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
      */
-    private class TreeActionEnableState{
+    private class TreeActionEnableState {
         boolean addEnable = false;
         boolean removeEnable = false;
         boolean upEnable = false;
         boolean downEnable = false;
     }
-    
+
     /*
      * Class used to store button objects for each section
      */
@@ -418,12 +423,14 @@ public class TestCaseTypeSection extends IpsSection {
         private class ButtonSelectionListener implements SelectionListener {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
+
             public void widgetSelected(SelectionEvent e) {
                 try {
                     ISelection selection = attributeTableViewer.getSelection();
-                    if (selection instanceof IStructuredSelection){
-                        IIpsObjectPart selectedDetailObject = (IIpsObjectPart) ((IStructuredSelection)selection).getFirstElement();
-                        if (selectedDetailObject != null){
+                    if (selection instanceof IStructuredSelection) {
+                        IIpsObjectPart selectedDetailObject = (IIpsObjectPart)((IStructuredSelection)selection)
+                                .getFirstElement();
+                        if (selectedDetailObject != null) {
                             currSelectedDetailObject = selectedDetailObject;
                         }
                         clickedEvent(e);
@@ -432,142 +439,152 @@ public class TestCaseTypeSection extends IpsSection {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
-            protected void clickedEvent(SelectionEvent e){
+
+            protected void clickedEvent(SelectionEvent e) {
             }
         }
 
-        public void createButtons(Composite structureComposite, ITestPolicyCmptTypeParameter testParameter, TableViewer attributeTableViewer) {
+        public void createButtons(Composite structureComposite,
+                ITestPolicyCmptTypeParameter testParameter,
+                TableViewer attributeTableViewer) {
             this.testParameter = testParameter;
             this.attributeTableViewer = attributeTableViewer;
-            
+
             buttons = toolkit.getFormToolkit().createComposite(structureComposite);
             buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
             GridLayout buttonLayout = new GridLayout(1, true);
             buttons.setLayout(buttonLayout);
-            
+
             addAtributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddAttribute);
             removeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_RemoveAttribute);
             moveAttributeUp = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeUp);
             moveAttributeDown = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeDown);
-            
+
             addAtributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             removeAttributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             moveAttributeUp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             moveAttributeDown.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            
+
             removeAttributeButton.setEnabled(false);
             moveAttributeUp.setEnabled(false);
             moveAttributeDown.setEnabled(false);
-            
+
             hookButtonListenersDetail();
         }
-        
+
         public void updateDetailButtonStatus(IIpsObjectPart mainSectionObject, IIpsObjectPart currSelectedDetailObject) {
-            if (!isDataChangeable()){
+            if (!isDataChangeable()) {
                 toolkit.setDataChangeable(addAtributeButton, false);
                 toolkit.setDataChangeable(removeAttributeButton, false);
                 toolkit.setDataChangeable(moveAttributeUp, false);
                 toolkit.setDataChangeable(moveAttributeDown, false);
                 return;
             }
-            
-            if (testParameter != mainSectionObject){
+
+            if (testParameter != mainSectionObject) {
                 removeAttributeButton.setEnabled(false);
                 moveAttributeUp.setEnabled(false);
                 moveAttributeDown.setEnabled(false);
                 return;
             }
-            
-            if (currSelectedDetailObject instanceof ITestPolicyCmptTypeParameter){
+
+            if (currSelectedDetailObject instanceof ITestPolicyCmptTypeParameter) {
                 addAtributeButton.setEnabled(true);
                 removeAttributeButton.setEnabled(false);
                 moveAttributeUp.setEnabled(false);
                 moveAttributeDown.setEnabled(false);
-            } else if (currSelectedDetailObject instanceof ITestAttribute){
+            } else if (currSelectedDetailObject instanceof ITestAttribute) {
                 addAtributeButton.setEnabled(true);
                 removeAttributeButton.setEnabled(true);
                 moveAttributeUp.setEnabled(true);
                 moveAttributeDown.setEnabled(true);
             }
         }
-        
+
         /**
          * Adds the button listener for the details area.
          */
         private void hookButtonListenersDetail() {
             addAtributeButton.addSelectionListener(new ButtonSelectionListener() {
+                @Override
                 protected void clickedEvent(SelectionEvent e) {
                     addAttributeClicked(testParameter);
                 }
             });
             removeAttributeButton.addSelectionListener(new ButtonSelectionListener() {
+                @Override
                 protected void clickedEvent(SelectionEvent e) {
                     removeAttributeClicked(currSelectedDetailObject);
-                }                
+                }
             });
             moveAttributeUp.addSelectionListener(new ButtonSelectionListener() {
+                @Override
                 protected void clickedEvent(SelectionEvent e) {
                     moveUpAttributeClicked(currSelectedDetailObject);
                 }
             });
             moveAttributeDown.addSelectionListener(new ButtonSelectionListener() {
+                @Override
                 protected void clickedEvent(SelectionEvent e) {
                     moveDownAttributeClicked(currSelectedDetailObject);
                 }
-            }); 
-        }        
+            });
+        }
     }
-    
+
     /*
      * Mouse listener class to select the section if the mouse button is clicked
      */
     private class SectionSelectMouseListener implements MouseListener {
         private Section section;
         private IIpsObjectPart object;
-        
-        public SectionSelectMouseListener(Section section, IIpsObjectPart object){
+
+        public SectionSelectMouseListener(Section section, IIpsObjectPart object) {
             this.section = section;
             this.object = object;
         }
+
         public void mouseDown(MouseEvent e) {
             currSelectedDetailObject = object;
-            if (section == null){
+            if (section == null) {
                 Section section = objectCache.getSection(object);
-                if (section != null){
+                if (section != null) {
                     selectSection(section);
-                }                
-            }else{
+                }
+            } else {
                 selectSection(section);
             }
         }
+
         public void mouseDoubleClick(MouseEvent e) {
             // nothing to do
         }
+
         public void mouseUp(MouseEvent e) {
             // nothing to do
         }
     }
-    
+
     /*
      * Cell Modifier for the test attribute table
      */
     private class TestAttributeCellModifier implements ICellModifier {
         private TableViewer viewer;
-        
-        public TestAttributeCellModifier(TableViewer viewer){
+
+        public TestAttributeCellModifier(TableViewer viewer) {
             this.viewer = viewer;
         }
-        
+
         /**
          * {@inheritDoc}
          */
         public boolean canModify(Object element, String property) {
             ITestAttribute testAttributeFromObject = getTestAttributeFromObject(element);
-            if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
-                if (!StringUtils.isEmpty(testAttributeFromObject.getAttribute())){
+            if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
+                if (!StringUtils.isEmpty(testAttributeFromObject.getAttribute())) {
                     return false;
                 }
-                
+
             }
             return isDataChangeable();
         }
@@ -578,9 +595,9 @@ public class TestCaseTypeSection extends IpsSection {
         public Object getValue(Object element, String property) {
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
                 return getTestAttributeFromObject(element).getTestAttributeType().getIndex();
-            } else if (property.equals(ITestAttribute.PROPERTY_NAME)){
+            } else if (property.equals(IIpsElement.PROPERTY_NAME)) {
                 return getTestAttributeFromObject(element).getName();
-            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
+            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
                 return getTestAttributeFromObject(element).getDatatype();
             }
             return null;
@@ -593,33 +610,34 @@ public class TestCaseTypeSection extends IpsSection {
             TableItem tableItem = (TableItem)element;
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
                 TestParameterType selectedType = TestParameterType.getTestParameterType((Integer)value);
-                if (selectedType == null)
+                if (selectedType == null) {
                     return;
+                }
                 getTestAttributeFromObject(tableItem.getData()).setTestAttributeType(selectedType);
                 tableItem.setText(1, selectedType.getName());
-            } else if (property.equals(ITestAttribute.PROPERTY_NAME)){
+            } else if (property.equals(IIpsElement.PROPERTY_NAME)) {
                 getTestAttributeFromObject(tableItem.getData()).setName((String)value);
-                tableItem.setText(0, (String) value);
-            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
+                tableItem.setText(0, (String)value);
+            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
                 getTestAttributeFromObject(tableItem.getData()).setDatatype((String)value);
-                tableItem.setText(3, (String) value);
+                tableItem.setText(3, (String)value);
             }
             repackAttributeTable(viewer);
         }
-        
-        private ITestAttribute getTestAttributeFromObject(Object obj){
+
+        private ITestAttribute getTestAttributeFromObject(Object obj) {
             ArgumentCheck.isInstanceOf(obj, ITestAttribute.class);
-            return (ITestAttribute) obj;
+            return (ITestAttribute)obj;
         }
     }
-    
+
     /*
      * Label provider for the attribute table
      */
-    private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider{
+    private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider {
 
         private IIpsProject ipsProject;
-        
+
         public TestAttributeTblLabelProvider() {
             ipsProject = testCaseType.getIpsProject();
         }
@@ -627,14 +645,14 @@ public class TestCaseTypeSection extends IpsSection {
         public Image getColumnImage(Object element, int columnIndex) {
             Image defaultImage = null;
             try {
-                ITestAttribute testAttribute = ((ITestAttribute) element);
+                ITestAttribute testAttribute = ((ITestAttribute)element);
                 MessageList msgList = testAttribute.validate(ipsProject);
                 switch (columnIndex) {
                     case 0:
                         // test attribute name (used in test case)
                         defaultImage = empytImage;
-                        msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_NAME);
-                        if (! msgList.isEmpty()){
+                        msgList = msgList.getMessagesFor(element, IIpsElement.PROPERTY_NAME);
+                        if (!msgList.isEmpty()) {
                             return getImageForMsgList(defaultImage, msgList);
                         }
                         return null;
@@ -642,18 +660,18 @@ public class TestCaseTypeSection extends IpsSection {
                         // type input or expected
                         defaultImage = testAttribute.getTestAttributeType().getImage();
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
-                        if (! msgList.isEmpty()){
+                        if (!msgList.isEmpty()) {
                             return getImageForMsgList(defaultImage, msgList);
                         }
                         break;
                     case 2:
                         // attribute
-                        if (StringUtils.isEmpty(testAttribute.getAttribute())){
+                        if (StringUtils.isEmpty(testAttribute.getAttribute())) {
                             return null;
                         }
                         defaultImage = getImageForAttribute(element);
                         msgList = msgList.getMessagesFor(element);
-                        if (! msgList.isEmpty()){
+                        if (!msgList.isEmpty()) {
                             return getImageForMsgList(defaultImage, msgList);
                         }
                         break;
@@ -661,7 +679,7 @@ public class TestCaseTypeSection extends IpsSection {
                         // datatype
                         defaultImage = IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
-                        if (! msgList.isEmpty()){
+                        if (!msgList.isEmpty()) {
                             return getImageForMsgList(defaultImage, msgList);
                         }
                         break;
@@ -675,8 +693,8 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof ITestAttribute){
-                ITestAttribute testAttribute = (ITestAttribute) element;
+            if (element instanceof ITestAttribute) {
+                ITestAttribute testAttribute = (ITestAttribute)element;
                 switch (columnIndex) {
                     case 0:
                         // test attribute name (used in test case)
@@ -688,11 +706,12 @@ public class TestCaseTypeSection extends IpsSection {
                         // attribute
                         try {
                             IPolicyCmptTypeAttribute attr = testAttribute.findAttribute(ipsProject);
-                            if (attr != null){
-                                return (attr.isDerived()?"/":"")+attr.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                            if (attr != null) {
+                                return (attr.isDerived() ? "/" : "") + attr.getName(); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } catch (CoreException e) {
-                            // ignore exception, display attributes name stored in test parameter instead
+                            // ignore exception, display attributes name stored in test parameter
+                            // instead
                         }
                         return testAttribute.getAttribute();
                     case 3:
@@ -700,11 +719,12 @@ public class TestCaseTypeSection extends IpsSection {
                         ValueDatatype datatype;
                         try {
                             datatype = testAttribute.findDatatype(ipsProject);
-                            if (datatype != null){
+                            if (datatype != null) {
                                 return super.getText(datatype);
                             }
                         } catch (CoreException e) {
-                            // ignore exception, display datatype name stored in test parameter instead
+                            // ignore exception, display datatype name stored in test parameter
+                            // instead
                         }
                         return testAttribute.getDatatype();
                     default:
@@ -715,41 +735,45 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         private Image getImageForAttribute(Object element) throws CoreException {
-            return ((ITestAttribute) element).getImage();
+            return ((ITestAttribute)element).getImage();
         }
     }
-    
+
     /*
      * Expansion section listener class to select the section if expand or collapsed
      */
-    private class SectionExpandListern implements IExpansionListener{
+    private class SectionExpandListern implements IExpansionListener {
         private Section section;
         private IIpsObjectPart object;
-        
-        public SectionExpandListern(Section section, IIpsObjectPart object){
+
+        public SectionExpandListern(Section section, IIpsObjectPart object) {
             this.section = section;
             this.object = object;
         }
+
         public void expansionStateChanged(ExpansionEvent e) {
             currSelectedDetailObject = object;
             selectSection(section);
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
-            if (object instanceof ITestAttribute)
+            if (object instanceof ITestAttribute) {
                 testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)((ITestAttribute)object).getParent();
-            else if (object instanceof ITestPolicyCmptTypeParameter)
+            } else if (object instanceof ITestPolicyCmptTypeParameter) {
                 testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)object;
-            else
+            } else {
                 return;
+            }
 
             try {
-                if (!object.isValid() && !e.getState())
+                if (!object.isValid() && !e.getState()) {
                     postAsyncRunnable(new Runnable() {
                         public void run() {
-                            if (isDisposed())
+                            if (isDisposed()) {
                                 return;
+                            }
                             redrawDetailArea(testPolicyCmptTypeParameter, object);
                         }
                     });
+                }
 
             } catch (Exception e1) {
                 throw new RuntimeException(e1);
@@ -760,7 +784,7 @@ public class TestCaseTypeSection extends IpsSection {
             // nothing to do
         }
     }
-    
+
     /*
      * Action to add an element
      */
@@ -773,6 +797,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.addEnable;
@@ -781,11 +806,11 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             try {
                 addParameterClicked();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -803,6 +828,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.removeEnable;
@@ -811,15 +837,16 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             try {
                 removeClicked();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
+
     /*
      * Action to move up an element
      */
@@ -828,28 +855,29 @@ public class TestCaseTypeSection extends IpsSection {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_Up);
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.upEnable;
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             try {
                 moveUpClicked(selection);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
-    
+
     /*
      * Action to move down an element
      */
@@ -858,43 +886,45 @@ public class TestCaseTypeSection extends IpsSection {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_Down);
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.downEnable;
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             try {
                 moveDownClicked(selection);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
-    
+
     private class OpenInNewEditorAction extends IpsAction {
         public OpenInNewEditorAction() {
             super(treeViewer);
             setText(""); //$NON-NLS-1$
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             Object firstElement = selection.getFirstElement();
-            if (firstElement instanceof ITestPolicyCmptTypeParameter){
+            if (firstElement instanceof ITestPolicyCmptTypeParameter) {
                 try {
-                    ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) firstElement;
-                    if (StringUtils.isNotEmpty(param.getPolicyCmptType())){
+                    ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)firstElement;
+                    if (StringUtils.isNotEmpty(param.getPolicyCmptType())) {
                         IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
                         IpsUIPlugin.getDefault().openEditor(cmptType);
                         return;
@@ -905,19 +935,19 @@ public class TestCaseTypeSection extends IpsSection {
             }
         }
     }
-    
-    public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, final String title,
-            String detailTitle, ScrolledForm form) {
-        super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
-        this.empytImage = new Image(getDisplay(), 16, 16);
-        this.objectCache = new SectionDetailObjectCache();
-        
+    public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType,
+            final String title, String detailTitle, ScrolledForm form) {
+        super(parent, ExpandableComposite.NO_TITLE, GridData.FILL_BOTH, toolkit);
+
+        empytImage = new Image(getDisplay(), 16, 16);
+        objectCache = new SectionDetailObjectCache();
+
         this.testCaseType = testCaseType;
-        this.sectionTreeStructureTitle = title;
-        this.sectionDetailsTitle = detailTitle;
+        sectionTreeStructureTitle = title;
+        sectionDetailsTitle = detailTitle;
         this.form = form;
-        
+
         initControls();
         setText(title);
     }
@@ -925,24 +955,26 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         empytImage.dispose();
-        
+
         for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
             ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
             Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
-            if (problemImage != null){
+            if (problemImage != null) {
                 problemImage.dispose();
             }
         }
-        cachedProblemImageDescriptors.clear(); 
-        
+        cachedProblemImageDescriptors.clear();
+
         super.dispose();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void performRefresh() {
         postRefreshAll();
     }
@@ -951,22 +983,24 @@ public class TestCaseTypeSection extends IpsSection {
      * Post the given runnable to the async executable list of the display
      */
     private void postAsyncRunnable(Runnable r) {
-        if (!isDisposed())
+        if (!isDisposed()) {
             getDisplay().asyncExec(r);
-    }    
-    
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         this.toolkit = toolkit;
-        
+
         // Layout main section with two columns
         client.setLayout(new GridLayout(2, true));
         client.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         // Tree structure section
-        Section structureSection = toolkit.getFormToolkit().createSection(client, Section.TITLE_BAR);
+        Section structureSection = toolkit.getFormToolkit().createSection(client, ExpandableComposite.TITLE_BAR);
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
         Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
@@ -984,39 +1018,40 @@ public class TestCaseTypeSection extends IpsSection {
         treeViewer = new TreeViewer(tree);
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         labelProvider = new TestCaseTypeLabelProvider();
-        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider, testCaseType.getIpsProject());
+        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider, testCaseType
+                .getIpsProject());
         treeViewer.setLabelProvider(msgCueLabelProvider);
         TestCaseTypeContentProvider contentProvider = new TestCaseTypeContentProvider(testCaseType);
         treeViewer.setContentProvider(contentProvider);
-        treeViewer.setInput(testCaseType);        
+        treeViewer.setInput(testCaseType);
         treeViewer.expandAll();
         treeViewer.collapseAll();
         hookTreeListeners();
         treeViewer.expandToLevel(2);
         buildContextMenu();
-        
+
         // Buttons belongs to the tree structure
         Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
         buttons.setLayout(buttonLayout);
-        
+
         addParameterButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_NewRootParameter);
         removeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Remove);
         moveUpButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Up);
         moveDownButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Down);
-        
+
         addParameterButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         moveUpButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         moveDownButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         updateTreeButtonStatus(null);
         hookButtonListeners();
 
         // Details section
-        Section detailsSection = toolkit.getFormToolkit().createSection(client, Section.TITLE_BAR);     
-        detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));     
+        Section detailsSection = toolkit.getFormToolkit().createSection(client, ExpandableComposite.TITLE_BAR);
+        detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         detailsSection.setText(sectionDetailsTitle);
 
         parentOfdetailsArea = toolkit.createComposite(detailsSection);
@@ -1027,22 +1062,23 @@ public class TestCaseTypeSection extends IpsSection {
         detailLayout.marginHeight = 0;
         parentOfdetailsArea.setLayout(detailLayout);
         detailsSection.setClient(parentOfdetailsArea);
-        
-        if (showAll){
+
+        if (showAll) {
             createDetailsArea(null);
         }
-        
+
         configureToolBar();
-        
+
         redrawForm();
     }
-    
+
     /*
      * Configuration of toolbar
      */
-    private void configureToolBar(){
+    private void configureToolBar() {
         // Toolbar item show all
-        Action actionAll = new Action("structureAll", Action.AS_CHECK_BOX) { //$NON-NLS-1$
+        Action actionAll = new Action("structureAll", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
+            @Override
             public void run() {
                 showAllClicked();
             }
@@ -1053,14 +1089,15 @@ public class TestCaseTypeSection extends IpsSection {
         form.getToolBarManager().add(actionAll);
         form.updateToolBar();
     }
-    
+
     /*
      * Show all test parameter elements
      */
     private void showAllClicked() {
-        showAll = ! showAll;
-        if (showAll)
+        showAll = !showAll;
+        if (showAll) {
             treeViewer.expandAll();
+        }
         createDetailsArea(getRootSectionObject(currSelectedDetailObject));
         setDataChangeable(isDataChangeable());
     }
@@ -1069,23 +1106,24 @@ public class TestCaseTypeSection extends IpsSection {
      * Creates the test case type details area depending on the given object.
      */
     private void createDetailsArea(ITestParameter testParam) {
-        if (isTreeRefreshing)
+        if (isTreeRefreshing) {
             return;
-        
+        }
+
         clearDetailArea();
-        
-        if (testParam == null && ! showAll){
+
+        if (testParam == null && !showAll) {
             updateTreeButtonStatus(getSelectedObjectInTree());
             prevSelectedTestParam = null;
             return;
         }
-        
+
         ITestParameter firstTestParam = testParam;
         Section firstSection = null;
-        if (showAll){
+        if (showAll) {
             ITestParameter[] testParms = null;
             testParms = testCaseType.getTestParameters();
-            if (testParms != null && testParms.length > 0){
+            if (testParms != null && testParms.length > 0) {
                 createDetailsForAllTestParams(testParms);
                 firstTestParam = testParms[0];
                 firstSection = objectCache.getSection(firstTestParam);
@@ -1096,29 +1134,29 @@ public class TestCaseTypeSection extends IpsSection {
         } else {
             firstSection = createDetailsForTestParam(testParam);
         }
-        
+
         redrawForm();
-        
+
         prevSelectedTestParam = firstTestParam;
-        
+
         currSelectedDetailObject = firstTestParam;
-        
+
         selectSection(firstSection);
     }
-    
+
     /*
      * Creates the details all given test parameter
      */
     private void createDetailsForAllTestParams(ITestParameter[] testParams) {
         for (int i = 0; i < testParams.length; i++) {
             createDetailsForTestParam(testParams[i]);
-            if (testParams[i] instanceof ITestPolicyCmptTypeParameter){
-                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) testParams[i];
+            if (testParams[i] instanceof ITestPolicyCmptTypeParameter) {
+                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParams[i];
                 createDetailsForAllTestParams(testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds());
             }
-        } 
+        }
     }
-    
+
     /*
      * Creates the details for the given test parameter
      */
@@ -1130,7 +1168,7 @@ public class TestCaseTypeSection extends IpsSection {
         structureLayout.marginWidth = 0;
         structureLayout.marginHeight = 3;
         detailComposite.setLayout(structureLayout);
-        
+
         MessageList msgList = null;
         try {
             msgList = testParam.validate(testParam.getIpsProject());
@@ -1141,10 +1179,10 @@ public class TestCaseTypeSection extends IpsSection {
         Section section = toolkit.getFormToolkit().createSection(details, 0);
         section.setText(labelProvider.getText(testParam));
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         // create error indicator in the description bar
-        //   show errors for property policy cmpt type and property association,
-        //   because there are no edit fields which shows these errors
+        // show errors for property policy cmpt type and property association,
+        // because there are no edit fields which shows these errors
         String errorMessageText = ""; //$NON-NLS-1$
         MessageList msgListPolicyCmptType = msgList.getMessagesFor(testParam,
                 ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
@@ -1152,46 +1190,49 @@ public class TestCaseTypeSection extends IpsSection {
                 ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
         if (!msgListPolicyCmptType.isEmpty()) {
             String msgText = msgListPolicyCmptType.getText();
-            errorMessageText += errorMessageText.length()>0?"<br/>":""; //$NON-NLS-1$ //$NON-NLS-2$
+            errorMessageText += errorMessageText.length() > 0 ? "<br/>" : ""; //$NON-NLS-1$ //$NON-NLS-2$
             errorMessageText += "<p><img href=\"imagepccmpttype\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!msgListPolicyCmptAssociation.isEmpty()) {
             String msgText = msgListPolicyCmptAssociation.getText();
-            errorMessageText += errorMessageText.length()>0?"<br/>":""; //$NON-NLS-1$ //$NON-NLS-2$
+            errorMessageText += errorMessageText.length() > 0 ? "<br/>" : ""; //$NON-NLS-1$ //$NON-NLS-2$
             errorMessageText += "<p><img href=\"imageassociation\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (errorMessageText.length()>0){
+        if (errorMessageText.length() > 0) {
             FormToolkit toolkit = new FormToolkit(form.getParent().getDisplay());
             FormText formText = toolkit.createFormText(section, false);
-            formText.setImage("imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage(), msgList)); //$NON-NLS-1$
-            formText.setImage("imageassociation", getImageForMsgList(IpsPlugin.getDefault().getImage("Association.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
+            formText.setImage(
+                    "imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage(), msgList)); //$NON-NLS-1$
+            formText
+                    .setImage(
+                            "imageassociation", getImageForMsgList(IpsPlugin.getDefault().getImage("Association.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
             section.setDescriptionControl(formText);
             addSectionSelectionListeners(null, formText, testParam);
         }
-        
+
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
         storeSection(section, testParam);
-        
+
         IpsObjectUIController uiController = createUIController(testParam);
- 
+
         // create common edit fields
         Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
         section.setClient(editFieldsComposite);
 
         createTestParamDetails(editFieldsComposite, testParam, uiController);
-        
+
         // create details depending on the test parameter
-        if (testParam instanceof ITestPolicyCmptTypeParameter){
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) testParam;
-            
+        if (testParam instanceof ITestPolicyCmptTypeParameter) {
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
+
             createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, uiController);
 
             // Spacer between test policy cmpt type param and test attribute
             toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
-            
+
             Composite composite = toolkit.getFormToolkit().createComposite(details);
             composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
             if (!isAssociation(testPolicyCmptTypeParam)) {
@@ -1215,9 +1256,10 @@ public class TestCaseTypeSection extends IpsSection {
                 repackAttributeTable(attributeTableViewer);
 
                 SectionButtons currSectionButtons = new SectionButtons();
-                currSectionButtons.createButtons(composite,(ITestPolicyCmptTypeParameter) testParam, attributeTableViewer);
+                currSectionButtons.createButtons(composite, (ITestPolicyCmptTypeParameter)testParam,
+                        attributeTableViewer);
                 objectCache.putSectionButtons(testParam, currSectionButtons);
-                
+
                 // create detail area of selected attributes
                 AttributeDetails attributeDetails = new AttributeDetails();
                 attributeDetails.createAttributeDetailArea(composite);
@@ -1225,30 +1267,31 @@ public class TestCaseTypeSection extends IpsSection {
             } else {
                 composite.setLayout(new GridLayout(1, true));
 
-                FormText text = toolkit.getFormToolkit().createFormText(composite, false); //$NON-NLS-1$
+                FormText text = toolkit.getFormToolkit().createFormText(composite, false);
                 GridData gridData = new GridData(GridData.FILL_BOTH);
                 gridData.heightHint = 60;
                 gridData.widthHint = 100;
                 text.setLayoutData(gridData);
                 text.setText(NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
                         + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
-                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
-                        testPolicyCmptTypeParam.getAssociation()), true, false);
+                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_3, testPolicyCmptTypeParam
+                        .getAssociation()), true, false);
             }
-        } else if (testParam instanceof ITestValueParameter){
+        } else if (testParam instanceof ITestValueParameter) {
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
-        } else if (testParam instanceof ITestRuleParameter){
+        } else if (testParam instanceof ITestRuleParameter) {
             createTestRuleParamDetails(editFieldsComposite, (ITestRuleParameter)testParam, uiController);
         }
-        
+
         uiController.updateUI();
-        
+
         return section;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         updateDetailButtonStatus(null);
@@ -1268,77 +1311,80 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    
     ICompletionProposal proposal = null;
-    
+
     /*
      * Create the test attribute table
      */
-    private TableViewer createTestAttributeTable(Composite details, final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
+    private TableViewer createTestAttributeTable(Composite details,
+            final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
         final Table table = new Table(details, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
-        table.setHeaderVisible (true);
-        table.setLinesVisible (true);
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
         TableColumn column = null;
-        
+
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName);
-        
+
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType);
 
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttribute);
-        
+
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitle_Datatyp);
-        
 
         // Create the viewer and connect it to the view
         final TableViewer viewer = new TableViewer(table);
-        viewer.setContentProvider (new ArrayContentProvider());
-        viewer.setLabelProvider (new TestAttributeTblLabelProvider());
-        
+        viewer.setContentProvider(new ArrayContentProvider());
+        viewer.setLabelProvider(new TestAttributeTblLabelProvider());
+
         EnumValue[] values = TestParameterType.getEnumType().getValues();
-        String[] valueNames = new String[values.length -1];
-        int idx=0;
+        String[] valueNames = new String[values.length - 1];
+        int idx = 0;
         for (int i = 0; i < values.length; i++) {
-            if (values[i] != TestParameterType.COMBINED)
+            if (values[i] != TestParameterType.COMBINED) {
                 valueNames[idx++] = values[i].getName();
+            }
         }
-        
+
         // create the cell editors
-        ComboBoxCellEditor cellEditorTestAttributeType = new ComboBoxCellEditor(table, valueNames, SWT.READ_ONLY); //$NON-NLS-1$ //$NON-NLS-2$
+        ComboBoxCellEditor cellEditorTestAttributeType = new ComboBoxCellEditor(table, valueNames, SWT.READ_ONLY);
         final TextCellEditor textCellEditorName = new TextCellEditor(table);
-        
-        viewer.setCellEditors(new CellEditor[]{textCellEditorName, cellEditorTestAttributeType, null, null});
-        
+
+        viewer.setCellEditors(new CellEditor[] { textCellEditorName, cellEditorTestAttributeType, null, null });
+
         viewer.setCellModifier(new TestAttributeCellModifier(viewer));
-        viewer.setColumnProperties(new String[] { ITestAttribute.PROPERTY_NAME,
+        viewer.setColumnProperties(new String[] { IIpsElement.PROPERTY_NAME,
                 ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE, ITestAttribute.PROPERTY_ATTRIBUTE,
                 ITestAttribute.PROPERTY_DATATYPE });
 
         // add listener to the table
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection){
+                if (event.getSelection() instanceof IStructuredSelection) {
                     Object firstElement = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    if (firstElement instanceof ITestAttribute){
+                    if (firstElement instanceof ITestAttribute) {
                         currSelectedDetailObject = (ITestAttribute)firstElement;
                         updateDetailButtonStatus((ITestAttribute)firstElement);
                         selectSection(objectCache.getSection((ITestAttribute)firstElement));
-                        AttributeDetails attributeDetails = objectCache.getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
+                        AttributeDetails attributeDetails = objectCache
+                                .getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
                         attributeDetails.updateDetailAttributeArea((ITestAttribute)firstElement);
                     }
                 }
             }
         });
         new TableMessageHoverService(viewer) {
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
                     return validateElement(element);
-                } else
+                } else {
                     return null;
+                }
             }
         };
         return viewer;
@@ -1349,17 +1395,18 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void addAttributeClicked(IIpsObjectPart object) {
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParam;
-        if (object instanceof ITestAttribute){
+        if (object instanceof ITestAttribute) {
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)((ITestAttribute)object).getParent();
         } else if (object instanceof ITestPolicyCmptTypeParameter) {
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
         } else {
-            throw new RuntimeException(NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object.getClass().getName()));
+            throw new RuntimeException(NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object
+                    .getClass().getName()));
         }
-        
-        // open a wizard to select an attribute of the policy cmpt 
+
+        // open a wizard to select an attribute of the policy cmpt
         // wich is related by the given test policy cmpt type param
-        // or define a new test attribite without a policy cmpt type 
+        // or define a new test attribite without a policy cmpt type
         // attribute
         try {
             newTestAttributesByWizard(testPolicyCmptTypeParam);
@@ -1372,55 +1419,55 @@ public class TestCaseTypeSection extends IpsSection {
      * Add attribute to test policy cmpt type param
      */
     private void removeAttributeClicked(IIpsObjectPart object) {
-        if (object == null){
+        if (object == null) {
             return;
         }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
-        
-        ITestParameter param = (ITestParameter) object.getParent();
+
+        ITestParameter param = (ITestParameter)object.getParent();
 
         for (Iterator iter = getSelectedAttributes(object).iterator(); iter.hasNext();) {
             ((ITestAttribute)iter.next()).delete();
         }
-        
-        redrawDetailArea((ITestPolicyCmptTypeParameter) param, (ITestPolicyCmptTypeParameter) param);
-    } 
+
+        redrawDetailArea((ITestPolicyCmptTypeParameter)param, (ITestPolicyCmptTypeParameter)param);
+    }
 
     /**
      * Move attribute up
      */
     private void moveUpAttributeClicked(IIpsObjectPart object) {
-        if (object == null){
+        if (object == null) {
             return;
         }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
-        moveTestAttribute((ITestAttribute) object, true);
+        moveTestAttribute((ITestAttribute)object, true);
     }
 
     /**
      * Move attribute down
      */
     private void moveDownAttributeClicked(IIpsObjectPart object) {
-        if (object == null){
+        if (object == null) {
             return;
         }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
-        moveTestAttribute((ITestAttribute) object, false);
-    } 
-    
+        moveTestAttribute((ITestAttribute)object, false);
+    }
+
     /*
      * Creates the edit fields for the test parameter
      */
     private void createTestParamDetails(Composite editFieldsComposite,
             ITestParameter testParam,
             IpsObjectUIController uiController) {
-        
+
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label, testParam);
         objectCache.putFirstEditFieldInSection(testParam, editFieldName);
-        uiController.add(editFieldName, ITestParameter.PROPERTY_NAME);
+        uiController.add(editFieldName, IIpsElement.PROPERTY_NAME);
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
@@ -1440,9 +1487,9 @@ public class TestCaseTypeSection extends IpsSection {
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
         try {
-            IPolicyCmptTypeAssociation association = ((ITestPolicyCmptTypeParameter)testParam).findAssociation(testParam.getIpsProject());
-            if (association != null){
-                if (association.isAssoziation()){
+            IPolicyCmptTypeAssociation association = (testParam).findAssociation(testParam.getIpsProject());
+            if (association != null) {
+                if (association.isAssoziation()) {
                     return true;
                 }
             }
@@ -1456,11 +1503,12 @@ public class TestCaseTypeSection extends IpsSection {
      * Adds a listener to mark the section as selected if the given edit field gets the focus
      */
     private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
-        if (editField != null){
+        if (editField != null) {
             editField.getControl().addFocusListener(new FocusAdapter() {
+                @Override
                 public void focusGained(FocusEvent e) {
                     Section section = objectCache.getSection(object);
-                    if (section != null){
+                    if (section != null) {
                         currSelectedDetailObject = objectCache.getObject(object);
                         selectSection(section);
                     }
@@ -1468,135 +1516,141 @@ public class TestCaseTypeSection extends IpsSection {
             });
             editField.getControl().addMouseListener(new SectionSelectMouseListener(null, object));
         }
-        if (label != null){
+        if (label != null) {
             label.addMouseListener(new SectionSelectMouseListener(null, object));
         }
     }
 
     /*
      * Select the given section, means change the color of the section and store the current object.
-     * And select the corresponding tree item if withFocusChange is <code>true</code>.
-     * If the given section is <code>null</code> do nothing.
+     * And select the corresponding tree item if withFocusChange is <code>true</code>. If the given
+     * section is <code>null</code> do nothing.
      */
-    private void selectSection(Section section, boolean withFocusChange){
+    private void selectSection(Section section, boolean withFocusChange) {
         resetSectionSelectedColor();
-        if (section == null){
+        if (section == null) {
             return;
         }
         section.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-        
-        if (withFocusChange){
+
+        if (withFocusChange) {
             // select the corresponding object in the tree
             ITestParameter testParam = getRootSectionObject(currSelectedDetailObject);
             treeViewer.setSelection(new StructuredSelection(testParam));
             updateTreeButtonStatus(testParam);
         }
     }
-    
+
     /*
      * Select the given section, means change the color of the section and store the current object.
-     * And select the corresponding tree item.
-     * If the given section is <code>null</code> do nothing.
+     * And select the corresponding tree item. If the given section is <code>null</code> do nothing.
      */
     private void selectSection(Section section) {
         selectSection(section, true);
     }
 
     /*
-     * Returns the image for the given message list (e.g. if there is an error return a problem image)
+     * Returns the image for the given message list (e.g. if there is an error return a problem
+     * image)
      */
     private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
         // get the cached problem descriptor for the base image
         String key = getKey(defaultImage, msgList.getSeverity());
-        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
-        if (descriptor == null && defaultImage != null){
+        ProblemImageDescriptor descriptor = (ProblemImageDescriptor)cachedProblemImageDescriptors.get(key);
+        if (descriptor == null && defaultImage != null) {
             descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
             cachedProblemImageDescriptors.put(key, descriptor);
         }
         return IpsPlugin.getDefault().getImage(descriptor);
-    } 
-    
+    }
+
     /*
      * Returns an unique key for the given image and severity compination.
      */
     private String getKey(Image image, int severity) {
-        if (image == null){
+        if (image == null) {
             return null;
         }
         return image.hashCode() + "_" + severity; //$NON-NLS-1$
-    }   
-    
+    }
+
     /*
      * Update the enable status of the detail buttons
      */
     private void updateDetailButtonStatus(IIpsObjectPart currSelectedDetailObject) {
         for (Iterator iter = objectCache.getAllSectionButtons().iterator(); iter.hasNext();) {
-            SectionButtons buttons = (SectionButtons) iter.next();
+            SectionButtons buttons = (SectionButtons)iter.next();
             buttons.updateDetailButtonStatus(getRootSectionObject(currSelectedDetailObject), currSelectedDetailObject);
         }
     }
-    
+
     /*
-     * Returns the object which is the root of a section, the returned object is the object in the tree
+     * Returns the object which is the root of a section, the returned object is the object in the
+     * tree
      */
     private ITestParameter getRootSectionObject(IIpsObjectPart partInMainSection) {
-        if (partInMainSection == null)
+        if (partInMainSection == null) {
             return null;
-        
-        if (partInMainSection instanceof ITestAttribute)
-            partInMainSection = (ITestPolicyCmptTypeParameter) partInMainSection.getParent();
-        return (ITestParameter) partInMainSection;
+        }
+
+        if (partInMainSection instanceof ITestAttribute) {
+            partInMainSection = (ITestPolicyCmptTypeParameter)partInMainSection.getParent();
+        }
+        return (ITestParameter)partInMainSection;
     }
 
     /*
      * Reset the selection color of all sections
      */
-    private void resetSectionSelectedColor(){
+    private void resetSectionSelectedColor() {
         for (Iterator iter = objectCache.getAllSections().iterator(); iter.hasNext();) {
-            Section section = (Section) iter.next();
+            Section section = (Section)iter.next();
             section.setBackground(form.getBackground());
         }
     }
-    
+
     /*
      * Creates the edit fields for the test value parameter
      */
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
             IpsObjectUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
+        Label label = toolkit
+                .createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
         EditField editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
         editFieldDatatype.getControl().setEnabled(false);
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
-        
+
         toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
         toolkit.createVerticalSpacer(editFieldsComposite, 1);
         Text description = toolkit.createMultilineText(editFieldsComposite);
         GridData gd = (GridData)description.getLayoutData();
         gd.horizontalSpan = 2;
-        
+
         TextField descriptionField = new TextField(description);
-        
+
         // connect to model
         uiController.add(editFieldDatatype, ITestValueParameter.PROPERTY_VALUEDATATYPE);
-        uiController.add(descriptionField, ITestValueParameter.PROPERTY_DESCRIPTION);
+        uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
-    
+
     /*
      * Creates the edit fields for the test rule parameter
      */
-    private void createTestRuleParamDetails(Composite editFieldsComposite, ITestRuleParameter parameter, IpsObjectUIController uiController) {
+    private void createTestRuleParamDetails(Composite editFieldsComposite,
+            ITestRuleParameter parameter,
+            IpsObjectUIController uiController) {
         toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
         toolkit.createVerticalSpacer(editFieldsComposite, 1);
         Text description = toolkit.createMultilineText(editFieldsComposite);
         GridData gd = (GridData)description.getLayoutData();
         gd.horizontalSpan = 2;
-        
+
         TextField descriptionField = new TextField(description);
-        uiController.add(descriptionField, ITestValueParameter.PROPERTY_DESCRIPTION);
+        uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
-    
+
     /*
      * Creates the edit fields for the test policy cmpt type parameter
      */
@@ -1604,31 +1658,29 @@ public class TestCaseTypeSection extends IpsSection {
             ITestPolicyCmptTypeParameter parameter,
             IpsObjectUIController uiController) {
         Label label = null;
-        if (!(parameter instanceof ITestPolicyCmptTypeParameter && isAssociation((ITestPolicyCmptTypeParameter)parameter))) {
+        if (!(parameter instanceof ITestPolicyCmptTypeParameter && isAssociation(parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
                     Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
             EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
             addSectionSelectionListeners(editFieldReqProd, label, parameter);
             uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
         }
-        
+
         // min and max instances only for child parameters
-        label = toolkit.createFormLabel(editFieldsComposite,
-                Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
         EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
         editFieldMin.setText("" + parameter.getMinInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMin, label, parameter);
         uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
 
-        label = toolkit.createFormLabel(editFieldsComposite,
-                Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
         EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
         editFieldMax.setText("" + parameter.getMaxInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMax, label, parameter);
         uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
 
         // disable min and max for root parameter
-        if (parameter.isRoot()){
+        if (parameter.isRoot()) {
             editFieldMin.getControl().setEnabled(false);
             editFieldMax.getControl().setEnabled(false);
         }
@@ -1638,12 +1690,13 @@ public class TestCaseTypeSection extends IpsSection {
      * Clears the detail area.
      */
     public void clearDetailArea() {
-        if (detailsArea != null)
+        if (detailsArea != null) {
             detailsArea.dispose();
+        }
 
         currSelectedDetailObject = null;
         objectCache.clear();
-        
+
         detailsArea = toolkit.getFormToolkit().createComposite(parentOfdetailsArea);
         detailsArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout detailLayout = new GridLayout(1, true);
@@ -1652,15 +1705,16 @@ public class TestCaseTypeSection extends IpsSection {
         detailLayout.marginHeight = 0;
         detailsArea.setLayout(detailLayout);
     }
-    
+
     /*
      * Performs and returns validation messages on the given element.
      */
-    private MessageList validateElement(Object element) throws CoreException{
+    private MessageList validateElement(Object element) throws CoreException {
         MessageList messageList = new MessageList();
         // validate element
-        if (element instanceof IIpsObjectPartContainer){
-            messageList.add(((IIpsObjectPartContainer)element).validate(((IIpsObjectPartContainer)element).getIpsProject()));
+        if (element instanceof IIpsObjectPartContainer) {
+            messageList.add(((IIpsObjectPartContainer)element).validate(((IIpsObjectPartContainer)element)
+                    .getIpsProject()));
         }
         return messageList;
     }
@@ -1671,7 +1725,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void storeSection(Section section, IIpsObjectPart object) {
         objectCache.putSection(object, section);
         objectCache.putSectionObjects(object);
-        
+
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(section, object));
         section.addMouseListener(new SectionSelectMouseListener(section, object));
         section.addExpansionListener(new SectionExpandListern(section, object));
@@ -1682,31 +1736,33 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void hookTreeListeners() {
         openInNewEditorAction = new OpenInNewEditorAction();
-        
+
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
-                    IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                    selectionInTreeChanged(selection);  
+                    IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+                    selectionInTreeChanged(selection);
                 }
             }
         });
         new TreeMessageHoverService(treeViewer) {
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
                     return validateElement(element);
-                } else
+                } else {
                     return null;
+                }
             }
-        }; 
+        };
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(DoubleClickEvent event) {
                 Object selection = event.getSelection();
-                if (! (selection instanceof IStructuredSelection)) {
+                if (!(selection instanceof IStructuredSelection)) {
                     return;
                 }
                 Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
-                if ( ! (selectedObject instanceof IIpsObjectPart)){
+                if (!(selectedObject instanceof IIpsObjectPart)) {
                     return;
                 }
                 currSelectedDetailObject = (IIpsObjectPart)selectedObject;
@@ -1719,17 +1775,19 @@ public class TestCaseTypeSection extends IpsSection {
                     removeClicked();
                 }
             }
+
             public void keyReleased(KeyEvent e) {
             }
         });
         MouseAdapter adapter = new MouseAdapter() {
+            @Override
             public void mouseDown(MouseEvent e) {
-                if ((e.stateMask & SWT.CTRL) != 0){
+                if ((e.stateMask & SWT.CTRL) != 0) {
                     openInNewEditorAction.run();
                 }
             }
         };
-        treeViewer.getTree().addMouseListener(adapter);        
+        treeViewer.getTree().addMouseListener(adapter);
     }
 
     private void buildContextMenu() {
@@ -1742,17 +1800,18 @@ public class TestCaseTypeSection extends IpsSection {
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
-    
+
     /*
      * Selects the first edit field in the section contains the given object
      */
     private void selectFirstEditFieldInSection(Object selected) {
         EditField editFieldName = objectCache.getSectionFirstEditField(selected);
-        if (editFieldName == null)
+        if (editFieldName == null) {
             return;
+        }
         editFieldName.getControl().setFocus();
     }
-    
+
     /*
      * Adds the button listener for the tree area.
      */
@@ -1765,6 +1824,7 @@ public class TestCaseTypeSection extends IpsSection {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -1776,6 +1836,7 @@ public class TestCaseTypeSection extends IpsSection {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -1787,6 +1848,7 @@ public class TestCaseTypeSection extends IpsSection {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -1798,33 +1860,34 @@ public class TestCaseTypeSection extends IpsSection {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
     }
-    
+
     /*
      * Redraws the form.
      */
     private void redrawForm() {
         // redraw the form
-        try{
+        try {
             setFormRedraw(false);
             pack();
             getParent().layout(true);
             form.reflow(true);
-        } finally{
+        } finally {
             setFormRedraw(true);
         }
     }
-    
+
     /*
      * Add root or child parameter.
      */
     private void addParameterClicked() {
         Object selObject = getSelectedObjectInTree();
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
-        if (selObject instanceof TestCaseTypeTreeRootElement){
+        if (selObject instanceof TestCaseTypeTreeRootElement) {
             // open wizard to add a new root test parameter
             Memento memento = testCaseType.newMemento();
             NewRootParameterWizard wizard = new NewRootParameterWizard(testCaseType);
@@ -1838,15 +1901,17 @@ public class TestCaseTypeSection extends IpsSection {
                 refresh();
                 return;
             }
-            refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
-        } else if (selObject instanceof ITestPolicyCmptTypeParameter){
+            refreshTreeAndDetails(wizard.getNewCreatedTestParameter());
+        } else if (selObject instanceof ITestPolicyCmptTypeParameter) {
             // open wizard to add a new child test parameter
 
             // check if the policy cmpt type exists and if not
             // open a error dialog and cancel
             try {
-                if (((ITestPolicyCmptTypeParameter)selObject).findPolicyCmptType(((ITestPolicyCmptTypeParameter)selObject).getIpsProject()) == null) {
-                    MessageDialog.openInformation(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
+                if (((ITestPolicyCmptTypeParameter)selObject)
+                        .findPolicyCmptType(((ITestPolicyCmptTypeParameter)selObject).getIpsProject()) == null) {
+                    MessageDialog.openInformation(getShell(),
+                            Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
                             Messages.TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing);
                     return;
                 }
@@ -1854,7 +1919,7 @@ public class TestCaseTypeSection extends IpsSection {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }
-            
+
             Memento memento = testCaseType.newMemento();
             NewChildParameterWizard wizard = new NewChildParameterWizard(testCaseType,
                     (ITestPolicyCmptTypeParameter)selObject);
@@ -1867,109 +1932,114 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 return;
             }
-            refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
+            refreshTreeAndDetails(wizard.getNewCreatedTestParameter());
         }
     }
-    
+
     /*
      * Remove button was clicked.
      */
     private void removeClicked() {
         Object selObject = getSelectedObjectInTree();
-        if (! (selObject instanceof ITestParameter))
+        if (!(selObject instanceof ITestParameter)) {
             return;
-        
-        ITestParameter testParameter = (ITestParameter) selObject;
+        }
+
+        ITestParameter testParameter = (ITestParameter)selObject;
         testParameter.delete();
-        
+
         // try to obtain the previous tree item and if extist use this item as new sel object
         // after delete, if no previous found select the next item
         TreeItem[] selection = treeViewer.getTree().getSelection();
         TreeItem[] childs = treeViewer.getTree().getItems();
         TreeItem prevTreeItem = searchChilds(childs, selection[0], null);
-        if (prevTreeItem == null || ! (prevTreeItem.getData() instanceof ITestParameter)){
+        if (prevTreeItem == null || !(prevTreeItem.getData() instanceof ITestParameter)) {
             // try to find the previous item
             childs = selection[0].getParentItem().getItems();
             for (int i = 0; i < childs.length; i++) {
-                if (childs[i].equals(selection[0]))
+                if (childs[i].equals(selection[0])) {
                     prevTreeItem = childs[i];
-                else
-                    if (prevTreeItem != null){
-                        prevTreeItem = childs[i];
-                        break;
-                    }
+                } else if (prevTreeItem != null) {
+                    prevTreeItem = childs[i];
+                    break;
+                }
             }
         }
-        if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter){
+        if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter) {
             currSelectedDetailObject = (ITestParameter)prevTreeItem.getData();
         } else {
             currSelectedDetailObject = null;
         }
-        
+
         redrawDetails((ITestParameter)currSelectedDetailObject);
     }
 
     /*
-     * Move the selected test parameter up 
+     * Move the selected test parameter up
      */
-    private void moveUpClicked(Object selectedObjInTree){
-        if (selectedObjInTree instanceof ITestParameter){
+    private void moveUpClicked(Object selectedObjInTree) {
+        if (selectedObjInTree instanceof ITestParameter) {
             moveTestParameter((ITestParameter)selectedObjInTree, true);
         }
     }
-    
+
     /*
-     * Move the selected test parameter down 
+     * Move the selected test parameter down
      */
-    private void moveDownClicked(Object selectedObjInTree){
-        if (selectedObjInTree instanceof ITestParameter){
+    private void moveDownClicked(Object selectedObjInTree) {
+        if (selectedObjInTree instanceof ITestParameter) {
             moveTestParameter((ITestParameter)selectedObjInTree, false);
         }
     }
-    
-    private TreeItem searchChilds(TreeItem[] childs, TreeItem selectedItem, TreeItem prevTreeItem){
+
+    private TreeItem searchChilds(TreeItem[] childs, TreeItem selectedItem, TreeItem prevTreeItem) {
         for (int i = 0; i < childs.length; i++) {
-            if (childs[i].equals(selectedItem))
+            if (childs[i].equals(selectedItem)) {
                 return prevTreeItem;
+            }
 
             prevTreeItem = childs[i];
-            
+
             TreeItem found = searchChilds(childs[i].getItems(), selectedItem, prevTreeItem);
-            if (found != null)
+            if (found != null) {
                 return found;
-            
+            }
+
         }
         return null;
     }
+
     /*
      * Gets the currently selected test parameter or null if no test parameter is selected in the
      * tree
      */
-    private Object getSelectedObjectInTree(){
+    private Object getSelectedObjectInTree() {
         ISelection selection = treeViewer.getSelection();
-        if (! (selection instanceof IStructuredSelection))
+        if (!(selection instanceof IStructuredSelection)) {
             return null;
+        }
         Object selectedElem = ((IStructuredSelection)selection).getFirstElement();
-        if (! (selectedElem instanceof ITestParameter || selectedElem instanceof TestCaseTypeTreeRootElement))
+        if (!(selectedElem instanceof ITestParameter || selectedElem instanceof TestCaseTypeTreeRootElement)) {
             return null;
+        }
         return selectedElem;
     }
-    
+
     /*
      * Return the selected attributes in the attribute table
      */
-    private Set getSelectedAttributes(IIpsObjectPart object){
+    private Set getSelectedAttributes(IIpsObjectPart object) {
         Set testAttributesSelected = new HashSet(1);
-        testAttributesSelected.add((ITestAttribute) object);
-        
-        ITestParameter param = (ITestParameter) object.getParent();
-        TableViewer attributeTable = (TableViewer) objectCache.getAttributeTable(param);
-        if (attributeTable != null){
+        testAttributesSelected.add(object);
+
+        ITestParameter param = (ITestParameter)object.getParent();
+        TableViewer attributeTable = objectCache.getAttributeTable(param);
+        if (attributeTable != null) {
             ISelection selection = attributeTable.getSelection();
-            if (selection instanceof IStructuredSelection){
+            if (selection instanceof IStructuredSelection) {
                 for (Iterator iter = ((IStructuredSelection)selection).iterator(); iter.hasNext();) {
                     Object element = iter.next();
-                    if (element instanceof ITestAttribute){
+                    if (element instanceof ITestAttribute) {
                         testAttributesSelected.add(element);
                     }
                 }
@@ -1977,7 +2047,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
         return testAttributesSelected;
     }
-    
+
     /*
      * Moves the give test attribute up or down
      */
@@ -1988,8 +2058,9 @@ public class TestCaseTypeSection extends IpsSection {
         for (Iterator iter = selectedAttributes.iterator(); iter.hasNext();) {
             ITestAttribute element = (ITestAttribute)iter.next();
             Integer testAttributeIdx = objectCache.getIdxFromAttribute(element);
-            if (testAttributeIdx == null)
+            if (testAttributeIdx == null) {
                 throw new RuntimeException(Messages.TestCaseTypeSection_Error_WrongTestAttributeIndex);
+            }
             selectedAttributesIndexes[i++] = testAttributeIdx.intValue();
         }
 
@@ -1997,14 +2068,15 @@ public class TestCaseTypeSection extends IpsSection {
                 .getParent();
         int[] movedAttributesIndexes = testPolicyCmptTypeParameter.moveTestAttributes(selectedAttributesIndexes, up);
         redrawDetailArea(testPolicyCmptTypeParameter, testAttribute);
-        
+
         TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParameter);
         List newAttributeIdx = new ArrayList(selectedAttributes.size());
-        if (attrTable != null){
+        if (attrTable != null) {
             for (int j = 0; j < movedAttributesIndexes.length; j++) {
                 ITestAttribute movedAttribute = objectCache.getAttributeByIndex(new Integer(movedAttributesIndexes[j]));
-                if (movedAttribute != null)
+                if (movedAttribute != null) {
                     newAttributeIdx.add(movedAttribute);
+                }
             }
         }
     }
@@ -2014,32 +2086,32 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void moveTestParameter(ITestParameter testParameter, boolean up) {
         int[] selectedTestParamIndexes = null;
-        if (testParameter.isRoot()){
+        if (testParameter.isRoot()) {
             ITestParameter[] testParams = testCaseType.getTestParameters();
             for (int i = 0; i < testParams.length; i++) {
-                if (testParams[i].equals(testParameter)){
-                    selectedTestParamIndexes = new int[]{i};
+                if (testParams[i].equals(testParameter)) {
+                    selectedTestParamIndexes = new int[] { i };
                     break;
                 }
             }
-            if (selectedTestParamIndexes == null){
+            if (selectedTestParamIndexes == null) {
                 throw new RuntimeException("Unable to determine the index of the given test parameter!"); //$NON-NLS-1$
             }
-            testCaseType.moveTestParameters(selectedTestParamIndexes, up);            
+            testCaseType.moveTestParameters(selectedTestParamIndexes, up);
         } else {
-            ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) testParameter.getParent();
+            ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)testParameter.getParent();
             List childs = Arrays.asList(parent.getTestPolicyCmptTypeParamChilds());
-            selectedTestParamIndexes = new int[]{childs.indexOf(testParameter)};
+            selectedTestParamIndexes = new int[] { childs.indexOf(testParameter) };
             parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
         }
 
         redrawDetails(testParameter);
     }
-    
+
     /**
      * Redraw the details for the current selection
      */
-    private void redrawDetails(ITestParameter testParameter){
+    private void redrawDetails(ITestParameter testParameter) {
         // redraw details for the new selected object
         Object selObject = getSelectedObjectInTree();
         if (!(selObject instanceof ITestParameter)) {
@@ -2048,35 +2120,36 @@ public class TestCaseTypeSection extends IpsSection {
         currSelectedDetailObject = (ITestParameter)selObject;
         createDetailsArea((ITestParameter)currSelectedDetailObject);
         treeViewer.setSelection(new StructuredSelection(testParameter));
-        
+
         postRefreshAll();
         postSelectedTestParameterInTree(testParameter);
     }
-    
+
     /*
      * The selection in the tree changed the given object is selected.
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
     private void selectionInTreeChanged(IStructuredSelection selection) {
         // skip if this method was called while the tree is refreshing
-        if (isTreeRefreshing){
+        if (isTreeRefreshing) {
             return;
         }
-        
-        if (selection instanceof IStructuredSelection){
-            Object selectedObj = ((IStructuredSelection) selection).getFirstElement();
-            if (selectedObj != null && selectedObj instanceof ITestParameter){
-                // if the selected object is the previous rendered object 
+
+        if (selection instanceof IStructuredSelection) {
+            Object selectedObj = (selection).getFirstElement();
+            if (selectedObj != null && selectedObj instanceof ITestParameter) {
+                // if the selected object is the previous rendered object
                 // or all elements are visible return
-                if (showAll){
+                if (showAll) {
                     // select section for the tree entry
                     selectSection(objectCache.getSection((ITestParameter)selectedObj), false);
                 } else if (selectedObj != prevSelectedTestParam) {
-                    createDetailsArea((ITestParameter) selectedObj);
+                    createDetailsArea((ITestParameter)selectedObj);
                     setDataChangeable(isDataChangeable());
                 }
             } else {
-                if (! showAll){
+                if (!showAll) {
                     // no details are created
                     createDetailsArea(null);
                 }
@@ -2086,12 +2159,12 @@ public class TestCaseTypeSection extends IpsSection {
             updateTreeButtonStatus(selectedObj);
         }
     }
-    
+
     /*
      * Updates the enable state of the buttons which belongs to the tree
      */
     private void updateTreeButtonStatus(Object object) {
-        if (!isDataChangeable()){
+        if (!isDataChangeable()) {
             toolkit.setDataChangeable(removeButton, false);
             toolkit.setDataChangeable(addParameterButton, false);
             toolkit.setDataChangeable(moveUpButton, false);
@@ -2106,32 +2179,32 @@ public class TestCaseTypeSection extends IpsSection {
 
     }
 
-    private TreeActionEnableState evaluateTreeActionEnableState(Object object){
+    private TreeActionEnableState evaluateTreeActionEnableState(Object object) {
         TreeActionEnableState treeActionEnableState = new TreeActionEnableState();
-        if (object == null){
+        if (object == null) {
             object = getSelectedObjectInTree();
         }
 
-        if (object == null || !isDataChangeable()){
+        if (object == null || !isDataChangeable()) {
             return treeActionEnableState;
         }
-        
-        if (object instanceof ITestPolicyCmptTypeParameter){
+
+        if (object instanceof ITestPolicyCmptTypeParameter) {
             treeActionEnableState.removeEnable = true;
             treeActionEnableState.addEnable = true;
             treeActionEnableState.upEnable = true;
             treeActionEnableState.downEnable = true;
-        } else if (object instanceof ITestParameter){
+        } else if (object instanceof ITestParameter) {
             treeActionEnableState.removeEnable = true;
             treeActionEnableState.addEnable = false;
             treeActionEnableState.upEnable = true;
             treeActionEnableState.downEnable = true;
-        } else if (object instanceof TestCaseTypeTreeRootElement){
+        } else if (object instanceof TestCaseTypeTreeRootElement) {
             treeActionEnableState.removeEnable = false;
             treeActionEnableState.addEnable = true;
             treeActionEnableState.upEnable = false;
             treeActionEnableState.downEnable = false;
-        } else{
+        } else {
             treeActionEnableState.removeEnable = false;
             treeActionEnableState.addEnable = false;
             treeActionEnableState.upEnable = false;
@@ -2139,7 +2212,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
         return treeActionEnableState;
     }
-    
+
     /*
      * Refreshs the tree and details
      */
@@ -2150,7 +2223,7 @@ public class TestCaseTypeSection extends IpsSection {
         selectSection(objectCache.getSection(param));
         selectFirstEditFieldInSection(param);
     }
-    
+
     /*
      * Refresh the attribute table
      */
@@ -2164,11 +2237,12 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Refresh the tree.
      */
-    private void refreshTree(){
-        if (treeViewer.getTree().isDisposed())
+    private void refreshTree() {
+        if (treeViewer.getTree().isDisposed()) {
             return;
-        
-        try{
+        }
+
+        try {
             isTreeRefreshing = true;
             treeViewer.getTree().setRedraw(false);
             TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
@@ -2177,7 +2251,7 @@ public class TestCaseTypeSection extends IpsSection {
             treeViewer.expandAll();
             treeViewer.collapseAll();
             treeexpandStorage.restoreExpandedStatus();
-        }finally {
+        } finally {
             treeViewer.getTree().setRedraw(true);
             isTreeRefreshing = false;
         }
@@ -2188,10 +2262,11 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void refreshSectionTitles() {
         for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
-            Integer key = (Integer) iter.next();
+            Integer key = (Integer)iter.next();
             Section section = objectCache.getSectionByKey(key);
-            if (section.isDisposed())
+            if (section.isDisposed()) {
                 continue;
+            }
             section.setText(labelProvider.getText(objectCache.getObjectByKey(key)));
             section.getParent().setRedraw(false);
             section.pack();
@@ -2199,7 +2274,7 @@ public class TestCaseTypeSection extends IpsSection {
             section.getParent().setRedraw(true);
         }
     }
-    
+
     /*
      * Redraw and select the section of the new attribute
      */
@@ -2207,11 +2282,12 @@ public class TestCaseTypeSection extends IpsSection {
         // store the expanded sections state
         List expandedSectionKeys = new ArrayList();
         for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
-            Integer key = (Integer) iter.next();
-            if (objectCache.getSectionByKey(key).isExpanded())
+            Integer key = (Integer)iter.next();
+            if (objectCache.getSectionByKey(key).isExpanded()) {
                 expandedSectionKeys.add(key);
+            }
         }
-        
+
         try {
             setFormRedraw(false);
             refreshTree();
@@ -2223,14 +2299,15 @@ public class TestCaseTypeSection extends IpsSection {
             // restore the expanded section states
             for (Iterator iter = expandedSectionKeys.iterator(); iter.hasNext();) {
                 Section section = objectCache.getSectionByKey((Integer)iter.next());
-                if (section == null)
+                if (section == null) {
                     return;
+                }
                 section.setExpanded(true);
             }
 
-            if (selectedObject instanceof ITestAttribute){
+            if (selectedObject instanceof ITestAttribute) {
                 TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParam);
-                if (attrTable != null){
+                if (attrTable != null) {
                     attrTable.setSelection(new StructuredSelection(selectedObject));
                 }
             }
@@ -2238,33 +2315,34 @@ public class TestCaseTypeSection extends IpsSection {
             setFormRedraw(true);
         }
     }
-    
+
     /*
      * Refresh the ui
      */
-    private void postRefreshAll(){
+    private void postRefreshAll() {
         postAsyncRunnable(new Runnable() {
             public void run() {
-                if (isDisposed())
+                if (isDisposed()) {
                     return;
-                try{
+                }
+                try {
                     setFormRedraw(false);
                     refreshTree();
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields
                     for (Iterator iter = attributeControllers.iterator(); iter.hasNext();) {
-                        UIController controller = (UIController) iter.next();
+                        UIController controller = (UIController)iter.next();
                         controller.updateUI();
                     }
                     updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));
-                }finally{
+                } finally {
                     setFormRedraw(true);
-                }                
+                }
             }
-        });        
+        });
     }
-    
+
     /*
      * Select the given test parameter in the tree
      */
@@ -2273,43 +2351,45 @@ public class TestCaseTypeSection extends IpsSection {
             public void run() {
                 treeViewer.setSelection(new StructuredSelection(testParam));
             }
-            });
+        });
     }
-    
+
     /*
      * Create a bordered composite
      */
-    private Composite createBorderComposite(Composite parent){
+    private Composite createBorderComposite(Composite parent) {
         Composite c1 = toolkit.createLabelEditColumnComposite(parent);
         c1.setLayoutData(new GridData(GridData.FILL_BOTH));
         c1.setLayout(new GridLayout(1, true));
-        
+
         Composite c2 = toolkit.getFormToolkit().createComposite(c1);
         c2.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout detailLayout = new GridLayout(1, true);
-        
+
         detailLayout.horizontalSpacing = 10;
         detailLayout.marginWidth = 10;
         detailLayout.marginHeight = 10;
         c2.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-    
+
         c2.setLayout(detailLayout);
         return c2;
-    } 
-        
+    }
+
     /*
      * Sets the redraw state of the form
      */
-    private void setFormRedraw(boolean redraw){
-        if (!form.isDisposed())
+    private void setFormRedraw(boolean redraw) {
+        if (!form.isDisposed()) {
             form.setRedraw(redraw);
+        }
     }
-    
+
     /*
      * Creates a new ui controller for the given object.
      */
     private IpsObjectUIController createUIController(IIpsObjectPart part) {
         IpsObjectUIController controller = new IpsObjectUIController(part) {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
                     super.valueChanged(e);
@@ -2320,16 +2400,17 @@ public class TestCaseTypeSection extends IpsSection {
         };
         return controller;
     }
-   
+
     /*
      * Displays a dialog to select attributes of a policy component.
      */
     private void newTestAttributesByWizard(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) throws CoreException {
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
-        
+
         // open wizard to add new test attributes
         Memento memento = testCaseType.newMemento();
-        NewTestAttributeWizard wizard = new NewTestAttributeWizard(testCaseType, testPolicyCmptTypeParam, showSubtypeAttributes);
+        NewTestAttributeWizard wizard = new NewTestAttributeWizard(testCaseType, testPolicyCmptTypeParam,
+                showSubtypeAttributes);
         WizardDialog dialog = new WizardDialog(getShell(), wizard);
         dialog.open();
         if (dialog.getReturnCode() == Window.CANCEL) {
@@ -2341,5 +2422,9 @@ public class TestCaseTypeSection extends IpsSection {
             redrawDetailArea(testPolicyCmptTypeParam, wizard.getNewlyCreatedTestAttribute());
             showSubtypeAttributes = wizard.getShowSubtypeAttributes();
         }
+    }
+
+    public void refreshTreeAndDetailArea() {
+        refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
     }
 }

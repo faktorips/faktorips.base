@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,28 +18,29 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 /**
- *  Editor page to edit the test case type.
- *  
+ * Editor page to edit the test case type.
+ * 
  * @author Joerg Ortmann
  */
 public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
     public static final String PAGE_ID = "TestCaseTypeEditorPage"; //$NON-NLS-1$
-    
+
     private String sectionTitle;
     private String sectionDetailTitle;
-	
+
     private TestCaseTypeSection section;
-   
-    
-    public TestCaseTypeEditorPage(TestCaseTypeEditor editor, String title, String sectionTitle, String sectionDetailTitle) {
-		super(editor, PAGE_ID, title);
-		this.sectionTitle = sectionTitle;
-		this.sectionDetailTitle = sectionDetailTitle;
-	}
-	
+
+    public TestCaseTypeEditorPage(TestCaseTypeEditor editor, String title, String sectionTitle,
+            String sectionDetailTitle) {
+        super(editor, PAGE_ID, title);
+        this.sectionTitle = sectionTitle;
+        this.sectionDetailTitle = sectionDetailTitle;
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         section.dispose();
         super.dispose();
@@ -48,9 +49,14 @@ public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
         section = new TestCaseTypeSection(formBody, toolkit, ((TestCaseTypeEditor)getEditor()).getTestCaseType(),
                 sectionTitle, sectionDetailTitle, getManagedForm().getForm());
+    }
+
+    public void refreshInclStructuralChanges() {
+        section.refreshTreeAndDetailArea();
     }
 }
