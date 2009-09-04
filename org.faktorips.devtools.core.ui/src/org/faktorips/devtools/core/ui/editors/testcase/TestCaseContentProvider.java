@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -296,6 +297,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                         // test rule objects are not visible if the input filter is chosen
                         orderedList.add(getDummyObject(params[i], null));
                     }
+                } else if (testObjects != null && params[i] instanceof ITestValueParameter) {
+                    orderedList.addAll(testObjects);
                 }
             }
 
