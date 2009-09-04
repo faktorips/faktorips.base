@@ -288,7 +288,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
                 if (params[i] instanceof ITestPolicyCmptTypeParameter) {
                     // dummy root node for all test policy cmpt type parameter
-                    orderedList.add(getDummyObject(params[i], null));
+                    if (parameterMatchesType((ITestPolicyCmptTypeParameter)params[i])) {
+                        orderedList.add(getDummyObject(params[i], null));
+                    }
                 } else if (params[i] instanceof ITestRuleParameter) {
                     if (isCombined() || isExpectedResult()) {
                         // test rule objects are not visible if the input filter is chosen
