@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -67,9 +68,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     private boolean withoutAssociations = false;
 
     // Cache containing the dummy objects, to display the association and rules.
-    // This kind of objects are only used in the ui to adapt the model objects to the correct
+    // This kind of objects are only used in the user interface to adapt the model objects to the
+    // correct
     // content in the tree view
-    private HashMap dummyObjects = new HashMap();
+    private HashMap<String, IDummyTestCaseObject> dummyObjects = new HashMap<String, IDummyTestCaseObject>();
 
     // ips project used to search
     private IIpsProject ipsProject;
@@ -251,7 +253,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
-        List elements = new ArrayList();
+        List<ITestObject> elements = new ArrayList<ITestObject>();
         if (inputElement instanceof ITestCase) {
             addElementsFor((ITestCase)inputElement, elements);
         }
@@ -277,15 +279,15 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * rule objects displayed as group and the root test policy cmpt type node is a dummy node
      * depending on the root parameter in the type
      */
-    private Object[] sortListAndAddDummyElements(List elements, ITestCaseType testCaseType) {
+    private Object[] sortListAndAddDummyElements(List<ITestObject> elements, ITestCaseType testCaseType) {
         // create helper map
-        List orderedList = new ArrayList();
-        HashMap name2elements = new HashMap();
-        for (Iterator iter = elements.iterator(); iter.hasNext();) {
-            ITestObject element = (ITestObject)iter.next();
-            List existingElements = (List)name2elements.get(element.getTestParameterName());
+        List<Object> resultList = new ArrayList<Object>();
+        HashMap<String, List<ITestObject>> name2elements = new HashMap<String, List<ITestObject>>();
+        for (Iterator<ITestObject> iter = elements.iterator(); iter.hasNext();) {
+            ITestObject element = iter.next();
+            List<ITestObject> existingElements = name2elements.get(element.getTestParameterName());
             if (existingElements == null) {
-                existingElements = new ArrayList(1);
+                existingElements = new ArrayList<ITestObject>(1);
             }
             existingElements.add(element);
             name2elements.put(element.getTestParameterName(), existingElements);
@@ -295,37 +297,37 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         ITestParameter[] params = testCaseType.getTestParameters();
 
         for (int i = 0; i < params.length; i++) {
-            List testObjects = (List)name2elements.get(params[i].getName());
+            List<ITestObject> testObjects = name2elements.get(params[i].getName());
             name2elements.remove(params[i].getName());
 
             if (params[i] instanceof ITestPolicyCmptTypeParameter) {
                 // dummy root node for all test policy cmpt type parameter
                 if (parameterMatchesType(params[i])) {
-                    orderedList.add(getDummyObject(params[i], null));
+                    resultList.add(getDummyObject(params[i], null));
                 }
             } else if (params[i] instanceof ITestRuleParameter) {
                 if (isCombined() || isExpectedResult()) {
                     // test rule objects are not visible if the input filter is chosen
-                    orderedList.add(getDummyObject(params[i], null));
+                    resultList.add(getDummyObject(params[i], null));
                 }
             } else if (testObjects != null && params[i] instanceof ITestValueParameter) {
                 if (parameterMatchesType(params[i])) {
-                    orderedList.addAll(testObjects);
+                    resultList.addAll(testObjects);
                 }
             }
         }
 
         // add all elements which are not in the test parameter on the end
         // -> invalid test objects
-        for (Iterator iter = name2elements.values().iterator(); iter.hasNext();) {
-            List elementsWithNoParams = (List)iter.next();
-            orderedList.addAll(elementsWithNoParams);
+        for (Iterator<List<ITestObject>> iter = name2elements.values().iterator(); iter.hasNext();) {
+            List<ITestObject> elementsWithNoParams = iter.next();
+            resultList.addAll(elementsWithNoParams);
         }
 
-        return orderedList.toArray(new Object[orderedList.size()]);
+        return resultList.toArray(new Object[resultList.size()]);
     }
 
-    private void addElementsFor(ITestCase testCase, List elements) {
+    private void addElementsFor(ITestCase testCase, List<ITestObject> elements) {
         if (isCombined()) {
             // return input and expected result objects
             elements.addAll(Arrays.asList(testCase.getTestObjects()));
@@ -379,7 +381,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      */
     private Object[] getChildsForTestCaseTypeAssociation(TestCaseTypeAssociation dummyAssociation) {
         // show instances of this test policy component type parameter
-        ArrayList childs = new ArrayList();
+
+        // the result objects type could be ITestPolicyCmpt or ITestPolicyCpmtLink in case of
+        // an association
+        ArrayList<IIpsObjectPart> childs = new ArrayList<IIpsObjectPart>();
 
         ITestPolicyCmpt parent = dummyAssociation.getParentTestPolicyCmpt();
         if (parent != null) {
@@ -440,11 +445,14 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     private Object[] getChildsWithAssociationLayer(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptLink[] links) {
-        // group childs using the test policy component type
-        ArrayList childs = new ArrayList();
-        ArrayList childNames = new ArrayList();
+        // group child's using the test policy component type
+
+        // the result objects type could be IDummyTestCaseObject or ITestPolicyCpmtLink in case of
+        // an association
+        ArrayList<Object> childs = new ArrayList<Object>();
+        ArrayList<String> childNames = new ArrayList<String>();
         try {
-            // get all childs from the test case type definition
+            // get all child's from the test case type definition
             ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
             if (typeParam != null) {
                 ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
@@ -475,10 +483,12 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Return childs without association layer
+     * Return child's without association layer.
      */
     private Object[] getChildsWithoutDummyAssociationLayer(ITestPolicyCmptLink[] links) {
-        List childTestPolicyCmpt = new ArrayList(links.length);
+        // the result objects type could be ITestPolicyCmpt or ITestPolicyCpmtLink in case of an
+        // association
+        List<IIpsObjectPart> childTestPolicyCmpt = new ArrayList<IIpsObjectPart>(links.length);
         for (int i = 0; i < links.length; i++) {
             ITestPolicyCmptLink link = links[i];
             if (link.isComposition()) {
@@ -492,7 +502,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                     childTestPolicyCmpt.add(target);
                 }
             } else {
-                // assoziation will be added
+                // the link is an association will be added
                 childTestPolicyCmpt.add(links[i]);
             }
         }
@@ -500,10 +510,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     /*
-     * Returns a chached dummy object. To adapt the model object to the corresponding object which
-     * will be displayed in the ui.
+     * Returns a cached dummy object. To adapt the model object to the corresponding object which
+     * will be displayed in the user interface.
      */
-    private Object getDummyObject(ITestParameter parameter, ITestObject testObject) {
+    private IDummyTestCaseObject getDummyObject(ITestParameter parameter, ITestObject testObject) {
         String id = ""; //$NON-NLS-1$
         if (testObject instanceof ITestPolicyCmpt) {
             id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
@@ -511,7 +521,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             id = parameter.getName() + (testObject == null ? "" : "#" + testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        Object dummyObject = dummyObjects.get(id);
+        IDummyTestCaseObject dummyObject = dummyObjects.get(id);
         if (dummyObject == null) {
             if (testObject instanceof ITestPolicyCmpt) {
                 dummyObject = new TestCaseTypeAssociation((ITestPolicyCmptTypeParameter)parameter,
@@ -530,7 +540,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     /*
-     * Returns <code>true</code> if the given paramter matches the current type which the content
+     * Returns <code>true</code> if the given parameter matches the current type which the content
      * provider provides.
      */
     private boolean parameterMatchesType(ITestParameter parameter) {
@@ -539,23 +549,19 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     /*
-     * Helper class to sort test policy component objecs.
+     * Helper class to sort test policy component objects.
      */
-    private static class TestPolicyCmptSorter implements Comparator {
-        public int compare(Object o1, Object o2) {
-            ITestPolicyCmpt testPolicyCmpt1 = (ITestPolicyCmpt)o1;
-            ITestPolicyCmpt testPolicyCmpt2 = (ITestPolicyCmpt)o2;
+    private static class TestPolicyCmptSorter implements Comparator<ITestPolicyCmpt> {
+        public int compare(ITestPolicyCmpt testPolicyCmpt1, ITestPolicyCmpt testPolicyCmpt2) {
             return testPolicyCmpt1.getProductCmpt().compareTo(testPolicyCmpt2.getProductCmpt());
         }
     }
 
     /*
-     * Helper class to sort test value objecs.
+     * Helper class to sort test value objects.
      */
-    private static class TestValueSorter implements Comparator {
-        public int compare(Object o1, Object o2) {
-            ITestValue testValue1 = (ITestValue)o1;
-            ITestValue testValue2 = (ITestValue)o2;
+    private static class TestValueSorter implements Comparator<ITestValue> {
+        public int compare(ITestValue testValue1, ITestValue testValue2) {
             return testValue1.getTestValueParameter().compareTo(testValue2.getTestValueParameter());
         }
     }

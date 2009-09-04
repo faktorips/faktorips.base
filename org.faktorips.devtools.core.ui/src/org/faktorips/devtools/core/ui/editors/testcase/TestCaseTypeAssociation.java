@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -39,7 +38,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeAssociation implements Validatable {
+public class TestCaseTypeAssociation implements IDummyTestCaseObject {
 
     /** Contains the type definition of the association */
     private ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
