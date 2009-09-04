@@ -251,11 +251,34 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
-        // TODO Joerg: Methodenlaenge
         List elements = new ArrayList();
         if (inputElement instanceof ITestCase) {
             addElementsFor((ITestCase)inputElement, elements);
         }
+
+        ITestCaseType testCaseType = null;
+        try {
+            testCaseType = testCase.findTestCaseType(ipsProject);
+        } catch (CoreException e) {
+            // ignore exception while retrieving the test rule parameter
+        }
+
+        if (testCaseType == null) {
+            // if the test case type is missing then show the unsorted list of all existing test
+            // objects
+            return elements.toArray(new Object[elements.size()]);
+        }
+
+        return sortListAndAddDummyElements(elements, testCaseType);
+    }
+
+    /**
+     * returns the ordered list, the ordered list depends on the test case type, because the test
+     * rule objects displayed as group and the root test policy cmpt type node is a dummy node
+     * depending on the root parameter in the type
+     */
+    private Object[] sortListAndAddDummyElements(List elements, ITestCaseType testCaseType) {
+        // create helper map
         List orderedList = new ArrayList();
         HashMap name2elements = new HashMap();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
@@ -268,53 +291,38 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             name2elements.put(element.getTestParameterName(), existingElements);
         }
 
-        // return the ordered list, the ordered list depends on the test case type,
-        // because the test rule objects displayed as group, iterate the list of test case type
-        // parameter
-        // and add the corresponding elements
+        // sort and add dummy nodes for root policy cmpt type params and rules
+        ITestParameter[] params = testCaseType.getTestParameters();
 
-        // furthermore show the test rule objects as childs of a dummy test rule parameter node
-        ITestCaseType testCaseType = null;
-        try {
-            testCaseType = testCase.findTestCaseType(ipsProject);
-        } catch (CoreException e) {
-            // ignore exception while retrieving the test rule parameter
-        }
-        if (testCaseType != null) {
-            ITestParameter[] params = testCaseType.getTestParameters();
+        for (int i = 0; i < params.length; i++) {
+            List testObjects = (List)name2elements.get(params[i].getName());
+            name2elements.remove(params[i].getName());
 
-            for (int i = 0; i < params.length; i++) {
-                List testObjects = (List)name2elements.get(params[i].getName());
-                name2elements.remove(params[i].getName());
-
-                if (params[i] instanceof ITestPolicyCmptTypeParameter) {
-                    // dummy root node for all test policy cmpt type parameter
-                    if (parameterMatchesType((ITestPolicyCmptTypeParameter)params[i])) {
-                        orderedList.add(getDummyObject(params[i], null));
-                    }
-                } else if (params[i] instanceof ITestRuleParameter) {
-                    if (isCombined() || isExpectedResult()) {
-                        // test rule objects are not visible if the input filter is chosen
-                        orderedList.add(getDummyObject(params[i], null));
-                    }
-                } else if (testObjects != null && params[i] instanceof ITestValueParameter) {
+            if (params[i] instanceof ITestPolicyCmptTypeParameter) {
+                // dummy root node for all test policy cmpt type parameter
+                if (parameterMatchesType(params[i])) {
+                    orderedList.add(getDummyObject(params[i], null));
+                }
+            } else if (params[i] instanceof ITestRuleParameter) {
+                if (isCombined() || isExpectedResult()) {
+                    // test rule objects are not visible if the input filter is chosen
+                    orderedList.add(getDummyObject(params[i], null));
+                }
+            } else if (testObjects != null && params[i] instanceof ITestValueParameter) {
+                if (parameterMatchesType(params[i])) {
                     orderedList.addAll(testObjects);
                 }
             }
-
-            // add all elements which are not in the test parameter on the end
-            for (Iterator iter = name2elements.values().iterator(); iter.hasNext();) {
-                List elementsWithNoParams = (List)iter.next();
-                orderedList.addAll(elementsWithNoParams);
-            }
-
-            // dummy objects for all missing root nodes
-
-        } else {
-            // ignore the sort order of the test case type if the test case type not exists
-            orderedList.addAll(elements);
         }
-        return orderedList.toArray(new Object[0]);
+
+        // add all elements which are not in the test parameter on the end
+        // -> invalid test objects
+        for (Iterator iter = name2elements.values().iterator(); iter.hasNext();) {
+            List elementsWithNoParams = (List)iter.next();
+            orderedList.addAll(elementsWithNoParams);
+        }
+
+        return orderedList.toArray(new Object[orderedList.size()]);
     }
 
     private void addElementsFor(ITestCase testCase, List elements) {
@@ -423,63 +431,72 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Returns childs of the test policy component.
      */
     private Object[] getChildsForTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
-        // TODO Joerg: Methodenlaenge
         ITestPolicyCmptLink[] links = testPolicyCmpt.getTestPolicyCmptLinks();
         if (withoutAssociations) {
-            // show childs without association layer
-            List childTestPolicyCmpt = new ArrayList(links.length);
-            for (int i = 0; i < links.length; i++) {
-                ITestPolicyCmptLink link = links[i];
-                if (link.isComposition()) {
-                    ITestPolicyCmpt target = null;
-                    try {
-                        target = link.findTarget();
-                    } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+            return getChildsWithoutDummyAssociationLayer(links);
+        } else {
+            return getChildsWithAssociationLayer(testPolicyCmpt, links);
+        }
+    }
+
+    private Object[] getChildsWithAssociationLayer(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptLink[] links) {
+        // group childs using the test policy component type
+        ArrayList childs = new ArrayList();
+        ArrayList childNames = new ArrayList();
+        try {
+            // get all childs from the test case type definition
+            ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
+            if (typeParam != null) {
+                ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
+                for (int i = 0; i < children.length; i++) {
+                    ITestPolicyCmptTypeParameter parameter = children[i];
+                    if (parameterMatchesType(parameter)) {
+                        childs.add(getDummyObject(parameter, testPolicyCmpt));
                     }
-                    if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
-                        childTestPolicyCmpt.add(target);
-                    }
-                } else {
-                    // assoziation will be added
-                    childTestPolicyCmpt.add(links[i]);
+                    childNames.add(parameter.getName());
                 }
             }
-            return childTestPolicyCmpt.toArray(new IIpsElement[0]);
-        } else {
-            // group childs using the test policy component type
-            ArrayList childs = new ArrayList();
-            ArrayList childNames = new ArrayList();
-            try {
-                // get all childs from the test case type definition
-                ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
-                if (typeParam != null) {
-                    ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
-                    for (int i = 0; i < children.length; i++) {
-                        ITestPolicyCmptTypeParameter parameter = children[i];
-                        if (parameterMatchesType(parameter)) {
-                            childs.add(getDummyObject(parameter, testPolicyCmpt));
-                        }
-                        childNames.add(parameter.getName());
-                    }
+            // add links which are not added by the test case parameter
+            // association with missing test case type parameter
+            ITestPolicyCmptLink[] linksInTestCase = testPolicyCmpt.getTestPolicyCmptLinks();
+            for (int i = 0; i < linksInTestCase.length; i++) {
+                ITestPolicyCmptLink link = linksInTestCase[i];
+                if (!childNames.contains(link.getTestPolicyCmptTypeParameter())) {
+                    childs.add(link);
                 }
-                // add links which are not added by the test case parameter
-                // association with missing test case type parameter
-                ITestPolicyCmptLink[] linksInTestCase = testPolicyCmpt.getTestPolicyCmptLinks();
-                for (int i = 0; i < linksInTestCase.length; i++) {
-                    ITestPolicyCmptLink link = linksInTestCase[i];
-                    if (!childNames.contains(link.getTestPolicyCmptTypeParameter())) {
-                        childs.add(link);
-                    }
+            }
+            return childs.toArray(new Object[0]);
+        } catch (CoreException e) {
+            // ignore model error, the model consitence between the test case type and the test
+            // case
+            // will be check when openening the editor, therefore it will be ignored is here
+            return EMPTY_ARRAY;
+        }
+    }
+
+    /**
+     * Return childs without association layer
+     */
+    private Object[] getChildsWithoutDummyAssociationLayer(ITestPolicyCmptLink[] links) {
+        List childTestPolicyCmpt = new ArrayList(links.length);
+        for (int i = 0; i < links.length; i++) {
+            ITestPolicyCmptLink link = links[i];
+            if (link.isComposition()) {
+                ITestPolicyCmpt target = null;
+                try {
+                    target = link.findTarget();
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
                 }
-                return childs.toArray(new Object[0]);
-            } catch (CoreException e) {
-                // ignore model error, the model consitence between the test case type and the test
-                // case
-                // will be check when openening the editor, therefore it will be ignored is here
-                return EMPTY_ARRAY;
+                if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
+                    childTestPolicyCmpt.add(target);
+                }
+            } else {
+                // assoziation will be added
+                childTestPolicyCmpt.add(links[i]);
             }
         }
+        return childTestPolicyCmpt.toArray(new IIpsElement[0]);
     }
 
     /*
@@ -516,7 +533,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Returns <code>true</code> if the given paramter matches the current type which the content
      * provider provides.
      */
-    private boolean parameterMatchesType(ITestPolicyCmptTypeParameter parameter) {
+    private boolean parameterMatchesType(ITestParameter parameter) {
         return (isExpectedResult() && parameter.isExpextedResultOrCombinedParameter())
                 || (isInput() && parameter.isInputOrCombinedParameter());
     }
