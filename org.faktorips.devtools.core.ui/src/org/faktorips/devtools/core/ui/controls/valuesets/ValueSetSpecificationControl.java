@@ -96,6 +96,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private void initControls(UIToolkit toolkit) {
         initLayout();
         Composite parentArea = createParentArea(toolkit);
+
         createValueSetTypesCombo(toolkit, parentArea);
         createConcreteValueSetCheckbox(toolkit, parentArea);
 
@@ -232,7 +233,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Group createGroupAroundValueSet(Composite parent, String title) {
         Group group = toolkit.createGroup(parent, title);
         GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 10;
+        layout.marginHeight = 3;
         group.setLayout(layout);
         return group;
     }
@@ -384,8 +385,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             IValueSet valueSet = valueSetOwner.getValueSet();
             boolean checked = !valueSet.isAbstract() && !valueSet.isUnrestricted();
             concreteValueSetCheckbox.setChecked(checked);
-            boolean enabled = !valueSet.isUnrestricted() && editMode.canDefineAbstractSets();
-            concreteValueSetCheckbox.setEnabled(enabled);
+            updateConcreteValueSetCheckboxDataChangeableState();
         }
     }
 
@@ -396,7 +396,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         dataChangeable = changeable;
         toolkit.setDataChangeable(valueSetTypesCombo, changeable);
         toolkit.setDataChangeable(valueSetEditControl, changeable);
-        toolkit.setDataChangeable(concreteValueSetCheckbox, changeable);
+        updateConcreteValueSetCheckboxDataChangeableState();
+    }
+
+    private void updateConcreteValueSetCheckboxDataChangeableState() {
+        if (!isDataChangeable()) {
+            toolkit.setDataChangeable(concreteValueSetCheckbox, false);
+        }
+        boolean enabled = !getValueSet().isUnrestricted() && editMode.canDefineAbstractSets();
+        toolkit.setDataChangeable(concreteValueSetCheckbox, enabled);
     }
 
     /**
