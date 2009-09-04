@@ -153,8 +153,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private IpsObjectUIController ruleUIController;
 
-    private ValueSetType currentValueSetType;
-
     private ValueDatatype currentDatatype;
 
     private AttributeType currentAttributeType;
@@ -177,7 +175,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        currentValueSetType = attribute.getValueSet().getValueSetType();
         currentAttributeType = attribute.getAttributeType();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
@@ -615,7 +612,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void updateAllowedValueSetTypes() {
-        currentValueSetType = valueSetSpecificationControl.getValueSetType();
+        ValueSetType currentValueSetType = valueSetSpecificationControl.getValueSetType();
         try {
             valueSetSpecificationControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute
                     .getIpsProject()));
