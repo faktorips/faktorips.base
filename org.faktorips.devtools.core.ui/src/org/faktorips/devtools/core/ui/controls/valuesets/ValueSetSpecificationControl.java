@@ -192,7 +192,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
-            return valueSetEditControl.getParent();
+            return valueSetEditControl.getParent(); // have to return the parent here, as there is a
+            // group control (see below) around the edit control. There has to be a better way to do
+            // this!
         }
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
