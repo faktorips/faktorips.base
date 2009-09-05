@@ -42,19 +42,23 @@ import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
 
 /**
- * A control to specify a value set including it's type.
+ * A control to specify the value set belonging to a {@link IValueSetOwner} . The control also
+ * allows to change the type of the value set. Which value set types are allowed are defined by
+ * {@link IValueSetOwner#getAllowedValueSetTypes(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
-    private ValueSetControlEditMode editMode = ValueSetControlEditMode.ALL_KIND_OF_SETS;
     private IValueSetOwner valueSetOwner;
+
+    private ValueSetControlEditMode editMode = ValueSetControlEditMode.ALL_KIND_OF_SETS;
 
     private ValueSetEditControlFactory valueSetEditControlFactory = new ValueSetEditControlFactory();
 
-    private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
-    // combo showing the allowed value set types
+    // Label, Combo & Field for the allowed value set types
+    private Label valueSetTypeLabel;
     private Combo valueSetTypesCombo;
     private ComboField valueSetTypeField;
+    private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
 
     private Checkbox concreteValueSetCheckbox = null;
     private CheckboxField concreteValueSetField = null;
@@ -69,8 +73,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private UIToolkit toolkit;
     private DefaultUIController uiController;
-
-    private Label valueSetTypeLabel;
 
     private boolean dataChangeable;
     private Label concreteValueSetLabel;

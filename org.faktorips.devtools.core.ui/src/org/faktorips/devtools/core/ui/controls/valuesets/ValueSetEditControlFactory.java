@@ -26,6 +26,13 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * Factory to create controls to edit a given value set. As the value set is given to the factory it
+ * is not possible to switch the type of value set. The returned control es suitable to edit the
+ * given value set instance.
+ * 
+ * @author Jan Ortmann
+ */
 public class ValueSetEditControlFactory {
 
     /**
