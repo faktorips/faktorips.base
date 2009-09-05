@@ -19,26 +19,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -61,7 +58,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
     private List<ValueSetType> allowedValuesSetTypes;
 
     // edit field for the default value
-    private DefaultEditField defaultValueField;
+    private EditField defaultValueField;
 
     // true if the dialog is used to just display the value set, no editing is possible
     private boolean viewOnly;
@@ -116,17 +113,11 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     private void createControlsForDefaultValue(Composite workArea, IValueSet valueSet) {
         uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
-        if (valueSet.isEnum()) {
-            Combo combo = uiToolkit.createCombo(workArea);
-            defaultValueField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, valueDatatype);
-        } else if (valueDatatype.isEnum()) {
-            Combo combo = uiToolkit.createCombo(workArea);
-            defaultValueField = new EnumDatatypeField(combo, (EnumDatatype)valueDatatype);
-        } else {
-            Text defaultValueText = uiToolkit.createText(workArea);
-            defaultValueText.setEnabled(!viewOnly);
-            defaultValueField = new TextField(defaultValueText);
-        }
+        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                valueDatatype);
+        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, workArea, valueDatatype, null, configElement
+                .getIpsProject());
+        defaultValueField.getControl().setEnabled(!viewOnly);
     }
 
     private Composite createValueSetControl(Composite workArea) {
