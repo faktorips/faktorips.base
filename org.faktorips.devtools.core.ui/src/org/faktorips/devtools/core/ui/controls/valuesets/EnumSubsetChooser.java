@@ -157,6 +157,12 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     }
 
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+        if (valueSet == null) {
+            return false;
+        }
+        if (valueDatatype == null) {
+            return false;
+        }
         return valueSet.isEnum() && (valueDatatype.isEnum());
     }
 

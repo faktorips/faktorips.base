@@ -101,6 +101,12 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
      * {@inheritDoc}
      */
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+        if (valueSet == null) {
+            return false;
+        }
+        if (valueDatatype == null) {
+            return false;
+        }
         return valueSet.isEnum() && !valueDatatype.isEnum();
     }
 

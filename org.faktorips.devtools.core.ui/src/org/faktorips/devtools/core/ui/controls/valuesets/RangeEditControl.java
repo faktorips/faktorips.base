@@ -155,6 +155,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
      * {@inheritDoc}
      */
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
+        if (valueSet == null) {
+            return false;
+        }
         return valueSet.isRange();
     }
 

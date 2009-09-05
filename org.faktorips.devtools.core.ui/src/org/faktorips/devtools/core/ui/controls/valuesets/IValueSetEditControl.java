@@ -49,7 +49,8 @@ public interface IValueSetEditControl {
 
     /**
      * Returns <code>true</code> if this control can be used to edit the given value set using the
-     * given value datatype. Returns <code>false</code> otherwise.
+     * given value datatype. Returns <code>false</code> otherwise. Returns <code>false</code> if
+     * <code>valueSet</code> or <code>valueDatatype</code> is <code>null</code>.
      * 
      * @param valueSet The value set to test.
      * @param valueDatatype The datatype the values in the set are instances of.
