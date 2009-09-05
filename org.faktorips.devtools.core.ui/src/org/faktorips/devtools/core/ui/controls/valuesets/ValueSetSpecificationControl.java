@@ -398,6 +398,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private void updateConcreteValueSetCheckboxDataChangeableState() {
         if (!isDataChangeable()) {
             toolkit.setDataChangeable(concreteValueSetCheckbox, false);
+            return;
         }
         boolean enabled = !getValueSet().isUnrestricted() && editMode.canDefineAbstractSets();
         toolkit.setDataChangeable(concreteValueSetCheckbox, enabled);
