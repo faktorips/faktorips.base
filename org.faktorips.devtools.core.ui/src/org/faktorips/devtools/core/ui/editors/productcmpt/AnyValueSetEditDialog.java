@@ -44,7 +44,9 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- *
+ * A dialog that allows to edit any kind of value set. If is also possible to switch the type of
+ * value set! The value set types that are allowed are passed in the constructor. This dialog works
+ * together with {@link AnyValueSetEditDialog}.
  */
 public class AnyValueSetEditDialog extends IpsPartEditDialog {
 

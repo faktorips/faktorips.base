@@ -35,8 +35,11 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.memento.Memento;
 
 /**
- * Control to define a value set in the product component editor. A textfeld followed by a button is
- * provided. If the button is clicked, a special editor to define the values is opened.
+ * Control to define any kind of value set in the product component editor. A text field followed by
+ * a button is provided. If the button is clicked, a special dialog to define the value set opens.
+ * In the dialog it is also possible to switch the type of value set!
+ * 
+ * @see AnyValueSetEditDialog
  * 
  * @author Thorsten Guenther
  * @auhtor Jan Ortmann
@@ -166,4 +169,5 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     public boolean isDataChangeable() {
         return dataChangeable;
     }
+
 }
