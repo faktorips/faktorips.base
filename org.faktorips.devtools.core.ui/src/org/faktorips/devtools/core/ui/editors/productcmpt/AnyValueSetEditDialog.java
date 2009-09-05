@@ -29,11 +29,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
-import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
@@ -57,9 +54,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     // list of value set types the users can select
     private List<ValueSetType> allowedValuesSetTypes;
-
-    // edit field for the default value
-    private EditField defaultValueField;
 
     // true if the dialog is used to just display the value set, no editing is possible
     private boolean viewOnly;
@@ -97,20 +91,9 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        createControlsForDefaultValue(c);
+        // createControlsForDefaultValue(c);
         createValueSetControl(c);
         return c;
-    }
-
-    private void createControlsForDefaultValue(Composite parent) {
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
-        workArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                valueDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, workArea, valueDatatype, null, configElement
-                .getIpsProject());
-        defaultValueField.getControl().setEnabled(!viewOnly);
     }
 
     private Composite createValueSetControl(Composite parent) {
@@ -127,15 +110,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
             gd.heightHint = 250;
         }
         return vsEdit;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
     }
 
     class Chooser extends EnumSubsetChooser {
