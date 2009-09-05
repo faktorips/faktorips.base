@@ -52,8 +52,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private ValueSetControlEditMode editMode = ValueSetControlEditMode.ALL_KIND_OF_SETS;
 
-    private ValueSetEditControlFactory valueSetEditControlFactory = new ValueSetEditControlFactory();
-
     // Label, Combo & Field for the allowed value set types
     private Label valueSetTypeLabel;
     private Combo valueSetTypesCombo;
@@ -198,7 +196,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
-        Control c = valueSetEditControlFactory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
+        ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
+        Control c = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
         c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         setValueSetEditControl(c);
         return group;
