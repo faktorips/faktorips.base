@@ -111,12 +111,12 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         mainAreaLayout.marginHeight = 0;
         mainAreaLayout.marginWidth = 0;
         setLayout(mainAreaLayout);
-        setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
+        setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
     }
 
     private void createValueSetArea(UIToolkit toolkit, Composite parent) {
         valueSetArea = toolkit.createComposite(parent);
-        GridData stackData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        GridData stackData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH);
         valueSetArea.setLayoutData(stackData);
         valueSetArea.setLayout(new StackLayout());
     }
@@ -197,7 +197,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         Control c = valueSetEditControlFactory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
-        c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
+        c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         setValueSetEditControl(c);
         return group;
     }
@@ -223,7 +223,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 3;
         group.setLayout(layout);
-        GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH);
         group.setLayoutData(labelGridData);
         return group;
     }

@@ -28,7 +28,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -98,22 +97,14 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        IValueSet valueSet = configElement.getValueSet();
-        createControlsForDefaultValue(workArea, valueSet);
-
-        Control valueSetControl = createValueSetControl(workArea);
-        GridData valueSetGridData = new GridData(GridData.FILL_BOTH);
-        valueSetGridData.horizontalSpan = 2;
-        valueSetControl.setLayoutData(valueSetGridData);
-        valueSetControl.setEnabled(!viewOnly);
+        createControlsForDefaultValue(c);
+        createValueSetControl(c);
         return c;
     }
 
-    private void createControlsForDefaultValue(Composite workArea, IValueSet valueSet) {
+    private void createControlsForDefaultValue(Composite parent) {
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+        workArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 valueDatatype);
@@ -122,16 +113,19 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         defaultValueField.getControl().setEnabled(!viewOnly);
     }
 
-    private Composite createValueSetControl(Composite workArea) {
-        ((GridData)workArea.getLayoutData()).heightHint = 250;
+    private Composite createValueSetControl(Composite parent) {
         IpsObjectUIController uiController = new IpsObjectUIController(configElement);
-        Composite vsEditComposite = uiToolkit.createComposite(workArea);
-        vsEditComposite.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
-        vsEditComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        ((GridData)vsEditComposite.getLayoutData()).horizontalSpan = 2;
-        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(vsEditComposite, uiToolkit,
-                uiController, configElement, allowedValuesSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, uiToolkit, uiController,
+                configElement, allowedValuesSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
+        vsEdit.setEnabled(!viewOnly);
+        Object layoutData = vsEdit.getLayoutData();
+        if (layoutData instanceof GridData) {
+            // set the minimum height to show at least the maximum size of the selected
+            // ValueSetEditControl
+            GridData gd = (GridData)layoutData;
+            gd.heightHint = 250;
+        }
         return vsEdit;
     }
 
