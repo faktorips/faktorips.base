@@ -13,18 +13,14 @@
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Factory to create controls to edit a given value set. As the value set is given to the factory it
@@ -69,33 +65,4 @@ public class ValueSetEditControlFactory {
                 + valueDatatype);
     }
 
-    class EmptyComposite extends Composite implements IValueSetEditControl {
-
-        private IValueSet valueSet;
-
-        public EmptyComposite(IValueSet valueSet, Composite parent) {
-            super(parent, SWT.NONE);
-            setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-            ArgumentCheck.isTrue(valueSet.isAbstract() || valueSet.isUnrestricted());
-            this.valueSet = valueSet;
-        }
-
-        public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
-            return valueSet.isAbstract() || valueSet.isUnrestricted();
-        }
-
-        public IValueSet getValueSet() {
-            return valueSet;
-        }
-
-        public ValueSetType getValueSetType() {
-            return valueSet.getValueSetType();
-        }
-
-        public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
-            ArgumentCheck.isTrue(newSet.isAbstract() || newSet.isUnrestricted());
-            valueSet = newSet;
-        }
-
-    }
 }
