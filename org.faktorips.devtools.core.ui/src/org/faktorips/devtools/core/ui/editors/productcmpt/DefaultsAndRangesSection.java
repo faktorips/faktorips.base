@@ -145,8 +145,12 @@ public class DefaultsAndRangesSection extends IpsSection {
             IpsObjectUIController controller = new IpsObjectUIController(element);
             uiMasterController.add(controller);
             createLabel(element, attribute);
+            boolean controlCreated = createEditControlForValueSet(element, attribute, controller);
+            if (controlCreated) {
+                // "indent the next line"
+                toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+            }
             createEditControlForDefaultValue(element, attribute, datatype, controller);
-            createEditControlForValueSet(element, attribute, controller);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -175,23 +179,28 @@ public class DefaultsAndRangesSection extends IpsSection {
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);
     }
 
-    private void createEditControlForValueSet(IConfigElement element,
+    /**
+     * Creates the edit control(s) for the config element's value set.
+     * 
+     * @return <code>true</code> if the control(s) have bean created, otherwise <code>false</code>.
+     */
+    private boolean createEditControlForValueSet(IConfigElement element,
             IPolicyCmptTypeAttribute attribute,
             IpsObjectUIController controller) throws CoreException {
 
         IValueSet attrValueSet = attribute == null ? null : attribute.getValueSet();
         if (attrValueSet == null) {
-            return;
+            return false;
         }
         if (attrValueSet.isRange()) {
             createEditControlsForRange(element.getValueSet(), controller);
         } else {
             createEditControlsForOtherThanRange(element, controller);
         }
+        return true;
     }
 
     private void createEditControlsForOtherThanRange(IConfigElement element, IpsObjectUIController controller) {
-        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
         AnyValueSetControl evc = new AnyValueSetControl(rootPane, toolkit, element, getShell(), controller);
         evc.setDataChangeable(isDataChangeable());
@@ -209,7 +218,6 @@ public class DefaultsAndRangesSection extends IpsSection {
         Text upper;
         Text step;
         if (!IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
-            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
             toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
             lower = toolkit.createText(rootPane);
             addFocusControl(lower);
@@ -224,8 +232,6 @@ public class DefaultsAndRangesSection extends IpsSection {
             step = toolkit.createText(rootPane);
             addFocusControl(step);
         } else {
-            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-
             toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
 
             Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
