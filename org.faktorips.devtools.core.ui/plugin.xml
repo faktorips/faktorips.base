@@ -148,7 +148,8 @@
                id="org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.label"
                toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip"/>
+               tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip">
+         </action>
       </actionSet>
  	  <actionSet
             id="org.faktorips.devtools.actions.EditModeActionSet"   
@@ -530,16 +531,8 @@
             extensions="ipstestcase"
             icon="icons/TestCase.gif"
             id="testCaseEditor"
-            name="%testCaseEditor"/>
-      	<editor
-            class="org.faktorips.devtools.core.ui.editors.question.QuestionEditor"
-            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
-            default="true"
-            extensions="ipsquestion"
-            icon="icons/Question.gif"
-            id="questionEditor"
-            name="%questionEditor">
-      	</editor>
+            name="%testCaseEditor">
+        </editor>
 	</extension>
 
 <!-- 

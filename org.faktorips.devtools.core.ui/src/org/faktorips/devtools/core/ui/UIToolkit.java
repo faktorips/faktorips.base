@@ -34,6 +34,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.FilteredIpsObjectTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
@@ -465,6 +467,19 @@ public class UIToolkit {
             Composite parent,
             boolean excludeAbstractTypes) {
         return new ProductCmptType2RefControl(project, parent, this, excludeAbstractTypes);
+    }
+
+    /**
+     * Creates a new QuestionIpsObjectTypeRefControl.
+     */
+    public FilteredIpsObjectTypeRefControl createFilteredIpsObjectTypeRefControl(IIpsProject project,
+            Composite parent,
+            String controlTitle,
+            String controlDescription,
+            IpsObjectType[] applicableTypes,
+            boolean excludeAbstractTypes) {
+        return new FilteredIpsObjectTypeRefControl(project, parent, this, controlTitle, controlDescription,
+                applicableTypes, excludeAbstractTypes);
     }
 
     /**

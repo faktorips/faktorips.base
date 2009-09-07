@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,6 +12,9 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controls;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -33,60 +36,55 @@ import org.faktorips.util.StringUtil;
  * button that allows to browse the available objects.
  */
 public abstract class IpsObjectRefControl extends TextButtonControl {
-    
+
     private IIpsProject ipsProject;
-    
+
     private String dialogTitle;
     private boolean enableDialogFilter = true;
     private String dialogMessage;
     private ContentAssistHandler handler;
-    
+
     private IpsObjectCompletionProcessor completionProcessor;
 
     private ILabelProvider labelProvider;
-    
-    public IpsObjectRefControl(
-            IIpsProject project,
-            Composite parent, 
-            UIToolkit toolkit,
-            String dialogTitle,
+
+    public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
-        this(project, parent, toolkit, dialogTitle, dialogMessage, DefaultLabelProvider.createWithIpsSourceFileMapping());
+        this(project, parent, toolkit, dialogTitle, dialogMessage, DefaultLabelProvider
+                .createWithIpsSourceFileMapping());
     }
-    
+
     /**
      * @param parent
      * @param style
      */
-    public IpsObjectRefControl(
-            IIpsProject project,
-            Composite parent, 
-            UIToolkit toolkit,
-            String dialogTitle,
-            String dialogMessage,
-            ILabelProvider labelProvider) {
+    public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
+            String dialogMessage, ILabelProvider labelProvider) {
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
         this.labelProvider = labelProvider;
         setIpsProject(project);
     }
-    
+
     public void setIpsProject(IIpsProject project) {
-        this.ipsProject = project;
-        setButtonEnabled(project!=null && project.exists());
-        if(handler != null){
+        ipsProject = project;
+        setButtonEnabled(project != null && project.exists());
+        if (handler != null) {
             handler.setEnabled(false);
         }
-        handler = ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(new IpsObjectCompletionProcessor(this)));
+        handler = ContentAssistHandler.createHandlerForText(text, CompletionUtil
+                .createContentAssistant(new IpsObjectCompletionProcessor(this)));
     }
-    
+
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
-    
+
+    @Override
     protected void buttonClicked() {
-        final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), dialogTitle, dialogMessage, labelProvider);
+        final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), dialogTitle, dialogMessage,
+                labelProvider);
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
             public void run() {
                 try {
@@ -97,13 +95,17 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             }
         });
         try {
-            if(isDialogFilterEnabled()){
-                dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
+            if (isDialogFilterEnabled()) {
+                dialog.setFilter(getDefaultDialogFilterExpression());
             }
             if (dialog.open() == Window.OK) {
                 if (dialog.getResult().length > 0) {
-                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)dialog.getResult()[0];
-                    setText(ipsSrcFile.getQualifiedNameType().getName());
+                    List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+                    Object[] result = dialog.getResult();
+                    for (int i = 0; i < result.length; i++) {
+                        srcFiles.add((IIpsSrcFile)result[i]);
+                    }
+                    updateTextControlAfterDialogOK(srcFiles);
                 } else {
                     setText(""); //$NON-NLS-1$
                 }
@@ -113,12 +115,25 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         }
     }
 
+    protected String getDefaultDialogFilterExpression() {
+        return StringUtil.unqualifiedName(super.getText());
+    }
+
+    /**
+     * Called when the user closes the dialog by clicking OK.
+     * 
+     * @param List of selected ips source files containing at least 1 element!
+     */
+    protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
+        setText(ipsSrcFiles.get(0).getQualifiedNameType().getName());
+    }
+
     public boolean isDialogFilterEnabled() {
         return enableDialogFilter;
     }
 
     public void setDialogFilterEnabled(boolean enable) {
-        this.enableDialogFilter = enable;
+        enableDialogFilter = enable;
     }
 
     /**

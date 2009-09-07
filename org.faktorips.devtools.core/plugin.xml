@@ -342,10 +342,4 @@
             class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
 		</ipsobjecttype>
 	</extension>
-   <extension
-         point="org.faktorips.devtools.core.ipsobjecttype">
-      <ipsobjecttype
-            class="org.faktorips.devtools.core.model.question.QuestionIpsObjectType">
-      </ipsobjecttype>
-   </extension>
 </plugin>
