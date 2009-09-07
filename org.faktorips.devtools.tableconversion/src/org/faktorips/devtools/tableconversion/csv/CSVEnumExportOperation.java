@@ -74,6 +74,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -113,7 +114,13 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
                 // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
                 // Zielordner
                 out = new FileOutputStream(new File(filename));
-                writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)));
+
+                String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
+                char fieldSeparatorChar = ',';
+                if (fieldSeparator != null && fieldSeparator.length() == 1) {
+                    fieldSeparatorChar = fieldSeparator.charAt(0);
+                }
+                writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
 
                 exportHeader(writer, structure.getEnumAttributes(true), exportColumnHeaderRow);
 
@@ -128,7 +135,6 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         } finally {
             if (out != null) {
                 try {
-
                     out.close();
                 } catch (Exception ee) {
                     // ignore
@@ -180,12 +186,11 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException, IOException {
 
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes(true);
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
 
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(false)];
+        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(true)];
         for (int i = 0; i < datatypes.length; i++) {
-            String datatype = enumAttributes.get(i).getDatatype();
-            datatypes[i] = structure.getIpsProject().findDatatype(datatype);
+            datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }
 
         for (int i = 0; i < values.size(); i++) {

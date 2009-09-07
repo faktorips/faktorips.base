@@ -19,7 +19,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -161,6 +166,25 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         if (propertyName != null) {
             properties.put(propertyName, propertyValue);
         }
+    }
+
+    protected Datatype[] getDatatypes(ITableStructure structure) throws CoreException {
+        IColumn[] columns = structure.getColumns();
+        Datatype[] datatypes = new Datatype[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
+        }
+        return datatypes;
+    }
+
+    protected Datatype[] getDatatypes(IEnumType structure) throws CoreException {
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
+        Datatype[] datatypes = new Datatype[enumAttributes.size()];
+        for (int i = 0; i < datatypes.length; i++) {
+            IEnumAttribute enumAttribute = enumAttributes.get(i);
+            datatypes[i] = enumAttribute.findDatatype(enumAttribute.getIpsProject());
+        }
+        return datatypes;
     }
 
     /**

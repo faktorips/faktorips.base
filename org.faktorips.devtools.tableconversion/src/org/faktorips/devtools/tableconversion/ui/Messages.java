@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,11 +29,14 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String CSVPropertyCompositeFactory_errMsgDecimalGroupingLength;
+    public static String CSVPropertyCompositeFactory_errMsgDecimalSeparatorAndGroupingCharsAreEqual;
+    public static String CSVPropertyCompositeFactory_errMsgDecimalSeparatorLength;
     public static String CSVPropertyFactory_dateFormatHelp1;
     public static String CSVPropertyFactory_dateFormatHelp2;
     public static String CSVPropertyFactory_dateFormatHelp3;
     public static String CSVPropertyFactory_dateFormatLabel;
-    public static String CSVPropertyFactory_errMsgEmptyDateFormat;
+    public static String CSVPropertyFactory_errMsgInvalidDateFormat;
     public static String CSVPropertyFactory_errMsgFieldDelimiterLength;
     public static String CSVPropertyFactory_fieldDelimiterLabel;
 }

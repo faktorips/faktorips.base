@@ -12,13 +12,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
@@ -32,18 +30,20 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class CSVTableFormat extends AbstractExternalTableFormat {
 
-    private boolean ignoreColumnHeaderRow;
-
     // property constants following the JavaBeans standard
     public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter";
     public final static String PROPERTY_DOT_REPRESENTATION = "dotRepresentation";
     public final static String PROPERTY_DATE_FORMAT = "dateFormat";
+    public static final String PROPERTY_DECIMAL_SEPARATOR_CHAR = "decimalFormat";
+    public static final String PROPERTY_DECIMAL_GROUPING_CHAR = "decimalSeparatorChar";
 
     public CSVTableFormat() {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ",");
         properties.put(PROPERTY_DOT_REPRESENTATION, ".");
         properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
+        properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, ".");
+        properties.put(PROPERTY_DECIMAL_GROUPING_CHAR, ",");
     }
 
     /**
@@ -173,16 +173,22 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        return getImportPreview(structure, filename, maxNumberOfRows);
+    public List getImportTablePreview(ITableStructure structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
     }
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
-        return getImportPreview(structure, filename, maxNumberOfRows);
+    public List getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
     }
 
     /**
@@ -190,7 +196,10 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      *         an {@link ITableStructure} or an {@link IEnumType}.
      */
     @SuppressWarnings("unchecked")
-    private List getImportPreview(IIpsObject structure, IPath filename, int maxNumberOfRows) {
+    private List getImportPreview(IIpsObject structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
         Datatype[] datatypes;
         try {
             if (structure instanceof ITableStructure) {
@@ -201,7 +210,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 return Collections.EMPTY_LIST;
             }
 
-            return getPreviewInternal(datatypes, filename, maxNumberOfRows);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return Collections.EMPTY_LIST;
@@ -209,7 +218,10 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     @SuppressWarnings("unchecked")
-    private List getPreviewInternal(Datatype[] datatypes, IPath filename, int maxNumberOfRows) {
+    private List getPreviewInternal(Datatype[] datatypes,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
         if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }
@@ -218,7 +230,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         MessageList ml = new MessageList();
         CSVReader reader = null;
         try {
-            reader = new CSVReader(new FileReader(filename.toOSString()));
+            char fieldDelimiter = ',';
+            if (getProperty(PROPERTY_FIELD_DELIMITER).length() == 1) {
+                fieldDelimiter = getProperty(PROPERTY_FIELD_DELIMITER).charAt(0);
+            }
+
+            reader = new CSVReader(new FileReader(filename.toOSString()), fieldDelimiter);
             String[] line = (ignoreColumnHeaderRow == true) ? reader.readNext() : null;
             int linesLeft = maxNumberOfRows;
             while ((line = reader.readNext()) != null) {
@@ -243,26 +260,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
         }
         return result;
-    }
-
-    // TODO rg: Duplicated code in CSVTableImportOperation
-    private Datatype[] getDatatypes(ITableStructure structure) throws CoreException {
-        IColumn[] columns = structure.getColumns();
-        Datatype[] datatypes = new Datatype[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
-        }
-        return datatypes;
-    }
-
-    private Datatype[] getDatatypes(IEnumType structure) throws CoreException {
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes(true);
-        Datatype[] datatypes = new Datatype[enumAttributes.size()];
-        for (int i = 0; i < datatypes.length; i++) {
-            IEnumAttribute enumAttribute = enumAttributes.get(i);
-            datatypes[i] = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-        }
-        return datatypes;
     }
 
 }

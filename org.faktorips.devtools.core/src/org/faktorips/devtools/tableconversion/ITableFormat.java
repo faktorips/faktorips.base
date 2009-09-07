@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -229,12 +230,18 @@ public interface ITableFormat {
      * @param structure The table structure to use for the preview.
      * @param filename The filename of the file to be previewed.
      * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
+     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
+     *            should be ignored <code>false</code> if the to be imported content contains no
+     *            column header row.
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
      *         Collections.EMPTY_LIST if the preview could not be computed or the file contains no
      *         entries.
      */
     @SuppressWarnings("unchecked")
-    public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows);
+    public List getImportTablePreview(ITableStructure structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow);
 
     /**
      * Computes a preview for the enum to be imported.
@@ -242,11 +249,18 @@ public interface ITableFormat {
      * @param IEnumType The enum type to use (derive datatypes) for the preview.
      * @param filename The filename of the file to be previewed.
      * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
+     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
+     *            should be ignored <code>false</code> if the to be imported content contains no
+     *            column header row.
+     * 
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
      *         Collections.EMPTY_LIST if the preview could not be computed or the file contains no
      *         entries.
      */
     @SuppressWarnings("unchecked")
-    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows);
+    public List getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow);
 
 }

@@ -61,7 +61,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     public EnumImportWizard() {
         setWindowTitle(Messages.EnumImportWizard_title);
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumImportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumImportWizard.png")); //$NON-NLS-1$
     }
 
     /**
@@ -76,9 +76,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             addPage(newEnumContentPage);
             selectContentsPage = new SelectEnumPage(selection);
             addPage(selectContentsPage);
-            // TODO AW: preview feature out commented for release 2.3.0.rfinal
-            // tablePreviewPage = new ImportPreviewPage(selection);
-            // addPage(tablePreviewPage);
+            tablePreviewPage = new ImportPreviewPage(selection);
+            addPage(tablePreviewPage);
 
             filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
@@ -127,18 +126,19 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             try {
                 newEnumContentPage.validatePage();
             } catch (CoreException e) {
-                throw new RuntimeException(e);
+                IpsPlugin.log(e);
+                return null;
             }
             return newEnumContentPage;
         }
 
-        // TODO AW: out commented for release 2.3.0.rfinal
-        // if (page == selectContentsPage || page == newEnumContentPage) {
-        // IEnumType enumType = getEnumType();
-        // tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType);
-        // tablePreviewPage.validatePage();
-        // return tablePreviewPage;
-        // }
+        if (page == selectContentsPage || page == newEnumContentPage) {
+            IEnumType enumType = getEnumType();
+            tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType, filePage
+                    .isImportIgnoreColumnHeaderRow());
+            tablePreviewPage.validatePage();
+            return tablePreviewPage;
+        }
 
         return null;
     }
@@ -146,6 +146,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean performFinish() {
         final ITableFormat format = filePage.getFormat();
         try {
@@ -165,7 +166,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             model.runAndQueueChangeEvents(runnable, null);
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(e);
         }
 
         // Don't keep wizard open.

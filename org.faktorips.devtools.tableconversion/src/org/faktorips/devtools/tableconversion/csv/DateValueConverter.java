@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,7 +28,7 @@ import org.faktorips.values.DateUtil;
 public class DateValueConverter extends AbstractValueConverter {
 
     private DateDatatype datatype = new DateDatatype();
-    
+
     /**
      * {@inheritDoc}
      */
@@ -37,7 +37,7 @@ public class DateValueConverter extends AbstractValueConverter {
             return null;
         }
         try {
-            Date date = (Date) datatype.getValue(ipsValue);
+            Date date = (Date)datatype.getValue(ipsValue);
             if (tableFormat == null) {
                 return DateUtil.dateToIsoDateString(date);
             }
@@ -45,7 +45,7 @@ public class DateValueConverter extends AbstractValueConverter {
             return DateFormatUtils.format(date, datePattern);
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
-                    .getQualifiedName(), GregorianCalendar.class.getName())); //$NON-NLS-1$
+                    .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
         }
     }
@@ -62,16 +62,18 @@ public class DateValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof String) {
             try {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
-                Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] {dateFormat});
+                Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
                 return DateUtil.dateToIsoDateString(parseDate);
             } catch (Exception ignored) {
-                // could not convert, so add error messages to MessageList and return unconverted value
+                // could not convert, so add error messages to MessageList and return unconverted
+                // value
             }
         }
-        
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
-                .getClass().getName(), getSupportedDatatype().getQualifiedName())); 
-        return externalDataValue.toString();            
+
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue //$NON-NLS-1$
+                        .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+        return externalDataValue.toString();
     }
 
     /**

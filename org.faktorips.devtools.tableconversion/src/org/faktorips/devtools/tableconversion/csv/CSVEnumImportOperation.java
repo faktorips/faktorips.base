@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -45,15 +46,15 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
     private final IEnumValueContainer valueContainer;
     private final String sourceFile;
-    private final CSVTableFormat format;
+    private final AbstractExternalTableFormat format;
     private final String nullRepresentationString;
     private final boolean ignoreColumnHeaderRow;
     private final MessageList messageList;
     private Datatype[] datatypes;
 
-    public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename, CSVTableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList,
-            boolean importIntoExisting) {
+    public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename,
+            AbstractExternalTableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow,
+            MessageList messageList, boolean importIntoExisting) {
 
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
@@ -68,11 +69,11 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
             List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributes(true);
+                    .getEnumAttributesIncludeSupertypeCopies(true);
             datatypes = new Datatype[enumAttributes.size()];
 
             for (int i = 0; i < datatypes.length; i++) {
-                IEnumAttribute enumAttribute = (IEnumAttribute)enumAttributes.get(i);
+                IEnumAttribute enumAttribute = enumAttributes.get(i);
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
@@ -127,8 +128,8 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                 reader.readNext();
             }
 
-            int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject()).getEnumAttributesCount(
-                    false);
+            int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject())
+                    .getEnumAttributesCountIncludeSupertypeCopies(true);
 
             String[] readLine;
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;

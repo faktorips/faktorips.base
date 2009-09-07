@@ -16,15 +16,23 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -151,13 +159,94 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
-    public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        // TODO rg: implement preview
-        return Collections.EMPTY_LIST;
+    public List getImportTablePreview(ITableStructure structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
     }
 
-    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
-        // TODO rg: implement preview
-        return Collections.EMPTY_LIST;
+    public List getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+    }
+
+    private List getImportPreview(IIpsObject structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        Datatype[] datatypes;
+        try {
+            if (structure instanceof ITableStructure) {
+                datatypes = getDatatypes((ITableStructure)structure);
+            } else if (structure instanceof IEnumType) {
+                datatypes = getDatatypes((IEnumType)structure);
+            } else {
+                return Collections.EMPTY_LIST;
+            }
+
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    private List getPreviewInternal(Datatype[] datatypes,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow) {
+        HSSFSheet sheet = null;
+        try {
+            sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            return Collections.EMPTY_LIST;
+        }
+
+        List result = new ArrayList();
+        MessageList ml = new MessageList();
+
+        // row 0 is the header if ignoreColumnHeaderRow is true,
+        // otherwise row 0 contains data
+        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+
+        // the workbook can contain less rows than requested
+        int linesLeft = Math.min(sheet.getLastRowNum(), maxNumberOfRows);
+        for (int i = startRow;; i++) {
+            HSSFRow sheetRow = sheet.getRow(i);
+            if (linesLeft-- <= 0 || sheetRow == null) {
+                // no more rows, we are finished with this sheet.
+                break;
+            }
+            int numberOfCells = sheetRow.getLastCellNum();
+            String[] convertedLine = new String[numberOfCells];
+            for (short j = 0; j < numberOfCells; j++) {
+                HSSFCell cell = sheetRow.getCell(j);
+                String cellString = readCell(cell, datatypes[j], ml);
+                convertedLine[j] = cellString;
+            }
+
+            result.add(convertedLine);
+        }
+
+        return result;
+    }
+
+    // TODO rg: code duplication in AbstractExcelImportOperation
+    private String readCell(HSSFCell cell, Datatype datatype, MessageList messageList) {
+        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                return getIpsValue(cell.getDateCellValue(), datatype, messageList);
+            }
+            return getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
+        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+            return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
+        } else {
+            String value = cell.getStringCellValue();
+            return getIpsValue(value, datatype, messageList);
+        }
     }
 }

@@ -435,10 +435,6 @@ public class IpsPlugin extends AbstractUIPlugin {
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         List<ITableFormat> result = new ArrayList<ITableFormat>();
         for (int i = 0; i < elements.length; i++) {
-            // TODO CSV: skipped for 2.4.0rc1
-            if (i == 1) {
-                continue;
-            }
             try {
                 ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 initExternalTableFormat(format, elements[i]);

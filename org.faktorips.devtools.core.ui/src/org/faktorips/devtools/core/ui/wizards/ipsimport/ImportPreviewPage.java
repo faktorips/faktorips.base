@@ -80,6 +80,8 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     // creates configuration controls specific to a table format
     private TableFormatConfigurationCompositeFactory configCompositeFactory;
 
+    private boolean ignoreColumnHeaderRow;
+
     /**
      * Initializes the preview dialog using the given selection.
      * <p>
@@ -103,7 +105,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
      */
     public void createControl(Composite parent) {
         validateInput = false;
-        setTitle(Messages.ImportPreviewPage_pageTtile);
+        setTitle(Messages.ImportPreviewPage_pageTitle);
 
         pageControl = toolkit.createGridComposite(parent, 1, false, false);
 
@@ -138,6 +140,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         previewTable.setHeaderVisible(true);
         previewTable.setLinesVisible(true);
         previewTable.addControlListener(new ControlAdapter() {
+            @Override
             public void controlResized(ControlEvent e) {
                 refreshColumnWidths();
             }
@@ -146,6 +149,13 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     private void resetDynamicPropertiesControl(Composite parent, UIToolkit toolkit, ITableFormat tableFormat) {
         if (!IpsUIPlugin.getDefault().hasTableFormatCustomProperties(tableFormat)) {
+            if (dynamicPropertiesComposite != null) {
+                dynamicPropertiesComposite.moveBelow(null);
+                ((GridData)dynamicPropertiesComposite.getLayoutData()).exclude = true;
+                pageControl.layout(true);
+            }
+            // force update of preview table
+            valueChanged(null);
             return;
         }
 
@@ -171,7 +181,9 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         }
 
         // make sure the configuration composite is displayed above the preview
-        dynamicPropertiesComposite.moveAbove(null);
+        if (IpsUIPlugin.getDefault().hasTableFormatCustomProperties(tableFormat)) {
+            dynamicPropertiesComposite.moveAbove(null);
+        }
     }
 
     private void fillPreviewTableContents() {
@@ -184,10 +196,10 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         List preview = Collections.EMPTY_LIST;
         if (structure instanceof ITableStructure) {
             preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),
-                    MAX_NUMBER_PREVIEW_ROWS);
+                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow);
         } else if (structure instanceof IEnumType) {
             preview = tableFormat.getImportEnumPreview((IEnumType)structure, new Path(filename),
-                    MAX_NUMBER_PREVIEW_ROWS);
+                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow);
         }
 
         int numberOfColumns = preview.isEmpty() ? 0 : ((String[])preview.get(0)).length;
@@ -203,7 +215,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
                 columns[i].setText(((ITableStructure)structure).getColumn(i - 1).getName());
             } else if (structure instanceof IEnumType) {
                 IEnumType type = (IEnumType)structure;
-                String attributeName = type.getEnumAttributes(true).get(i - 1).getName();
+                String attributeName = type.getEnumAttributesIncludeSupertypeCopies(true).get(i - 1).getName();
                 columns[i].setText(attributeName);
             }
         }
@@ -289,11 +301,15 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
      * @param tableFormat
      * @param An <code>IEnumType</code> instance when previewing an enum, or an
      *            <code>ITableStructure</code> instance for table previews
+     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
+     *            should be ignored <code>false</code> if the to be imported content contains no
+     *            column header row.
      */
-    public void reinit(String filename, ITableFormat tableFormat, IIpsObject structure) {
+    public void reinit(String filename, ITableFormat tableFormat, IIpsObject structure, boolean ignoreColumnHeaderRow) {
         this.filename = filename;
         this.tableFormat = tableFormat;
         this.structure = structure;
+        this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
 
         resetDynamicPropertiesControl(dynamicPropertiesAnchorComposite, toolkit, tableFormat);
         refreshPage();
