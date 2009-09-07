@@ -141,8 +141,6 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             }
             if (!found) {
                 missing.add(params[i]);
-                // new root parameter always changes the order of the root test parameters
-                differentTestParameterOrder = true;
             }
         }
         testValueParametersWithMissingTestValue = (ITestValueParameter[])missing.toArray(new ITestValueParameter[0]);
@@ -162,11 +160,12 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             // if no rules exists in the test case then don't do a sort order check
             return;
         }
+
         for (int i = 0; i < params.length; i++) {
             int idxInTestCase = 0;
             for (Iterator iter = rules.iterator(); iter.hasNext();) {
                 ITestRule rule = (ITestRule)iter.next();
-                if (rule.getTestRuleParameter().equals(params[i].getName())) {
+                if (rule.getTestRuleParameter().equals(params[i])) {
                     // check if the order is equal
                     checkSortOrder(params[i], rule);
                     break;
@@ -195,14 +194,18 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List testObjects = new ArrayList();
         testObjects.addAll(Arrays.asList(testCase.getTestObjects()));
 
-        // if the test parameter is a rule param and no test objects exsists don't check the order
+        // if the test parameter is a rule param and no test objects exists don't check the order
         if (testParameter instanceof ITestRuleParameter && testCase.getTestRule(testParameter.getName()).length == 0) {
             return;
         }
 
         removeTestRulesWithSameParamFromLists(testParams, testObjects);
+        List cleanedList = testParams;
+        if (testParameter instanceof ITestPolicyCmptTypeParameter) {
+            cleanedList = removeTestPolicyCmptParamsWithNoTestObjectFromLists(testParams, testObjects);
+        }
 
-        int idxInTestCaseType = testParams.indexOf(testParameter);
+        int idxInTestCaseType = cleanedList.indexOf(testParameter);
         int idxInTestCase = testObjects.indexOf(testObject);
         if (idxInTestCase == -1) {
             throw new RuntimeException("Object not found in test case: " + testObject); //$NON-NLS-1$
@@ -214,6 +217,23 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         if (idxInTestCaseType != idxInTestCase) {
             differentTestParameterOrder = true;
         }
+    }
+
+    private List removeTestPolicyCmptParamsWithNoTestObjectFromLists(List testParams, List testObjects) {
+        List testObjectParams = new ArrayList(testObjects.size());
+        // remove all parameter with no test objects
+        for (int i = 0; i < testObjects.size(); i++) {
+            testObjectParams.add(((ITestObject)testObjects.get(i)).getTestParameterName());
+        }
+
+        List paramsWithTestObjectsOnly = new ArrayList(testParams.size());
+        for (int i = 0; i < testParams.size(); i++) {
+            ITestParameter testParameter = (ITestParameter)testParams.get(i);
+            if (testObjectParams.contains(testParameter.getName())) {
+                paramsWithTestObjectsOnly.add(testParameter);
+            }
+        }
+        return paramsWithTestObjectsOnly;
     }
 
     /*
