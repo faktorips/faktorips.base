@@ -68,7 +68,21 @@ public class Messages extends NLS {
 
     public static String IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject;
 
-	public static String IpsProjectProperties_msgUnknownDatatype;
+	public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_COOPERATE;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_IMPLEMENTATION;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_UNDEFINED;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_STATUS_CLOSED;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_STATUS_DEFERRED;
+
+    public static String IpsProjectProperties_ENUM_QUESTION_STATUS_OPEN;
+
+    public static String IpsProjectProperties_msgUnknownDatatype;
 
 	public static String IpsProjectProperties_msgUnknownBuilderSetId;
 

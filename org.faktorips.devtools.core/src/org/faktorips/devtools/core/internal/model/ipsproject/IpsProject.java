@@ -1079,7 +1079,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
     }
 
-    private void findAllIpsSrcFiles(List result, IpsObjectType[] ipsObjectTypes) throws CoreException {
+    public void findAllIpsSrcFiles(List result, IpsObjectType[] ipsObjectTypes) throws CoreException {
         Set visitedEntries = new HashSet();
         for (int i = 0; i < ipsObjectTypes.length; i++) {
             getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectTypes[i], result, visitedEntries);

@@ -546,6 +546,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException;
 
     /**
+     * Returns all ips source files within this IpsProject and the IpsProjects this one depends on
+     * and match the given filter (object type list).
+     */
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter) throws CoreException;
+
+    /**
      * Puts all {@link IIpsSrcFile}s within this {@link IIpsProject} in the provided result list
      * that match the selection parameters.
      * 

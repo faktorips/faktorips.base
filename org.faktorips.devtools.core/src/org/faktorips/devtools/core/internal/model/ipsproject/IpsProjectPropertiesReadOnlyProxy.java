@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,6 +19,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -39,9 +40,9 @@ import org.faktorips.util.message.MessageList;
 public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties {
 
     private IIpsProjectProperties propertiesInternal;
-    
+
     /**
-     * @param propertiesInternal 
+     * @param propertiesInternal
      */
     public IpsProjectPropertiesReadOnlyProxy(IIpsProjectProperties propertiesInternal) {
         ArgumentCheck.notNull(propertiesInternal, this);
@@ -82,7 +83,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public DynamicValueDatatype[] getDefinedValueDatatypes() {
         return propertiesInternal.getDefinedValueDatatypes();
     }
-    
+
     /**
      * Returns the value of the underlying IIpsProjectProperties instance.
      */
@@ -93,7 +94,8 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     /**
      * {@inheritDoc}
      * 
-     * Remark: Returns not a read only object of the ips object path. This is an accepted inconsistency to this read only object.
+     * Remark: Returns not a read only object of the ips object path. This is an accepted
+     * inconsistency to this read only object.
      */
     public IIpsObjectPath getIpsObjectPath() {
         return propertiesInternal.getIpsObjectPath();
@@ -196,7 +198,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -304,14 +306,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     /**
      * Returns the value of the underlying IIpsProjectProperties instance.
-     */    
+     */
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         return propertiesInternal.validate(ipsProject);
     }
 
     /**
      * Returns the value of the underlying IIpsProjectProperties instance.
-     */    
+     */
     public Long getLastPersistentModificationTimestamp() {
         return propertiesInternal.getLastPersistentModificationTimestamp();
     }
@@ -321,6 +323,20 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     public void setLastPersistentModificationTimestamp(Long timestamp) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EnumType getQuestionAssignedUserGroup() {
+        return propertiesInternal.getQuestionAssignedUserGroup();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EnumType getQuestionStatus() {
+        return propertiesInternal.getQuestionStatus();
     }
 
 }
