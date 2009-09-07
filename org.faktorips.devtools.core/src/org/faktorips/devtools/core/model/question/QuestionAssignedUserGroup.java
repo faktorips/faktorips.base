@@ -13,27 +13,17 @@
 
 package org.faktorips.devtools.core.model.question;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
  * 
- * @author INSERT YOUR NAME
+ * @author Faktor Zehn AG, Juergen Niedernhuber
  */
-public interface IQuestion extends IIpsObject {
+public class QuestionAssignedUserGroup extends DefaultEnumValue {
 
-    public final static String PROPERY_QUESTION_TEXT = "questionText";
+    public QuestionAssignedUserGroup(DefaultEnumType type, String id, String name) {
+        super(type, id, name);
+    }
 
-    public final static String MSG_CODE_QUESTION_TEXT_IS_EMPTY = "QuestionTextIsEmpty";
-
-    /**
-     * Returns the text of the question, e.g. "Why is ...?"
-     */
-    public String getQuestionText();
-
-    /**
-     * Sets the question text.
-     * 
-     * @throws NullPointerException if newText is <code>null</code>.
-     */
-    public void setQuestionText(String newText);
 }
