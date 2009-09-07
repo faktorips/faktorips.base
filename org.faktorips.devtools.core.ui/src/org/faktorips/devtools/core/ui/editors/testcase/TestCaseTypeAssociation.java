@@ -29,7 +29,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Helper class to represent a dummy association depending on the test case type association (test
  * policy component type parameter) and a concrete test policy component which will be the parent of
- * all concrete associations inside the test case. The concret associations are based on the test
+ * all concrete associations inside the test case. The concrete associations are based on the test
  * case type association.<br>
  * The parent test policy component could be used to add new associations to this test policy
  * component inside the test case (based on the test case type association).<br>

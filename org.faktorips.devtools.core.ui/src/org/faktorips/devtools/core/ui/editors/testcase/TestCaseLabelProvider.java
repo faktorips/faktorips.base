@@ -23,9 +23,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -75,11 +77,26 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      */
     private Image getImageFromAssociationType(TestCaseTypeAssociation dummyAssociation) {
         ITestPolicyCmptTypeParameter typeParam = dummyAssociation.getTestPolicyCmptTypeParam();
-        if (typeParam != null) {
+        if (typeParam == null) {
+            return null;
+        }
+        if (dummyAssociation.getParentTestPolicyCmpt() == null) {
+            // root node
+            return getImageForRootPolicyCmptTypeParamNode(typeParam);
+        } else {
             return typeParam.getImage();
         }
+    }
 
-        return null;
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
+        String baseImageName = AssociationType.AGGREGATION.getImageName();
+        if (typeParam.isRequiresProductCmpt()) {
+            return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
+        }
+        return IpsPlugin.getDefault().getImage(baseImageName);
     }
 
     @Override
@@ -131,9 +148,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             try {
                 text = TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
                 ITestPolicyCmptTypeParameter typeParam = testPcTypeLink.findTestPolicyCmptTypeParameter(ipsProject);
-                if (typeParam != null && typeParam.isRequiresProductCmpt()) {
-                    text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
-                }
             } catch (CoreException e) {
                 // ignore model error, the model check between the test case type and the test case
                 // will be check when open the editor, therefore we can ignore it here
@@ -147,11 +161,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             return ((ITestObject)element).getTestParameterName();
         } else if (element instanceof TestCaseTypeAssociation) {
             TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
-            String text = dummyAssociation.getName();
-            if (dummyAssociation.isRequiresProductCmpt()) {
-                text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
-            }
-            return text;
+            return dummyAssociation.getName();
         } else if (element instanceof IIpsObjectPart) {
             // e.g. tree node element for test rule parameters
             return ((IIpsObjectPart)element).getName();

@@ -367,11 +367,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          */
         public String getText(Object element) {
             TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
-            String text = dummyAssociation.getName();
-            if (dummyAssociation.isRequiresProductCmpt()) {
-                text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
-            }
-            return text;
+            return dummyAssociation.getName();
         }
 
         /**
@@ -1177,9 +1173,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private TreeItem searchChildsByLabel(String labelPath, TreeItem[] childs) {
         for (int i = 0; i < childs.length; i++) {
             TreeItem currItem = childs[i];
-            if (currItem.getText().equals(labelPath)
-                    || currItem.getText().equals(
-                            labelPath + Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt)) {
+            if (currItem.getText().equals(labelPath)) {
                 return currItem;
             }
             currItem = searchChildsByLabel(labelPath, currItem.getItems());
@@ -1201,9 +1195,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         TreeItem currItem = null;
         for (int i = 0; i < childs.length; i++) {
             currItem = childs[i];
-            if (currItem.getText().equals(currPathItem)
-                    || currItem.getText().equals(
-                            currPathItem + Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt)) {
+            if (currItem.getText().equals(currPathItem)) {
                 if (hierarchyPath.hasNext()) {
                     currItem = searchChildsByHierarchyPath(hierarchyPath, currItem.getItems());
                 }

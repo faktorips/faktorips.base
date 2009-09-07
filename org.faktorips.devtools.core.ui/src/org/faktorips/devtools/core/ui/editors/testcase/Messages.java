@@ -72,7 +72,6 @@ public class Messages extends NLS {
     public static String TestCaseSection_ToolBar_ShowAssociations;
     public static String TestCaseEditor_Combined_Title;
     public static String TestCaseLabelProvider_undefined;
-    public static String TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
     public static String TestCaseSection_MessageDialog_TitleStoreExpectedResults;
     public static String TestCaseSection_MessageDialog_QuestionStoreExpectedResults;
     public static String TestCaseSection_Action_StoreExpectedResults;
