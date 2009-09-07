@@ -387,8 +387,20 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.newTestRule().setTestRuleParameter("a3");
         testCase.newTestRule().setTestRuleParameter("a2");
         ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
-        // FIXME Joerg
-        // assertTrue(delta.isDifferentTestParameterOrder());
+        assertTrue(delta.isDifferentTestParameterOrder());
+        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        fixAndAssert(delta);
+    }
+
+    public void testSameSortOrderTestRule() throws CoreException {
+        testCaseType.newExpectedResultRuleParameter().setName("a1");
+        testCaseType.newExpectedResultRuleParameter().setName("a2");
+        testCaseType.newExpectedResultRuleParameter().setName("a3");
+        testCase.newTestRule().setTestRuleParameter("a1");
+        testCase.newTestRule().setTestRuleParameter("a2");
+        testCase.newTestRule().setTestRuleParameter("a3");
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        assertFalse(delta.isDifferentTestParameterOrder());
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
@@ -751,9 +763,8 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     private void fixAndAssert(ITestCaseTestCaseTypeDelta delta) throws CoreException {
         testCase.fixDifferences(delta);
         ITestCaseTestCaseTypeDelta newDelta = testCase.computeDeltaToTestCaseType();
-        // FIXME Joerg Tesfall einschalten
-        // assertFalse(newDelta.isDifferentTestParameterOrder());
-        // assertTrue(newDelta.isEmpty());
+        assertFalse(newDelta.isDifferentTestParameterOrder());
+        assertTrue(newDelta.isEmpty());
         assertDeltaContainer(newDelta, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 

@@ -522,40 +522,49 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         parameter.setName("inputTestValueX2");
         parameter.setDatatype("String");
 
+        assertTrue(testCaseX.containsDifferenceToModel(ipsProject));
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertFalse(testCaseX.containsDifferenceToModel(ipsProject));
+
+        // create root test policy cmpt object
+        ITestPolicyCmpt testPolicyCmpt = testCaseX.newTestPolicyCmpt();
+        testPolicyCmpt.setName("PolicyCmptType");
+        testPolicyCmpt.setTestPolicyCmptTypeParameter("PolicyCmptType");
+        ITestAttributeValue testAttributeValue = testPolicyCmpt.newTestAttributeValue();
+        testAttributeValue.setTestAttribute("Attribute1");
+        testAttributeValue.setValue("Test1"); // default value
+        testAttributeValue = testPolicyCmpt.newTestAttributeValue();
+        testAttributeValue.setTestAttribute("Attribute1");
+        testAttributeValue.setValue("Test2");// default value
+
+        // further check to ensure that the old default values will not be overridden
+        testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[0];
+        assertEquals("Test1", testAttributeValue.getValue());
+        testAttributeValue.setValue("1234");
+
+        testAttribute = policyCmptParam.newInputTestAttribute();
+        testAttribute.setName("Attribute2");
+        testAttribute.setAttribute("Attribute2");
+
         assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));
         testCaseX.fixAllDifferencesToModel(ipsProject);
-        // FIXME Joerg Testfall
-        // assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
-        //        
-        // // further check to ensure that the old default values will not be overridden
-        // ITestAttributeValue testAttributeValue =
-        // testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[0];
-        // assertEquals("Test1", testAttributeValue.getValue());
-        // testAttributeValue.setValue("1234");
-        //        
-        // testAttribute = policyCmptParam.newInputTestAttribute();
-        // testAttribute.setName("Attribute2");
-        // testAttribute.setAttribute("Attribute2");
-        //        
-        // assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));
-        // testCaseX.fixAllDifferencesToModel(ipsProject);
-        // assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
-        //        
-        // assertEquals("1234", testAttributeValue.getValue());
-        // testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[1];
-        // assertEquals("Test2", testAttributeValue.getValue());
-        //        
-        // // test the correct default values
-        // MessageList ml = testCaseX.validate(ipsProject);
-        // assertEquals(ml.getNoOfMessages(), 0);
-        // parameter = testCaseTypeX.newInputTestValueParameter();
-        // parameter.setName("testBoolean");
-        // parameter.setDatatype("Boolean");
-        //        
-        // testCaseX.fixAllDifferencesToModel(ipsProject);
-        // assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
-        // ml = testCaseX.validate(ipsProject);
-        // assertFalse(ml.containsErrorMsg());
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
+
+        assertEquals("1234", testAttributeValue.getValue());
+        testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[1];
+        assertEquals("Test2", testAttributeValue.getValue());
+
+        // test the correct default values
+        MessageList ml = testCaseX.validate(ipsProject);
+        assertEquals(ml.getNoOfMessages(), 0);
+        parameter = testCaseTypeX.newInputTestValueParameter();
+        parameter.setName("testBoolean");
+        parameter.setDatatype("Boolean");
+
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
+        ml = testCaseX.validate(ipsProject);
+        assertFalse(ml.containsErrorMsg());
     }
 
     public void testGetAllTestPolicyCmpts() throws CoreException {

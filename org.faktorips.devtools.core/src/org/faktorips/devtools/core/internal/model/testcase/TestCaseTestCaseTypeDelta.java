@@ -151,7 +151,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
      */
     private void computeTestRuleSortOrder() {
         if (differentTestParameterOrder) {
-            // already different, don't check for futher differences
+            // already different, don't check for further differences
             return;
         }
         ITestRuleParameter[] params = testCaseType.getTestRuleParameters();
@@ -165,7 +165,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             int idxInTestCase = 0;
             for (Iterator iter = rules.iterator(); iter.hasNext();) {
                 ITestRule rule = (ITestRule)iter.next();
-                if (rule.getTestRuleParameter().equals(params[i])) {
+                if (rule.getTestRuleParameter().equals(params[i].getName())) {
                     // check if the order is equal
                     checkSortOrder(params[i], rule);
                     break;
@@ -200,19 +200,16 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         }
 
         removeTestRulesWithSameParamFromLists(testParams, testObjects);
-        List cleanedList = testParams;
-        if (testParameter instanceof ITestPolicyCmptTypeParameter) {
-            cleanedList = removeTestPolicyCmptParamsWithNoTestObjectFromLists(testParams, testObjects);
-        }
+        List cleanedList = removeTestPolicyCmptParamsWithNoTestObjectFromLists(testParams, testObjects);
 
         int idxInTestCaseType = cleanedList.indexOf(testParameter);
         int idxInTestCase = testObjects.indexOf(testObject);
         if (idxInTestCase == -1) {
             throw new RuntimeException("Object not found in test case: " + testObject); //$NON-NLS-1$
         }
-        if (idxInTestCaseType == -1) {
-            throw new RuntimeException("Object not found in test case type: " + testParameter); //$NON-NLS-1$
-        }
+        // if (idxInTestCaseType == -1) {
+        //            throw new RuntimeException("Object not found in test case type: " + testParameter); //$NON-NLS-1$
+        // }
 
         if (idxInTestCaseType != idxInTestCase) {
             differentTestParameterOrder = true;
@@ -229,6 +226,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List paramsWithTestObjectsOnly = new ArrayList(testParams.size());
         for (int i = 0; i < testParams.size(); i++) {
             ITestParameter testParameter = (ITestParameter)testParams.get(i);
+            if (!(testParameter instanceof ITestPolicyCmptTypeParameter)) {
+                // non ITestPolicyCmptTypeParameter are mandatory
+                paramsWithTestObjectsOnly.add(testParameter);
+                continue;
+            }
             if (testObjectParams.contains(testParameter.getName())) {
                 paramsWithTestObjectsOnly.add(testParameter);
             }
