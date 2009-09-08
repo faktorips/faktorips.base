@@ -29,14 +29,14 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String CSVPropertyCompositeFactory_dateFormatHelp1;
+    public static String CSVPropertyCompositeFactory_dateFormatLabel;
     public static String CSVPropertyCompositeFactory_errMsgDecimalGroupingLength;
     public static String CSVPropertyCompositeFactory_errMsgDecimalSeparatorAndGroupingCharsAreEqual;
     public static String CSVPropertyCompositeFactory_errMsgDecimalSeparatorLength;
-    public static String CSVPropertyFactory_dateFormatHelp1;
-    public static String CSVPropertyFactory_dateFormatHelp2;
-    public static String CSVPropertyFactory_dateFormatHelp3;
-    public static String CSVPropertyFactory_dateFormatLabel;
-    public static String CSVPropertyFactory_errMsgInvalidDateFormat;
-    public static String CSVPropertyFactory_errMsgFieldDelimiterLength;
-    public static String CSVPropertyFactory_fieldDelimiterLabel;
+    public static String CSVPropertyCompositeFactory_errMsgInvalidDateFormat;
+    public static String CSVPropertyCompositeFactory_errMsgFieldDelimiterLength;
+    public static String CSVPropertyCompositeFactory_fieldDelimiterLabel;
+    public static String CSVPropertyCompositeFactory_labelDecimalGrouping;
+    public static String CSVPropertyCompositeFactory_labelDecimalSeparator;
 }

@@ -32,25 +32,14 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String IpsObjectExportPage_pageTitle;
     public static String TableExport_title;
-    public static String TableExportPage_firstRowContainsHeader;
     public static String TableExportPage_title;
     public static String TableExportPage_labelContents;
-    public static String TableExportPage_labelName;
-    public static String TableExportPage_msgEmptyName;
-    public static String TableExportPage_labelProject;
-    public static String TableExportPage_msgNonExistingProject;
-    public static String TableExportPage_msgProjectEmpty;
     public static String TableExportPage_msgContentsEmpty;
     public static String TableExportPage_msgNonExisitingContents;
     public static String TableExportWizard_msgFileExistsTitle;
     public static String TableExportWizard_msgFileExists;
-    public static String TableExportPage_labelFileFormat;
-    public static String TableExportPage_msgMissingFileFormat;
-    public static String TableExportPage_labelNullRepresentation;
     public static String TableExportWizard_operationName;
     public static String TableExportPage_msgContentsNotValid;
     public static String TableExportPage_msgStructureNotValid;
-
 }

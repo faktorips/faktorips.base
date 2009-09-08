@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipsexport;
 
+import java.io.File;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -38,7 +40,6 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
-import org.faktorips.devtools.core.ui.wizards.tableexport.Messages;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
 
@@ -52,10 +53,9 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class IpsObjectExportPage extends WizardDataTransferPage implements ValueChangeListener {
 
-    /** The maximum number of columns allowed in an Excel sheet. */
-
     public static final String PAGE_NAME = "IpsObjectExportPage"; //$NON-NLS-1$
 
+    /** The maximum number of columns allowed in an Excel sheet. */
     protected static final short MAX_EXCEL_COLUMNS = Short.MAX_VALUE;
     protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
     protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
@@ -130,38 +130,45 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected void validateFormat() {
         // must not be empty
         if (fileFormatControl.getSelectionIndex() == -1) {
-            setErrorMessage(Messages.TableExportPage_msgMissingFileFormat);
+            setErrorMessage(Messages.IpsObjectExportPage_msgMissingFileFormat);
             return;
         }
     }
 
     /**
-     * The method validates the name.
+     * The method validates the filename.
      * <p>
      * Subclasses may extend this method to perform their own validation.
      * </p>
      */
-    protected void validateName() {
-        String name = filenameField.getText();
+    protected void validateFilename() {
+        String filename = filenameField.getText();
         // must not be empty
-        if (name.length() == 0) {
-            setErrorMessage(Messages.TableExportPage_msgEmptyName);
+        if (filename.length() == 0) {
+            setErrorMessage(Messages.IpsObjectExportPage_msgEmptyName);
             return;
+        }
+        File file = new File(filename);
+        if (file.isDirectory()) {
+            setErrorMessage(Messages.IpsObjectExportPage_msgFilenameIsDirectory);
+        }
+        if (file.exists()) {
+            setMessage(Messages.IpsObjectExportPage_msgFileAlreadyExists, IMessageProvider.WARNING);
         }
     }
 
     protected void validateProject() {
-        if (projectField.getText().equals("")) {
-            setErrorMessage(Messages.TableExportPage_msgProjectEmpty);
+        if (projectField.getText().equals("")) { //$NON-NLS-1$
+            setErrorMessage(Messages.IpsObjectExportPage_msgProjectEmpty);
             return;
         }
         IIpsProject project = getIpsProject();
         if (project == null) {
-            setErrorMessage(Messages.TableExportPage_msgNonExistingProject);
+            setErrorMessage(Messages.IpsObjectExportPage_msgNonExistingProject);
             return;
         }
         if (!project.exists()) {
-            setErrorMessage(Messages.TableExportPage_msgNonExistingProject);
+            setErrorMessage(Messages.IpsObjectExportPage_msgNonExistingProject);
             return;
         }
     }
@@ -178,6 +185,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         /**
          * {@inheritDoc}
          */
+        @Override
         protected void buttonClicked() {
             String previousFilename = getFilename();
 
@@ -217,7 +225,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (getErrorMessage() != null) {
             return;
         }
-        validateName();
+        validateFilename();
         if (getErrorMessage() != null) {
             return;
         }
@@ -243,6 +251,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings == null) {
@@ -268,6 +277,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings == null) {
@@ -293,7 +303,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         setControl(pageControl);
 
         Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, Messages.TableExportPage_labelProject);
+        toolkit.createFormLabel(locationComposite, Messages.IpsObjectExportPage_labelProject);
         projectControl = toolkit.createIpsProjectRefControl(locationComposite);
         projectField = new TextButtonField(projectControl);
         projectField.addChangeListener(this);
@@ -308,7 +318,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         exportedIpsObjectField = new TextButtonField(exportedIpsObjectControl);
         exportedIpsObjectField.addChangeListener(this);
 
-        toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelFileFormat);
+        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelFileFormat);
         fileFormatControl = toolkit.createCombo(lowerComposite);
 
         formats = IpsPlugin.getDefault().getExternalTableFormats();
@@ -319,16 +329,16 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         fileFormatField = new ComboField(fileFormatControl);
         fileFormatField.addChangeListener(this);
 
-        toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelName);
+        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelName);
         filenameField = new TextButtonField(new FileSelectionDialogWithDefault(lowerComposite, toolkit));
         filenameField.addChangeListener(this);
 
-        toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelNullRepresentation);
+        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(lowerComposite);
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
         Checkbox withColumnHeaderRow = toolkit.createCheckbox(pageControl,
-                Messages.TableExportPage_firstRowContainsHeader);
+                Messages.IpsObjectExportPage_firstRowContainsHeader);
         exportWithColumnHeaderRowField = new CheckboxField(withColumnHeaderRow);
         exportWithColumnHeaderRowField.addChangeListener(this);
         withColumnHeaderRow.setChecked(true);
@@ -371,6 +381,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean allowNewContainerName() {
         return false;
     }

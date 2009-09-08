@@ -52,13 +52,13 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         Composite root = toolkit.createLabelEditColumnComposite(parent);
 
         // First row: field delimiter controls.
-        toolkit.createLabel(root, Messages.CSVPropertyFactory_fieldDelimiterLabel);
+        toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_fieldDelimiterLabel);
         fieldDelimiterText = toolkit.createText(root);
         TextField fieldDelimiterTextField = new TextField(fieldDelimiterText);
         fieldDelimiterTextField.addChangeListener(this);
 
         // Second row: date format controls.
-        toolkit.createLabel(root, Messages.CSVPropertyFactory_dateFormatLabel);
+        toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_dateFormatLabel);
         dateFormatText = toolkit.createText(root);
         TextField dateFormatTextField = new TextField(dateFormatText);
         dateFormatTextField.addChangeListener(this);
@@ -66,18 +66,19 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         // Third row: Help label for date format syntax.
         toolkit.createLabel(root, ""); //$NON-NLS-1$
         Text helpText = toolkit.createText(root, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
-        helpText.setText(Messages.CSVPropertyFactory_dateFormatHelp1);
+        helpText.setEnabled(false);
+        helpText.setText(Messages.CSVPropertyCompositeFactory_dateFormatHelp1);
         helpText.setBackground(root.getBackground());
 
         // Fourth row: Decimal separator character control
-        toolkit.createLabel(root, "Decimal separator character"); //$NON-NLS-1$
+        toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_labelDecimalSeparator);
         decimalSeparatorText = toolkit.createText(root);
         TextField decimalSeparatorTextField = new TextField(decimalSeparatorText);
         decimalSeparatorTextField.addChangeListener(this);
         decimalSeparatorText.setText("."); //$NON-NLS-1$
 
         // Fifth row: Decimal grouping character control
-        toolkit.createLabel(root, "Decimal grouping character"); //$NON-NLS-1$
+        toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_labelDecimalGrouping);
         decimalGroupingText = toolkit.createText(root);
         TextField groupingSeparatorTextField = new TextField(decimalGroupingText);
         groupingSeparatorTextField.addChangeListener(this);
@@ -135,7 +136,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             // Construction of a new SimpleDateFormat instance fails if the pattern is invalid
             new SimpleDateFormat(dateFormat);
         } catch (Exception e) {
-            ml.add(new Message("", Messages.CSVPropertyFactory_errMsgInvalidDateFormat, Message.ERROR)); //$NON-NLS-1$
+            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgInvalidDateFormat, Message.ERROR)); //$NON-NLS-1$
         }
     }
 
@@ -151,7 +152,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
     private void validateDecimalGrouping(MessageList ml) {
         String decimalGrouping = decimalGroupingText.getText();
         if (decimalGrouping.length() != 1) {
-            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalGroupingLength, Message.ERROR));
+            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalGroupingLength, Message.ERROR)); //$NON-NLS-1$
         }
         validateDecimalSeparatorAndGroupingAreNotEqual(ml);
     }
@@ -171,7 +172,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
     private void validateFieldDelimiter(MessageList ml) {
         String text = fieldDelimiterText.getText();
         if (text.length() != 1) {
-            ml.add(new Message("", Messages.CSVPropertyFactory_errMsgFieldDelimiterLength, Message.ERROR)); //$NON-NLS-1$
+            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgFieldDelimiterLength, Message.ERROR)); //$NON-NLS-1$
         }
     }
 

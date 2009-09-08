@@ -25,6 +25,18 @@ public class Messages extends NLS {
     private Messages() {
     }
 
+    public static String IpsObjectExportPage_msgFileAlreadyExists;
+    public static String IpsObjectExportPage_msgFilenameIsDirectory;
+    public static String IpsObjectExportPage_pageTitle;
+    public static String IpsObjectExportPage_firstRowContainsHeader;
+    public static String IpsObjectExportPage_labelFileFormat;
+    public static String IpsObjectExportPage_labelName;
+    public static String IpsObjectExportPage_labelNullRepresentation;
+    public static String IpsObjectExportPage_labelProject;
+    public static String IpsObjectExportPage_msgEmptyName;
+    public static String IpsObjectExportPage_msgMissingFileFormat;
+    public static String IpsObjectExportPage_msgNonExistingProject;
+    public static String IpsObjectExportPage_msgProjectEmpty;
     public static String TableFormatPropertiesPage_configGroupLabel;
     public static String TableFormatPropertiesPage_title;
 }
