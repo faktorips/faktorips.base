@@ -26,7 +26,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.Wizard;
@@ -54,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -190,7 +190,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             contentProvider = new EnumContentsContentProvider();
             viewer.setContentProvider(contentProvider);
             viewer.setLabelProvider(new EnumContentsLabelProvider());
-            viewer.setInput("");
+            viewer.setInput(this); // input element can be anything (but an existing package name
+            // including the default package name ""
             viewer.addCheckStateListener(new ICheckStateListener() {
                 public void checkStateChanged(CheckStateChangedEvent event) {
                     setPageComplete(checkPageCompleteCondition());
@@ -360,8 +361,17 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             return targetFolder.substring(targetFolder.indexOf('/') + 1);
         }
 
+        private IIpsPackageFragmentRoot getTargetPackageFragmentRoot() {
+            IIpsProject targetProject = getTargetIpsProject();
+            IIpsPackageFragmentRoot root = targetProject.getIpsPackageFragmentRoot(getTargetSourceFolderName());
+            if (root == null) {
+                root = targetProject.getIpsPackageFragmentRoot("VirtualRoot");
+            }
+            return root;
+        }
+
         /** The <tt>LabelProvider</tt> for the tree viewer widget. */
-        private class EnumContentsLabelProvider extends LabelProvider {
+        private class EnumContentsLabelProvider extends DefaultLabelProvider {
 
             @Override
             public String getText(Object element) {
@@ -379,17 +389,9 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                 if (element instanceof IEnumType) {
                     return defaultUiPlugin.getImage("NewEnumContent.gif");
                 }
-
-                String packageFragmentName = (String)element;
-                IIpsProject targetIpsProject = getTargetIpsProject();
-                String targetSourceFolderName = getTargetSourceFolderName();
-                if (targetSourceFolderName.length() > 0) {
-                    IIpsPackageFragmentRoot targetRoot = targetIpsProject
-                            .getIpsPackageFragmentRoot(targetSourceFolderName);
-                    IIpsPackageFragment fragment = targetRoot.getIpsPackageFragment(packageFragmentName);
-                    if (fragment == null ? false : !(fragment.exists())) {
-                        return defaultUiPlugin.getImage("NewIpsPackageFragment.gif");
-                    }
+                IIpsPackageFragment pack = (IIpsPackageFragment)element;
+                if (pack == null || !(pack.exists())) {
+                    return defaultUiPlugin.getImage("NewIpsPackageFragment.gif");
                 }
                 return defaultUiPlugin.getImage("IpsPackageFragment.gif");
             }
@@ -400,30 +402,32 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         private class EnumContentsContentProvider implements ITreeContentProvider {
 
             /** A map that is used to speed up the <tt>getChildren(Object)</tt> operation. */
-            private Map<String, List<IEnumType>> treeStructure;
+            private Map<IIpsPackageFragment, List<IEnumType>> treeStructure;
 
             /** Creates the <tt>EnumContentsContentProvider</tt>. */
             public EnumContentsContentProvider() {
-                treeStructure = new HashMap<String, List<IEnumType>>();
+                treeStructure = new HashMap<IIpsPackageFragment, List<IEnumType>>();
             }
 
             public Object[] getElements(Object inputElement) {
                 treeStructure.clear();
-                List<Object> elements = new ArrayList<Object>();
+                List<IIpsPackageFragment> elements = new ArrayList<IIpsPackageFragment>();
                 try {
                     IIpsProject targetProject = getTargetIpsProject();
+                    IIpsPackageFragmentRoot targetRoot = getTargetPackageFragmentRoot();
                     if (targetProject != null) {
                         for (IEnumType currentEnumType : findEnumTypesNeedingEnumContent(targetProject)) {
                             String enumContentName = currentEnumType.getEnumContentName();
-                            String currentPackageFragment = StringUtil.getPackageName(enumContentName);
-                            List<IEnumType> list = treeStructure.get(currentPackageFragment);
+                            String currentPackName = StringUtil.getPackageName(enumContentName);
+                            IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(currentPackName);
+                            List<IEnumType> list = treeStructure.get(pack);
                             if (list == null) {
                                 list = new ArrayList<IEnumType>();
                             }
                             list.add(currentEnumType);
-                            treeStructure.put(currentPackageFragment, list);
-                            if (!(elements.contains(currentPackageFragment))) {
-                                elements.add(currentPackageFragment);
+                            treeStructure.put(pack, list);
+                            if (!(elements.contains(pack))) {
+                                elements.add(pack);
                             }
                         }
                     }
@@ -443,9 +447,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             public Object[] getChildren(Object parentElement) {
                 List<Object> children = new LinkedList<Object>();
-                if (parentElement instanceof String) {
-                    String packageFragment = (String)parentElement;
-                    children.addAll(treeStructure.get(packageFragment));
+                if (parentElement instanceof IIpsPackageFragment) {
+                    children.addAll(treeStructure.get(parentElement));
                 }
                 return children.toArray();
             }
@@ -488,7 +491,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             }
 
             public boolean hasChildren(Object element) {
-                return element instanceof String;
+                return element instanceof IIpsPackageFragment;
             }
 
         }
