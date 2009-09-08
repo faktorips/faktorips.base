@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -212,7 +214,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
-        return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+        // TODO update Javadoc and write a test case
+        List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
+        for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
+            ValueSetType valueSetType = it.next();
+            if (valueSetType.isEnum()) {
+                ValueDatatype datatype = findDatatype(ipsProject);
+                if (DatatypeUtil.isEnumTypeWithSeparateContent(datatype)) {
+                    it.remove();
+                }
+            }
+        }
+        return types;
     }
 
     /**

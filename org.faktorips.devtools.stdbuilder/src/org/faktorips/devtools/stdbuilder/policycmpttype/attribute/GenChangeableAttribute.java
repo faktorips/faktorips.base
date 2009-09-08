@@ -25,7 +25,7 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -124,6 +124,9 @@ public class GenChangeableAttribute extends GenAttribute {
 
     protected boolean shouldGetAllowedSetOfValuesBeGenerated() {
         if (isUnrestrictedValueSet() && !isConfigurableByProduct()) {
+            return false;
+        }
+        if (isEnumValueSet() && DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype())) {
             return false;
         }
         return true;
@@ -453,9 +456,7 @@ public class GenChangeableAttribute extends GenAttribute {
             generateConstantRangeOfAllowedValues(builder);
             return;
         } else if (isEnumValueSet()) {
-            if (!(getDatatype() instanceof EnumTypeDatatypeAdapter)) {
-                generateConstantEnumSetOfAllowedValues(builder);
-            }
+            generateConstantEnumSetOfAllowedValues(builder);
             return;
         }
         throw new RuntimeException("Unknown type of value set " + getValueSet());

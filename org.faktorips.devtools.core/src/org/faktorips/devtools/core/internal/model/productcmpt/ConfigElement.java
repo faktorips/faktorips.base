@@ -342,7 +342,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return new ArrayList<ValueSetType>();
         }
         if (attribute.getValueSet().isUnrestricted()) {
-            return attribute.getAllowedValueSetTypes(ipsProject);
+            return ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject));
         }
         ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
         types.add(attribute.getValueSet().getValueSetType());
