@@ -129,9 +129,9 @@ public class DefaultsAndRangesSection extends IpsSection {
         for (int i = 0; i < elements.length; i++) {
             createEditControlsForElement(elements[i]);
         }
-
         rootPane.layout(true);
         rootPane.redraw();
+        uiMasterController.updateUI();
     }
 
     private void createEditControlsForElement(IConfigElement element) {
