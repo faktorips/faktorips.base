@@ -340,7 +340,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
 
-    protected void updatePageStructure() {
+    protected void updatePageStructure(boolean forceRefreshInclStructuralChanges) {
         if (TRACE) {
             logMethodStarted("updatePageStructure"); //$NON-NLS-1$
         }
@@ -355,7 +355,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 // necessary for all editors which shows a dynamic structures inside
                 // (editors which overwrites the corresponding method e.g. ProductcmptEditor or
                 // TestCaseEditor)
-                if (getIpsSrcFile().isContentParsable()) {
+                if (forceRefreshInclStructuralChanges && getIpsSrcFile().isContentParsable()) {
                     refreshInclStructuralChanges();
                 }
 
@@ -551,7 +551,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 }
 
                 if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                    updatePageStructure();
+                    updatePageStructure(false);
                 } else {
                     refresh();
                 }
@@ -687,10 +687,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                             log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
                         }
                         getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
-                        // TODO Joerg? automatisch durch IpsObject contentsChanged(), sonst 2 mal
-                        // gibt es eine Situation wo kein Event kommt, aber updatePageStructure
-                        // notwendig ware?
-                        // updatePageStructure();
+                        updatePageStructure(true);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
