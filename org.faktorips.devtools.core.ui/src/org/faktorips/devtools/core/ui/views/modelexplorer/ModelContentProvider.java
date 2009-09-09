@@ -180,11 +180,11 @@ public class ModelContentProvider implements ITreeContentProvider {
 
             List<IResource> childResources = new ArrayList<IResource>();
             for (int i = 0; i < children.length; i++) {
-                if (isIpsArchiveFromIpsObjectPath(project, (IResource)children[i])) {
+                if (isIpsArchiveFromIpsObjectPath(project, children[i])) {
                     // filter out ips archive files which are specified in the ipsobjectpath
                     continue;
                 }
-                if (!isJavaResource(javaProject, (IResource)children[i])) {
+                if (!isJavaResource(javaProject, children[i])) {
                     childResources.add(children[i]);
                 }
             }
@@ -385,28 +385,27 @@ public class ModelContentProvider implements ITreeContentProvider {
                     filtered.add(elements[i]);
                 }
             } else if (elements[i] instanceof IResource) {
+                IResource resource = (IResource)elements[i];
 
                 // filter out hidden files and folders, except the ".ipsproject"-file and
                 // ".sortorder"-file
-                if (elements[i] instanceof IFile | elements[i] instanceof IFolder) {
-                    if (((IResource)elements[i]).getName().indexOf(".") == 0) { //$NON-NLS-1$
-                        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(
-                                ((IResource)elements[i]).getProject());
+                if (resource instanceof IFile | resource instanceof IFolder) {
+                    if (resource.getName().indexOf(".") == 0) { //$NON-NLS-1$
+                        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
 
-                        if ((!elements[i].equals(project.getIpsProjectPropertiesFile()))
-                                && ((IResource)elements[i]).getName().compareTo(
-                                        IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0) { //$NON-NLS-1$
+                        if ((!resource.equals(project.getIpsProjectPropertiesFile()))
+                                && resource.getName().compareTo(IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0) {
                             continue;
                         }
                     }
                 }
-                if (elements[i] instanceof IFile) {
-                    if (((IResource)elements[i]).getName().endsWith(".class")) { //$NON-NLS-1$
+                if (resource instanceof IFile) {
+                    if (resource.getName().endsWith(".class")) { //$NON-NLS-1$
                         continue;
                     }
                 }
-                if (configuration.isAllowedResource(elements[i])) {
-                    filtered.add(elements[i]);
+                if (configuration.isAllowedResource(resource)) {
+                    filtered.add(resource);
                 }
             }
 
@@ -492,7 +491,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 closedProjects.add(nonIpsProjects[i]);
             }
         }
-        return (IProject[])closedProjects.toArray(new IProject[closedProjects.size()]);
+        return closedProjects.toArray(new IProject[closedProjects.size()]);
     }
 
     public void dispose() {

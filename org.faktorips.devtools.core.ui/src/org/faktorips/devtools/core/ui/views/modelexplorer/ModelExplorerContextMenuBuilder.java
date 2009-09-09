@@ -43,13 +43,13 @@ import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -57,11 +57,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
@@ -240,38 +237,38 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             IWorkbenchWindow workbenchWindow = viewSite.getWorkbenchWindow();
 
             // Model side elements
-            if (modelExplorerConfig.isAllowedIpsElementType(IPolicyCmptType.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
                 newMenu.add(new NewPolicyComponentTypeAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(IProductCmptType.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT_TYPE)) {
                 newMenu.add(new NewProductCmptTypeAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(IEnumType.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE)) {
                 newMenu.add(new NewEnumTypeAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(IBusinessFunction.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
                 newMenu.add(new NewBusinessFunctionAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(ITableStructure.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
                 newMenu.add(new NewTableStructureAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(ITestCaseType.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE_TYPE)) {
                 newMenu.add(new NewTestCaseTypeAction(workbenchWindow));
             }
 
             newMenu.add(new Separator());
 
             // Product side elements
-            if (modelExplorerConfig.isAllowedIpsElementType(IProductCmpt.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
                 newMenu.add(new NewProductComponentAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(IEnumContent.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)) {
                 newMenu.add(new NewEnumContentAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(ITableContents.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_CONTENTS)) {
                 newMenu.add(new NewTableContentAction(workbenchWindow));
             }
-            if (modelExplorerConfig.isAllowedIpsElementType(ITestCase.class)) {
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE)) {
                 newMenu.add(new NewTestCaseAction(workbenchWindow));
             }
 
@@ -434,7 +431,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     private void createImportExportTableContentsActions(IMenuManager manager, Object selected) {
-        if (modelExplorerConfig.isAllowedIpsElementType(ITableContents.class) && selected instanceof ITableContents) {
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_CONTENTS)
+                && selected instanceof ITableContents) {
             manager.add(TableImportExportAction.createTableImportAction(viewSite.getShell(), treeViewer));
             manager.add(TableImportExportAction.createTableExportAction(viewSite.getShell(), treeViewer));
             manager.add(new Separator());
@@ -442,8 +440,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     private void createImportExportEnumActions(IMenuManager manager, Object selected) {
-        if ((modelExplorerConfig.isAllowedIpsElementType(IEnumType.class) && selected instanceof IEnumType)
-                || (modelExplorerConfig.isAllowedIpsElementType(IEnumContent.class) && selected instanceof IEnumContent)) {
+        if ((modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE) && selected instanceof IEnumType)
+                || (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT) && selected instanceof IEnumContent)) {
             boolean show = true;
             if (selected instanceof IEnumType) {
                 /*
@@ -473,8 +471,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createTestCaseAction(IMenuManager manager, Object selected) {
-        if (modelExplorerConfig.isAllowedIpsElementType(ITestCase.class)
-                || modelExplorerConfig.isAllowedIpsElementType(IProductCmpt.class)) {
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE)
+                || modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
             if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
                     || selected instanceof IIpsProject || selected instanceof ITestCase
                     || selected instanceof IProductCmpt) {
@@ -506,24 +504,22 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private void createIpsArchiveAction(IMenuManager manager, Object selected) {
         // show ips archive menu only for the model explorer
+        // TODO: should be moved to the configuration
         if (!(modelExplorer.isModelExplorer())) {
             return;
         }
-        if (modelExplorerConfig.isAllowedIpsElementType(IIpsProject.class)
-                || modelExplorerConfig.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
-            if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
-                if (selected instanceof IIpsPackageFragmentRoot) {
-                    try {
-                        // don't enable menu for ips archives
-                        if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null) {
-                            return;
-                        }
-                    } catch (CoreException e) {
-                        // ignore exception while creating the menu
+        if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
+            if (selected instanceof IIpsPackageFragmentRoot) {
+                try {
+                    // don't enable menu for ips archives
+                    if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null) {
+                        return;
                     }
+                } catch (CoreException e) {
+                    // ignore exception while creating the menu
                 }
-                manager.add(new CreateIpsArchiveAction(treeViewer));
             }
+            manager.add(new CreateIpsArchiveAction(treeViewer));
         }
     }
 

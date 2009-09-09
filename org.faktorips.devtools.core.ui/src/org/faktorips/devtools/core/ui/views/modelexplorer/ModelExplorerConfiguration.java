@@ -21,11 +21,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
  * Configuration class for <code>ModelExlporer</code>s, that can be asked if a specific class or
@@ -37,9 +44,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class ModelExplorerConfiguration {
 
-    private HashSet<Class<?>> allowedIpsElementTypes = new HashSet<Class<?>>();
+    private HashSet<Class<? extends IIpsElement>> allowedIpsElementTypes = new HashSet<Class<? extends IIpsElement>>();
 
-    private HashSet<Class<?>> allowedResourceTypes = new HashSet<Class<?>>();
+    private HashSet<Class<? extends IResource>> allowedResourceTypes = new HashSet<Class<? extends IResource>>();
+
+    private final IpsObjectType[] allowedIpsObjectTypes;
 
     /**
      * Constructs a ModelExplorerConfiguration that allows the given list of IpsElement types and
@@ -47,18 +56,24 @@ public class ModelExplorerConfiguration {
      * <code>IpsPackageFragmentRoot</code> and <code>IpsPackageFragment</code> are allowed by
      * default.
      */
-    public ModelExplorerConfiguration(Class<?>[] ipsElementTypes, Class<?>[] resourceTypes) {
+    public ModelExplorerConfiguration(IpsObjectType[] allowedIpsObjectTypes) {
+        this.allowedIpsObjectTypes = allowedIpsObjectTypes;
         // add default allowed types
         allowedIpsElementTypes.add(IIpsProject.class);
         allowedIpsElementTypes.add(IIpsPackageFragmentRoot.class);
         allowedIpsElementTypes.add(IIpsPackageFragment.class);
 
-        for (int i = 0, size = ipsElementTypes.length; i < size; i++) {
-            allowedIpsElementTypes.add(ipsElementTypes[i]);
-        }
-        for (int i = 0, size = resourceTypes.length; i < size; i++) {
-            allowedResourceTypes.add(resourceTypes[i]);
-        }
+        // hard coded IpsObjectParts. Use a extensible mechanism if there will be any
+        allowedIpsElementTypes.add(IProductCmptGeneration.class);
+        allowedIpsElementTypes.add(IAttribute.class);
+        allowedIpsElementTypes.add(IEnumAttribute.class);
+        allowedIpsElementTypes.add(IAssociation.class);
+        allowedIpsElementTypes.add(IMethod.class);
+        allowedIpsElementTypes.add(ITableStructureUsage.class);
+
+        allowedResourceTypes.add(IFolder.class);
+        allowedResourceTypes.add(IFile.class);
+        allowedResourceTypes.add(IProject.class);
     }
 
     /**
@@ -68,8 +83,16 @@ public class ModelExplorerConfiguration {
     public boolean isAllowedIpsElement(IIpsElement type) {
         if (type instanceof IIpsSrcFile) {
             return isAllowedIpsSrcFile((IIpsSrcFile)type);
+        }
+        if (type instanceof IIpsObject) {
+            return isAllowedIpsElementType(((IIpsObject)type).getIpsObjectType());
         } else {
-            return isAllowedIpsElementType(type.getClass());
+            for (Class<? extends IIpsElement> allowedElement : allowedIpsElementTypes) {
+                if (allowedElement.isAssignableFrom(type.getClass())) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -79,7 +102,7 @@ public class ModelExplorerConfiguration {
             return false;
         }
 
-        return isAllowedIpsElementType(ipsObjectType.newObject(ipsSrcFile).getClass());
+        return isAllowedIpsElementType(ipsSrcFile.getIpsObjectType());
     }
 
     /**
@@ -87,14 +110,19 @@ public class ModelExplorerConfiguration {
      * also checks if superclasses an implemented interfaces of the given class are allowed, and in
      * that case returns true.
      */
-    public boolean isAllowedIpsElementType(Class<?> type) {
-        return isAllowedType(type, allowedIpsElementTypes);
+    public boolean isAllowedIpsElementType(IpsObjectType type) {
+        for (IpsObjectType ipsObjectType : allowedIpsObjectTypes) {
+            if (ipsObjectType == type) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Returns true if the given Objects's class is allowed by this configuration, false otherwise.
      */
-    public boolean isAllowedResource(Object type) {
+    public boolean isAllowedResource(IResource type) {
         return isAllowedResourceType(type.getClass());
     }
 
@@ -103,7 +131,7 @@ public class ModelExplorerConfiguration {
      * also checks if superclasses an implemented interfaces of the given class are allowed, and in
      * that case returns true.
      */
-    public boolean isAllowedResourceType(Class<?> type) {
+    public boolean isAllowedResourceType(Class<? extends IResource> type) {
         return isAllowedType(type, allowedResourceTypes);
     }
 
@@ -111,8 +139,8 @@ public class ModelExplorerConfiguration {
      * Returns true if the given class, one of its superclasses or implemented interfaces are
      * contained in the given set.
      */
-    private boolean isAllowedType(Class<?> type, HashSet<Class<?>> allowedTypes) {
-        for (Iterator<Class<?>> iter = allowedTypes.iterator(); iter.hasNext();) {
+    private <T> boolean isAllowedType(Class<? extends T> type, HashSet<Class<? extends T>> allowedTypes) {
+        for (Iterator<Class<? extends T>> iter = allowedTypes.iterator(); iter.hasNext();) {
             Class<?> allowedClass = iter.next();
             if (allowedClass.isAssignableFrom(type)) {
                 return true;

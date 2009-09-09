@@ -152,31 +152,31 @@ public class IpsObjectType {
     }
 
     // The human readable type's name
-    private String displayName;
+    private final String displayName;
 
     // The human readable type's plural name
-    private String displayNamePlural;
+    private final String displayNamePlural;
 
     // The identifying name of this type
-    private String id;
+    private final String id;
 
     // Name of xml elements that represent objects of this type
-    private String xmlElementName;
+    private final String xmlElementName;
 
     // Extension of files that store objects of this type
-    private String fileExtension;
+    private final String fileExtension;
 
     // Name of the image file with enabled look
-    private String enabledImage;
+    private final String enabledImage;
 
     // Name of the image file with disabled look
-    private String disabledImage;
+    private final String disabledImage;
 
     // Flag indicating whether this type defines a datatype
-    private boolean datatype = false;
+    private final boolean datatype;
 
     // Flag indicating whether this type is a product definition type
-    private boolean productDefinitionType = false;
+    private final boolean productDefinitionType;
 
     /**
      * Creates a new ips object for the given file.
@@ -371,7 +371,7 @@ public class IpsObjectType {
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */
-    public IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
+    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
             String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage,
             String disabledImage) {
 

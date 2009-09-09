@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
@@ -57,24 +55,12 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
@@ -156,6 +142,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     private ToggleLinkingAction toggleLinking;
 
+    protected boolean supportCategories = false;
+
     /** Creates a new <tt>ModelExplorer</tt>. */
     public ModelExplorer() {
         super();
@@ -189,11 +177,33 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * @see #ModelExplorerConfiguration
      */
     protected ModelExplorerConfiguration createConfig() {
-        return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmptType.class,
-                IEnumType.class, IEnumContent.class, IProductCmpt.class, IProductCmptGeneration.class,
-                ITableStructure.class, ITableContents.class, IBusinessFunction.class, IAttribute.class,
-                IEnumAttribute.class, IAssociation.class, IMethod.class, ITableStructureUsage.class, ITestCase.class,
-                ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
+        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
+        return new ModelExplorerConfiguration(objectTypes);
+        // Class<?>[] classes = new Class<?>[objectTypes.length];
+        // for (int i = 0; i < classes.length; i++) {
+        // classes[i] = objectTypes[i].newObject(null).getClass();
+        // }
+        // return new ModelExplorerConfiguration(classes, new Class[] { IFolder.class, IFile.class,
+        // IProject.class });
+        // return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class,
+        // IProductCmptType.class,
+        // IEnumType.class, IEnumContent.class, IProductCmpt.class, IProductCmptGeneration.class,
+        // ITableStructure.class, ITableContents.class, IBusinessFunction.class, IAttribute.class,
+        // IEnumAttribute.class, IAssociation.class, IMethod.class, ITableStructureUsage.class,
+        // ITestCase.class,
+        // ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
+
+        // keine IpsObjectTypes:
+        // IProductCmptGeneration.class,
+        // IAttribute.class,
+        // IEnumAttribute.class,
+        // IAssociation.class,
+        // IMethod.class,
+        // ITableStructureUsage.class,
+
+        // brauche Interfaces statt Classes
+
     }
 
     /**
@@ -216,7 +226,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
                 .getLabelDecorator());
         treeViewer.setLabelProvider(decoProvider);
-        treeViewer.setSorter(new ModelExplorerSorter());
+        treeViewer.setSorter(new ModelExplorerSorter(supportCategories));
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
         treeViewer.addDoubleClickListener(new ModelExplorerDoubleclickListener(treeViewer));

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,29 +14,37 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.eclipse.core.internal.resources.WorkspaceRoot;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
+@SuppressWarnings("restriction")
+// suppress the warning because of using WorkspaceRoot
 public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
 
     private IIpsProject proj;
-    
+
     private PolicyCmptType pcType;
     private IProductCmpt prodCmpt;
     private IIpsPackageFragmentRoot root;
@@ -44,41 +52,53 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation relation;
     private ITableContents tableContents;
     private ITableStructure tableStructure;
-    
+
     private ModelExplorerConfiguration config;
 
     private IFolder folder;
 
     private IFile file;
 
-    private IIpsPackageFragment defaultPackage;
-    
+    private IResource failRessource;
 
+    private IIpsPackageFragment defaultPackage;
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("Testprojekt");
-        
+
         root = proj.getIpsPackageFragmentRoots()[0];
         defaultPackage = root.getDefaultIpsPackageFragment();
         pcType = newPolicyCmptType(root, "TestPCType");
         attribute = pcType.newPolicyCmptTypeAttribute();
         relation = pcType.newPolicyCmptTypeAssociation();
         prodCmpt = newProductCmpt(root, "TestProdCmpt");
-        tableContents = (ITableContents) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
-        tableStructure = (ITableStructure) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
-        
-        config = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
-                        IPolicyCmptTypeAttribute.class, IPolicyCmptTypeAssociation.class }, new Class[]{IFolder.class});
+        tableContents = (ITableContents)newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS,
+                "TestTableContents");
+        tableStructure = (ITableStructure)newIpsObject(root.getDefaultIpsPackageFragment(),
+                IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
+
+        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IpsPlugin.getDefault()
+                .getIpsModel().getIpsObjectTypes()));
+        // config should not support TableStructure and TableContents
+        allowedTypes.remove(IpsObjectType.TABLE_STRUCTURE);
+        allowedTypes.remove(IpsObjectType.TABLE_CONTENTS);
+        config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
         folder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
-        
+        failRessource = new WorkspaceRoot(Path.ROOT, null) {
+
+        };
+
     }
-    
+
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(IIpsElement)'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(IIpsElement)'
      */
     public void testIsAllowedIpsElement() {
         assertTrue(config.isAllowedIpsElement(proj));
@@ -93,38 +113,30 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(Class)'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(Class)'
      */
     public void testIsAllowedIpsElementType() {
-        assertTrue(config.isAllowedIpsElementType(proj.getClass()));
-        assertTrue(config.isAllowedIpsElementType(root.getClass()));
-        assertTrue(config.isAllowedIpsElementType(defaultPackage.getClass()));
-        assertTrue(config.isAllowedIpsElementType(pcType.getClass()));
-        assertTrue(config.isAllowedIpsElementType(prodCmpt.getClass()));
-        assertTrue(config.isAllowedIpsElementType(attribute.getClass()));
-        assertTrue(config.isAllowedIpsElementType(relation.getClass()));
-        assertFalse(config.isAllowedIpsElementType(tableContents.getClass()));
-        assertFalse(config.isAllowedIpsElementType(tableStructure.getClass()));
+        assertTrue(config.isAllowedIpsElementType(pcType.getIpsObjectType()));
+        assertTrue(config.isAllowedIpsElementType(prodCmpt.getIpsObjectType()));
+        assertFalse(config.isAllowedIpsElementType(tableContents.getIpsObjectType()));
+        assertFalse(config.isAllowedIpsElementType(tableStructure.getIpsObjectType()));
     }
-    public void testIsAllowedResource(){
-        assertTrue(config.isAllowedResource(folder));
-        assertFalse(config.isAllowedResource(file));
 
-        assertFalse(config.isAllowedResource(proj));
-        assertFalse(config.isAllowedResource(root));
-        assertFalse(config.isAllowedResource(defaultPackage));
+    public void testIsAllowedResource() {
+        assertTrue(config.isAllowedResource(folder));
+        assertTrue(config.isAllowedResource(file));
+        assertFalse(config.isAllowedResource(failRessource));
     }
-    public void testIsAllowedResourceType(){
+
+    public void testIsAllowedResourceType() {
         assertTrue(config.isAllowedResourceType(folder.getClass()));
-        assertFalse(config.isAllowedResourceType(file.getClass()));
-        assertFalse(config.isAllowedResourceType(proj.getCorrespondingResource().getClass()));
-        
-        assertFalse(config.isAllowedResourceType(proj.getClass()));
-        assertFalse(config.isAllowedResourceType(root.getClass()));
-        assertFalse(config.isAllowedResourceType(defaultPackage.getClass()));
+        assertTrue(config.isAllowedResourceType(file.getClass()));
+        assertTrue(config.isAllowedResourceType(proj.getCorrespondingResource().getClass()));
+        assertFalse(config.isAllowedResourceType(failRessource.getClass()));
     }
-    
-    public void testRepresentsProject(){
+
+    public void testRepresentsProject() {
         assertTrue(config.representsProject(proj));
         assertTrue(config.representsProject(proj.getCorrespondingResource()));
         assertFalse(config.representsProject(folder));
@@ -134,7 +146,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsProject(pcType));
     }
 
-    public void testRepresentsFolder(){
+    public void testRepresentsFolder() {
         assertFalse(config.representsFolder(proj));
         assertFalse(config.representsFolder(proj.getCorrespondingResource()));
         assertTrue(config.representsFolder(folder));
@@ -143,7 +155,8 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsFolder(file));
         assertFalse(config.representsFolder(pcType));
     }
-    public void testRepresentsFile() throws CoreException{
+
+    public void testRepresentsFile() throws CoreException {
         assertFalse(config.representsFile(proj));
         assertFalse(config.representsFile(proj.getCorrespondingResource()));
         assertFalse(config.representsFile(folder));
@@ -151,7 +164,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsFile(defaultPackage));
         assertTrue(config.representsFile(file));
         assertTrue(config.representsFile(pcType));
-        
+
         IIpsObjectPath path = proj.getIpsObjectPath();
         IFile file = proj.getProject().getFile("Archive.ipsar");
         file.create(new ByteArrayInputStream("".getBytes()), true, null);

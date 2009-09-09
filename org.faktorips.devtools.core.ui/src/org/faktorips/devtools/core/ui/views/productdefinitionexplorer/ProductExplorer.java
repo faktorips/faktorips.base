@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -34,10 +34,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
@@ -68,6 +66,7 @@ public class ProductExplorer extends ModelExplorer {
 
     public ProductExplorer() {
         super();
+        supportCategories = true;
     }
 
     /**
@@ -84,8 +83,15 @@ public class ProductExplorer extends ModelExplorer {
      */
     @Override
     protected ModelExplorerConfiguration createConfig() {
-        return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class, ITableContents.class, ITestCase.class,
-                IProductCmptGeneration.class }, new Class[] { IFile.class, IFolder.class, IProject.class });
+        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
+        List<IpsObjectType> allowedObjectTypes = new ArrayList<IpsObjectType>();
+        for (int i = 0; i < objectTypes.length; i++) {
+            if (objectTypes[i].isProductDefinitionType()) {
+                allowedObjectTypes.add(objectTypes[i]);
+            }
+        }
+        return new ModelExplorerConfiguration(allowedObjectTypes.toArray(new IpsObjectType[allowedObjectTypes.size()]));
     }
 
     /**
