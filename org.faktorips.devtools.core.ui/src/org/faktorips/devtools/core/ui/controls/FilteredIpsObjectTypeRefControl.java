@@ -58,10 +58,7 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
      */
     @Override
     protected String getDefaultDialogFilterExpression() {
-        if (selectedIpsObject == null) {
-            return null;
-        }
-        return selectedIpsObject.getName();
+        return selectedIpsObject == null ? null : selectedIpsObject.getName();
     }
 
     /**
@@ -104,6 +101,6 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
     }
 
     public IIpsSrcFile findSelectedIpsSrcFile() throws CoreException {
-        return getIpsProject().findIpsSrcFile(selectedIpsObject);
+        return selectedIpsObject == null ? null : getIpsProject().findIpsSrcFile(selectedIpsObject);
     }
 }
