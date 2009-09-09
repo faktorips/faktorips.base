@@ -14,17 +14,15 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 
-public class DecimalValueConverter extends AbstractValueConverter {
+public class DecimalValueConverter extends NumberValueConverter {
 
     /**
      * {@inheritDoc}
@@ -39,7 +37,7 @@ public class DecimalValueConverter extends AbstractValueConverter {
                 return decimal.toString();
             }
 
-            DecimalFormat decimalFormat = getDecimalFormat();
+            DecimalFormat decimalFormat = getDecimalFormat(tableFormat);
             return decimalFormat.format(decimal);
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
@@ -54,7 +52,7 @@ public class DecimalValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             try {
-                DecimalFormat decimalFormat = getDecimalFormat();
+                DecimalFormat decimalFormat = getDecimalFormat(tableFormat);
 
                 Number number = decimalFormat.parse((String)externalDataValue);
                 return number.toString();
@@ -76,22 +74,6 @@ public class DecimalValueConverter extends AbstractValueConverter {
                         .createConvertExtToIntErrorMessage(
                                 "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
         return externalDataValue.toString();
-    }
-
-    private DecimalFormat getDecimalFormat() {
-        DecimalFormat decimalFormat = new DecimalFormat();
-
-        if (tableFormat != null) {
-            String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
-            String decimalGrouping = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR);
-            if (decimalSeparator.length() == 1 && decimalGrouping.length() == 1
-                    && !decimalSeparator.equals(decimalGrouping)) {
-                DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();
-                decimalFormatSymbols.setDecimalSeparator(decimalSeparator.charAt(0));
-                decimalFormatSymbols.setGroupingSeparator(decimalGrouping.charAt(0));
-            }
-        }
-        return decimalFormat;
     }
 
     /**

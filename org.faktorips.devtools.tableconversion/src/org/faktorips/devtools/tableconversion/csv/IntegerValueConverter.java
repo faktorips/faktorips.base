@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,15 +14,11 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 
-public class IntegerValueConverter extends AbstractValueConverter {
+public class IntegerValueConverter extends NumberValueConverter {
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -30,10 +26,8 @@ public class IntegerValueConverter extends AbstractValueConverter {
         return ipsValue;
     }
 
-    /**     
+    /**
      * The only supported type for externalDataValue is String.
-     * 
-     * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
@@ -42,11 +36,13 @@ public class IntegerValueConverter extends AbstractValueConverter {
                 return Integer.valueOf(external).toString();
             } catch (NumberFormatException e) {
                 // TODO: scientific notation (exponent + mantissa)
-                //       for now fall through to report the error
+                // for now fall through to report the error
             }
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        messageList
+                .add(ExtSystemsMessageUtil
+                        .createConvertExtToIntErrorMessage(
+                                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
         return externalDataValue.toString();
     }
 

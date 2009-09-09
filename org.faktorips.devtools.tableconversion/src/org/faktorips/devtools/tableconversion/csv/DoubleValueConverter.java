@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,17 +13,16 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 
-public class DoubleValueConverter extends AbstractValueConverter {
+public class DoubleValueConverter extends NumberValueConverter {
 
-
-    /**
-     * {@inheritDoc}
-     */
+    // FIXME rg: use ITableFormat's decimal separator char!
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -33,36 +32,35 @@ public class DoubleValueConverter extends AbstractValueConverter {
 
     /**
      * The only supported type for externalDataValue is String.
-     * 
-     * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
-            String external = (String)externalDataValue;
             try {
-                return String.valueOf(Double.parseDouble(external));
-            } catch (NumberFormatException ignored) {
-                String dotRepresentation = tableFormat.getProperty(CSVTableFormat.PROPERTY_DOT_REPRESENTATION);
-                if (dotRepresentation != null && dotRepresentation.length() == 1) {
-                    String externalDataValueDotReplaced = external.replace(dotRepresentation, ".");
-                    try {
-                        Double internal = Double.parseDouble(externalDataValueDotReplaced);
-                        return internal.toString();
-                    } catch (NumberFormatException nfe) {
-                    }
-                }
+                DecimalFormat decimalFormat = getDecimalFormat(tableFormat);
+
+                Number number = decimalFormat.parse((String)externalDataValue);
+                return number.toString();
+            } catch (NumberFormatException e) {
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                        "" + externalDataValue, externalDataValue //$NON-NLS-1$
+                                .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                return externalDataValue.toString();
+
+            } catch (ParseException e) {
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                        "" + externalDataValue, externalDataValue //$NON-NLS-1$
+                                .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                return externalDataValue.toString();
             }
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        messageList
+                .add(ExtSystemsMessageUtil
+                        .createConvertExtToIntErrorMessage(
+                                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype getSupportedDatatype() {
         return Datatype.DOUBLE;
     }
-
 }

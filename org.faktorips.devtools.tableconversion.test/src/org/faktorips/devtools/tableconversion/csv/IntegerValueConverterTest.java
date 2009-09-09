@@ -13,35 +13,43 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.util.message.MessageList;
 
 /**
- * Tests for conversion of an arbitrary CSV-double representation to IPS Double Datatype and vice versa.
+ * Tests for Conversion of an arbitrary CSV-Integer representation to IPS Integer Datatype and vice versa.
  * 
  * @author Roman Grutza
  */
-public class DoubleValueConverterTest extends NumberValueConverterTest {
+public class IntegerValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public ValueDatatype getDatatypeUsedForConversion() {
-        return Datatype.DOUBLE;
+        return Datatype.INTEGER;
     }
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
         String[] validExternalDoubles = {
-                String.valueOf(Double.MAX_VALUE).replace(".", ","),
-                String.valueOf(Double.MIN_VALUE).replace(".", ","),
-                "42", "42,42", "-42,003E-03"
+                String.valueOf(Integer.MAX_VALUE),
+                String.valueOf(Integer.MIN_VALUE),
+                "0"
         };
-        if (useCommaAsDecimalSeparator) {
-            for (int i = 0; i < validExternalDoubles.length; i++) {
-                validExternalDoubles[i] = validExternalDoubles[i].replace(".", ",");
-            }
-        }
         return validExternalDoubles;
+    }
+
+    public void testExternalToInternalOverflow() {
+        String[] doNotFitInInteger = { String.valueOf(Long.MAX_VALUE), String.valueOf(Double.MIN_VALUE) };
+
+        MessageList ml = new MessageList();
+        IValueConverter converter = new IntegerValueConverter();
+        for (int i = 0; i < doNotFitInInteger.length; i++) {
+            String ipsValue = converter.getIpsValue(doNotFitInInteger[i], ml);
+            assertFalse(ml.isEmpty());
+            assertFalse(Datatype.INTEGER.isParsable(ipsValue));
+        }
     }
 
 }

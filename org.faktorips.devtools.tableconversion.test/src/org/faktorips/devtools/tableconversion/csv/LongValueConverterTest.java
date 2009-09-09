@@ -13,35 +13,43 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.util.message.MessageList;
 
 /**
- * Tests for conversion of an arbitrary CSV-double representation to IPS Double Datatype and vice versa.
+ * Tests for Conversion of an arbitrary CSV-Long representation to IPS Long Datatype and vice versa.
  * 
  * @author Roman Grutza
  */
-public class DoubleValueConverterTest extends NumberValueConverterTest {
+public class LongValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public ValueDatatype getDatatypeUsedForConversion() {
-        return Datatype.DOUBLE;
+        return Datatype.LONG;
     }
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
         String[] validExternalDoubles = {
-                String.valueOf(Double.MAX_VALUE).replace(".", ","),
-                String.valueOf(Double.MIN_VALUE).replace(".", ","),
-                "42", "42,42", "-42,003E-03"
+                String.valueOf(Long.MAX_VALUE),
+                String.valueOf(Long.MIN_VALUE),
+                "0"
         };
-        if (useCommaAsDecimalSeparator) {
-            for (int i = 0; i < validExternalDoubles.length; i++) {
-                validExternalDoubles[i] = validExternalDoubles[i].replace(".", ",");
-            }
-        }
         return validExternalDoubles;
+    }
+
+    public void testExternalToInternalOverflow() {
+        String tooBig = new BigDecimal(Long.MAX_VALUE).multiply(new BigDecimal(2)).toString();
+
+        MessageList ml = new MessageList();
+        IValueConverter converter = new IntegerValueConverter();
+        String ipsValue = converter.getIpsValue(tooBig, ml);
+        assertFalse(ml.toString(), ml.isEmpty());
+        assertFalse(Datatype.INTEGER.isParsable(ipsValue));
     }
 
 }
