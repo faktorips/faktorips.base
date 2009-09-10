@@ -144,6 +144,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected boolean supportCategories = false;
 
+    private ModelExplorerSorter sorter;
+
     /** Creates a new <tt>ModelExplorer</tt>. */
     public ModelExplorer() {
         super();
@@ -202,7 +204,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
                 .getLabelDecorator());
         treeViewer.setLabelProvider(decoProvider);
-        treeViewer.setSorter(new ModelExplorerSorter(supportCategories));
+        sorter = new ModelExplorerSorter(supportCategories);
+        treeViewer.setSorter(sorter);
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
         treeViewer.addDoubleClickListener(new ModelExplorerDoubleclickListener(treeViewer));
@@ -333,8 +336,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      */
     protected void createAdditionalMenuEntries(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
+        Action groupForCategories = createGroupCategoriesAction();
+        groupForCategories.setChecked(supportCategories);
         Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
         showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
+
+        menuManager.add(groupForCategories);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);
         menuManager.add(toggleLinking);
 
@@ -701,4 +708,19 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         };
     }
 
+    private Action createGroupCategoriesAction() {
+        return new Action(Messages.ModelExplorer_menuGroupCategories_Title, IAction.AS_CHECK_BOX) {
+            @Override
+            public String getToolTipText() {
+                return Messages.ModelExplorer_menuGroupCategories_Tooltip;
+            }
+
+            @Override
+            public void run() {
+                supportCategories = !supportCategories;
+                sorter.setSupportCategories(supportCategories);
+                treeViewer.refresh();
+            }
+        };
+    }
 }
