@@ -145,15 +145,16 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 for (short j = 0; j < structure.getNumOfColumns(); j++) {
                     String ipsValue = null;
 
+					String tableField = readLine[j];
                     if (j < readLine.length) {
-                        if (nullRepresentationString.equals(readLine[j])) {
-                            ipsValue = nullRepresentationString;
+                        if (nullRepresentationString.equals(tableField)) {
+                            ipsValue = null;
                         } else {
-                            ipsValue = getIpsValue(readLine[j], datatypes[j]);
+                            ipsValue = getIpsValue(tableField, datatypes[j]);
                         }
                     }
 
-                    if (ipsValue == null) {
+                    if (tableField == null) {
                         Object[] objects = new Object[3];
                         objects[0] = new Integer(rowNumber);
                         objects[1] = new Integer(j);
@@ -161,10 +162,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                         String msg = NLS
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                        genRow.setValue(j, nullRepresentationString);
-                    } else {
-                        genRow.setValue(j, ipsValue);
+                        
                     }
+                    genRow.setValue(j, ipsValue);
                 }
                 ++rowNumber;
             }

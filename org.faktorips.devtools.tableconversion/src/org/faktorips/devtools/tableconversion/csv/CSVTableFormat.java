@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
+import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.util.message.MessageList;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -32,7 +33,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
     // property constants following the JavaBeans standard
     public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter";
-    public final static String PROPERTY_DOT_REPRESENTATION = "dotRepresentation";
     public final static String PROPERTY_DATE_FORMAT = "dateFormat";
     public static final String PROPERTY_DECIMAL_SEPARATOR_CHAR = "decimalFormat";
     public static final String PROPERTY_DECIMAL_GROUPING_CHAR = "decimalSeparatorChar";
@@ -40,10 +40,8 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     public CSVTableFormat() {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ",");
-        properties.put(PROPERTY_DOT_REPRESENTATION, ".");
         properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
         properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, ".");
-        properties.put(PROPERTY_DECIMAL_GROUPING_CHAR, ",");
     }
 
     /**
@@ -119,7 +117,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             MessageList list) {
 
         try {
-            CSVEnumExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer, filename
+            AbstractTableExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer, filename
                     .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
@@ -176,8 +174,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     public List getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
-        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
     /**
@@ -187,8 +186,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     public List getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
-        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
     /**
@@ -199,7 +199,8 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     private List getImportPreview(IIpsObject structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         Datatype[] datatypes;
         try {
             if (structure instanceof ITableStructure) {
@@ -210,7 +211,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 return Collections.EMPTY_LIST;
             }
 
-            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return Collections.EMPTY_LIST;
@@ -221,7 +222,8 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     private List getPreviewInternal(Datatype[] datatypes,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }
@@ -244,7 +246,11 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 }
                 String[] convertedLine = new String[line.length];
                 for (int i = 0; i < line.length; i++) {
-                    convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
+                    if (nullRepresentation.equals(line[i])) {
+                        convertedLine[i] = nullRepresentation;
+                    } else {
+                        convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
+                    }
                 }
 
                 result.add(convertedLine);

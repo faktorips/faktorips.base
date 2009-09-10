@@ -57,7 +57,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             MessageList messageList, boolean importIntoExisting) {
 
         this.valueContainer = valueContainer;
-        this.sourceFile = filename;
+        sourceFile = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
@@ -146,13 +146,14 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
                     IEnumAttributeValue column = genRow.getEnumAttributeValues().get(j);
 
-                    if (nullRepresentationString.equals(readLine[j])) {
-                        ipsValue = nullRepresentationString;
+                    String enumField = readLine[j];
+                    if (nullRepresentationString.equals(enumField)) {
+                        ipsValue = null;
                     } else {
-                        ipsValue = getIpsValue(readLine[j], datatypes[j]);
+                        ipsValue = getIpsValue(enumField, datatypes[j]);
                     }
 
-                    if (ipsValue == null) {
+                    if (enumField == null) {
                         Object[] objects = new Object[3];
                         objects[0] = new Integer(rowNumber);
                         objects[1] = new Integer(j);
@@ -161,10 +162,8 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
-                        column.setValue(nullRepresentationString);
-                    } else {
-                        column.setValue(ipsValue);
                     }
+                    column.setValue(ipsValue);
                 }
                 ++rowNumber;
             }

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.wizards.enumexport;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,8 +28,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
@@ -57,20 +55,17 @@ public class EnumExportWizard extends IpsObjectExportWizard {
     private static String DIALOG_SETTINGS_KEY = "EnumExportWizard"; //$NON-NLS-1$
 
     // mandatory page to select filename, table format etc.
-    private EnumExportPage exportPage;
-
-    // each table format can contain custom properties which are shown in the second wizard page
-    private Map<ITableFormat, TableFormatPropertiesPage> customPages;
+    public EnumExportPage exportPage;
 
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumExportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
-        if (section == null)
+        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+        if (section == null) {
             hasNewDialogSettings = true;
-        else {
+        } else {
             hasNewDialogSettings = false;
             setDialogSettings(section);
         }
@@ -97,6 +92,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPages() {
         try {
             exportPage = new EnumExportPage(selection);
@@ -117,27 +113,10 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         }
     }
 
-    @Override
-    public IWizardPage getNextPage(IWizardPage page) {
-        if (page == exportPage) {
-            exportPage.validateObjectToExport();
-            boolean isValid = exportPage.getErrorMessage() == null;
-
-            for (WizardPage customPage : customPages.values()) {
-                customPage.setPageComplete(isValid);
-
-            }
-
-            ITableFormat tableFormat = exportPage.getFormat();
-            TableFormatPropertiesPage nextPage = customPages.get(tableFormat);
-            return nextPage;
-        }
-        return null;
-    }
-
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean performFinish() {
         try {
             ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource();
@@ -154,13 +133,14 @@ public class EnumExportWizard extends IpsObjectExportWizard {
                         Messages.EnumExportWizard_msgFileExists, MessageDialog.QUESTION, new String[] {
                                 IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
 
-                if (dialog.open() != MessageDialog.OK) {
+                if (dialog.open() != Window.OK) {
                     // User did not say "yes" to overwrite the file, so return to the wizard.
                     return false;
                 }
             }
 
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
+                @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                         InterruptedException {
                     MessageList messageList = new MessageList();
@@ -205,6 +185,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         return true;
     }
 
+    @Override
     public void saveWidgetSettings() {
         exportPage.saveWidgetValues();
     }

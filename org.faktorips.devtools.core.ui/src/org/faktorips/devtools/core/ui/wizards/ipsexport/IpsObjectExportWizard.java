@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipsexport;
 
+import java.util.Map;
+
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 
 /**
  * Base class for wizards exporting <code>IIpsObject</code> types like <code>IEnumType</code>,
@@ -32,6 +37,7 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
     protected boolean hasNewDialogSettings;
 
     protected IStructuredSelection selection;
+    protected Map<ITableFormat, TableFormatPropertiesPage> customPages;
 
     /**
      * Saves dialog settings, like size and position information.
@@ -56,4 +62,22 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
      * Persists the current settings in the wizard's pages.
      */
     public abstract void saveWidgetSettings();
+
+    @Override
+    public IWizardPage getNextPage(IWizardPage page) {
+        IpsObjectExportPage exportPage = (IpsObjectExportPage)getStartingPage();
+        if (page == exportPage) {
+            exportPage.validateObjectToExport();
+            boolean isValid = exportPage.getErrorMessage() == null;
+
+            for (WizardPage customPage : customPages.values()) {
+                customPage.setPageComplete(isValid);
+            }
+
+            ITableFormat tableFormat = exportPage.getFormat();
+            TableFormatPropertiesPage nextPage = customPages.get(tableFormat);
+            return nextPage;
+        }
+        return null;
+    }
 }

@@ -65,7 +65,8 @@ class TestTableFormat extends AbstractExternalTableFormat {
     public List getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         return null;
     }
 
@@ -73,7 +74,8 @@ class TestTableFormat extends AbstractExternalTableFormat {
     public List getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         return null;
     }
 
@@ -83,5 +85,5 @@ class TestTableFormat extends AbstractExternalTableFormat {
 }
 
 class TestTableFormatTwo extends TestTableFormat {
-    
+
 }

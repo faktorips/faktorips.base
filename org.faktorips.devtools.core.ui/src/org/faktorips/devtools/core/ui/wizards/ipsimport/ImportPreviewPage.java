@@ -187,19 +187,20 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     }
 
     private void fillPreviewTableContents() {
-        if (this.filename == null || this.tableFormat == null) {
+        if (filename == null || tableFormat == null) {
             return;
         }
 
         createTablePreviewControls(previewGroup, toolkit);
 
+        String nullRepresentation = ((IpsObjectImportWizard)getWizard()).nullRepresentation;
         List preview = Collections.EMPTY_LIST;
         if (structure instanceof ITableStructure) {
             preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),
-                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow);
+                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow, nullRepresentation);
         } else if (structure instanceof IEnumType) {
             preview = tableFormat.getImportEnumPreview((IEnumType)structure, new Path(filename),
-                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow);
+                    MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow, nullRepresentation);
         }
 
         int numberOfColumns = preview.isEmpty() ? 0 : ((String[])preview.get(0)).length;

@@ -24,21 +24,19 @@ import org.faktorips.values.Decimal;
 
 public class DecimalValueConverter extends NumberValueConverter {
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
         }
         try {
-            Decimal decimal = (Decimal)new DecimalDatatype().getValue(ipsValue);
-            if (tableFormat == null) {
-                return decimal.toString();
+            Decimal d = (Decimal)new DecimalDatatype().getValue(ipsValue);
+            String result = d.toString();
+            String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
+            if (tableFormat != null && decimalSeparator.length() == 1) {
+                result = result.replace(".", tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR));
             }
 
-            DecimalFormat decimalFormat = getDecimalFormat(tableFormat);
-            return decimalFormat.format(decimal);
+            return result;
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
                     getSupportedDatatype().getQualifiedName()));

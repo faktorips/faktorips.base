@@ -58,22 +58,24 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      */
     public CSVTableExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
-        if (! (typeToExport instanceof ITableContents)) {
-            throw new IllegalArgumentException("The given IPS object is not supported. Expected ITableContents, but got '"
-                    + typeToExport == null ?  "null" : typeToExport.getClass().toString() + "'");
+        if (!(typeToExport instanceof ITableContents)) {
+            throw new IllegalArgumentException(
+                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null"
+                            : typeToExport.getClass().toString() + "'");
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.exportColumnHeaderRow = exportColumnHeaderRow;
-        this.messageList = list;
+        messageList = list;
     }
 
     /**
      * 
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
 
         if (monitor == null) {
@@ -120,9 +122,12 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         CSVWriter writer = null;
         try {
             if (!monitor.isCanceled()) {
-                // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und Zielordner
+                // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
+                // Zielordner
                 out = new FileOutputStream(new File(filename));
-                writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)));
+
+                char fieldSeparatorChar = getFieldSeparatorCSV(format);
+                writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
 
                 exportHeader(writer, structure.getColumns(), exportColumnHeaderRow);
 
@@ -137,7 +142,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         } finally {
             if (out != null) {
                 try {
-                    
+
                     out.close();
                 } catch (Exception ee) {
                     // ignore
@@ -148,7 +153,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
     private ITableContents getTableContents(IIpsObject typeToExport) {
         if (typeToExport instanceof ITableContents) {
-            return (ITableContents) typeToExport;
+            return (ITableContents)typeToExport;
         }
         return null;
     }
@@ -156,13 +161,12 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
     /**
      * Writes the CSV header containing the names of the columns using the given CSV writer.
      * 
-     * @param writer A CSV writer instance  
+     * @param writer A CSV writer instance
      * @param columns The tablescontents` columns
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
-    private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow)
-            throws IOException {
-        
+    private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) throws IOException {
+
         if (exportColumnHeaderRow) {
             String[] header = new String[columns.length];
             for (int i = 0; i < header.length; i++) {
@@ -200,26 +204,25 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         IRow[] contentRows = generation.getRows();
         for (int i = 0; i < contentRows.length; i++) {
             IRow row = generation.getRow(i);
-            
+
             String[] fieldsToExport = new String[contents.getNumOfColumns()];
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
                 String ipsValue = row.getValue(j);
                 Object obj = format.getExternalValue(ipsValue, datatypes[j], messageList);
-                
+
                 String csvField;
                 try {
-                    csvField = (obj == null) ? nullRepresentationString
-                            :  obj.toString();
+                    csvField = (obj == null) ? nullRepresentationString : obj.toString();
                 } catch (NumberFormatException e) {
                     // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                    csvField = nullRepresentationString; 
+                    csvField = nullRepresentationString;
                 }
 
                 fieldsToExport[j] = csvField;
             }
 
             writer.writeNext(fieldsToExport);
-            
+
             if (monitor.isCanceled()) {
                 return;
             }

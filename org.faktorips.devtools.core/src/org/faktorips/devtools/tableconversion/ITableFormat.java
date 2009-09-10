@@ -233,6 +233,8 @@ public interface ITableFormat {
      * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
      *            should be ignored <code>false</code> if the to be imported content contains no
      *            column header row.
+     * @param nullRepresentationString The string to use to replace <code>null</code>.
+     * 
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
      *         Collections.EMPTY_LIST if the preview could not be computed or the file contains no
      *         entries.
@@ -241,7 +243,8 @@ public interface ITableFormat {
     public List getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentationString);
 
     /**
      * Computes a preview for the enum to be imported.
@@ -252,6 +255,7 @@ public interface ITableFormat {
      * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
      *            should be ignored <code>false</code> if the to be imported content contains no
      *            column header row.
+     * @param nullRepresentationString The string to use to replace <code>null</code>.
      * 
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
      *         Collections.EMPTY_LIST if the preview could not be computed or the file contains no
@@ -261,6 +265,7 @@ public interface ITableFormat {
     public List getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentationString);
 
 }

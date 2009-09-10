@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard;
 import org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 
 /**
  * Action that opens a wizard for importing or exporting enum types and contents.
@@ -78,7 +79,7 @@ public class EnumImportExportAction extends IpsAction {
         IWorkbenchWizard wizard;
         if (isImport) {
             wizard = new EnumImportWizard();
-            ((EnumImportWizard)wizard).setImportIntoExisting(true);
+            ((IpsObjectImportWizard)wizard).setImportIntoExisting(true);
         } else {
             wizard = new EnumExportWizard();
         }

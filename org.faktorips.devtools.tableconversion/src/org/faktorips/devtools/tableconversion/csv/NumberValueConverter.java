@@ -25,7 +25,8 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
      * Uses the properties of the given table format to retrieve a custom DecimalFormat. One can
      * configure the table format by setting the properties
      * <code>CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR</code> and
-     * <code>CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR</code>.
+     * <code>CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR</code> on the given ITableFormat
+     * instance.
      * 
      * @param tableFormat
      * 
@@ -39,12 +40,15 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
         if (tableFormat != null && tableFormat instanceof CSVTableFormat) {
             String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
             String decimalGrouping = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR);
-            if (decimalSeparator.length() == 1 && decimalGrouping.length() == 1
-                    && !decimalSeparator.equals(decimalGrouping)) {
-                DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();
+
+            DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();
+            if (decimalSeparator != null && decimalSeparator.length() == 1 && !decimalSeparator.equals(decimalGrouping)) {
                 decimalFormatSymbols.setDecimalSeparator(decimalSeparator.charAt(0));
+            }
+            if (decimalGrouping != null && !decimalGrouping.equals(decimalSeparator)) {
                 decimalFormatSymbols.setGroupingSeparator(decimalGrouping.charAt(0));
             }
+            decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
         }
         return decimalFormat;
     }

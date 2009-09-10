@@ -162,21 +162,24 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     public List getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
-        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
     public List getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
-        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
+        return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
     private List getImportPreview(IIpsObject structure,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         Datatype[] datatypes;
         try {
             if (structure instanceof ITableStructure) {
@@ -187,7 +190,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                 return Collections.EMPTY_LIST;
             }
 
-            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return Collections.EMPTY_LIST;
@@ -197,7 +200,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     private List getPreviewInternal(Datatype[] datatypes,
             IPath filename,
             int maxNumberOfRows,
-            boolean ignoreColumnHeaderRow) {
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation) {
         HSSFSheet sheet = null;
         try {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
@@ -225,7 +229,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             String[] convertedLine = new String[numberOfCells];
             for (short j = 0; j < numberOfCells; j++) {
                 HSSFCell cell = sheetRow.getCell(j);
-                String cellString = readCell(cell, datatypes[j], ml);
+                String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
                 convertedLine[j] = cellString;
             }
 
@@ -236,7 +240,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     }
 
     // TODO rg: code duplication in AbstractExcelImportOperation
-    private String readCell(HSSFCell cell, Datatype datatype, MessageList messageList) {
+    private String readCell(HSSFCell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
         if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
             if (HSSFDateUtil.isCellDateFormatted(cell)) {
                 return getIpsValue(cell.getDateCellValue(), datatype, messageList);
@@ -246,6 +250,9 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
             String value = cell.getStringCellValue();
+            if (nullRepresentation.equals(value)) {
+                return nullRepresentation;
+            }
             return getIpsValue(value, datatype, messageList);
         }
     }

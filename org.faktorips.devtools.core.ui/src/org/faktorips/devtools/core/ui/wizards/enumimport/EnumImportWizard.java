@@ -45,14 +45,13 @@ import org.faktorips.util.message.MessageList;
 /**
  * Wizard to import tabular data into an <tt>IEnumType</tt> or <tt>IEnumContent</tt>.
  * 
- * @author Roman Grutza, Alexnader Weickmann
+ * @author Roman Grutza, Alexander Weickmann
  */
 public class EnumImportWizard extends IpsObjectImportWizard {
 
     public final static String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
 
-    private SelectFileAndImportMethodPage filePage;
     private EnumContentPage newEnumContentPage;
     private SelectEnumPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
@@ -70,8 +69,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     @Override
     public void addPages() {
         try {
-            filePage = new SelectFileAndImportMethodPage(null);
-            addPage(filePage);
+            startingPage = new SelectFileAndImportMethodPage(null);
+            addPage(startingPage);
             newEnumContentPage = new EnumContentPage(selection);
             addPage(newEnumContentPage);
             selectContentsPage = new SelectEnumPage(selection);
@@ -79,7 +78,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             tablePreviewPage = new ImportPreviewPage(selection);
             addPage(tablePreviewPage);
 
-            filePage.setImportIntoExisting(importIntoExisting);
+            startingPage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -108,18 +107,19 @@ public class EnumImportWizard extends IpsObjectImportWizard {
      */
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
-        if (page == filePage) {
+        saveDataToWizard();
+        if (page == startingPage) {
             /*
              * Set the completed state on the opposite page to true so that the wizard can finish
              * normally.
              */
-            selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
-            newEnumContentPage.setPageComplete(filePage.isImportIntoExisting());
+            selectContentsPage.setPageComplete(!startingPage.isImportIntoExisting());
+            newEnumContentPage.setPageComplete(startingPage.isImportIntoExisting());
             /*
              * Validate the returned Page so that finished state is already set to true if all
              * default settings are correct.
              */
-            if (filePage.isImportIntoExisting()) {
+            if (startingPage.isImportIntoExisting()) {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
@@ -134,7 +134,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
         if (page == selectContentsPage || page == newEnumContentPage) {
             IEnumType enumType = getEnumType();
-            tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType, filePage
+            tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType, startingPage
                     .isImportIgnoreColumnHeaderRow());
             tablePreviewPage.validatePage();
             return tablePreviewPage;
@@ -143,23 +143,40 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return null;
     }
 
+    @Override
+    public boolean canFinish() {
+        if (isExcelTableFormatSelected()) {
+            if (getContainer().getCurrentPage() == selectContentsPage) {
+                if (selectContentsPage.isPageComplete()) {
+                    return true;
+                }
+            }
+            if (getContainer().getCurrentPage() == newEnumContentPage) {
+                if (newEnumContentPage.isPageComplete()) {
+                    return true;
+                }
+            }
+        }
+        return super.canFinish();
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean performFinish() {
-        final ITableFormat format = filePage.getFormat();
+        final ITableFormat format = startingPage.getFormat();
         try {
             final IEnumValueContainer enumTypeOrContent = getEnumValueContainer();
-            if (filePage.isImportExistingReplace()) {
+            if (startingPage.isImportExistingReplace()) {
                 enumTypeOrContent.clear();
             }
 
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeEnumImport(enumTypeOrContent, new Path(filePage.getFilename()), filePage
-                            .getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(), new MessageList(),
-                            filePage.isImportIntoExisting());
+                    format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
+                            .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), new MessageList(),
+                            startingPage.isImportIntoExisting());
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
@@ -178,7 +195,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
      */
     private IEnumType getEnumType() {
         try {
-            if (filePage.isImportIntoExisting()) {
+            if (startingPage.isImportIntoExisting()) {
                 IEnumValueContainer enumValueContainer = selectContentsPage.getEnum();
                 IIpsProject ipsProject = enumValueContainer.getIpsProject();
                 if (ipsProject != null) {
@@ -193,13 +210,13 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return null;
     }
 
-    /**
+    /*
      * Returns the enumeration type or enumeration content as a target for import.
      * 
      * @throws CoreException
      */
     private IEnumValueContainer getEnumValueContainer() throws CoreException {
-        if (filePage.isImportIntoExisting()) {
+        if (startingPage.isImportIntoExisting()) {
             return selectContentsPage.getEnum();
         } else {
             IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.util.message.Message;
 
@@ -242,6 +244,19 @@ public class SelectEnumPage extends SelectImportTargetPage {
         boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
                 && !"".equals(enumField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
+    }
+
+    @Override
+    public boolean canFlipToNextPage() {
+        IWizard wizard = getWizard();
+        if (wizard instanceof IpsObjectImportWizard) {
+            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
+                // do not show the configuration/preview page for excel
+                return false;
+            }
+        }
+
+        return super.canFlipToNextPage();
     }
 
 }

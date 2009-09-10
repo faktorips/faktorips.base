@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.util.message.Message;
 
@@ -96,9 +98,10 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
     }
 
     public ITableContents getTableContents() throws CoreException {
-        return ((TableContentsRefControl)contentsControl).findTableContents();
+        return (contentsControl).findTableContents();
     }
 
+    @Override
     protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         try {
@@ -199,4 +202,18 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
     private void projectChanged() {
         contentsControl.setIpsProject(getIpsProject());
     }
+
+    @Override
+    public boolean canFlipToNextPage() {
+        IWizard wizard = getWizard();
+        if (wizard instanceof IpsObjectImportWizard) {
+            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
+                // do not show the configuration/preview page for excel
+                return false;
+            }
+        }
+
+        return super.canFlipToNextPage();
+    }
+
 }

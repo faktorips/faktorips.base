@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -215,6 +217,19 @@ public class TableContentsPage extends IpsObjectPage {
      */
     public ITableContents getCreatedTableContents() {
         return createdTableContents;
+    }
+
+    @Override
+    public boolean canFlipToNextPage() {
+        IWizard wizard = getWizard();
+        if (wizard instanceof IpsObjectImportWizard) {
+            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
+                // do not show the configuration/preview page for excel
+                return false;
+            }
+        }
+
+        return super.canFlipToNextPage();
     }
 
 }

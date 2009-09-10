@@ -31,14 +31,19 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
 
     protected IStructuredSelection selection;
     protected boolean hasNewDialogSettings;
+
+    // data that needs to be accessible across multiple wizard pages
     protected boolean importIntoExisting;
+    protected String nullRepresentation;
+
+    protected SelectFileAndImportMethodPage startingPage;
 
     public IpsObjectImportWizard() {
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
-        if (section == null)
+        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+        if (section == null) {
             hasNewDialogSettings = true;
-        else {
+        } else {
             hasNewDialogSettings = false;
             setDialogSettings(section);
         }
@@ -57,6 +62,14 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
      */
     public void setImportIntoExisting(boolean importIntoExisting) {
         this.importIntoExisting = importIntoExisting;
+    }
+
+    public boolean isExcelTableFormatSelected() {
+        return startingPage.getFormat().getDefaultExtension().equals(".xls");
+    }
+
+    protected void saveDataToWizard() {
+        nullRepresentation = startingPage.getNullRepresentation();
     }
 
 }

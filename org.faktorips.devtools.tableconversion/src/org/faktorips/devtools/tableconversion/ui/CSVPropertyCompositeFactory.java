@@ -40,7 +40,9 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
     private Text fieldDelimiterText;
     private Text dateFormatText;
     private Text decimalSeparatorText;
-    private Text decimalGroupingText;
+
+    // TODO rg: commented out for 2.4rc1
+    // private Text decimalGroupingText;
 
     @Override
     public void setTableFormat(ITableFormat tableFormat) {
@@ -77,12 +79,13 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         decimalSeparatorTextField.addChangeListener(this);
         decimalSeparatorText.setText("."); //$NON-NLS-1$
 
+        // TODO rg: commented out for 2.4rc1, needs adaptation of IValueConverter's
         // Fifth row: Decimal grouping character control
-        toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_labelDecimalGrouping);
-        decimalGroupingText = toolkit.createText(root);
-        TextField groupingSeparatorTextField = new TextField(decimalGroupingText);
-        groupingSeparatorTextField.addChangeListener(this);
-        decimalGroupingText.setText(","); //$NON-NLS-1$
+        // toolkit.createLabel(root, Messages.CSVPropertyCompositeFactory_labelDecimalGrouping);
+        // decimalGroupingText = toolkit.createText(root);
+        // TextField groupingSeparatorTextField = new TextField(decimalGroupingText);
+        // groupingSeparatorTextField.addChangeListener(this);
+        //        decimalGroupingText.setText(","); //$NON-NLS-1$
 
         initializeProperties();
 
@@ -112,7 +115,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         if (decimalGrouping == null) {
             decimalGrouping = ","; //$NON-NLS-1$
         }
-        decimalGroupingText.setText(decimalGrouping);
+        // decimalGroupingText.setText(decimalGrouping);
     }
 
     @Override
@@ -150,23 +153,23 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
     }
 
     private void validateDecimalGrouping(MessageList ml) {
-        String decimalGrouping = decimalGroupingText.getText();
-        if (decimalGrouping.length() != 1) {
-            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalGroupingLength, Message.ERROR)); //$NON-NLS-1$
-        }
-        validateDecimalSeparatorAndGroupingAreNotEqual(ml);
+        // String decimalGrouping = decimalGroupingText.getText();
+        // if (decimalGrouping.length() != 1) {
+        //            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalGroupingLength, Message.ERROR)); //$NON-NLS-1$
+        // }
+        // validateDecimalSeparatorAndGroupingAreNotEqual(ml);
     }
 
     private void validateDecimalSeparatorAndGroupingAreNotEqual(MessageList ml) {
-        String decimalSeparator = decimalSeparatorText.getText();
-        String decimalGrouping = decimalGroupingText.getText();
-        if (decimalSeparator.equals(decimalGrouping)) {
-            ml
-                    .add(new Message(
-                            "", //$NON-NLS-1$
-                            Messages.CSVPropertyCompositeFactory_errMsgDecimalSeparatorAndGroupingCharsAreEqual,
-                            Message.ERROR));
-        }
+        // String decimalSeparator = decimalSeparatorText.getText();
+        // String decimalGrouping = decimalGroupingText.getText();
+        // if (decimalSeparator.equals(decimalGrouping)) {
+        // ml
+        // .add(new Message(
+        //                            "", //$NON-NLS-1$
+        // Messages.CSVPropertyCompositeFactory_errMsgDecimalSeparatorAndGroupingCharsAreEqual,
+        // Message.ERROR));
+        // }
     }
 
     private void validateFieldDelimiter(MessageList ml) {
@@ -190,8 +193,11 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             tableFormat.setProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER, fieldDelimiterText.getText());
         } else if (e.field.getControl() == decimalSeparatorText) {
             tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR, decimalSeparatorText.getText());
-        } else if (e.field.getControl() == decimalGroupingText) {
-            tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR, decimalGroupingText.getText());
+
+            // TODO rg: commented out for 2.4rc1, needs adaptation of IValueConverter's
+            // } else if (e.field.getControl() == decimalGroupingText) {
+            // tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR,
+            // decimalGroupingText.getText());
         }
     }
 

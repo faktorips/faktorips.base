@@ -68,7 +68,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.exportColumnHeaderRow = exportColumnHeaderRow;
-        this.messageList = list;
+        messageList = list;
     }
 
     /**
@@ -115,11 +115,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
                 // Zielordner
                 out = new FileOutputStream(new File(filename));
 
-                String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
-                char fieldSeparatorChar = ',';
-                if (fieldSeparator != null && fieldSeparator.length() == 1) {
-                    fieldSeparatorChar = fieldSeparator.charAt(0);
-                }
+                char fieldSeparatorChar = getFieldSeparatorCSV(format);
                 writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
 
                 exportHeader(writer, structure.getEnumAttributes(true), exportColumnHeaderRow);

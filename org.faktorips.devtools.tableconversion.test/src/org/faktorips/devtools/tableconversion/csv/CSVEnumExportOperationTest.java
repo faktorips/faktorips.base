@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
@@ -62,7 +63,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
         MessageList ml = new MessageList();
-        CSVEnumExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertTrue(ml.toString(), ml.isEmpty());
     }
@@ -74,7 +75,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         enumType.newEnumAttribute().setName("AddedColumn");
 
         MessageList ml = new MessageList();
-        CSVEnumExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -97,7 +98,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         IEnumType enumType = createInvalidEnumTypeWithValues(ipsProject);
 
         MessageList ml = new MessageList();
-        CSVEnumExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertEquals(8, ml.getNoOfMessages());
     }
