@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -79,6 +79,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
@@ -86,6 +87,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean generatesInterface() {
         return false;
     }
@@ -93,6 +95,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getSuperclass() throws CoreException {
         IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype != null) {
@@ -108,6 +111,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
         return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalize(name));
@@ -116,6 +120,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         String publishedInterface = GenType.getQualifiedName(getPcType(), (StandardBuilderSet)getBuilderSet(), true);
         if (isFirstDependantTypeInHierarchy(getPcType())) {
@@ -127,6 +132,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(null, ANNOTATION_GENERATED);
     }
@@ -134,6 +140,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         generateConstructorDefault(builder);
         if (getProductCmptType() != null) {
@@ -144,6 +151,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -399,18 +407,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         // code sample
         // if (Contract.class.isAssigneableFrom(otherObject.getClass()) {
-        //     return delta;
+        // return delta;
         // }
         methodsBuilder.append("if (!");
         methodsBuilder.append(getUnqualifiedClassName());
         methodsBuilder.appendln(".class.isAssignableFrom(otherObject.getClass())) {");
         methodsBuilder.appendln("return delta;");
         methodsBuilder.appendln("}");
-        
+
         // code sample: Contract otherContract = (Contract)otherObject;
         String varOther = " other" + StringUtils.capitalize(getPcType().getName());
         boolean castForOtherGenerated = false;
-        
+
         // code sample for an attribute:
         // delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute,
         // otherRoot.stringAttribute, options);
@@ -582,6 +590,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
+    @Override
     protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
@@ -597,6 +606,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation containerAssociation,
             List associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -606,6 +616,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         gen.generateCodeForContainerAssociationImplementation(associations, memberVarsBuilder, methodsBuilder);
     }
 
+    @Override
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -667,10 +678,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         String javaDoc = getLocalizedText(getPcType(), "VALIDATE_DEPENDANTS_JAVADOC", getPcType().getName());
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
-        builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), methodName, new String[] {
-                "ml", parameterValidationContext }, new String[] { MessageList.class.getName(),
-                IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), methodName,
+                new String[] { "ml", parameterValidationContext }, new String[] { MessageList.class.getName(),
+                        IValidationContext.class.getName() });
+        builder.append(body);
+        builder.methodEnd();
     }
 
     /**
@@ -712,10 +726,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         body.appendln(" return true;");
         // buildValidationValueSet(body, attributes); wegschmeissen ??
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
-        builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(), methodName,
-                new String[] { "ml", parameterNameContext }, new String[] { MessageList.class.getName(),
-                        IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
+                methodName, new String[] { "ml", parameterNameContext }, new String[] { MessageList.class.getName(),
+                        IValidationContext.class.getName() });
+        builder.append(body);
+        builder.methodEnd();
     }
 
     /**
@@ -802,7 +819,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
-        if(getPcType().isConfigurableByProductCmptType() || getPcType().hasSupertype()){
+        if (getPcType().isConfigurableByProductCmptType() || getPcType().hasSupertype()) {
             appendOverrideAnnotation(builder, false);
         }
         GenPolicyCmptType genPolicyCmptType = getGenerator();
@@ -942,8 +959,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 appendOverrideAnnotation(builder, false);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap", "productRepository" },
-                        new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
-                                + "," + String.class.getName() + ">" : HashMap.class.getName(), IRuntimeRepository.class.getName() });
+                        new String[] {
+                                isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ","
+                                        + String.class.getName() + ">" : HashMap.class.getName(),
+                                IRuntimeRepository.class.getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap, productRepository);");
             }
             generator.generateInitPropertiesFromXml(builder, new JavaCodeFragment("productRepository"));
@@ -1106,12 +1125,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder) {
         String javadoc = getLocalizedText(getPcType(), "FIELD_PARENT_JAVADOC");
         memberVarsBuilder.javaDoc(javadoc, ANNOTATION_GENERATED);
-        
+
         if (isGenerateJaxbSuppert()) {
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-object.id");
         }
-        
+
         memberVarsBuilder.append("private ");
         memberVarsBuilder.appendClassName(AbstractModelObject.class);
         memberVarsBuilder.append(' ');
@@ -1201,13 +1220,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String roleUncapitalized = StringUtils.uncapitalize(tsus[i].getRoleName());
             if (policyCmptType.findAttribute(roleCapitalized, ipsProject) != null) {
                 continue; // if the policy component type has an attribute with the table usage's
-                          // role name, don't generate an access method for the table
+                // role name, don't generate an access method for the table
             }
             if (policyCmptType.findAttribute(roleUncapitalized, ipsProject) != null) {
                 continue; // if the policy component type has an attribute with the table usage's
-                          // role name, don't generate an access method for the table
+                // role name, don't generate an access method for the table
             }
-            
+
             if (policyCmptType.findAssociation(roleCapitalized, ipsProject) != null) {
                 continue; // same for association
             }
@@ -1217,7 +1236,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (policyCmptType.findAssociationByRoleNamePlural(roleCapitalized, ipsProject) != null) {
                 continue; // same for association
             }
-            if (policyCmptType.findAssociationByRoleNamePlural(roleUncapitalized, ipsProject)!=null) {
+            if (policyCmptType.findAssociationByRoleNamePlural(roleUncapitalized, ipsProject) != null) {
                 continue; // same for association
             }
             generateMethodGetTable(methodsBuilder, tsus[i]);
@@ -1291,16 +1310,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         builder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", getUnqualifiedClassName());
     }
-    
-    
-    private class CheckForOverrideAnnotationForNewCopyMethod extends PolicyCmptTypeHierarchyVisitor{
+
+    private class CheckForOverrideAnnotationForNewCopyMethod extends PolicyCmptTypeHierarchyVisitor {
 
         boolean implementsInterfaceMethod = true;
-        
+
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             implementsInterfaceMethod = currentType.isAbstract();
-            if(!implementsInterfaceMethod){
+            if (!implementsInterfaceMethod) {
                 return false;
             }
             return true;

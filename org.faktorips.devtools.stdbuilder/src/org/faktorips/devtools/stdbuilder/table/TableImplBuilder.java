@@ -112,6 +112,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
         qualifiedTableRowName = tableRowBuilder.getQualifiedClassName(ipsSrcFile);
@@ -122,6 +123,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
         fKeyVariableNames = null;
@@ -134,6 +136,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fRanges = null;
     }
 
+    @Override
     protected String generate() throws CoreException {
         if (getTableStructure().isModelEnumType()) {
             return null;
@@ -298,6 +301,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
@@ -534,12 +538,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (keys.length != 0) {
             methodBody = createInitKeyMapsMethodBody(keys);
         }
+        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         // TODO pk 12-08-2009: why is here a check agains <???
         if (isUseTypesafeCollections() && methodBody.getSourcecode().indexOf("<") > 0) {
             codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
         }
-        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
         codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, "initKeyMaps", new String[0], new Class[0]);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
@@ -861,8 +865,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendCloseBracket();
         methodBody.append("return false;");
 
-        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" },
                 new Class[] { Object.class });
         codeBuilder.append(methodBody);
