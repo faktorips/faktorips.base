@@ -551,7 +551,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 }
 
                 if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                    updatePageStructure(false);
+                    updatePageStructure(true);
                 } else {
                     refresh();
                 }
