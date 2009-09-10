@@ -180,30 +180,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
         IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
         return new ModelExplorerConfiguration(objectTypes);
-        // Class<?>[] classes = new Class<?>[objectTypes.length];
-        // for (int i = 0; i < classes.length; i++) {
-        // classes[i] = objectTypes[i].newObject(null).getClass();
-        // }
-        // return new ModelExplorerConfiguration(classes, new Class[] { IFolder.class, IFile.class,
-        // IProject.class });
-        // return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class,
-        // IProductCmptType.class,
-        // IEnumType.class, IEnumContent.class, IProductCmpt.class, IProductCmptGeneration.class,
-        // ITableStructure.class, ITableContents.class, IBusinessFunction.class, IAttribute.class,
-        // IEnumAttribute.class, IAssociation.class, IMethod.class, ITableStructureUsage.class,
-        // ITestCase.class,
-        // ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
-
-        // keine IpsObjectTypes:
-        // IProductCmptGeneration.class,
-        // IAttribute.class,
-        // IEnumAttribute.class,
-        // IAssociation.class,
-        // IMethod.class,
-        // ITableStructureUsage.class,
-
-        // brauche Interfaces statt Classes
-
     }
 
     /**
