@@ -87,9 +87,6 @@ public class ModelExplorerSorter extends ViewerSorter {
 
     @Override
     public int category(Object element) {
-        if (!isSupportCategories()) {
-            return 0;
-        }
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
             if (ipsElement instanceof IIpsObject) {
@@ -115,6 +112,9 @@ public class ModelExplorerSorter extends ViewerSorter {
     }
 
     private int category(IpsObjectType ipsObjectType) {
+        if (!isSupportCategories()) {
+            return CAT_OTHER_IPS_OBJECTS;
+        }
         if (ipsObjectType == IpsObjectType.POLICY_CMPT_TYPE) {
             return CAT_POLICY_CMPT_TYPE;
         } else if (ipsObjectType == IpsObjectType.PRODUCT_CMPT_TYPE) {
