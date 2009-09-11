@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -69,6 +70,7 @@ public class ModelExplorerConfiguration {
         allowedIpsElementTypes.add(IEnumAttribute.class);
         allowedIpsElementTypes.add(IAssociation.class);
         allowedIpsElementTypes.add(IMethod.class);
+        allowedIpsElementTypes.add(IColumn.class);
         allowedIpsElementTypes.add(ITableStructureUsage.class);
 
         allowedResourceTypes.add(IFolder.class);

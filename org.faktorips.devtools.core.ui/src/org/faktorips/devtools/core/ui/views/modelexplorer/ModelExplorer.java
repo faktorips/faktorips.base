@@ -93,6 +93,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     /** Used for saving the current filter into an eclipse <tt>Memento</tt>. */
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
 
+    /** Used for saving the state of group by into an eclipse <tt>Memento</tt>. */
+    protected static final String GROUP_BY_KEY = "groupby"; //$NON-NLS-1$
+
     protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
 
     /** Identification number for hierarchical layout. */
@@ -336,15 +339,24 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      */
     protected void createAdditionalMenuEntries(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
+
         Action groupForCategories = createGroupCategoriesAction();
         groupForCategories.setChecked(supportCategories);
-        Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
-        showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
-
         menuManager.add(groupForCategories);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);
+
+        addProjectFilterAction(menuManager);
+
         menuManager.add(toggleLinking);
 
+    }
+
+    /**
+     * @param menuManager
+     */
+    protected void addProjectFilterAction(IMenuManager menuManager) {
+        Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
+        showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);
     }
 
     /** Creates the context menu for the model explorer. */
@@ -409,9 +421,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             if (layout != null) {
                 Integer layoutValue = layout.getInteger(LAYOUT_STYLE_KEY);
                 Integer filterValue = layout.getInteger(FILTER_KEY);
+                Integer groupByValue = layout.getInteger(GROUP_BY_KEY);
                 Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
                 isFlatLayout = layoutValue == null ? false : layoutValue.intValue() == FLAT_LAYOUT;
                 excludeNoIpsProjects = filterValue == null ? false : filterValue.intValue() == 1;
+                supportCategories = groupByValue == null ? supportCategories : groupByValue.intValue() == 1;
                 linkingEnabled = linkingValue == null ? false : linkingValue.intValue() == 1;
             }
         }
@@ -449,6 +463,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         IMemento layout = memento.createChild(MEMENTO);
         layout.putInteger(LAYOUT_STYLE_KEY, isFlatLayout() ? FLAT_LAYOUT : HIERARCHICAL_LAYOUT);
         layout.putInteger(FILTER_KEY, excludeNoIpsProjects ? 1 : 0);
+        layout.putInteger(GROUP_BY_KEY, supportCategories ? 1 : 0);
         layout.putInteger(LINK_TO_EDITOR_KEY, linkingEnabled ? 1 : 0);
     }
 
@@ -708,7 +723,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         };
     }
 
-    private Action createGroupCategoriesAction() {
+    protected Action createGroupCategoriesAction() {
         return new Action(Messages.ModelExplorer_menuGroupCategories_Title, IAction.AS_CHECK_BOX) {
             @Override
             public String getToolTipText() {

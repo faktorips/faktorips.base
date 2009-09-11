@@ -297,9 +297,11 @@ public class ProductExplorer extends ModelExplorer {
         layout.putInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY, excludeNoIpsProductDefinitionProjects ? 1 : 0);
     }
 
+    /**
+     * @param menuManager
+     */
     @Override
-    protected void createAdditionalMenuEntries(IMenuManager menuManager) {
-        menuManager.add(new Separator(MENU_FILTER_GROUP));
+    protected void addProjectFilterAction(IMenuManager menuManager) {
         Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();
         showNoIpsProdDefProjectsAction.setChecked(excludeNoIpsProductDefinitionProjects);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProdDefProjectsAction);
