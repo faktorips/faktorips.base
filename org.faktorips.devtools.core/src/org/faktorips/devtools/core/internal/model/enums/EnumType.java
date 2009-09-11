@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -785,6 +786,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         String oldEnumContentPackageFragment = enumContentPackageFragment;
         enumContentPackageFragment = packageFragmentQualifiedName;
         valueChanged(oldEnumContentPackageFragment, packageFragmentQualifiedName);
+    }
+
+    public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findEnumContent(this);
     }
 
     @Override

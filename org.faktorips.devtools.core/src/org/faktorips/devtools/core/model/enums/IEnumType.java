@@ -151,6 +151,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public String getEnumContentName();
 
     /**
+     * @return The IEnumContent referencing this EnumType.
+     */
+    public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Sets the qualified name a referencing <tt>IEnumContent</tt> must have.
      * 
      * @param name The qualified name a referencing <tt>IEnumContent</tt> must be have.
