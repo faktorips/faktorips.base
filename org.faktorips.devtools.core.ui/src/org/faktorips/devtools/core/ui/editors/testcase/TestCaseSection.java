@@ -2211,7 +2211,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ITestPolicyCmptLink testPcTypeAssociation = (ITestPolicyCmptLink)domainObject;
             testPolicyCmpt = (ITestPolicyCmpt)testPcTypeAssociation.getParent();
         } else if (domainObject instanceof TestCaseTypeAssociation) {
-            testPolicyCmpt = ((TestCaseTypeAssociation)domainObject).getParentTestPolicyCmpt();
+            TestCaseTypeAssociation testCaseTypeAssociation = (TestCaseTypeAssociation)domainObject;
+            testPolicyCmpt = testCaseTypeAssociation.getParentTestPolicyCmpt();
+            if (testPolicyCmpt != null) {
+                return testPolicyCmpt;
+            }
+            // this must be the root node
+            // find and return the correspondinf test object in the test case
+            ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+            for (int i = 0; i < testPolicyCmpts.length; i++) {
+                if (testCaseTypeAssociation.getTestPolicyCmptTypeParam().getName().equals(
+                        testPolicyCmpts[i].getTestParameterName())) {
+                    return testPolicyCmpts[i];
+                }
+            }
         }
         return testPolicyCmpt;
     }
