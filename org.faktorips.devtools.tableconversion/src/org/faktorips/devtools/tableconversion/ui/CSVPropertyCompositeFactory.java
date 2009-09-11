@@ -181,9 +181,8 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        super.valueChanged(e);
-
         if (tableFormat == null || validate().containsErrorMsg()) {
+            super.valueChanged(e);
             return;
         }
 
@@ -199,6 +198,8 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             // tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR,
             // decimalGroupingText.getText());
         }
+
+        super.valueChanged(e);
     }
 
 }

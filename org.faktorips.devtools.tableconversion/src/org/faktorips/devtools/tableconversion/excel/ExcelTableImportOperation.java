@@ -59,6 +59,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         initDatatypes();
     }
 
+    @Override
     protected void initDatatypes() {
         try {
             IColumn[] columns = structure.getColumns();
@@ -74,6 +75,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -87,13 +89,14 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             initDatatypes();
             monitor.worked(1);
             fillGeneration(targetGeneration, sheet, monitor);
-            if (monitor.isCanceled()) {
+
+            if (!monitor.isCanceled()) {
+                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
+                monitor.worked(1);
+            } else {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
 
-            if (!importIntoExisting) {
-                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
-            }
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {

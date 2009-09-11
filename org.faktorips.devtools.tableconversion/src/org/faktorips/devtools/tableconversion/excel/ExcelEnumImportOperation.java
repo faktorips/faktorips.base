@@ -84,13 +84,14 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             initDatatypes();
             monitor.worked(1);
             fillEnum(valueContainer, sheet, monitor);
-            if (monitor.isCanceled()) {
+
+            if (!monitor.isCanceled()) {
+                valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
+                monitor.worked(1);
+            } else {
                 valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
             }
 
-            if (!importIntoExisting) {
-                valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
-            }
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {

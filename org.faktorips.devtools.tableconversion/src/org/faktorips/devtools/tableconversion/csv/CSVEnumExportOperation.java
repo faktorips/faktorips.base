@@ -118,7 +118,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
                 char fieldSeparatorChar = getFieldSeparatorCSV(format);
                 writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
 
-                exportHeader(writer, structure.getEnumAttributes(true), exportColumnHeaderRow);
+                exportHeader(writer, structure.getEnumAttributesIncludeSupertypeCopies(true), exportColumnHeaderRow);
 
                 monitor.worked(1);
 

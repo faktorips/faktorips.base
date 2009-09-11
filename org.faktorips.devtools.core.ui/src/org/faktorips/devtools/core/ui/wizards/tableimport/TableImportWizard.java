@@ -71,8 +71,6 @@ public class TableImportWizard extends IpsObjectImportWizard {
             addPage(newTableContentsPage);
             selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);
-            tablePreviewPage = new ImportPreviewPage(selection);
-            addPage(tablePreviewPage);
 
             startingPage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
@@ -210,9 +208,18 @@ public class TableImportWizard extends IpsObjectImportWizard {
         }
 
         if (page == selectContentsPage || page == newTableContentsPage) {
-            tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), getTableStructure(),
-                    startingPage.isImportIgnoreColumnHeaderRow());
+            ITableStructure tableStructure = getTableStructure();
+            if (tablePreviewPage == null) {
+                tablePreviewPage = new ImportPreviewPage(this, startingPage.getFilename(), startingPage.getFormat(),
+                        tableStructure, startingPage.isImportIgnoreColumnHeaderRow());
+
+                addPage(tablePreviewPage);
+            } else {
+                tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), tableStructure,
+                        startingPage.isImportIgnoreColumnHeaderRow());
+            }
             tablePreviewPage.validatePage();
+
             return tablePreviewPage;
         }
 

@@ -75,8 +75,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             addPage(newEnumContentPage);
             selectContentsPage = new SelectEnumPage(selection);
             addPage(selectContentsPage);
-            tablePreviewPage = new ImportPreviewPage(selection);
-            addPage(tablePreviewPage);
+            // tablePreviewPage = new ImportPreviewPage(this, );
+            // addPage(tablePreviewPage);
 
             startingPage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
@@ -134,8 +134,15 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
         if (page == selectContentsPage || page == newEnumContentPage) {
             IEnumType enumType = getEnumType();
-            tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType, startingPage
-                    .isImportIgnoreColumnHeaderRow());
+            if (tablePreviewPage == null) {
+                tablePreviewPage = new ImportPreviewPage(this, startingPage.getFilename(), startingPage.getFormat(),
+                        enumType, startingPage.isImportIgnoreColumnHeaderRow());
+
+                addPage(tablePreviewPage);
+            } else {
+                tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType, startingPage
+                        .isImportIgnoreColumnHeaderRow());
+            }
             tablePreviewPage.validatePage();
             return tablePreviewPage;
         }
