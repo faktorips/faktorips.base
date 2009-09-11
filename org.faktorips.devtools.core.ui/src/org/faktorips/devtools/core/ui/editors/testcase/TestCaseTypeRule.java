@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -106,5 +107,12 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
         for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
             list.add((Message)iter.next());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter getTestParameter() {
+        return getTestRuleParameter();
     }
 }

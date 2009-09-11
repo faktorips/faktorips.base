@@ -358,7 +358,7 @@ public class TestCase extends IpsObject implements ITestCase {
         // add missing test policy cmpt type parameters
         for (int i = 0; i < testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length; i++) {
             if (testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i].isRoot()) {
-                fixMissingRootTestPolicyCmpt(testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i]);
+                addRootTestPolicyCmpt(testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i]);
             } else {
                 throw new RuntimeException("Merge of child test test policy cmpts is not supported!"); //$NON-NLS-1$
             }
@@ -379,20 +379,24 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    public ITestPolicyCmpt fixMissingRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameters)
+    /**
+     * Adds the missing test object of the given testPolicyCmptTypeParameter
+     */
+    public ITestPolicyCmpt addRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter)
             throws CoreException {
-        String name = testPolicyCmptTypeParameters.getName();
+        String name = testPolicyCmptTypeParameter.getName();
         ITestPolicyCmpt testPolicyCpmt = newTestPolicyCmpt();
         testPolicyCpmt.setTestPolicyCmptTypeParameter(name);
         testPolicyCpmt.setName(name);
         // add test attributes values
-        ITestAttribute[] attrs = testPolicyCmptTypeParameters.getTestAttributes();
+        ITestAttribute[] attrs = testPolicyCmptTypeParameter.getTestAttributes();
         for (int j = 0; j < attrs.length; j++) {
             ITestAttributeValue testAttributeValue = testPolicyCpmt.newTestAttributeValue();
             testAttributeValue.setTestAttribute(attrs[j].getName());
             // set default for the added test attribute value
             testAttributeValue.updateDefaultTestAttributeValue();
         }
+        sortTestObjects();
         return testPolicyCpmt;
     }
 

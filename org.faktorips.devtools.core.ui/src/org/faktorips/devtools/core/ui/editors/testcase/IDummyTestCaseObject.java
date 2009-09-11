@@ -14,10 +14,16 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 
 /**
  * Helper interface for all dummy test objects, a dummy test object is virtual test object displayed
  * in the user interface. E.g. TestCaseTypeRule, TestCaseTypeAssociation.
  */
 public interface IDummyTestCaseObject extends Validatable {
+
+    /**
+     * Returns the test association type parameter.
+     */
+    public ITestParameter getTestParameter();
 }

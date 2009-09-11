@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -230,5 +231,12 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
      */
     private boolean ifMessageRelevant(Message msg) {
         return (msg.getText().indexOf("\"" + getName() + "\"") >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter getTestParameter() {
+        return getTestPolicyCmptTypeParam();
     }
 }

@@ -1689,13 +1689,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         boolean chooseProductCmpts = false;
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
         if (associationType.getParentTestPolicyCmpt() == null) {
-            // root element
-            ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).fixMissingRootTestPolicyCmpt(testPolicyCmptTypeParam);
-            if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
-                changeProductCmpt(testPolicyCmpt);
-            }
-            refreshTreeAndDetailArea();
-            selectInTreeByObject(testPolicyCmpt, true);
+            addRootTestPolicyCmptObject(testPolicyCmptTypeParam);
             return;
         } else if (associationType.isRequiresProductCmpt()) {
             // target requires a product cmpt
@@ -1804,6 +1798,31 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
     }
 
+    private void addRootTestPolicyCmptObject(final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam)
+            throws CoreException {
+        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
+                if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
+                    changeProductCmpt(testPolicyCmpt);
+                }
+                refreshTreeAndDetailArea();
+                selectInTreeByObject(testPolicyCmpt, true);
+            }
+        };
+
+        Runnable runnableWithBusyIndicator = new Runnable() {
+            public void run() {
+                try {
+                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        };
+        BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
+    }
+
     /*
      * Adds a new link target to the given association type
      */
@@ -1865,12 +1884,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     if (selection instanceof IStructuredSelection) {
                         TreeItem nextItemToSelect = null;
                         for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
-                            Object domainObject = iterator.next();
+                            ITestObject domainObject = (ITestObject)iterator.next();
                             nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
+                            if (domainObject instanceof ITestPolicyCmpt && ((ITestPolicyCmpt)domainObject).isRoot()) {
+                                // is the root object will be deleted then the cache of all dummy
+                                // gui objects must be
+                                // cleared, otherwise if the object are added again then all old /
+                                // invalid objects
+                                // are visible again
+                                ((TestCaseContentProvider)treeViewer.getContentProvider()).clearDummyObjectCache();
+                            }
                             if (domainObject instanceof ITestPolicyCmptLink) {
                                 ((ITestPolicyCmptLink)domainObject).delete();
                             } else if (domainObject instanceof ITestObject) {
-                                ((ITestObject)domainObject).delete();
+                                (domainObject).delete();
                             } else {
                                 throw new RuntimeException(
                                         "Remove object with type " + domainObject.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1879,7 +1906,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         treeViewer.getTree().setSelection(new TreeItem[] { nextItemToSelect });
                         treeViewer.getControl().setFocus();
                         refreshTreeAndDetailArea();
-                        selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
+                        if (!nextItemToSelect.isDisposed()) {
+                            selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
+                        }
                     }
                 }
             };
@@ -2155,10 +2184,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     protected void refreshTreeAndDetailArea() {
         form.setRedraw(false);
         try {
-            refreshTree();
             // redraw the detail area in async way to reduce the time of refreshing
             Runnable runnable = new Runnable() {
                 public void run() {
+                    refreshTree();
                     testCaseDetailArea.clearDetailArea();
                     if (showAll) {
                         createDetailsSectionsForAll();

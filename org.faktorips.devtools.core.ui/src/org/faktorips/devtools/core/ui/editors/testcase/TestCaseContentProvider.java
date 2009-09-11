@@ -565,4 +565,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             return testValue1.getTestValueParameter().compareTo(testValue2.getTestValueParameter());
         }
     }
+
+    public void clearDummyObjectCache() {
+        dummyObjects.clear();
+    }
 }
