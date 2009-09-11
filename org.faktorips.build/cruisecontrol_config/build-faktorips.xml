@@ -258,6 +258,7 @@
     	<!-- checkout nl1 plugins -->
     	<cvs command="co" package="org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	<cvs command="co" package="org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.tableconversion.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         
     	<!-- checkout test plugins -->
         <cvs command="co" package="org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
