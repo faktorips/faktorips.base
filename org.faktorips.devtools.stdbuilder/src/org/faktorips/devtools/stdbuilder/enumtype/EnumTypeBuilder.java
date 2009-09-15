@@ -329,14 +329,29 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append(getConstantNameForEnumAttributeValue(literalNameAttributeValue));
             return fragment;
         }
-        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value,
-                repositoryExp, false);
+        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value, false,
+                repositoryExp);
     }
 
+    /**
+     * 
+     * @param enumType The enum type the new instance is a value of.
+     * @param valueOrExpression Either an unqoted value in String format like <code>male</code> or
+     *            an expression to get this value like <code>values.getValue(i)</code>
+     * @param isExpression <code>true</code> if the parameter <code>valueOrExpression</code>is an
+     *            expression, <code>false</code> otherwise.
+     * @param repositoryExp Expression to get the runtime repository instance that contains the enum
+     *            type, e.g. <code>getRepository()</code>
+     * @return
+     * @throws CoreException
+     */
     private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType,
-            String value,
-            JavaCodeFragment repositoryExp,
-            boolean valueAsExpression) throws CoreException {
+            String valueOrExpression,
+            boolean isExpression,
+            JavaCodeFragment repositoryExp) throws CoreException {
+
+        IEnumAttribute attribute = enumType.findIdentiferAttribute(getIpsProject());
+        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(attribute.findDatatype(getIpsProject()));
         JavaCodeFragment fragment = new JavaCodeFragment();
 
         if (!java5EnumsAvailable()) {
@@ -351,13 +366,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         fragment.append("getEnumValue(");
         fragment.appendClassName(getQualifiedClassName(enumType));
         fragment.append(".class, ");
-        if (!valueAsExpression) {
-            fragment.append("\"");
+        String expression = valueOrExpression;
+        if (!isExpression) {
+            expression = "\"" + valueOrExpression + "\"";
         }
-        fragment.append(value);
-        if (!valueAsExpression) {
-            fragment.append("\"");
-        }
+        // as the datatype of the identifier attribute needn't be a String, we have to convert
+        // the String expression to an instance of the appropriate datatype.
+        // see bug #1586
+        fragment.append(datatypeHelper.newInstanceFromExpression(expression));
         fragment.append(")");
         return fragment;
     }
@@ -400,7 +416,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append(")");
             return fragment;
         }
-        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, repositoryExp, true);
+        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, true, repositoryExp);
     }
 
     /**
