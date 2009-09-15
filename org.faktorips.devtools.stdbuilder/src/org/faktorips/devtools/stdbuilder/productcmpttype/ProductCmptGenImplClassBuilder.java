@@ -222,9 +222,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
         for (Iterator<GenProdAttribute> it = typeGenerator.getGenProdAttributes(); it.hasNext();) {
             GenProdAttribute generator = it.next();
-            if (!generator.isValidAttribute()) {
-                continue;
-            }
             if (attributeFound == false) {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
