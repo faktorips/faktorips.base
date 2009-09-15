@@ -229,8 +229,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                 MessageFragment.VALUES_AS_PARAMETER_NAMES);
 
         // determine method parameters (name and type)
-        List methodParamNames = new ArrayList(msgFrag.getNumberOfParameters() + 2);
-        List methodParamTypes = new ArrayList(msgFrag.getNumberOfParameters() + 2);
+        List<String> methodParamNames = new ArrayList<String>(msgFrag.getNumberOfParameters() + 2);
+        List<String> methodParamTypes = new ArrayList<String>(msgFrag.getNumberOfParameters() + 2);
         methodParamNames.add("context");
         methodParamTypes.add(IValidationContext.class.getName());
         methodParamNames.addAll(Arrays.asList(msgFrag.getParameterNames()));
@@ -277,9 +277,9 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         String javaDoc = getLocalizedText("CREATE_MESSAGE_JAVADOC", rule.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                getMethodNameCreateMessageForRule(rule), (String[])methodParamNames.toArray(new String[methodParamNames
-                        .size()]), (String[])methodParamTypes.toArray(new String[methodParamTypes.size()]), body,
-                javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+                getMethodNameCreateMessageForRule(rule), methodParamNames.toArray(new String[methodParamNames.size()]),
+                methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
+                JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties,

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.ICopySupport;
@@ -43,10 +44,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         setMergeEnabled(true);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptTypeName(ipsSrcFile));
     }
@@ -59,6 +62,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getSuperclass() throws CoreException {
         return null;
     }
@@ -73,6 +77,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         List<String> interfaces = new ArrayList<String>();
         IPolicyCmptType type = getPcType();
@@ -109,6 +114,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean generatesInterface() {
         return true;
     }
@@ -116,12 +122,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("INTERFACE", getIpsObject().getName(), getIpsObject().getDescription(), getIpsObject(),
                 builder);
@@ -130,6 +138,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -176,6 +185,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder constantBuilder,
@@ -189,8 +199,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * 
      * overidden
      */
-    protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation containerAssociation,
-            List subAssociations,
+    @Override
+    protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation derivedUnionAssociation,
+            List<IAssociation> subAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }

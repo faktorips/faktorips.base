@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,10 +28,10 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
 import org.faktorips.util.LocalizedStringsSet;
@@ -55,7 +55,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @throws CoreException
      */
     public GenProdAssociation(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
-    throws CoreException {
+            throws CoreException {
         super(genProductCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
         target = association.findTargetProductCmptType(association.getIpsProject());
@@ -76,10 +76,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         }
         expression.append("(0)");
         fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class.getName()
-                + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
-                        + IntegerRange.class.getName()
-                        + ">" : ""),
-                        getFieldNameCardinalityForAssociation(), expression);
+                + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", " + IntegerRange.class.getName()
+                        + ">" : ""), getFieldNameCardinalityForAssociation(), expression);
     }
 
     public String getFieldNameCardinalityForAssociation() throws CoreException {
@@ -99,13 +97,13 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfRelatedProductCmpts(List implAssociations, JavaCodeFragmentBuilder builder)
-    throws CoreException {
+    protected void generateMethodGetNumOfRelatedProductCmpts(List<IAssociation> implAssociations,
+            JavaCodeFragmentBuilder builder) throws CoreException {
         if (!association.isDerivedUnion()) {
             throw new IllegalArgumentException("Association must be a container association.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        
+
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
         appendOverrideAnnotation(builder, supertype == null || supertype.isAbstract());
@@ -131,7 +129,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfRelatedProductCmptsInternal(List implAssociations,
+    protected void generateMethodGetNumOfRelatedProductCmptsInternal(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder builder) throws CoreException {
         if (!association.isDerivedUnion()) {
             throw new IllegalArgumentException("Association must be a container association.");
@@ -147,7 +145,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             String methodName2 = getMethodNameGetNumOfRelatedCmpts();
             builder.appendln("num += super." + methodName2 + "();");
         }
-        for (Iterator it = implAssociations.iterator(); it.hasNext();) {
+        for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
             builder.append("num += ");
             getGenProductCmptType().getGenerator(association).generateCodeGetNumOfRelatedProductCmptsInternal(builder);
@@ -157,7 +155,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     }
 
     protected abstract void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
-    throws CoreException;
+            throws CoreException;
 
     /*
      * Returns the name of the internal method returning the number of referenced objects, e.g.
@@ -230,22 +228,20 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     }
 
     protected abstract void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder)
-    throws CoreException;
+            throws CoreException;
 
     public void generateSignatureGetCardinalityForAssociation(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         String methodName = getMethodNameGetCardinalityForAssociation();
         String[][] params = getParamGetCardinalityForAssociation();
-        methodsBuilder.signature(Modifier.PUBLIC,
-                IntegerRange.class.getName(),
-                methodName, params[0], params[1]);
+        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, params[0], params[1]);
     }
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(
                 getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", StringUtils.capitalize(association
                         .findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular())),
-                        IntegerRange.class);
+                IntegerRange.class);
     }
 
     public String[][] getParamGetCardinalityForAssociation() throws CoreException {
@@ -289,14 +285,14 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * }
      * </pre>
      */
-    public void generateMethodGetRelatedCmptsInContainer(List implAssociations, JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+    public void generateMethodGetRelatedCmptsInContainer(List<IAssociation> implAssociations,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
         appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
-        
+
         generateSignatureDerivedUnionAssociation(methodsBuilder);
 
         String targetClass = getQualifiedInterfaceClassNameForTarget();
@@ -346,17 +342,17 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
                 methodsBuilder.append("int index = 0;");
             }
         }
-        for (Iterator it = implAssociations.iterator(); it.hasNext();) {
+        for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)it.next();
             getGenProductCmptType().getGenerator(implAssociation)
-            .generateCodeGetRelatedCmptsInContainer(methodsBuilder);
+                    .generateCodeGetRelatedCmptsInContainer(methodsBuilder);
         }
         methodsBuilder.appendln("return result;");
         methodsBuilder.closeBracket();
     }
 
     protected abstract void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException;
+            throws CoreException;
 
     String getPropertyNameToManyAssociation(IProductCmptTypeAssociation association) {
         String role = StringUtils.capitalize(association.getTargetRolePlural());
@@ -390,13 +386,13 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * </pre>
      */
     void generateSignatureGetManyRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder)
-    throws CoreException {
+            throws CoreException {
         String methodName = getMethodNameGetManyRelatedCmpts(association);
         IProductCmptType target = association.findTargetProductCmptType(association.getIpsProject());
         String returnType;
         if (isUseTypesafeCollections()) {
             returnType = List.class.getName() + "<"
-            + getGenProductCmptType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
+                    + getGenProductCmptType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
         } else {
             returnType = getGenProductCmptType().getBuilderSet().getGenerator(target).getQualifiedName(true) + "[]";
         }
@@ -424,13 +420,13 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         String returnType;
         if (isUseTypesafeCollections()) {
             returnType = List.class.getName()
-            + "<"
-            + getGenProductCmptType().getBuilderSet().getGenerator(target)
-            .getQualifiedClassNameForProductCmptTypeGen(true) + ">";
+                    + "<"
+                    + getGenProductCmptType().getBuilderSet().getGenerator(target)
+                            .getQualifiedClassNameForProductCmptTypeGen(true) + ">";
         } else {
             returnType = getGenProductCmptType().getBuilderSet().getGenerator(target)
-            .getQualifiedClassNameForProductCmptTypeGen(true)
-            + "[]";
+                    .getQualifiedClassNameForProductCmptTypeGen(true)
+                    + "[]";
         }
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
                 new String[] { "effectiveDate" }, new String[] { Calendar.class.getName() });
@@ -440,7 +436,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         return getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyAssociation(association));
     }
 
-    public void generateCodeForDerivedUnionAssociationImplementation(List implAssociations,
+    public void generateCodeForDerivedUnionAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateMethodGetRelatedCmptsInContainer(implAssociations, methodsBuilder);
     }
@@ -449,7 +445,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             JavaCodeFragmentBuilder builder) throws CoreException;
 
     protected void generateMethodGetCardinalityForAssociation(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", association.findMatchingPolicyCmptTypeAssociation(
                 association.getIpsProject()).getTargetRoleSingular(), methodsBuilder);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
@@ -460,7 +456,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * {@inheritDoc}
      */
     public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder)
-    throws Exception {
+            throws Exception {
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), methodsBuilder);
         generateSignatureDerivedUnionAssociation(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -506,7 +502,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @throws CoreException
      */
     protected void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_LINK", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureGetRelatedCmptLink(methodsBuilder);
         methodsBuilder.appendln(";");

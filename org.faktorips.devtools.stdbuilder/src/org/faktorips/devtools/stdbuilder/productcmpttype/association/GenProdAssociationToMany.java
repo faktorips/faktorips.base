@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
@@ -51,21 +52,24 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association) throws CoreException {
+    public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
+            throws CoreException {
         super(genProductCmptType, association);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -82,8 +86,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGetManyRelatedCmpts(builder);
             generateMethodInterfaceGetManyRelatedCmptGens(builder);
@@ -122,7 +127,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * @throws CoreException
      */
     private void generateMethodInterfaceGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), methodsBuilder);
         generateSignatureGetManyRelatedCmptLinks(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -140,7 +145,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     private void generateSignatureGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameGetManyRelatedCmptLinks();
         String returnType = Collection.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<"
-        + getQualifiedInterfaceClassNameForTarget() + ">>";
+                + getQualifiedInterfaceClassNameForTarget() + ">>";
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
                 methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
@@ -201,7 +206,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     private void generateMethodGetCardinalityFor1ToManyAssociation(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc("@inheritDoc", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
@@ -256,7 +261,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         appendLocalizedJavaDoc("FIELD_TOMANY_ASSOCIATION", role, memberVarsBuilder);
         if (isUseTypesafeCollections()) {
             String type = Map.class.getName() + "<" + String.class.getName() + ","
-            + Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">>";
+                    + Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">>";
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.append("new ");
             fragment.appendClassName(LinkedHashMap.class.getName());
@@ -467,7 +472,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodInterfaceGetManyRelatedCmpts(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), methodsBuilder);
         generateSignatureGetManyRelatedCmpts(association, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -489,7 +494,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodInterfaceGetManyRelatedCmptGens(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPT_GENS", association.getTargetRolePlural(), methodsBuilder);
         generateSignatureGetManyRelatedCmptGens(association, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -643,7 +648,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     protected void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
-    throws CoreException {
+            throws CoreException {
         builder.append(getMethodNameGetNumOfRelatedCmpts());
         builder.append("();");
     }
@@ -683,12 +688,12 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * {@inheritDoc}
      */
     public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder)
-    throws Exception {
+            throws Exception {
         super.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
         generateMethodGetNumOfRelatedCmpts(methodsBuilder);
     }
 
-    public void generateCodeForDerivedUnionAssociationImplementation(List implAssociations,
+    public void generateCodeForDerivedUnionAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         super.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
         generateMethodGetNumOfRelatedProductCmpts(implAssociations, methodsBuilder);
@@ -799,12 +804,13 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * Java 5 code sample:
      * 
      * <pre>
-     *  list.addAll(getLinksForProducts());
+     * list.addAll(getLinksForProducts());
      * </pre>
+     * 
      * @throws CoreException
      */
     public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.appendln("list.addAll("+getMethodNameGetManyRelatedCmptLinks()+"());");
+        methodsBuilder.appendln("list.addAll(" + getMethodNameGetManyRelatedCmptLinks() + "());");
     }
 
 }

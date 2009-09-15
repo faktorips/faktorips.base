@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,19 +42,20 @@ import org.faktorips.util.LocalizedStringsSet;
  * @author Jan Ortmann
  */
 public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
- 
-    public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            LocalizedStringsSet stringsSet) {
+
+    public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
         super(builderSet, kindId, stringsSet);
     }
 
     /**
      * Returns the policy component type this builder builds an artefact for.
      */
+    @Override
     public IPolicyCmptType getPcType() {
         return (IPolicyCmptType)getIpsObject();
     }
-    
+
+    @Override
     public IProductCmptType getProductCmptType() throws CoreException {
         return getPcType().findProductCmptType(getIpsProject());
     }
@@ -69,27 +70,30 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     /**
      * Generates the sourcecode of the generated Java class or interface.
      */
+    @Override
     protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
 
-        generateCodeForValidationRules(mainSection.getConstantBuilder(), 
-                mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateCodeForValidationRules(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection
+                .getMethodBuilder());
         generateInnerClasses();
     }
 
     /**
-     * Subclasses of this builder can generate inner classes within this method. Inner classes are created by
-     * calling the <code>createInnerClassSection()</code> method.
+     * Subclasses of this builder can generate inner classes within this method. Inner classes are
+     * created by calling the <code>createInnerClassSection()</code> method.
      * 
-     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions and 
-     *  propagated by this method
+     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions
+     *             and propagated by this method
      */
-    protected void generateInnerClasses() throws CoreException{
-        
+    @Override
+    protected void generateInnerClasses() throws CoreException {
+
     }
 
     /*
      * Generates the code for all attributes.
      */
+    @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection mainSection) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
@@ -116,7 +120,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     protected abstract void generateCodeForAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
-            JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /**
@@ -129,27 +133,26 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * @param memberVarsBuilder The code fragment builder to build the member variables section.
      * @param memberVarsBuilder The code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForProductCmptTypeAttribute(
-            IProductCmptTypeAttribute attribute, 
-            DatatypeHelper helper, 
-            JavaCodeFragmentBuilder constantBuilder, 
-            JavaCodeFragmentBuilder memberVarBuilder, 
+    @Override
+    protected abstract void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException;
-    
-    
+
     /**
      * Generates the code for the validation rules of the ProductCmptType which is assigned to this
      * builder.
      * 
-     * @throws CoreException if an exception occurs while generating code 
+     * @throws CoreException if an exception occurs while generating code
      */
-    protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder, 
-            JavaCodeFragmentBuilder memberVarBuilder, 
+    protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             try {
-                if(!rules[i].validate(getIpsProject()).containsErrorMsg()){
+                if (!rules[i].validate(getIpsProject()).containsErrorMsg()) {
                     generateCodeForValidationRule(rules[i]);
                 }
             } catch (CoreException e) {
@@ -164,32 +167,32 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * Generates the code for the provided validation rule.
      * 
      * @param validationRule the validation rule for which this method can generate code
-     * @throws CoreException 
+     * @throws CoreException
      */
     protected abstract void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException;
 
-    
     /*
-     * Loops over the associations and generates code for a association if it is valid.
-     * Takes care of proper exception handling.
+     * Loops over the associations and generates code for a association if it is valid. Takes care
+     * of proper exception handling.
      */
+    @Override
     protected final void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        HashMap containerAssociations = new HashMap();
+
+        HashMap<IAssociation, List<IAssociation>> derivedUnions = new HashMap<IAssociation, List<IAssociation>>();
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < associations.length; i++) {
             try {
                 if (!associations[i].isValid()) {
                     continue;
                 }
-                generateCodeForAssociation(associations[i], fieldsBuilder, methodsBuilder);                
+                generateCodeForAssociation(associations[i], fieldsBuilder, methodsBuilder);
                 if (associations[i].isSubsetOfADerivedUnion()) {
                     IAssociation derivedUnion = associations[i].findSubsettedDerivedUnion(getIpsProject());
-                    List implementationAssociations = (List)containerAssociations.get(derivedUnion);
-                    if (implementationAssociations==null) {
-                        implementationAssociations = new ArrayList();
-                        containerAssociations.put(derivedUnion, implementationAssociations);
+                    List<IAssociation> implementationAssociations = derivedUnions.get(derivedUnion);
+                    if (implementationAssociations == null) {
+                        implementationAssociations = new ArrayList<IAssociation>();
+                        derivedUnions.put(derivedUnion, implementationAssociations);
                     }
                     implementationAssociations.add(associations[i]);
                 }
@@ -199,34 +202,35 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(containerAssociations, fieldsBuilder, methodsBuilder);
+        CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(
+                derivedUnions, fieldsBuilder, methodsBuilder);
         generator.start(getPcType());
     }
-    
+
     /**
-     * Generates the code for a association. The method is called for every 
-     * valid association defined in the policy component type we currently build sourcecode for.
+     * Generates the code for a association. The method is called for every valid association
+     * defined in the policy component type we currently build sourcecode for.
      * 
      * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the member variables section.
      * @param fieldsBuilder the code fragment builder to build the method section.
-     * @throws Exception Any exception thrown leads to an interruption of the
-     *             current build cycle of this builder. Alternatively it is possible to catch an
-     *             exception and log it by means of the addToBuildStatus() method of the super
-     *             class.
+     * @throws Exception Any exception thrown leads to an interruption of the current build cycle of
+     *             this builder. Alternatively it is possible to catch an exception and log it by
+     *             means of the addToBuildStatus() method of the super class.
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForAssociation(
-    		IPolicyCmptTypeAssociation association,
+    protected abstract void generateCodeForAssociation(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
      * Generates the code for the implementation of an abstract container association.
      * 
-     * @param containerAssociation the container association that is common for the associations in the group
-     * @param subAssociations a group of association instances that have the same container association
+     * @param containerAssociation the container association that is common for the associations in
+     *            the group
+     * @param subAssociations a group of association instances that have the same container
+     *            association
      * @param memberVarsBuilder the code fragment builder to build the member variables section.
      * @param memberVarsBuilder the code fragment builder to build the method section.
      * @throws Exception implementations of this method don't have to take care about rising checked
@@ -235,43 +239,45 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      *             exception and log it by means of the addToBuildStatus() methods of the super
      *             class.
      */
-    protected abstract void generateCodeForContainerAssociationImplementation(
-    		IPolicyCmptTypeAssociation containerAssociation,
-            List subAssociations,
+    protected abstract void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation containerAssociation,
+            List<IAssociation> subAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
-    
     class CodeGeneratorForContainerAssociationImplementation extends PolicyCmptTypeHierarchyCodeGenerator {
 
-        private HashMap containerImplMap;
-        
-        public CodeGeneratorForContainerAssociationImplementation(HashMap containerImplMap, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) {
+        private HashMap<IAssociation, List<IAssociation>> derivedUnionMap;
+
+        public CodeGeneratorForContainerAssociationImplementation(
+                HashMap<IAssociation, List<IAssociation>> derivedUnionMap, JavaCodeFragmentBuilder fieldsBuilder,
+                JavaCodeFragmentBuilder methodsBuilder) {
             super(fieldsBuilder, methodsBuilder);
-            this.containerImplMap = containerImplMap;
+            this.derivedUnionMap = derivedUnionMap;
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAssociation[] associations = currentType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion() && associations[i].isValid()) {
                     try {
-                        List implAssociations = (List)containerImplMap.get(associations[i]);
-                        if (implAssociations!=null) {
-                            generateCodeForContainerAssociationImplementation(associations[i], implAssociations, fieldsBuilder, methodsBuilder);
+                        List<IAssociation> implAssociations = derivedUnionMap.get(associations[i]);
+                        if (implAssociations != null) {
+                            generateCodeForContainerAssociationImplementation(associations[i], implAssociations,
+                                    fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container association implementation. " //$NON-NLS-1$
-                            + "ContainerAssociation: " + associations[i] //$NON-NLS-1$
-                            + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
+                                + "ContainerAssociation: " + associations[i] //$NON-NLS-1$
+                                + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
                     }
                 }
             }
             return true;
         }
-        
+
     }
 }

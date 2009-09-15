@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
@@ -607,12 +608,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     @Override
-    protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation containerAssociation,
-            List associations,
+    protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation derivedUnionAssociation,
+            List<IAssociation> associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        GenAssociation gen = getGenerator(containerAssociation);
+        GenAssociation gen = getGenerator(derivedUnionAssociation);
         gen.generateCodeForContainerAssociationImplementation(associations, memberVarsBuilder, methodsBuilder);
     }
 
@@ -1070,7 +1071,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
         String[] argNames = new String[] { "objectId", "targetRole", "targetId" };
-        Class[] argClasses = new Class[] { Object.class, String.class, String.class };
+        Class<?>[] argClasses = new Class[] { Object.class, String.class, String.class };
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, IUnresolvedReference.class,
                 MethodNames.CREATE_UNRESOLVED_REFERENCE, argNames, argClasses, new Class[] { Exception.class });
 
