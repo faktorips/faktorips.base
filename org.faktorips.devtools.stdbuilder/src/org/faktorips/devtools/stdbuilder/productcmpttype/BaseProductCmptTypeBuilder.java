@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -49,6 +49,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     /**
      * {@inheritDoc}
      */
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
     }
@@ -67,6 +68,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      * @param fieldsBuilder The code fragment builder to build the member variabales section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
+    @Override
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -89,6 +91,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      * @param fieldsBuilder The code fragment builder to build the member variabales section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
+    @Override
     protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -104,5 +107,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
 
     protected boolean isUseTypesafeCollections() {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+    }
+
+    public StandardBuilderSet getStandardBuilderSet() {
+        return (StandardBuilderSet)getBuilderSet();
     }
 }
