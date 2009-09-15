@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -66,9 +66,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private JavaSourceFileBuilder javaSourceFileBuilder;
 
-    private Map objectIdMap = new HashMap();
+    private Map<ITestPolicyCmpt, String> objectIdMap = new HashMap<ITestPolicyCmpt, String>();
 
-    private Map targetObjectIdMap = new HashMap();
+    private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<Element, ITestPolicyCmpt>();
 
     /*
      * Class to generate an unique object id within the input and the expected result.
@@ -80,6 +80,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return objectId++;
         }
 
+        @Override
         public String toString() {
             return "" + objectId;
         }
@@ -222,7 +223,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
         DescriptionHelper.setDescription(testCaseElm, testCase.getDescription());
         doc.appendChild(testCaseElm);
-        
+
         Element input = doc.createElement("Input");
         Element expectedResult = doc.createElement("ExpectedResult");
 
@@ -253,10 +254,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     private void resolveAssociations() {
-        for (Iterator iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
-        	Element elem = (Element)iter.next();
-        	ITestPolicyCmpt target = (ITestPolicyCmpt)targetObjectIdMap.get(elem);
-            String objectId = (String)objectIdMap.get(target);
+        for (Iterator<Element> iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
+            Element elem = iter.next();
+            ITestPolicyCmpt target = targetObjectIdMap.get(elem);
+            String objectId = objectIdMap.get(target);
             if (objectId != null) {
                 elem.setAttribute("targetId", objectId);
             }
@@ -330,7 +331,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             testPolicyCmptElem.setAttribute("objectId", "" + currObjectId);
 
             String policyCmptTypeQName = null;
-            // get the policyCmptTypeQName 
+            // get the policyCmptTypeQName
             if (testPolicyCmpts[i].isProductRelevant()) {
                 // the test policy cmpt type parameter is product relevant
                 // the the product cmpt will be used to search the policy cmpt type qualified name
@@ -340,8 +341,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 // the test policy cmpt type parameter is not product relevant
                 // then the policy cmpt qualified name is stored on the test policy cmpt
                 policyCmptTypeQName = testPolicyCmpts[i].getPolicyCmptType();
-                if (StringUtils.isEmpty(policyCmptTypeQName)){
-                    // attribute policyCmptType not set, get the policy cmpt type from test parameter
+                if (StringUtils.isEmpty(policyCmptTypeQName)) {
+                    // attribute policyCmptType not set, get the policy cmpt type from test
+                    // parameter
                     policyCmptTypeQName = getPolicyCmptTypeNameFromParameter(testPolicyCmpts[i]);
                 }
             }
@@ -382,7 +384,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (parameter == null) {
             throw new CoreException(new IpsStatus(NLS.bind(
                     "The test policy component type parameter {0} was not found.", testPolicyCmpt
-                    .getTestPolicyCmptTypeParameter())));
+                            .getTestPolicyCmptTypeParameter())));
         }
         return parameter.getPolicyCmptType();
     }
@@ -481,9 +483,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                             "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]
                                     .getTestAttribute())));
                 }
-                
-                // the child name is either the attribute name or the extension attribute (=test attribute name)
-                String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName() : testAttribute.getAttribute();
+
+                // the child name is either the attribute name or the extension attribute (=test
+                // attribute name)
+                String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName()
+                        : testAttribute.getAttribute();
                 Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, childName);
                 XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
                 attrValueElem.setAttribute("type", "property");
@@ -504,6 +508,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * 
      * Returns true.
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }

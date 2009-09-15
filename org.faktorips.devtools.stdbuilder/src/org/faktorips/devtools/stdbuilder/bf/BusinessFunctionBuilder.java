@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -63,6 +63,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setUnqualifiedName(getBusinessFunction().getName());
@@ -103,9 +104,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForInlineActions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List bfElements = getBusinessFunction().getBFElements();
-        for (Iterator it = bfElements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> bfElements = getBusinessFunction().getBFElements();
+        for (Iterator<IBFElement> it = bfElements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.getType().equals(BFElementType.ACTION_INLINE) && element.isValid()) {
                 methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameInlineAction((IActionBFE)element),
                         new String[0], new Class[0], new JavaCodeFragment(), element.getDescription(),
@@ -115,10 +116,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodCallMethodAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List bfElements = getBusinessFunction().getBFElements();
-        List alreadyGenerated = new ArrayList();
-        for (Iterator it = bfElements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> bfElements = getBusinessFunction().getBFElements();
+        List<String> alreadyGenerated = new ArrayList<String>();
+        for (Iterator<IBFElement> it = bfElements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.getType().equals(BFElementType.ACTION_METHODCALL) && element.isValid()) {
                 IActionBFE actionBFE = (IActionBFE)element;
                 if (alreadyGenerated.contains(actionBFE.getExecutableMethodName())) {
@@ -133,12 +134,12 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                 String methodName = getMethodNameCallMethodAction(actionBFE);
                 String javaDoc = "Calls the method " + actionBFE.getExecutableMethodName() + " on the parameter "
                         + parameter.getName() + ".";
-                ArrayList annotatios = new ArrayList();
+                ArrayList<String> annotatios = new ArrayList<String>();
                 annotatios.addAll(Arrays.asList(ANNOTATION_GENERATED));
                 annotatios.add("see " + parameter.findDatatype().getQualifiedName() + "#"
                         + actionBFE.getExecutableMethodName());
                 methodBuilder.method(Modifier.PRIVATE, Void.TYPE, methodName, new String[0], new Class[0], body,
-                        javaDoc, (String[])annotatios.toArray(new String[annotatios.size()]));
+                        javaDoc, annotatios.toArray(new String[annotatios.size()]));
                 alreadyGenerated.add(actionBFE.getExecutableMethodName());
             }
         }
@@ -150,10 +151,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateMemberVariableForCallBusinessFunctionAction(JavaCodeFragmentBuilder memberVarBuilder)
             throws CoreException {
-        List bfElements = getBusinessFunction().getBFElements();
-        List alreadyGenerated = new ArrayList();
-        for (Iterator it = bfElements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> bfElements = getBusinessFunction().getBFElements();
+        List<String> alreadyGenerated = new ArrayList<String>();
+        for (Iterator<IBFElement> it = bfElements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL) && element.isValid()) {
                 IActionBFE actionBFE = (IActionBFE)element;
                 if (alreadyGenerated.contains(actionBFE.getReferencedBfQualifiedName())) {
@@ -173,10 +174,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodCallBusinessFunctionAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List bfElements = getBusinessFunction().getBFElements();
-        List alreadyGenerated = new ArrayList();
-        for (Iterator it = bfElements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> bfElements = getBusinessFunction().getBFElements();
+        List<String> alreadyGenerated = new ArrayList<String>();
+        for (Iterator<IBFElement> it = bfElements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL) && element.isValid()) {
                 IActionBFE action = (IActionBFE)element;
                 if (alreadyGenerated.contains(getMethodNameCallBusinessFunctionAction(action))) {
@@ -230,9 +231,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodForMerges(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List merges = getBusinessFunction().getBFElements();
-        for (Iterator it = merges.iterator(); it.hasNext();) {
-            IBFElement merge = (IBFElement)it.next();
+        List<IBFElement> merges = getBusinessFunction().getBFElements();
+        for (Iterator<IBFElement> it = merges.iterator(); it.hasNext();) {
+            IBFElement merge = it.next();
             if (merge.getType().equals(BFElementType.MERGE) && merge.isValid()) {
                 generateMethodForMerge(merge, methodBuilder);
             }
@@ -242,15 +243,15 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodForMerge(IBFElement merge, JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, merge, methodBuilder);
-        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameMerge(merge), new String[0], new Class[0],
-                body, "", ANNOTATION_GENERATED);
+        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameMerge(merge), new String[0], new Class[0], body,
+                "", ANNOTATION_GENERATED);
     }
 
     private void generateCodeForDecisions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List decisions = getBusinessFunction().getBFElements();
-        Set alreadyGenerated = new HashSet();
-        for (Iterator it = decisions.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> decisions = getBusinessFunction().getBFElements();
+        Set<String> alreadyGenerated = new HashSet<String>();
+        for (Iterator<IBFElement> it = decisions.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.isValid()) {
                 if (element.getType().equals(BFElementType.DECISION)
                         || element.getType().equals(BFElementType.DECISION_METHODCALL)) {
@@ -327,7 +328,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln();
             return;
         }
-        List outgoingFlows = inputElement.getOutgoingControlFlow();
+        List<IControlFlow> outgoingFlows = inputElement.getOutgoingControlFlow();
         if (inputElement.getType().equals(BFElementType.DECISION)
                 || inputElement.getType().equals(BFElementType.DECISION_METHODCALL)) {
             IDecisionBFE decision = (IDecisionBFE)inputElement;
@@ -343,7 +344,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             // parsable by jmerge. Otherwise jmerge
             // rises an exception.
             for (int r = 0, i = 0; i < outgoingFlows.size(); i++, r++) {
-                IControlFlow controlFlow = (IControlFlow)outgoingFlows.get(i);
+                IControlFlow controlFlow = outgoingFlows.get(i);
                 if (!controlFlow.isValid()) {
                     r--;
                     continue;
@@ -380,25 +381,26 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         if (!outgoingFlows.isEmpty()) {
-            generateSingleControlFlowMethodBody(methodBuilder, body, (IControlFlow)outgoingFlows.get(0));
+            generateSingleControlFlowMethodBody(methodBuilder, body, outgoingFlows.get(0));
         }
     }
 
     private String getMethodNameGetConditionValue(IDecisionBFE decision) {
-        if(BFElementType.DECISION == decision.getType()){
+        if (BFElementType.DECISION == decision.getType()) {
             return "get" + StringUtils.capitalize(decision.getName()) + "Value";
         }
         return "get" + StringUtils.capitalize(decision.getExecutableMethodName()) + "Value";
     }
 
-    private String getKeyForMethodCallDecision(IDecisionBFE decision){
+    private String getKeyForMethodCallDecision(IDecisionBFE decision) {
         return decision.getTarget() + "." + decision.getExecutableMethodName();
     }
-    
+
     private void generateMethodGetConditionValue(JavaCodeFragmentBuilder methodBuilder,
             IDecisionBFE decision,
-            Set alreadyGenerated) throws CoreException {
-        if (BFElementType.DECISION_METHODCALL == decision.getType() && alreadyGenerated.contains(getKeyForMethodCallDecision(decision))) {
+            Set<String> alreadyGenerated) throws CoreException {
+        if (BFElementType.DECISION_METHODCALL == decision.getType()
+                && alreadyGenerated.contains(getKeyForMethodCallDecision(decision))) {
             return;
         }
         Datatype datatype = decision.findDatatype(getIpsProject());
@@ -468,9 +470,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateCodeForParameters(JavaCodeFragmentBuilder memberBuilder, JavaCodeFragmentBuilder methodBuilder)
             throws CoreException {
-        List parameters = getBusinessFunction().getParameterBFEs();
-        for (Iterator it = parameters.iterator(); it.hasNext();) {
-            IParameterBFE parameter = (IParameterBFE)it.next();
+        List<IParameterBFE> parameters = getBusinessFunction().getParameterBFEs();
+        for (Iterator<IParameterBFE> it = parameters.iterator(); it.hasNext();) {
+            IParameterBFE parameter = it.next();
             if (!parameter.isValid()) {
                 continue;
             }
@@ -493,10 +495,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodCreateCallBusinessFunction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List elements = getBusinessFunction().getBFElements();
-        List alreadyGenerated = new ArrayList();
-        for (Iterator it = elements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> elements = getBusinessFunction().getBFElements();
+        List<String> alreadyGenerated = new ArrayList<String>();
+        for (Iterator<IBFElement> it = elements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (!element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 continue;
             }
@@ -523,12 +525,12 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
-        ArrayList parameterNames = new ArrayList();
-        ArrayList parameterTypes = new ArrayList();
+        ArrayList<String> parameterNames = new ArrayList<String>();
+        ArrayList<String> parameterTypes = new ArrayList<String>();
 
-        List parameters = getBusinessFunction().getParameterBFEs();
-        for (Iterator it = parameters.iterator(); it.hasNext();) {
-            IParameterBFE parameter = (IParameterBFE)it.next();
+        List<IParameterBFE> parameters = getBusinessFunction().getParameterBFEs();
+        for (Iterator<IParameterBFE> it = parameters.iterator(); it.hasNext();) {
+            IParameterBFE parameter = it.next();
             if (!parameter.isValid()) {
                 continue;
             }
@@ -537,8 +539,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             parameterTypes.add(getJavaClassName(datatype));
         }
         JavaCodeFragment body = new JavaCodeFragment();
-        for (Iterator it = parameterNames.iterator(); it.hasNext();) {
-            String name = (String)it.next();
+        for (Iterator<String> it = parameterNames.iterator(); it.hasNext();) {
+            String name = it.next();
             body.append("this.");
             body.append(name);
             body.append(" = ");
@@ -549,10 +551,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
 
-        List bfActions = getBusinessFunction().getBFElements();
-        List alreadyGenerated = new ArrayList();
-        for (Iterator it = bfActions.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
+        List<IBFElement> bfActions = getBusinessFunction().getBFElements();
+        List<String> alreadyGenerated = new ArrayList<String>();
+        for (Iterator<IBFElement> it = bfActions.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 IActionBFE action = (IActionBFE)element;
                 if (!action.isValid()) {
@@ -571,9 +573,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                 }
             }
         }
-        constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(), (String[])parameterNames
-                .toArray(new String[parameterNames.size()]), (String[])parameterTypes.toArray(new String[parameterTypes
-                .size()]), body, "Creates a new " + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
+        constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(), parameterNames
+                .toArray(new String[parameterNames.size()]), parameterTypes.toArray(new String[parameterTypes.size()]),
+                body, "Creates a new " + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
     }
 
     public IBusinessFunction getBusinessFunction() {
