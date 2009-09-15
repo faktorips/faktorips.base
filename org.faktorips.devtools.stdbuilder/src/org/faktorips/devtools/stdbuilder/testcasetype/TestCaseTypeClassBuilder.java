@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -109,8 +109,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private ITestCaseType testCaseType;
 
     // contains all test parameters with at least one extension attribute
-    private List policyTypeParamsWithExtensionAttr;
-    
+    private List<ITestPolicyCmptTypeParameter> policyTypeParamsWithExtensionAttr;
+
     public TestCaseTypeClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TestCaseTypeClassBuilder.class));
         setMergeEnabled(true);
@@ -126,6 +126,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
         inputPrefix = getLocalizedText(getIpsSrcFile(), INPUT_PREFIX);
@@ -139,13 +140,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
         testCaseType = (ITestCaseType)getIpsObject();
         project = testCaseType.getIpsProject();
-        
-        policyTypeParamsWithExtensionAttr = new ArrayList();
+
+        policyTypeParamsWithExtensionAttr = new ArrayList<ITestPolicyCmptTypeParameter>();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
@@ -266,8 +268,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private DatatypeHelper getCachedDatatypeHelper(ITestValueParameter testValueParameter) throws CoreException {
         ValueDatatype valueDatatype = testValueParameter.findValueDatatype(getIpsProject());
-        if (valueDatatype == null)
+        if (valueDatatype == null) {
             return null;
+        }
 
         try {
             DatatypeHelper helper = project.getDatatypeHelper(valueDatatype);
@@ -359,7 +362,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
         body.appendln(MARKER_END_USER_CODE);
-        buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix, true);
+        buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix,
+                true);
         buildInitForTestValueParameter(body, testCaseType.getInputTestValueParameters(), inputPrefix);
         buildMethodInit(codeBuilder, "initInputFromXml", body, javaDoc);
     }
@@ -402,12 +406,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * (inputElement!=null){ [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
      * 
      * @see #buildConstrutorForTestPolicyCmptParameter } ... try { new
-     *      DefaultReferenceResolver().resolve(objectReferenceStore); } catch (Exception e) { throw
-     *      new RuntimeException(e); }; </pre>
+     * DefaultReferenceResolver().resolve(objectReferenceStore); } catch (Exception e) { throw new
+     * RuntimeException(e); }; </pre>
      */
     private void buildInitForTestPolicyCmptParameter(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter[] policyTypeParams,
-            String variablePrefix, boolean isInput) throws CoreException {
+            String variablePrefix,
+            boolean isInput) throws CoreException {
         String objectReferenceStoreName = "objectReferenceStore";
         if (policyTypeParams.length > 0) {
             body.appendClassName(IObjectReferenceStore.class);
@@ -425,11 +430,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             if (!policyTypeParams[i].isValid()) {
                 continue;
             }
-            
+
             // create the local variable for the XML callback class
             // if at least on extension attribute exists
             String callbackClassName = null;
-            if (policyTypeParamsWithExtensionAttr.contains(policyTypeParams[i])){
+            if (policyTypeParamsWithExtensionAttr.contains(policyTypeParams[i])) {
                 callbackClassName = policyTypeParams[i].getName() + "XmlCallback";
                 body.appendClassName(StringUtils.capitalize(callbackClassName));
                 body.append(" ");
@@ -437,16 +442,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 body.append(" = new ");
                 body.append(StringUtils.capitalize(callbackClassName));
                 body.appendln("(");
-                body.appendln(isInput?"true":"false");
+                body.appendln(isInput ? "true" : "false");
                 body.appendln(");");
             }
-            
+
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             body.append("childElement = ");
             body.appendClassName(XmlUtil.class);
             body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
             body.appendln("if (childElement != null){");
-            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName, StringUtils.uncapitalize(callbackClassName));
+            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName,
+                    StringUtils.uncapitalize(callbackClassName));
             body.appendln("}");
         }
 
@@ -466,22 +472,28 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Generates the constructor for a PolicyCmptParameter in the initInputFromXml method.<br> <p>
-     * Example: <p> <pre>
+     * Generates the constructor for a PolicyCmptParameter in the initInputFromXml method.<br>
+     * <p>
+     * Example:
+     * <p>
+     * 
+     * <pre>
      *  try { 
-     *      String className = childElement.getAttribute("class");
+     *      String className = childElement.getAttribute(&quot;class&quot;);
      *      inputTcPolicyA_1 =([PolicyCmptTypeParameter.name]) Class.forName(className, true,
      *          [PolicyCmptTypeParameter.name].class.getClassLoader()).newInstance();
      *      inputTcPolicyA_1.initFromXml(childElement, true, getRepository(),
-     *          <objectReferenceStoreName>); 
+     *          &lt;objectReferenceStoreName&gt;); 
      * } catch (Exception e) { 
      *      throw new RuntimeException(e); 
-     * } </pre>
+     * }
+     * </pre>
      */
     protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter policyTypeParam,
             String variablePrefix,
-            String objectReferenceStoreName, String callbackClassName) throws CoreException {
+            String objectReferenceStoreName,
+            String callbackClassName) throws CoreException {
         String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam);
         String variableName = variablePrefix + policyTypeParam.getName();
         body.appendln("try {");
@@ -495,9 +507,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.append(variableName);
         body.append(".initFromXml(childElement, true, getRepository(), ");
         body.append(objectReferenceStoreName);
-        // only if at least one extension attributes exists, 
+        // only if at least one extension attributes exists,
         // use the initFromXml with additional XML callback parameter
-        if (callbackClassName != null){
+        if (callbackClassName != null) {
             body.appendln(", ");
             body.appendln(callbackClassName);
         }
@@ -685,9 +697,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /*
-     * Generates the method to execute the assertion of one rule.<br> Example: <p> <pre> public
-     * void executeValidationErwartetRegeln(MessageList messageList, IpsTestResult result){ for
-     * (Iterator iter = erwartetVerletzteRegeln.iterator(); iter.hasNext();) { String msgCode =
+     * Generates the method to execute the assertion of one rule.<br> Example: <p> <pre> public void
+     * executeValidationErwartetRegeln(MessageList messageList, IpsTestResult result){ for (Iterator
+     * iter = erwartetVerletzteRegeln.iterator(); iter.hasNext();) { String msgCode =
      * (String)iter.next(); if (messageList.getMessageByCode(msgCode) == null){ fail(VERLETZT,
      * NICHT_VERLETZT, result, "Regeln", msgCode, "Fehlende Regelverletzung: " + msgCode); } } for
      * (Iterator iter = erwartetNichtVerletzteRegeln.iterator(); iter.hasNext();) { String msgCode =
@@ -749,23 +761,25 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generate XML callback classes for each root policy cmpt type parameter containing at least
      * one extension attribute.
      */
-    private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType) throws CoreException {
+    private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType)
+            throws CoreException {
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
         for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
-            if (! testPolicyCmptTypeParameters[i].isValid()){
+            if (!testPolicyCmptTypeParameters[i].isValid()) {
                 continue;
             }
             buildXmlCallbackClasseFor(memberVarBuilder, testPolicyCmptTypeParameters[i]);
         }
     }
 
-    private void buildXmlCallbackClasseFor(JavaCodeFragmentBuilder builder, ITestPolicyCmptTypeParameter parameter) throws CoreException {
+    private void buildXmlCallbackClasseFor(JavaCodeFragmentBuilder builder, ITestPolicyCmptTypeParameter parameter)
+            throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         boolean extensionAttrExists = buildXmlCallbackBodyFor(body, parameter, "");
 
-        if (extensionAttrExists){
+        if (extensionAttrExists) {
             String javaDoc;
-            
+
             // class definition
             String testParamName = StringUtils.capitalize(parameter.getName());
             String className = testParamName + "XmlCallback";
@@ -781,76 +795,80 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_BOOLEAN_FIELD_JAVADOC);
             builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
             builder.varDeclaration(Modifier.PRIVATE, "boolean", "input");
-            
+
             // constructor
             javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_CONSTRUCTOR_JAVADOC, testParamName);
             JavaCodeFragment constructorBody = new JavaCodeFragment();
             constructorBody.appendln("this.input = input;");
             JavaCodeFragmentBuilder method = new JavaCodeFragmentBuilder();
-            method.method(Modifier.PUBLIC, "", className, new String[] { "input"}, new String[] { "boolean"}, constructorBody, javaDoc, 
-                    ANNOTATION_GENERATED);
+            method.method(Modifier.PUBLIC, "", className, new String[] { "input" }, new String[] { "boolean" },
+                    constructorBody, javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
-            
+
             // init method
             javaDoc = "{@inheritDoc}";
             method = new JavaCodeFragmentBuilder();
-            method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot", "modelObject",
-            "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
-                    Map.class.getName() }, body,javaDoc, ANNOTATION_GENERATED);
+            method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",
+                    "modelObject", "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
+                    Map.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }
     }
 
-    private boolean buildXmlCallbackBodyFor(JavaCodeFragment body, ITestPolicyCmptTypeParameter parameter, String parentPath) throws CoreException {
-    	String pathElement = null;
-        // evaluate the path, the current path element is: a) in case of root elements the name of the
+    private boolean buildXmlCallbackBodyFor(JavaCodeFragment body,
+            ITestPolicyCmptTypeParameter parameter,
+            String parentPath) throws CoreException {
+        String pathElement = null;
+        // evaluate the path, the current path element is: a) in case of root elements the name of
+        // the
         // test parameter (because the xml node name is equal to the test parameter name)
         // otherwise b) in case of child elements the name of the policyCmptType
-    	// (because the element is identified by the association in the xml file)
-        if (!parameter.isRoot()){
+        // (because the element is identified by the association in the xml file)
+        if (!parameter.isRoot()) {
             IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(getIpsProject());
-            if (policyCmptType == null){
+            if (policyCmptType == null) {
                 throw new CoreException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
                         + " not found for test policy component type parameter " + parameter.getName()));
             }
             pathElement = policyCmptType.getName();
-    	} else {
-    	    pathElement = parameter.getName();
-    	}
-    	String currentPath = parentPath + "/" + pathElement;
+        } else {
+            pathElement = parameter.getName();
+        }
+        String currentPath = parentPath + "/" + pathElement;
 
         boolean extensionAttrExists = false;
         JavaCodeFragment childCodeFragment = new JavaCodeFragment();
         ITestAttribute[] testAttributes = parameter.getTestAttributes();
         boolean valueDeclAvailable = false;
         for (int i = 0; i < testAttributes.length; i++) {
-            if (StringUtils.isEmpty(testAttributes[i].getAttribute())){
+            if (StringUtils.isEmpty(testAttributes[i].getAttribute())) {
                 extensionAttrExists = true;
 
-                if (!valueDeclAvailable){
+                if (!valueDeclAvailable) {
                     childCodeFragment.appendClassName(String.class);
                     childCodeFragment.append(" value = null;");
                     valueDeclAvailable = true;
                 }
 
                 childCodeFragment.append("if (");
-                childCodeFragment.append(testAttributes[i].isInputAttribute()?"input":"!input");
+                childCodeFragment.append(testAttributes[i].isInputAttribute() ? "input" : "!input");
                 childCodeFragment.append("){");
-                
+
                 String testAttribute = testAttributes[i].getName();
                 ValueDatatype datatype = testAttributes[i].findDatatype(getIpsProject());
-                if (datatype == null){
+                if (datatype == null) {
                     // ignore, should be catched by a validation error
                     continue;
                 }
                 DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-                if (datatypeHelper == null){
-                    throw new CoreException(new IpsStatus("Datatypehelper not found for: " + datatype.getQualifiedName()));
+                if (datatypeHelper == null) {
+                    throw new CoreException(new IpsStatus("Datatypehelper not found for: "
+                            + datatype.getQualifiedName()));
                 }
                 // generate a constant
                 String constName = generateTestAttributeConstant(parameter, testAttribute);
-                
+
                 childCodeFragment.append(" value = (String) propMap.get(");
                 childCodeFragment.append(constName);
                 childCodeFragment.appendln(");");
@@ -866,32 +884,33 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 childCodeFragment.append(datatypeHelper.newInstanceFromExpression("value"));
                 childCodeFragment.appendln(");");
                 childCodeFragment.append("}");
-                
+
             }
         }
-        
-        if (extensionAttrExists){
+
+        if (extensionAttrExists) {
             body.append("if (pathFromAggregateRoot.equals(\"");
             body.append(currentPath);
             body.appendln("\")){");
             body.append(childCodeFragment);
             body.appendln("}");
         }
-        
+
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParamChilds = parameter.getTestPolicyCmptTypeParamChilds();
         for (int i = 0; i < testPolicyCmptTypeParamChilds.length; i++) {
-            extensionAttrExists = extensionAttrExists | (buildXmlCallbackBodyFor(body, testPolicyCmptTypeParamChilds[i], currentPath));
+            extensionAttrExists = extensionAttrExists
+                    | (buildXmlCallbackBodyFor(body, testPolicyCmptTypeParamChilds[i], currentPath));
         }
         return extensionAttrExists;
     }
-    
+
     private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
         String constName = "TESTATTR_" + parameter.getName() + "_" + testAttribute;
-//        constName  = constName.replaceAll("([a-z])([A-Z])", "1_2");
+        // constName = constName.replaceAll("([a-z])([A-Z])", "1_2");
         constName = StringUtils.upperCase(constName);
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
-        constantBuilder.varDefinition("public final static String" , constName, "\"" + testAttribute + "\"");
+        constantBuilder.varDefinition("public final static String", constName, "\"" + testAttribute + "\"");
         return constName;
     }
 
