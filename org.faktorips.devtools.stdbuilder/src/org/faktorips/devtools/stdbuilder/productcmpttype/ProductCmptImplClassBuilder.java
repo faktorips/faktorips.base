@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
@@ -63,6 +64,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName());
     }
@@ -70,6 +72,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean generatesInterface() {
         return false;
     }
@@ -77,6 +80,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getSuperclass() throws CoreException {
         String javaSupertype = ProductComponent.class.getName();
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
@@ -89,6 +93,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         return new String[] { GenType.getQualifiedName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true) };
     }
@@ -96,6 +101,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(),
                 (StandardBuilderSet)getBuilderSet(), true);
@@ -111,6 +117,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * }
      * </pre>
      */
+    @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         String className = getUnqualifiedClassName();
         appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
@@ -128,6 +135,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -135,7 +143,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateGetGenerationMethod(methodsBuilder);
         IPolicyCmptType policyCmptType = getPcType();
         if (policyCmptType != null && !policyCmptType.isAbstract()) {
-            generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet());
+            generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet<IPolicyCmptType>());
         }
         if (policyCmptType == null || !policyCmptType.isAbstract()) {
             // if policy component type is null, must generate to fullfill the contract of
@@ -146,7 +154,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder,
-            Set supertypesHandledSoFar) throws CoreException {
+            Set<IPolicyCmptType> supertypesHandledSoFar) throws CoreException {
 
         if (returnedTypeInSignature != null && !returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
@@ -171,13 +179,13 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        if(!returnedTypeInSignature.equals(getPcType())){
+        if (!returnedTypeInSignature.equals(getPcType())) {
             appendOverrideAnnotation(methodsBuilder, false);
         }
         IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
-        if(superType != null){
+        if (superType != null) {
             IPolicyCmptType superPolicyCmptType = superType.findPolicyCmptType(getIpsProject());
-            if(superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())){
+            if (superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())) {
                 appendOverrideAnnotation(methodsBuilder, false);
             }
         }
@@ -206,10 +214,11 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         // TODO pk 17-07-2009: this is still not correct. Their are situations which I could not yet
         // figure out when an override of an implementation appears which doesn't have an override
         // annotation.
-        if(StringUtils.isEmpty(getProductCmptType().getPolicyCmptType())){
+        if (StringUtils.isEmpty(getProductCmptType().getPolicyCmptType())) {
             appendOverrideAnnotation(methodsBuilder, !getProductCmptType().hasSupertype());
-        } else if(getProductCmptType().hasSupertype()){
-            CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(getIpsProject());
+        } else if (getProductCmptType().hasSupertype()) {
+            CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(
+                    getIpsProject());
             checkVisitor.start(getProductCmptType().findSupertype(getIpsProject()));
             appendOverrideAnnotation(methodsBuilder, checkVisitor.isInterfaceImplementation());
         }
@@ -245,6 +254,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -256,6 +266,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -268,6 +279,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -278,6 +290,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -287,8 +300,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation,
-            List implementationAssociations,
+    @Override
+    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
+            List<IAssociation> implementationAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
@@ -297,6 +311,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -306,6 +321,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
@@ -338,8 +354,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         return null;
     }
 
-    
-    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends ProductCmptTypeHierarchyVisitor{
+    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends ProductCmptTypeHierarchyVisitor {
 
         private boolean isInterfaceImplementation;
         private int counter = 0;
@@ -348,15 +363,15 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         public CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(IIpsProject ipsProject) {
             super(ipsProject);
         }
-        
+
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            if(counter == 0){
+            if (counter == 0) {
                 firstAbstract = currentType.isAbstract();
                 counter++;
                 return true;
             }
-            if(!firstAbstract) {
+            if (!firstAbstract) {
                 isInterfaceImplementation = true;
                 return false;
             }
@@ -364,9 +379,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             isInterfaceImplementation = currentType.isAbstract();
             return isInterfaceImplementation;
         }
-        
-        public boolean isInterfaceImplementation(){
-            if(counter == 1){
+
+        public boolean isInterfaceImplementation() {
+            if (counter == 1) {
                 return firstAbstract;
             }
             return isInterfaceImplementation;

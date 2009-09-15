@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -47,24 +48,26 @@ import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * A generator for <code>IProductCmptType</code>s. It provides access to generators for attributes, methods and associations of the 
- * product component type. Typically when the generator is created all the generators of its parts are also greated accept the ones
- * in the super type hierarchy. These are created on demand since it is expected that only a few of them will be overridden. It is necessary
- * to provide an own generator instance for those overridden parts in this generator and not to delegate to the generator of the super
- * class since otherwise it would not be possible to determine if code has to be generated with respect to the super type.
+ * A generator for <code>IProductCmptType</code>s. It provides access to generators for attributes,
+ * methods and associations of the product component type. Typically when the generator is created
+ * all the generators of its parts are also greated accept the ones in the super type hierarchy.
+ * These are created on demand since it is expected that only a few of them will be overridden. It
+ * is necessary to provide an own generator instance for those overridden parts in this generator
+ * and not to delegate to the generator of the super class since otherwise it would not be possible
+ * to determine if code has to be generated with respect to the super type.
  * 
  * @author Peter Erzberger
  */
 public class GenProductCmptType extends GenType {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProductCmptType.class);
-    
-    private Map generatorsByPart = new HashMap();
-    private List genProdAttributes = new ArrayList();
-    private List genProdAssociations = new ArrayList();
-    private List genMethods = new ArrayList();
-    private List genTableStructureUsages = new ArrayList();
-    
+
+    private Map<IIpsObjectPart, GenProductCmptTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenProductCmptTypePart>();
+    private List<GenProdAttribute> genProdAttributes = new ArrayList<GenProdAttribute>();
+    private List<GenProdAssociation> genProdAssociations = new ArrayList<GenProdAssociation>();
+    private List<GenProdMethod> genMethods = new ArrayList<GenProdMethod>();
+    private List<GenTableStructureUsage> genTableStructureUsages = new ArrayList<GenTableStructureUsage>();
+
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet) throws CoreException {
         super(productCmptType, builderSet, LOCALIZED_STRINGS);
         createGeneratorsForProdAttributes();
@@ -176,7 +179,7 @@ public class GenProductCmptType extends GenType {
             }
         }
     }
-    
+
     private void createGeneratorsForTableStructureUsages() throws CoreException {
         ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
         for (int i = 0; i < tsus.length; i++) {
@@ -188,8 +191,7 @@ public class GenProductCmptType extends GenType {
         }
     }
 
-    private GenProdAssociation createGenerator(IProductCmptTypeAssociation association)
-            throws CoreException {
+    private GenProdAssociation createGenerator(IProductCmptTypeAssociation association) throws CoreException {
         if (association.is1ToMany()) {
             return new GenProdAssociationToMany(this, association);
         }
@@ -199,9 +201,11 @@ public class GenProductCmptType extends GenType {
     public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
         GenProdAttribute generator = (GenProdAttribute)generatorsByPart.get(a);
         if (generator == null && a.isValid()) {
-            //generators for supertype attributes will be created on demand since it is expected that 
-            //only a few exit. It will not be checked if the provided attribute is actually a supertype
-            //attribute because of performance reasons.
+            // generators for supertype attributes will be created on demand since it is expected
+            // that
+            // only a few exit. It will not be checked if the provided attribute is actually a
+            // supertype
+            // attribute because of performance reasons.
             generator = new GenProdAttribute(this, a);
             genProdAttributes.add(generator);
             generatorsByPart.put(a, generator);
@@ -212,10 +216,11 @@ public class GenProductCmptType extends GenType {
 
     public GenProdMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
         GenProdMethod generator = (GenProdMethod)generatorsByPart.get(method);
-        if(generator == null && method.isValid()){
-            //generators for supertype methods will be created on demand since it is expected that 
-            //only a few exit. It will not be checked if the provided method is actually a supertype
-            //method because of performance reasons.
+        if (generator == null && method.isValid()) {
+            // generators for supertype methods will be created on demand since it is expected that
+            // only a few exit. It will not be checked if the provided method is actually a
+            // supertype
+            // method because of performance reasons.
             generator = new GenProdMethod(this, method);
             genMethods.add(generator);
             generatorsByPart.put(method, generator);
@@ -225,10 +230,12 @@ public class GenProductCmptType extends GenType {
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
         GenProdAssociation generator = (GenProdAssociation)generatorsByPart.get(a);
-        if(generator == null && a.isValid()){
-            //generators for supertype associations will be created on demand since it is expected that 
-            //only a few exit. It will not be checked if the provided association is actually a supertype
-            //assocation because of performance reasons.
+        if (generator == null && a.isValid()) {
+            // generators for supertype associations will be created on demand since it is expected
+            // that
+            // only a few exit. It will not be checked if the provided association is actually a
+            // supertype
+            // assocation because of performance reasons.
             generator = createGenerator(a);
             genProdAssociations.add(generator);
             generatorsByPart.put(a, generator);
@@ -240,7 +247,7 @@ public class GenProductCmptType extends GenType {
         return (GenTableStructureUsage)generatorsByPart.get(tsu);
     }
 
-    public Iterator getGenProdAttributes() {
+    public Iterator<GenProdAttribute> getGenProdAttributes() {
         return genProdAttributes.iterator();
     }
 

@@ -219,9 +219,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
 
         boolean attributeFound = false;
-        for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getGenProdAttributes(); it.hasNext();) {
-            GenProdAttribute generator = (GenProdAttribute)it.next();
+        GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
+        for (Iterator<GenProdAttribute> it = typeGenerator.getGenProdAttributes(); it.hasNext();) {
+            GenProdAttribute generator = it.next();
             if (!generator.isValidAttribute()) {
                 continue;
             }
@@ -641,9 +641,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     @Override
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation association,
-            List implAssociations,
+            List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+
         GenProdAssociation generator = getGenerator(association);
         generator.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
     }

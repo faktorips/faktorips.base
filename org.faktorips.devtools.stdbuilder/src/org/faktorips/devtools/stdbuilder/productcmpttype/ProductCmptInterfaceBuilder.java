@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
@@ -52,6 +53,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
     }
@@ -63,6 +65,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean generatesInterface() {
         return true;
     }
@@ -70,6 +73,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         // nothing to do, generating an interface
     }
@@ -77,6 +81,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getSuperclass() throws CoreException {
         return null; // no superclass, generating an interface
     }
@@ -84,6 +89,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         String javaSupertype = IProductComponent.class.getName();
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
@@ -96,6 +102,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("INTERFACE", getConceptName(getIpsSrcFile()), getIpsObject(), builder);
     }
@@ -103,6 +110,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -155,6 +163,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -166,6 +175,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -178,6 +188,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -189,6 +200,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -198,8 +210,9 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation,
-            List implementationAssociations,
+    @Override
+    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
+            List<IAssociation> implementationAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
@@ -208,6 +221,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -217,6 +231,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do

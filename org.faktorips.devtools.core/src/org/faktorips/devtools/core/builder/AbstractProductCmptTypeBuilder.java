@@ -230,13 +230,13 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * valid container association in the product component type we currently build sourcecode for
      * and for each valid container association in one of it's supertypes.
      * 
-     * @param containerAssociation the container association source code should be generated for.
+     * @param derivedUnionAssociation the container association source code should be generated for.
      * @param implementationAssociations the association implementing the container association.
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param methodsBuilder the code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation,
-            List<?> implementationAssociations,
+    protected abstract void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
+            List<IAssociation> implementationAssociations,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
