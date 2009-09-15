@@ -630,7 +630,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     @Override
-    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
+    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation derivedUnionAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
@@ -640,12 +640,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     @Override
-    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation association,
+    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
             List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        GenProdAssociation generator = getGenerator(association);
+        GenProdAssociation generator = getGenerator(derivedUnionAssociation);
         generator.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
     }
 
