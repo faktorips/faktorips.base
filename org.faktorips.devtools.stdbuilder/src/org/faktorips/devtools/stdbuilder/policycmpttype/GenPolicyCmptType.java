@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,13 +53,14 @@ import org.faktorips.util.StringUtil;
 /**
  * A generator for <code>IPolicyCmptType</code>s.
  * 
- * <p>It provides access to generators for attributes,
- * methods and associations of the policy component type. Typically, when the generator is created,
- * all the generators of its parts are also created, except the ones in the super type hierarchy.
- * These are created on demand since it is expected that only a few of them will be overridden. It
- * is necessary to provide an own generator instance for those overridden parts in this generator
- * and not to delegate to the generator of the super class since otherwise it would not be possible
- * to determine if code has to be generated with respect to the super type.
+ * <p>
+ * It provides access to generators for attributes, methods and associations of the policy component
+ * type. Typically, when the generator is created, all the generators of its parts are also created,
+ * except the ones in the super type hierarchy. These are created on demand since it is expected
+ * that only a few of them will be overridden. It is necessary to provide an own generator instance
+ * for those overridden parts in this generator and not to delegate to the generator of the super
+ * class since otherwise it would not be possible to determine if code has to be generated with
+ * respect to the super type.
  * </p>
  * 
  * @author Peter Erzberger
@@ -198,6 +198,7 @@ public class GenPolicyCmptType extends GenType {
      * @return the qualified class name
      * @throws CoreException is delegated from calls to other methods
      */
+    @Override
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
         if (forInterface) {
             return getBuilderSet().getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptType().getName());
