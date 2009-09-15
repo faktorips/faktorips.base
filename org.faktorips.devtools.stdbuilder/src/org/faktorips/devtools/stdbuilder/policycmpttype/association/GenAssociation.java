@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
@@ -992,7 +993,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         // nothing to do
     }
 
-    public abstract void generateCodeForContainerAssociationImplementation(List associations,
+    public abstract void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 

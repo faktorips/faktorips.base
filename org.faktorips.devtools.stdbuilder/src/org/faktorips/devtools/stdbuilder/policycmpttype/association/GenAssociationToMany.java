@@ -47,6 +47,7 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String computeFieldName() {
         return getJavaNamingConvention().getMemberVarName(association.getTargetRolePlural());
     }
@@ -54,6 +55,7 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMethodNameAddOrSetObject() {
         return getMethodNameAddObject();
     }
@@ -62,6 +64,7 @@ public class GenAssociationToMany extends GenAssociation {
      * Returns the name of the parameter for the method that tests if an object is references in a
      * multi-value association, e.g. objectToTest.
      */
+    @Override
     public String getParamNameForContainsObject() {
         return getLocalizedText("PARAM_OBJECT_TO_TEST_NAME", association.getTargetRoleSingular());
     }
@@ -88,6 +91,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public List&lt;ICoverage&gt; getCoverages()
      * </pre>
      */
+    @Override
     public void generateSignatureGetAllRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameGetAllRefObjects();
         String returnType;
@@ -103,6 +107,7 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * Returns the name of the method that returns a reference object at a specified index.
      */
+    @Override
     public String getMethodNameGetRefObjectAtIndex() {
         // TODO extend JavaNamingConventions for association accessor and mutator methods
         return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
@@ -166,6 +171,7 @@ public class GenAssociationToMany extends GenAssociation {
      * Returns the name of the parameter for the method removing an object from a multi-value
      * association, e.g. objectToRemove.
      */
+    @Override
     public String getParamNameForRemoveObject() {
         return getLocalizedText("PARAM_OBJECT_TO_REMOVE_NAME", association.getTargetRoleSingular());
     }
@@ -174,6 +180,7 @@ public class GenAssociationToMany extends GenAssociation {
      * {@inheritDoc}
      */
 
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -193,12 +200,14 @@ public class GenAssociationToMany extends GenAssociation {
 
             if (isGenerateJaxbSupport()) {
                 if (!isCompositionDetailToMaster()) {
-                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName() + "\", type=" + targetImplClassName + ".class");
+                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
+                            + "\", type=" + targetImplClassName + ".class");
                     if (!isCompositionMasterToDetail()) {
                         builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                     }
                 }
-                builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name", association.getTargetRolePlural());
+                builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name", association
+                        .getTargetRolePlural());
             }
 
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
@@ -211,6 +220,7 @@ public class GenAssociationToMany extends GenAssociation {
      * {@inheritDoc}
      */
 
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         super.generateMethods(builder, ipsProject, generatesInterface);
@@ -345,6 +355,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
+    @Override
     protected void generateMethodGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.openBracket();
@@ -510,6 +521,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public boolean containsCoverage(ICoverage objectToTest);
      * </pre>
      */
+    @Override
     protected void generateMethodContainsObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_CONTAINS_OBJECT", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureContainsObject(methodsBuilder);
@@ -580,6 +592,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.appendln(";");
     }
 
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         super.generateConstants(builder, ipsProject, generatesInterface);
@@ -588,6 +601,7 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getFieldNameForAssociation() throws CoreException {
         return getJavaNamingConvention().getMemberVarName(association.getTargetRolePlural());
     }
@@ -599,6 +613,7 @@ public class GenAssociationToMany extends GenAssociation {
      * copy.child2s.addAll(child2s);
      * </pre>
      */
+    @Override
     public void generateMethodCopyPropertiesForAssociation(String paramName, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String field = getFieldNameForAssociation();
@@ -663,10 +678,10 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfForContainerAssociationImplementation(List implAssociations,
+    protected void generateMethodGetNumOfForContainerAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        
+
         IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
                 getIpsProject());
         appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
@@ -719,7 +734,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodGetAllRefObjectsForContainerAssociationImplementation(List subAssociations,
+    protected void generateMethodGetAllRefObjectsForContainerAssociationImplementation(List<IAssociation> subAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -817,7 +832,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfInternalForContainerAssociationImplementation(List implAssociations,
+    protected void generateMethodGetNumOfInternalForContainerAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(null, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         String methodName = getMethodNameGetNumOfRefObjectsInternal();
@@ -847,7 +862,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.closeBracket();
     }
 
-    public void generateCodeForContainerAssociationImplementation(List associations,
+    public void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateMethodGetNumOfForContainerAssociationImplementation(associations, methodsBuilder);
