@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,22 +14,20 @@
 package org.faktorips.util;
 
 import org.w3c.dom.Node;
-        
 
 /**
- * A class that provides static methods to check method arguments, e.g.
- * check if an argument is not null or is an instance of a specific class. 
+ * A class that provides static methods to check method arguments, e.g. check if an argument is not
+ * null or is an instance of a specific class.
  * <p>
- * All methods have an "optional" context parameter. If the check fails, the 
- * context's toString method is called and put into the IllegalArgumentException
- * that is thrown. In this way you can provide some information in which context
- * the check has failed and avoid to create a String object in the default case,
- * when the check passes successfully. 
- *   
- * @author Jan Ortmann   
- */    
+ * All methods have an "optional" context parameter. If the check fails, the context's toString
+ * method is called and put into the IllegalArgumentException that is thrown. In this way you can
+ * provide some information in which context the check has failed and avoid to create a String
+ * object in the default case, when the check passes successfully.
+ * 
+ * @author Jan Ortmann
+ */
 public class ArgumentCheck {
-           
+
     /**
      * Checks if the indicated argument is not null.
      * 
@@ -38,53 +36,53 @@ public class ArgumentCheck {
      * @throws NullPointerException if arg is null.
      */
     public final static void notNull(Object arg) {
-        if (arg==null) {
+        if (arg == null) {
             throw new NullPointerException();
         }
     }
-    
+
     /**
-     * Checks if the provided array or one of the objects at the array's positions is null. 
-     * If so a NullPointerException is thrown.
-     *
+     * Checks if the provided array or one of the objects at the array's positions is null. If so a
+     * NullPointerException is thrown.
+     * 
      * @param arg the argument to check.
      */
-    public final static void notNull(Object[] arg){
-    	notNull((Object)arg);
-    	for (int i = 0; i < arg.length; i++) {
-			notNull((Object)arg[i]);
-		}
+    public final static void notNull(Object[] arg) {
+        notNull((Object)arg);
+        for (int i = 0; i < arg.length; i++) {
+            notNull(arg[i]);
+        }
     }
 
-	/**
-	 * Checks if the provided array or the objects at the array positions are null. 
-	 * If so a NullPointerException is thrown.
-	 *
-	 * @param arg the argument to check.
-	 * @param context information, in case the test fails, the context's toString()
-	 */
-	public final static void notNull(Object[] arg, Object context){
-		notNull((Object)arg);
-		for (int i = 0; i < arg.length; i++) {
-			notNull((Object)arg[i], context);
-		}
-	}
+    /**
+     * Checks if the provided array or the objects at the array positions are null. If so a
+     * NullPointerException is thrown.
+     * 
+     * @param arg the argument to check.
+     * @param context information, in case the test fails, the context's toString()
+     */
+    public final static void notNull(Object[] arg, Object context) {
+        notNull((Object)arg);
+        for (int i = 0; i < arg.length; i++) {
+            notNull(arg[i], context);
+        }
+    }
 
     /**
      * Checks if the indicated argument is not null.
      * 
-     * @param arg		the argument to check.
-     * @param context	context information, in case the test fails, the context's toString()
-     * method is called and the result passed to the NullPointerException.
+     * @param arg the argument to check.
+     * @param context context information, in case the test fails, the context's toString() method
+     *            is called and the result passed to the NullPointerException.
      * 
      * @throws NullPointerException if arg is null.
      */
     public final static void notNull(Object arg, Object context) {
-        if (arg==null) {
+        if (arg == null) {
             throw new NullPointerException("" + context);
         }
     }
-    
+
     /**
      * Checks if the indicated argument is true.
      * 
@@ -97,7 +95,7 @@ public class ArgumentCheck {
             throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * Checks if the indicated argument is true.
      * 
@@ -110,8 +108,7 @@ public class ArgumentCheck {
             throw new IllegalArgumentException(context.toString());
         }
     }
-    
-    
+
     /**
      * Checks if the indicated arguments are equal.
      * 
@@ -122,7 +119,7 @@ public class ArgumentCheck {
             throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * Checks if the indicated arguments are equal.
      * 
@@ -133,7 +130,7 @@ public class ArgumentCheck {
             throw new IllegalArgumentException(context.toString());
         }
     }
-    
+
     /**
      * Checks if the indicated argument is an instance of the indicated class.
      * 
@@ -142,12 +139,12 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg is null.
      */
-    public final static void isInstanceOf(Object arg, Class clazz) {
+    public final static void isInstanceOf(Object arg, Class<?> clazz) {
         if (!clazz.isAssignableFrom(arg.getClass())) {
             throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * Checks if the indicated argument is an instance of the indicated class.
      * 
@@ -156,12 +153,12 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg is null.
      */
-    public final static void isInstanceOf(Object arg, Class clazz, Object context) {
+    public final static void isInstanceOf(Object arg, Class<?> clazz, Object context) {
         if (!clazz.isAssignableFrom(arg.getClass())) {
             throw new IllegalArgumentException(context.toString());
         }
     }
-    
+
     /**
      * Checks if the indicated array has the indicated length.
      * 
@@ -171,11 +168,11 @@ public class ArgumentCheck {
      * @throws IllegalArgumentException if the array has not the given length.
      */
     public final static void length(Object[] arg, int length) {
-        if (arg.length!=length) {
+        if (arg.length != length) {
             throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * Checks if the indicated array has the indicated length.
      * 
@@ -185,11 +182,11 @@ public class ArgumentCheck {
      * @throws IllegalArgumentException if the array has not the given length.
      */
     public final static void length(Object[] arg, int length, Object context) {
-        if (arg.length!=length) {
+        if (arg.length != length) {
             throw new IllegalArgumentException(context.toString());
         }
     }
-    
+
     /**
      * Checks if the given subclass is a subclass of the given superclass.
      * 
@@ -198,12 +195,12 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if subclass is not a subclass of superclass.
      */
-    public final static void isSubclassOf(Class subclass, Class superclass) {
+    public final static void isSubclassOf(Class<?> subclass, Class<?> superclass) {
         if (!superclass.isAssignableFrom(subclass)) {
             throw new IllegalArgumentException(subclass + " is not a subclass of " + superclass);
         }
     }
-    
+
     /**
      * Checks if the given xml node has the given name.
      * 
@@ -215,7 +212,7 @@ public class ArgumentCheck {
             throw new IllegalArgumentException("Node has name " + node.getNodeName() + ", expected " + name + ".");
         }
     }
-    
+
     /**
      * Prohibit instantiation.
      */
