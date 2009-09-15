@@ -51,11 +51,9 @@
                class="org.faktorips.devtools.core.builder.IpsLoggingFrameworkConnectorPropertyDef"
                defaultValue="org.faktorips.devtools.core.javaUtilLoggingConnector"
                description="%loggingFrameworkConnector_Description"
-               extensionPoint="loggingFrameworkConnector"
                extensionPointId="org.faktorips.devtools.core.loggingFrameworkConnector"
                label="Logging Framework Connector"
                name="loggingFrameworkConnector"
-               pluginId="org.faktorips.devtools.core"
                type="extensionPoint"/>
          <builderSetPropertyDef
                defaultValue="de"
