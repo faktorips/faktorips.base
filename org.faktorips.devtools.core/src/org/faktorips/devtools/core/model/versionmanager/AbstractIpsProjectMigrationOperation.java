@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,13 +38,6 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
     private String featureId;
 
     /**
-     * The default-constructor is forbidden for external calls...
-     */
-    private AbstractIpsProjectMigrationOperation() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Creates a new migration operation.
      */
     public AbstractIpsProjectMigrationOperation(IIpsProject projectToMigrate, String featureId) {
@@ -59,6 +52,7 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
      * 
      * {@inheritDoc}
      */
+    @Override
     protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
         migrate(monitor);
@@ -74,7 +68,7 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
      *         call).
      */
     public IIpsProject getIpsProject() {
-        return this.project;
+        return project;
     }
 
     /**
@@ -83,7 +77,7 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
      *         featuer which id is returned.
      */
     public String getFeatureId() {
-        return this.featureId;
+        return featureId;
     }
 
     /**
@@ -114,8 +108,8 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
      * 
      * @param monitor Progress monitor to report progress to, can be <code>null</code>.
      * @return A list of messages describing any problems occurred during migration. If this list is
-     *         empty, migration was successful. If this list contains a message with severity
-     *         error, it was not.
+     *         empty, migration was successful. If this list contains a message with severity error,
+     *         it was not.
      */
     public abstract MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException;
