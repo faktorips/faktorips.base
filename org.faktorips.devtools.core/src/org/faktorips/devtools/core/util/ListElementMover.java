@@ -22,9 +22,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ListElementMover {
 
-    private List<Object> list;
+    private List list;
 
-    public ListElementMover(List<Object> list) {
+    public ListElementMover(List list) {
         ArgumentCheck.notNull(list);
         this.list = list;
     }
