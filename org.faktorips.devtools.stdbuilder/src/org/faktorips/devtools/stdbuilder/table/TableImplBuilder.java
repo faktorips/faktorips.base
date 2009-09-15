@@ -85,13 +85,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private String[] fKeyVariableNames;
     private String[] fKeyClassNames;
-    private List fKeyClassParameterNames;
-    private List fAllItemNamesAsParameters;
-    private List fKeyClassParameterTypes;
-    private List fAllItemParameterTypes;
-    private Map fDatatypes;
+    private List<String[]> fKeyClassParameterNames;
+    private List<String[]> fAllItemNamesAsParameters;
+    private List<String[]> fKeyClassParameterTypes;
+    private List<String[]> fAllItemParameterTypes;
+    private Map<String, Datatype> fDatatypes;
     private String qualifiedTableRowName;
-    private Map fRanges;
+    private Map<String, IColumnRange> fRanges;
 
     public TableImplBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TableImplBuilder.class));
@@ -154,9 +154,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
-    private Set getIndicesForKeysWithSameDatatypeSequence() throws CoreException {
+    private Set<Integer> getIndicesForKeysWithSameDatatypeSequence() throws CoreException {
         IUniqueKey[] keys = getUniqueKeys();
-        Set positions = new HashSet();
+        Set<Integer> positions = new HashSet<Integer>();
         for (int i = 0; i < keys.length; i++) {
             IUniqueKey key1 = keys[i];
             for (int j = i + 1; j < keys.length; j++) {
@@ -181,7 +181,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private String[] buildFindMethodNamesArray() throws CoreException {
         IUniqueKey[] keys = getUniqueKeys();
         String[] findMethodNames = new String[keys.length];
-        Set keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
+        Set<Integer> keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
         for (int i = 0; i < keys.length; i++) {
             if (keysWithSameDatatypeSequence.contains(new Integer(i))) {
                 StringBuffer keyName = new StringBuffer();
@@ -234,17 +234,17 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         IUniqueKey[] keys = getUniqueKeys();
         fKeyClassNames = new String[keys.length];
-        fKeyClassParameterNames = new ArrayList(keys.length);
-        fKeyClassParameterTypes = new ArrayList(keys.length);
-        fAllItemNamesAsParameters = new ArrayList(keys.length);
-        fAllItemParameterTypes = new ArrayList(keys.length);
-        fRanges = new HashMap(keys.length);
+        fKeyClassParameterNames = new ArrayList<String[]>(keys.length);
+        fKeyClassParameterTypes = new ArrayList<String[]>(keys.length);
+        fAllItemNamesAsParameters = new ArrayList<String[]>(keys.length);
+        fAllItemParameterTypes = new ArrayList<String[]>(keys.length);
+        fRanges = new HashMap<String, IColumnRange>(keys.length);
         for (int i = 0; i < keys.length; i++) {
             String[] keyItems = keys[i].getKeyItemNames();
-            List parameters = new ArrayList();
-            List allParameterTypes = new ArrayList();
-            List keyClassParameterTypes = new ArrayList();
-            List keyClassParameterNames = new ArrayList();
+            List<String> parameters = new ArrayList<String>();
+            List<String> allParameterTypes = new ArrayList<String>();
+            List<String> keyClassParameterTypes = new ArrayList<String>();
+            List<String> keyClassParameterNames = new ArrayList<String>();
             boolean isColumn = false;
             for (int j = 0; j < keyItems.length; j++) {
 
@@ -471,13 +471,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             StringBuffer methodName = new StringBuffer();
             methodName.append("findRow");
             methodName.append(findMethodNames[i]);
-            createFindMethodRegular(methodName.toString(), qualifiedTableRowName, (String[])fAllItemParameterTypes
-                    .get(i), (String[])fAllItemNamesAsParameters.get(i), (String[])fKeyClassParameterNames.get(i),
-                    fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
-            createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName,
-                    (String[])fAllItemParameterTypes.get(i), (String[])fAllItemNamesAsParameters.get(i),
-                    (String[])fKeyClassParameterNames.get(i), fKeyVariableNames[i], fKeyClassNames[i], keys[i],
-                    codeBuilder);
+            createFindMethodRegular(methodName.toString(), qualifiedTableRowName, fAllItemParameterTypes.get(i),
+                    fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i), fKeyVariableNames[i],
+                    fKeyClassNames[i], keys[i], codeBuilder);
+            createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName, fAllItemParameterTypes
+                    .get(i), fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i), fKeyVariableNames[i],
+                    fKeyClassNames[i], keys[i], codeBuilder);
         }
     }
 
@@ -554,8 +553,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < keys.length; i++) {
             String keyClassName = fKeyClassNames[i];
             if (keyClassName == null && keys[i].containsRanges()) {
-                String[] keyClassParameterNames = (String[])fKeyClassParameterNames.get(i);
-                String[] parameterNames = (String[])fAllItemNamesAsParameters.get(i);
+                String[] keyClassParameterNames = fKeyClassParameterNames.get(i);
+                String[] parameterNames = fAllItemNamesAsParameters.get(i);
                 String[] rangeParameterNames;
                 if (keyClassParameterNames == null) {
                     rangeParameterNames = parameterNames;
@@ -565,7 +564,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                             rangeParameterNames.length);
                 }
                 for (int j = 0; j < rangeParameterNames.length; j++) {
-                    IColumnRange range = (IColumnRange)fRanges.get(rangeParameterNames[j]);
+                    IColumnRange range = fRanges.get(rangeParameterNames[j]);
                     if (range != null && range.getColumnRangeType().isTwoColumn()) {
                         keyClassName = TwoColumnKey.class.getName();
                     }
@@ -596,8 +595,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < keys.length; i++) {
             if (keys[i].containsRanges()) {
                 String tempName = StringUtils.uncapitalize(fKeyVariableNames[i]) + "MapTemp";
-                String[] parameterNames = (String[])fAllItemNamesAsParameters.get(i);
-                String[] keyClassParameterNames = (String[])fKeyClassParameterNames.get(i);
+                String[] parameterNames = fAllItemNamesAsParameters.get(i);
+                String[] keyClassParameterNames = fKeyClassParameterNames.get(i);
                 String[] rangeParameterNames;
                 if (keyClassParameterNames == null) {
                     rangeParameterNames = parameterNames;
@@ -606,21 +605,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
                             rangeParameterNames.length);
                 }
-                ArrayList getMapFirstParameter = new ArrayList();
-                ArrayList getMapSecondParameter = new ArrayList();
-                ArrayList getMapThirdParameter = new ArrayList();
+                ArrayList<String> getMapFirstParameter = new ArrayList<String>();
+                ArrayList<String> getMapSecondParameter = new ArrayList<String>();
+                ArrayList<String> getMapThirdParameter = new ArrayList<String>();
                 getMapFirstParameter.add(tempName);
                 if (keys[i].containsColumns()) {
                     getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[0]) + "Map");
                     getMapSecondParameter.add(createKeyInstantiation(fKeyClassNames[i],
-                            createInitKeyMapsKeyClassParameters((String[])fKeyClassParameterNames.get(i))).toString());
+                            createInitKeyMapsKeyClassParameters(fKeyClassParameterNames.get(i))).toString());
                     getMapThirdParameter.add(null);
                 }
                 for (int j = 0; j < rangeParameterNames.length; j++) {
                     if (j != 0) {
                         getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[j]) + "Map");
                     }
-                    IColumnRange range = (IColumnRange)fRanges.get(rangeParameterNames[j]);
+                    IColumnRange range = fRanges.get(rangeParameterNames[j]);
                     if (range != null && range.getColumnRangeType().isTwoColumn()) {
                         getMapSecondParameter.add("row.get" + StringUtils.capitalize(range.getFromColumn()) + "()");
                         getMapThirdParameter.add("row.get" + StringUtils.capitalize(range.getToColumn()) + "()");
@@ -632,19 +631,19 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     }
                 }
                 for (int j = 1; j < getMapFirstParameter.size(); j++) {
-                    methodBody.append(createInitKeyMapsMapAssignment((String)getMapFirstParameter.get(j),
-                            (String)getMapFirstParameter.get(j - 1), (String)getMapSecondParameter.get(j - 1),
-                            (String)getMapThirdParameter.get(j - 1)));
+                    methodBody.append(createInitKeyMapsMapAssignment(getMapFirstParameter.get(j), getMapFirstParameter
+                            .get(j - 1), getMapSecondParameter.get(j - 1), getMapThirdParameter.get(j - 1)));
                     methodBody.appendln();
                 }
-                methodBody.append(createInitKeyMapsPutStatement((String)getMapFirstParameter.get(getMapFirstParameter
-                        .size() - 1), (String)getMapSecondParameter.get(getMapSecondParameter.size() - 1),
-                        (String)getMapThirdParameter.get(getMapThirdParameter.size() - 1)));
+                methodBody.append(createInitKeyMapsPutStatement(getMapFirstParameter
+                        .get(getMapFirstParameter.size() - 1), getMapSecondParameter
+                        .get(getMapSecondParameter.size() - 1), getMapThirdParameter
+                        .get(getMapThirdParameter.size() - 1)));
                 methodBody.appendln();
                 continue;
             }
-            methodBody.append(buildAddKeyFragment(fKeyVariableNames[i], fKeyClassNames[i],
-                    (String[])fKeyClassParameterNames.get(i)));
+            methodBody.append(buildAddKeyFragment(fKeyVariableNames[i], fKeyClassNames[i], fKeyClassParameterNames
+                    .get(i)));
         }
 
         methodBody.appendCloseBracket();
@@ -1113,11 +1112,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private Datatype findDatatype(String name) throws CoreException {
-
         if (fDatatypes == null) {
-
             Datatype[] datatypes = getTableStructure().getIpsProject().findDatatypes(false, true);
-            fDatatypes = new HashMap(datatypes.length);
+            fDatatypes = new HashMap<String, Datatype>(datatypes.length);
             for (int i = 0; i < datatypes.length; i++) {
                 fDatatypes.put(datatypes[i].getQualifiedName(), datatypes[i]);
             }

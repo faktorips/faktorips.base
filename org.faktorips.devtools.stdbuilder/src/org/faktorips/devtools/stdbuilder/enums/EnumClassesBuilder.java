@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -70,6 +70,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         setMergeEnabled(true);
     }
 
+    @Override
     protected String generate() throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if (tableStructure == null || !tableStructure.isModelEnumType()) {
@@ -81,6 +82,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if (tableStructure == null) {
@@ -202,7 +204,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * Code sample: <pre> [Javadoc] private Integer id; </pre>
      */
     private void generateField(JavaCodeFragmentBuilder memberBuilder, IColumn column, Datatype datatype)
-    throws CoreException {
+            throws CoreException {
         memberBuilder.javaDoc(null, ANNOTATION_GENERATED);
         memberBuilder.varDeclaration(Modifier.PRIVATE, datatype.getJavaClassName(), getFieldName(column));
     }
@@ -243,12 +245,12 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         if (!checkTableColumns(columns)) {
             return;
         }
-        List columnsDatatypes = new ArrayList();
+        List<Datatype> columnsDatatypes = new ArrayList<Datatype>();
         for (int i = 0; i < columns.length; i++) {
             Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             columnsDatatypes.add(datatype);
         }
-        Datatype[] datatypes = (Datatype[])columnsDatatypes.toArray(new Datatype[columnsDatatypes.size()]);
+        Datatype[] datatypes = columnsDatatypes.toArray(new Datatype[columnsDatatypes.size()]);
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         for (int i = 0; i < columns.length; i++) {
@@ -281,7 +283,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     private IRow[] getValidTableContentRows() throws CoreException {
         ITableContentsGeneration generation = (ITableContentsGeneration)getTableContents().getFirstGeneration();
-        List validRows = new ArrayList();
+        List<IRow> validRows = new ArrayList<IRow>();
         IRow[] rows = generation.getRows();
         for (int i = 0; i < rows.length; i++) {
             MessageList msgList = rows[i].validate(getIpsProject());
@@ -289,7 +291,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
                 validRows.add(rows[i]);
             }
         }
-        return (IRow[])validRows.toArray(new IRow[validRows.size()]);
+        return validRows.toArray(new IRow[validRows.size()]);
     }
 
     /**
@@ -302,7 +304,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure)
-    throws CoreException {
+            throws CoreException {
 
         String className = getTableContents().getName();
         IColumn[] columns = structure.getColumns();
@@ -314,7 +316,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         // shown
         // to the user as an error. The builder still has to cope with this inconsistency.
         int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
-        List datatypHelpers = new ArrayList();
+        List<DatatypeHelper> datatypHelpers = new ArrayList<DatatypeHelper>();
         for (int i = 0; i < numberOfColumns; i++) {
             Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             IIpsProject project = getIpsObject().getIpsProject();
@@ -327,7 +329,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             value.append(className);
             value.append("(");
             for (int j = 0; j < numberOfColumns; j++) {
-                DatatypeHelper helper = (DatatypeHelper)datatypHelpers.get(j);
+                DatatypeHelper helper = datatypHelpers.get(j);
                 value.append(helper.newInstance(rows[i].getValue(j)));
                 if (j < numberOfColumns - 1) {
                     value.appendln(", ");
@@ -350,7 +352,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
-    throws CoreException {
+            throws CoreException {
 
         IColumn[] columns = structure.getColumns();
         if (!checkTableColumns(columns)) {
@@ -361,7 +363,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         // shown
         // to the user as an error. The builder still has to cope with this inconsistency.
         int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
-        List datatypeHelpers = getDatatypeHelpers(columns, numberOfColumns);
+        List<DatatypeHelper> datatypeHelpers = getDatatypeHelpers(columns, numberOfColumns);
         IRow[] rows = getValidTableContentRows();
         if (rows.length == 0) {
             enumDefinitionBuilder.appendln(";");
@@ -372,12 +374,12 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             value.append(getEnumValueConstantName(rows[i]));
             value.append("(");
             for (int j = 0; j < numberOfColumns; j++) {
-                DatatypeHelper helper = (DatatypeHelper)datatypeHelpers.get(j);
+                DatatypeHelper helper = datatypeHelpers.get(j);
                 // use autoboxing if possible to reduce static code size
-                if(helper instanceof IntegerHelper){
+                if (helper instanceof IntegerHelper) {
                     helper = DatatypeHelper.PRIMITIVE_INTEGER;
                 }
-                if(helper instanceof BooleanHelper){
+                if (helper instanceof BooleanHelper) {
                     helper = DatatypeHelper.PRIMITIVE_BOOLEAN;
                 }
                 value.append(helper.newInstance(rows[i].getValue(j)));
@@ -396,8 +398,8 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private List getDatatypeHelpers(IColumn[] columns, int numberOfColumns) throws CoreException {
-        List datatypeHelpers = new ArrayList();
+    private List<DatatypeHelper> getDatatypeHelpers(IColumn[] columns, int numberOfColumns) throws CoreException {
+        List<DatatypeHelper> datatypeHelpers = new ArrayList<DatatypeHelper>();
         for (int i = 0; i < numberOfColumns; i++) {
             Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             IIpsProject project = getIpsObject().getIpsProject();

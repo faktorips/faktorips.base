@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,8 +34,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Daniel Hohenberger
  */
-public class BeanChangeListenerSupportBuilder implements
-IChangeListenerSupportBuilder {
+public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportBuilder {
     private final LocalizedTextHelper localizedTextHelper = new LocalizedTextHelper(new LocalizedStringsSet(
             BeanChangeListenerSupportBuilder.class));
     private final GenPolicyCmptType genPolicyCmptType;
@@ -196,7 +195,7 @@ IChangeListenerSupportBuilder {
         methodBuilder.append("} else {");
         methodBuilder.appendln(propertyChangeSupportFieldName + ".firePropertyChange(event);");
         methodBuilder.append("}");
-        if(generateParentNotification){
+        if (generateParentNotification) {
             methodBuilder.appendln("if (" + parentModelObjectName + "!=null) {");
             methodBuilder.append("((");
             methodBuilder.appendClassName(INotificationSupport.class);
@@ -209,10 +208,10 @@ IChangeListenerSupportBuilder {
 
     private void generateMethodDelegation(JavaCodeFragmentBuilder methodBuilder,
             int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
+            Class<?>[] argClass,
             String delegateName) {
         methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
