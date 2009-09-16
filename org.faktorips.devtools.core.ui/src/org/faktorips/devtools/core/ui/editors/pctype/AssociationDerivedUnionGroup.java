@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -46,38 +45,43 @@ public class AssociationDerivedUnionGroup extends Composite {
     private PmoAssociation pmoAssociation;
     private Combo derivedUnionCombo;
 
-    public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
+    public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
+            IAssociation association) {
         super(parent, SWT.NONE);
-        
+
         GridLayout layout = new GridLayout(1, false);
         layout.marginTop = 0;
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        this.setLayout(layout);
-        
+        setLayout(layout);
+
         GridData gridData = new GridData(SWT.FILL, SWT.NONE, true, false);
-        this.setLayoutData(gridData);
-        
+        setLayoutData(gridData);
+
         Group groupDerived = uiToolkit.createGroup(this, Messages.AssociationDerivedUnionGroup_groupDerivedUnion);
         ((GridData)groupDerived.getLayoutData()).grabExcessVerticalSpace = false;
         createDerivedUnionControls(uiToolkit, bindingContext, groupDerived, association);
     }
 
-    private void createDerivedUnionControls(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
+    private void createDerivedUnionControls(UIToolkit uiToolkit,
+            BindingContext bindingContext,
+            Composite parent,
+            IAssociation association) {
 
         // derived union checkbox
         containerCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelIsDerivedUnion);
-        
+
         // is subset checkbox
-        subsetCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion);
-        
+        subsetCheckbox = uiToolkit.createCheckbox(parent,
+                Messages.AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion);
+
         // subset combo field
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(workArea, Messages.AssociationDerivedUnionGroup_labelSubsetTextField);
-        derivedUnionCombo = new Combo(workArea ,SWT.DROP_DOWN);
+        derivedUnionCombo = new Combo(workArea, SWT.DROP_DOWN);
         derivedUnionCombo.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        
+
         bindContent(bindingContext, association);
     }
 
@@ -90,66 +94,71 @@ public class AssociationDerivedUnionGroup extends Composite {
      */
     public void bindContent(BindingContext bindingContext, IAssociation association) {
         // bind controls, only if a binding context and an association is available
-        if (bindingContext == null || association == null){
+        if (bindingContext == null || association == null) {
             return;
         }
         pmoAssociation = new PmoAssociation(association);
-        
+
         addCompletionProcessor(association);
-        
+
         bindingContext.bindContent(containerCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
-        
+
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        
-        bindingContext.bindContent(new ComboField(derivedUnionCombo), association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
+
+        bindingContext.bindContent(new ComboField(derivedUnionCombo), association,
+                IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(derivedUnionCombo, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        
+
         // special binding for policy cmpt type associations only
-        //   derived union is only enabled if @see IPolicyCmptTypeAssociation.isContainerRelationApplicable()
-        if (association instanceof IPolicyCmptTypeAssociation){
-            bindingContext.bindEnabled(containerCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
-            bindingContext.bindEnabled(subsetCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
+        // derived union is only enabled if @see
+        // IPolicyCmptTypeAssociation.isContainerRelationApplicable()
+        if (association instanceof IPolicyCmptTypeAssociation) {
+            bindingContext.bindEnabled(containerCheckbox, association,
+                    IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
+            bindingContext.bindEnabled(subsetCheckbox, association,
+                    IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         }
     }
-    
+
     /**
      * Sets the available derived union association in the drop down.
      */
-    public void setDerivedUnions(String[] derivedUnions){
-        if (! derivedUnionCombo.isDisposed()){
+    public void setDerivedUnions(String[] derivedUnions) {
+        if (!derivedUnionCombo.isDisposed()) {
             derivedUnionCombo.setItems(derivedUnions);
         }
     }
-    
+
     /**
-     * Sets the defaults. If subset is <code>true</code> then the subset checkbox will be checked otherwise it will be unchecked.
+     * Sets the defaults. If subset is <code>true</code> then the subset checkbox will be checked
+     * otherwise it will be unchecked.
      */
     public void setDefaultSubset(boolean subset) {
         pmoAssociation.setSubset(subset);
         pmoAssociation.ignoreAutomaticSubsetEnabling();
     }
-    
-    private void addCompletionProcessor(IAssociation association){
+
+    private void addCompletionProcessor(IAssociation association) {
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler.createHandlerForCombo(derivedUnionCombo, CompletionUtil.createContentAssistant(completionProcessor));
+        CompletionUtil.createHandlerForCombo(derivedUnionCombo, completionProcessor);
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
         public String previousTarget = ""; //$NON-NLS-1$
-        
+
         private IAssociation association;
 
         private boolean subset;
         private boolean ignoreAutomaticSubsetEnabling = false;
-        
+
         public PmoAssociation(IAssociation association) {
             super(association);
             this.association = association;
-            this.subset = association.isSubsetOfADerivedUnion();
+            subset = association.isSubsetOfADerivedUnion();
         }
-        
+
         /**
          * Ignores the automatically enabling of the subset checkbox.
          */
@@ -160,7 +169,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         public boolean isSubset() {
             return subset;
         }
-        
+
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
@@ -172,6 +181,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected void partHasChanged() {
             initDerivedUnionCandidates(association);
 
@@ -188,7 +198,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                 setDerivedUnions(new String[0]);
                 return;
             }
-            
+
             if (!currentTarget.equals(previousTarget)) {
                 previousTarget = currentTarget;
                 try {
@@ -200,14 +210,14 @@ public class AssociationDerivedUnionGroup extends Composite {
                         derivedUnionCandidates[i] = associations[i].getName();
                     }
                     setDerivedUnions(derivedUnionCandidates);
-                    
-                    if (ignoreAutomaticSubsetEnabling){
+
+                    if (ignoreAutomaticSubsetEnabling) {
                         return;
                     }
-                    
+
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
-                    if (associations.length > 0){
+                    if (associations.length > 0) {
                         subset = true;
                         association.setSubsettedDerivedUnion(associations[0].getName());
                     }
@@ -216,13 +226,13 @@ public class AssociationDerivedUnionGroup extends Composite {
                 }
             }
         }
-        
+
         private void partHasChangedFor(IPolicyCmptTypeAssociation association) {
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = association;
             // enable subset
             if (!policyCmptTypeAssociation.isContainerRelationApplicable()) {
                 subset = false;
             }
-        }        
+        }
     }
 }
