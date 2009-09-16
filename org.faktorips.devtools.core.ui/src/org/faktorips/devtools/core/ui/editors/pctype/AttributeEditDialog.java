@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -749,7 +750,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
          * {@inheritDoc}
          */
         @Override
-        protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+        protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+                throws Exception {
             if (type == null) {
                 return;
             }
@@ -761,7 +763,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             }
         }
 
-        private void addToResult(List result, IMethod method, int documentOffset) {
+        private void addToResult(List<ICompletionProposal> result, IMethod method, int documentOffset) {
             String name = method.getSignatureString();
             CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), method
                     .getImage(), name, null, method.getDescription());
