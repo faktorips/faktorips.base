@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,13 +36,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
 /**
- * Copy of objects controlled by FaktorIps. This action activates/deactivates itself
- * according to the current selection.
+ * Copy of objects controlled by FaktorIps. This action activates/deactivates itself according to
+ * the current selection.
  * 
  * @author Thorsten Guenther
  * @author Stefan Widmaier
  */
-public class IpsCopyAction extends IpsAction implements ISelectionChangedListener{
+public class IpsCopyAction extends IpsAction implements ISelectionChangedListener {
 
     private Clipboard clipboard;
 
@@ -52,15 +52,14 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
         selectionProvider.addSelectionChangedListener(this);
     }
 
+    @Override
     public void run(IStructuredSelection selection) {
-        List selectedObjects = selection.toList();
+        List<String> copiedObjects = new ArrayList<String>();
+        List<IResource> copiedResources = new ArrayList<IResource>();
+        List<String> copiedResourceLinks = new ArrayList<String>();
 
-        List copiedObjects = new ArrayList();
-        List copiedResources = new ArrayList();
-        List copiedResourceLinks = new ArrayList(); 
-        
         // IIpsObjectPart part;
-        for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object selected = iter.next();
 
             if (selected instanceof IIpsObjectPart) {
@@ -70,10 +69,10 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
                 // copiedObjects.add(new IpsObjectPartState(part).toString());
             } else if (selected instanceof IIpsElement) {
                 IIpsPackageFragmentRoot root = null;
-                IIpsArchive ipsArchive =  null;
-                if (selected instanceof IIpsObject){
+                IIpsArchive ipsArchive = null;
+                if (selected instanceof IIpsObject) {
                     root = ((IIpsObject)selected).getIpsPackageFragment().getRoot();
-                } else if (selected instanceof IIpsPackageFragment){
+                } else if (selected instanceof IIpsPackageFragment) {
                     root = ((IIpsPackageFragment)selected).getRoot();
                 }
                 if (root != null) {
@@ -88,18 +87,18 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
                     if (selected instanceof IIpsObject) {
                         copiedResourceLinks.add(getResourceLinkInArchive((IIpsObject)selected));
                         continue;
-                    } else if (selected instanceof IIpsPackageFragment){
+                    } else if (selected instanceof IIpsPackageFragment) {
                         copiedResourceLinks.add(getResourceLinkInArchive((IIpsPackageFragment)selected));
                         continue;
                     }
                 }
-                
+
                 IResource resource = ((IIpsElement)selected).getEnclosingResource();
                 if (resource != null) {
                     copiedResources.add(resource);
                 }
             } else if (selected instanceof IFolder | selected instanceof IFile) {
-                copiedResources.add(selected);
+                copiedResources.add((IResource)selected);
             }
         }
 
@@ -110,21 +109,20 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
     }
 
     /**
-     * Disabled this action if no copyable IpsElement is selected.
-     * {@inheritDoc}
+     * Disabled this action if no copyable IpsElement is selected. {@inheritDoc}
      */
     public void selectionChanged(SelectionChangedEvent event) {
-        if(event.getSelection() instanceof IStructuredSelection){
-            IStructuredSelection selection= (IStructuredSelection) event.getSelection();
-            Object[] objects= selection.toArray();
-            boolean enabled= true;
+        if (event.getSelection() instanceof IStructuredSelection) {
+            IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+            Object[] objects = selection.toArray();
+            boolean enabled = true;
             for (int i = 0; i < objects.length; i++) {
-                if(objects[i] instanceof IIpsObjectPart){
-                    enabled= false;
+                if (objects[i] instanceof IIpsObjectPart) {
+                    enabled = false;
                 }
             }
             setEnabled(enabled);
-        }else{
+        } else {
             setEnabled(false);
         }
     }

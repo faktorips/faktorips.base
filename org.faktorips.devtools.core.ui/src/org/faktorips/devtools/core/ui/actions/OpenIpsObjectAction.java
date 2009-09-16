@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -60,14 +60,15 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         setAccelerator(SWT.CTRL | SWT.SHIFT | 'I');
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("OpenIpsObject.gif")); //$NON-NLS-1$
     }
-    
+
+    @Override
     public void run() {
         Shell parent = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
         String dialogTitle = Messages.OpenIpsObjectAction_dialogTitle;
         String dialogMessage = Messages.OpenIpsObjectAction_dialogMessage;
         perspective = getCurrentPerspective().getId();
         try {
-            BusyIndicator.showWhile(parent.getDisplay(), new Runnable(){
+            BusyIndicator.showWhile(parent.getDisplay(), new Runnable() {
                 public void run() {
                     ipsSrcFiles = getIpsSrcFiles();
                 }
@@ -80,9 +81,9 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
                 IIpsElement object = dialog.getSelectedObject();
                 if (object != null) {
                     IIpsObject ipsObject = null;
-                    if (object instanceof IIpsSrcFile){
+                    if (object instanceof IIpsSrcFile) {
                         ipsObject = ((IIpsSrcFile)object).getIpsObject();
-                    } else if (object instanceof IIpsObject){
+                    } else if (object instanceof IIpsObject) {
                         ipsObject = (IIpsObject)object;
                     }
                     IpsUIPlugin.getDefault().openEditor(ipsObject);
@@ -109,15 +110,15 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         } catch (CoreException e) {
             // if we fail to get the objects, we won't be able to open them either.
         }
-        if (perspective.equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID)) { //$NON-NLS-1$
-            List list = new ArrayList();
+        if (perspective.equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID)) {
+            List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
             for (int i = 0; i < ipsSrcFiles.length; i++) {
                 IIpsSrcFile object = ipsSrcFiles[i];
                 if (object.getIpsObjectType().isProductDefinitionType()) {
                     list.add(object);
                 }
             }
-            ipsSrcFiles = (IIpsSrcFile[])list.toArray(new IIpsSrcFile[list.size()]);
+            ipsSrcFiles = list.toArray(new IIpsSrcFile[list.size()]);
         }
         return ipsSrcFiles;
     }
@@ -127,13 +128,13 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     }
 
     public IpsObjectType[] getIpsObjectTypes() {
-        SortedMap map = new TreeMap();
+        SortedMap<String, IpsObjectType> map = new TreeMap<String, IpsObjectType>();
         for (int i = 0; i < ipsSrcFiles.length; i++) {
             IIpsSrcFile srcFile = ipsSrcFiles[i];
             IpsObjectType type = srcFile.getIpsObjectType();
             map.put(type.getId(), type);
         }
-        return (IpsObjectType[])map.values().toArray(new IpsObjectType[map.size()]);
+        return map.values().toArray(new IpsObjectType[map.size()]);
     }
 
     /*
@@ -143,18 +144,18 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
      * @throws CoreException if getting objects from a <code>IIpsProject</code> fails.
      */
     private IIpsSrcFile[] getAllIpsSrcFiles() throws CoreException {
-        List list = new ArrayList();
+        List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
         IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
         for (int i = 0; i < projects.length; i++) {
             IIpsProject project = projects[i];
             project.findAllIpsSrcFiles(list);
         }
-        Set set = new HashSet();
-        for (Iterator iter = list.iterator(); iter.hasNext();) {
-            IIpsElement object = (IIpsElement)iter.next();
+        Set<IIpsSrcFile> set = new HashSet<IIpsSrcFile>();
+        for (Iterator<IIpsSrcFile> iter = list.iterator(); iter.hasNext();) {
+            IIpsSrcFile object = iter.next();
             set.add(object);
         }
-        return (IIpsSrcFile[])set.toArray(new IIpsSrcFile[set.size()]);
+        return set.toArray(new IIpsSrcFile[set.size()]);
     }
 
     // ---- IWorkbenchWindowActionDelegate ------------------------------------------------

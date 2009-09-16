@@ -479,10 +479,10 @@ public abstract class IpsAction extends Action {
     }
 
     /**
-     * Extracted as private method to get along with one suppress warnings annotation.
+     * Extracted as protected method to get along with one suppress warnings annotation.
      */
     @SuppressWarnings("unchecked")
-    private Iterator<Object> getSelectionIterator(IStructuredSelection selection) {
+    protected Iterator<Object> getSelectionIterator(IStructuredSelection selection) {
         return selection.iterator();
     }
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
@@ -32,31 +33,30 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 public class IpsCutAction extends IpsAction {
 
     private Clipboard clipboard;
-    
+
     public IpsCutAction(ISelectionProvider selectionProvider, Shell shell) {
         super(selectionProvider);
         clipboard = new Clipboard(shell.getDisplay());
     }
 
+    @Override
     public void run(IStructuredSelection selection) {
-        List selectedObjects = selection.toList();
-
-        List removedObjects = new ArrayList();
+        List<String> removedObjects = new ArrayList<String>();
         IIpsObjectPart part;
-        for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object selected = iter.next();
-
             if (selected instanceof IIpsObjectPart) {
                 part = (IIpsObjectPart)selected;
                 removedObjects.add(new IpsObjectPartState(part).toString());
                 part.delete();
             }
         }
-        
+
         if (removedObjects.size() > 0) {
-        	ArrayList emptyList = new ArrayList(0);
-            clipboard.setContents(getDataArray(removedObjects, emptyList, null), getTypeArray(removedObjects, emptyList, null));
+            ArrayList<IResource> emptyList = new ArrayList<IResource>(0);
+            clipboard.setContents(getDataArray(removedObjects, emptyList, null), getTypeArray(removedObjects,
+                    emptyList, null));
         }
-//    	throw new RuntimeException("Forced exception to test feature requested by #326. 3");
+        // throw new RuntimeException("Forced exception to test feature requested by #326. 3");
     }
 }
