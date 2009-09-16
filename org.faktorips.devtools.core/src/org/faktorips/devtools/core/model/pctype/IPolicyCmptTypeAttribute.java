@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -165,15 +168,17 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the set of allowed values.
+     * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
+     * provide more detailed documentation.
+     * 
+     * For policy component type attributes the allowed values set types are the types returned by
+     * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
+     * attribute's datatype. However if the datatype is defined by an {@link IEnumType} with values
+     * stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
+     * 
+     * @throws CoreException if an error occurs.
      */
-    public IValueSet getValueSet();
-
-    /**
-     * Sets the type of the value set defining the values valid for this attribute. If the type of
-     * the current value set is the same as the new type, the attribute remains unchanged.
-     */
-    public void setValueSetType(ValueSetType type);
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates a copy of the given value set and aplies this copy to this attribute.

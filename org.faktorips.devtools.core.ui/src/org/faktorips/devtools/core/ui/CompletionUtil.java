@@ -30,10 +30,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.internal.text.HTMLTextPresenter;
 
 /**
- *
+ * Collection of utility for content assist and auto completion. As of Eclipse 3.2 most the
+ * ContentAssistHandler is replaced by JFace field assist support. So this class encapsulate the
+ * calls to the deprecated API.
  */
 public class CompletionUtil {
 
@@ -55,6 +59,24 @@ public class CompletionUtil {
     private static final String PREFIX_COMPLETION = PreferenceConstants.CODEASSIST_PREFIX_COMPLETION;
 
     private static JavaTextTools textTools;
+
+    /**
+     * Encapsulate the deprecated call to
+     * {@link ContentAssistHandler#createHandlerForText(Text, SubjectControlContentAssistant)} to
+     * avoid the deprecated warning in a lot of source sections.
+     */
+    public static ContentAssistHandler createHandlerForText(Text text, SubjectControlContentAssistant contentAssistant) {
+        return ContentAssistHandler.createHandlerForText(text, contentAssistant);
+    }
+
+    /**
+     * Encapsulate the deprecated call to
+     * {@link ContentAssistHandler#createHandlerForText(Text, SubjectControlContentAssistant)} to
+     * avoid the deprecated warning in a lot of source sections.
+     */
+    public static ContentAssistHandler createHandlerForText(Text text, IContentAssistProcessor processor) {
+        return ContentAssistHandler.createHandlerForText(text, createContentAssistant(processor));
+    }
 
     public static SubjectControlContentAssistant createContentAssistant(IContentAssistProcessor processor) {
         final SubjectControlContentAssistant contentAssistant = new SubjectControlContentAssistant();

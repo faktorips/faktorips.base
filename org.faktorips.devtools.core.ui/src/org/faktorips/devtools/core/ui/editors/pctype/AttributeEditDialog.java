@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -385,9 +384,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         });
         Text compuationMethodText = uiToolkit.createText(temp);
         MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
-        CompletionUtil.createContentAssistant(processor);
-        ContentAssistHandler.createHandlerForText(compuationMethodText, CompletionUtil
-                .createContentAssistant(processor));
+        CompletionUtil.createHandlerForText(compuationMethodText, processor);
 
         bindingContext.bindContent(compuationMethodText, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
@@ -697,8 +694,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void enableCheckValueAgainstValueSetRule(boolean enabled) {
-        for (Iterator iter = ruleDependendControls.iterator(); iter.hasNext();) {
-            Control control = (Control)iter.next();
+        for (Iterator<Control> iter = ruleDependendControls.iterator(); iter.hasNext();) {
+            Control control = iter.next();
             control.setEnabled(enabled);
         }
 

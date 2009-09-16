@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -51,7 +52,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         if (datatype == null) {
             return false;
         }
-        return datatype.isEnum();
+        return datatype.isEnum() && !(datatype instanceof EnumTypeDatatypeAdapter);
     }
 
     /**
