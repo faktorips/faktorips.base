@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -79,6 +80,38 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("attr");
+    }
+
+    public void testGetPositions() {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        List<Integer> positions = set.getPositions("1");
+        assertEquals(0, positions.size());
+
+        set.addValue("1");
+        positions = set.getPositions("1");
+        assertEquals(1, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+
+        set.addValue("2");
+        set.addValue("3");
+        set.addValue("1");
+        positions = set.getPositions("1");
+        assertEquals(2, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
+
+        set.addValue("1");
+        positions = set.getPositions("1");
+        assertEquals(3, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
+        assertEquals(4, positions.get(2).intValue());
+
+        set.removeValue(0);
+        positions = set.getPositions("1");
+        assertEquals(2, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
     }
 
     public void testContainsValue() {
@@ -183,23 +216,109 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals("one", set.getValue(2));
     }
 
-    public void testRemoveValue() {
+    public void testRemoveValue_byValue() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("three");
+        set.addValue("one");
+        set.addValue("four");
+        set.addValue("one");
+        set.addValue("three");
+        set.addValue("five");
+
+        // remove something that is not part of the set
+        set.removeValue("unknown");
+        String[] values = set.getValues();
+        assertEquals(8, values.length);
+
+        // "four" has one occurance
+        set.removeValue("four");
+        values = set.getValues();
+        assertEquals(7, values.length);
+        assertEquals("one", values[0]);
+        assertEquals("two", values[1]);
+        assertEquals("three", values[2]);
+        assertEquals("one", values[3]);
+        assertEquals("three", values[5]);
+        assertEquals("one", values[4]);
+        assertEquals("five", values[6]);
+
+        // "one" has multiple occurances and is first entry
+        set.removeValue("one");
+        values = set.getValues();
+        assertEquals(4, values.length);
+        assertEquals("two", values[0]);
+        assertEquals("three", values[1]);
+        assertEquals("three", values[2]);
+        assertEquals("five", values[3]);
+
+        // "five" has one occurance and is last index
+        set.removeValue("five");
+        values = set.getValues();
+        assertEquals(3, values.length);
+        assertEquals("two", values[0]);
+        assertEquals("three", values[1]);
+        assertEquals("three", values[2]);
+
+        // "three" has multiple occurances and is last entry
+        set.removeValue("three");
+        values = set.getValues();
+        assertEquals(1, values.length);
+        assertEquals("two", values[0]);
+
+        // "three" has multiple occurances and is last entry
+        set.removeValue("two");
+        values = set.getValues();
+        assertEquals(0, values.length);
+
+    }
+
+    public void testRemoveValue_byIndex() {
         IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         set.addValue("one");
         assertEquals(3, set.getValues().length);
+        List<Integer> positions = set.getPositions("one");
+        assertEquals(2, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(2, positions.get(1).intValue());
+        positions = set.getPositions("two");
+        assertEquals(1, positions.size());
+        assertEquals(1, positions.get(0).intValue());
 
         set.removeValue(0);
+        // set is now: two, one
         assertEquals(2, set.getValues().length);
         assertEquals("two", set.getValue(0));
+        positions = set.getPositions("one");
+        assertEquals(1, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+        positions = set.getPositions("two");
+        assertEquals(1, positions.size());
+        assertEquals(0, positions.get(0).intValue());
 
         set.removeValue(0);
+        // set is now: one
         assertEquals(1, set.getValues().length);
         assertEquals("one", set.getValue(0));
+        positions = set.getPositions("one");
+        assertEquals(1, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        positions = set.getPositions("two");
+        assertEquals(0, positions.size());
 
         set.removeValue(0);
+        // set is now empty
         assertEquals(0, set.getValues().length);
+        positions = set.getPositions("one");
+        assertEquals(0, positions.size());
+        positions = set.getPositions("two");
+        assertEquals(0, positions.size());
+    }
+
+    public void testRemoveValue_byIndex_LastEntry() {
     }
 
     public void testGetValue() {
@@ -214,14 +333,163 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testSetValue() {
+    public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("three");
+
+        set.setValue(1, "four");
+        assertEquals("four", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(0, positions.size());
+        positions = set.getPositions("four");
+        assertEquals(1, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+    }
+
+    public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("three");
+
+        set.setValue(1, "three");
+        assertEquals("three", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(0, positions.size());
+        positions = set.getPositions("three");
+        assertEquals(2, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+        assertEquals(2, positions.get(1).intValue());
+    }
+
+    public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("three");
+        set.addValue("three");
+
+        set.setValue(1, "three");
+        assertEquals("three", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(0, positions.size());
+        positions = set.getPositions("three");
+        assertEquals(3, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+        assertEquals(2, positions.get(1).intValue());
+        assertEquals(3, positions.get(2).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
 
-        set.setValue(1, "anderstwo");
-        assertEquals("anderstwo", set.getValue(1));
+        set.setValue(1, "three");
+        assertEquals("three", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(1, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        positions = set.getPositions("three");
+        assertEquals(1, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("two");
+
+        set.setValue(1, "one");
+        assertEquals("one", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(1, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        positions = set.getPositions("one");
+        assertEquals(2, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(1, positions.get(1).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("two");
+        set.addValue("one");
+
+        set.setValue(1, "one");
+        assertEquals("one", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(1, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        positions = set.getPositions("one");
+        assertEquals(3, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(1, positions.get(1).intValue());
+        assertEquals(3, positions.get(2).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("two");
+        set.addValue("two");
+
+        set.setValue(1, "three");
+        assertEquals("three", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(2, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
+        positions = set.getPositions("three");
+        assertEquals(1, positions.size());
+        assertEquals(1, positions.get(0).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("two");
+        set.addValue("two");
+
+        set.setValue(1, "one");
+        assertEquals("one", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(2, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
+        positions = set.getPositions("one");
+        assertEquals(2, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(1, positions.get(1).intValue());
+    }
+
+    public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("one");
+        set.addValue("two");
+        set.addValue("two");
+        set.addValue("two");
+        set.addValue("one");
+
+        set.setValue(1, "one");
+        assertEquals("one", set.getValue(1));
+        List<Integer> positions = set.getPositions("two");
+        assertEquals(2, positions.size());
+        assertEquals(2, positions.get(0).intValue());
+        assertEquals(3, positions.get(1).intValue());
+        positions = set.getPositions("one");
+        assertEquals(3, positions.size());
+        assertEquals(0, positions.get(0).intValue());
+        assertEquals(1, positions.get(1).intValue());
+        assertEquals(4, positions.get(2).intValue());
     }
 
     public void testCreateFromXml() {

@@ -287,6 +287,9 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         }
 
         public void modify(Object element, String property, Object value) {
+            if (element == null) {
+                return;
+            }
             if (element instanceof Item) {
                 element = ((Item)element).getData();
             }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +53,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public static final String XML_TAG = "Enum"; //$NON-NLS-1$    
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
+    // The values in the set as list
     private ArrayList<String> values = new ArrayList<String>();
+
+    // A map with the values as keys and the index positions of the occurences of a value as
+    // "map value". If a value occurs once, the "map value" the index is stored as single Integer.
+    // If a value occurs more than once, the "map value" is a list containing the indexes of the
+    // occurences.
     private Map<String, Object> valuesToIndexMap = new HashMap<String, Object>();
 
     public EnumValueSet(IIpsObjectPart parent, int partId) {
@@ -69,6 +76,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
         Object o = valuesToIndexMap.get(value);
@@ -76,6 +84,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             positions.add((Integer)o);
         } else if (o instanceof List) {
             positions.addAll((Collection<? extends Integer>)o);
+            Collections.sort(positions);
         }
         return positions;
     }
@@ -208,13 +217,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
-    @SuppressWarnings("unchecked")
     private void addValueWithoutTriggeringChangeEvent(String newValue) {
         values.add(newValue);
         Integer newIndex = values.size() - 1;
         setValueWithoutTriggeringChangeEvent(newValue, newIndex);
     }
 
+    @SuppressWarnings("unchecked")
     private void setValueWithoutTriggeringChangeEvent(String newValue, Integer newIndex) {
         Object o = valuesToIndexMap.get(newValue);
         if (o == null) {
@@ -260,11 +269,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         if (o instanceof Integer) {
             Integer index = (Integer)o;
-            values.remove(index);
+            values.remove(index.intValue()); // Without intValue(), we call remove(Object o)!!!
             if (index == values.size()) {
                 return;
             }
             refillValuesToIndexMap();
+            return;
         }
         for (Iterator<String> it = values.iterator(); it.hasNext();) {
             String each = it.next();
@@ -292,6 +302,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public void setValue(int index, String value) {
         String oldValue = values.get(index);
         values.set(index, value);
@@ -302,7 +313,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             List<Integer> indexes = (List<Integer>)o;
             indexes.remove((Object)index);
             if (indexes.size() == 1) {
-                valuesToIndexMap.put(value, indexes.get(0));
+                valuesToIndexMap.put(oldValue, indexes.get(0));
             }
         }
         setValueWithoutTriggeringChangeEvent(value, index);
@@ -387,6 +398,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void checkForDuplicates(MessageList list) {
         for (String value : valuesToIndexMap.keySet()) {
             Object o = valuesToIndexMap.get(value);
