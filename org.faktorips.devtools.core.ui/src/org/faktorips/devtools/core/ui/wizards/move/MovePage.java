@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -44,119 +45,117 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Page to let the user select the target package for the move. 
+ * Page to let the user select the target package for the move.
  * 
  * @author Thorsten Guenther
  */
 public class MovePage extends WizardPage implements ModifyListener {
 
-	/**
-	 * The input field for the target package. 
-	 */
-	private TreeViewer targetInput;
+    /**
+     * The input field for the target package.
+     */
+    private TreeViewer targetInput;
 
-	/**
-	 * The page-id to identify this page.
-	 */
-	private static final String PAGE_ID = "MoveWizard.move"; //$NON-NLS-1$
+    /**
+     * The page-id to identify this page.
+     */
+    private static final String PAGE_ID = "MoveWizard.move"; //$NON-NLS-1$
 
     private IIpsElement[] sources;
-    
-	/**
-	 * Creates a new page to select the objects to copy.
-	 */
-	protected MovePage(IIpsElement[] selectedObjects) {
-		super(PAGE_ID, Messages.MovePage_title, null);
-        this.sources = selectedObjects;
-		super.setDescription(Messages.MovePage_description);
-		super.setPageComplete(false);
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createControl(Composite parent) {
-		UIToolkit toolkit = new UIToolkit(null);
+    /**
+     * Creates a new page to select the objects to copy.
+     */
+    protected MovePage(IIpsElement[] selectedObjects) {
+        super(PAGE_ID, Messages.MovePage_title, null);
+        sources = selectedObjects;
+        super.setDescription(Messages.MovePage_description);
+        super.setPageComplete(false);
+    }
 
-		Composite root = toolkit.createComposite(parent);
-		root.setLayout(new GridLayout(1, false));
-		root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		setControl(root);
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
+        UIToolkit toolkit = new UIToolkit(null);
 
-		toolkit.createFormLabel(root, Messages.MovePage_targetLabel);
+        Composite root = toolkit.createComposite(parent);
+        root.setLayout(new GridLayout(1, false));
+        root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        setControl(root);
 
-		Tree tree = new Tree(root, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        toolkit.createFormLabel(root, Messages.MovePage_targetLabel);
+
+        Tree tree = new Tree(root, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         targetInput = new TreeViewer(tree);
         targetInput.setLabelProvider(new MoveLabelProvider());
         targetInput.setContentProvider(new MoveContentProvider());
         try {
             targetInput.setInput(IpsPlugin.getDefault().getIpsModel().getIpsProjects());
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             // error creating the input, rethrow as runtime exception
             throw new RuntimeException(e);
         }
-        
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.minimumHeight = 300;
         tree.setLayoutData(gridData);
-        
-        targetInput.addSelectionChangedListener(new ISelectionChangedListener(){
+
+        targetInput.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 setPageComplete();
             }
         });
-        
+
         targetInput.expandToLevel(2);
-	}
-    
-	/**
-	 * Set the current completion state (and, if neccessary, messages for the user
-	 * to help him to get the page complete).
-	 */
-	private void setPageComplete() {
-		setMessage(null);
-		setErrorMessage(null);
-        
+    }
+
+    /**
+     * Set the current completion state (and, if neccessary, messages for the user to help him to
+     * get the page complete).
+     */
+    private void setPageComplete() {
+        setMessage(null);
+        setErrorMessage(null);
+
         if (targetInput == null) {
             // page not yet created, so do nothing.
             return;
         }
-        
+
         // check for invalid sources
         try {
             IpsStatus status = MoveOperation.checkSourcesForInvalidContent(sources);
-            if (status != null){
-                if (status.getSeverity() == IpsStatus.ERROR){
+            if (status != null) {
+                if (status.getSeverity() == IStatus.ERROR) {
                     setErrorMessage(status.getMessage());
                     super.setPageComplete(false);
-                    return;                    
+                    return;
                 } else {
                     setMessage(status.getMessage());
                 }
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             super.setPageComplete(false);
             return;
         }
-        
+
         // check for invalid target selection
-		Object selected = ((IStructuredSelection)targetInput.getSelection()).getFirstElement();
-        if (! (selected instanceof IIpsPackageFragment)){
+        Object selected = ((IStructuredSelection)targetInput.getSelection()).getFirstElement();
+        if (!(selected instanceof IIpsPackageFragment)) {
             super.setPageComplete(false);
             return;
         }
-        
+
         try {
-            if (MoveOperation.isTargetIncludedInSources(sources, (IIpsPackageFragment)selected)){
+            if (MoveOperation.isTargetIncludedInSources(sources, (IIpsPackageFragment)selected)) {
                 setErrorMessage(Messages.MovePage_msgErrorSelectedTargetIsIncludedInSource);
                 super.setPageComplete(false);
                 return;
             } else {
                 for (int i = 0; i < sources.length; i++) {
-                    if (! (sources[i] instanceof IIpsPackageFragment)){
+                    if (!(sources[i] instanceof IIpsPackageFragment)) {
                         continue;
                     }
                     IIpsPackageFragment[] childs = ((IIpsPackageFragment)selected).getChildIpsPackageFragments();
@@ -170,74 +169,73 @@ public class MovePage extends WizardPage implements ModifyListener {
                     }
                 }
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             super.setPageComplete(false);
             return;
         }
-        
+
         // all ok
         super.setPageComplete(true);
-	}
+    }
 
-	/**
-	 * Returns the package selected as target. The returned package is neither guaranteed to exist nor
-	 * that it can be created.
-	 */
-	public IIpsPackageFragment getTarget() {
-		Object selected = ((IStructuredSelection) targetInput.getSelection())
-				.getFirstElement();
-		return (IIpsPackageFragment) selected;
-	}
+    /**
+     * Returns the package selected as target. The returned package is neither guaranteed to exist
+     * nor that it can be created.
+     */
+    public IIpsPackageFragment getTarget() {
+        Object selected = ((IStructuredSelection)targetInput.getSelection()).getFirstElement();
+        return (IIpsPackageFragment)selected;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void modifyText(ModifyEvent e) {
-		setPageComplete();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void modifyText(ModifyEvent e) {
+        setPageComplete();
+    }
 
-	/**
-	 * Label provider for the package selection tree used by this move page.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class MoveLabelProvider extends DefaultLabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getText(Object element) {
- 			String text = ""; //$NON-NLS-1$
+    /**
+     * Label provider for the package selection tree used by this move page.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class MoveLabelProvider extends DefaultLabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(Object element) {
+            String text = ""; //$NON-NLS-1$
             if (element instanceof IIpsPackageFragment) {
-                if (((IIpsPackageFragment) element).isDefaultPackage()) {
-					text = super.getText(element);
-				} else {
-				    text = ((IIpsPackageFragment) element).getLastSegmentName();
+                if (((IIpsPackageFragment)element).isDefaultPackage()) {
+                    text = super.getText(element);
+                } else {
+                    text = ((IIpsPackageFragment)element).getLastSegmentName();
                 }
-			} else {
+            } else {
                 text = super.getText(element);
             }
-			return text;
-		}
-	}
+            return text;
+        }
+    }
 
-	/**
-	 * Content provider for the package selection tree used by this move page.
-	 * All packages (including the default package) of one project are examind.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class MoveContentProvider implements ITreeContentProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object[] getChildren(Object parentElement) {
+    /**
+     * Content provider for the package selection tree used by this move page. All packages
+     * (including the default package) of one project are examind.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class MoveContentProvider implements ITreeContentProvider {
+        /**
+         * {@inheritDoc}
+         */
+        public Object[] getChildren(Object parentElement) {
             try {
                 if (parentElement instanceof IIpsProject) {
                     return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
                 } else if (parentElement instanceof IIpsPackageFragmentRoot) {
-                    ArrayList result = new ArrayList();
+                    ArrayList<IIpsPackageFragment> result = new ArrayList<IIpsPackageFragment>();
                     IIpsPackageFragment def = ((IIpsPackageFragmentRoot)parentElement).getDefaultIpsPackageFragment();
                     result.add(def);
                     result.addAll(Arrays.asList(def.getChildIpsPackageFragments()));
@@ -248,55 +246,54 @@ public class MovePage extends WizardPage implements ModifyListener {
                     }
                     return ((IIpsPackageFragment)parentElement).getChildIpsPackageFragments();
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
-            }            
-            return new Object[0];
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object getParent(Object element) {
-			if (element instanceof IIpsPackageFragment) {
-				return ((IIpsPackageFragment) element).getParent();
-			} else  if (element instanceof IIpsPackageFragmentRoot) {
-                return ((IIpsPackageFragmentRoot) element).getIpsProject();
             }
-			return null;
-		}
+            return new Object[0];
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean hasChildren(Object element) {
-			return getChildren(element).length > 0;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object getParent(Object element) {
+            if (element instanceof IIpsPackageFragment) {
+                return ((IIpsPackageFragment)element).getParent();
+            } else if (element instanceof IIpsPackageFragmentRoot) {
+                return ((IIpsPackageFragmentRoot)element).getIpsProject();
+            }
+            return null;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object[] getElements(Object inputElement) {
-			if (inputElement instanceof IIpsProject[]) {
-				return (IIpsProject[]) inputElement;
-			}
-			return new Object[0];
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public boolean hasChildren(Object element) {
+            return getChildren(element).length > 0;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dispose() {
-			// nothing to do
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object[] getElements(Object inputElement) {
+            if (inputElement instanceof IIpsProject[]) {
+                return (IIpsProject[])inputElement;
+            }
+            return new Object[0];
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// nothing to do
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public void dispose() {
+            // nothing to do
+        }
 
-	}
+        /**
+         * {@inheritDoc}
+         */
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // nothing to do
+        }
+
+    }
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -45,101 +45,101 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Page to let the user enter a new name for the object to rename. 
+ * Page to let the user enter a new name for the object to rename.
  * 
  * @author Thorsten Guenther
  */
 public class RenamePage extends WizardPage implements ModifyListener {
-	
-	// The input field holding the complete new name.
-	private Text newName;
-	
-	// Input holding the version id part of the name. 
-	private Text versionId;
-	
-	// Input for the constant part of the name.
-	private Text constNamePart;
 
-	// Input for the runtime id.
+    // The input field holding the complete new name.
+    private Text newName;
+
+    // Input holding the version id part of the name.
+    private Text versionId;
+
+    // Input for the constant part of the name.
+    private Text constNamePart;
+
+    // Input for the runtime id.
     private Text runtimeId;
-    
-	// The object to rename
-	private IIpsElement renameObject;
-	
-	// The page-id to identify this page.
-	private static final String PAGE_ID = "MoveWizard.configure"; //$NON-NLS-1$
 
-	// The naming strategy to use for move/rename.
-	private IProductCmptNamingStrategy namingStrategy;
-	
-	/**
-	 * Creates a new page to select the objects to copy.
-	 */
-	protected RenamePage(IIpsElement renameObject) {
-		super(PAGE_ID, Messages.RenamePage_rename, null);
-		
-		this.renameObject = renameObject;
-	
-		try {
-			namingStrategy = renameObject.getIpsProject().getProductCmptNamingStrategy();
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-		
-		super.setDescription(Messages.RenamePage_msgChooseNewName);
-		setPageComplete();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createControl(Composite parent) {
+    // The object to rename
+    private IIpsElement renameObject;
+
+    // The page-id to identify this page.
+    private static final String PAGE_ID = "MoveWizard.configure"; //$NON-NLS-1$
+
+    // The naming strategy to use for move/rename.
+    private IProductCmptNamingStrategy namingStrategy;
+
+    /**
+     * Creates a new page to select the objects to copy.
+     */
+    protected RenamePage(IIpsElement renameObject) {
+        super(PAGE_ID, Messages.RenamePage_rename, null);
+
+        this.renameObject = renameObject;
+
+        try {
+            namingStrategy = renameObject.getIpsProject().getProductCmptNamingStrategy();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+
+        super.setDescription(Messages.RenamePage_msgChooseNewName);
+        setPageComplete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
 
-		Composite root = toolkit.createComposite(parent);
-		root.setLayout(new GridLayout(1, false));
-		root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		setControl(root);
+        Composite root = toolkit.createComposite(parent);
+        root.setLayout(new GridLayout(1, false));
+        root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        setControl(root);
 
-		Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
+        Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
-		if (renameObject instanceof IpsPackageFragment || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
-			createControlForObject(toolkit, inputRoot, (IIpsElement)renameObject);
-		}
-		else if (renameObject instanceof IProductCmpt){
-			createControlForProduct(toolkit, inputRoot, (IProductCmpt)renameObject);
-		}
-        else{
+        if (renameObject instanceof IpsPackageFragment || renameObject instanceof ITableContents
+                || renameObject instanceof ITestCase) {
+            createControlForObject(toolkit, inputRoot, renameObject);
+        } else if (renameObject instanceof IProductCmpt) {
+            createControlForProduct(toolkit, inputRoot, (IProductCmpt)renameObject);
+        } else {
             throw new RuntimeException("Rename not supported for object type " + renameObject.getClass().getName()); //$NON-NLS-1$
         }
-		newName.addModifyListener(this);
-		setPageComplete();
-	}
+        newName.addModifyListener(this);
+        setPageComplete();
+    }
 
-	/**
-	 * Creates the input controlls for an IpsObject.
-	 */
-	private void createControlForObject(UIToolkit toolkit, Composite parent, IIpsElement obj) {
-		toolkit.createLabel(parent, Messages.RenamePage_newName);
-		newName = toolkit.createText(parent);
-		if (obj instanceof IpsPackageFragment) {
-			newName.setText(((IIpsPackageFragment)obj).getLastSegmentName());
-		} else {
-			newName.setText(obj.getName());
-		}
-	}
-	
-	/**
-	 * Creates the input controls for a product component to rename
-	 */
-	private void createControlForProduct(UIToolkit toolkit, Composite parent, IProductCmpt product) {
-		if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-			toolkit.createLabel(parent, Messages.RenamePage_labelConstNamePart);
-			constNamePart = toolkit.createText(parent);
+    /**
+     * Creates the input controlls for an IpsObject.
+     */
+    private void createControlForObject(UIToolkit toolkit, Composite parent, IIpsElement obj) {
+        toolkit.createLabel(parent, Messages.RenamePage_newName);
+        newName = toolkit.createText(parent);
+        if (obj instanceof IpsPackageFragment) {
+            newName.setText(((IIpsPackageFragment)obj).getLastSegmentName());
+        } else {
+            newName.setText(obj.getName());
+        }
+    }
 
-			String label = NLS.bind(Messages.RenamePage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-			toolkit.createLabel(parent, label);
-			versionId = toolkit.createText(parent);
+    /**
+     * Creates the input controls for a product component to rename
+     */
+    private void createControlForProduct(UIToolkit toolkit, Composite parent, IProductCmpt product) {
+        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+            toolkit.createLabel(parent, Messages.RenamePage_labelConstNamePart);
+            constNamePart = toolkit.createText(parent);
+
+            String label = NLS.bind(Messages.RenamePage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+            toolkit.createLabel(parent, label);
+            versionId = toolkit.createText(parent);
 
             toolkit.createLabel(parent, Messages.RenamePage_labelRuntimeId);
             runtimeId = toolkit.createText(parent);
@@ -151,69 +151,70 @@ public class RenamePage extends WizardPage implements ModifyListener {
                     updateFullName();
                 }
             });
-            
-			toolkit.createLabel(parent, Messages.RenamePage_newName);
-			newName = toolkit.createText(parent);
-			newName.setEnabled(false);
 
-			versionId.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					updateFullName();
-				}
-			});
-			constNamePart.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					updateFullName();
-				}
-			});
-			try {
-				versionId.setText(namingStrategy.getVersionId(product.getName()));
-				constNamePart.setText(namingStrategy.getKindId(product.getName()));
-			} catch (IllegalArgumentException e) {
-				constNamePart.setText(product.getName());
-				versionId.setText(""); //$NON-NLS-1$
-			}
-			
-		} else {
-			toolkit.createLabel(parent, Messages.RenamePage_newName);
-			newName = toolkit.createText(parent);
-			newName.setText(renameObject.getName());
-		}
-	}
-	
-	/**
-	 * Constructs the full name out of the version id and the constant name part 
-	 * using the active product coponent naming strategy.
-	 */
-	private void updateFullName() {
-		newName.setText(namingStrategy.getProductCmptName(constNamePart.getText(), versionId.getText()));
-	}
+            toolkit.createLabel(parent, Messages.RenamePage_newName);
+            newName = toolkit.createText(parent);
+            newName.setEnabled(false);
 
-	/**
-	 * If at least one message is contained in the given list, the first message is set
-	 * as error-message. 
-	 *  
-	 * @param list The list to look for messages in.
-	 * @return <code>true</code> if an error message was found and set, <code>false</code> otherwise.
-	 */
-	private boolean setMessageFromList(MessageList list) {
-		if (!list.isEmpty()) {
+            versionId.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    updateFullName();
+                }
+            });
+            constNamePart.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    updateFullName();
+                }
+            });
+            try {
+                versionId.setText(namingStrategy.getVersionId(product.getName()));
+                constNamePart.setText(namingStrategy.getKindId(product.getName()));
+            } catch (IllegalArgumentException e) {
+                constNamePart.setText(product.getName());
+                versionId.setText(""); //$NON-NLS-1$
+            }
+
+        } else {
+            toolkit.createLabel(parent, Messages.RenamePage_newName);
+            newName = toolkit.createText(parent);
+            newName.setText(renameObject.getName());
+        }
+    }
+
+    /**
+     * Constructs the full name out of the version id and the constant name part using the active
+     * product coponent naming strategy.
+     */
+    private void updateFullName() {
+        newName.setText(namingStrategy.getProductCmptName(constNamePart.getText(), versionId.getText()));
+    }
+
+    /**
+     * If at least one message is contained in the given list, the first message is set as
+     * error-message.
+     * 
+     * @param list The list to look for messages in.
+     * @return <code>true</code> if an error message was found and set, <code>false</code>
+     *         otherwise.
+     */
+    private boolean setMessageFromList(MessageList list) {
+        if (!list.isEmpty()) {
             String text = list.getFirstMessage(list.getSeverity()).getText();
-            if (list.getSeverity() == Message.ERROR){
-                setMessage(text, DialogPage.ERROR);
+            if (list.getSeverity() == Message.ERROR) {
+                setMessage(text, IMessageProvider.ERROR);
                 return true;
-            } else if (list.getSeverity() == Message.WARNING){
-                setMessage(text, DialogPage.WARNING);
-            } else if (list.getSeverity() == Message.INFO){
-                setMessage(text, DialogPage.INFORMATION);
+            } else if (list.getSeverity() == Message.WARNING) {
+                setMessage(text, IMessageProvider.WARNING);
+            } else if (list.getSeverity() == Message.INFO) {
+                setMessage(text, IMessageProvider.INFORMATION);
             } else {
-                setMessage(text, DialogPage.NONE);
+                setMessage(text, IMessageProvider.NONE);
             }
         }
-		return false;
-	}
-	
-	/**
+        return false;
+    }
+
+    /**
      * Set the current completion state (and, if neccessary, messages for the user to help him to
      * get the page complete).
      */
@@ -322,63 +323,71 @@ public class RenamePage extends WizardPage implements ModifyListener {
     private void validateForRuntimeId(MessageList ml) throws CoreException {
         if (renameObject instanceof IProductCmpt) {
             // additional validate the runtime id
-            IProductCmpt pcmtWithSameRuntimeId = renameObject.getIpsProject().findProductCmptByRuntimeId(runtimeId.getText());
+            IProductCmpt pcmtWithSameRuntimeId = renameObject.getIpsProject().findProductCmptByRuntimeId(
+                    runtimeId.getText());
             if (pcmtWithSameRuntimeId != null && pcmtWithSameRuntimeId != renameObject) {
-                String text = NLS.bind(Messages.RenamePage_msgRuntimeCollision,
-                        newName.getText(), pcmtWithSameRuntimeId.getName());
+                String text = NLS.bind(Messages.RenamePage_msgRuntimeCollision, newName.getText(),
+                        pcmtWithSameRuntimeId.getName());
                 Message msg = new Message(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION, text, Message.ERROR, renameObject,
                         IProductCmpt.PROPERTY_RUNTIME_ID);
                 ml.add(msg);
             }
         }
     }
-	
-	private boolean hasContentWithNameEqualsIgnoreCase(IContainer parentFolder, String name) {
-		try {
-			IResource[] children = parentFolder.members();
-			for (int i = 0; i < children.length; i++) {
-				if (children[i].getName().equalsIgnoreCase(name)) {
-					return true;
-				}
-			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-		return false;
-	}
-	
-	/**
-	 * Returns the name the user has entered. The name is always qualified with the package name
-	 * of the package containing the object to rename.
-	 */
-	public String getNewName() {
-		String name = ""; //$NON-NLS-1$
-		if (this.renameObject instanceof IProductCmpt || this.renameObject instanceof ITableContents
-                || this.renameObject instanceof ITestCase) {
-            name = ((IIpsObject)this.renameObject).getIpsPackageFragment().getName();
+
+    private boolean hasContentWithNameEqualsIgnoreCase(IContainer parentFolder, String name) {
+        try {
+            IResource[] children = parentFolder.members();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i].getName().equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
         }
-		else if (this.renameObject instanceof IIpsPackageFragment) {
-			IIpsPackageFragment parent = ((IIpsPackageFragment)this.renameObject).getParentIpsPackageFragment();
-			if (parent != null) {
-				name = parent.getName();
-			}
-			else {
-				name = ""; //$NON-NLS-1$
-			}
-		}
-		
-		if (!name.equals("")) { //$NON-NLS-1$
-			name += "."; //$NON-NLS-1$
-		}
-		return name + newName.getText();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void modifyText(ModifyEvent e) {
-		setPageComplete();
+        return false;
+    }
+
+    /**
+     * Returns the name the user has entered. The name is always qualified with the package name of
+     * the package containing the object to rename.
+     */
+    public String getNewName() {
+        String name = ""; //$NON-NLS-1$
+        if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents
+                || renameObject instanceof ITestCase) {
+            name = ((IIpsObject)renameObject).getIpsPackageFragment().getName();
+        } else if (renameObject instanceof IIpsPackageFragment) {
+            IIpsPackageFragment parent = ((IIpsPackageFragment)renameObject).getParentIpsPackageFragment();
+            if (parent != null) {
+                name = parent.getName();
+            } else {
+                name = ""; //$NON-NLS-1$
+            }
+        }
+
+        if (!name.equals("")) { //$NON-NLS-1$
+            name += "."; //$NON-NLS-1$
+        }
+        return name + newName.getText();
+    }
+
+    /**
+     * If this page is used to rename a product component, this method returns the new runtime id
+     * for the component. Returns <code>null</code> otherwise.
+     */
+    public String getNewRuntimeId() {
+        if (runtimeId != null) {
+            return runtimeId.getText();
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void modifyText(ModifyEvent e) {
+        setPageComplete();
     }
 }
-
-

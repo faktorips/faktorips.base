@@ -17,6 +17,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -74,6 +75,11 @@ public class MoveOperation implements IRunnableWithProgress {
     private String[] targetNames;
 
     /**
+     * If product components are moved/renamed it is also possible to provide new runtime ids.
+     */
+    private List<String> newRuntimeIds = null;
+
+    /**
      * The ips package fragment root defines the ips src root where to place the moved objects.
      */
     private IIpsPackageFragmentRoot targetRoot;
@@ -81,9 +87,9 @@ public class MoveOperation implements IRunnableWithProgress {
     private IProject targetProject;
 
     /**
-     * Creates a new operation to move or rename the given product. After the run-method has
-     * returned, all references of other products to the moved/renamed one are updated to refer to
-     * the new name.
+     * Creates a new operation to move or rename the given product component. After the run-method
+     * has returned, all references of other products to the moved/renamed one are updated to refer
+     * to the new name.
      * 
      * @param source The product to rename.
      * @param target The new location/name.
@@ -92,6 +98,22 @@ public class MoveOperation implements IRunnableWithProgress {
      */
     public MoveOperation(IProductCmpt source, String target) throws CoreException {
         this(new IIpsElement[] { source }, new String[] { target });
+    }
+
+    /**
+     * Creates a new operation to move or rename the given product component. After the run-method
+     * has returned, all references of other products to the moved/renamed one are updated to refer
+     * to the new name.
+     * 
+     * @param source The product to rename.
+     * @param target The new location/name.
+     * @throws CoreException If the source does not exist or is modified (if a product component) or
+     *             if the target already exists.
+     */
+    public MoveOperation(IProductCmpt source, String target, String newRuntimeId) throws CoreException {
+        this(source, target);
+        newRuntimeIds = new ArrayList<String>(1);
+        newRuntimeIds.add(newRuntimeId);
     }
 
     /**
@@ -157,6 +179,18 @@ public class MoveOperation implements IRunnableWithProgress {
 
         checkSources(sources);
         checkTargets(sources, targetNames);
+    }
+
+    /**
+     * Returns the new runtime id for the target specified by the given index. Returns
+     * <code>null</code> if no new runtime id is provided. In this case the old runtime id, has to
+     * used.
+     */
+    private String getNewRuntimeId(int index) {
+        if (newRuntimeIds == null) {
+            return null;
+        }
+        return newRuntimeIds.get(index);
     }
 
     /*
@@ -320,7 +354,7 @@ public class MoveOperation implements IRunnableWithProgress {
                         }
 
                         if (toMove instanceof IProductCmpt) {
-                            moveProductCmpt((IProductCmpt)toMove, targetNames[i], currMonitor);
+                            moveProductCmpt((IProductCmpt)toMove, targetNames[i], getNewRuntimeId(i), currMonitor);
                         } else if (toMove instanceof IIpsPackageFragment) {
                             movePackageFragement((IIpsPackageFragment)toMove, targetNames[i], currMonitor);
                         } else if (toMove instanceof ITableContents) {
@@ -458,9 +492,14 @@ public class MoveOperation implements IRunnableWithProgress {
         pack.getEnclosingResource().delete(true, monitor);
     }
 
-    private void moveProductCmpt(IProductCmpt cmpt, String newName, IProgressMonitor monitor) {
+    private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor)
+            throws CoreException {
         IIpsSrcFile file = createTarget(cmpt, newName);
         move(cmpt, file, monitor);
+        if (newRuntimeId != null) {
+            IProductCmpt productCmpt = (IProductCmpt)file.getIpsObject();
+            productCmpt.setRuntimeId(newRuntimeId);
+        }
     }
 
     private void moveTableContent(ITableContents content, String newName, IProgressMonitor monitor) {
