@@ -113,7 +113,7 @@ public abstract class IpsAction extends Action {
      */
     private List<Object> mapIpsSrcFilesToIpsObjects(IStructuredSelection selection) {
         List<Object> selectedIpsObjects = new ArrayList<Object>((selection).size());
-        for (Iterator<Object> iter = (selection).iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object select = iter.next();
             if (select instanceof IIpsSrcFile) {
                 try {
@@ -137,7 +137,7 @@ public abstract class IpsAction extends Action {
      */
     protected IIpsObject[] getIpsObjectsForSelection(IStructuredSelection selection) {
         List<IIpsObject> ipsObjects = new ArrayList<IIpsObject>();
-        for (Iterator i = selection.iterator(); i.hasNext();) {
+        for (Iterator<Object> i = getSelectionIterator(selection); i.hasNext();) {
             ipsObjects.add(getIpsObjectForSelection(i.next()));
         }
 
@@ -150,7 +150,7 @@ public abstract class IpsAction extends Action {
      */
     protected IIpsSrcFile[] getIpsSrcFilesForSelection(IStructuredSelection selection) {
         List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
-        for (Iterator i = selection.iterator(); i.hasNext();) {
+        for (Iterator<?> i = getSelectionIterator(selection); i.hasNext();) {
             IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection(i.next());
             if (ipsSrcFile != null) {
                 ipsSrcFiles.add(ipsSrcFile);
@@ -297,7 +297,9 @@ public abstract class IpsAction extends Action {
      * Returns the apropriate Transfer for every item in the given lists in the same order as the
      * data is returend in getDataArray.
      */
-    protected Transfer[] getTypeArray(List stringItems, List resourceItems, List copiedResourceLinks) {
+    protected Transfer[] getTypeArray(List<String> stringItems,
+            List<IResource> resourceItems,
+            List<String> copiedResourceLinks) {
         List<Transfer> resultList = new ArrayList<Transfer>();
         if (resourceItems.size() > 0) {
             resultList.add(ResourceTransfer.getInstance());
@@ -320,8 +322,10 @@ public abstract class IpsAction extends Action {
      * @param resourceItems The list of resources to put to the clipboard
      * @param copiedResourceLinks The list of resource links to put in the clipboard
      */
-    protected Object[] getDataArray(List stringItems, List resourceItems, List copiedResourceLinks) {
-        List result = new ArrayList();
+    protected Object[] getDataArray(List<String> stringItems,
+            List<IResource> resourceItems,
+            List<String> copiedResourceLinks) {
+        List<Object> result = new ArrayList<Object>();
         // add copied resources
         if (resourceItems.size() > 0) {
             IResource[] res = new IResource[resourceItems.size()];
@@ -333,8 +337,8 @@ public abstract class IpsAction extends Action {
         // all links will be merged to one text inside the clipboard
         if (copiedResourceLinks != null) {
             String strReferences = ""; //$NON-NLS-1$
-            for (Iterator iter = copiedResourceLinks.iterator(); iter.hasNext();) {
-                String element = (String)iter.next();
+            for (Iterator<String> iter = copiedResourceLinks.iterator(); iter.hasNext();) {
+                String element = iter.next();
                 strReferences += strReferences.length() > 0 ? "," + element : element; //$NON-NLS-1$
             }
             if (StringUtils.isNotEmpty(strReferences)) {
@@ -372,15 +376,15 @@ public abstract class IpsAction extends Action {
 
         StringTokenizer tokenizer = new StringTokenizer(resourceLinks, ","); //$NON-NLS-1$
         int count = tokenizer.countTokens();
-        List result = new ArrayList(1);
-        List links = new ArrayList(count);
+        List<Object> result = new ArrayList<Object>(1);
+        List<String> links = new ArrayList<String>(count);
 
         for (int i = 0; tokenizer.hasMoreTokens(); i++) {
             links.add(tokenizer.nextToken());
         }
 
-        for (Iterator iter = links.iterator(); iter.hasNext();) {
-            String resourceLink = (String)iter.next();
+        for (Iterator<String> iter = links.iterator(); iter.hasNext();) {
+            String resourceLink = iter.next();
 
             String[] copiedResource = StringUtils.split(resourceLink, "#"); //$NON-NLS-1$
             // 1. find the project
@@ -474,4 +478,11 @@ public abstract class IpsAction extends Action {
         }
     }
 
+    /**
+     * Extracted as private method to get along with one suppress warnings annotation.
+     */
+    @SuppressWarnings("unchecked")
+    private Iterator<Object> getSelectionIterator(IStructuredSelection selection) {
+        return selection.iterator();
+    }
 }
