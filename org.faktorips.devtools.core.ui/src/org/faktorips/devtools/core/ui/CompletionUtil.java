@@ -29,6 +29,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
@@ -76,6 +77,25 @@ public class CompletionUtil {
      */
     public static ContentAssistHandler createHandlerForText(Text text, IContentAssistProcessor processor) {
         return ContentAssistHandler.createHandlerForText(text, createContentAssistant(processor));
+    }
+
+    /**
+     * Encapsulate the deprecated call to
+     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)
+     * avoid the deprecated warning in a lot of source sections.
+     */
+    public static ContentAssistHandler createHandlerForCombo(Combo combo, IContentAssistProcessor processor) {
+        return ContentAssistHandler.createHandlerForCombo(combo, createContentAssistant(processor));
+    }
+
+    /**
+     * Encapsulate the deprecated call to
+     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)
+     * avoid the deprecated warning in a lot of source sections.
+     */
+    public static ContentAssistHandler createHandlerForCombo(Combo combo,
+            SubjectControlContentAssistant contentAssistant) {
+        return ContentAssistHandler.createHandlerForCombo(combo, contentAssistant);
     }
 
     public static SubjectControlContentAssistant createContentAssistant(IContentAssistProcessor processor) {
