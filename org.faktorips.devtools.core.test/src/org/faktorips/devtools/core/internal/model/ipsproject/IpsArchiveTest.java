@@ -66,6 +66,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         motorPolicyType = newPolicyCmptTypeWithoutProductCmptType(project, "motor.MotorPolicy");
         newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.SimpleCollisionCoverage");
         newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.ExtendedCollisionCoverage");
+        newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
 
         archiveFile = project.getProject().getFile("test.ipsar");
         archivePath = archiveFile.getProjectRelativePath();
