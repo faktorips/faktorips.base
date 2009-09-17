@@ -389,9 +389,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     void toggleLockAndSyncLiteralNames() {
         lockAndSynchronizeLiteralNames = !lockAndSynchronizeLiteralNames;
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
-        if (lockAndSynchronizeLiteralNames) {
-            resetLiteralNamesAction.run();
-        }
         updateCellEditorSkippedColumns();
     }
 
@@ -458,9 +455,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /**
      * Reinitializes the contents of this section:
      * <ul>
-     * <li>The <tt>columnNames</tt> will be emptied and created anew.
-     * <li>Every table column of the table will be disposed and created anew.
-     * <li>The table viewer will be refreshed.
+     * <li>The <tt>columnNames</tt> will be emptied and created anew. <li>Every table column of the
+     * table will be disposed and created anew. <li>The table viewer will be refreshed.
      */
     public void reinit() throws CoreException {
         columnNames.clear();
@@ -732,8 +728,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * Initiates in-place fixing of the <tt>enumValuesTable</tt> if the <tt>IEnumValueContainer</tt>
      * to be edited is an <tt>IEnumType</tt>.
      * <p>
-     * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the
-     * <tt>enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
+     * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the <tt>
+     * enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
      */
     public void contentsChanged(ContentChangeEvent event) {
         // TODO AW: REFACTOR - this method is pretty awkward.
