@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -137,7 +138,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     public ValueDatatype getValueDatatype() {
         try {
-            return valueSetOwner.getValueDatatype();
+            ValueDatatype datatype = valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
+            if (datatype == null) {
+                return Datatype.STRING;
+            }
+            return datatype;
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

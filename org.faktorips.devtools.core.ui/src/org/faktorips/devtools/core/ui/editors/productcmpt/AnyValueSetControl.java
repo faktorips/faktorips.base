@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -90,14 +91,12 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     @Override
     protected void buttonClicked() {
         preserveState();
-        IIpsProject ipsProject = configElement.getIpsProject();
         try {
-            // TODO null handling for attribute
-            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(ipsProject);
-            List<ValueSetType> valueSetTypes = configElement.getAllowedValueSetTypes(ipsProject);
-            ValueDatatype datatype = attribute.findDatatype(ipsProject);
+            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(getIpsProject());
+            ValueDatatype datatype = getValueDatatype(attribute);
             IpsPartEditDialog dialog = createEnumSubsetDialogIfApplicable(attribute, datatype);
             if (dialog == null) {
+                List<ValueSetType> valueSetTypes = configElement.getAllowedValueSetTypes(getIpsProject());
                 dialog = new AnyValueSetEditDialog(configElement, datatype, valueSetTypes, shell, !dataChangeable);
             }
             dialog.setDataChangeable(isDataChangeable());
@@ -112,9 +111,26 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         }
     }
 
+    private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) throws CoreException {
+        ValueDatatype datatype = null;
+        if (attribute != null) {
+            datatype = attribute.findDatatype(getIpsProject());
+        }
+        if (datatype == null) {
+            return Datatype.STRING;
+        }
+        return datatype;
+    }
+
+    private IIpsProject getIpsProject() {
+        return configElement.getIpsProject();
+    }
+
     private IpsPartEditDialog createEnumSubsetDialogIfApplicable(IPolicyCmptTypeAttribute attribute,
             ValueDatatype datatype) {
-
+        if (attribute == null) {
+            return null;
+        }
         if (!attribute.getValueSet().isEnum()) {
             return null;
         }
