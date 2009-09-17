@@ -81,6 +81,16 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     public final static String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the config'elements value set is not of a type that
+     * conforms to the specification in the model. E.g. if in the model (=the policy component
+     * type's attribute) the value set type
+     * <code>UNRESTRICTED<code> is specified, then in the config element all types
+     * are allowd. If <code>RANGE</code> is specified in the model, then only <code>RANGE</code> is
+     * allowed in the config element.
+     */
+    public final static String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the config'elements value set is not a subset of the
      * value set defined in the model.
      */

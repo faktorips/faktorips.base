@@ -320,6 +320,36 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
     }
 
+    public void testValidate_ValueSetTypeMismatch() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("a1");
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Integer");
+
+        IConfigElement ce = generation.newConfigElement();
+        ce.setValue("12");
+        ce.setPolicyCmptTypeAttribute("a1");
+        ce.changeValueSetType(ValueSetType.RANGE);
+
+        MessageList ml = ce.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+        ce.changeValueSetType(ValueSetType.ENUM);
+        ml = ce.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+        attr.changeValueSetType(ValueSetType.UNRESTRICTED);
+        ml = ce.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
+        ce.changeValueSetType(ValueSetType.RANGE);
+        ml = ce.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
+        ce.changeValueSetType(ValueSetType.UNRESTRICTED);
+        ml = ce.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+    }
+
     public void testValidate_ValueSetNotASubset() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
@@ -327,7 +357,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("15");
-        attr.setAttributeType(AttributeType.CONSTANT);
         attr.setDatatype("Decimal");
 
         IConfigElement ce = generation.newConfigElement();
@@ -341,8 +370,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
 
         MessageList ml = ce.validate(ipsProject);
-        // no test for specific message codes because the codes are under controll
-        // of the value set.
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setUpperBound("20");

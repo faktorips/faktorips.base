@@ -273,31 +273,32 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             // are ok.
             return;
         }
+        String msgCode;
         String text;
-        if (!valueSet.getValueSetType().equals(modelValueSet.getValueSetType())) {
+        if (!valueSet.isSameTypeOfValueSet(modelValueSet)) {
+            msgCode = IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH;
             text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] {
                     modelValueSet.getValueSetType().getName(), valueSet.getValueSetType().getName() });
         } else if (!modelValueSet.containsValueSet(valueSet)) {
+            msgCode = IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
             text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
                     .toShortString());
         } else {
-            // This should never happen
-            text = "Unexpected difference between model and product configuration!";
+            throw new RuntimeException(); // should never happen
         }
-        // determine invalid property (usage e.g. to display problem marker on correct ui
-        // control)
+        // determine invalid property (usage e.g. to display problem marker on correct ui control)
         String[] invalidProperties = null;
-        Object obj = valueSet;
+        Object invalidObject = this;
         if (valueSet instanceof IEnumValueSet) {
-            invalidProperties = new String[] { IEnumValueSet.PROPERTY_VALUES };
+            invalidProperties = new String[] { IConfigElement.PROPERTY_VALUE_SET };
         } else if (valueSet instanceof IRangeValueSet) {
-            invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND };
+            invalidObject = valueSet;
+            invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND,
+                    IRangeValueSet.PROPERTY_STEP };
         } else {
-            obj = this;
             invalidProperties = new String[] { PROPERTY_VALUE };
         }
-        list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj,
-                invalidProperties));
+        list.add(new Message(msgCode, text, Message.ERROR, invalidObject, invalidProperties));
     }
 
     private void validateValueVsValueSet(IPolicyCmptTypeAttribute attribute,
