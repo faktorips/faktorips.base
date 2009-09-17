@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
@@ -56,11 +57,13 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     public final static String[] IPS_VARIABLES_JAVA5_SRC = new String[] { VARNAME_VALUETYPES_JAVA5_SRC,
             VARNAME_RUNTIME_JAVA5_SRC };
 
-    private final HashMap varMapping = new HashMap();
+    private final HashMap<String, Mapping> varMapping = new HashMap<String, Mapping>();
 
     public FaktorIpsClasspathVariableInitializer() {
-        add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN, "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_VALUETYPES_JAVA5_SRC, "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN,
+                "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_VALUETYPES_JAVA5_SRC,
+                "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_BIN, "org.faktorips.runtime.java5", "/faktorips-runtime-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_SRC, "org.faktorips.runtime.java5", "/faktorips-runtime-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_VALUETYPES_BIN, "org.faktorips.valuetypes", "/faktorips-valuetypes.jar")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -74,12 +77,13 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     }
 
     private Mapping getMapping(String varName) {
-        return (Mapping)varMapping.get(varName);
+        return varMapping.get(varName);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(String variable) {
         Mapping m = getMapping(variable);
         if (m == null) {
@@ -94,7 +98,18 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
 
         URL installLocation = bundle.getEntry(m.jarName);
         if (installLocation == null) {
-            return; // if source is not distributed we init the variable.
+            // Jar not installed - maybe the plugin is running in a Runtime-Eclipse from source. In
+            // this case, keep the old value if there is one.
+            IPath previous = JavaCore.getClasspathVariable(variable);
+            if (previous == null) {
+                return;
+            }
+            try {
+                JavaCore.setClasspathVariable(variable, previous, null);
+            } catch (JavaModelException e) {
+                IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable, e)); //$NON-NLS-1$
+            }
+            return;
         }
         // installLocation is something like bundleentry://140/faktorips-util.jar
         URL local = null;
