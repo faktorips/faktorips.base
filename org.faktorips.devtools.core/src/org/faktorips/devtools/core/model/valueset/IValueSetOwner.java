@@ -16,7 +16,8 @@ package org.faktorips.devtools.core.model.valueset;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IValueDatatypeProvider;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -24,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public interface IValueSetOwner extends IValueDatatypeProvider {
+public interface IValueSetOwner extends IIpsElement {
 
     /**
      * Returns the set of allowed values.
@@ -56,5 +57,13 @@ public interface IValueSetOwner extends IValueDatatypeProvider {
      * Returns <code>true</code> if the value set owned by this owner is updateabled.
      */
     public boolean isValueSetUpdateable();
+
+    /**
+     * Returns the value datatype all values in the value set must be "instances" of.
+     * 
+     * @param ipsProject The project which ips object path is used to search the datatype. This is
+     *            not necessarily the project this value set owner is part of.
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 
 }
