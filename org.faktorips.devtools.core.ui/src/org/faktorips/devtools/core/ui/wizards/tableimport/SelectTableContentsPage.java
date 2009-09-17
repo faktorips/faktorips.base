@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -33,31 +31,26 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
-import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.util.message.Message;
 
+/**
+ * A wizard page to select an existing Table Content.
+ * 
+ * @author Roman Grutza
+ */
 public class SelectTableContentsPage extends SelectImportTargetPage {
 
-    private TableContentsRefControl contentsControl;
-    private TextButtonField contentsField;
-    private boolean validateInput;
-
     public SelectTableContentsPage(IStructuredSelection selection) throws JavaModelException {
-        this(selection, "Select table contents");
-    }
-
-    public SelectTableContentsPage(IStructuredSelection selection, String pageName) throws JavaModelException {
-        super(selection, pageName);
+        super(selection, Messages.SelectTableContentsPage_title);
     }
 
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(Messages.SelectContentsPage_title);
+        setTitle(Messages.SelectTableContentsPage_title);
 
         pageControl = new Composite(parent, SWT.NONE);
         pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -67,7 +60,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
         setControl(pageControl);
 
         Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, Messages.SelectContentsPage_labelProject);
+        toolkit.createFormLabel(locationComposite, Messages.SelectTableContentsPage_labelProject);
         projectControl = toolkit.createIpsProjectRefControl(locationComposite);
         projectField = new TextButtonField(projectControl);
         projectField.addChangeListener(this);
@@ -84,21 +77,15 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
 
     private void createTableImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(lowerComposite, Messages.SelectContentsPage_labelContents);
-        contentsControl = toolkit.createTableContentsRefControl(null, lowerComposite);
-        contentsField = new TextButtonField(contentsControl);
-        contentsField.addChangeListener(this);
+        toolkit.createFormLabel(lowerComposite, Messages.SelectTableContentsPage_labelContents);
+        importTargetControl = toolkit.createTableContentsRefControl(null, lowerComposite);
+        importTargetField = new TextButtonField(importTargetControl);
+        importTargetField.addChangeListener(this);
     }
 
-    private void setImportDestination(IIpsObject ipsObject) throws CoreException {
-        if (ipsObject != null && ipsObject.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-            ITableContents contents = (ITableContents)ipsObject;
-            setTableContents(contents);
-        }
-    }
-
-    public ITableContents getTableContents() throws CoreException {
-        return (contentsControl).findTableContents();
+    @Override
+    public IIpsObject getTargetForImport() throws CoreException {
+        return ((TableContentsRefControl)importTargetControl).findTableContents();
     }
 
     @Override
@@ -106,62 +93,54 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
         super.setDefaults(selectedResource);
         try {
             if (selectedResource == null) {
-                setImportDestination(null);
+                setTargetForImport(null);
                 return;
             }
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
             if (element instanceof IIpsSrcFile) {
                 IIpsSrcFile src = (IIpsSrcFile)element;
-                setImportDestination(src.getIpsObject());
+                setTargetForImport(src.getIpsObject());
             }
             if (element == null) {
-                setImportDestination(null);
+                setTargetForImport(null);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
     }
 
-    /**
-     * Validates the page and generates error messages if needed. Can be overridden in subclasses to
-     * add specific validation logic.
-     */
-    protected void validatePage() {
-        setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
-        setErrorMessage(null);
-        validateProject();
-        if (getErrorMessage() != null) {
-            return;
+    private void setTargetForImport(IIpsObject ipsObject) throws CoreException {
+        if (ipsObject != null && ipsObject.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+            ITableContents contents = (ITableContents)ipsObject;
+            setTableContents(contents);
         }
-        validateImportTarget();
-        if (getErrorMessage() != null) {
-            return;
-        }
-        updatePageComplete();
     }
 
+    @Override
     protected void validateImportTarget() {
-        if (contentsControl.getText().length() == 0) {
-            setErrorMessage(Messages.SelectContentsPage_msgContentsEmpty);
+        if (importTargetControl.getText().length() == 0) {
+            setErrorMessage(Messages.SelectTableContentsPage_msgContentsEmpty);
             return;
         }
         try {
-            ITableContents tableContents = getTableContents();
+            ITableContents tableContents = (ITableContents)getTargetForImport();
             if (tableContents == null) {
-                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, contentsControl.getText()));
+                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent, importTargetControl
+                        .getText()));
                 return;
             }
             if (!tableContents.exists()) {
-                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, contentsControl.getText()));
+                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent, importTargetControl
+                        .getText()));
                 return;
             }
             if (tableContents.validate(tableContents.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.SelectContentsPage_msgContentsNotValid);
+                setErrorMessage(Messages.SelectTableContentsPage_msgContentsNotValid);
                 return;
             }
             ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());
             if (structure.validate(structure.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.SelectContentsPage_msgStructureNotValid);
+                setErrorMessage(Messages.SelectTableContentsPage_msgStructureNotValid);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -171,49 +150,11 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
 
     private void setTableContents(ITableContents contents) {
         if (contents == null) {
-            contentsControl.setText(""); //$NON-NLS-1$
+            importTargetControl.setText(""); //$NON-NLS-1$
             setIpsProject(null);
             return;
         }
-        contentsControl.setText(contents.getQualifiedName());
+        importTargetControl.setText(contents.getQualifiedName());
         setIpsProject(contents.getIpsProject());
     }
-
-    protected void updatePageComplete() {
-        if (getErrorMessage() != null) {
-            setPageComplete(false);
-            return;
-        }
-        boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
-                && !"".equals(contentsField.getText()); //$NON-NLS-1$
-        setPageComplete(complete);
-    }
-
-    public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == projectField) {
-            projectChanged();
-        }
-        if (validateInput) { // don't validate during control creating!
-            validatePage();
-        }
-        updatePageComplete();
-    }
-
-    private void projectChanged() {
-        contentsControl.setIpsProject(getIpsProject());
-    }
-
-    @Override
-    public boolean canFlipToNextPage() {
-        IWizard wizard = getWizard();
-        if (wizard instanceof IpsObjectImportWizard) {
-            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
-                // do not show the configuration/preview page for excel
-                return false;
-            }
-        }
-
-        return super.canFlipToNextPage();
-    }
-
 }

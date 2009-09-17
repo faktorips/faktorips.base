@@ -67,7 +67,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
 
         // Third row: Help label for date format syntax.
         toolkit.createLabel(root, ""); //$NON-NLS-1$
-        Text helpText = toolkit.createText(root, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+        Text helpText = toolkit.createText(root, SWT.MULTI | SWT.READ_ONLY);
         helpText.setEnabled(false);
         helpText.setText(Messages.CSVPropertyCompositeFactory_dateFormatHelp1);
         helpText.setBackground(root.getBackground());

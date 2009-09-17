@@ -68,6 +68,9 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
         return startingPage.getFormat().getDefaultExtension().equals(".xls");
     }
 
+    /**
+     * This method synchronizes the model with the current state of the GUI widgets.
+     */
     protected void saveDataToWizard() {
         nullRepresentation = startingPage.getNullRepresentation();
     }

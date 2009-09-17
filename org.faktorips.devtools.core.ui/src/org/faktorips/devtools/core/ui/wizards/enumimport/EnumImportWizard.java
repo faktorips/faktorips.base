@@ -36,9 +36,11 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
 import org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor;
+import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.EnumContentPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -53,7 +55,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
 
     private EnumContentPage newEnumContentPage;
-    private SelectEnumPage selectContentsPage;
+    private SelectImportTargetPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
 
     public EnumRefControl enumControl;
@@ -63,48 +65,23 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumImportWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         try {
             startingPage = new SelectFileAndImportMethodPage(null);
-            addPage(startingPage);
-            newEnumContentPage = new EnumContentPage(selection);
-            addPage(newEnumContentPage);
-            selectContentsPage = new SelectEnumPage(selection);
-            addPage(selectContentsPage);
-            // tablePreviewPage = new ImportPreviewPage(this, );
-            // addPage(tablePreviewPage);
-
             startingPage.setImportIntoExisting(importIntoExisting);
+            newEnumContentPage = new EnumContentPage(selection);
+            selectContentsPage = new SelectEnumPage(selection);
+
+            addPage(startingPage);
+            addPage(newEnumContentPage);
+            addPage(selectContentsPage);
+
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        if (selection.isEmpty()) {
-            IEditorPart activeEditor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (activeEditor instanceof EnumTypeEditor) {
-                EnumTypeEditor enumTypeEditor = (EnumTypeEditor)activeEditor;
-                selection = new StructuredSelection(enumTypeEditor.getIpsObject());
-            } else if (activeEditor instanceof EnumContentEditor) {
-                EnumContentEditor enumContentEditor = (EnumContentEditor)activeEditor;
-                selection = new StructuredSelection(enumContentEditor.getIpsObject());
-            }
-        }
-        super.init(workbench, selection);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         saveDataToWizard();
@@ -126,8 +103,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             try {
                 newEnumContentPage.validatePage();
             } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return null;
+                throw new RuntimeException(e);
             }
             return newEnumContentPage;
         }
@@ -151,6 +127,21 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     @Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        if (selection.isEmpty()) {
+            IEditorPart activeEditor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if (activeEditor instanceof EnumTypeEditor) {
+                EnumTypeEditor enumTypeEditor = (EnumTypeEditor)activeEditor;
+                selection = new StructuredSelection(enumTypeEditor.getIpsObject());
+            } else if (activeEditor instanceof EnumContentEditor) {
+                EnumContentEditor enumContentEditor = (EnumContentEditor)activeEditor;
+                selection = new StructuredSelection(enumContentEditor.getIpsObject());
+            }
+        }
+        super.init(workbench, selection);
+    }
+
+    @Override
     public boolean canFinish() {
         if (isExcelTableFormatSelected()) {
             if (getContainer().getCurrentPage() == selectContentsPage) {
@@ -167,9 +158,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return super.canFinish();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         final ITableFormat format = startingPage.getFormat();
@@ -179,15 +167,23 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                 enumTypeOrContent.clear();
             }
 
+            final MessageList messageList = new MessageList();
+
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
-                            .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), new MessageList(),
+                            .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), messageList,
                             startingPage.isImportIntoExisting());
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
+
+            if (!messageList.isEmpty()) {
+                getShell().getDisplay().syncExec(
+                        new ResultDisplayer(getShell(), Messages.EnumImportWizard_operationName, messageList));
+            }
+
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -197,13 +193,13 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return true;
     }
 
-    /**
+    /*
      * Returns the enumeration type defining the structure for import.
      */
     private IEnumType getEnumType() {
         try {
             if (startingPage.isImportIntoExisting()) {
-                IEnumValueContainer enumValueContainer = selectContentsPage.getEnum();
+                IEnumValueContainer enumValueContainer = (IEnumValueContainer)selectContentsPage.getTargetForImport();
                 IIpsProject ipsProject = enumValueContainer.getIpsProject();
                 if (ipsProject != null) {
                     return enumValueContainer.findEnumType(ipsProject);
@@ -219,12 +215,10 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     /*
      * Returns the enumeration type or enumeration content as a target for import.
-     * 
-     * @throws CoreException
      */
     private IEnumValueContainer getEnumValueContainer() throws CoreException {
         if (startingPage.isImportIntoExisting()) {
-            return selectContentsPage.getEnum();
+            return (IEnumValueContainer)selectContentsPage.getTargetForImport();
         } else {
             IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
             newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList<IIpsObject>());

@@ -113,7 +113,8 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             }
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(NLS.bind("Exception reading import file {0}", sourceFile), e));
+            throw new CoreException(new IpsStatus(NLS
+                    .bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 
@@ -137,11 +138,11 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             while ((readLine = reader.readNext()) != null) {
                 if (readLine.length != expectedFields) {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
-                    messageList.add(new Message("", msg, Message.ERROR));
+                    messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 }
 
                 IEnumValue genRow = valueContainer.newEnumValue();
-                for (short j = 0; j < expectedFields; j++) {
+                for (short j = 0; j < Math.min(expectedFields, readLine.length); j++) {
                     String ipsValue;
 
                     IEnumAttributeValue column = genRow.getEnumAttributeValues().get(j);

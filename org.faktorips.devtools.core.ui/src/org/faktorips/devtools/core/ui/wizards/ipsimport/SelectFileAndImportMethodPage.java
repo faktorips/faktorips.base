@@ -108,8 +108,8 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             importExistingAppendChanged();
         } else if (e.field == importExistingReplaceField) {
             importExistingReplaceChanged();
-        } else if (e.field == this.fileFormatField) {
-
+        } else if (e.field == fileFormatField) {
+            // TODO rg: update preview
         }
 
         if (validateInput) { // don't validate during control creating!
@@ -119,7 +119,12 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     }
 
     protected void filenameChanged() {
-
+        for (int i = 0; i < formats.length; i++) {
+            ITableFormat format = formats[i];
+            if (filenameField.getText().endsWith(format.getDefaultExtension())) {
+                fileFormatField.getCombo().select(i);
+            }
+        }
     }
 
     protected void importIntoExistingChanged() {
@@ -202,7 +207,10 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             setErrorMessage(Messages.SelectFileAndImportMethodPage_msgEmptyFilename);
             return;
         }
-
+        File file = new File(filename);
+        if (file.isDirectory()) {
+            setErrorMessage(Messages.SelectFileAndImportMethodPage_msgFilenameIsDirectory);
+        }
         if (!(new File(filename).exists())) {
             setErrorMessage(Messages.SelectFileAndImportMethodPage_msgFileDoesNotExist);
         }
@@ -361,6 +369,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings == null) {
@@ -376,6 +385,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings == null) {
@@ -389,6 +399,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean allowNewContainerName() {
         return false;
     }

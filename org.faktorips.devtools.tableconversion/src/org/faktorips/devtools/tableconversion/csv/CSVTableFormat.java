@@ -32,16 +32,16 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CSVTableFormat extends AbstractExternalTableFormat {
 
     // property constants following the JavaBeans standard
-    public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter";
-    public final static String PROPERTY_DATE_FORMAT = "dateFormat";
-    public static final String PROPERTY_DECIMAL_SEPARATOR_CHAR = "decimalFormat";
-    public static final String PROPERTY_DECIMAL_GROUPING_CHAR = "decimalSeparatorChar";
+    public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter"; //$NON-NLS-1$
+    public final static String PROPERTY_DATE_FORMAT = "dateFormat"; //$NON-NLS-1$
+    public static final String PROPERTY_DECIMAL_SEPARATOR_CHAR = "decimalFormat"; //$NON-NLS-1$
+    public static final String PROPERTY_DECIMAL_GROUPING_CHAR = "decimalSeparatorChar"; //$NON-NLS-1$
 
     public CSVTableFormat() {
         // initialize table format specific properties
-        properties.put(PROPERTY_FIELD_DELIMITER, ",");
-        properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
-        properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, ".");
+        properties.put(PROPERTY_FIELD_DELIMITER, ","); //$NON-NLS-1$
+        properties.put(PROPERTY_DATE_FORMAT, Messages.getString("CSVTableFormat_dateFormatPattern")); //$NON-NLS-1$
+        properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, "."); //$NON-NLS-1$
     }
 
     /**
@@ -81,7 +81,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             tableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
     }
@@ -102,7 +102,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
     }

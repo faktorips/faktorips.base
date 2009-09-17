@@ -83,7 +83,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             excelTableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
     }
@@ -124,7 +124,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
     }

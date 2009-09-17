@@ -76,6 +76,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         }
     }
 
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
@@ -116,7 +117,8 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(NLS.bind("Exception reading import file {0}", sourceFile), e));
+            throw new CoreException(new IpsStatus(NLS
+                    .bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 
@@ -138,14 +140,14 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             while ((readLine = reader.readNext()) != null) {
                 if (readLine.length != expectedFields) {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
-                    messageList.add(new Message("", msg, Message.ERROR));
+                    messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 }
 
                 IRow genRow = targetGeneration.newRow();
-                for (short j = 0; j < structure.getNumOfColumns(); j++) {
+                for (short j = 0; j < Math.min(structure.getNumOfColumns(), readLine.length); j++) {
                     String ipsValue = null;
 
-					String tableField = readLine[j];
+                    String tableField = readLine[j];
                     if (j < readLine.length) {
                         if (nullRepresentationString.equals(tableField)) {
                             ipsValue = null;
@@ -162,7 +164,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                         String msg = NLS
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                        
+
                     }
                     genRow.setValue(j, ipsValue);
                 }

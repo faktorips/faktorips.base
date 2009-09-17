@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,40 +20,29 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Waertel
  */
 public class Messages extends NLS {
-    
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.tableimport.messages"; //$NON-NLS-1$
 
-	private Messages() {
-	
-	}
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.tableimport.messages"; //$NON-NLS-1$
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    private Messages() {
 
-	public static String TableImport_title;
-	public static String NewContentsPage_msgTableStructureNotExists;
-    public static String NewContentsPage_title;
-    public static String NewContentsPage_labelContents;
-    public static String NewContentsPage_labelStructure;
-    public static String NewContentsPage_msgExistingContent;
-    public static String NewContentsPage_labelSrcFolder;
-    public static String NewContentsPage_labelPackage;
-    public static String NewContentsPage_msgRootMissing;
-    public static String NewContentsPage_msgRootNoIPSSrcFolder;
-    public static String NewContentsPage_msgPackageMissing;
-    public static String NewContentsPage_msgEmptyContent;
+    }
+
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    public static String TableImport_title;
     public static String TableImportWizard_operationName;
-    public static String SelectContentsPage_title;
-    public static String SelectContentsPage_labelContents;
-    public static String SelectContentsPage_msgMissingContent;
-    public static String SelectContentsPage_labelProject;
-    public static String SelectContentsPage_msgProjectEmpty;
-    public static String SelectContentsPage_msgNonExistingProject;
-    public static String SelectContentsPage_msgContentsEmpty;
-    public static String SelectContentsPage_msgContentsNotValid;
-    public static String SelectContentsPage_msgStructureNotValid;
+    public static String SelectTableContentsPage_title;
+    public static String SelectTableContentsPage_labelContents;
+    public static String SelectTableContentsPage_msgMissingContent;
+    public static String SelectTableContentsPage_labelProject;
+    public static String SelectTableContentsPage_msgProjectEmpty;
+    public static String SelectTableContentsPage_msgNonExistingProject;
+    public static String SelectTableContentsPage_msgContentsEmpty;
+    public static String SelectTableContentsPage_msgContentsNotValid;
+    public static String SelectTableContentsPage_msgStructureNotValid;
     public static String SelectFileAndImportMethodPage_labelImportExisting;
     public static String SelectFileAndImportMethodPage_labelImportNew;
 }

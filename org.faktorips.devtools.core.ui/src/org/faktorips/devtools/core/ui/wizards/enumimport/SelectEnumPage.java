@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.enumimport;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,42 +29,24 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
-import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
-import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.util.message.Message;
 
 /**
- * A wizard page to select enum types or contents.
+ * A wizard page to select an existing Enum Type or Content.
  * 
  * @author Thorsten Waertel
  * @author Roman Grutza
  */
 public class SelectEnumPage extends SelectImportTargetPage {
 
-    private IpsObjectRefControl enumControl;
-    private TextButtonField enumField;
-
-    // true if the input is validated and errors are displayed in the messages area.
-    protected boolean validateInput = true;
-
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
     public SelectEnumPage(IStructuredSelection selection) throws JavaModelException {
         super(selection, Messages.SelectEnumPage_title);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -97,111 +77,52 @@ public class SelectEnumPage extends SelectImportTargetPage {
     private void createEnumImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
-        enumControl = toolkit.createEnumRefControl(null, lowerComposite, true, true);
-        enumField = new TextButtonField(enumControl);
-        enumField.addChangeListener(this);
+        importTargetControl = toolkit.createEnumRefControl(null, lowerComposite, true, true);
+        importTargetField = new TextButtonField(importTargetControl);
+        importTargetField.addChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public IIpsObject getTargetForImport() throws CoreException {
+        return ((EnumRefControl)importTargetControl).findEnum(true);
+    }
+
     @Override
     protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         try {
             if (selectedResource == null) {
-                setImportTarget(null);
+                setTargetForImport(null);
                 return;
             }
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
             if (element instanceof IIpsSrcFile) {
                 IIpsSrcFile src = (IIpsSrcFile)element;
-                setImportTarget(src.getIpsObject());
+                setTargetForImport(src.getIpsObject());
             }
             if (element == null) {
-                setImportTarget(null);
+                setTargetForImport(null);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
     }
 
-    private void setImportTarget(IIpsObject ipsObject) throws CoreException {
+    private void setTargetForImport(IIpsObject ipsObject) throws CoreException {
         if (ipsObject != null && ipsObject instanceof IEnumValueContainer) {
             IEnumValueContainer valueContainer = (IEnumValueContainer)ipsObject;
             setEnum(valueContainer);
         }
     }
 
-    private void setEnum(IEnumValueContainer enumValueContainer) {
-        if (enumValueContainer == null) {
-            enumControl.setText(""); //$NON-NLS-1$
-            setIpsProject(null);
-            return;
-        }
-        enumControl.setText(enumValueContainer.getQualifiedName());
-        setIpsProject(enumValueContainer.getIpsProject());
-    }
-
-    public IEnumValueContainer getEnum() throws CoreException {
-        return ((EnumRefControl)enumControl).findEnum(true);
-    }
-
-    protected void contentsChanged() {
-
-    }
-
-    protected void projectChanged() {
-        if ("".equals(projectField.getText())) { //$NON-NLS-1$
-            enumControl.setIpsProject(null);
-            return;
-        }
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
-        if (project.exists()) {
-            enumControl.setIpsProject(project);
-            return;
-        }
-        enumControl.setIpsProject(null);
-    }
-
-    public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == projectField) {
-            projectChanged();
-        }
-        if (e.field == enumField) {
-            contentsChanged();
-        }
-        if (validateInput) { // don't validate during control creating!
-            validatePage();
-        }
-        updatePageComplete();
-    }
-
-    /**
-     * Validates the page and generates error messages if needed. Can be overridden in subclasses to
-     * add specific validation logic.s
-     */
-    protected void validatePage() {
-        setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
-        setErrorMessage(null);
-        validateProject();
-        if (getErrorMessage() != null) {
-            return;
-        }
-        validateImportTarget();
-        if (getErrorMessage() != null) {
-            return;
-        }
-        updatePageComplete();
-    }
-
+    @Override
     protected void validateImportTarget() {
-        if (enumControl.getText().length() == 0) {
+        if (importTargetControl.getText().length() == 0) {
             setErrorMessage(Messages.SelectEnumPage_msgEnumEmpty);
             return;
         }
         try {
-            IEnumValueContainer enumValueContainer = getEnum();
+            IEnumValueContainer enumValueContainer = (IEnumValueContainer)getTargetForImport();
             if (enumValueContainer == null) {
                 setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
                 return;
@@ -236,27 +157,14 @@ public class SelectEnumPage extends SelectImportTargetPage {
         }
     }
 
-    protected void updatePageComplete() {
-        if (getErrorMessage() != null) {
-            setPageComplete(false);
+    private void setEnum(IEnumValueContainer enumValueContainer) {
+        if (enumValueContainer == null) {
+            importTargetControl.setText(""); //$NON-NLS-1$
+            setIpsProject(null);
             return;
         }
-        boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
-                && !"".equals(enumField.getText()); //$NON-NLS-1$
-        setPageComplete(complete);
-    }
-
-    @Override
-    public boolean canFlipToNextPage() {
-        IWizard wizard = getWizard();
-        if (wizard instanceof IpsObjectImportWizard) {
-            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
-                // do not show the configuration/preview page for excel
-                return false;
-            }
-        }
-
-        return super.canFlipToNextPage();
+        importTargetControl.setText(enumValueContainer.getQualifiedName());
+        setIpsProject(enumValueContainer.getIpsProject());
     }
 
 }

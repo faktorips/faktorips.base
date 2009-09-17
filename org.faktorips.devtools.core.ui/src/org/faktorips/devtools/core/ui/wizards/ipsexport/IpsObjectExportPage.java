@@ -358,11 +358,12 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     protected void filenameChanged() {
-
-    }
-
-    protected void formatChanged() {
-
+        for (int i = 0; i < formats.length; i++) {
+            ITableFormat format = formats[i];
+            if (filenameField.getText().endsWith(format.getDefaultExtension())) {
+                fileFormatField.getCombo().select(i);
+            }
+        }
     }
 
     public void valueChanged(FieldValueChangedEvent e) {

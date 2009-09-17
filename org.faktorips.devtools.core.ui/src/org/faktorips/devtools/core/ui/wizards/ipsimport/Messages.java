@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String SelectFileAndImportMethodPage_msgMissingImportExistingMethod;
     public static String SelectFileAndImportMethodPage_msgMissingFileFormat;
     public static String SelectFileAndImportMethodPage_msgFileDoesNotExist;
+    public static String SelectFileAndImportMethodPage_msgFilenameIsDirectory;
     public static String SelectFileAndImportMethodPage_labelFileFormat;
     public static String SelectFileAndImportMethodPage_labelNullRepresentation;
     public static String ImportPreviewPage_configurationGroupTitle;
