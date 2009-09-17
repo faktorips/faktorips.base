@@ -34,10 +34,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * 
  * @author Jan Ortmann
  */
-public class PropertyValueComparator implements Comparator {
+public class PropertyValueComparator implements Comparator<IPropertyValue> {
 
     private IProductCmptType type;
-    private Map propIndexMap = null;
+    private Map<String, Integer> propIndexMap = null;
 
     public PropertyValueComparator(IProductCmptGeneration gen, IIpsProject ipsProject) {
         this(gen.getProductCmpt(), ipsProject);
@@ -65,7 +65,7 @@ public class PropertyValueComparator implements Comparator {
     private void initPropIndexMap(IIpsProject ipsProject) {
         try {
             if (type != null) {
-                propIndexMap = new HashMap();
+                propIndexMap = new HashMap<String, Integer>();
                 IProdDefProperty[] props = type.findProdDefProperties(ipsProject);
                 for (int i = 0; i < props.length; i++) {
                     propIndexMap.put(props[i].getPropertyName(), new Integer(i));
@@ -83,9 +83,9 @@ public class PropertyValueComparator implements Comparator {
     /**
      * {@inheritDoc}
      */
-    public int compare(Object o1, Object o2) {
-        IPropertyValue prop1 = (IPropertyValue)o1;
-        IPropertyValue prop2 = (IPropertyValue)o2;
+    public int compare(IPropertyValue o1, IPropertyValue o2) {
+        IPropertyValue prop1 = o1;
+        IPropertyValue prop2 = o2;
         int typeCompare = prop1.getPropertyType().compareTo(prop2.getPropertyType());
         if (typeCompare != 0) {
             return typeCompare;
@@ -97,7 +97,7 @@ public class PropertyValueComparator implements Comparator {
         if (type == null) {
             return 0;
         }
-        Integer index = (Integer)propIndexMap.get(prop.getPropertyName());
+        Integer index = propIndexMap.get(prop.getPropertyName());
         if (index == null) {
             return 0;
         }
