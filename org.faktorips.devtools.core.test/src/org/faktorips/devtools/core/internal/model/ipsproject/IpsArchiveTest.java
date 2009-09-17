@@ -314,6 +314,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     /**
      * Test Archive with default package only.
+     * 
+     * ArchiveIpsPackageFragment#getChildIpsPackageFragments
      */
     public void testWithDefaultPackage() throws Exception {
         IIpsProject dummyProject = newIpsProject("DummyProject");
