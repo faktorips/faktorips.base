@@ -275,8 +275,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
         String text;
         if (!valueSet.getValueSetType().equals(modelValueSet.getValueSetType())) {
-            text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] { valueSet.toShortString(),
-                    modelValueSet.toShortString() });
+            text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] {
+                    modelValueSet.getValueSetType().getName(), valueSet.getValueSetType().getName() });
         } else if (!modelValueSet.containsValueSet(valueSet)) {
             text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
                     .toShortString());
