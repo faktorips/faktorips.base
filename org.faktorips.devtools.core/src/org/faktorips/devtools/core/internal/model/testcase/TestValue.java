@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,13 +43,13 @@ import org.w3c.dom.Element;
  */
 public class TestValue extends TestObject implements ITestValue {
 
-	/** Tags */
-	final static String TAG_NAME = "ValueObject"; //$NON-NLS-1$
-	
-	private String testValueParameter = ""; //$NON-NLS-1$
-	
-	private String value = ""; //$NON-NLS-1$
-	
+    /** Tags */
+    final static String TAG_NAME = "ValueObject"; //$NON-NLS-1$
+
+    private String testValueParameter = ""; //$NON-NLS-1$
+
+    private String value = ""; //$NON-NLS-1$
+
     public TestValue(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -57,10 +57,11 @@ public class TestValue extends TestObject implements ITestValue {
     public TestValue(IIpsObjectPart parent, int id) {
         super(parent, id);
     }
-    
-	/**
+
+    /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -68,35 +69,39 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
-	protected void initPropertiesFromXml(Element element, Integer id) {
-		super.initPropertiesFromXml(element, id);
-		testValueParameter = element.getAttribute(PROPERTY_VALUE_PARAMETER);
-		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
-        if (value == null){
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        testValueParameter = element.getAttribute(PROPERTY_VALUE_PARAMETER);
+        value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
+        if (value == null) {
             // TODO Joerg: Workaround for existing test cases
             value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
         }
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-	protected void propertiesToXml(Element element) {
-		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_VALUE_PARAMETER, testValueParameter);
-		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_VALUE_PARAMETER, testValueParameter);
+        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage("TestValue.gif"); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isRoot() {
         // test values are always root elements
         return true;
@@ -123,8 +128,8 @@ public class TestValue extends TestObject implements ITestValue {
      */
     public String getTestParameterName() {
         return testValueParameter;
-    } 
-    
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -141,16 +146,16 @@ public class TestValue extends TestObject implements ITestValue {
         }
 
         ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType(ipsProject);
-        if (testCaseType == null){
+        if (testCaseType == null) {
             return null;
         }
         ITestParameter param = testCaseType.getTestParameterByName(testValueParameter);
-        if (param instanceof ITestValueParameter){
-            return (ITestValueParameter) param;
+        if (param instanceof ITestValueParameter) {
+            return (ITestValueParameter)param;
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -162,21 +167,21 @@ public class TestValue extends TestObject implements ITestValue {
      * {@inheritDoc}
      */
     public void setValue(String newValue) {
-        String oldValue = this.value;
-        this.value = newValue;
+        String oldValue = value;
+        value = newValue;
         valueChanged(oldValue, newValue);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void setDefaultValue() throws CoreException {
         ITestValueParameter parameter = findTestValueParameter(getIpsProject());
-        if (parameter == null){
+        if (parameter == null) {
             return;
         }
         ValueDatatype valueDatatype = parameter.findValueDatatype(getIpsProject());
-        if (valueDatatype != null){
+        if (valueDatatype != null) {
             setValue(valueDatatype.getDefaultValue());
         }
     }
@@ -184,16 +189,18 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
-	public ITestObject getRoot() {
+    @Override
+    public ITestObject getRoot() {
         // test values have no childs
         return this;
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-		super.validateThis(list, ipsProject);
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ITestValueParameter param = findTestValueParameter(ipsProject);
         if (param == null) {
             String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
@@ -201,7 +208,7 @@ public class TestValue extends TestObject implements ITestValue {
             list.add(msg);
         } else {
             // validate test parameter aspects will be severity warning
-            
+
             // validate the test datatype value
             ValueDatatype datatype = param.findValueDatatype(ipsProject);
             if (datatype == null) {
@@ -212,20 +219,21 @@ public class TestValue extends TestObject implements ITestValue {
             } else {
                 ValidationUtils.checkValue(param.getDatatype(), value, this, PROPERTY_VALUE, list);
             }
-            
+
             // validate the correct type of the test value parameter
             if (param.isCombinedParameter() || (!isInput() && !isExpectedResult())) {
                 String text = NLS.bind(Messages.TestValue_ErrorWrongType, param.getName());
                 Message msg = new Message(ITestValueParameter.MSGCODE_WRONG_TYPE, text, Message.WARNING, this,
-                        ITestValueParameter.PROPERTY_TEST_PARAMETER_TYPE);
+                        ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);
             }
         }
-	}
-    
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
@@ -233,12 +241,14 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reinitPartCollections() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reAddPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
@@ -246,6 +256,7 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
@@ -253,6 +264,7 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
@@ -260,6 +272,7 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return getTestValueParameter();
     }

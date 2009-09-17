@@ -46,7 +46,6 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class TestCaseLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
-
     private IIpsProject ipsProject;
 
     public TestCaseLabelProvider(IIpsProject ipsProject) {
@@ -177,7 +176,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         } else if (object instanceof ITestRule) {
             return getLabelExtensionForTestRule((ITestRule)object);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     private String getLabelExtensionForTestPolicyCmpt(ITestPolicyCmpt object) {
@@ -185,12 +184,12 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         String name = tstPolicyCmpt.getName();
         IPolicyCmptType policyCmptType = tstPolicyCmpt.findPolicyCmptType();
         if (policyCmptType == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
         if (name.equals(unqualifiedPolicyCmptTypeName)) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return " : " + unqualifiedPolicyCmptTypeName; //$NON-NLS-1$
     }
