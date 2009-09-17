@@ -24,7 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
-import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -69,7 +69,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public PolicyCmptTypeAttribute(PolicyCmptType pcType, int id) {
         super(pcType, id);
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     /**
@@ -463,7 +463,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     @Override
     protected void removePart(IIpsObjectPart part) {
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     /**

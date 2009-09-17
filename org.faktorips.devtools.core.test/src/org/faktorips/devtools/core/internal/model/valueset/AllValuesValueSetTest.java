@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.valueset.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
@@ -81,21 +81,21 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 		Element root = doc.getDocumentElement();
 		Element element = XmlUtil.getFirstElement(root);
 
-		IValueSet allValues = new AllValuesValueSet(ce, 1);
+		IValueSet allValues = new UnrestrictedValueSet(ce, 1);
 		allValues.initFromXml(element);
 		assertNotNull(allValues);
 	}
 
 	public void testToXml() {
-	    AllValuesValueSet allValues = new AllValuesValueSet(ce, 1);
+	    UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, 1);
 		Element element = allValues.toXml(this.newDocument());
-		IAllValuesValueSet allValues2 = new AllValuesValueSet(ce, 2);
+		IUnrestrictedValueSet allValues2 = new UnrestrictedValueSet(ce, 2);
 		allValues2.initFromXml(element);
 		assertNotNull(allValues2);
 	}
 	
 	public void testContainsValue() throws Exception {
-	    AllValuesValueSet allValues = new AllValuesValueSet(ce, 1);
+	    UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, 1);
 	    assertFalse(allValues.containsValue("abc"));
 	    assertTrue(allValues.containsValue("1EUR"));
 
@@ -105,15 +105,15 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
  	}
 	
 	public void testContainsValueSet() throws Exception {
-		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
+		UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 		
 		assertTrue(allValues.containsValueSet(allValues));
-		assertTrue(allValues.containsValueSet(new AllValuesValueSet(ce, 99)));
+		assertTrue(allValues.containsValueSet(new UnrestrictedValueSet(ce, 99)));
 		assertFalse(allValues.containsValueSet(ce2.getValueSet()));
 	}
 	
 	public void testGetContainsNull() throws Exception {
-		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
+		UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
 		// test with non-primitive datatype
 		assertTrue(allValues.getContainsNull());
@@ -136,7 +136,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 	}
 
 	public void testSetContainsNull() throws Exception {
-		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
+		UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
 		allValues.setContainsNull(true);
 		

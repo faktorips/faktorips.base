@@ -24,7 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -62,13 +62,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     public ConfigElement(ProductCmptGeneration parent, int id) {
         super(parent, id);
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     public ConfigElement(ProductCmptGeneration parent, int id, String pcTypeAttribute) {
         super(parent, id);
         this.pcTypeAttribute = pcTypeAttribute;
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     /**

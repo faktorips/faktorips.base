@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.valueset.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
@@ -25,12 +25,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Represents a value set containing all values. That means either all values declared by the
- * underlying datatype or all values declared by the super-valueset.
+ * Implementation of IUnrestrictedValueSet
  * 
  * @author Thorsten Guenther
  */
-public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
+public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
     public final static String XML_TAG = "AllValues"; //$NON-NLS-1$
 
@@ -43,7 +42,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
-    public AllValuesValueSet(IIpsObjectPart parent, int partId) {
+    public UnrestrictedValueSet(IIpsObjectPart parent, int partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
@@ -156,7 +155,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet {
      * {@inheritDoc}
      */
     public IValueSet copy(IIpsObjectPart parent, int id) {
-        return new AllValuesValueSet(parent, id);
+        return new UnrestrictedValueSet(parent, id);
     }
 
     /**

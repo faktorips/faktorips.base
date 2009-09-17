@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -121,7 +121,7 @@ public class ValueSetType extends DefaultEnumValue {
      */
     public IValueSet newValueSet(IIpsObjectPart parent, int id) {
         if (this == UNRESTRICTED) {
-            return new AllValuesValueSet(parent, id);
+            return new UnrestrictedValueSet(parent, id);
         } else if (this == ENUM) {
             return new EnumValueSet(parent, id);
         } else if (this == RANGE) {
@@ -147,8 +147,8 @@ public class ValueSetType extends DefaultEnumValue {
             return new EnumValueSet(parent, id);
         } else if (tagName.equals(RangeValueSet.XML_TAG)) {
             return new RangeValueSet(parent, id);
-        } else if (tagName.equals(AllValuesValueSet.XML_TAG)) {
-            return new AllValuesValueSet(parent, id);
+        } else if (tagName.equals(UnrestrictedValueSet.XML_TAG)) {
+            return new UnrestrictedValueSet(parent, id);
         }
         return null;
     }

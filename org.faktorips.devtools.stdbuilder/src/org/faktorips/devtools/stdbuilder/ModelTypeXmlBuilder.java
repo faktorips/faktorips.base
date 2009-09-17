@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.valueset.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -230,7 +230,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (attribute instanceof IProductCmptTypeAttribute) {
             valueSet = ((IProductCmptTypeAttribute)attribute).getValueSet();
         }
-        if (valueSet instanceof IAllValuesValueSet) {
+        if (valueSet instanceof IUnrestrictedValueSet) {
             return "AllValues";
         }
         if (valueSet instanceof IRangeValueSet) {

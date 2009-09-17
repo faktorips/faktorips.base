@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
-import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -48,7 +48,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     public ProductCmptTypeAttribute(IIpsObject parent, int id) {
         super(parent, id);
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     /**
@@ -218,7 +218,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
      */
     @Override
     protected void removePart(IIpsObjectPart part) {
-        valueSet = new AllValuesValueSet(this, getNextPartId());
+        valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
     /**

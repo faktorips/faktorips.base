@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.valueset.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -373,7 +373,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 sb.append(rangeSet.getUpperBound());
             }
             sb.append("]"); //$NON-NLS-1$
-        } else if (set instanceof IAllValuesValueSet) {
+        } else if (set instanceof IUnrestrictedValueSet) {
             sb.append("["); //$NON-NLS-1$
             sb.append(Messages.ProductCmptCompareItem_AllValues);
             sb.append("]"); //$NON-NLS-1$
