@@ -125,9 +125,13 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
     public IValueSet getValueSet();
 
     /**
+     * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
+     * provide more detailed documentation.
+     * 
      * Returns the value set types that are allowed for the element's value set. If the attribute's
      * value set this config element configures is unrestricted, all value set types allowed by the
-     * project are returned. Otherwise the attribute's value set type is returned.
+     * project are returned. Otherwise the attribute's value set type is returned. If the attribute
+     * does not exist, this method returns the type of the config element's value set.
      * 
      * @throw CoreException if an error occurs.
      * 

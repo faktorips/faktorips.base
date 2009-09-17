@@ -60,8 +60,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private String value = ""; //$NON-NLS-1$
 
-    private List formulaTestCases = new ArrayList(0);
-
     public ConfigElement(ProductCmptGeneration parent, int id) {
         super(parent, id);
         valueSet = new AllValuesValueSet(this, getNextPartId());
@@ -339,7 +337,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
-            return new ArrayList<ValueSetType>();
+            ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
+            types.add(valueSet.getValueSetType());
+            return types;
         }
         if (attribute.getValueSet().isUnrestricted()) {
             return ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject));
@@ -440,6 +440,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -449,12 +450,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      */
     @Override
     public IIpsElement[] getChildren() {
-        List childrenList = new ArrayList((valueSet != null ? 1 : 0) + formulaTestCases.size());
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(1);
         if (valueSet != null) {
             childrenList.add(valueSet);
         }
-        childrenList.addAll(formulaTestCases);
-        return (IIpsElement[])childrenList.toArray(new IIpsElement[0]);
+        return childrenList.toArray(new IIpsElement[0]);
     }
 
     /**
@@ -478,7 +478,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      */
     public ValueDatatype getValueDatatype() {
         try {
-            // TODO v2 - signature getValueDatatype() is wrong!
             return findValueDatatype(getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.log(e);

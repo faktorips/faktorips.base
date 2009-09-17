@@ -73,6 +73,44 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 
+    public void testGetAllowedValueSetTypes() throws CoreException {
+
+        // case 1: attribute not found
+        configElement.setPolicyCmptTypeAttribute("a1");
+        List<ValueSetType> types = configElement.getAllowedValueSetTypes(ipsProject);
+        assertEquals(1, types.size());
+        assertEquals(configElement.getValueSet().getValueSetType(), types.get(0));
+
+        // case 2: attribute found, value set type is unrestricted, datatype is Integer
+        // => all types should be available
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
+        a1.setName("a1");
+        a1.setDatatype("Integer");
+        a1.setProductRelevant(true);
+        a1.setValueSetType(ValueSetType.UNRESTRICTED);
+        types = configElement.getAllowedValueSetTypes(ipsProject);
+        assertEquals(3, types.size());
+        assertTrue(types.contains(ValueSetType.ENUM));
+        assertTrue(types.contains(ValueSetType.RANGE));
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+
+        // case 3: as before, but with datatype String
+        // => only unrestricted and enum should be available
+        a1.setDatatype("String");
+        types = configElement.getAllowedValueSetTypes(ipsProject);
+        assertEquals(2, types.size());
+        assertTrue(types.contains(ValueSetType.ENUM));
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+
+        // case 4: as before, but with datatype String
+        // => only unrestricted and enum should be available
+        a1.setDatatype("Integer");
+        a1.setValueSetType(ValueSetType.RANGE);
+        types = configElement.getAllowedValueSetTypes(ipsProject);
+        assertEquals(1, types.size());
+        assertTrue(types.contains(ValueSetType.RANGE));
+    }
+
     public void testFindPcTypeAttribute() throws CoreException {
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
