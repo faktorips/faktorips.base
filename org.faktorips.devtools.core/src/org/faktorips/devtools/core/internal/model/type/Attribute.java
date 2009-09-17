@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,7 +48,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     private String datatype = ""; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
     private String defaultValue = null;
-    
+
     public Attribute(IIpsObject parent, int id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
@@ -57,10 +57,11 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,14 +110,21 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
         return project.findValueDatatype(datatype);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findValueDatatype(IIpsProject project) throws CoreException {
+        return project.findValueDatatype(datatype);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -136,11 +144,12 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
-        if (modifier==null) {
+        if (modifier == null) {
             modifier = Modifier.PUBLISHED;
         }
         datatype = element.getAttribute(PROPERTY_DATATYPE);
@@ -150,17 +159,19 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_NAME, name); 
-        element.setAttribute(PROPERTY_DATATYPE, datatype); 
+        element.setAttribute(PROPERTY_NAME, name);
+        element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
         String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
@@ -168,7 +179,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name
-                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ 
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
@@ -178,11 +189,11 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
             if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype, defaultValue);
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
-                        PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+                        PROPERTY_DEFAULT_VALUE));
             }
         }
     }
-    
+
     private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result) throws CoreException {
         if (!valueDatatype.isParsable(defaultValue)) {
             String defaultValueInMsg = defaultValue;
@@ -192,19 +203,19 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
                 defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
             String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
-            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
             return;
         }
         IValueSet valueSet = getValueSet();
         if (valueSet != null) {
-            if (defaultValue!=null && !valueSet.containsValue(defaultValue)) {
+            if (defaultValue != null && !valueSet.containsValue(defaultValue)) {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msg_DefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                        Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
+                        Messages.Attribute_msg_DefaultNotInValueset, defaultValue), Message.WARNING, this,
+                        PROPERTY_DEFAULT_VALUE));
             }
         }
     }
 
     protected abstract IValueSet getValueSet() throws CoreException;
-    
+
 }

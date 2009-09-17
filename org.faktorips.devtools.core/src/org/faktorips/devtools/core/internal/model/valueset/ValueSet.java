@@ -19,9 +19,9 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -69,7 +69,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      */
     protected ValueSet(ValueSetType type, IIpsObjectPart parent, int partId) {
         super(parent, partId);
-        if (!(parent instanceof IValueDatatypeProvider)) {
+        if (!(parent instanceof IValueSetOwner)) {
             super.parent = null;
             throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider."); //$NON-NLS-1$
         }
@@ -139,7 +139,8 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      */
     public ValueDatatype getValueDatatype() {
         try {
-            return ((IValueDatatypeProvider)parent).getValueDatatype();
+            // TODO getIpsProject() needs to be replaced with a paramter!
+            return ((IValueSetOwner)parent).findValueDatatype(getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

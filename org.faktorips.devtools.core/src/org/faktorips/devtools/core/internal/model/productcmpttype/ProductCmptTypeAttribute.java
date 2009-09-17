@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -41,7 +40,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeAttribute extends Attribute implements IProductCmptTypeAttribute, IValueDatatypeProvider {
+public class ProductCmptTypeAttribute extends Attribute implements IProductCmptTypeAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
