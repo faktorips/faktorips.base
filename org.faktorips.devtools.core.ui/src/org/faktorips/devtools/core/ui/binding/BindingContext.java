@@ -101,10 +101,8 @@ public class BindingContext {
      * Updates the UI with information from the model.
      */
     public void updateUI() {
-        // defensive copy to avoid concurrent modification
+        // defensive copy to avoid concurrent modification exceptions
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
-
-        // exceptions
         for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
             FieldPropertyMapping mapping = it.next();
             try {
