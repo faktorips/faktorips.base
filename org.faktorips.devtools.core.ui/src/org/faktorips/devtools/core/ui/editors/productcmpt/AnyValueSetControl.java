@@ -92,12 +92,10 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     protected void buttonClicked() {
         preserveState();
         try {
-            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(getIpsProject());
-            ValueDatatype datatype = getValueDatatype(attribute);
-            IpsPartEditDialog dialog = createEnumSubsetDialogIfApplicable(attribute, datatype);
+            IpsPartEditDialog dialog = createEnumSubsetDialogIfApplicable();
             if (dialog == null) {
                 List<ValueSetType> valueSetTypes = configElement.getAllowedValueSetTypes(getIpsProject());
-                dialog = new AnyValueSetEditDialog(configElement, datatype, valueSetTypes, shell, !dataChangeable);
+                dialog = new AnyValueSetEditDialog(configElement, valueSetTypes, shell, !dataChangeable);
             }
             dialog.setDataChangeable(isDataChangeable());
             if (dialog.open() == Window.OK) {
@@ -126,8 +124,10 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         return configElement.getIpsProject();
     }
 
-    private IpsPartEditDialog createEnumSubsetDialogIfApplicable(IPolicyCmptTypeAttribute attribute,
-            ValueDatatype datatype) {
+    private IpsPartEditDialog createEnumSubsetDialogIfApplicable() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(getIpsProject());
+        ValueDatatype datatype = getValueDatatype(attribute);
+
         if (attribute == null) {
             return null;
         }

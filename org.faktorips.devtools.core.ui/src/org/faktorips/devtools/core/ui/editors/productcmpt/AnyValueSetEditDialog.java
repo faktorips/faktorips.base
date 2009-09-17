@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -49,26 +48,21 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
     // The config element that owns the value set being shown/edited.
     private IConfigElement configElement;
 
-    // The value datatype values in the value set are "instances" of.
-    private ValueDatatype valueDatatype;
-
     // list of value set types the users can select
     private List<ValueSetType> allowedValuesSetTypes;
 
     // true if the dialog is used to just display the value set, no editing is possible
     private boolean viewOnly;
 
-    public AnyValueSetEditDialog(IConfigElement configElement, ValueDatatype valueDatatype,
-            List<ValueSetType> allowedTypes, Shell parentShell) {
-        this(configElement, valueDatatype, allowedTypes, parentShell, false);
+    public AnyValueSetEditDialog(IConfigElement configElement, List<ValueSetType> allowedTypes, Shell parentShell) {
+        this(configElement, allowedTypes, parentShell, false);
     }
 
-    public AnyValueSetEditDialog(IConfigElement configElement, ValueDatatype valueDatatype,
-            List<ValueSetType> allowedTypes, Shell parentShell, boolean viewOnly) {
+    public AnyValueSetEditDialog(IConfigElement configElement, List<ValueSetType> allowedTypes, Shell parentShell,
+            boolean viewOnly) {
 
         super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
-        this.valueDatatype = valueDatatype;
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
     }
