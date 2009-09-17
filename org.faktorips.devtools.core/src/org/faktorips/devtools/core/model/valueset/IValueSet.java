@@ -194,7 +194,7 @@ public interface IValueSet extends IIpsObjectPart {
     public boolean isAbstractAndNotUnrestricted();
 
     /**
-     * Returns <code>true</code> if this value set os of the same type as the given other value set.
+     * Returns <code>true</code> if this value set is of the same type as the given other value set.
      * Returns <code>false</code> otherwise. Returns <code>false</code> if the other value set is
      * <code>null</code>.
      */
