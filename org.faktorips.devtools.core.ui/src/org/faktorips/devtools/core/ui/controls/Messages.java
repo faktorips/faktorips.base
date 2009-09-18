@@ -65,6 +65,8 @@ public class Messages extends NLS {
 
     public static String ValueSetEditControl_UnspecifiedValueSet_Comment;
 
+    public static String ValueSetSpecificationControl_specifyBoundsValues;
+
     public static String TableStructureRefControl_title;
 
     public static String TableStructureRefControl_description;

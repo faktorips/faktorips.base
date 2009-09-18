@@ -80,7 +80,7 @@ public class ExtensionPropertyControlFactory {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
-            if (!"false".equals(extPropData[i].extProperty.getPosition())) {
+            if (!"false".equals(extPropData[i].extProperty.getPosition())) { //$NON-NLS-1$
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }

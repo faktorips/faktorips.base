@@ -243,7 +243,7 @@ public class BindingContext {
         if (!expectedType.isAssignableFrom(property.getPropertyType())) {
             throw new IllegalArgumentException(
                     "Expected property " + property.getName() + " to be of type " + expectedType //$NON-NLS-1$ //$NON-NLS-2$
-                            + ", but is of type " + property.getPropertyType());
+                            + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
         }
     }
 
@@ -251,14 +251,14 @@ public class BindingContext {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < expectedTypes.length; i++) {
             if (i > 0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(expectedTypes[i]);
         }
 
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                        + ", but is expected to of one of the types " + buffer.toString());
+                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
     }
 
     /**
@@ -450,7 +450,7 @@ public class BindingContext {
             try {
                 binding.updateUI();
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding));
+                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
             }
         }
 
@@ -470,7 +470,7 @@ public class BindingContext {
                         mapping.setPropertyValue();
                     } catch (Exception ex) {
                         IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex));
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                     }
                 }
             }
@@ -498,7 +498,7 @@ public class BindingContext {
                             mapping.setControlValue();
                         } catch (Exception ex) {
                             IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                    + " of object " + mapping.getObject(), ex));
+                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                         }
                     }
                 }
@@ -523,7 +523,7 @@ public class BindingContext {
                         mapping.setControlValue();
                     } catch (Exception ex) {
                         IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex));
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                     }
                 }
             }
@@ -541,7 +541,7 @@ public class BindingContext {
         StringBuffer sb = new StringBuffer("Ctx["); //$NON-NLS-1$
         for (int i = 0; i < ipsObjects.size(); i++) {
             if (i > 0) {
-                sb.append(", ");
+                sb.append(", "); //$NON-NLS-1$
             }
             IIpsObject ipsObject = ipsObjects.get(i);
             sb.append(ipsObject.getName());

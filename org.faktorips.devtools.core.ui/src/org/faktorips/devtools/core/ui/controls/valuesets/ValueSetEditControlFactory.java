@@ -61,7 +61,7 @@ public class ValueSetEditControlFactory {
             }
             return new EnumValueSetEditControl(enumValueSet, parent);
         }
-        throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype "
+        throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
                 + valueDatatype);
     }
 

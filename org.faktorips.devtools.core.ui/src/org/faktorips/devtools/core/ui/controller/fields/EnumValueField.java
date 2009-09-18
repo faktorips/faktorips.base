@@ -37,7 +37,7 @@ public class EnumValueField extends ComboField {
         for (int i = 0; i < items.length; i++) {
             usedEnumValues[i] = getEnumValue(allEnumValues, items[i]);
             if (usedEnumValues[i]==null) {
-                throw new RuntimeException("Not enum value for combo box item " + items[i]);
+                throw new RuntimeException("Not enum value for combo box item " + items[i]); //$NON-NLS-1$
             }
         }
     }

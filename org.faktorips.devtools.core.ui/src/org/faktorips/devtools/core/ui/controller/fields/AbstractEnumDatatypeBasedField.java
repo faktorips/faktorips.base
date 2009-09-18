@@ -93,7 +93,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
             String text = getDisplayTextForValue(id);
             if (text == null) {
                 throw new RuntimeException(
-                        "Inconsistant state during initialization of this edit field. The method getDisplayTextForValue(String) returned null for the provided id="
+                        "Inconsistant state during initialization of this edit field. The method getDisplayTextForValue(String) returned null for the provided id=" //$NON-NLS-1$
                                 + id);
             }
             items.add(text);

@@ -44,13 +44,13 @@ public class ParameterInfo {
         fOldName = name;
         fNewName = name;
         fOldIndex = index;
-        fDefaultValue = "";
+        fDefaultValue = ""; //$NON-NLS-1$
         fIsDeleted = false;
     }
 
     public static ParameterInfo createInfoForAddedParameter() {
         ParameterInfo info = new ParameterInfo("String", "newParam", INDEX_FOR_ADDED); //$NON-NLS-1$ //$NON-NLS-2$
-        info.setDefaultValue("null");
+        info.setDefaultValue(Messages.ParameterInfo_1);
         return info;
     }
 
@@ -112,7 +112,7 @@ public class ParameterInfo {
 
     @Override
     public String toString() {
-        return fOldTypeName + " " + fOldName + " @" + fOldIndex + " -> " //$NON-NLS-1$//$NON-NLS-2$
-                + fNewTypeName + " " + fNewName + ": " + fDefaultValue + (fIsDeleted ? " (deleted)" : " (stays)");
+        return fOldTypeName + " " + fOldName + " @" + fOldIndex + " -> " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                + fNewTypeName + " " + fNewName + ": " + fDefaultValue + (fIsDeleted ? " (deleted)" : " (stays)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

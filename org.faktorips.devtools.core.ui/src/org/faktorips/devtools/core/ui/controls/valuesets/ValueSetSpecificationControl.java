@@ -281,7 +281,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (!editMode.canDefineAbstractSets()) {
             return; // the user has no choice, so need to create a checkbox
         }
-        concreteValueSetLabel = toolkit.createLabel(parent, "Specify Bounds/Values:");
+        concreteValueSetLabel = toolkit.createLabel(parent, Messages.ValueSetSpecificationControl_specifyBoundsValues);
         concreteValueSetCheckbox = toolkit.createCheckbox(parent);
         concreteValueSetField = new CheckboxField(concreteValueSetCheckbox);
         updateConcreteValueSetCheckbox();

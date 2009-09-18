@@ -25,6 +25,7 @@ public class Messages extends NLS {
     public static String ChangeParametersControl_down;
     public static String ChangeParametersControl_remove;
     public static String ChangeParametersControl_up;
+    public static String ParameterInfo_1;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

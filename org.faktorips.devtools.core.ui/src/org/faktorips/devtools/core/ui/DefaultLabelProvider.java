@@ -165,7 +165,7 @@ public class DefaultLabelProvider extends LabelProvider {
         sb.append(" : "); //$NON-NLS-1$
         try {
             Datatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-            sb.append((datatype == null) ? "" : datatype.getName());
+            sb.append((datatype == null) ? "" : datatype.getName()); //$NON-NLS-1$
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -184,7 +184,7 @@ public class DefaultLabelProvider extends LabelProvider {
         sb.append(a.getDatatype());
 
         if (showAssociatedType) {
-            sb.append(" - ");
+            sb.append(" - "); //$NON-NLS-1$
             sb.append(a.getType().getName());
         }
 
@@ -228,7 +228,7 @@ public class DefaultLabelProvider extends LabelProvider {
         buffer.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
 
         if (showAssociatedType) {
-            buffer.append(" - ");
+            buffer.append(" - "); //$NON-NLS-1$
             buffer.append(method.getType().getName());
         }
 

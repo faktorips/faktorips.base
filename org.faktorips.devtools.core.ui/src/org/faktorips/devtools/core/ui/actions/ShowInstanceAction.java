@@ -67,7 +67,7 @@ public class ShowInstanceAction extends IpsAction {
             this.setText(Messages.bind(Messages.ShowInstanceAction_nameForInstances, ((IIpsMetaObject) selectedElement).getIpsObjectType().getDisplayNamePlural()));
             this.setDescription(Messages.ShowInstanceAction_descriptionForInstances);
         } else {
-            this.setText(Messages.bind(Messages.ShowInstanceAction_nameForInstances, ""));
+            this.setText(Messages.bind(Messages.ShowInstanceAction_nameForInstances, "")); //$NON-NLS-1$
         }
         this.setToolTipText(this.getDescription());
         this.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(InstanceExplorer.IMAGE));

@@ -79,7 +79,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * The simple extension point id of the extension point
      * <tt>extensionPropertyEditFieldFactory</tt>.
      */
-    public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory";
+    public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
 
     /** The shared instance. */
     private static IpsUIPlugin plugin;
@@ -205,23 +205,23 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (tableFormatToPropertiesCompositeMap == null) {
             tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
-            IExtension[] extensions = extensionPoints.getExtension("externalTableFormat");
+            IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
             for (int i = 0; i < extensions.length; i++) {
                 IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
                 for (IConfigurationElement configElement : configElements) {
-                    String configElClass = configElement.getAttribute("class");
+                    String configElClass = configElement.getAttribute("class"); //$NON-NLS-1$
                     if (StringUtils.isEmpty(configElClass)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
-                                "A problem occured while trying to load the extension: "
+                                "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extensions[i].getExtensionPointUniqueIdentifier()
-                                        + ". The attribute 'class' is not specified."));
+                                        + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
                     }
                     if (tableFormat.getClass().getName().equals(configElClass)) {
                         // the current configuration element corresponds to the given table format
-                        String configElGuiClass = configElement.getAttribute("guiClass");
+                        String configElGuiClass = configElement.getAttribute("guiClass"); //$NON-NLS-1$
                         if (!StringUtils.isEmpty(configElGuiClass)) {
                             TableFormatConfigurationCompositeFactory factory = (TableFormatConfigurationCompositeFactory)ExtensionPoints
-                                    .createExecutableExtension(extensions[i], configElement, "guiClass",
+                                    .createExecutableExtension(extensions[i], configElement, "guiClass", //$NON-NLS-1$
                                             TableFormatConfigurationCompositeFactory.class);
 
                             // assign the given table format to the created factory
@@ -483,15 +483,15 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             for (int i = 0; i < extensions.length; i++) {
                 IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
                 if (configElements.length > 0) {
-                    String configElPropertyId = configElements[0].getAttribute("propertyId");
+                    String configElPropertyId = configElements[0].getAttribute("propertyId"); //$NON-NLS-1$
                     if (StringUtils.isEmpty(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
-                                "A problem occured while trying to load the extension: "
+                                "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extensions[i].getExtensionPointUniqueIdentifier()
-                                        + ". The attribute propertyId is not specified."));
+                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertyEditFieldFactory factory = (IExtensionPropertyEditFieldFactory)ExtensionPoints
-                            .createExecutableExtension(extensions[i], configElements[0], "class",
+                            .createExecutableExtension(extensions[i], configElements[0], "class", //$NON-NLS-1$
                                     IExtensionPropertyEditFieldFactory.class);
                     if (factory != null) {
                         extensionPropertyEditFieldFactoryMap.put(configElPropertyId, factory);

@@ -153,7 +153,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             // use the first registered builder set info as default
             IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
                     .getIpsArtefactBuilderSetInfos();
-            props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : "");
+            props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
 
             props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
@@ -234,7 +234,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     // TODO do not change the targetVersion coming from the java options
     private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
 
-        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\.");
+        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
                 || Integer.parseInt(targetVersion[0]) > 1;
     }
@@ -438,8 +438,8 @@ public class AddIpsNatureAction extends ActionDelegate {
 
             String basePackageName = basePackageText.getText();
             IJavaProject javaProject = getJavaProject();
-            String sourceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_SOURCE, true);
-            String complianceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            String sourceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_SOURCE, true); //$NON-NLS-1$
+            String complianceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true); //$NON-NLS-1$
             if (!JavaConventions.validatePackageName(basePackageName, sourceLevel, complianceLevel).isOK()) {
                 newValidationStatus = IMessageProvider.ERROR;
                 message = Messages.AddIpsNatureAction_basePackageNameNotValid;
