@@ -159,12 +159,9 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             frag.append(containsNull);
             frag.append(", ");
             frag.append(newInstance(null));
-            frag.append(", ");
             for (int i = 0; i < values.length; i++) {
+                frag.append(", ");
                 frag.append(newInstance(values[i]));
-                if (i < values.length - 1) {
-                    frag.append(", ");
-                }
             }
             frag.appendln(")");
         } else {
@@ -176,10 +173,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             frag.append("[] ");
             frag.appendOpenBracket();
             for (int i = 0; i < values.length; i++) {
-                frag.append(newInstance(values[i]));
-                if (i < values.length - 1) {
+                if (i > 0) {
                     frag.append(", ");
                 }
+                frag.append(newInstance(values[i]));
             }
             frag.appendCloseBracket();
             frag.append(", ");
