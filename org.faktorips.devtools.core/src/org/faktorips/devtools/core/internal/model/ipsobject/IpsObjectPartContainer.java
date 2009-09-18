@@ -259,6 +259,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         }
         if (successful) {
+            IpsSrcFileContent content = ((IpsModel)getIpsModel()).getIpsSrcFileContent(getIpsSrcFile());
+            if (content != null) {
+                content.markAsUnmodified();
+            }
             objectHasChanged(modifications.modificationEvent());
         }
         return modifications.getResult();

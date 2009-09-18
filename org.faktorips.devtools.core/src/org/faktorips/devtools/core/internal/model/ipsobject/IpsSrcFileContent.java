@@ -95,7 +95,7 @@ public class IpsSrcFileContent {
             parsable = false;
             ipsObject.markAsFromUnparsableFile();
         } finally {
-            this.modified = wasModified; // set back modified flag
+            modified = wasModified; // set back modified flag
             setModified(newModified); // and use setter to trigger notification
             wholeContentChanged();
         }
@@ -143,9 +143,6 @@ public class IpsSrcFileContent {
     }
 
     public void markAsUnmodified() {
-        if(!((IpsModel)getIpsObject().getIpsModel()).isBroadcastingChangesForCurrentThread()){
-            return;
-        }
         if (modified) {
             modified = false;
             modificationStatusHasChanged();
@@ -153,9 +150,6 @@ public class IpsSrcFileContent {
     }
 
     public void markAsModified() {
-        if(!((IpsModel)getIpsObject().getIpsModel()).isBroadcastingChangesForCurrentThread()){
-            return;
-        }
         if (!modified) {
             modified = true;
             modificationStatusHasChanged();
@@ -188,7 +182,7 @@ public class IpsSrcFileContent {
      * @param modStamp The modStamp to set.
      */
     public void setModificationStamp(long modStamp) {
-        this.modificationStamp = modStamp;
+        modificationStamp = modStamp;
     }
 
     /**
@@ -312,7 +306,7 @@ public class IpsSrcFileContent {
          * rootProperties could be null if the workspace is out of sync and the file doesn't exist
          * anymore.
          */
-        return (String)(rootProperties != null ? rootProperties.get(propertyName) : null);
+        return (rootProperties != null ? rootProperties.get(propertyName) : null);
     }
 
     private String getPropertyFromIpsObject(String propertyName) {
@@ -385,6 +379,7 @@ public class IpsSrcFileContent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$
     }

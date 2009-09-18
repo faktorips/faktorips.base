@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -447,30 +446,37 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         clearUniqueIdentifierValidationCache();
     }
 
-    public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete) {
+    public boolean deleteEnumValues(final List<IEnumValue> enumValuesToDelete) {
         if (enumValuesToDelete == null) {
             return false;
         }
 
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        try {
+            return executeModificationsWithSingleEvent(new SingleEventModification<Boolean>() {
 
-        boolean changed = false;
-        for (IEnumValue currentEnumValue : enumValuesToDelete) {
-            if (!(enumValues.contains(currentEnumValue))) {
-                continue;
-            }
-            currentEnumValue.delete();
-            changed = true;
+                private Boolean changed;
+
+                @Override
+                protected boolean execute() throws CoreException {
+                    changed = false;
+                    for (IEnumValue currentEnumValue : enumValuesToDelete) {
+                        if (!(enumValues.contains(currentEnumValue))) {
+                            continue;
+                        }
+                        currentEnumValue.delete();
+                        changed = true;
+                    }
+                    return changed;
+                }
+
+                @Override
+                protected Boolean getResult() {
+                    return changed;
+                }
+            });
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-
-        // TODO - BROADCASTING CHANGES -
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-
-        if (changed) {
-            objectHasChanged();
-        }
-        return changed;
     }
 
 }
