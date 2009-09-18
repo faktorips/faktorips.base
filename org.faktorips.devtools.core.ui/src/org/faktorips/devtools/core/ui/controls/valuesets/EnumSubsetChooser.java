@@ -134,8 +134,12 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
             return;
         }
         valueDatatype = newDatatype;
-        String[] values = getAllSourceValues();
         formattedValue2Value = new HashMap<String, String>();
+        fillFormattedValue2ValueMap(getTargetValues());
+        fillFormattedValue2ValueMap(getAdditionalSourceValues());
+    }
+
+    private void fillFormattedValue2ValueMap(String[] values) {
         for (int i = 0; i < values.length; i++) {
             String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                     valueDatatype, values[i]);
@@ -144,8 +148,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     }
 
     private void setContents() {
-        super.setTargetContent(getTargetValues());
-        super.setSourceContent(getSourceValues());
+        super.setTargetContent(formatValues(getTargetValues()));
+        super.setSourceContent(formatValues(getAdditionalSourceValues()));
     }
 
     public IEnumValueSet getSourceValueSet() {
@@ -235,24 +239,17 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     }
 
     /**
-     * Returns an array of human readable strings representing all values contained in the given
-     * valueset. The names are requested from the given datatype. If the type is <code>null</code>
-     * or does not suppert value names, the ids are returned as names.
-     * 
-     * @param valueSet The valueset to get the names for.
-     * @param type The datatype to get the names from. Can be <code>null</code>.
+     * Returns all values in the target value set.
      */
     private String[] getTargetValues() {
-        String[] ids = targetValueSet.getValues();
-        return formatValues(ids);
+        return targetValueSet.getValues();
     }
 
     /**
-     * Returns all values the user can add to the (target) value set he is editing. Value already in
-     * the target set, are not returned. The values are formatted according to the preferences for
-     * the given value datatype. For enum value for example, the name is returned instead of the id.
+     * Returns all values the user can add to the (target) value set he is editing. Values already
+     * in the target set, are not returned.
      */
-    private String[] getSourceValues() {
+    private String[] getAdditionalSourceValues() {
         String[] values = new String[0];
         if (allowedValuesAreDefinedBySourceValueSet()) {
             values = targetValueSet.getValuesNotContained(sourceValueSet);
@@ -267,10 +264,14 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
             }
             values = result.toArray(new String[result.size()]);
         }
-        return formatValues(values);
+        return values;
     }
 
-    private String[] getAllSourceValues() {
+    /**
+     * Returns all values the user can add to the (target) value set whether the value is already in
+     * the target set or not.
+     */
+    public String[] getAllSourceValues() {
         if (allowedValuesAreDefinedByEnumDatatype()) {
             return getEnumDatatype().getAllValueIds(true);
         } else {
