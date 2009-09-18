@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -40,8 +41,14 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     public CSVTableFormat() {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ","); //$NON-NLS-1$
-        properties.put(PROPERTY_DATE_FORMAT, Messages.getString("CSVTableFormat_dateFormatPattern")); //$NON-NLS-1$
         properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, "."); //$NON-NLS-1$
+
+        Locale locale = IpsPlugin.getDefault().getUsedLanguagePackLocale();
+        if (locale.equals(Locale.GERMAN)) {
+            properties.put(PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
+        } else {
+            properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
+        }
     }
 
     /**

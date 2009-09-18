@@ -135,8 +135,6 @@ public interface ITableFormat {
             boolean importIntoExisting);
 
     /**
-     * Returns a runnable which is used to import enumerated types.
-     * <p/>
      * The file to import can either contain attributes of an enum (therefore defining a structure)
      * or enum values. In case of enum values the decision where to store them is based on
      * {@link IEnumType#getValuesArePartOfModel()}.
@@ -169,8 +167,6 @@ public interface ITableFormat {
             boolean importIntoExisting);
 
     /**
-     * Returns a runnable which is used to import enumerated types.
-     * <p/>
      * The file to import can either contain attributes of an enum (therefore defining a structure)
      * or enum values. In case of enum values the decision where to store them is based on
      * {@link IEnumType#isContainingValues()}.

@@ -15,12 +15,12 @@ package org.faktorips.devtools.tableconversion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -52,7 +52,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     /**
      * List of all converters this external table format is configured with.
      */
-    private List converter = new ArrayList();
+    private List<IValueConverter> converters = new ArrayList<IValueConverter>();
 
     /**
      * Table specific properties like text/field delimiter chars for CSV, ...
@@ -100,9 +100,9 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      * {@inheritDoc}
      */
     public void setDefaultExtension(String extension) {
-        this.defaultExtension = extension;
+        defaultExtension = extension;
 
-        if (this.defaultExtension == null) {
+        if (defaultExtension == null) {
             defaultExtension = ""; //$NON-NLS-1$
         }
     }
@@ -118,7 +118,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      * {@inheritDoc}
      */
     public void addValueConverter(IValueConverter converter) {
-        this.converter.add(converter);
+        converters.add(converter);
     }
 
     /**
@@ -141,12 +141,18 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return getConverter(datatype).getExternalDataValue(ipsValue, messageList);
     }
 
+    // TODO rg: cache converters in a map instead of for-loop
+    // add testcase for GregorianCalendarAsDateDatatype
     private IValueConverter getConverter(Datatype datatype) {
-        for (Iterator iter = converter.iterator(); iter.hasNext();) {
-            IValueConverter valueConverter = (IValueConverter)iter.next();
+        for (IValueConverter converter : converters) {
+            IValueConverter valueConverter = converter;
 
             if (valueConverter.getSupportedDatatype().equals(datatype)) {
                 return valueConverter;
+            }
+            // Manually handle GregorianCalendarAsDateDatatype
+            if (datatype instanceof GregorianCalendarAsDateDatatype) {
+                return getConverter(Datatype.GREGORIAN_CALENDAR_DATE);
             }
         }
         return defaultValueConverter;
@@ -199,7 +205,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         /**
          * {@inheritDoc}
          */
-        public Class getSupportedClass() {
+        public Class<Object> getSupportedClass() {
             return Object.class;
         }
 

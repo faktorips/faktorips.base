@@ -256,11 +256,11 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     public void validatePage() {
         setMessage("", IMessageProvider.NONE);
+        setErrorMessage(null);
         if (!tableFormat.isValidImportSource(filename)) {
             String msg = NLS.bind(Messages.ImportPreviewPage_validationWarningInvalidFile, filename);
-            setMessage(msg, IMessageProvider.WARNING);
+            setErrorMessage(msg);
         }
-        setErrorMessage(null);
 
         if (configCompositeFactory != null) {
             MessageList ml = configCompositeFactory.validate();
