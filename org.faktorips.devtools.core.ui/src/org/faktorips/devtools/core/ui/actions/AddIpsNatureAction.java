@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -83,6 +82,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
         if (newSelection instanceof IStructuredSelection) {
             selection = (IStructuredSelection)newSelection;
@@ -101,12 +101,17 @@ public class AddIpsNatureAction extends ActionDelegate {
         return null;
     }
 
+    @Override
     public void runWithEvent(IAction action, Event event) {
+        if (selection.size() > 1) {
+            MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
+                    Messages.AddIpsNatureAction_needToSelectOneSingleJavaProject);
+            return;
+        }
         IJavaProject javaProject = getJavaProject();
         if (javaProject == null) {
-            IpsStatus status = new IpsStatus(IpsStatus.WARNING, 0, NLS.bind(Messages.AddIpsNatureAction_noJavaProject,
-                    selection), null);
-            ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_errorTitle, null, status);
+            MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
+                    Messages.AddIpsNatureAction_mustSelectAJavaProject);
             return;
         }
         IProjectDescription description;
@@ -284,6 +289,7 @@ public class AddIpsNatureAction extends ActionDelegate {
          * 
          * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
          */
+        @Override
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
             shell.setText(Messages.AddIpsNatureAction_dialogTitle);
@@ -296,6 +302,7 @@ public class AddIpsNatureAction extends ActionDelegate {
          * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite
          * )
          */
+        @Override
         protected void createButtonsForButtonBar(Composite parent) {
             // create OK and Cancel buttons by default
             okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
@@ -306,6 +313,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         /*
          * (non-Javadoc) Method declared on Dialog.
          */
+        @Override
         protected Control createDialogArea(Composite parent) {
             Composite composite0 = (Composite)super.createDialogArea(parent);
             UIToolkit kit = new UIToolkit(null);
@@ -464,6 +472,7 @@ public class AddIpsNatureAction extends ActionDelegate {
          * @param errorMessage the error message, or <code>null</code> to clear
          * @since 3.0
          */
+        @Override
         public void setErrorMessage(String errorMessage) {
             this.errorMessage = errorMessage;
             if (errorMessageText != null && !errorMessageText.isDisposed()) {
@@ -481,6 +490,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         /*
          * (non-Javadoc) Method declared on Dialog.
          */
+        @Override
         protected void buttonPressed(int buttonId) {
             if (buttonId == IDialogConstants.OK_ID) {
                 sourceFolderName = sourceFolderText.getText();
@@ -496,6 +506,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         /*
          * (non-Javadoc) Method declared in Window.
          */
+        @Override
         protected Control createContents(Composite parent) {
 
             Control contents = super.createContents(parent);
@@ -511,6 +522,7 @@ public class AddIpsNatureAction extends ActionDelegate {
          * This implementation of this <code>Window</code> method disposes of the banner image when
          * the dialog is closed.
          */
+        @Override
         public boolean close() {
             if (dlgTitleImage != null) {
                 dlgTitleImage.dispose();

@@ -40,11 +40,13 @@ public class Messages extends NLS {
     public static String AddIpsNatureAction_runtimeIdPrefix;
     public static String AddIpsNatureAction_sourceFolderName;
     public static String AddIpsNatureAction_TheSourceFolderMustBeADirectChildOfTheProject;
+    public static String AddIpsNatureAction_needToSelectOneSingleJavaProject;
     public static String AddIpsNatureAction_noJavaProject;
     public static String AddIpsNatureAction_errorTitle;
     public static String AddIpsNatureAction_msgIPSNatureAlreadySet;
     public static String AddIpsNatureAction_msgSourceInProjectImpossible;
     public static String AddIpsNatureAction_msgErrorCreatingIPSProject;
+    public static String AddIpsNatureAction_mustSelectAJavaProject;
     public static String AddIpsNatureAction_titleAddFaktorIpsNature;
 
     public static String DeleteRowAction_Label;
