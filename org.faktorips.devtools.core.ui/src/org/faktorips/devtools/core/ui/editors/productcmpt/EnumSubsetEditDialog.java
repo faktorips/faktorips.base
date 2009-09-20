@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -27,8 +26,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.message.Message;
@@ -42,9 +39,6 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
     private IConfigElement configElement;
     private IEnumValueSet source;
     private ValueDatatype valueDatatype;
-
-    // edit fields
-    private DefaultEditField defaultValueField;
 
     private boolean viewOnly;
 
@@ -79,12 +73,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        createControlsForDefaultValue(workArea);
-
-        Control valueSetControl = createEnumValueSetChooser(workArea);
+        Control valueSetControl = createEnumValueSetChooser(c);
         GridData valueSetGridData = new GridData(GridData.FILL_BOTH);
         valueSetGridData.horizontalSpan = 2;
         valueSetControl.setLayoutData(valueSetGridData);
@@ -92,26 +81,11 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    private void createControlsForDefaultValue(Composite workArea) {
-        uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
-        Combo combo = uiToolkit.createCombo(workArea);
-        defaultValueField = new EnumValueSetField(combo, source, valueDatatype);
-    }
-
     private Composite createEnumValueSetChooser(Composite workArea) {
         EnumSubsetChooser chooser = new Chooser(workArea);
         chooser.setSourceLabel(Messages.DefaultsAndRangesEditDialog_additionalValuesDefinedInModel);
         chooser.setTargetLabel(Messages.DefaultsAndRangesEditDialog_valueDefinedInProductCmpt);
         return chooser;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
     }
 
     class Chooser extends EnumSubsetChooser {

@@ -75,6 +75,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.util.message.Message;
@@ -96,6 +97,29 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = baseProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { "Integer" });
         baseProject.setProperties(props);
+    }
+
+    public void testGetValueSetTypes() {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.STRING);
+        assertEquals(2, types.size());
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertTrue(types.contains(ValueSetType.ENUM));
+
+        types = ipsProject.getValueSetTypes(Datatype.INTEGER);
+        assertEquals(3, types.size());
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertTrue(types.contains(ValueSetType.RANGE));
+        assertTrue(types.contains(ValueSetType.ENUM));
+    }
+
+    public void testIsValueSetTypeApplicable() throws CoreException {
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.ENUM));
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.RANGE));
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.UNRESTRICTED));
+
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.ENUM));
+        assertFalse(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.RANGE));
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.UNRESTRICTED));
     }
 
     public void testFindAllProductCmpts() throws CoreException {
@@ -744,7 +768,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 Datatype.MONEY.getQualifiedName() });
         refProject.setProperties(props);
 
-        newDefinedEnumDatatype((IpsProject)refProject, new Class[] { TestEnumType.class });
+        newDefinedEnumDatatype(refProject, new Class[] { TestEnumType.class });
         // set the reference from the ips project to the referenced project
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(refProject);
@@ -1287,7 +1311,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindReferencingProductCmptGenerations() throws CoreException {
-        IIpsPackageFragmentRoot[] roots = this.ipsProject.getIpsPackageFragmentRoots();
+        IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
         assertEquals(roots.length, 1);
 
         IIpsPackageFragment pack = roots[0].getIpsPackageFragment(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);

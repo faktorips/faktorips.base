@@ -214,7 +214,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
-        // TODO update Javadoc and write a test case
         List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
         for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
             ValueSetType valueSetType = it.next();

@@ -769,7 +769,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public DatatypeHelper findDatatypeHelper(String qName) throws CoreException;
 
     /**
-     * Returns the possible value set types that are defined for the given datatype. The type
+     * Returns the value set types that are allowed for the given datatype. The type
      * {@link ValueSetType#UNRESTRICTED} is always returned and is the first element in the array.
      * If datatype is <code>null</code> then an array with <code>UNRESTRICTED</code> is returned.
      * 
@@ -781,9 +781,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns <code>true</code> if the given value set type is available for the given value
      * datatype. Returns <code>false</code> otherwise. Returns <code>false</code> if
-     * <code>datatype</code> or <code>valueSetType</code> are <code>null</code>. If this method
-     * returns <code>true</code>, it is guaranteed that the value set type is returned by
-     * {@link #getValueSetTypes(ValueDatatype)}.
+     * <code>valueSetType</code> is <code>null</code>. If <code>datatype</code> is <code>null</code>
+     * and the <code>valueSetType</code> is unrestricted, this method returns <code>true</code>.
+     * 
+     * If this method returns <code>true</code>, it is guaranteed that the value set type is
+     * returned by {@link #getValueSetTypes(ValueDatatype)}.
      */
     public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException;
 
