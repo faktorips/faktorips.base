@@ -71,4 +71,15 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
     public String toString() {
         return "UnrestrictedValueSet";
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof UnrestrictedValueSet<?>;
+    }
+
 }
