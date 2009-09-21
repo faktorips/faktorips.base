@@ -128,8 +128,10 @@ public abstract class TableCellEditor extends CellEditor {
      * is used for navigating trough the table using the <tt>Tab</tt>, <tt>Shift+Tab</tt>,
      * <tt>Enter</tt> and <tt>Escape</tt> keys.
      * <ul>
-     * <li><tt>Tab</tt>: Edits the next column. <li><tt>Shift+Tab</tt>: Edits the previous column.
-     * <li><tt>Enter</tt>: Edits the next row. <li><tt>Escape</tt>: Deactivates the editing mode.
+     * <li><tt>Tab</tt>: Edits the next column.
+     * <li><tt>Shift+Tab</tt>: Edits the previous column.
+     * <li><tt>Enter</tt>: Edits the next row.
+     * <li><tt>Escape</tt>: Deactivates the editing mode.
      * </ul>
      */
     protected void initTraverseListener() {
@@ -157,13 +159,20 @@ public abstract class TableCellEditor extends CellEditor {
      * used for navigating trough the table using the <tt>Arrow-Up</tt> and <tt>Arrow-Down</tt>
      * keys.
      * <ul>
-     * <li><tt>Arrow-Up</tt>: Edits the previous row. <li><tt>Arrow-Down</tt>: Edits the next row.
+     * <li><tt>Arrow-Up</tt>: Edits the previous row.
+     * <li><tt>Arrow-Down</tt>: Edits the next row.
      * </ul>
      */
     protected void initKeyListener() {
         control.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                // FS#1585: if this cell editor is a ComboCellEditor then the arrow down and up
+                // feature to create or delete rows are not supported, because otherwise the
+                // selection of a new value inside the drop down doesn't work correctly
+                if (TableCellEditor.this instanceof ComboCellEditor) {
+                    return;
+                }
                 if (e.keyCode == SWT.ARROW_DOWN) {
                     editNextRow();
                     e.doit = false;
@@ -223,13 +232,15 @@ public abstract class TableCellEditor extends CellEditor {
      * <tt>TableCellEditor</tt> is used in. If no following row exists, two behaviors are possible:
      * <ul>
      * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
-     * the current column in the new row is edited. <li>If this <tt>TableCellEditor</tt> is
-     * configured to not create rows the current column of the last row is edited.
+     * the current column in the new row is edited.
+     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the current column of
+     * the last row is edited.
      * </ul>
      */
     private void editNextRow() {
         fireApplyEditorValue();
         if (getNextRow() != getCurrentRow() && isAtNewRow()) {
+
             appendTableRow();
         }
         editCell(getNextRow(), columnIndex);
@@ -241,8 +252,9 @@ public abstract class TableCellEditor extends CellEditor {
      * row exists two behaviors are possible:
      * <ul>
      * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
-     * the first cell edited. <li>If this <tt>TableCellEditor</tt> is configured to not create rows
-     * the last cell of the last row of the table is edited.
+     * the first cell edited.
+     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the last cell of the
+     * last row of the table is edited.
      * </ul>
      * 
      */
@@ -298,8 +310,8 @@ public abstract class TableCellEditor extends CellEditor {
      * Returns the index of the previous column. If there is no previous column there are two
      * possible behaviors:
      * <ul>
-     * <li>If the first row is being edited the first column (0) will be returned. <li>For any other
-     * row the highest column index will be returned.
+     * <li>If the first row is being edited the first column (0) will be returned.
+     * <li>For any other row the highest column index will be returned.
      * </ul>
      * <p>
      * Takes skipped columns into account.
