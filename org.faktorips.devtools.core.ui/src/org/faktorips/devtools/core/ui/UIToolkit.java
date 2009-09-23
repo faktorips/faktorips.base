@@ -470,7 +470,7 @@ public class UIToolkit {
     }
 
     /**
-     * Creates a new QuestionIpsObjectTypeRefControl.
+     * Creates a new FilteredIpsObjectTypeRefControl.
      */
     public FilteredIpsObjectTypeRefControl createFilteredIpsObjectTypeRefControl(IIpsProject project,
             Composite parent,
