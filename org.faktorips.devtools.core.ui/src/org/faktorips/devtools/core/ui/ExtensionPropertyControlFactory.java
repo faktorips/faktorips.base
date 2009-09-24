@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,56 +27,56 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 
 /**
  * Factory to create controls for the extension properties of a type.
-
+ * 
  * @author eidenschink
  */
 public class ExtensionPropertyControlFactory {
 
-	private ExtPropControlData[] extPropData;
-    
-	public ExtensionPropertyControlFactory(Class extensionClass) {
-		IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
-				.getExtensionPropertyDefinitions(extensionClass, true);
-        
+    private ExtPropControlData[] extPropData;
+
+    public ExtensionPropertyControlFactory(Class extensionClass) {
+        IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
+                .getExtensionPropertyDefinitions(extensionClass, true);
+
         extPropData = new ExtPropControlData[extensionProperties.length];
         for (int i = 0; i < extensionProperties.length; i++) {
             extPropData[i] = new ExtPropControlData(extensionProperties[i]);
         }
-	}
-    
+    }
+
     public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
         for (int i = 0; i < extPropData.length; i++) {
-            if (position.equals(extPropData[i].extProperty.getPosition())
-                    && (extPropData[i].editField == null)) {
+            if (position.equals(extPropData[i].extProperty.getPosition()) && (extPropData[i].editField == null)) {
                 return true;
             }
         }
         return false;
     }
 
-	/**
-	 * Creates the <code>EditFields</code> of extension at <code>where</code> position
-	 */
-	public void createControls(Composite workArea, UIToolkit uiToolkit,
-            IIpsObjectPartContainer ipsObjectPart, String position) {
-        
+    /**
+     * Creates the <code>EditFields</code> of extension at <code>where</code> position
+     */
+    public void createControls(Composite workArea,
+            UIToolkit uiToolkit,
+            IIpsObjectPartContainer ipsObjectPart,
+            String position) {
+
         // find all extension property definitions for the given position
-        ArrayList extPropertiesForPosition = new ArrayList();
+        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<ExtPropControlData>();
         for (int i = 0; i < extPropData.length; i++) {
             if (position.equals(extPropData[i].extProperty.getPosition())) {
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }
-        
+
         createControls(extPropertiesForPosition, workArea, uiToolkit, ipsObjectPart);
-	}
-    
-	/**
-	 * Creates all not yet explicitely created EditFields of an extension not including
-	 * the extensions tagged with <code>false</code> 
-	 */
-	public void createControls(Composite workArea, UIToolkit uiToolkit,
-            IIpsObjectPartContainer ipsObjectPart) {
+    }
+
+    /**
+     * Creates all not yet explicitely created EditFields of an extension not including the
+     * extensions tagged with <code>false</code>
+     */
+    public void createControls(Composite workArea, UIToolkit uiToolkit, IIpsObjectPartContainer ipsObjectPart) {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
@@ -85,16 +85,19 @@ public class ExtensionPropertyControlFactory {
             }
         }
         createControls(extPropertiesForPosition, workArea, uiToolkit, ipsObjectPart);
-	}
-    
-    private void createControls(ArrayList extPropControlData, Composite workArea, UIToolkit uiToolkit,
+    }
+
+    private void createControls(ArrayList<ExtPropControlData> extPropControlData,
+            Composite workArea,
+            UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart) {
-        
+
         // sort the array of found extension property definitions by their SortOrder
         ExtPropControlData[] sortedExtensionPropertyDefinitions;
-        sortedExtensionPropertyDefinitions = (ExtPropControlData[])extPropControlData.toArray(new ExtPropControlData[extPropControlData.size()]);
+        sortedExtensionPropertyDefinitions = extPropControlData.toArray(new ExtPropControlData[extPropControlData
+                .size()]);
         Arrays.sort(sortedExtensionPropertyDefinitions);
-        
+
         // create controls
         for (int i = 0; i < sortedExtensionPropertyDefinitions.length; i++) {
             if (sortedExtensionPropertyDefinitions[i].editField == null) {
@@ -102,17 +105,17 @@ public class ExtensionPropertyControlFactory {
             }
         }
     }
-    
-    private void createLabelAndEditField(
-            Composite workArea, 
-            UIToolkit uiToolkit, 
+
+    private void createLabelAndEditField(Composite workArea,
+            UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart,
             ExtPropControlData extPropertyData) {
 
         uiToolkit.createFormLabel(workArea, extPropertyData.extProperty.getName() + ":"); //$NON-NLS-1$
         IExtensionPropertyEditFieldFactory factory;
         try {
-            factory = IpsUIPlugin.getDefault().getExtensionPropertyEditFieldFactory(extPropertyData.extProperty.getPropertyId());
+            factory = IpsUIPlugin.getDefault().getExtensionPropertyEditFieldFactory(
+                    extPropertyData.extProperty.getPropertyId());
             extPropertyData.editField = factory.newEditField(ipsObjectPart, workArea, uiToolkit);
             extPropertyData.partContainer = ipsObjectPart;
         } catch (CoreException e) {
@@ -120,15 +123,15 @@ public class ExtensionPropertyControlFactory {
         }
     }
 
-	/**
-	 * Connects all EditFields created by this factory with the model.
-	 */
-	public void connectToModel(IpsObjectUIController uiController) {
+    /**
+     * Connects all EditFields created by this factory with the model.
+     */
+    public void connectToModel(IpsObjectUIController uiController) {
         for (int i = 0; i < extPropData.length; i++) {
             uiController.add(extPropData[i].editField, extPropData[i].extProperty.getPropertyId());
         }
-	}
-    
+    }
+
     /**
      * Binds all edit fields created by this factory into the given context.
      * 
@@ -137,7 +140,8 @@ public class ExtensionPropertyControlFactory {
     public void bind(BindingContext context) {
         for (int i = 0; i < extPropData.length; i++) {
             if (extPropData[i].editField != null) {
-                context.bindContent(extPropData[i].editField, extPropData[i].partContainer, extPropData[i].extProperty.getPropertyId());
+                context.bindContent(extPropData[i].editField, extPropData[i].partContainer, extPropData[i].extProperty
+                        .getPropertyId());
             }
         }
     }
@@ -152,14 +156,14 @@ public class ExtensionPropertyControlFactory {
             if (extPropData[i].editField != null) {
                 context.removeBindings(extPropData[i].editField.getControl());
             }
-        }        
+        }
     }
-    
+
     private class ExtPropControlData implements Comparable {
         IExtensionPropertyDefinition extProperty;
         EditField editField;
         IIpsObjectPartContainer partContainer;
-        
+
         public ExtPropControlData(IExtensionPropertyDefinition extProperty) {
             this.extProperty = extProperty;
         }
@@ -170,6 +174,6 @@ public class ExtensionPropertyControlFactory {
             }
             return extProperty.compareTo(((ExtPropControlData)o).extProperty);
         }
-        
+
     }
 }
