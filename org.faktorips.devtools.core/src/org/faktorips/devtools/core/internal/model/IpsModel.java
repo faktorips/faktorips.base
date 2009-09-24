@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
@@ -210,12 +211,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         types.add(IpsObjectType.BUSINESS_FUNCTION);
         types.add(IpsObjectType.ENUM_TYPE);
         types.add(IpsObjectType.ENUM_CONTENT);
+
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
         for (int i = 0; i < extensions.length; i++) {
-            IpsObjectType type = createIpsObjectType(extensions[i]);
-            if (type != null) {
-                types.add(type);
+            List<IpsObjectType> additionalTypes = createIpsObjectTypes(extensions[i]);
+            for (IpsObjectType objType : additionalTypes) {
+                addIpsObjectTypeIfNotDuplicate(types, objType);
             }
         }
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
@@ -226,8 +228,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
-    private IpsObjectType createIpsObjectType(IExtension extension) {
+    private void addIpsObjectTypeIfNotDuplicate(List<IpsObjectType> types, IpsObjectType newType) {
+        for (IpsObjectType exisingType : types) {
+            if (exisingType.getFileExtension().equalsIgnoreCase(newType.getFileExtension())) {
+                IpsPlugin.log(new IpsStatus("Can't register IpsObjectType " + newType //$NON-NLS-1$
+                        + " as it has the same file extension as the type " + exisingType)); //$NON-NLS-1$
+                return;
+            }
+        }
+        types.add(newType);
+    }
+
+    private List<IpsObjectType> createIpsObjectTypes(IExtension extension) {
         IpsObjectType type = null;
+        List<IpsObjectType> validTypes = new ArrayList<IpsObjectType>();
         IConfigurationElement[] configElements = extension.getConfigurationElements();
         for (int i = 0; i < configElements.length; i++) {
             if (!configElements[i].getName().equalsIgnoreCase("ipsobjecttype")) { //$NON-NLS-1$
@@ -239,12 +253,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
             type = (IpsObjectType)ExtensionPoints.createExecutableExtension(extension, configElements[i],
                     "class", IpsObjectType.class); //$NON-NLS-1$
+
+            if (type == null) {
+                String text = "Illegal ips object type definition " + extension.getUniqueIdentifier(); //$NON-NLS-1$
+                IpsPlugin.log(new IpsStatus(text));
+            } else {
+                validTypes.add(type);
+            }
         }
-        if (type == null) {
-            String text = "Illegal ips object type definition" + extension.getUniqueIdentifier(); //$NON-NLS-1$
-            IpsPlugin.log(new IpsStatus(text));
-        }
-        return type;
+        return validTypes;
     }
 
     public void startListeningToResourceChanges() {
@@ -285,7 +302,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         };
         changeListeners.clear();
-        this.addChangeListener(batchListener);
+        addChangeListener(batchListener);
 
         HashSet copyOfCurrentModifyListeners = new HashSet(modificationStatusChangeListeners);
         final Set modifiedSrcFiles = new LinkedHashSet(0);
@@ -297,13 +314,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         };
         modificationStatusChangeListeners.clear();
-        this.addModifcationStatusChangeListener(batchModifiyListener);
+        addModifcationStatusChangeListener(batchModifiyListener);
 
         try {
             getWorkspace().run(action, rule, flags, monitor);
         } finally {
             // restore change listeners
-            this.removeChangeListener(batchListener);
+            removeChangeListener(batchListener);
             changeListeners = new HashSet(listeners);
 
             // notify about changes
@@ -394,6 +411,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsModel getIpsModel() {
         return this;
     }
@@ -429,6 +447,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsProjects();
     }
@@ -553,7 +572,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
         }
-        if (this.modificationStatusChangeListeners == null) {
+        if (modificationStatusChangeListeners == null) {
             modificationStatusChangeListeners = new HashSet(1);
         }
         modificationStatusChangeListeners.add(listener);
@@ -671,6 +690,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object o) {
         return o instanceof IIpsModel;
     }
@@ -678,6 +698,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "IpsModel"; //$NON-NLS-1$
     }
@@ -855,10 +876,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
+        Map map = projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
             initDatatypesDefinedInProjectProperties(ipsProject);
-            map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
+            map = projectDatatypeHelpersMap.get(ipsProject.getName());
         }
         return (DatatypeHelper)map.get(datatype);
     }
@@ -1241,7 +1262,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValueDatatype[] getPredefinedValueDatatypes() {
         if (datatypes == null) {
-            this.initDatatypesDefinedViaExtension();
+            initDatatypesDefinedViaExtension();
         }
         Collection c = datatypes.values();
         return (ValueDatatype[])c.toArray(new ValueDatatype[c.size()]);
@@ -1252,7 +1273,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
         if (datatypes == null) {
-            this.initDatatypesDefinedViaExtension();
+            initDatatypesDefinedViaExtension();
         }
         return datatypes.containsKey(valueDatatypeId);
     }
@@ -1280,7 +1301,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         convention = (IChangesOverTimeNamingConvention)changesOverTimeNamingConventionMap
                 .get(IChangesOverTimeNamingConvention.VAA);
         if (convention != null) {
-            IpsPlugin.log(new IpsStatus(IpsStatus.WARNING, "Unknown changes in time naming convention " + id //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknown changes in time naming convention " + id //$NON-NLS-1$
                     + ". Using default " //$NON-NLS-1$
                     + IChangesOverTimeNamingConvention.VAA, null));
             return convention;
@@ -1312,7 +1333,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.VAA);
             changesOverTimeNamingConventionMap.put(vaa.getId(), vaa);
-            
+
             IChangesOverTimeNamingConvention pm = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.PM);
             changesOverTimeNamingConventionMap.put(pm.getId(), pm);
@@ -1707,17 +1728,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IpsPlugin.log(e);
             }
 
-            this.addSortDefinition(fragment, sortDef, lastModification);
+            addSortDefinition(fragment, sortDef, lastModification);
         }
 
         return sortDef;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isContainedInArchive() {
         return false;
     }
-    
+
 }
