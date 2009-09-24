@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -72,9 +71,11 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
+            throws CoreException {
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
 
+            @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 return ""; //$NON-NLS-1$
             }
@@ -127,6 +128,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * @return the string <i>emptyBuilderSet</i>
      */
+    @Override
     public String getId() {
         return "emptyBuilderSet"; //$NON-NLS-1$
     }
@@ -134,11 +136,9 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * Calls to this method are ignored. The getId() method always returns <i>emptyBuilderSet</i>
      */
+    @Override
     public void setId(String id) {
 
-    }
-
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
     }
 
     /**
@@ -172,6 +172,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         return new IIpsArtefactBuilder[0];
     }
