@@ -64,8 +64,7 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
                     break;
                 } else if (selected instanceof IResource) {
                     IResource resource = (IResource)selected;
-                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource)
-                            .getIpsProject();
+                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
                     break;
                 }
             }
