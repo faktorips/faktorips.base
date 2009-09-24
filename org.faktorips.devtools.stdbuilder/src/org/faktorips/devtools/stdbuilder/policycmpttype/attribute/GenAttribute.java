@@ -202,6 +202,9 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
      */
     protected void generateGetterImplementation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (attribute.getModifier().isPublished()) {
+            appendOverrideAnnotation(methodsBuilder, true);
+        }
         generateGetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");

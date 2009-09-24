@@ -179,15 +179,16 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
         if (!returnedTypeInSignature.equals(getPcType())) {
             appendOverrideAnnotation(methodsBuilder, false);
-        }
-        IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
-        if (superType != null) {
+        } else if (superType != null) {
             IPolicyCmptType superPolicyCmptType = superType.findPolicyCmptType(getIpsProject());
             if (superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())) {
                 appendOverrideAnnotation(methodsBuilder, false);
             }
+        } else {
+            appendOverrideAnnotation(methodsBuilder, true);
         }
         ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(
                 methodsBuilder);
@@ -238,6 +239,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
+        appendOverrideAnnotation(methodsBuilder, true);
         GenProductCmptType genProd = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
         genProd.generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.openBracket();

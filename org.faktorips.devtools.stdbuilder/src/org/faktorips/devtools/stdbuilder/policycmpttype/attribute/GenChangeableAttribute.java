@@ -271,6 +271,8 @@ public class GenChangeableAttribute extends GenAttribute {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             if (getPolicyCmptTypeAttribute().isOverwrite()) {
                 appendOverrideAnnotation(methodsBuilder, false);
+            } else if (attribute.getModifier().isPublished()) {
+                appendOverrideAnnotation(methodsBuilder, true);
             }
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.openBracket();
@@ -298,6 +300,9 @@ public class GenChangeableAttribute extends GenAttribute {
      */
     protected void generateSetterMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (attribute.getModifier().isPublished()) {
+            appendOverrideAnnotation(methodsBuilder, true);
+        }
         generateSetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
         getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder,
@@ -339,6 +344,8 @@ public class GenChangeableAttribute extends GenAttribute {
             if (genOverwritten.shouldGetAllowedSetOfValuesBeGenerated()) {
                 appendOverrideAnnotation(methodBuilder, false);
             }
+        } else if (attribute.getModifier().isPublished()) {
+            appendOverrideAnnotation(methodBuilder, true);
         }
         generateSignatureGetSetOfAllowedValues(methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -369,6 +376,8 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
             appendOverrideAnnotation(methodsBuilder, false);
+        } else if (attribute.getModifier().isPublished()) {
+            appendOverrideAnnotation(methodsBuilder, true);
         }
         generateSignatureGetSetOfAllowedValues(methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();

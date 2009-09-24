@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -77,11 +77,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     }
 
     public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
-        this.productCmptImplBuilder = builder;
+        productCmptImplBuilder = builder;
     }
 
     public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
-        this.productCmptGenImplBuilder = builder;
+        productCmptGenImplBuilder = builder;
     }
 
     /**
@@ -98,6 +98,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         if (generation == null) {
             addToBuildStatus(new IpsStatus(
@@ -163,6 +164,35 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             String methodSuffix,
             String[] testParameterNames,
             String[] testParameterTypes) throws CoreException {
+        generateMethodForFormula(formula, builder, methodSuffix, testParameterNames, testParameterTypes, true);
+    }
+
+    /**
+     * Generates the method to compute a value as specified by a formula configuration element,
+     * especially for test case classes.
+     * 
+     * @param formula The formula the method will be generated for
+     * @param builder The builder which is used to generate the code
+     * @param methodSuffix Suffix which will append to the method name
+     * @param testParameterNames additional parameter name which will be append to the method
+     *            signature
+     * @param testParameterTypes additional parameter types which will be append to the method
+     *            signature
+     */
+    public void generateMethodForFormulaForTestCase(IFormula formula,
+            JavaCodeFragmentBuilder builder,
+            String methodSuffix,
+            String[] testParameterNames,
+            String[] testParameterTypes) throws CoreException {
+        generateMethodForFormula(formula, builder, methodSuffix, testParameterNames, testParameterTypes, false);
+    }
+
+    private void generateMethodForFormula(IFormula formula,
+            JavaCodeFragmentBuilder builder,
+            String methodSuffix,
+            String[] testParameterNames,
+            String[] testParameterTypes,
+            boolean addOverrideAnnotationIfNecessary) throws CoreException {
         IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
         if (method.validate(getIpsProject()).containsErrorMsg()) {
             return;
@@ -170,9 +200,13 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method).generateSignatureForModelMethod(false, true, builder, methodSuffix,
-                testParameterNames, testParameterTypes, getIpsProject());
+        if (addOverrideAnnotationIfNecessary) {
+            appendOverrideAnnotation(builder, method.getModifier().isPublished());
+        }
+
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method)
+                .generateSignatureForModelMethod(false, true, builder, methodSuffix, testParameterNames,
+                        testParameterTypes, getIpsProject());
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$
@@ -192,8 +226,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                 builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
                 ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
                 if (valuetype != null && valuetype.isPrimitive()) { // optimization: we search for
-                                                                    // value types only as only
-                                                                    // those can be primitives!
+                    // value types only as only
+                    // those can be primitives!
                     builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     builder
@@ -266,6 +300,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * 
      * Returns true.
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }

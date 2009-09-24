@@ -860,6 +860,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodGetProductCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, true);
         getGenProductCmptType().generateSignatureGetProductCmpt(builder);
         builder.openBracket();
         String productCmptInterfaceQualifiedName = getGenProductCmptType().getQualifiedName(true);
@@ -883,6 +884,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodGetProductCmptGeneration(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, true);
         getGenProductCmptType().generateSignatureGetProductCmptGeneration(builder);
         builder.openBracket();
         builder.append("return (");
@@ -896,6 +898,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private void generateMethodSetProductComponent(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, true);
         getGenProductCmptType().generateSignatureSetProductComponent(builder);
         String[] paramNames = getGenProductCmptType().getMethodParamNamesSetProductCmpt();
         builder.openBracket();

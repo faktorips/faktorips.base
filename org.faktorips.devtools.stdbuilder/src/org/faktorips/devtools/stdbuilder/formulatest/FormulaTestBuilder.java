@@ -274,9 +274,10 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 throw new CoreException(new IpsStatus("No formula parameter names and types found for generation id: "
                         + generationId));
             }
-            generationBuilder.generateMethodForFormula(formula, builder, getComputeTestMethodSuffix(generationId
-                    .intValue()), testParameterNames.toArray(new String[testParameterNames.size()]), testParameterTypes
-                    .toArray(new String[testParameterTypes.size()]));
+            generationBuilder.generateMethodForFormulaForTestCase(formula, builder,
+                    getComputeTestMethodSuffix(generationId.intValue()), testParameterNames
+                            .toArray(new String[testParameterNames.size()]), testParameterTypes
+                            .toArray(new String[testParameterTypes.size()]));
         }
     }
 
@@ -344,6 +345,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragmentBuilder builder) {
         String javaDoc = getJavaDocCommentForOverriddenMethod();
         JavaCodeFragment body = new JavaCodeFragment();
+        appendOverrideAnnotation(builder, false);
         builder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY, body,
                 javaDoc, ANNOTATION_GENERATED);
     }
@@ -376,6 +378,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln(", result);");
         }
 
+        appendOverrideAnnotation(builder, false);
         builder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
                 new String[] { IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
