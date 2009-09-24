@@ -65,27 +65,18 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean executeTableImport(ITableStructure structure,
+    public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) {
+            boolean importIntoExisting) throws CoreException {
 
-        try {
-            ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename
-                    .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
-                    importIntoExisting);
-            excelTableImportOperation.run(new NullProgressMonitor());
-            return true;
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
+        ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename
+                .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
+                importIntoExisting);
+        excelTableImportOperation.run(new NullProgressMonitor());
     }
 
     /**
@@ -108,25 +99,16 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+    public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) {
+            boolean importIntoExisting) throws CoreException {
 
-        try {
-            ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
-            enumImportOperation.run(new NullProgressMonitor());
-            return true;
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
+        ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, filename
+                .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
+        enumImportOperation.run(new NullProgressMonitor());
     }
 
     /**

@@ -70,48 +70,29 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean executeTableImport(ITableStructure structure,
+    public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) {
+            boolean importIntoExisting) throws CoreException {
 
-        try {
-            CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure,
-                    filename.toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow,
-                    list, importIntoExisting);
-            tableImportOperation.run(new NullProgressMonitor());
-            return true;
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
+        CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure, filename.toOSString(),
+                targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
+        tableImportOperation.run(new NullProgressMonitor());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+    public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) {
+            boolean importIntoExisting) throws CoreException {
 
-        try {
-            CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
-            enumImportOperation.run(new NullProgressMonitor());
-            return true;
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
+        CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename.toOSString(),
+                this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
+        enumImportOperation.run(new NullProgressMonitor());
     }
 
     /**
@@ -163,15 +144,31 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    /**
+     * Examines if the number of fields stays the same throughout the whole file. Empty lines are
+     * omitted.
+     */
     private boolean hasConstantNumberOfFieldsPerLine(CSVReader reader) throws IOException {
         String[] row = reader.readNext();
         int expectedNumberOfFields = row.length;
         while ((row = reader.readNext()) != null) {
+            if (isEmptyRow(row)) {
+                // Handle empty lines as being valid. They can be skipped without information loss
+                // appearing somewhere in the in the file. In case a CSV file ends with a newline,
+                // which is totally reasonable, the file would be unintentionally marked as invalid
+                // when not handling it here.
+                continue;
+            }
+
             if (expectedNumberOfFields != row.length) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean isEmptyRow(String[] row) {
+        return row.length == 1 && row[0].equals("");
     }
 
     /**
@@ -250,6 +247,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             while ((line = reader.readNext()) != null) {
                 if (linesLeft-- <= 0) {
                     break;
+                }
+                if (isEmptyRow(line)) {
+                    continue;
                 }
                 String[] convertedLine = new String[line.length];
                 for (int i = 0; i < line.length; i++) {

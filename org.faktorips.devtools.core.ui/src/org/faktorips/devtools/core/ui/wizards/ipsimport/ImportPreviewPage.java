@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.ipsimport;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,9 +22,8 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
@@ -41,6 +39,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -78,21 +77,31 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     private boolean ignoreColumnHeaderRow;
 
-    private final IpsObjectImportWizard wizard;
-
     /**
-     * Initializes the preview dialog using the given selection.
+     * Displays a preview of the external file which optionally can be adjusted with custom
+     * controls.
      * <p>
-     * Note that in order to correctly display a preview one must also set a filename, a table
-     * format and a table structure.
      * 
-     * @param wizard The wizard this page belongs to.
+     * @param filename The name of the file to show the preview for.
+     * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
+     *            they are created using this table format by looking up the <code>guiClass</code>
+     *            extension element of the
+     *            <code>org.faktorips.devtools.core.externalTableFormat</code> extension point.
+     * @param structure The structure against which to validate the file. Is an
+     *            <code>IEnumType</code> instance when previewing an enum, or an
+     *            <code>ITableStructure</code> instance for table previews.
+     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
+     *            should be ignored <code>false</code> if the to be imported content contains no
+     *            column header row.
      */
-    public ImportPreviewPage(IpsObjectImportWizard wizard, String filename, ITableFormat tableFormat,
-            IIpsObject structure, boolean ignoreColumnHeaderRow) {
+    public ImportPreviewPage(String filename, ITableFormat tableFormat, IIpsObject structure,
+            boolean ignoreColumnHeaderRow) {
         super(Messages.ImportPreviewPage_pageName);
 
-        this.wizard = wizard;
+        ArgumentCheck.notNull(filename);
+        ArgumentCheck.notNull(tableFormat);
+        ArgumentCheck.notNull(structure);
+
         this.filename = filename;
         this.tableFormat = tableFormat;
         this.structure = structure;
@@ -101,32 +110,25 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         setPageComplete(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void createControl(Composite parent) {
         validateInput = false;
         setTitle(Messages.ImportPreviewPage_pageTitle);
 
         pageControl = toolkit.createGridComposite(parent, 1, false, false);
-        // TODO rg: remove listener when this page is disposed
-        pageControl.addControlListener(new ControlListener() {
-            public void controlMoved(ControlEvent e) {
-                // nothing to do
-            }
-
-            public void controlResized(ControlEvent e) {
-                refreshColumnWidths();
-            }
-        });
 
         configurationGroup = toolkit.createGroup(pageControl, Messages.ImportPreviewPage_configurationGroupTitle);
         createTableFormatPropertiesControl(configurationGroup, toolkit);
+        if (configurationGroup.getLayout() instanceof GridLayout) {
+            final GridData layoutData = (GridData)configurationGroup.getLayoutData();
+            layoutData.grabExcessVerticalSpace = false;
+        }
 
         previewGroup = toolkit.createGroup(pageControl, Messages.ImportPreviewPage_livePreviewGroupTitle);
         createTable(previewGroup, toolkit);
-
-        fillPreview();
+        if (previewGroup.getLayout() instanceof GridLayout) {
+            final GridData layoutData = (GridData)previewGroup.getLayoutData();
+            layoutData.grabExcessVerticalSpace = true;
+        }
 
         setControl(pageControl);
         validateInput = true;
@@ -146,7 +148,6 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
             if (configCompositeFactory != null) {
                 configCompositeFactory.createPropertyComposite(parent, toolkit);
-                // TODO rg: remove listener when page is disposed
                 configCompositeFactory.addValueChangedListener(this);
             }
         } catch (CoreException e) {
@@ -154,7 +155,16 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         }
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        configCompositeFactory.removeValueChangedListener(this);
+    }
+
+    @SuppressWarnings("unchecked")
     private void fillPreview() {
+        previewTable.removeAll();
+
         if (filename == null || tableFormat == null) {
             return;
         }
@@ -162,7 +172,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         handleNumberOfTableColumnsChanged();
 
         String nullRepresentation = ((IpsObjectImportWizard)getWizard()).nullRepresentation;
-        List preview = Collections.EMPTY_LIST;
+        List<String[]> preview = Collections.emptyList();
         if (structure instanceof ITableStructure) {
             preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),
                     MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow, nullRepresentation);
@@ -187,8 +197,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
         previewTable.removeAll();
 
-        for (Iterator iterator = preview.iterator(); iterator.hasNext();) {
-            String[] row = (String[])iterator.next();
+        for (String[] row : preview) {
             TableItem item = new TableItem(previewTable, SWT.LEAD);
             for (int col = 0; col < Math.min(columnCount, row.length); col++) {
                 item.setText(col, row[col]);
@@ -227,17 +236,17 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
      * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
-        fillPreview();
-
         if (validateInput) { // don't validate during control creating!
             validatePage();
         }
         updatePageComplete();
+        fillPreview();
     }
 
     protected void updatePageComplete() {
         if (getErrorMessage() != null) {
             setPageComplete(false);
+            previewTable.removeAll();
             return;
         }
         setPageComplete(true);
@@ -252,6 +261,11 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             previewTable.getColumn(i).setWidth(widthPerColumn);
         }
         pageControl.layout(true);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        fillPreview();
     }
 
     public void validatePage() {
@@ -274,20 +288,28 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     /**
      * Reinitializes the contents of this page.
+     * <p/>
      * 
-     * @param filename
-     * @param tableFormat
-     * @param structure An <code>IEnumType</code> instance when previewing an enum, or an
-     *            <code>ITableStructure</code> instance for table previews
+     * @param filename The name of the file to show the preview for.
+     * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
+     *            they are created using this table format by looking up the <code>guiClass</code>
+     *            extension element of the
+     *            <code>org.faktorips.devtools.core.externalTableFormat</code> extension point.
+     * @param structure The structure against which to validate the file. Is an
+     *            <code>IEnumType</code> instance when previewing an enum, or an
+     *            <code>ITableStructure</code> instance for table previews.
      * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
      *            should be ignored <code>false</code> if the to be imported content contains no
      *            column header row.
      */
     public void reinit(String filename, ITableFormat tableFormat, IIpsObject structure, boolean ignoreColumnHeaderRow) {
+        ArgumentCheck.notNull(filename);
+        ArgumentCheck.notNull(tableFormat);
+        ArgumentCheck.notNull(structure);
+
         this.filename = filename;
         this.tableFormat = tableFormat;
         this.structure = structure;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
     }
-
 }

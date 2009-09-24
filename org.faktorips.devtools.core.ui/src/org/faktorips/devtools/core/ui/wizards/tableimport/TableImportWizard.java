@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -103,13 +104,14 @@ public class TableImportWizard extends IpsObjectImportWizard {
         if (page == selectContentsPage || page == newTableContentsPage) {
             ITableStructure tableStructure = getTableStructure();
             if (tablePreviewPage == null) {
-                tablePreviewPage = new ImportPreviewPage(this, startingPage.getFilename(), startingPage.getFormat(),
+                tablePreviewPage = new ImportPreviewPage(startingPage.getFilename(), startingPage.getFormat(),
                         tableStructure, startingPage.isImportIgnoreColumnHeaderRow());
 
                 addPage(tablePreviewPage);
             } else {
                 tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), tableStructure,
                         startingPage.isImportIgnoreColumnHeaderRow());
+                tablePreviewPage.validatePage();
             }
             tablePreviewPage.validatePage();
 
@@ -159,14 +161,19 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
 
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
-                            ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
-                }
-            };
-            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-            model.runAndQueueChangeEvents(runnable, null);
+            try {
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
+                                ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
+                    }
+                };
+                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                model.runAndQueueChangeEvents(runnable, null);
+            } catch (CoreException e) {
+                MessageDialog.openError(getShell(), Messages.TableImport_title, e.getLocalizedMessage());
+                return false;
+            }
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

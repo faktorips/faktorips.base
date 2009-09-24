@@ -138,6 +138,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
 
             while ((readLine = reader.readNext()) != null) {
+                if (isEmptyRow(readLine)) {
+                    rowNumber++;
+                    continue;
+                }
                 if (readLine.length != expectedFields) {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
                     messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
@@ -180,6 +184,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 IpsPlugin.log(e);
             }
         }
+    }
+
+    private boolean isEmptyRow(String[] row) {
+        return row.length == 1 && row[0].equals("");
     }
 
     private String getIpsValue(Object rawValue, Datatype datatype) {

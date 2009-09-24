@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -111,13 +112,14 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         if (page == selectContentsPage || page == newEnumContentPage) {
             IEnumType enumType = getEnumType();
             if (tablePreviewPage == null) {
-                tablePreviewPage = new ImportPreviewPage(this, startingPage.getFilename(), startingPage.getFormat(),
+                tablePreviewPage = new ImportPreviewPage(startingPage.getFilename(), startingPage.getFormat(),
                         enumType, startingPage.isImportIgnoreColumnHeaderRow());
 
                 addPage(tablePreviewPage);
             } else {
                 tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType, startingPage
                         .isImportIgnoreColumnHeaderRow());
+                tablePreviewPage.validatePage();
             }
             tablePreviewPage.validatePage();
             return tablePreviewPage;
@@ -169,15 +171,20 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
 
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
-                            .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), messageList,
-                            startingPage.isImportIntoExisting());
-                }
-            };
-            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-            model.runAndQueueChangeEvents(runnable, null);
+            try {
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
+                                .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), messageList,
+                                startingPage.isImportIntoExisting());
+                    }
+                };
+                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                model.runAndQueueChangeEvents(runnable, null);
+            } catch (CoreException e) {
+                MessageDialog.openError(getShell(), Messages.EnumImportWizard_title, e.getLocalizedMessage());
+                return false;
+            }
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

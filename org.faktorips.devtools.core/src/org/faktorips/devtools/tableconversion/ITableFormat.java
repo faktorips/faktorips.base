@@ -15,6 +15,7 @@ package org.faktorips.devtools.tableconversion;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -123,16 +124,18 @@ public interface ITableFormat {
      * @param importIntoExisting <tt>true</tt> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
-     * @return <code>true</code> if the import operation was successful, <code>false</code>
-     *         otherwise.
+     * @throws CoreException If the file could not be imported. This can happen for instance if the
+     *             file referenced by <code>filename</code> is an Excel file and one tries to import
+     *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
+     * 
      */
-    public boolean executeTableImport(ITableStructure structure,
+    public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting);
+            boolean importIntoExisting) throws CoreException;
 
     /**
      * The file to import can either contain attributes of an enum (therefore defining a structure)
@@ -153,18 +156,21 @@ public interface ITableFormat {
      * @param importIntoExisting <tt>true</tt> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
-     * @return The runnable to use to import an enum.
+     * @throws CoreException If the file could not be imported. This can happen for instance if the
+     *             file referenced by <code>filename</code> is an Excel file and one tries to import
+     *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
+     * 
      * @see {@link IEnumValueContainer}
      * @see {@link IEnumType}
      * @see {@link IEnumContent}
      * @since 2.3
      */
-    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+    public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting);
+            boolean importIntoExisting) throws CoreException;
 
     /**
      * The file to import can either contain attributes of an enum (therefore defining a structure)
@@ -183,7 +189,6 @@ public interface ITableFormat {
      *            messages of severity ERROR are contained in this list, the import is considered
      *            successful.
      * 
-     * @return The runnable to use to import an enum.
      * @see {@link IEnumValueContainer}
      * @see {@link IEnumType}
      * @see {@link IEnumContent}

@@ -34,13 +34,12 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
-    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+    public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
             boolean importIntoExisting) {
-        return false;
     }
 
     public boolean executeTableExport(ITableContents contents,
@@ -51,14 +50,13 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
-    public boolean executeTableImport(ITableStructure structure,
+    public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
             boolean importIntoExisting) {
-        return false;
     }
 
     @SuppressWarnings("unchecked")
