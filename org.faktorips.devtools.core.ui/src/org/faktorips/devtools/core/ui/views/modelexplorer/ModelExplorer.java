@@ -157,29 +157,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }
 
     /**
-     * Creates and returns a <code>ModelExplorerConfiguration</code> with the following allowed
-     * types:
+     * Creates and returns a <code>ModelExplorerConfiguration</code> with the all ips object types
+     * defined in the IpsModel.
      * 
-     * <ul>
-     * <li>IPolicyCmptType</li>
-     * <li>IProductCmptType</li>
-     * <li>IEnumType</li>
-     * <li>IEnumContent</li>
-     * <li>IProductCmpt</li>
-     * <li>IProductCmptGeneration</li>
-     * <li>ITableStructure</li>
-     * <li>ITableContents</li>
-     * <li>IBusinessFunction</li>
-     * <li>IEnumAttribute</li>
-     * <li>IAttribute</li>
-     * <li>IAssociation</li>
-     * <li>IMethod</li>
-     * <li>ITableStructureUsage</li>
-     * <li>ITestCase</li>
-     * <li>ITestCaseType</li>
-     * </ul>
-     * 
-     * @see #ModelExplorerConfiguration
+     * @see IIpsModel#getIpsObjectTypes()
+     * @see ModelExplorerConfiguration
      */
     protected ModelExplorerConfiguration createConfig() {
         IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
