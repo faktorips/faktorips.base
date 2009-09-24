@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -78,7 +78,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a javadoc annotation. It becomes relevant if the
@@ -183,6 +183,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         model = null;
         versionSection = null;
@@ -191,6 +192,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         initJControlModel(project);
         createVersionSection();
@@ -223,7 +225,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public JavaNamingConvention getJavaNamingConvention() {
         return JavaNamingConvention.ECLIPSE_STANDARD;
     }
-    
+
     /**
      * Implementations of this class must override this method to provide the content of the java
      * source file.
@@ -257,6 +259,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the ips project, the builder is currently building for.
      */
+    @Override
     public IIpsProject getIpsProject() {
         return getBuilderSet().getIpsProject();
     }
@@ -349,11 +352,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overridden for convenience. Subclasses might need to implement this method
-     * to clean up the state of the builder that was created during the generation.
+     * This method has been overridden for convenience. Subclasses might need to implement this
+     * method to clean up the state of the builder that was created during the generation.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
+    @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         this.ipsSrcFile = null;
         ipsObject = null;
@@ -362,15 +366,16 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overridden for convenience. Subclasses might need to implement this method
-     * to set up a defined state before the generation starts.
+     * This method has been overridden for convenience. Subclasses might need to implement this
+     * method to set up a defined state before the generation starts.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile,
      *      org.eclipse.core.runtime.MultiStatus)
      */
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         this.ipsSrcFile = ipsSrcFile;
-        this.buildStatus = status;
+        buildStatus = status;
         if (ipsSrcFile.isContentParsable()) {
             ipsObject = ipsSrcFile.getIpsObject();
         } else {
@@ -595,8 +600,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param keyPrefix the key prefix that identifies the requested javadoc and annotation. The
      *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
-     * @param replacements Objects that replaces the placeholders {0}, {1} etc. in the property
-     *            file
+     * @param replacements Objects that replaces the placeholders {0}, {1} etc. in the property file
      * @param element the ips element used to access the ips project where the language to use is
      *            defined.
      * @param modelDescription a description of the model object can be provided here so that it can
@@ -635,8 +639,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
             return text;
         }
-        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue() -
-                javaOptionsTabSize.intValue() - 3, SystemUtils.LINE_SEPARATOR);
+        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue()
+                - javaOptionsTabSize.intValue() - 3, SystemUtils.LINE_SEPARATOR);
     }
 
     /**
@@ -705,13 +709,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         boolean newFileCreated = createFileIfNotThere(javaFile);
 
-        if(newFileCreated){
+        if (newFileCreated) {
             content = writeFeatureVersions(content);
             String formattedContent = format(content);
             javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
             return;
         }
-        
+
         String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
         String javaFileContentsStr = getJavaFileContents(javaFile, charset);
         if (isMergeEnabled()) {
@@ -784,15 +788,16 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            be generated it must be known if the the generated method is an implementation of
      *            an interface method or an override of a super class method.
      */
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation){
-        if(ComplianceCheck.isComplianceLevel5(getIpsProject()) && !interfaceMethodImplementation){
+    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation) {
+        if (ComplianceCheck.isComplianceLevel5(getIpsProject()) && !interfaceMethodImplementation) {
             fragmentBuilder.annotationLn(ANNOTATION_OVERRIDE);
+            return;
         }
-        if(ComplianceCheck.isComplianceLevelGreaterJava5(getIpsProject())){
+        if (ComplianceCheck.isComplianceLevelGreaterJava5(getIpsProject())) {
             fragmentBuilder.annotationLn(ANNOTATION_OVERRIDE);
         }
     }
-    
+
     /**
      * Returns the localized string set of this builder.
      */
@@ -807,15 +812,15 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         IJavaProject javaProject = getIpsProject().getJavaProject();
         CodeFormatter formatter;
-        if(javaProject != null){
+        if (javaProject != null) {
             formatter = ToolFactory.createCodeFormatter(javaProject.getOptions(true));
         } else {
             formatter = ToolFactory.createCodeFormatter(null);
         }
         // with parameter null the CodeFormatter is configured with the
         // preferences that are currently set
-        TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content, 0, content.length(), 0, StringUtil
-                .getSystemLineSeparator());
+        TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content,
+                0, content.length(), 0, StringUtil.getSystemLineSeparator());
 
         if (edit == null) {
             return content;
@@ -917,11 +922,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private String getJMergeDefaultConfigLocation(IIpsProject ipsProject) {
         StringBuffer mergeFile = new StringBuffer();
-        mergeFile
-                .append('/')
-                .append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
-                .append(
-                        ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
+                ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 
@@ -955,7 +957,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         versionSecionBuf.append(END_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
         versionSecionBuf.append(" */"); //$NON-NLS-1$
-        this.versionSection = versionSecionBuf.toString();
+        versionSection = versionSecionBuf.toString();
     }
 
     private String writeFeatureVersions(String source) {
