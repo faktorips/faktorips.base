@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,32 +26,37 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 
 /**
- * This implementation of the {@link IIpsBuilderSetPropertyDef} interface can be used by {@link IIpsArtefactBuilderSet} implementations
- * that use implementations of the {@link DefaultJavaSourceFileBuilder}. Since this builder has the ability to generation
- * logging code. To configure the {@link IIpsLoggingFrameworkConnector} within the properties of the builder set configuration
- * this class has to be specified in the property definition for the logging connector of the builder set.
+ * This implementation of the {@link IIpsBuilderSetPropertyDef} interface can be used by
+ * {@link IIpsArtefactBuilderSet} implementations that use implementations of the
+ * {@link DefaultJavaSourceFileBuilder}. Since this builder has the ability to generate logging
+ * code. To configure the {@link IIpsLoggingFrameworkConnector} within the properties of the builder
+ * set configuration this class has to be specified in the property definition for the logging
+ * connector of the builder set.
  * 
  * @author Peter Erzberger
  */
 public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetPropertyDef {
 
-    
-    
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAvailable(IIpsProject ipsProject) {
         return true;
     }
 
-    public String getDefaultValue(IIpsProject ipsProject){
+    @Override
+    public String getDefaultValue(IIpsProject ipsProject) {
         return "None";
     }
-    
+
     /**
      * {@inheritDoc}
-     * <p>Returns an empty string</p>
+     * <p>
+     * Returns an empty string
+     * </p>
      */
+    @Override
     public String getDisableValue(IIpsProject ipsProject) {
         return "None";
     }
@@ -59,6 +64,7 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getDiscreteValues() {
         String[] values = super.getDiscreteValues();
         ArrayList newValues = new ArrayList();
@@ -70,12 +76,13 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object parseValue(String value) {
-        if(value == null || "None".equals(value)){
+        if (value == null || "None".equals(value)) {
             return null;
         }
         Object returnValue = IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(value);
-        if(returnValue == null){
+        if (returnValue == null) {
             throw new IllegalArgumentException("Unparsable value: " + value);
         }
         return returnValue;
@@ -84,14 +91,15 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     /**
      * {@inheritDoc}
      */
+    @Override
     public Message validateValue(String value) {
-        if(StringUtils.isEmpty(value)){
+        if (StringUtils.isEmpty(value)) {
             return null;
         }
         try {
             parseValue(value);
             return null;
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return getStandardValidationMessage(value);
         }
     }
