@@ -172,6 +172,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 model.runAndQueueChangeEvents(runnable, null);
             } catch (CoreException e) {
                 MessageDialog.openError(getShell(), Messages.TableImport_title, e.getLocalizedMessage());
+                contents.getIpsObject().getIpsSrcFile().discardChanges();
+
                 return false;
             }
 
@@ -188,6 +190,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 setDialogSettings(section);
             }
 
+            contents.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
         } catch (Exception e) {
             Throwable throwable = e;

@@ -90,10 +90,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             fillGeneration(targetGeneration, sheet, monitor);
 
-            if (!monitor.isCanceled()) {
-                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
-                monitor.worked(1);
-            } else {
+            if (monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
 

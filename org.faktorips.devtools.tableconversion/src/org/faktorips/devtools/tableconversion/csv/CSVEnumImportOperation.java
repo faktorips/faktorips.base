@@ -105,10 +105,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
             monitor.worked(1);
 
-            if (!monitor.isCanceled()) {
-                valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
-                monitor.worked(1);
-            } else {
+            if (monitor.isCanceled()) {
                 valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
             }
             monitor.done();

@@ -183,6 +183,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                 model.runAndQueueChangeEvents(runnable, null);
             } catch (CoreException e) {
                 MessageDialog.openError(getShell(), Messages.EnumImportWizard_title, e.getLocalizedMessage());
+                enumTypeOrContent.getIpsObject().getIpsSrcFile().discardChanges();
+
                 return false;
             }
 
@@ -191,6 +193,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                         new ResultDisplayer(getShell(), Messages.EnumImportWizard_operationName, messageList));
             }
 
+            enumTypeOrContent.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

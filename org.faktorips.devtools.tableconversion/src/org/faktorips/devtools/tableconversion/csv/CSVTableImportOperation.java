@@ -109,12 +109,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
             monitor.worked(1);
 
-            if (!monitor.isCanceled()) {
-                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
-                monitor.worked(1);
-            } else {
+            if (monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
+
             monitor.done();
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(NLS
