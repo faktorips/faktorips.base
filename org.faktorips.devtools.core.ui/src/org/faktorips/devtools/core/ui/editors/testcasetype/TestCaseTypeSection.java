@@ -113,7 +113,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
@@ -1887,6 +1886,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void addParameterClicked() {
         Object selObject = getSelectedObjectInTree();
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
+        ITestParameter newParam = null;
         if (selObject instanceof TestCaseTypeTreeRootElement) {
             // open wizard to add a new root test parameter
             Memento memento = testCaseType.newMemento();
@@ -1901,7 +1901,7 @@ public class TestCaseTypeSection extends IpsSection {
                 refresh();
                 return;
             }
-            refreshTreeAndDetails(wizard.getNewCreatedTestParameter());
+            newParam = wizard.getNewCreatedTestParameter();
         } else if (selObject instanceof ITestPolicyCmptTypeParameter) {
             // open wizard to add a new child test parameter
 
@@ -1932,8 +1932,9 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 return;
             }
-            refreshTreeAndDetails(wizard.getNewCreatedTestParameter());
+            newParam = wizard.getNewCreatedTestParameter();
         }
+        refreshTreeAndDetails(newParam);
     }
 
     /*
@@ -1948,30 +1949,16 @@ public class TestCaseTypeSection extends IpsSection {
         ITestParameter testParameter = (ITestParameter)selObject;
         testParameter.delete();
 
-        // try to obtain the previous tree item and if extist use this item as new sel object
+        // try to obtain the previous tree item and if exists use this item as new selected object
         // after delete, if no previous found select the next item
         TreeItem[] selection = treeViewer.getTree().getSelection();
         TreeItem[] childs = treeViewer.getTree().getItems();
         TreeItem prevTreeItem = searchChilds(childs, selection[0], null);
-        if (prevTreeItem == null || !(prevTreeItem.getData() instanceof ITestParameter)) {
-            // try to find the previous item
-            childs = selection[0].getParentItem().getItems();
-            for (int i = 0; i < childs.length; i++) {
-                if (childs[i].equals(selection[0])) {
-                    prevTreeItem = childs[i];
-                } else if (prevTreeItem != null) {
-                    prevTreeItem = childs[i];
-                    break;
-                }
-            }
-        }
         if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter) {
-            currSelectedDetailObject = (ITestParameter)prevTreeItem.getData();
+            refreshTreeAndDetails((ITestParameter)prevTreeItem.getData());
         } else {
-            currSelectedDetailObject = null;
+            refreshTreeAndDetails(null);
         }
-
-        redrawDetails((ITestParameter)currSelectedDetailObject);
     }
 
     /*
@@ -2217,6 +2204,11 @@ public class TestCaseTypeSection extends IpsSection {
      * Refreshs the tree and details
      */
     private void refreshTreeAndDetails(ITestParameter param) {
+        if (param != null && !treeViewer.getExpandedState(param)) {
+            // if the parameter isn't expanded then first expand the tree
+            // otherwise it isn't possible to select the new parameter in the tree
+            treeViewer.expandAll();
+        }
         refreshTree();
         createDetailsArea(param);
         currSelectedDetailObject = param;
@@ -2243,14 +2235,15 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         try {
-            isTreeRefreshing = true;
-            treeViewer.getTree().setRedraw(false);
-            TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
-            treeexpandStorage.storeExpandedStatus();
+            // isTreeRefreshing = true;
+            // treeViewer.getTree().setRedraw(false);
+            // TreeViewerExpandStateStorage treeexpandStorage = new
+            // TreeViewerExpandStateStorage(treeViewer);
+            // treeexpandStorage.storeExpandedStatus();
             treeViewer.refresh();
-            treeViewer.expandAll();
-            treeViewer.collapseAll();
-            treeexpandStorage.restoreExpandedStatus();
+            // treeViewer.expandAll();
+            // treeViewer.collapseAll();
+            // treeexpandStorage.restoreExpandedStatus();
         } finally {
             treeViewer.getTree().setRedraw(true);
             isTreeRefreshing = false;
@@ -2290,7 +2283,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         try {
             setFormRedraw(false);
-            refreshTree();
+            treeViewer.refresh();
             prevSelectedTestParam = null;
             createDetailsArea(testPolicyCmptTypeParam);
             currSelectedDetailObject = selectedObject;
@@ -2327,7 +2320,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 try {
                     setFormRedraw(false);
-                    refreshTree();
+                    // refreshTree();
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields

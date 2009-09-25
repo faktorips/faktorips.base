@@ -61,6 +61,7 @@ public class NewTestAttributeWizardPage extends WizardPage {
         String text = NLS.bind(Messages.NewTestAttributeWizardPage_radioBtnLabelBasedOnPolicyCmptTypeAttr, typeName);
         modelTestAttributeBtn = uiToolkit.createRadioButton(c, text);
         modelTestAttributeBtn.addSelectionListener(listener);
+        modelTestAttributeBtn.setSelection(true);
 
         uiToolkit.createVerticalSpacer(c, 1);
 
