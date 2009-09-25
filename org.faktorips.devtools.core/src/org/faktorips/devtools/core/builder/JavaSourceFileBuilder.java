@@ -22,7 +22,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -533,7 +532,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
@@ -574,7 +573,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
@@ -620,7 +619,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
@@ -633,14 +632,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             IIpsElement element,
             JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc(keyPrefix, replacements, null, element, builder);
-    }
-
-    private String wrapText(String text) {
-        if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
-            return text;
-        }
-        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue()
-                - javaOptionsTabSize.intValue() - 3, SystemUtils.LINE_SEPARATOR);
     }
 
     /**

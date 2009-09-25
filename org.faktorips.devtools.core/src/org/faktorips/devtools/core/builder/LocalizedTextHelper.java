@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,13 +15,8 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -31,24 +26,10 @@ import org.faktorips.util.LocalizedStringsSet;
 public class LocalizedTextHelper {
 
     private LocalizedStringsSet localizedStringsSet;
-    private Integer javaOptionsSplitLength;
-    private Integer javaOptionsTabSize;
-    
+
     public LocalizedTextHelper(LocalizedStringsSet localizedStringsSet) {
         super();
         this.localizedStringsSet = localizedStringsSet;
-        initJavaOptions();
-    }
-    
-    //TODO duplicate code in JavaSourceFileBuilder
-    private void initJavaOptions() {
-        try {
-            javaOptionsSplitLength = Integer.valueOf(JavaCore
-                    .getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
-            javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
-        } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
-        }
     }
 
     /**
@@ -60,13 +41,18 @@ public class LocalizedTextHelper {
     public String getLocalizedText(String key, Locale locale) {
         return localizedStringsSet.getString(key, locale);
     }
-    
+
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement this rule.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement this rule.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      */
     public String getLocalizedToDo(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
         return getLocalizedToDo(keyPrefix, new Object[0], locale);
@@ -74,21 +60,30 @@ public class LocalizedTextHelper {
 
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement the rule xyz.
+     * </pre>
+     * 
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      * @param replacement An object to replace the wildcard in the message text.
      */
     public String getLocalizedToDo(String keyPrefix, Object replacement, Locale locale) {
-        return getLocalizedToDo(keyPrefix, new Object[]{replacement}, locale);
+        return getLocalizedToDo(keyPrefix, new Object[] { replacement }, locale);
     }
 
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement the rule xyz.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      * @param replacements Any objects to replace wildcards in the message text.
      */
     public String getLocalizedToDo(String keyPrefix, Object[] replacements, Locale locale) {
@@ -118,12 +113,12 @@ public class LocalizedTextHelper {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
-     * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)}
-     * without a description that is expected to be provided by the model.
+     * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)} without a
+     * description that is expected to be provided by the model.
      */
     public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
         appendLocalizedJavaDoc(keyPrefix, (String)null, builder, locale);
@@ -154,12 +149,12 @@ public class LocalizedTextHelper {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
-     * Like {@link #appendLocalizedJavaDoc(String, Object, String, JavaCodeFragmentBuilder)}
-     * without a description that is expected to be provided by the model.
+     * Like {@link #appendLocalizedJavaDoc(String, Object, String, JavaCodeFragmentBuilder)} without
+     * a description that is expected to be provided by the model.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
@@ -169,7 +164,8 @@ public class LocalizedTextHelper {
     }
 
     /**
-     * Inserts the localized Javadoc including the annotations into the given JavaCodeFragmentBuilder.
+     * Inserts the localized Javadoc including the annotations into the given
+     * JavaCodeFragmentBuilder.
      * 
      * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
      *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
@@ -186,7 +182,7 @@ public class LocalizedTextHelper {
             String modelDescription,
             JavaCodeFragmentBuilder builder,
             Locale locale) {
-        
+
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements, locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
@@ -194,7 +190,7 @@ public class LocalizedTextHelper {
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(wrapText(buf.toString()), annotations);
+        builder.javaDoc(buf.toString(), annotations);
     }
 
     /**
@@ -207,7 +203,7 @@ public class LocalizedTextHelper {
             Locale locale) {
         appendLocalizedJavaDoc(keyPrefix, replacements, null, builder, locale);
     }
-    
+
     /**
      * Returns the localized text for the provided key.
      * 
@@ -236,37 +232,4 @@ public class LocalizedTextHelper {
         return localizedStringsSet.getString(key, locale, replacements);
     }
 
-    private String wrapText(String text) {
-
-        if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
-            return text;
-        }
-        int maxLengthInt = javaOptionsSplitLength.intValue();
-        int tabSizeInt = javaOptionsTabSize.intValue();
-        int length = maxLengthInt - tabSizeInt - 3;
-        String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < lines.length; i++) {
-            String lineText = lines[i];
-            while (lineText.length() > length) {
-                int index = lineText.indexOf(' ', length);
-                if (index != -1) {
-                    buf.append(lineText.substring(0, index));
-                    buf.append(SystemUtils.LINE_SEPARATOR);
-                    if (lineText.length() > index + 1) {
-                        lineText = lineText.substring(index + 1, lineText.length() - 1);
-                    } else {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-            buf.append(lineText);
-            buf.append(SystemUtils.LINE_SEPARATOR);
-        }
-        return buf.toString();
-    }
-
-    
 }
