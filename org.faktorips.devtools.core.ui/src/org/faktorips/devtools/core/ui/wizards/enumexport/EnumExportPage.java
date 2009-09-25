@@ -180,10 +180,20 @@ public class EnumExportPage extends IpsObjectExportPage {
     }
 
     public IEnumValueContainer getEnum() throws CoreException {
-        if (exportedIpsObjectControl instanceof EnumRefControl) {
-            return ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
+        // Return the Enum which currently holds the values if an IEnumType and an IEnumContent with
+        // the same full qualified name exist
+        final IEnumValueContainer enum1 = ((EnumRefControl)exportedIpsObjectControl).findEnum(false);
+        final IEnumValueContainer enum2 = ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
+
+        if (enum1 == enum2) {
+            return enum1;
         }
-        return null;
+
+        if (enum1.isCapableOfContainingValues()) {
+            return enum1;
+        } else {
+            return enum2;
+        }
     }
 
 }

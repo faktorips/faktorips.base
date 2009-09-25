@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
@@ -204,6 +205,11 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
             }
         }
 
+        if (previewTable.getItemCount() <= 0 && previewTable.getColumnCount() > 0) {
+            String warningMsg = NLS.bind(Messages.ImportPreviewPage_warnFileInvalid, filename);
+            setMessage(warningMsg, IStatus.WARNING);
+        }
+
         refreshColumnWidths();
         pageControl.layout();
     }
@@ -269,7 +275,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     }
 
     public void validatePage() {
-        setMessage("", IMessageProvider.NONE);
+        setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         if (!tableFormat.isValidImportSource(filename)) {
             String msg = NLS.bind(Messages.ImportPreviewPage_validationWarningInvalidFile, filename);
