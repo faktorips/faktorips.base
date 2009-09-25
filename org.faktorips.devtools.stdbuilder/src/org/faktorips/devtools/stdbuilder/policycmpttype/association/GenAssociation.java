@@ -819,17 +819,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         return getLocalizedText("PARAM_OBJECT_TO_TEST_NAME", association.getTargetRoleSingular());
     }
 
-    public void generateSignatureGetMaxCardinalityFor(JavaCodeFragmentBuilder methodsBuilder) {
-        String methodName = getMethodNameGetMaxCardinalityFor();
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName,
-                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    public String getMethodNameGetMaxCardinalityFor() {
-        return getLocalizedText("METHOD_GET_MAX_CARDINALITY_NAME", StringUtils.capitalize(association
-                .getTargetRoleSingular()));
-    }
-
     protected void generateFieldGetMaxCardinalityFor(JavaCodeFragmentBuilder attrBuilder) {
         appendLocalizedJavaDoc("FIELD_MAX_CARDINALITY", association.getTargetRoleSingular(), attrBuilder);
         String fieldName = getFieldNameGetMaxCardinalityFor();
