@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -91,11 +90,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * {@inheritDoc}
      */
     public Image getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
-        String baseImageName = AssociationType.AGGREGATION.getImageName();
-        if (typeParam.isRequiresProductCmpt()) {
-            return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
-        }
-        return IpsPlugin.getDefault().getImage(baseImageName);
+        return IpsPlugin.getDefault().getImage("TestParameterRootObject.gif");
     }
 
     @Override
