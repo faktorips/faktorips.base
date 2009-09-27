@@ -15,12 +15,14 @@ package org.faktorips.devtools.core.ui.wizards.testcase;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -42,6 +44,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
 
     private TestCaseTypeRefControl superTypeControl;
+    private Text nameField;
 
     /**
      * @param pageName
@@ -59,7 +62,8 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
 
         TextButtonField supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
-        super.fillNameComposite(nameComposite, toolkit);
+
+        nameField = addNameLabelField(toolkit, nameComposite);
 
         superTypeControl.setFocus();
     }
@@ -137,4 +141,16 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         }
     }
 
+    /**
+     * Sets the focus to the super type control if empty, if not to the name control.
+     */
+    @Override
+    protected void setDefaultFocus() {
+        super.setDefaultFocus();
+        if (StringUtils.isEmpty(superTypeControl.getText())) {
+            superTypeControl.setFocus();
+            return;
+        }
+        nameField.setFocus();
+    }
 }
