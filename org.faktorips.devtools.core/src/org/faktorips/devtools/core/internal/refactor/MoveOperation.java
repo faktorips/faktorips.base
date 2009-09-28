@@ -457,7 +457,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 // we got an IIpsSrcFile, so we have to move it correctly
                 if (cmptFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
                     IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
-                    move(cmpt, file, monitor);
+                    move(cmpt, file, null, monitor);
                 } else if (cmptFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
                     ITableContents tblcontent = (ITableContents)cmptFile.getIpsObject();
                     move(tblcontent, file, monitor);
@@ -495,11 +495,7 @@ public class MoveOperation implements IRunnableWithProgress {
     private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor)
             throws CoreException {
         IIpsSrcFile file = createTarget(cmpt, newName);
-        move(cmpt, file, monitor);
-        if (newRuntimeId != null) {
-            IProductCmpt productCmpt = (IProductCmpt)file.getIpsObject();
-            productCmpt.setRuntimeId(newRuntimeId);
-        }
+        move(cmpt, file, newRuntimeId, monitor);
     }
 
     private void moveTableContent(ITableContents content, String newName, IProgressMonitor monitor) {
@@ -629,7 +625,7 @@ public class MoveOperation implements IRunnableWithProgress {
     /**
      * Moves one product component to the given target file.
      */
-    private void move(IProductCmpt source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
+    private void move(IProductCmpt source, IIpsSrcFile targetFile, String newRuntimeId, IProgressMonitor monitor) {
         try {
             String runtimeId = source.getRuntimeId();
 
@@ -657,7 +653,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
             // at least, update the runtime id of the moved product cmpt to the original runtime id
             IProductCmpt productCmpt = (IProductCmpt)targetFile.getIpsObject();
-            productCmpt.setRuntimeId(runtimeId);
+            productCmpt.setRuntimeId(newRuntimeId != null ? newRuntimeId : runtimeId);
             productCmpt.getIpsSrcFile().save(true, null);
         } catch (CoreException e) {
             Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
