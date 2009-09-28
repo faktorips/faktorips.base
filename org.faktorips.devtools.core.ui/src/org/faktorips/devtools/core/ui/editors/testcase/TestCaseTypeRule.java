@@ -88,24 +88,25 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     }
 
     /**
-     * Validate the test policy cmpt association parameters. And validate the min and max instances
-     * of the test policy cmpt type param by validating the parent test policy cmpt
+     * Validate the test policy component association parameters. And validate the min and max
+     * instances of the test policy component type parameter by validating the parent test policy
+     * component
      */
     private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
         // delegate the validation to the test rules
-        HashMap messages = new HashMap();
+        HashMap<String, Message> messages = new HashMap<String, Message>();
         ITestRule[] testRules = testCase.getTestRule(testRuleParameter.getName());
         for (int i = 0; i < testRules.length; i++) {
             MessageList msgList = testRules[i].validate(ipsProject);
-            for (Iterator iter = msgList.iterator(); iter.hasNext();) {
-                Message msg = (Message)iter.next();
+            for (Iterator<Message> iter = msgList.iterator(); iter.hasNext();) {
+                Message msg = iter.next();
                 messages.put(msg.getCode(), msg);
             }
         }
 
         // add the unique test rule messages to the list of messages
-        for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
-            list.add((Message)iter.next());
+        for (Iterator<Message> iter = messages.values().iterator(); iter.hasNext();) {
+            list.add(iter.next());
         }
     }
 

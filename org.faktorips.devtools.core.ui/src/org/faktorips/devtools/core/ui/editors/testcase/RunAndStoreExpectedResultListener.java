@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,19 +19,19 @@ import java.util.List;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 
 /**
- * Special ips test run listener to listen for failures and forward this failures as
- * new expected result to the test case editor.
+ * Special ips test run listener to listen for failures and forward this failures as new expected
+ * result to the test case editor.
  * 
  * @author Joerg Ortmann
  */
 public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     private TestCaseSection testCaseSection;
-    
-    private List failureDetailsList;
-    
+
+    private List<String[]> failureDetailsList;
+
     public RunAndStoreExpectedResultListener(TestCaseSection testCaseSection) {
         this.testCaseSection = testCaseSection;
-        failureDetailsList = new ArrayList();
+        failureDetailsList = new ArrayList<String[]>();
     }
 
     /**
@@ -44,7 +44,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
             failureDetailsList.add(failureDetails);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -53,7 +53,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
         testCaseSection.testFailureOccuredToStoreExpResult(qualifiedTestName, failureDetailsList);
         testCaseSection.testRunEndedToStoreExpResult(qualifiedTestName);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -94,12 +94,12 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
      */
     public void testRunEnded(String elapsedTime) {
         // nothing to do
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean canNavigateToFailure() {
         return false;
-    }    
+    }
 }

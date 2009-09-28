@@ -90,7 +90,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * {@inheritDoc}
      */
     public Image getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
-        return IpsPlugin.getDefault().getImage("TestParameterRootObject.gif");
+        return IpsPlugin.getDefault().getImage("TestParameterRootObject.gif"); //$NON-NLS-1$
     }
 
     @Override
@@ -120,7 +120,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         if (object instanceof ITestPolicyCmpt) {
             return ((ITestPolicyCmpt)object).getName();
         } else if (object instanceof ITestRule) {
-            return ((ITestRule)object).getName();
+            return ((ITestRule)object).getValidationRule();
         }
         // the default for unspecified objects is the label,
         // because these objects didn't have a suffix, thus the label
@@ -138,15 +138,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             return name + getLabelExtensionForTestPolicyCmpt(tstPolicyCmpt);
         } else if (element instanceof ITestPolicyCmptLink) {
             ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)element;
-            String text = ""; //$NON-NLS-1$
-            try {
-                text = TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
-                ITestPolicyCmptTypeParameter typeParam = testPcTypeLink.findTestPolicyCmptTypeParameter(ipsProject);
-            } catch (CoreException e) {
-                // ignore model error, the model check between the test case type and the test case
-                // will be check when open the editor, therefore we can ignore it here
-            }
-            return text;
+            return TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
         } else if (element instanceof ITestRule) {
             ITestRule testRule = (ITestRule)element;
             String extForPolicyCmptForValidationRule = getLabelExtensionForTestRule(testRule);
@@ -254,7 +246,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     }
 
     /**
-     * Returns the label for the target of a assoziation.
+     * Returns the label for the target of a association.
      */
     public String getAssoziationTargetLabel(String target) {
         return target.replaceAll(TestCaseHierarchyPath.SEPARATOR, "/"); //$NON-NLS-1$

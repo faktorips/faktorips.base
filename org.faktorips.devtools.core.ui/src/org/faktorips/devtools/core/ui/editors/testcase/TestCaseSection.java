@@ -1585,7 +1585,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     /**
-     * Gets the unique key for the given test policy component and arrtibute
+     * Gets the unique key for the given test policy component and attribute
      */
     String getUniqueKey(ITestPolicyCmpt testPolicyCmpt, ITestAttributeValue attributeValue) {
         return getUniqueKey(testPolicyCmpt) + "/" + attributeValue.getTestAttribute(); //$NON-NLS-1$
@@ -1683,7 +1683,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         refreshTreeAndDetailArea();
-        selectInTreeByObject(testRuleParameter, true);
+        selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
+        treeViewer
+                .expandToLevel(contentProvider.getDummyObject(testRuleParameter, null), AbstractTreeViewer.ALL_LEVELS);
+        selectInTreeByObject(testRule);
     }
 
     /*
@@ -1788,6 +1791,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     }
                     treeViewer.expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                     refreshTreeAndDetailArea();
+                    selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
                     selectInTreeByObject(newTestPolicyCmpt, true);
                 }
             }
@@ -1813,9 +1817,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
                     changeProductCmpt(testPolicyCmpt);
                 }
-                refreshTree();
+                refreshTreeAndDetailArea();
                 treeViewer.expandToLevel(associationType, 1);
                 selectInTreeByObject(testPolicyCmpt, true);
+                selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
             }
         };
 
@@ -1912,7 +1917,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                         "Remove object with type " + domainObject.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        treeViewer.refresh();
+                        refreshTreeAndDetailArea();
                         treeViewer.getControl().setFocus();
                         treeViewer.setSelection(new StructuredSelection(nextItemToSelect));
                     }

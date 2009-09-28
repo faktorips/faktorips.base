@@ -534,7 +534,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     private String getIdFor(ITestParameter parameter, ITestObject testObject) {
-        String id = "";
+        String id = ""; //$NON-NLS-1$
         if (testObject instanceof ITestPolicyCmpt) {
             id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
         } else {
@@ -570,25 +570,28 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
     }
 
+    /**
+     * Clears the dummy objects for the given test policy component and all dummy objects of the
+     * child's from the cache. The dummy objects are only displayed in the gui. If an object are
+     * deleted then the dummy objects must be deleted too.
+     */
     public void clearChildDummyObjectsInCache(ITestPolicyCmpt testPolicyCmpt) {
-        String id = "";
+        String id = ""; //$NON-NLS-1$
         try {
             id = getIdFor(testPolicyCmpt.findTestParameter(ipsProject), testPolicyCmpt);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        String rootId = StringUtils.substringBefore(id, "#");
-        String objectId = StringUtils.substringAfter(id, "#");
-        List objectsToRemove = new ArrayList();
-        for (Iterator iterator = dummyObjects.keySet().iterator(); iterator.hasNext();) {
-            String currId = (String)iterator.next();
-            String currRootId = StringUtils.substringBefore(currId, "#");
-            String currObjectId = currId.indexOf("#") == -1 ? "none" : StringUtils.substringAfter(currId, "#");
-            if (currRootId.equals(rootId) || currObjectId.startsWith(objectId)) {
+        String objectId = StringUtils.substringAfter(id, "#"); //$NON-NLS-1$
+        List<String> objectsToRemove = new ArrayList<String>();
+        for (Iterator<String> iterator = dummyObjects.keySet().iterator(); iterator.hasNext();) {
+            String currId = iterator.next();
+            String currObjectId = currId.indexOf("#") == -1 ? "none" : StringUtils.substringAfter(currId, "#"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (currObjectId.startsWith(objectId)) {
                 objectsToRemove.add(currId);
             }
         }
-        for (Iterator iterator = objectsToRemove.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = objectsToRemove.iterator(); iterator.hasNext();) {
             dummyObjects.remove(iterator.next());
 
         }

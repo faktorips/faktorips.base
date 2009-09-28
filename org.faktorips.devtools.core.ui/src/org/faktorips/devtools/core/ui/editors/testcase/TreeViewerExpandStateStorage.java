@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TreeViewerExpandStateStorage {
     // Stores the expanded items
-    private ArrayList expandedItems = new ArrayList();
+    private ArrayList<String> expandedItems = new ArrayList<String>();
 
     // Tree viewer which will be analyzed and restored
     private TreeViewer treeViewer;
@@ -41,14 +41,14 @@ public class TreeViewerExpandStateStorage {
 
     public void storeExpandedStatus() {
         selection = treeViewer.getSelection();
-        expandedItems = new ArrayList();
+        expandedItems = new ArrayList<String>();
         TreeItem childs[] = treeViewer.getTree().getItems();
         checkExpandedStatus(expandedItems, childs, ""); //$NON-NLS-1$
     }
 
     public void restoreExpandedStatus() {
-        for (Iterator iter = expandedItems.iterator(); iter.hasNext();) {
-            String itemPath = (String)iter.next();
+        for (Iterator<String> iter = expandedItems.iterator(); iter.hasNext();) {
+            String itemPath = iter.next();
             TreeItem childs[] = treeViewer.getTree().getItems();
             searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
         }
@@ -75,7 +75,7 @@ public class TreeViewerExpandStateStorage {
         return false;
     }
 
-    private void checkExpandedStatus(ArrayList expandedItems, TreeItem childs[], String parent) {
+    private void checkExpandedStatus(ArrayList<String> expandedItems, TreeItem childs[], String parent) {
         for (int i = 0; i < childs.length; i++) {
             TreeItem item = childs[i];
             if (item.getExpanded()) {
