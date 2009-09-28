@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -69,8 +70,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
     // Cache containing the dummy objects, to display the association and rules.
     // This kind of objects are only used in the user interface to adapt the model objects to the
-    // correct
-    // content in the tree view
+    // correct content in the tree view
     private HashMap<String, IDummyTestCaseObject> dummyObjects = new HashMap<String, IDummyTestCaseObject>();
 
     // ips project used to search
@@ -513,14 +513,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Returns a cached dummy object. To adapt the model object to the corresponding object which
      * will be displayed in the user interface.
      */
-    private IDummyTestCaseObject getDummyObject(ITestParameter parameter, ITestObject testObject) {
-        String id = ""; //$NON-NLS-1$
-        if (testObject instanceof ITestPolicyCmpt) {
-            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
-        } else {
-            id = parameter.getName() + (testObject == null ? "" : "#" + testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
+    IDummyTestCaseObject getDummyObject(ITestParameter parameter, ITestObject testObject) {
+        String id = getIdFor(parameter, testObject);
         IDummyTestCaseObject dummyObject = dummyObjects.get(id);
         if (dummyObject == null) {
             if (testObject instanceof ITestPolicyCmpt) {
@@ -537,6 +531,16 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
         }
         return dummyObject;
+    }
+
+    private String getIdFor(ITestParameter parameter, ITestObject testObject) {
+        String id = "";
+        if (testObject instanceof ITestPolicyCmpt) {
+            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
+        } else {
+            id = parameter.getName() + (testObject == null ? "" : "#" + testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return id;
     }
 
     /*
@@ -566,7 +570,27 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
     }
 
-    public void clearDummyObjectCache() {
-        dummyObjects.clear();
+    public void clearChildDummyObjectsInCache(ITestPolicyCmpt testPolicyCmpt) {
+        String id = "";
+        try {
+            id = getIdFor(testPolicyCmpt.findTestParameter(ipsProject), testPolicyCmpt);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        String rootId = StringUtils.substringBefore(id, "#");
+        String objectId = StringUtils.substringAfter(id, "#");
+        List objectsToRemove = new ArrayList();
+        for (Iterator iterator = dummyObjects.keySet().iterator(); iterator.hasNext();) {
+            String currId = (String)iterator.next();
+            String currRootId = StringUtils.substringBefore(currId, "#");
+            String currObjectId = currId.indexOf("#") == -1 ? "none" : StringUtils.substringAfter(currId, "#");
+            if (currRootId.equals(rootId) || currObjectId.startsWith(objectId)) {
+                objectsToRemove.add(currId);
+            }
+        }
+        for (Iterator iterator = objectsToRemove.iterator(); iterator.hasNext();) {
+            dummyObjects.remove(iterator.next());
+
+        }
     }
 }

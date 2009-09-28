@@ -33,6 +33,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -1646,7 +1647,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)selectedObject;
                 TestCaseTypeAssociation associationType = selectTestCaseTypeAssociationByDialog(testPolicyCmpt);
                 if (associationType != null) {
-                    addAssociation(associationType);
+                    treeViewer.expandToLevel(testPolicyCmpt, 1);
+                    // get the cached dummy object, otherwise the expand doesn't work!
+                    IDummyTestCaseObject dummyObject = contentProvider.getDummyObject(associationType
+                            .getTestParameter(), associationType.getParentTestPolicyCmpt());
+                    addAssociation((TestCaseTypeAssociation)dummyObject);
                 }
             } else if (selectedObject instanceof TestCaseTypeRule) {
                 // add test rules for the test rule parameter
@@ -1687,12 +1692,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreException {
         String[] selectedTargetsQualifiedNames = null;
         boolean chooseProductCmpts = false;
-        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
+        final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
         if (associationType.getParentTestPolicyCmpt() == null) {
-            addRootTestPolicyCmptObject(testPolicyCmptTypeParam);
+            addRootTestPolicyCmptObject(associationType, testPolicyCmptTypeParam);
             return;
         } else if (associationType.isRequiresProductCmpt()) {
-            // target requires a product cmpt
+            // target requires a product component
             chooseProductCmpts = true;
 
             IPolicyCmptTypeAssociation association = associationType.findAssociation(associationType
@@ -1764,6 +1769,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                     targetName);
                         }
                     }
+                    treeViewer.expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                     refreshTreeAndDetailArea();
                     selectInTreeByObject(newAssociation, true);
                 } else {
@@ -1780,6 +1786,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     if (newTestPolicyCmpt == null) {
                         throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
                     }
+                    treeViewer.expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                     refreshTreeAndDetailArea();
                     selectInTreeByObject(newTestPolicyCmpt, true);
                 }
@@ -1798,15 +1805,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
     }
 
-    private void addRootTestPolicyCmptObject(final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam)
-            throws CoreException {
+    private void addRootTestPolicyCmptObject(final TestCaseTypeAssociation associationType,
+            final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) throws CoreException {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException {
                 ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
                     changeProductCmpt(testPolicyCmpt);
                 }
-                refreshTreeAndDetailArea();
+                refreshTree();
+                treeViewer.expandToLevel(associationType, 1);
                 selectInTreeByObject(testPolicyCmpt, true);
             }
         };
@@ -1882,17 +1890,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     if (selection instanceof IStructuredSelection) {
-                        TreeItem nextItemToSelect = null;
+                        Object nextItemToSelect = null;
                         for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
                             ITestObject domainObject = (ITestObject)iterator.next();
-                            nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
+                            nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject).getData();
                             if (domainObject instanceof ITestPolicyCmpt && ((ITestPolicyCmpt)domainObject).isRoot()) {
                                 // is the root object will be deleted then the cache of all dummy
                                 // gui objects must be
                                 // cleared, otherwise if the object are added again then all old /
                                 // invalid objects
                                 // are visible again
-                                ((TestCaseContentProvider)treeViewer.getContentProvider()).clearDummyObjectCache();
+                                ((TestCaseContentProvider)treeViewer.getContentProvider())
+                                        .clearChildDummyObjectsInCache((ITestPolicyCmpt)domainObject);
                             }
                             if (domainObject instanceof ITestPolicyCmptLink) {
                                 ((ITestPolicyCmptLink)domainObject).delete();
@@ -1903,12 +1912,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                         "Remove object with type " + domainObject.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        treeViewer.getTree().setSelection(new TreeItem[] { nextItemToSelect });
+                        treeViewer.refresh();
                         treeViewer.getControl().setFocus();
-                        refreshTreeAndDetailArea();
-                        if (!nextItemToSelect.isDisposed()) {
-                            selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
-                        }
+                        treeViewer.setSelection(new StructuredSelection(nextItemToSelect));
                     }
                 }
             };
@@ -2197,7 +2203,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     redrawForm();
                 }
             };
-            getDisplay().asyncExec(runnable);
+            getDisplay().syncExec(runnable);
         } finally {
             form.setRedraw(true);
         }
@@ -2229,7 +2235,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * Returns the corresponding test policy component object from the domain object. The domain
      * object could either be a policy component object or a link object. In case of a link object
-     * the parent test policy component will be returned. Returns <code>null</code> ff the
+     * the parent test policy component will be returned. Returns <code>null</code> if the
      * domainObject is not such a kind of object, in this case additionally an error will be logged.
      */
     private ITestPolicyCmpt getTestPolicyCmpFromDomainObject(Object domainObject) {
