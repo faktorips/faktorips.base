@@ -972,6 +972,7 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.ui"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.test"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.stdbuilder.test"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui.test"/>
@@ -1060,13 +1061,14 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml" tag="v2_2_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext" tag="v2_2_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.ui"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.stdbuilder.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml.test" tag="v2_2_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test" tag="v2_2_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_2_patches"/>
         </modificationset>
         <schedule interval="300">
@@ -1151,13 +1153,14 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml" tag="v2_3_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext" tag="v2_3_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.ui"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.test" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.stdbuilder.test" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui.test" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant.test" tag="v2_3_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml.test" tag="v2_3_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test" tag="v2_3_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_3_patches"/>
         </modificationset>
         <schedule interval="300">
@@ -1242,13 +1245,14 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml" tag="v2_4_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext" tag="v2_4_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.ui"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.test" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.stdbuilder.test" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui.test" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant.test" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml.test" tag="v2_4_patches"/>
-            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test" tag="v2_4_patches"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_4_patches"/>
         </modificationset>
         <schedule interval="300">

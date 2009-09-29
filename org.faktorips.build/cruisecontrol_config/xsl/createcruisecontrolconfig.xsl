@@ -109,18 +109,34 @@
                    <cvs>
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                       <xsl:attribute name="module"><xsl:value-of select="$cvsmodul"/></xsl:attribute>
-                      <xsl:if test='string-length($cvstag)>0'>
-                        <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
-                      </xsl:if>
+	     			  <xsl:choose>
+	     			  	<xsl:when test="@cvstag='HEAD'">
+	     			  	  <!-- HEAD not tag attribute necessary -->
+				    	</xsl:when>
+	     			  	<xsl:when test="string-length(@cvstag)>0">
+	                        <xsl:attribute name="tag"><xsl:value-of select="@cvstag"/></xsl:attribute>
+				    	</xsl:when>
+	                    <xsl:when test='string-length($cvstag)>0'>
+	                        <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+	                    </xsl:when>
+	                  </xsl:choose>
                   </cvs>
                   <xsl:for-each select="depends/cvs">
                    <!-- cvs additional modificationset -->
                        <cvs>
                           <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                           <xsl:attribute name="module"><xsl:value-of select="@module"/></xsl:attribute>
-                          <xsl:if test='string-length($cvstag)>0'>
-                            <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
-                          </xsl:if>
+		     			  <xsl:choose>
+		     			  	<xsl:when test="@cvstag='HEAD'">
+		     			  	  <!-- HEAD not tag attribute necessary -->
+					    	</xsl:when>
+		     			  	<xsl:when test="string-length(@cvstag)>0">
+		                        <xsl:attribute name="tag"><xsl:value-of select="@cvstag"/></xsl:attribute>
+					    	</xsl:when>
+		                    <xsl:when test='string-length($cvstag)>0'>
+		                        <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+		                    </xsl:when>
+		                  </xsl:choose>
                       </cvs>
                   </xsl:for-each>                  
     			  </xsl:when>
