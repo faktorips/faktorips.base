@@ -45,6 +45,7 @@
 #                                    with -version [versionnumber] the name (version) of the base version
 #                                    used for this branch must be specified (e.g. "-version 2.2.branch")
 #           -branchRootTag <tag>   : optinal - use the given tag as starting point for the branch otherwise HEAD will be used
+#                                    (e.g. "-branchRootTag v2_2_0_rfinal")
 #
 # additional environment parameters (useful when the release must be build local)
 # -------------------------------------------------------------------------------
