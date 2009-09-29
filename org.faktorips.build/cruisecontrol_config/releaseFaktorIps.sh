@@ -811,16 +811,6 @@ echo $EXEC
 eval $EXEC
 RC=$(echo $?)
 
-
-#################################
-# update download site index.html
-#################################
-echo ''
-if [ $RC -eq 0 -a ! "$SKIPPUBLISH" = "true" ] ; then
-  # build successfull and result should be published
-  createIndexHtml
-fi
-
 ####################################################
 # add lizenz to all generated and published archives
 ####################################################
@@ -833,3 +823,4 @@ else
 fi
 
 echo "OK: release build "${BUILD_VERSION}" successful"
+
