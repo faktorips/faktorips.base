@@ -172,6 +172,13 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
+     * Returns the value of the underlying IIpsProjectProperties instance.
+     */
+    public boolean isRulesWithoutReferencesAllowedEnabled() {
+        return propertiesInternal.isRulesWithoutReferencesAllowedEnabled();
+    }
+
+    /**
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
@@ -294,6 +301,13 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+
+    /**
+     * Throws a runtime exceptions since manipulation of this object is disallowed.
+     */
+    public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
     }
 

@@ -66,6 +66,8 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    private final static String OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
+
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
         data.initFromXml(ipsProject, element);
@@ -92,6 +94,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
+    private boolean rulesWithoutReferencesAllowed = false;
     private Hashtable requiredFeatures = new Hashtable();
     // hidden resource names in the model and product explorer
     private Set resourcesPathExcludedFromTheProductDefiniton = new HashSet(10);
@@ -432,6 +435,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 "referencedProductComponentsAreValidOnThisGenerationsValidFromDate", //$NON-NLS-1$
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
 
+        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
+                rulesWithoutReferencesAllowed));
+
         return projectEl;
     }
 
@@ -610,6 +616,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 derivedUnionIsImplementedRuleEnabled = enable;
             } else if (name.equals("referencedProductComponentsAreValidOnThisGenerationsValidFromDate")) { //$NON-NLS-1$
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
+            } else if (name.equals(OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE)) {
+                rulesWithoutReferencesAllowed = enable;
             }
         }
     }
@@ -704,6 +712,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled() {
         return referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRulesWithoutReferencesAllowedEnabled() {
+        return rulesWithoutReferencesAllowed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
+        rulesWithoutReferencesAllowed = enabled;
     }
 
     /**
@@ -983,10 +1005,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public EnumType getQuestionAssignedUserGroup() {
         DefaultEnumType type = new DefaultEnumType("QuestionAssignedUserGroup", QuestionAssignedUserGroup.class); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type, "undefined", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_UNDEFINED); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type, "business", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type, "implementation", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_IMPLEMENTATION); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type, "cooperate", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_COOPERATE); //$NON-NLS-1$
+        new QuestionAssignedUserGroup(type,
+                "undefined", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_UNDEFINED); //$NON-NLS-1$
+        new QuestionAssignedUserGroup(type,
+                "business", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS); //$NON-NLS-1$
+        new QuestionAssignedUserGroup(type,
+                "implementation", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_IMPLEMENTATION); //$NON-NLS-1$
+        new QuestionAssignedUserGroup(type,
+                "cooperate", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_COOPERATE); //$NON-NLS-1$
         return type;
     }
 
@@ -1000,4 +1026,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         new QuestionStatus(type, "deferred", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_DEFERRED); //$NON-NLS-1$
         return type;
     }
+
 }

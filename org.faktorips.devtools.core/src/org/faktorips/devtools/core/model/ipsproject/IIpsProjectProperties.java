@@ -271,6 +271,17 @@ public interface IIpsProjectProperties {
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
 
     /**
+     * Returns <code>true</code> if IpsObject rule without references is enabled, otherwise
+     * <code>false</code>.
+     */
+    public boolean isRulesWithoutReferencesAllowedEnabled();
+
+    /**
+     * @see #isRulesWithoutReferencesAllowedEnabled()
+     */
+    public void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
+
+    /**
      * @return The ids of all required features.
      */
     public String[] getRequiredIpsFeatureIds();
@@ -297,7 +308,7 @@ public interface IIpsProjectProperties {
     public EnumType getQuestionAssignedUserGroup();
 
     /**
-     * Returns the question status' allowed in the ips project.
+     * Returns the question status allowed in the ips project.
      */
     public EnumType getQuestionStatus();
 
