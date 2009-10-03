@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.extproperties;
 
+import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
@@ -23,10 +24,13 @@ import org.w3c.dom.Element;
  * 
  * @author Faktor Zehn AG, Juergen Niedernhuber
  */
-public class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition {
+public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition {
 
-    public EnumExtensionPropertyDefinition() {
+    private EnumType enumType;
+
+    public EnumExtensionPropertyDefinition(EnumType enumType) {
         super();
+        this.enumType = enumType;
     }
 
     /**
@@ -34,14 +38,14 @@ public class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition
      */
     @Override
     public void setDefaultValue(String s) {
-        defaultValue = s;
+        defaultValue = enumType.getEnumValue(s);
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getValueFromString(String value) {
-        return value;
+        return enumType.getEnumValue(value);
     }
 
     /**
@@ -52,7 +56,7 @@ public class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition
         if (cdata == null) {
             return defaultValue;
         }
-        return cdata.getData();
+        return enumType.getEnumValue(cdata.getData());
     }
 
 }
