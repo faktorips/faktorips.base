@@ -395,7 +395,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
             return;

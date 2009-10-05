@@ -61,7 +61,7 @@ public class BusinessFunctionImpl extends IpsObject implements
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
     }
 
     /**

@@ -249,7 +249,7 @@ public class TestValue extends TestObject implements ITestValue {
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 

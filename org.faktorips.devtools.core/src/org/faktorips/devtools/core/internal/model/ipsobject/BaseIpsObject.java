@@ -78,10 +78,10 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
             IpsObjectPartCollection container = it.next();
-            if (container.readdPart(part)) {
+            if (container.addPart(part)) {
                 return;
             }
         }

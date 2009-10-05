@@ -106,7 +106,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
             formulaTestInputValues.add(part);
             return;

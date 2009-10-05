@@ -171,7 +171,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof IRow) {
             rows.add((Row)part);
             return;

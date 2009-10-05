@@ -99,7 +99,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
             testObjects.add(part);
             return;

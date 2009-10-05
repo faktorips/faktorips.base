@@ -262,7 +262,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
     }
 
     @Override

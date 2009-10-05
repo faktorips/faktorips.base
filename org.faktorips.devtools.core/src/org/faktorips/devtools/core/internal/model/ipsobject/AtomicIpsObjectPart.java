@@ -67,7 +67,7 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
      * 
      * @throws UnsupportedOperationException
      */
-    protected final void reAddPart(IIpsObjectPart part) {
+    protected final void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
     

@@ -254,7 +254,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * Overridden.
      */
-    protected final void reAddPart(IIpsObjectPart part) {
+    protected final void addPart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
             generations.add(part);
             return;

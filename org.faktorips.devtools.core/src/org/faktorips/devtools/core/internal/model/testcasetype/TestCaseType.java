@@ -78,7 +78,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
             testParameters.add(part);
             return;

@@ -237,7 +237,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void reAddPart(IIpsObjectPart part) {
+	protected void addPart(IIpsObjectPart part) {
 		if (part instanceof TestPolicyCmpt) {
 			targetChild = (TestPolicyCmpt) part;
 			return;

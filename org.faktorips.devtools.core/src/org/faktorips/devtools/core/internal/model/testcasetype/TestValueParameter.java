@@ -189,7 +189,7 @@ public class TestValueParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 

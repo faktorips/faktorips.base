@@ -380,7 +380,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         valueSet = (IValueSet)part;
     }
 

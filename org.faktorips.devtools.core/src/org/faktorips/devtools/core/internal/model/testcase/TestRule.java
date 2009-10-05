@@ -244,7 +244,7 @@ public class TestRule extends TestObject implements ITestRule {
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 

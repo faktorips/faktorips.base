@@ -226,10 +226,13 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     /**
-     * Returns <code>true</code> if the part was contained in this collection (before this call) and
-     * was removed. Returns <code>false</code> otherwise.
+     * The part is added to the collection if the type is assignable form the partsBaseClass. Return
+     * true if the part is of correct type or fals if it is not.
+     * 
+     * @param part
+     * @return Return true if the type of the part is supported by this collection
      */
-    public boolean readdPart(T part) {
+    public boolean addPart(T part) {
         if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
             parts.add(part);
             return true;
@@ -237,6 +240,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return false;
     }
 
+    /**
+     * Returns <code>true</code> if the part was contained in this collection (before this call) and
+     * was removed. Returns <code>false</code> otherwise.
+     */
     public boolean removePart(IIpsObjectPart part) {
         return parts.remove(part);
     }

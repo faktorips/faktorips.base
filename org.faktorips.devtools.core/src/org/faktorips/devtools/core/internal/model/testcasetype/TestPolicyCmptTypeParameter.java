@@ -105,7 +105,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void reAddPart(IIpsObjectPart part) {
+	protected void addPart(IIpsObjectPart part) {
 		if (part instanceof TestAttribute) {
 			testAttributes.add(part);
 			return;

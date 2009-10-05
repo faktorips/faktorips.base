@@ -195,7 +195,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
     }
 
     @Override

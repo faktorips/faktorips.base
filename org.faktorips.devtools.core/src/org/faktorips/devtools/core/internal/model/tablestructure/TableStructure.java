@@ -508,7 +508,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
             columns.add(part);
             return;

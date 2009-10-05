@@ -145,7 +145,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 

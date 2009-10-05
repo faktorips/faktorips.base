@@ -189,7 +189,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         valueSet = (IValueSet)part;
     }
 

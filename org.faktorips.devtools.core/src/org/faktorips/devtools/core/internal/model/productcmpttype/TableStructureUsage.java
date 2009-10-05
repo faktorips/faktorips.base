@@ -135,7 +135,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
        if (part instanceof TableStructureReference){
             tableStructures.add(part);
             return;

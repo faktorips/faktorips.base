@@ -109,7 +109,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * {@inheritDoc}
      */
     @Override
-    protected void reAddPart(IIpsObjectPart part) {
+    protected void addPart(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
             testAttributeValues.add((TestAttributeValue)part);
             return;
