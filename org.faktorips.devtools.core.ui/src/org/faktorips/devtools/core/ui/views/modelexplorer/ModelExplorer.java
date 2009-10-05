@@ -14,9 +14,7 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
@@ -67,7 +65,6 @@ import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
-import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 /**
@@ -203,22 +200,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         getSite().setSelectionProvider(treeViewer);
 
-        resourceListener = new IpsResourceChangeListener(treeViewer) {
-            /*
-             * TODO Optimize refresh: Refresh folders if files were added or removed, additionally
-             * refresh changed files.
-             */
-            @Override
-            protected IResource[] internalResourceChanged(IResourceChangeEvent event) {
-                IResourceDelta delta = event.getDelta();
-                IResource res = delta.getResource();
-                if (res != null) {
-                    return new IResource[] { res };
-                }
-                return new IResource[] {};
-            }
-        };
-
+        resourceListener = new IpsResourceChangeListener(treeViewer);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener,
                 IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE);
 
