@@ -39,7 +39,7 @@ public class Migration_2_4_0_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getTargetVersion() {
-        return "2.4.1"; //$NON-NLS-1$
+        return "2.4.1.rfinal"; //$NON-NLS-1$
     }
 
     @Override
