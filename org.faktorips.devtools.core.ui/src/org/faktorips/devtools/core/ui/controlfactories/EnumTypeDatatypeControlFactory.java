@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -93,7 +92,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     @Override
     public TableCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
-            ValueSet valueSet,
+            IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {

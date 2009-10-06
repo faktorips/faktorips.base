@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -99,7 +98,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
     @Override
     public TableCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
-            ValueSet valueSet,
+            IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
@@ -117,7 +116,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         return new ComboCellEditor(tableViewer, columnIndex, comboControl);
     }
 
-    private void initializeEnumCombo(Combo combo, EnumDatatype datatype) {
+    protected void initializeEnumCombo(Combo combo, EnumDatatype datatype) {
         // stores the enum datatype object as data object in the combo,
         // will be used to map between the displayed text and id
         EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype);

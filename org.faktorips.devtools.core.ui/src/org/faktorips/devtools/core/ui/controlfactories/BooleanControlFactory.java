@@ -22,7 +22,6 @@ import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -50,6 +49,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return Datatype.BOOLEAN.equals(datatype) || Datatype.PRIMITIVE_BOOLEAN.equals(datatype);
     }
@@ -57,6 +57,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
@@ -71,6 +72,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
@@ -84,9 +86,10 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
      * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
      */
+    @Override
     public TableCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
-            ValueSet valueSet,
+            IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
