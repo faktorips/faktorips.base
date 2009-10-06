@@ -56,7 +56,14 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
         if (cdata == null) {
             return defaultValue;
         }
-        return enumType.getEnumValue(cdata.getData());
+        int qualifiedNameDelimiterPos = cdata.getData().lastIndexOf(".");
+        String id = "";
+        if (qualifiedNameDelimiterPos < 0) {
+            id = cdata.getData();
+        } else {
+            id = cdata.getData().substring(qualifiedNameDelimiterPos + 1);
+        }
+        return enumType.getEnumValue(id);
     }
 
 }
