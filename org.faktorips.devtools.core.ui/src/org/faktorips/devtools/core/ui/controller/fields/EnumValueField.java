@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,15 +17,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
 
-
 /**
  *
  */
 public class EnumValueField extends ComboField {
-    
+
     // array that contains all values used in the the combo box in the same order
     private EnumValue[] usedEnumValues;
-    
+
     /**
      * @param combo
      */
@@ -36,12 +35,12 @@ public class EnumValueField extends ComboField {
         usedEnumValues = new EnumValue[items.length];
         for (int i = 0; i < items.length; i++) {
             usedEnumValues[i] = getEnumValue(allEnumValues, items[i]);
-            if (usedEnumValues[i]==null) {
+            if (usedEnumValues[i] == null) {
                 throw new RuntimeException("Not enum value for combo box item " + items[i]); //$NON-NLS-1$
             }
         }
     }
-    
+
     private EnumValue getEnumValue(EnumValue[] allValues, String name) {
         for (int i = 0; i < allValues.length; i++) {
             if (allValues[i].getName().equals(name)) {
@@ -50,10 +49,10 @@ public class EnumValueField extends ComboField {
         }
         return null;
     }
-    
+
     public EnumValue getEnumValue() {
         int index = getCombo().getSelectionIndex();
-        if (index==-1) {
+        if (index == -1) {
             return null;
         }
         return usedEnumValues[index];
@@ -62,17 +61,19 @@ public class EnumValueField extends ComboField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object parseContent() {
         return getEnumValue();
     }
-    
+
     public void setEnumValue(EnumValue newValue) {
-        getCombo().setText(newValue.getName());
+        getCombo().setText(newValue == null ? "" : newValue.getName());
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         setEnumValue((EnumValue)newValue);
     }
