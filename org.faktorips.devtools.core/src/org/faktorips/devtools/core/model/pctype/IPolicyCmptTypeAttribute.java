@@ -135,8 +135,11 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public boolean isDerived();
 
     /**
-     * Returns true if this attribute is product relevant, that means the product developer can
-     * configure some aspect of the attribute.
+     * Returns true if this attribute is product relevant. If the attribute is product relevant, the
+     * set of allowed values and the default value can be defined in product components that are
+     * based on the associated product component type.
+     * 
+     * @see IPolicyCmptType#getProductCmptType()
      */
     public boolean isProductRelevant();
 
