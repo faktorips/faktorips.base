@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,8 +28,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-
-
 /**
  *
  */
@@ -37,40 +35,46 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
 
     protected String name;
     protected IIpsElement parent;
-    
+
     final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
     /*
-     * Resource mapping based on the mapping for the resource model 
+     * Resource mapping based on the mapping for the resource model
      */
     private class IpsElementResourceMapping extends ResourceMapping {
         private IIpsElement ipsElement;
-        
+
         public IpsElementResourceMapping(IIpsElement ipsElement) {
             this.ipsElement = ipsElement;
         }
 
+        @Override
         public Object getModelObject() {
             return ipsElement.getEnclosingResource();
         }
 
+        @Override
         public String getModelProviderId() {
             return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
         }
 
+        @Override
         public IProject[] getProjects() {
             IIpsProject ipsProject = ipsElement.getIpsProject();
-            return new IProject[]{ipsProject.getProject()};
+            return new IProject[] { ipsProject.getProject() };
         }
 
+        @Override
         public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) {
             Object modelObject = getModelObject();
-            if (modelObject instanceof IResource){
+            if (modelObject instanceof IResource) {
                 final IResource resource = (IResource)modelObject;
                 if (resource.getType() == IResource.ROOT) {
-                    return new ResourceTraversal[] {new ResourceTraversal(((IWorkspaceRoot)resource).getProjects(), IResource.DEPTH_INFINITE, IResource.NONE)};
+                    return new ResourceTraversal[] { new ResourceTraversal(((IWorkspaceRoot)resource).getProjects(),
+                            IResource.DEPTH_INFINITE, IResource.NONE) };
                 }
-                return new ResourceTraversal[] {new ResourceTraversal(new IResource[] {resource}, IResource.DEPTH_INFINITE, IResource.NONE)};
+                return new ResourceTraversal[] { new ResourceTraversal(new IResource[] { resource },
+                        IResource.DEPTH_INFINITE, IResource.NONE) };
             }
             return null;
         }
@@ -80,7 +84,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         this.parent = parent;
         this.name = name;
     }
-    
+
     /**
      * Constructor for testing purposes.
      */
@@ -88,25 +92,24 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
     }
 
     /**
-     * This method does not query any <code>AdapterManager</code>s to get the 
-     * adapter - if the requested adapter is an <code>IResource</code>, the
-     * enclosing resource is returned.
+     * This method does not query any <code>AdapterManager</code>s to get the adapter - if the
+     * requested adapter is an <code>IResource</code>, the enclosing resource is returned.
      * 
      * {@inheritDoc}
      */
     public Object getAdapter(Class adapter) {
-        if(adapter == null){
+        if (adapter == null) {
             return null;
         }
         IResource enclosingResource = getEnclosingResource();
-    	if (adapter.isInstance(enclosingResource)) {
-    		return enclosingResource;
-    	}
-    	if (adapter.equals(ResourceMapping.class)){
-    	    return new IpsElementResourceMapping(this);
-    	}
-		return null;
-	}
+        if (adapter.isInstance(enclosingResource)) {
+            return enclosingResource;
+        }
+        if (adapter.equals(ResourceMapping.class)) {
+            return new IpsElementResourceMapping(this);
+        }
+        return null;
+    }
 
     /**
      * {@inheritDoc}
@@ -121,7 +124,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
     public final IIpsElement getParent() {
         return parent;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -129,27 +132,27 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         if (!getParent().exists()) {
             return false;
         }
-        if (getCorrespondingResource()==null) {
-        	// if no corresponding resource exists, the EnclosingResource.exists() is handled
-        	// by calling getParent().exists() above. So if we have arrived here, we have
-        	// to return true (the parent exists) to avoid a NullPointerException in the
-        	// rest of the code.
-            return true;    
+        if (getCorrespondingResource() == null) {
+            // if no corresponding resource exists, the EnclosingResource.exists() is handled
+            // by calling getParent().exists() above. So if we have arrived here, we have
+            // to return true (the parent exists) to avoid a NullPointerException in the
+            // rest of the code.
+            return true;
         }
         return getCorrespondingResource().exists();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IResource getEnclosingResource() {
         IResource resource = getCorrespondingResource();
-        if (resource!=null) {
+        if (resource != null) {
             return resource;
         }
         return getParent().getEnclosingResource();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -161,12 +164,12 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
      * {@inheritDoc}
      */
     public IIpsProject getIpsProject() {
-        if (getParent()==null) {
+        if (getParent() == null) {
             return null;
         }
         return getParent().getIpsProject();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -178,31 +181,34 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
      * {@inheritDoc}
      */
     public boolean hasChildren() throws CoreException {
-        return getChildren().length>0;
+        return getChildren().length > 0;
     }
-    
+
+    @Override
     public int hashCode() {
         return name.hashCode();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean equals(Object o) {
-        if (!(o instanceof IIpsElement)) {
-            return false;
-        }
-        IIpsElement other = (IIpsElement)o;
-        return other.getName().equals(getName()) 
-        	&& ( (parent==null && other.getParent()==null)
-        		|| ( parent!=null && parent.equals(other.getParent()) ) );
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof IIpsElement)) {
+            return false;
+        }
+        IIpsElement other = (IIpsElement)o;
+        return other.getName().equals(getName())
+                && ((parent == null && other.getParent() == null) || (parent != null && parent
+                        .equals(other.getParent())));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
-        if (getParent()==null) {
+        if (getParent() == null) {
             return getName();
         }
         return getParent().toString() + "/" + getName(); //$NON-NLS-1$

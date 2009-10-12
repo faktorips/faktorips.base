@@ -48,7 +48,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * Constructor for testing purposes.
      */
     protected IpsObjectPart() {
-        
+
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         if (container == null) {
             return null;
         }
-        
+
         return container.getIpsObject();
     }
 
@@ -81,12 +81,12 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         if (isDeleted()) {
             throw new RuntimeException("Object has already been deleted!"); //$NON-NLS-1$
         }
-        
+
         deleted = true;
         if (getContainer() != null) {
             getContainer().removePart(this);
         }
-        
+
         ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
         objectHasChanged(event);
     }
@@ -117,18 +117,19 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      */
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
-        ArgumentCheck.isTrue(isDescriptionChangable(),"The description attribute of this object is marked " + //$NON-NLS-1$
-        		"as not changeable. See the method isDescriptionChangable() for explanation"); //$NON-NLS-1$
-        
+        ArgumentCheck.isTrue(isDescriptionChangable(), "The description attribute of this object is marked " + //$NON-NLS-1$
+                "as not changeable. See the method isDescriptionChangable() for explanation"); //$NON-NLS-1$
+
         String oldDescription = description;
-        this.description = newDescription;
-        
+        description = newDescription;
+
         valueChanged(oldDescription, newDescription);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void objectHasChanged() {
         IpsModel model = (IpsModel)getIpsModel();
         ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this);
@@ -159,6 +160,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         if (id != null) {
             this.id = id.intValue();
@@ -168,8 +170,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
                 this.id = Integer.parseInt(s);
             } // else keep the id set in the constructor. migration for old files without id!
         }
-        
-        if(isDescriptionChangable()){
+
+        if (isDescriptionChangable()) {
             description = DescriptionHelper.getDescription(element);
         }
     }
@@ -177,9 +179,10 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
-        if(isDescriptionChangable()){
+        if (isDescriptionChangable()) {
             DescriptionHelper.setDescription(element, description);
         }
     }
@@ -187,14 +190,15 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc} Two parts are equal if the have the same parent and the same id.
      */
+    // TODO XXX CD missing hashCode override
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof IIpsObjectPart)) {
             return false;
         }
-        
+
         IIpsObjectPart other = (IIpsObjectPart)o;
-        
+
         return other.getId() == getId()
                 && ((parent == null && other.getParent() == null) || (parent != null && parent
                         .equals(other.getParent())));
@@ -205,6 +209,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * Mark ipsObjectParts as not adaptable. This prevents the CVSDecorator from displaying
      * decorations for ipsobjectparts in ModelExplorer and ProductExplorer. {@inheritDoc}
      */
+    @Override
     public Object getAdapter(Class adapter) {
         return null;
     }
