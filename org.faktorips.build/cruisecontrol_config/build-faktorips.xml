@@ -243,6 +243,7 @@
     	<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/org.faktorips.pluginbuilder"/>
     	<property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
 
+    	<cvs command="co" package="${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	<antcall target="-checkout.all" />
     	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
@@ -677,7 +678,6 @@ ${faktoripsProductLinuxZipPath}
 	
 	<target name="-checkout.all" >
 	<!-- checkout features -->
-	<cvs command="co" package="${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	<cvs command="co" package="org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     <cvs command="co" package="org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	<cvs command="co" package="org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
