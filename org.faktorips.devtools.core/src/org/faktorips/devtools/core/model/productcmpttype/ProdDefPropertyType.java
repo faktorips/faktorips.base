@@ -20,9 +20,9 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
 
 /**
- * Enumeration that specifies the different (sub)types of product definition properties. So instead
- * of using inheritance for the different (sub)types of product definition properties, the
- * {@link IProdDefProperty) has a type flag {@link IProdDefProperty#getProdDefPropertyType()}.
+ * Enumeration that specifies the different (sub)types of product definition properties.
+ * 
+ * @see IProdDefProperty#getProdDefPropertyType()
  * 
  * @author Jan Ortmann
  */
