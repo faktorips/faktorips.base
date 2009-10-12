@@ -150,21 +150,21 @@
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext-->
-        <!--=====================================================-->           
+        <!--=====================================================-->          
+        <!--  
         <project name="org.faktorips.devtools.ormext" mainbuildtarget="ormext">
-            <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch_2_4"/>
             <property name="cvsTag" value="v2_4_patches"/> 
             <depends>
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
-
+ -->
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext.ui-->
         <!--=====================================================-->           
-        <project name="org.faktorips.devtools.ormext.ui" mainbuildtarget="ormext.ui">
-            <!-- property for the ant build script -->
+        <!-- 
+           <project name="org.faktorips.devtools.ormext.ui" mainbuildtarget="ormext.ui">
             <property name="checkoutdir" value="checkout_branch_2_4"/>
             <property name="cvsTag" value="v2_4_patches"/>
             <depends>
@@ -172,7 +172,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
- 
+  -->
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
