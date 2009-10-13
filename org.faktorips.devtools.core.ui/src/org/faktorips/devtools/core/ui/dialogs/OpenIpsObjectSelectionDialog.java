@@ -28,17 +28,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
-import org.eclipse.jface.viewers.StyledString.Styler;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -208,22 +202,24 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
         private static final String PACKAGE_CONCAT = " - "; //$NON-NLS-1$
 
-        private Font fBoldFont;
-
-        private Styler fBoldStyler;
+        // TODO feature needs Eclipse 3.5
+        // private Font fBoldFont;
+        // private Styler fBoldStyler;
 
         public OpenIpsObjectLabelProvider() {
-            fBoldStyler = createBoldStyler();
+            // TODO feature needs Eclipse 3.5
+            // fBoldStyler = createBoldStyler();
             setIspSourceFile2IpsObjectMapping(true);
         }
 
         @Override
         public void dispose() {
             super.dispose();
-            if (fBoldFont != null) {
-                fBoldFont.dispose();
-                fBoldFont = null;
-            }
+            // TODO feature needs Eclipse 3.5
+            // if (fBoldFont != null) {
+            // fBoldFont.dispose();
+            // fBoldFont = null;
+            // }
         }
 
         /**
@@ -265,12 +261,14 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
                 return string;
             }
 
-            String namePattern = filter.getPattern();
-            if (namePattern != null && !"*".equals(namePattern)) { //$NON-NLS-1$
-                String typeName = index == -1 ? text : text.substring(0, index);
-                int[] matchingRegions = SearchPattern.getMatchingRegions(namePattern, typeName, filter.getMatchRule());
-                createAndAddStyler(string, matchingRegions, fBoldStyler);
-            }
+            // TODO feature needs Eclipse 3.5
+            // String namePattern = filter.getPattern();
+            //            if (namePattern != null && !"*".equals(namePattern)) { //$NON-NLS-1$
+            // String typeName = index == -1 ? text : text.substring(0, index);
+            // int[] matchingRegions = SearchPattern.getMatchingRegions(namePattern, typeName,
+            // filter.getMatchRule());
+            // createAndAddStyler(string, matchingRegions, fBoldStyler);
+            // }
 
             if (index != -1) {
                 string.setStyle(index, text.length() - index, StyledString.QUALIFIER_STYLER);
@@ -278,52 +276,54 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             return string;
         }
 
-        private void createAndAddStyler(StyledString string, int[] matchingRegions, Styler styler) {
-            if (matchingRegions != null) {
-                int offset = -1;
-                int length = 0;
-                for (int i = 0; i + 1 < matchingRegions.length; i = i + 2) {
-                    if (offset == -1) {
-                        offset = matchingRegions[i];
-                    }
-                    if (i + 2 < matchingRegions.length
-                            && matchingRegions[i] + matchingRegions[i + 1] == matchingRegions[i + 2]) {
-                        length = length + matchingRegions[i + 1];
-                    } else {
-                        string.setStyle(offset, length + matchingRegions[i + 1], styler);
-                        offset = -1;
-                        length = 0;
-                    }
-                }
-            }
-        }
+        // TODO feature needs Eclipse 3.5
+        // private void createAndAddStyler(StyledString string, int[] matchingRegions, Styler
+        // styler) {
+        // if (matchingRegions != null) {
+        // int offset = -1;
+        // int length = 0;
+        // for (int i = 0; i + 1 < matchingRegions.length; i = i + 2) {
+        // if (offset == -1) {
+        // offset = matchingRegions[i];
+        // }
+        // if (i + 2 < matchingRegions.length
+        // && matchingRegions[i] + matchingRegions[i + 1] == matchingRegions[i + 2]) {
+        // length = length + matchingRegions[i + 1];
+        // } else {
+        // string.setStyle(offset, length + matchingRegions[i + 1], styler);
+        // offset = -1;
+        // length = 0;
+        // }
+        // }
+        // }
+        // }
 
-        /**
-         * Create the bold variant of the currently used font.
-         * 
-         * @return the bold font
-         * @since 3.5
-         */
-        private Font getBoldFont() {
-            if (fBoldFont == null) {
-                Font font = getDialogArea().getFont();
-                FontData[] data = font.getFontData();
-                for (int i = 0; i < data.length; i++) {
-                    data[i].setStyle(SWT.BOLD);
-                }
-                fBoldFont = new Font(font.getDevice(), data);
-            }
-            return fBoldFont;
-        }
-
-        private Styler createBoldStyler() {
-            return new Styler() {
-                @Override
-                public void applyStyles(TextStyle textStyle) {
-                    textStyle.font = getBoldFont();
-                }
-            };
-        }
+        // /**
+        // * Create the bold variant of the currently used font.
+        // *
+        // * @return the bold font
+        // * @since 3.5
+        // */
+        // private Font getBoldFont() {
+        // if (fBoldFont == null) {
+        // Font font = getDialogArea().getFont();
+        // FontData[] data = font.getFontData();
+        // for (int i = 0; i < data.length; i++) {
+        // data[i].setStyle(SWT.BOLD);
+        // }
+        // fBoldFont = new Font(font.getDevice(), data);
+        // }
+        // return fBoldFont;
+        // }
+        //
+        // private Styler createBoldStyler() {
+        // return new Styler() {
+        // @Override
+        // public void applyStyles(TextStyle textStyle) {
+        // textStyle.font = getBoldFont();
+        // }
+        // };
+        // }
 
     }
 
