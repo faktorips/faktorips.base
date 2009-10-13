@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
  * 
  * @author Jan Ortmann
  */
-public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
+class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
     private Set<IIpsElement> ipsElementsToRefresh = new HashSet<IIpsElement>();
     private Set<IResource> resourcesToRefresh = new HashSet<IResource>();
@@ -46,14 +46,14 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     /**
      * Returns the ips elements that needs to be refreshed for the givne delta.
      */
-    public Set<IIpsElement> getIpsElementsToRefresh() {
+    Set<IIpsElement> getIpsElementsToRefresh() {
         return ipsElementsToRefresh;
     }
 
     /**
      * Returns the resources that needs to be refreshed for the givne delta.
      */
-    public Set<IResource> getResourcesToRefresh() {
+    Set<IResource> getResourcesToRefresh() {
         return resourcesToRefresh;
     }
 

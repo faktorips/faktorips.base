@@ -44,7 +44,9 @@ public abstract class ViewerButtonComposite extends Composite {
         clientLayout.marginHeight = 2;
         clientLayout.marginWidth = 1;
         setLayout(clientLayout);
-        toolkit.getFormToolkit().paintBordersFor(this);
+        if (toolkit.getFormToolkit() != null) {
+            toolkit.getFormToolkit().paintBordersFor(this);
+        }
         viewer = createViewer(this, toolkit);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -52,7 +54,7 @@ public abstract class ViewerButtonComposite extends Composite {
                 updateButtonEnabledStates();
             }
         });
-        Composite buttons = toolkit.getFormToolkit().createComposite(this);
+        Composite buttons = toolkit.createComposite(this);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
         buttonLayout.horizontalSpacing = 10;
