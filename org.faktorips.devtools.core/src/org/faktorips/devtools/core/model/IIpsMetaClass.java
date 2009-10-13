@@ -32,11 +32,11 @@ public interface IIpsMetaClass extends IIpsObject {
     /**
      * This method returns an array of <code>IIpsSrcFile</code>s for all meta objects found for this
      * meta class. When the meta class supports a type hierarchy, the parameter
-     * <code>includeSubtypes</code> specifies wether to search in subtypes for further instances or
-     * not. If the meta class does not support type hierarchy, the parameter will be ignored.
+     * <code>includeSubtypes</code> specifies whether to search in sub types for further instances
+     * or not. If the meta class does not support sub types, the parameter will be ignored.
      * 
      * @param ipsProject the project in which the search is started. Because of project references
-     *            are directed, the method have to find all projects, referencing this
+     *            are directed, the method has to find all projects, referencing this
      *            <code>ipsProject</code>.
      * @param includeSubtypes for meta classes that support subtype hierarchy: true to include
      *            objects from meta class subtypes
