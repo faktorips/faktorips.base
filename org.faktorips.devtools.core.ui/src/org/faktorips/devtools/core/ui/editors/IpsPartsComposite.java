@@ -451,7 +451,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 if (!dirty) {
                     file.markAsClean();
                 }
-                refresh();
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);

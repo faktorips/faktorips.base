@@ -1,5 +1,5 @@
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
-	
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,83 +14,82 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
- * The label provider for the instance explorer, extending the {@link StyledCellLabelProvider}
- * The methods for {@link ILabelProvider} are delegated to the {@link DefaultLabelProvider}.
+ * The label provider for the instance explorer, extending the {@link StyledCellLabelProvider} The
+ * methods for {@link ILabelProvider} are delegated to the {@link DefaultLabelProvider}.
  * 
  * @author dirmeier
- *
+ * 
  */
 public class InstanceLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 
-	private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
-	
-	private boolean subTypeSearch = true;
-	
-	/**
-	 * Default Constructor
-	 */
-	public InstanceLabelProvider() {
-		defaultLabelProvider.setIspSourceFile2IpsObjectMapping(true);
-	}
-	
+    private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
+
+    private boolean subTypeSearch = true;
+
+    /**
+     * Default Constructor
+     */
+    public InstanceLabelProvider() {
+        defaultLabelProvider.setIspSourceFile2IpsObjectMapping(true);
+    }
+
     protected boolean isSubTypeSearch() {
-		return subTypeSearch;
-	}
+        return subTypeSearch;
+    }
 
     protected void setSubTypeSearch(boolean subTypeSearch) {
-		this.subTypeSearch = subTypeSearch;
-	}
+        this.subTypeSearch = subTypeSearch;
+    }
 
-	@Override
-	public void update(ViewerCell cell) {
-		Object element = cell.getElement();
-		try {
-			if (element instanceof InstanceViewerItem) {
-				InstanceViewerItem item = (InstanceViewerItem) element;
-				updateCell(cell, item);
-			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		} finally {
-			super.update(cell);
-		}
-	}
+    @Override
+    public void update(ViewerCell cell) {
+        Object element = cell.getElement();
+        try {
+            if (element instanceof InstanceViewerItem) {
+                InstanceViewerItem item = (InstanceViewerItem)element;
+                updateCell(cell, item);
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        } finally {
+            super.update(cell);
+        }
+    }
 
-	private void updateCell(ViewerCell cell, InstanceViewerItem item) throws CoreException {
-			String elementName = getText(item);
-			List<StyleRange> styleRanges = new ArrayList<StyleRange>();
-			if (item.getDefiningMetaClass() != null && item.getDefiningMetaClass().length() > 0) {
-				String typeSuffix = " - " + item.getDefiningMetaClass();  //$NON-NLS-1$
-				StyleRange styledType = new StyleRange();
-				styledType.start = elementName.length();
-				styledType.length = typeSuffix.length();
-				styledType.foreground = cell.getControl().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
-				styledType.fontStyle = SWT.NORMAL;
-				styleRanges.add(styledType);
-				elementName += typeSuffix;
-			}
-			if (item.isDuplicateName()) {
-				String pathSuffix = " - " + item.getIpsSrcFile().getParent().getCorrespondingResource().getFullPath();
-				StyleRange styledPath = new StyleRange();
-				styledPath.start = elementName.length();
-				styledPath.length = pathSuffix.length();
-				styledPath.foreground = cell.getControl().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
-				styledPath.fontStyle = SWT.NORMAL;
-				styleRanges.add(styledPath);
-				elementName += pathSuffix;
-			}
-			cell.setText(elementName);
-			cell.setStyleRanges(styleRanges.toArray(new StyleRange[styleRanges.size()]));
-			cell.setImage(getImage(item));
-	}
+    private void updateCell(ViewerCell cell, InstanceViewerItem item) throws CoreException {
+        String elementName = getText(item);
+        List<StyleRange> styleRanges = new ArrayList<StyleRange>();
+        if (item.getDefiningMetaClass() != null && item.getDefiningMetaClass().length() > 0) {
+            String typeSuffix = " - " + item.getDefiningMetaClass(); //$NON-NLS-1$
+            StyleRange styledType = new StyleRange();
+            styledType.start = elementName.length();
+            styledType.length = typeSuffix.length();
+            styledType.foreground = cell.getControl().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+            styledType.fontStyle = SWT.NORMAL;
+            styleRanges.add(styledType);
+            elementName += typeSuffix;
+        }
+        if (item.isDuplicateName()) {
+            String pathSuffix = " - " + item.getIpsSrcFile().getParent().getEnclosingResource().getFullPath();
+            StyleRange styledPath = new StyleRange();
+            styledPath.start = elementName.length();
+            styledPath.length = pathSuffix.length();
+            styledPath.foreground = cell.getControl().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+            styledPath.fontStyle = SWT.NORMAL;
+            styleRanges.add(styledPath);
+            elementName += pathSuffix;
+        }
+        cell.setText(elementName);
+        cell.setStyleRanges(styleRanges.toArray(new StyleRange[styleRanges.size()]));
+        cell.setImage(getImage(item));
+    }
 
-	public Image getImage(Object element) {
-		return defaultLabelProvider.getImage(element);
-	}
+    public Image getImage(Object element) {
+        return defaultLabelProvider.getImage(element);
+    }
 
-	public String getText(Object element) {
-		return defaultLabelProvider.getText(element);
-	}
-
+    public String getText(Object element) {
+        return defaultLabelProvider.getText(element);
+    }
 
 }
