@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,364 +14,392 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.ViewForm;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.dialogs.AbstractElementListSelectionDialog;
-import org.eclipse.ui.forms.events.ExpansionAdapter;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchive;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
  * 
  * @author Daniel Hohenberger
+ * @author Cornelius Dirmeier
  */
-public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDialog {
+public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
-    private static final String IPSOBJECTTYPESFILTER_KEY = "IpsObjectTypesFilter"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS = "org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog"; //$NON-NLS-1$
 
-    private Object[] fElements;
+    private IpsObjectTypeFilter filter;
 
-    // Map contains all duplicate elements, this map is used by the label provider
-    // to show the project and root if the name is duplicate
-    // Remark: the super class needs the label provider on construction time
-    // thus we must use a static map to check the duplicates but
-    // the dialog will be opened modular, thus a static helper map doesn't matter
-    private static Map duplicateNamesMap;
-    
-    private IpsObjectType[] types;
-    private Table filterList;
-    
-    private ViewForm fForm;
-    private CLabel packageInfo;
-    
-    private IDialogSettings dialogSettingsSection;
+    private final boolean onlyProductDefinitionOptions;
 
-    private ExpandableComposite expandableComposite;
+    /**
+     * Creates a list selection dialog.
+     * 
+     * @param parent the parent widget.
+     * @param onlyProductDefinitionOptions
+     */
+    public OpenIpsObjectSelectionDialog(Shell parent, boolean onlyProductDefinitionOptions) {
+        super(parent);
+        this.onlyProductDefinitionOptions = onlyProductDefinitionOptions;
+        setListLabelProvider(new OpenIpsObjectLabelProvider());
+        setDetailsLabelProvider(new PackageFragmentLabelProvider());
+        setTitle(Messages.OpenIpsObjectAction_dialogTitle);
+        setMessage(Messages.OpenIpsObjectAction_dialogMessage);
+        setSelectionHistory(new IpsObjectSelectionHistory());
+    }
 
-    private Composite thisDialogArea;
+    private static String getPackageSrcLabel(IIpsPackageFragment frgmt) {
+        String packageSource = frgmt.getName();
+        packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return packageSource;
+    }
 
-    public static class DefaultLabelProviderDuplicateSupport extends DefaultLabelProvider {
-        public DefaultLabelProviderDuplicateSupport() {
-            super(true);
+    public IIpsElement getSelectedObject() {
+        return (IIpsElement)getFirstResult();
+    }
+
+    @Override
+    protected Control createExtendedContentArea(Composite parent) {
+        // TODO Add additional filter component
+        return null;
+    }
+
+    @Override
+    protected ItemsFilter createFilter() {
+        filter = new IpsObjectTypeFilter();
+        return filter;
+    }
+
+    @Override
+    protected void fillContentProvider(AbstractContentProvider contentProvider,
+            ItemsFilter itemsFilter,
+            IProgressMonitor progressMonitor) throws CoreException {
+        if (progressMonitor == null) {
+            progressMonitor = new NullProgressMonitor();
+        }
+        List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, projects.length + 1);
+        for (int i = 0; i < projects.length; i++) {
+            IIpsProject project = projects[i];
+            project.findAllIpsSrcFiles(list);
+            progressMonitor.worked(1);
+        }
+        for (Iterator<IIpsSrcFile> iter = list.iterator(); iter.hasNext();) {
+            IIpsSrcFile object = iter.next();
+            contentProvider.add(object, itemsFilter);
+        }
+        progressMonitor.worked(1);
+        progressMonitor.done();
+    }
+
+    @Override
+    protected IDialogSettings getDialogSettings() {
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
+        if (settings == null) {
+            settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
+        }
+        return settings;
+    }
+
+    @Override
+    public String getElementName(Object item) {
+        if (item instanceof IIpsElement) {
+            IIpsElement element = (IIpsElement)item;
+            return element.getName();
+        }
+        return ""; //$NON-NLS-1$
+    }
+
+    @Override
+    protected Comparator<IIpsElement> getItemsComparator() {
+
+        return new Comparator<IIpsElement>() {
+            public int compare(IIpsElement o1, IIpsElement o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
+
+    }
+
+    @Override
+    protected IStatus validateItem(Object item) {
+        return new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, null);
+    }
+
+    public void setFilter(String unqualifiedName) {
+        setInitialPattern(unqualifiedName);
+    }
+
+    private static IIpsPackageFragment getPackageFragment(Object element) {
+        if (element instanceof IIpsObject) {
+            IIpsObject ipsObject = (IIpsObject)element;
+            return ipsObject.getIpsPackageFragment();
+        } else if (element instanceof IIpsSrcFile) {
+            IIpsSrcFile srcFile = (IIpsSrcFile)element;
+            return srcFile.getIpsPackageFragment();
+        }
+        return null;
+    }
+
+    private class IpsObjectTypeFilter extends ItemsFilter {
+
+        @Override
+        public boolean isConsistentItem(Object object) {
+            if (object instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
+                return ipsSrcFile.exists();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean matchItem(Object object) {
+            if (object instanceof IIpsSrcFile) {
+                IIpsSrcFile srcFile = (IIpsSrcFile)object;
+                if (!onlyProductDefinitionOptions || srcFile.getIpsObjectType().isProductDefinitionType()) {
+                    return matches(srcFile.getName());
+                }
+            }
+            return false;
+        }
+
+    }
+
+    private class OpenIpsObjectLabelProvider extends DefaultLabelProvider implements ILabelDecorator,
+            IStyledLabelProvider {
+
+        private static final String PACKAGE_CONCAT = " - "; //$NON-NLS-1$
+
+        private Font fBoldFont;
+
+        private Styler fBoldStyler;
+
+        public OpenIpsObjectLabelProvider() {
+            fBoldStyler = createBoldStyler();
+            setIspSourceFile2IpsObjectMapping(true);
+        }
+
+        @Override
+        public void dispose() {
+            super.dispose();
+            if (fBoldFont != null) {
+                fBoldFont.dispose();
+                fBoldFont = null;
+            }
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getText(Object element) {
-            boolean isIpsSrcFile = element instanceof IIpsSrcFile;
-
             String label = super.getText(element);
-            if (isDuplicate(getNameFor(element, isIpsSrcFile))) {
-                label += " - " + getAdditionalLabel(element, isIpsSrcFile);
+            if (isDuplicateElement(element)) {
+                label += PACKAGE_CONCAT + getAdditionalLabel(element);
             }
             return label;
         }
 
-        private String getNameFor(Object element, boolean isIpsSrcFile) {
-            if (isIpsSrcFile) {
-                return ((IIpsSrcFile)element).getName();
+        private String getAdditionalLabel(Object element) {
+            IIpsPackageFragment fragment = getPackageFragment(element);
+            if (fragment != null) {
+                return getPackageSrcLabel(fragment);
             } else {
-                return ((IIpsObject)element).getName();
+                return ""; //$NON-NLS-1$
             }
         }
 
-        private String getAdditionalLabel(Object element, boolean isIpsSrcFile) {
-            IIpsPackageFragment fragment;
-            if (isIpsSrcFile) {
-                fragment = ((IIpsSrcFile)element).getIpsPackageFragment();
-            } else {
-                fragment = ((IIpsObject)element).getIpsPackageFragment();
+        public Image decorateImage(Image image, Object element) {
+            return image;
+        }
+
+        public String decorateText(String text, Object element) {
+            return getText(element);
+        }
+
+        public StyledString getStyledText(Object element) {
+            String text = getText(element);
+            StyledString string = new StyledString(text);
+
+            int index = text.indexOf(PACKAGE_CONCAT);
+
+            if (filter == null) {
+                return string;
             }
-            return getPackageSrcLabel(fragment);
-        }
-    }
-    
-    /**
-     * Creates a list selection dialog.
-     * 
-     * @param parent the parent widget.
-     * @param renderer the label renderer.
-     */
-    public OpenIpsObjectSelectionDialog(Shell parent, String dialogTitle, String dialogMessage) {
-        super(parent, new DefaultLabelProviderDuplicateSupport());
-        setTitle(dialogTitle);
-        setMessage(dialogMessage);
-        setIgnoreCase(true);
-        setMatchEmptyString(true);
-        setMultipleSelection(false);
-    }
 
-    private IDialogSettings getDialogSettingsSection(String sectionName) {
-        IDialogSettings dialogSettings = IpsPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = dialogSettings.getSection(sectionName);
-        if (section == null){
-            section = dialogSettings.addNewSection(sectionName);
-        }
-        return section;
-    }
-
-    /**
-     * Sets the elements of the list.
-     * 
-     * @param elements the elements of the list.
-     */
-    public void setElements(final Object[] elements) {
-        final boolean isIpsObject = elements instanceof IIpsObject[];
-        final boolean isIpsSrcFile = elements instanceof IIpsSrcFile[];
-
-        if (isIpsObject || isIpsSrcFile) {
-            fElements = elements;
-            checkDuplicates(elements, isIpsSrcFile);
-        }
-    }
-
-    /*
-     * Store duplicate objects in a seperate hash, duplicate entries will be displayed with
-     * additional package info in their label
-     */
-    private void checkDuplicates(final Object[] elements, final boolean isIpsSrcFile) {
-        duplicateNamesMap = Collections.synchronizedMap(new HashMap(elements.length));
-        HashMap map = new HashMap(elements.length);
-        for (int i = 0; i < elements.length; i++) {
-            String name = getName(elements[i], isIpsSrcFile);
-            if (map.get(name) != null) {
-                duplicateNamesMap.put(name, name);
-            } else {
-                map.put(name, name);
+            String namePattern = filter.getPattern();
+            if (namePattern != null && !"*".equals(namePattern)) { //$NON-NLS-1$
+                String typeName = index == -1 ? text : text.substring(0, index);
+                int[] matchingRegions = SearchPattern.getMatchingRegions(namePattern, typeName, filter.getMatchRule());
+                createAndAddStyler(string, matchingRegions, fBoldStyler);
             }
+
+            if (index != -1) {
+                string.setStyle(index, text.length() - index, StyledString.QUALIFIER_STYLER);
+            }
+            return string;
         }
-    }
 
-    private String getName(Object object, boolean isIpsSrcFile){
-        if (isIpsSrcFile){
-            return ((IIpsSrcFile) object).getName();
-        } else {
-            return ((IIpsObject) object).getName();
-        }
-    }
-    
-    /*
-     * Returns true if the given object name is stored more then once in the list
-     */
-    private static boolean isDuplicate(String name){
-        return duplicateNamesMap != null && duplicateNamesMap.get(name)!=null;
-    }
-    
-    /**
-     * Sets the types of the filter list.
-     * 
-     * @param types the types of the filter list.
-     */
-    public void setTypes(IpsObjectType[] types) {
-        this.types = types;
-    }
-
-    private void updateFilterList() {
-        filterList.removeAll();
-        for (int i = 0; i < types.length; i++) {
-            TableItem item = new TableItem(filterList, SWT.NONE);
-            item.setText(types[i].getDisplayName());
-            item.setImage(types[i].getEnabledImage());
-        }
-        handleFilterSelectionChanged();
-    }
-
-    /*
-     * @see SelectionStatusDialog#computeResult()
-     */
-    protected void computeResult() {
-        setResult(Arrays.asList(getSelectedElements()));
-    }
-
-    /*
-     * @see Dialog#createDialogArea(Composite)
-     */
-    protected Control createDialogArea(Composite parent) {
-        thisDialogArea = (Composite)super.createDialogArea(parent);
-
-        createMessageArea(thisDialogArea);
-        createFilterText(thisDialogArea);
-        createTypeList(thisDialogArea);
-        createFilteredList(thisDialogArea);
-        createPackageInfo(thisDialogArea);
-        
-        setListElements(fElements);
-
-        setSelection(getInitialElementSelections().toArray());
-        
-        restoreState();
-        
-        return thisDialogArea;
-    }
-    
-    private void restoreState() {
-        dialogSettingsSection = getDialogSettingsSection("OpenIpsObjectSelectionDialog"); //$NON-NLS-1$
-        
-        // set size of dialog
-        setDialogBoundsSettings(dialogSettingsSection, Dialog.DIALOG_PERSISTSIZE);
-
-        // restore filter
-        String[] filters = dialogSettingsSection.getArray(IPSOBJECTTYPESFILTER_KEY);
-        if (filters == null){
-            return;
-        }
-        if (filters.length > 0){
-            expandableComposite.setExpanded(true);
-            updateFilterList();
-        }
-        
-        List selTableItems = new ArrayList(filters.length);
-        for (int i = 0; i < filters.length; i++) {
-            for (int j = 0; j < filterList.getItemCount(); j++) {
-                TableItem item = filterList.getItem(j);
-                if (item.getText().equals(filters[i])){
-                    selTableItems.add(item);
-                    break;
+        private void createAndAddStyler(StyledString string, int[] matchingRegions, Styler styler) {
+            if (matchingRegions != null) {
+                int offset = -1;
+                int length = 0;
+                for (int i = 0; i + 1 < matchingRegions.length; i = i + 2) {
+                    if (offset == -1) {
+                        offset = matchingRegions[i];
+                    }
+                    if (i + 2 < matchingRegions.length
+                            && matchingRegions[i] + matchingRegions[i + 1] == matchingRegions[i + 2]) {
+                        length = length + matchingRegions[i + 1];
+                    } else {
+                        string.setStyle(offset, length + matchingRegions[i + 1], styler);
+                        offset = -1;
+                        length = 0;
+                    }
                 }
             }
         }
-        filterList.setSelection((TableItem[])selTableItems.toArray(new TableItem[selTableItems.size()]));
-        handleFilterSelectionChanged();
+
+        /**
+         * Create the bold variant of the currently used font.
+         * 
+         * @return the bold font
+         * @since 3.5
+         */
+        private Font getBoldFont() {
+            if (fBoldFont == null) {
+                Font font = getDialogArea().getFont();
+                FontData[] data = font.getFontData();
+                for (int i = 0; i < data.length; i++) {
+                    data[i].setStyle(SWT.BOLD);
+                }
+                fBoldFont = new Font(font.getDevice(), data);
+            }
+            return fBoldFont;
+        }
+
+        private Styler createBoldStyler() {
+            return new Styler() {
+                @Override
+                public void applyStyles(TextStyle textStyle) {
+                    textStyle.font = getBoldFont();
+                }
+            };
+        }
+
     }
-    
-    private void createPackageInfo(Composite contents) {
-        fForm = new ViewForm(contents, SWT.BORDER | SWT.FLAT);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        fForm.setLayoutData(gd);
-        packageInfo = new CLabel(fForm, SWT.FLAT);
-        fForm.setContent(packageInfo);
-        packageInfo.setLayoutData(new GridData(GridData.FILL_BOTH));
-        fFilteredList.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                Object[] selection = fFilteredList.getSelection();
-                if (selection.length != 1) {
-                    packageInfo.setText(""); //$NON-NLS-1$
-                    packageInfo.setImage(null);
-                } else if (selection[0] instanceof IIpsObject) {
-                    IIpsPackageFragment frgmt = ((IIpsObject)selection[0]).getIpsPackageFragment();
-                    packageInfo.setText(getPackageSrcLabel(frgmt));
-                    packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
-                } else if (selection[0] instanceof IIpsSrcFile) {
-                    IIpsPackageFragment frgmt = ((IIpsSrcFile)selection[0]).getIpsPackageFragment();
-                    packageInfo.setText(getPackageSrcLabel(frgmt));
-                    packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
+
+    /**
+     * A <code>LabelProvider</code> for the label showing type details.
+     */
+    private static class PackageFragmentLabelProvider extends DefaultLabelProvider {
+
+        @Override
+        public Image getImage(Object element) {
+            IIpsPackageFragment packageFragment = getPackageFragment(element);
+            if (packageFragment != null) {
+                return super.getImage(packageFragment);
+            } else {
+                return super.getImage(element);
+            }
+        }
+
+        @Override
+        public String getText(Object element) {
+            IIpsPackageFragment packageFragment = getPackageFragment(element);
+            if (packageFragment != null) {
+                return getPackageSrcLabel(packageFragment);
+            } else {
+                return super.getText(element);
+            }
+        }
+
+    }
+
+    private static class IpsObjectSelectionHistory extends SelectionHistory {
+
+        private static final String TAG_PATH = "path"; //$NON-NLS-1$
+
+        private static final String TAG_NAMETYPE = "nameType"; //$NON-NLS-1$
+
+        @Override
+        protected Object restoreItemFromMemento(IMemento memento) {
+            String fileName = memento.getString(TAG_PATH);
+            if (fileName == null) {
+                return null;
+            }
+
+            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IResource resource = root.getFile(new Path(fileName));
+            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            IIpsElement ipsElement = ipsModel.getIpsElement(resource);
+            if (ipsElement == null) {
+                String nameType = memento.getString(TAG_NAMETYPE);
+                if (nameType != null) {
+                    IProject project = resource.getProject();
+                    IIpsProject ipsProject = ipsModel.getIpsProject(project);
+                    IpsArchive ipsArchive = new IpsArchive(ipsProject, resource.getFullPath());
+                    try {
+                        return ipsArchive.getRoot().findIpsSrcFile(QualifiedNameType.newQualifedNameType(nameType));
+                    } catch (Exception e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+                return null;
+            } else {
+                return ipsElement;
+            }
+        }
+
+        @Override
+        protected void storeItemToMemento(Object object, IMemento memento) {
+            if (object instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
+                IResource resource = ipsSrcFile.getEnclosingResource();
+                memento.putString(TAG_PATH, resource.getFullPath().toString());
+                if (ipsSrcFile.isContainedInArchive()) {
+                    memento.putString(TAG_NAMETYPE, ipsSrcFile.getQualifiedNameType().toPath().toString());
                 }
             }
-        });
-    }
-    
-    private static String getPackageSrcLabel(IIpsPackageFragment frgmt){
-        String packageSource = frgmt.getName();
-        packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
-        return packageSource;
-    }
-    
-    private void createTypeList(Composite contents) {
-        expandableComposite = new ExpandableComposite(contents, SWT.NONE);
-        expandableComposite.setText(Messages.OpenIpsObjectSelectionDialog_Filter);
-        expandableComposite.addExpansionListener(new ExpansionAdapter() {
-            public void expansionStateChanged(ExpansionEvent e) {
-                // resizes the application window.
-                updateFilterList();
-                thisDialogArea.pack(true);
-                thisDialogArea.getParent().layout(true);
-            }
-        });
-
-        filterList = new Table(expandableComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
-        filterList.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event evt) {
-                handleFilterSelectionChanged();
-            }
-        });
-        GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
-        data.widthHint = convertWidthInCharsToPixels(50);
-        data.heightHint = convertHeightInCharsToPixels(5);
-        filterList.setLayoutData(data);
-        filterList.setFont(contents.getFont());
-
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        expandableComposite.setLayoutData(data);
-        expandableComposite.setClient(filterList);
-    }
-
-    protected void handleFilterSelectionChanged() {
-        int[] selection = filterList.getSelectionIndices();
-        if (selection.length == 0) {
-            setListElements(fElements);
-            return;
-        }
-        Set activeFilters = new HashSet(selection.length);
-        for (int i = 0; i < selection.length; i++) {
-            int s = selection[i];
-            activeFilters.add(types[s]);
-        }
-        List list = new ArrayList();
-        for (int i = 0; i < fElements.length; i++) {
-            IpsObjectType ipsObjectType = null;
-            if (fElements[i] instanceof IIpsObject){
-                ipsObjectType = ((IIpsObject)fElements[i]).getIpsObjectType();
-            } else if (fElements[i] instanceof IIpsSrcFile){
-                ipsObjectType = ((IIpsSrcFile)fElements[i]).getIpsObjectType();
-            }
-            if (ipsObjectType != null) {
-                if (activeFilters.contains(ipsObjectType)) {
-                    list.add(fElements[i]);
-                }
-            }
-        }
-        if (fElements instanceof IIpsObject[]){
-            setListElements((IIpsObject[])list.toArray(new IIpsObject[list.size()]));
-        } else if (fElements instanceof IIpsSrcFile[]){
-            setListElements((IIpsSrcFile[])list.toArray(new IIpsSrcFile[list.size()]));
         }
     }
 
-    public IIpsElement getSelectedObject() {
-        if (getResult().length > 0) {
-            return (IIpsElement)getResult()[0];
-        }
-        return null;
-    }
-    
-    public boolean close() {
-        // store current filter
-        TableItem[] selection = filterList.getSelection();
-        String[] filters = new String[selection.length];
-        for (int i = 0; i < filters.length; i++) {
-            filters[i] = selection[i].getText();
-        }
-        dialogSettingsSection.put("IpsObjectTypesFilter", filters); //$NON-NLS-1$
-        return super.close();
-    }
 }

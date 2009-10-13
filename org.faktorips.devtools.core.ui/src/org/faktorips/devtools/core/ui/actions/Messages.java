@@ -78,6 +78,7 @@ public class Messages extends NLS {
     public static String OpenIpsObjectAction_dialogTitle;
     public static String OpenIpsObjectAction_titleText;
     public static String OpenIpsObjectAction_tooltip;
+    public static String OpenIpsObjectSelectionDialog_processName;
 
     public static String ShowStructureAction_description;
     public static String ShowStructureAction_name;
