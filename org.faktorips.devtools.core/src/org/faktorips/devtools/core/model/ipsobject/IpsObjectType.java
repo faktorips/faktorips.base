@@ -316,7 +316,7 @@ public class IpsObjectType {
      * 
      * @return SWT image of this ips object type with enabled look.
      */
-    public final Image getEnabledImage() {
+    public Image getEnabledImage() {
         return IpsPlugin.getDefault().getImage(enabledImage);
     }
 
@@ -325,7 +325,7 @@ public class IpsObjectType {
      * 
      * @return SWT image of this ips object type with disabled look.
      */
-    public final Image getDisabledImage() {
+    public Image getDisabledImage() {
         if (disabledImage == null) {
             return getEnabledImage();
         }
