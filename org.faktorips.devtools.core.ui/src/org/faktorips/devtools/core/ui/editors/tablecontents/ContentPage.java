@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -99,6 +100,7 @@ public class ContentPage extends IpsObjectEditorPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
                 tableViewer.setInput(getTableContents());
@@ -115,6 +117,7 @@ public class ContentPage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         checkDifferences(formBody, toolkit);
 
@@ -213,6 +216,7 @@ public class ContentPage extends IpsObjectEditorPage {
         tableGridData.heightHint = formBody.getClientArea().height;
         table.setLayoutData(tableGridData);
         table.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == SWT.F2) {
                     IRow selectedRow = (IRow)((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
@@ -289,6 +293,7 @@ public class ContentPage extends IpsObjectEditorPage {
             tableViewer.addSelectionChangedListener(new RowDeletor());
 
             new TableMessageHoverService(tableViewer) {
+                @Override
                 protected MessageList getMessagesFor(Object element) throws CoreException {
                     if (element != null) {
                         return ((IRow)element).validate(((IRow)element).getIpsProject());
@@ -437,7 +442,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 String msg = NLS.bind(Messages.ContentPage_msgMissingStructure, getTableContents().getTableStructure());
                 SetStructureDialog dialog = new SetStructureDialog(getTableContents(), getSite().getShell(), msg);
                 int button = dialog.open();
-                if (button != SetStructureDialog.OK) {
+                if (button != Window.OK) {
                     msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
                     toolkit.createLabel(formBody, msg);
                     return;
@@ -476,7 +481,7 @@ public class ContentPage extends IpsObjectEditorPage {
 
                 InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
                 int state = dialog.open();
-                if (state == InputDialog.OK) {
+                if (state == Window.OK) {
                     if (difference > 0) {
                         insertColumnsAt(dialog.getValue());
                     } else {
@@ -541,7 +546,7 @@ public class ContentPage extends IpsObjectEditorPage {
         private int indexCount = 0;
 
         public Validator(int requiredIndexCount) {
-            this.indexCount = requiredIndexCount;
+            indexCount = requiredIndexCount;
         }
 
         /**
