@@ -29,6 +29,8 @@ import java.util.List;
  * @author Jan Ortmann
  */
 public class StringUtil {
+    public static final String CAMEL_CASE_SEPERATORS = "[-_., ]";
+
     public final static String CHARSET_UTF8 = "UTF-8";
 
     public final static String CHARSET_ISO_8859_1 = "ISO-8859-1";
@@ -202,8 +204,8 @@ public class StringUtil {
         if (text == null || text.equals("")) {
             return "";
         }
-        String[] words = text.split("[-_., ]");
-        String result = "";
+        String[] words = text.split(CAMEL_CASE_SEPERATORS);
+        StringBuilder result = new StringBuilder();
         for (String word : words) {
             char firstChar = word.charAt(0);
             if (firstUp) {
@@ -211,10 +213,10 @@ public class StringUtil {
             } else {
                 firstChar = Character.toLowerCase(firstChar);
             }
-            result += firstChar + word.substring(1).toLowerCase();
+            result.append(firstChar).append(word.substring(1).toLowerCase());
             firstUp = true;
         }
-        return result;
+        return result.toString();
     }
 
 }
