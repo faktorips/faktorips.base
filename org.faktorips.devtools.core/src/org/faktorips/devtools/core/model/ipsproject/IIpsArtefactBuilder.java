@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,16 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-//TODO Kommentar verbessern. Die Methoden beforeFullBuild und afterFullBuild gibt es nicht mehr
+// TODO Kommentar verbessern. Die Methoden beforeFullBuild und afterFullBuild gibt es nicht mehr
 /**
  * An implementation of this interface is supposed to create one artefact for an IpsObject. The
  * isBuilderFor() method indicates to the ips build framework which kind of IpsObjects this builder
- * is interested in. This interface describes a defined build cycle. For every IpsObject this builder
- * builds an artefact for, the following methods are called sequentially beforeBuild(), build(),
- * afterBuild(). If a full build is started the beforeFullBuild() method is called before the first
- * IpsSrcFile that hosts the IpsObject is provided to this builder and the afterFullBuild() method
- * is called after the last IpsSrcFile has been provided to this builder. A set of
- * IpsArtefactBuilders are collected within an IpsArtefactBuilderSet. The builders are made
+ * is interested in. This interface describes a defined build cycle. For every IpsObject this
+ * builder builds an artefact for, the following methods are called sequentially beforeBuild(),
+ * build(), afterBuild(). If a full build is started the beforeFullBuild() method is called before
+ * the first IpsSrcFile that hosts the IpsObject is provided to this builder and the
+ * afterFullBuild() method is called after the last IpsSrcFile has been provided to this builder. A
+ * set of IpsArtefactBuilders are collected within an IpsArtefactBuilderSet. The builders are made
  * available to the building system by registering the IpsArtefactBuilderSet at the according
  * extension point.
  * 
@@ -34,20 +34,21 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  */
 public interface IIpsArtefactBuilder {
 
-	/**
-	 * Returns the builder's name.
-	 */
-	public String getName();
-	
-	/**
-	 * Returns the builder set this builder belongs to.
-	 */
-	public IIpsArtefactBuilderSet getBuilderSet();
-	
-	/**
+    /**
+     * Returns the builder's name.
+     */
+    public String getName();
+
+    /**
+     * Returns the builder set this builder belongs to.
+     */
+    public IIpsArtefactBuilderSet getBuilderSet();
+
+    /**
      * Is called on every registered IpsArtefactBuilder before a build process starts.
      * 
-	 * @param buildKind One of the build kinds defined in org.eclipse.core.resources.IncrementalProjectBuilder
+     * @param buildKind One of the build kinds defined in
+     *            org.eclipse.core.resources.IncrementalProjectBuilder
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a
      *             CoreException or RuntimeException will stop the current build cycle of this
@@ -58,16 +59,17 @@ public interface IIpsArtefactBuilder {
     /**
      * Is called on every registered IpsArtefactBuilder after a build process has finished.
      * 
-	 * @param buildKind One of the build kinds defined in org.eclipse.core.resources.IncrementalProjectBuilder
+     * @param buildKind One of the build kinds defined in
+     *            org.eclipse.core.resources.IncrementalProjectBuilder
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions.
      */
     public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException;
 
     /**
-     * Is called directly before the build method is called if the isBuilderFor method has returned true for the
-     * provided IpsSrcFile. This method is supposed to be used to set the builder in a defined state
-     * before the actual build process starts.
+     * Is called directly before the build method is called if the isBuilderFor method has returned
+     * true for the provided IpsSrcFile. This method is supposed to be used to set the builder in a
+     * defined state before the actual build process starts.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
      * @param status exceptional states can be reported to this multi status object. This will not
@@ -84,9 +86,9 @@ public interface IIpsArtefactBuilder {
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException;
 
     /**
-     * Is called directly after the build method has finished only if the isBuilderFor method has returned
-     * true for the provided IpsSrcFile. This method is supposed to be used for clean up after the
-     * build has finished.
+     * Is called directly after the build method has finished only if the isBuilderFor method has
+     * returned true for the provided IpsSrcFile. This method is supposed to be used for clean up
+     * after the build has finished.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. The
@@ -112,13 +114,15 @@ public interface IIpsArtefactBuilder {
     /**
      * Is supposed to return true if this builder is a builder for the provided IpsSrcFile.
      */
+    // FIXME AW: This method does not need to throw an exception.
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException;
 
     /**
-     * Indicates if the builder generates files that are considered derived. This means that 
-     * the files will be regenerated during each build cycle and be deleted during a clean build cycle. Code that is 
-     * added to these files between builds will be removed. The location where the artefact is
-     * put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of an IpsObjectPath.
+     * Indicates if the builder generates files that are considered derived. This means that the
+     * files will be regenerated during each build cycle and be deleted during a clean build cycle.
+     * Code that is added to these files between builds will be removed. The location where the
+     * artefact is put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of
+     * an IpsObjectPath.
      */
     public boolean buildsDerivedArtefacts();
 
