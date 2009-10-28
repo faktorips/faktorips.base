@@ -205,4 +205,5 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }
+
 }
