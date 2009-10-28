@@ -110,6 +110,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 generateMethodGetRelatedCmptLink(builder);
             }
             generateMethodAddRelatedCmpt(builder);
+            generateMethodAddRelatedCmptWithCardinality(builder);
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityFor1ToManyAssociation(builder);
             }
@@ -604,6 +605,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      *     System.arraycopy(coverageTypes, 0, tmp, 0, this.coverageTypes.length);
      *     tmp[tmp.length-1] = target.getId();
      *     this.coverageTypes = tmp;
+     *     cardinalitiesForCoverage.put(target.getId(), new IntegerRange(0, Integer.MAX_VALUE));
      * }
      * </pre>
      * 
@@ -616,12 +618,11 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      *         throw new IllegalRepositoryModificationException();
      *     }
      *     this.coverageTypes.add(target.getId());
-     *         this.productParts.put(target.getId(), new Link&lt;ICoverageType&gt;(this, target));
+     *         this.productParts.put(target.getId(), new ProductComponentLink&lt;ICoverageType&gt;(this, target));
      * }
      * </pre>
      */
     private void generateMethodAddRelatedCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
         appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", association.getTargetRoleSingular(), methodsBuilder);
         String methodName = "add" + StringUtils.capitalize(association.getTargetRoleSingular());
         String[] argNames = new String[] { "target" };
@@ -643,6 +644,76 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID
                     + "();");
             methodsBuilder.appendln("this." + fieldName + " = tmp;");
+            if (association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()) != null) {
+                methodsBuilder.append(getFieldNameCardinalityForAssociation());
+                methodsBuilder.append(".put(target.getId(), new ");
+                methodsBuilder.appendClassName(IntegerRange.class);
+                methodsBuilder.append("(0, ");
+                methodsBuilder.appendClassName(Integer.class);
+                methodsBuilder.appendln(".MAX_VALUE));");
+            }
+        }
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void addCoverageType(ICoverageType target, IntegerRange cardinality) {
+     *     if (getRepository()!=null &amp;&amp; !getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     String[] tmp = new String[this.coverageTypes.length+1];
+     *     System.arraycopy(coverageTypes, 0, tmp, 0, this.coverageTypes.length);
+     *     tmp[tmp.length-1] = target.getId();
+     *     this.coverageTypes = tmp;
+     *     cardinalitiesForCoverage.put(target.getId(), cardinality);
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void addCoverageType(ICoverageType target, IntegerRange cardinality) {
+     *     if (getRepository()!=null &amp;&amp; !getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     this.coverageTypes.add(target.getId());
+     *         this.productParts.put(target.getId(), new ProductComponentLink&lt;ICoverageType&gt;(this, target, cardinality));
+     * }
+     * </pre>
+     */
+    private void generateMethodAddRelatedCmptWithCardinality(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT_WITH_CARDINALITY", association.getTargetRoleSingular(),
+                methodsBuilder);
+        String methodName = "add" + StringUtils.capitalize(association.getTargetRoleSingular());
+        String[] argNames = new String[] { "target", "cardinality" };
+        String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget(), IntegerRange.class.getName() };
+        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), "void", methodName,
+                argNames, argTypes);
+        String fieldName = getFieldNameToManyAssociation();
+        methodsBuilder.openBracket();
+        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.append("this." + fieldName + ".put(target.getId(), new ");
+            methodsBuilder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
+                    + getQualifiedInterfaceClassNameForTarget() + ">");
+            methodsBuilder.appendln("(this, target, cardinality));");
+        } else {
+            methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");
+            methodsBuilder.appendln("System.arraycopy(this." + fieldName + ", 0, tmp, 0, this." + fieldName
+                    + ".length);");
+            methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID
+                    + "();");
+            methodsBuilder.appendln("this." + fieldName + " = tmp;");
+            if (association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()) != null) {
+                methodsBuilder.append(getFieldNameCardinalityForAssociation());
+                methodsBuilder.append(".put(target.getId(), cardinality);");
+            }
         }
         methodsBuilder.closeBracket();
     }
