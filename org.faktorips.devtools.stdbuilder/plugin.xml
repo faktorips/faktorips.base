@@ -80,5 +80,17 @@
          </builderSetPropertyDef>
       </builderSet>
    </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="org.faktorips.devtools.stdbuilder.refactor.RenamePolicyCmptTypeAttributeParticipant"
+            id="org.faktorips.devtools.stdbuilder.renamePolicyCmptTypeAttributeParticipant"
+            name="RenamePolicyCmptTypeAttributeParticipant">
+         <enablement>
+            <instanceof
+                  value="org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute">
+            </instanceof></enablement>
+      </renameParticipant>
+   </extension>
 
 </plugin>

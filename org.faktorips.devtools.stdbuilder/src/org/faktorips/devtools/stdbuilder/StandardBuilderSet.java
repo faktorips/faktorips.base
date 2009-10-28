@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -27,8 +30,10 @@ import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -128,6 +133,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
+    private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
     private EnumTypeBuilder enumTypeBuilder;
@@ -429,8 +435,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this,
-                KIND_POLICY_CMPT_IMPL);
+        policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this, KIND_POLICY_CMPT_IMPL);
         policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE);
 
         // create product component type builders
@@ -589,6 +594,34 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
 
         return datatype.getJavaClassName();
+    }
+
+    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
+    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
+        for (JavaSourceFileBuilder builder : getBuilders()) {
+            try {
+                if (builder.isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
+                    javaElements.addAll(builder.getGeneratedJavaElements(ipsObjectPartContainer));
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return javaElements;
+    }
+
+    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
+    private List<JavaSourceFileBuilder> getBuilders() {
+        List<JavaSourceFileBuilder> builders = new ArrayList<JavaSourceFileBuilder>(6);
+        builders.add(tableImplBuilder);
+        builders.add(tableRowBuilder);
+        builders.add(policyCmptInterfaceBuilder);
+        builders.add(policyCmptImplClassBuilder);
+        builders.add(productCmptGenInterfaceBuilder);
+        builders.add(enumClassesBuilder);
+        builders.add(enumTypeBuilder);
+        return builders;
     }
 
 }
