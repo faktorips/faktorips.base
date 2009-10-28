@@ -27,6 +27,7 @@
                 <include name="plugins/com.ibm.icu*.jar"/>
                 <include name="plugins/org.eclipse.draw2d*.jar"/>
                 <include name="plugins/org.eclipse.gef*.jar"/>
+			    <include name="plugins/org.eclipse.ltk.core.refactoring*.jar"/>
             </patternset>
         </fileset>
         <!--devtools.core depends on org.faktorips.valuetypes-->
