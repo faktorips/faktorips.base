@@ -7,4 +7,3 @@ Documentation of changes to the extension property extension point
 - default behavior if extension property is defined and no definition for and edit field
   is defined, then a TextField will be created.
   
- 
