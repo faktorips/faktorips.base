@@ -44,7 +44,7 @@ public class Migration_2_4_0_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 
     @Override
