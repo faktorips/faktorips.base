@@ -99,6 +99,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         baseProject.setProperties(props);
     }
 
+    public void testFindIpsPackageFragmentRoot() {
+        assertEquals(root, ipsProject.findIpsPackageFragmentRoot(root.getName()));
+        assertNull(ipsProject.findIpsPackageFragmentRoot("Unknown"));
+
+        IIpsProject notExistingProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("NotExistingProject");
+        assertFalse(notExistingProject.exists());
+        assertNull(notExistingProject.findIpsPackageFragmentRoot("src"));
+    }
+
     public void testGetValueSetTypes() {
         List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.STRING);
         assertEquals(2, types.size());
