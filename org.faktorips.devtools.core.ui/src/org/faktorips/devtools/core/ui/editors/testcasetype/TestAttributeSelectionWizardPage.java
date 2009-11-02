@@ -102,8 +102,8 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         // layout.marginWidth = 10;
         // group.setLayout(layout);
 
-        createFilterText(group);
-        createFilteredList(group);
+        fFilterText = createFilterText(group);
+        fFilteredList = createFilteredList(group);
 
         checkbox = uiToolkit.createCheckbox(group,
                 Messages.AttributeElementListSelectionDialog_ShowAttributesOfSubclasses);
@@ -214,8 +214,6 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 widgetDefaultSelected(e);
             }
         });
-        fFilteredList = list;
-
         return list;
     }
 
@@ -249,8 +247,6 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
             public void keyReleased(KeyEvent e) {
             }
         });
-
-        fFilterText = text;
 
         return text;
     }
