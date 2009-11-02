@@ -112,7 +112,29 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Returns the IpsElement that corresponds to the indicated resource. The IpsElement may not be
-     * valid or existing inside a IPS project's source folder.
+     * valid or exist inside a IPS project's source folder / IpsPackageFragmentRoot.
+     * <p>
+     * If the resource is contained in a project that exists and is also an IpsProject, the method
+     * returns ips element only for those resources that are contained in a source folder
+     * representing an ips package fragment root.
+     * <p>
+     * Examples:
+     * <p>
+     * Given is the IpsProject "HomeInsurance" with the source folder "model"
+     * (IpsPackageFragmentRoot).
+     * <p>
+     * Resource: HomeInsurance/model/pack1/Policy.ipspolicycmpttype<br>
+     * => Returns an IIpsSrcFile handle. (Whether the underlying Resource exists or not).
+     * <p>
+     * Resource: HomeInsurance/model/pack1/readme.txt<br>
+     * => Returns <code>null</code> as readme.txt is not a file containing an IpsObject.
+     * <p>
+     * Resource: HomeInsurance/root/pack1/Policy.ipspolicycmpttype<br>
+     * => Returns <code>null</code> as "root" is not a source folder representing an
+     * IpsPackageFragmentRoot in the project HomeInsurance!
+     * <p>
+     * Resource: HomeInsurance/root => Returns <code>null</code> as "root" is not a source folder
+     * representing an IpsPackageFragmentRoot in the project HomeInsurance!
      */
     public IIpsElement getIpsElement(IResource resource);
 

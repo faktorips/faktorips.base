@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
-
 /**
  *
  */
@@ -65,26 +64,27 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     private IpsModel model;
 
     // JavaProjects for testGetNonIpsResources()
-    private IJavaProject javaProject= null;
-    private IJavaProject javaProject2= null;
+    private IJavaProject javaProject = null;
+    private IJavaProject javaProject2 = null;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
     }
 
     public void testCreateIpsProject() throws CoreException {
-    	IProject project = newPlatformProject("TestProject");
-    	IJavaProject javaProject = addJavaCapabilities(project);
-    	IIpsProject ipsProject = model.createIpsProject(javaProject);
-    	assertNotNull(ipsProject);
-    	assertEquals(0, ipsProject.findDatatypes(true, false).length);
-    	IIpsObjectPath path = ipsProject.getIpsObjectPath();
-    	assertNotNull(path);
-    	assertEquals(0, path.getEntries().length);
+        IProject project = newPlatformProject("TestProject");
+        IJavaProject javaProject = addJavaCapabilities(project);
+        IIpsProject ipsProject = model.createIpsProject(javaProject);
+        assertNotNull(ipsProject);
+        assertEquals(0, ipsProject.findDatatypes(true, false).length);
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        assertNotNull(path);
+        assertEquals(0, path.getEntries().length);
     }
 
     public void testGetIpsProjects() throws CoreException {
@@ -104,35 +104,56 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("TestProject2", ipsProjects[0].getName());
     }
 
-    public void testGetIpsElement() throws Exception {
+    public void testGetIpsElement_ExistingIpsProject() throws Exception {
+        IIpsProject ipsProject = newIpsProject("TestProject");
+
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
 
         IProject project = root.getProject("TestProject");
-        IIpsProject pdProject = model.getIpsProject("TestProject");
-        assertEquals(pdProject, model.getIpsElement(project));
+        assertEquals(ipsProject, model.getIpsElement(project));
 
-        IFolder rootFolder = project.getFolder("productdef");
-        IIpsPackageFragmentRoot pdRootFolder = pdProject.getIpsPackageFragmentRoot("productdef");
-        assertEquals(pdRootFolder, model.getIpsElement(rootFolder));
+        IIpsPackageFragmentRoot packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
+        IFolder rootFolder = (IFolder)packRoot.getCorrespondingResource();
+        assertEquals(packRoot, model.getIpsElement(rootFolder));
 
         IFolder folderA = rootFolder.getFolder("a");
-        IIpsPackageFragment pdFolderA = pdRootFolder.getIpsPackageFragment("a");
-        assertEquals(pdFolderA, model.getIpsElement(folderA));
+        IIpsPackageFragment packA = packRoot.getIpsPackageFragment("a");
+        assertEquals(packA, model.getIpsElement(folderA));
 
         IFolder folderB = folderA.getFolder("b");
-        IIpsPackageFragment pdFolderB = pdRootFolder.getIpsPackageFragment("a.b");
-        assertEquals(pdFolderB, model.getIpsElement(folderB));
+        IIpsPackageFragment packB = packRoot.getIpsPackageFragment("a.b");
+        assertEquals(packB, model.getIpsElement(folderB));
 
-        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("test");
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy");
         IFile file = folderB.getFile(filename);
-        IIpsSrcFile srcFile = pdFolderB.getIpsSrcFile(filename);
+        IIpsSrcFile srcFile = packB.getIpsSrcFile(filename);
         assertEquals(srcFile, model.getIpsElement(file));
-        
+
         IFile textFile = folderB.getFile("Textfile.txt");
-//        textFile.create(new ByteArrayInputStream("".getBytes()), true, null);
         assertNull(model.getIpsElement(textFile));
-        
+    }
+
+    public void testGetIpsElement_NotExistingIpsProject() throws Exception {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject project = root.getProject("TestProject");
+        IIpsProject ipsProject = model.getIpsProject("TestProject");
+        assertEquals(ipsProject, model.getIpsElement(project));
+
+        IFolder rootFolder = project.getFolder("model");
+        IIpsPackageFragmentRoot packRoot = ipsProject.getIpsPackageFragmentRoot("productdef");
+        assertNotNull(packRoot);
+        assertNull(model.getIpsElement(rootFolder));
+
+        IFolder folderA = rootFolder.getFolder("a");
+        assertNull(model.getIpsElement(folderA));
+
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy");
+        IFile file = folderA.getFile(filename);
+        assertNull(model.getIpsElement(file));
+
+        IFile textFile = folderA.getFile("Textfile.txt");
+        assertNull(model.getIpsElement(textFile));
     }
 
     public void testFindIpsElement() throws CoreException {
@@ -202,8 +223,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(listener.lastEvent);
     }
 
-
-
     public void testResourceChanged() throws IOException, CoreException {
         IIpsProject ipsProject = this.newIpsProject("TestProject");
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -253,7 +272,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
         assertEquals(3, props.size());
-        
+
         assertTrue(props.contains(property));
         assertTrue(props.contains(property2));
         assertTrue(props.contains(property3));
@@ -267,7 +286,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         model.addIpsObjectExtensionProperty(property4);
         props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
         assertEquals(4, props.size());
-        assertTrue(props.contains(property));  // first the type's properties
+        assertTrue(props.contains(property)); // first the type's properties
         assertTrue(props.contains(property2)); // then the supertype's properties
         assertTrue(props.contains(property3)); // then the supertype's supertype's properties
         assertTrue(props.contains(property4)); // the the type's interface's properties
@@ -303,38 +322,39 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     public void testGetPredefinedValueDatatypes() {
-    	ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
-    	assertTrue(datatypes.length > 0);
+        ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
+        assertTrue(datatypes.length > 0);
     }
 
     public void testIsPredefinedValueDatatype() {
-    	ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
-    	assertTrue(model.isPredefinedValueDatatype(datatypes[0].getQualifiedName()));
-    	assertFalse(model.isPredefinedValueDatatype("unknownDatatype"));
-    	assertFalse(model.isPredefinedValueDatatype(null));
+        ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
+        assertTrue(model.isPredefinedValueDatatype(datatypes[0].getQualifiedName()));
+        assertFalse(model.isPredefinedValueDatatype("unknownDatatype"));
+        assertFalse(model.isPredefinedValueDatatype(null));
     }
 
     public void testGetChangesInTimeNamingConvention() {
-    	IChangesOverTimeNamingConvention convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
-    	assertNotNull(convention);
-    	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
+        IChangesOverTimeNamingConvention convention = model
+                .getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
+        assertNotNull(convention);
+        assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
 
-    	convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
-    	assertNotNull(convention);
-    	assertEquals(IChangesOverTimeNamingConvention.PM, convention.getId());
+        convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
+        assertNotNull(convention);
+        assertEquals(IChangesOverTimeNamingConvention.PM, convention.getId());
 
-    	convention = model.getChangesOverTimeNamingConvention("unknown");
-    	assertNotNull(convention);
-    	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
+        convention = model.getChangesOverTimeNamingConvention("unknown");
+        assertNotNull(convention);
+        assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     }
 
-    public void testGetNonIpsResources() throws CoreException{
+    public void testGetNonIpsResources() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException {
                 IProject project = newPlatformProject("TestJavaProject");
-                javaProject= addJavaCapabilities(project);
+                javaProject = addJavaCapabilities(project);
                 IProject project2 = newPlatformProject("TestJavaProject2");
-                javaProject2= addJavaCapabilities(project2);
+                javaProject2 = addJavaCapabilities(project2);
             }
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -345,14 +365,14 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNotNull(javaProject);
         assertNotNull(javaProject2);
 
-        Object[] nonIpsResources= model.getNonIpsProjects();
+        Object[] nonIpsResources = model.getNonIpsProjects();
         assertEquals(2, nonIpsResources.length);
         // compare handles (IProject)
         assertEquals(javaProject.getProject(), nonIpsResources[0]);
         assertEquals(javaProject2.getProject(), nonIpsResources[1]);
     }
 
-    public void testClearValidationCache() throws CoreException{
+    public void testClearValidationCache() throws CoreException {
         IIpsProject project = super.newIpsProject();
         IPolicyCmptType pcType = super.newPolicyCmptType(project, "TestedType");
         model.getValidationResultCache().putResult(pcType, new MessageList());
@@ -387,34 +407,32 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         model.addChangeListener(listener);
         TestModStatusListener modifyListener = new TestModStatusListener();
         model.addModifcationStatusChangeListener(modifyListener);
-        
+
         model.runAndQueueChangeEvents(action, null);
 
         assertEquals(2, listener.changedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
         assertEquals(typeB.getIpsSrcFile(), listener.changedFiles.get(1));
-        
+
         assertEquals(2, modifyListener.modifiedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
         assertEquals(typeB.getIpsSrcFile(), modifyListener.modifiedFiles.get(1));
 
         listener.changedFiles.clear();
         modifyListener.modifiedFiles.clear();
-        
+
         typeA.setDescription("blublu");
         typeA.getIpsSrcFile().save(true, null);
-        
+
         assertEquals(1, listener.changedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
 
-        //two entries are expected for modifiedFiles. Both are for the same file. First entry is
-        //expected due to the call to the setDescription() method, second due to the call to the
-        //save() of the ips source file
+        // two entries are expected for modifiedFiles. Both are for the same file. First entry is
+        // expected due to the call to the setDescription() method, second due to the call to the
+        // save() of the ips source file
         assertEquals(2, modifyListener.modifiedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
-        
-        
-        
+
     }
 
     private static class TestContentsChangeListener implements ContentsChangeListener {
@@ -438,7 +456,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
             lastEvent = event;
             modifiedFiles.add(event.getIpsSrcFile());
         }
-        
 
     }
 
@@ -448,7 +465,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         root.createPackageFragment("products.hausrat", true, null);
         IIpsPackageFragment unfall = root.createPackageFragment("products.unfall", true, null);
-        IpsPackageFragment leistungsarten = (IpsPackageFragment)root.createPackageFragment("products.unfall.leistungsarten", true, null);
+        IpsPackageFragment leistungsarten = (IpsPackageFragment)root.createPackageFragment(
+                "products.unfall.leistungsarten", true, null);
         root.createPackageFragment("products.unfall.leistungsartgruppen", true, null);
         IpsPackageFragment kranken = (IpsPackageFragment)root.createPackageFragment("products.kranken", true, null);
 
@@ -458,12 +476,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         list.add("kranken");
         list.add("unfall");
         list.add("hausrat");
-        createPackageOrderFile((IFolder) products.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)products.getCorrespondingResource(), list);
         list.clear();
 
         list.add("leistungsarten");
         list.add("leistungsartgruppen");
-        createPackageOrderFile((IFolder) unfall.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)unfall.getCorrespondingResource(), list);
         list.clear();
 
         // test default sort definition
@@ -478,7 +496,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition);
 
         // test later
-        
+
         IFile file = leistungsarten.getSortOrderFile();
         file.delete(true, null);
 
@@ -541,12 +559,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
             status = !model.isCached(pcType.getIpsSrcFile());
         }
 
-        assertTrue(
-                "The IpsSrcFile "
-                        + pcType.getIpsSrcFile()
-                        + " is in the IpsModel cache which is not expected since the resource changed listener " +
-                                "should be triggered by know and have the cache cleared.",
-                status);
+        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
+                + " is in the IpsModel cache which is not expected since the resource changed listener "
+                + "should be triggered by know and have the cache cleared.", status);
     }
-    
+
 }
