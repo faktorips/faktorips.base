@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Class for calculation the content of the model explorer tree. The returned lists of package
@@ -55,7 +56,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     protected static final Object[] EMPTY_ARRAY = new Object[0];
 
-    protected boolean isFlatLayout = false;
+    private LayoutStyle layoutStyle;
 
     private ModelExplorerConfiguration configuration;
 
@@ -65,9 +66,14 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Constructs a new <code>ModelContentProvider</code> using the given configuration and the
      * given layout style.
      */
-    public ModelContentProvider(ModelExplorerConfiguration config, boolean flatLayout) {
+    public ModelContentProvider(ModelExplorerConfiguration config, LayoutStyle layoutStyle) {
+        ArgumentCheck.notNull(layoutStyle);
         configuration = config;
-        isFlatLayout = flatLayout;
+        this.layoutStyle = layoutStyle;
+    }
+
+    public LayoutStyle getLayoutStyle() {
+        return layoutStyle;
     }
 
     /**
@@ -278,7 +284,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * @throws CoreException
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
-        if (isFlatLayout) {
+        if (layoutStyle == LayoutStyle.FLAT) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             if (fragments.length == 1) {
                 if (!hasChildren(fragments[0])) {
@@ -334,7 +340,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
         // in hierarchical layout display childpackagefragments as children
-        if (!isFlatLayout) {
+        if (layoutStyle == LayoutStyle.HIERACHICAL) {
             return fragment.getChildIpsPackageFragments();
         } else {
             return EMPTY_ARRAY;
@@ -420,13 +426,13 @@ public class ModelContentProvider implements ITreeContentProvider {
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
             IIpsElement parent;
-            if (!isFlatLayout && element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-                if (fragment.isDefaultPackage()) {
-                    parent = fragment.getRoot();
-                } else {
-                    parent = ((IIpsPackageFragment)element).getParentIpsPackageFragment();
-                }
+            if (element instanceof IIpsPackageFragment) {
+                // TODO Stefan: an dieser Stelle wird jetzt auch fuer Style Hierarchical, nicht mehr
+                // das Default Package als Parent von Toplevel Packages wie "org" oder "com"
+                // zurueckgegeben.
+                // Das scheint mir Consistent mit der getChildren Methode() und dem Verhalten des
+                // Package-Explorers.
+                parent = layoutStyle.getParent((IIpsPackageFragment)element);
             } else {
                 parent = ((IIpsElement)element).getParent();
             }
@@ -441,7 +447,18 @@ public class ModelContentProvider implements ITreeContentProvider {
             return parent;
 
         } else if (element instanceof IResource) {
-            return ((IResource)element).getParent();
+            // TODO Stefan: alter code ist die folgende Zeile.
+            // return ((IResource)element).getParent();
+            // Die Berücksichtigt aber nicht, dass
+            // Resourcen in Packages enthalten
+            // sein koennen. Neu ist korrekt, oder?
+            IResource parentResource = ((IResource)element).getParent();
+            IIpsElement parentIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(parentResource);
+            if (parentIpsElement != null) {
+                return parentIpsElement;
+            } else {
+                return parentResource;
+            }
         }
 
         return null;
@@ -468,7 +485,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                     // return only ips projects and closed projects
                     return concatenate(model.getIpsProjects(), getClosedProjects(model));
                 } else {
-                    // return alll kind of projects (ips- and no ips projects)
+                    // return all kind of projects (ips- and no ips projects)
                     return concatenate(model.getIpsProjects(), model.getNonIpsProjects());
                 }
             } catch (CoreException e) {
@@ -502,13 +519,9 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     }
 
-    /**
-     * Sets the flag for flat respectivly hierarchical PackageFragments
-     * 
-     * @param b
-     */
-    /* package */void setIsFlatLayout(boolean b) {
-        isFlatLayout = b;
+    public void setLayoutStyle(LayoutStyle newStyle) {
+        ArgumentCheck.notNull(newStyle);
+        layoutStyle = newStyle;
     }
 
     /**
