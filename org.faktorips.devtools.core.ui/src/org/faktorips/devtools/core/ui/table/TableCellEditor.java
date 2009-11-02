@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -29,7 +28,6 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -191,7 +189,6 @@ public abstract class TableCellEditor extends CellEditor {
     protected void initFocusListener() {
         control.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
-
             }
 
             public void focusLost(FocusEvent e) {
@@ -369,20 +366,23 @@ public abstract class TableCellEditor extends CellEditor {
         }
     }
 
-    /** Saves the current user input. */
-    private void saveCurrentValue() {
-        Object[] properties = tableViewer.getColumnProperties();
-        if (properties == null) {
-            // TODO since Eclipse 3.3 there is an alternative way for cell editing, do we have to
-            // support this here? @see ViewerColumn#setEditingSupport(EditingSupport)
-            return;
-        }
-        if (columnIndex < properties.length) {
-            Table table = tableViewer.getTable();
-            ICellModifier cellModifier = tableViewer.getCellModifier();
-            cellModifier.modify(table.getItem(getCurrentRow()), (String)properties[columnIndex], getValue());
-        }
-    }
+    // FS#1607, TODO not necessary?
+    // see this#deactivate()
+    // /** Saves the current user input. */
+    // private void saveCurrentValue() {
+    // Object[] properties = tableViewer.getColumnProperties();
+    // if (properties == null) {
+    // // TODO since Eclipse 3.3 there is an alternative way for cell editing, do we have to
+    // // support this here? @see ViewerColumn#setEditingSupport(EditingSupport)
+    // return;
+    // }
+    // if (columnIndex < properties.length) {
+    // Table table = tableViewer.getTable();
+    // ICellModifier cellModifier = tableViewer.getCellModifier();
+    // cellModifier.modify(table.getItem(getCurrentRow()), (String)properties[columnIndex],
+    // getValue());
+    // }
+    // }
 
     /**
      * Appends a new <tt>IRow</tt> to the table if the tableviewer's input is a
@@ -443,7 +443,9 @@ public abstract class TableCellEditor extends CellEditor {
     public void deactivate() {
         if (control != null && !(control.isDisposed())) {
             control.setVisible(false);
-            saveCurrentValue();
+            // FS#1607 wrong row changed after scrolling using vertical scroll bar,
+            // Note that the value is stored by ColumnViewerEditor#applyEditorValue (Eclipse 3.4)
+            // saveCurrentValue();
         }
     }
 

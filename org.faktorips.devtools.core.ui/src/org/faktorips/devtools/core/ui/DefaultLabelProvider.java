@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -80,7 +81,7 @@ public class DefaultLabelProvider extends LabelProvider {
      * @see #showAssociatedType
      */
     public void setShowAssociatedType(boolean show) {
-        this.showAssociatedType = show;
+        showAssociatedType = show;
     }
 
     /**
@@ -88,9 +89,9 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     @Override
     public Image getImage(Object element) {
-    	if (element instanceof IpsSrcFileProvider) {
-    		element = ((IpsSrcFileProvider)element).getIpsSrcFile();
-    	}
+        if (element instanceof IpsSrcFileProvider) {
+            element = ((IpsSrcFileProvider)element).getIpsSrcFile();
+        }
         try {
             if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping) {
                 return getMappedImageForIpsSrcFile((IIpsSrcFile)element);
@@ -107,6 +108,9 @@ public class DefaultLabelProvider extends LabelProvider {
             if (element instanceof FlFunction) {
                 return IpsPlugin.getDefault().getImage("Function.gif"); //$NON-NLS-1$
             }
+            if (element instanceof EnumTypeDatatypeAdapter) {
+                return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
+            }
             return super.getImage(element);
         } catch (Exception e) {
             IpsPlugin.log(e);
@@ -117,29 +121,20 @@ public class DefaultLabelProvider extends LabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText(Object element) {
         if (element == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
         if (element instanceof IpsSrcFileProvider) {
-        	element = ((IpsSrcFileProvider)element).getIpsSrcFile();
+            element = ((IpsSrcFileProvider)element).getIpsSrcFile();
         }
-
         if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping) {
             return getMappedNameForIpsSrcFile((IIpsSrcFile)element);
         }
-
-        if (!(element instanceof IIpsElement)) {
-            return element.toString();
+        if (element instanceof EnumTypeDatatypeAdapter) {
+            return getText(((EnumTypeDatatypeAdapter)element).getEnumType());
         }
-
-        IIpsElement ipsElement = (IIpsElement)element;
-        if (element instanceof IIpsPackageFragment) {
-            if (ipsElement.getName().equals("")) { //$NON-NLS-1$
-                return Messages.DefaultLabelProvider_labelDefaultPackage;
-            }
-        }
-
         if (element instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)element;
             return getEnumAttributeLabel(enumAttribute);
@@ -154,6 +149,16 @@ public class DefaultLabelProvider extends LabelProvider {
         }
         if (element instanceof IMethod) {
             return getMethodLabel((IMethod)element);
+        }
+        if (!(element instanceof IIpsElement)) {
+            return element.toString();
+        }
+
+        IIpsElement ipsElement = (IIpsElement)element;
+        if (element instanceof IIpsPackageFragment) {
+            if (ipsElement.getName().equals("")) { //$NON-NLS-1$
+                return Messages.DefaultLabelProvider_labelDefaultPackage;
+            }
         }
 
         return ipsElement.getName();
@@ -292,6 +297,7 @@ public class DefaultLabelProvider extends LabelProvider {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected void drawCompositeImage(int width, int height) {
             drawImage(baseImage.getImageData(), 0, 0);
             drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
@@ -300,6 +306,7 @@ public class DefaultLabelProvider extends LabelProvider {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected Point getSize() {
             return size;
         }
