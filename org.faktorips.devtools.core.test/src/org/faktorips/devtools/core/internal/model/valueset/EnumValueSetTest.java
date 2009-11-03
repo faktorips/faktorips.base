@@ -82,6 +82,34 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         ce.setPolicyCmptTypeAttribute("attr");
     }
 
+    public void testCopy() {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("10");
+        set.addValue("5");
+        set.addValue("1");
+
+        EnumValueSet copy = (EnumValueSet)set.copy(generation.newConfigElement(), 1);
+        assertEquals(3, copy.size());
+        assertEquals(0, copy.getPositions("10").get(0).intValue());
+        assertEquals(1, copy.getPositions("5").get(0).intValue());
+        assertEquals(2, copy.getPositions("1").get(0).intValue());
+    }
+
+    public void testCopyPropertiesFrom() {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("10");
+        set.addValue("5");
+        set.addValue("1");
+
+        EnumValueSet set2 = new EnumValueSet(generation.newConfigElement(), 1);
+        set2.copyPropertiesFrom(set);
+
+        assertEquals(3, set2.size());
+        assertEquals(0, set2.getPositions("10").get(0).intValue());
+        assertEquals(1, set2.getPositions("5").get(0).intValue());
+        assertEquals(2, set2.getPositions("1").get(0).intValue());
+    }
+
     public void testGetPositions() {
         EnumValueSet set = new EnumValueSet(ce, 1);
         List<Integer> positions = set.getPositions("1");
