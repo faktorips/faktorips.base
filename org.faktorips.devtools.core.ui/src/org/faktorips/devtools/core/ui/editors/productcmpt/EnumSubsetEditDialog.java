@@ -32,7 +32,9 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- *
+ * A dialog that allows to specify a subset of values available in a given enum data type.
+ * 
+ * @author Jan Ortmann
  */
 public class EnumSubsetEditDialog extends IpsPartEditDialog {
 

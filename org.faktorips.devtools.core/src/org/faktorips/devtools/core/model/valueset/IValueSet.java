@@ -144,9 +144,9 @@ public interface IValueSet extends IIpsObjectPart {
     public IValueSet copy(IIpsObjectPart newParent, int id);
 
     /**
-     * Copy all values including the abstract-flag -if applicable- (but not the parent or the id) of
-     * the given source to this value set. If this given source value set is of a different type,
-     * only the abstract flag is copied. If this value set is an ALL_VALUES value set, this method
+     * Copies all values including the abstract-flag -if applicable- (but not the parent or the id)
+     * of the given source to this value set. If this given source value set is of a different type,
+     * only the abstract flag is copied. If this value set is an Unrestricted value set, this method
      * does nothing.
      */
     public void setValuesOf(IValueSet source);
