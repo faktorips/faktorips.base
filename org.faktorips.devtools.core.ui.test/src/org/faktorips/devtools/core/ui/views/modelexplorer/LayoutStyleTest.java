@@ -45,7 +45,7 @@ public class LayoutStyleTest extends AbstractIpsPluginTest {
     }
 
     public void testGetParent_Hierarchical() throws CoreException {
-        assertEquals(root, LayoutStyle.FLAT.getParent(root.getDefaultIpsPackageFragment()));
+        assertEquals(root, LayoutStyle.HIERACHICAL.getParent(root.getDefaultIpsPackageFragment()));
         assertEquals(root, LayoutStyle.HIERACHICAL.getParent(packOrg));
         assertEquals(packOrg, LayoutStyle.HIERACHICAL.getParent(packOrgMotor));
     }
