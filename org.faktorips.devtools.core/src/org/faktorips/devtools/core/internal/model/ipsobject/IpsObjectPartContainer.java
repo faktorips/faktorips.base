@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer,
-        IExtensionPropertyAccess {
+        IExtensionPropertyAccess, IIpsSrcFileProvider {
 
     /**
      * Name of the xml element the containing the elements for the extension property values.
@@ -77,6 +77,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     // Validation start time used for tracing in debug mode
     private long validationStartTime;
 
+    /**
+     * Constructor
+     * 
+     * @param parent
+     * @param name
+     */
     public IpsObjectPartContainer(IIpsElement parent, String name) {
         super(parent, name);
     }
