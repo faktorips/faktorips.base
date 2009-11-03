@@ -96,6 +96,9 @@ public enum LayoutStyle {
             return pack.getParent();
         }
         if (this == HIERACHICAL) {
+            if (pack.isDefaultPackage()) {
+                return pack.getRoot();
+            }
             IIpsPackageFragment parentPack = pack.getParentIpsPackageFragment();
             if (parentPack.isDefaultPackage()) {
                 return parentPack.getRoot();
