@@ -59,6 +59,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -119,6 +121,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -179,6 +183,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -240,6 +246,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -301,6 +309,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -362,6 +372,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -422,6 +434,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -482,6 +496,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -544,6 +560,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -604,6 +622,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -664,6 +684,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -723,6 +745,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -783,6 +807,134 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_4_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_4_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_4_patches" address=""/>
+                <map alias="cc-de.qv.faktorips" address=""/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
+            </htmlemail>
+        </publishers>
+    </project>
+    <!--=====================================================-->
+    <!--Project definition: org.faktorips.devtools.ormext-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.devtools.ormext">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext"/>
+        </modificationset>
+        <schedule interval="60">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="ormext"/>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/org.faktorips.devtools.ormext/build/logs"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
+                <!--dummy aliases for buildstatus projects (cc-projectname)-->
+                <map alias="cc-org.faktorips.util" address=""/>
+                <map alias="cc-org.faktorips.valuetypes" address=""/>
+                <map alias="cc-org.faktorips.valuetypes.java5" address=""/>
+                <map alias="cc-org.faktorips.dtflcommon" address=""/>
+                <map alias="cc-org.faktorips.runtime" address=""/>
+                <map alias="cc-org.faktorips.runtime.java5" address=""/>
+                <map alias="cc-org.faktorips.fl" address=""/>
+                <map alias="cc-org.faktorips.devtools.core" address=""/>
+                <map alias="cc-org.faktorips.devtools.stdbuilder" address=""/>
+                <map alias="cc-org.faktorips.devtools.core.ui" address=""/>
+                <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
+                <map alias="cc-org.faktorips.devtools.ant" address=""/>
+                <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_4_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_3_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_4_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_4_patches" address=""/>
+                <map alias="cc-de.qv.faktorips" address=""/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
+            </htmlemail>
+        </publishers>
+    </project>
+    <!--=====================================================-->
+    <!--Project definition: org.faktorips.devtools.ormext.ui-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.devtools.ormext.ui">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
+            <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
+            <buildstatus logdir="${logdir}/org.faktorips.devtools.ormext"/>
+            <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.ui"/>
+        </modificationset>
+        <schedule interval="60">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="ormext.ui"/>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/org.faktorips.devtools.ormext.ui/build/logs"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
+                <!--dummy aliases for buildstatus projects (cc-projectname)-->
+                <map alias="cc-org.faktorips.util" address=""/>
+                <map alias="cc-org.faktorips.valuetypes" address=""/>
+                <map alias="cc-org.faktorips.valuetypes.java5" address=""/>
+                <map alias="cc-org.faktorips.dtflcommon" address=""/>
+                <map alias="cc-org.faktorips.runtime" address=""/>
+                <map alias="cc-org.faktorips.runtime.java5" address=""/>
+                <map alias="cc-org.faktorips.fl" address=""/>
+                <map alias="cc-org.faktorips.devtools.core" address=""/>
+                <map alias="cc-org.faktorips.devtools.stdbuilder" address=""/>
+                <map alias="cc-org.faktorips.devtools.core.ui" address=""/>
+                <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
+                <map alias="cc-org.faktorips.devtools.ant" address=""/>
+                <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -864,6 +1016,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -951,6 +1105,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1038,6 +1194,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1128,6 +1286,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1195,6 +1355,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1262,6 +1424,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1332,6 +1496,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1402,6 +1568,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1472,6 +1640,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1542,6 +1712,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1612,6 +1784,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1682,6 +1856,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
@@ -1747,6 +1923,8 @@
                 <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext" address=""/>
+                <map alias="cc-org.faktorips.devtools.ormext.ui" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder.v2_3_patches" address=""/>
