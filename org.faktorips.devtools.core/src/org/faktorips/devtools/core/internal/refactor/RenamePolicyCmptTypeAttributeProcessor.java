@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
@@ -51,18 +50,29 @@ public class RenamePolicyCmptTypeAttributeProcessor extends RenameProcessor {
     @Override
     public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
+
         return new RefactoringStatus();
     }
 
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
+
         return new RefactoringStatus();
     }
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        return new TextFileChange("name", policyCmptTypeAttribute.getIpsSrcFile().getCorrespondingFile());
+        return null;
+    }
+
+    @Override
+    public Change postCreateChange(Change[] participantChanges, IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+
+        policyCmptTypeAttribute.setName(newName);
+        policyCmptTypeAttribute.getIpsSrcFile().save(true, pm);
+        return null;
     }
 
     @Override
@@ -82,7 +92,7 @@ public class RenamePolicyCmptTypeAttributeProcessor extends RenameProcessor {
 
     @Override
     public boolean isApplicable() throws CoreException {
-        return true;
+        return policyCmptTypeAttribute.exists();
     }
 
     public void setNewName(String newName) {
@@ -92,6 +102,7 @@ public class RenamePolicyCmptTypeAttributeProcessor extends RenameProcessor {
     @Override
     public RefactoringParticipant[] loadParticipants(RefactoringStatus status, SharableParticipants sharedParticipants)
             throws CoreException {
+
         return ParticipantManager.loadRenameParticipants(status, this, policyCmptTypeAttribute, new RenameArguments(
                 newName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }

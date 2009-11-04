@@ -67,6 +67,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
             processor.setNewName(newNameTextField.getText());
             return super.performFinish();
         }
+
     }
 
 }

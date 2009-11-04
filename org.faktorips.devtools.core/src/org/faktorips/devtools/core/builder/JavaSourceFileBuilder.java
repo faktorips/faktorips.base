@@ -995,4 +995,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return javaElements;
     }
 
+    // TODO make abstract during stdbuilder cleanup
+    protected boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
 }

@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import java.util.List;
-
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -30,7 +31,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
-import org.eclipse.ui.internal.Workbench;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -41,78 +42,72 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * @author Alexander Weickmann
  */
 // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
-@SuppressWarnings("restriction")
 public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant {
 
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
-    private List<IJavaElement> generatedJavaElements;
+    private IJavaElement propertyConstant;
+
+    private IJavaElement setterMethod;
+
+    private IJavaElement getterMethod;
+
+    private IJavaElement implAttribute;
 
     @Override
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
-        return new RefactoringStatus();
+
+        RefactoringStatus status = new RefactoringStatus();
+        if (!(propertyConstant.exists() && setterMethod.exists() && getterMethod.exists() && implAttribute.exists())) {
+            status.addFatalError("Missing java source code for this attribute.");
+        }
+        return status;
     }
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        executeRenameField(pm);
-        executeRenameGetter(pm);
+        // TODO AW: naming convention duplicate
+        rename(propertyConstant, JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName("PROPERTY_"
+                + getArguments().getNewName()), IJavaRefactorings.RENAME_FIELD, pm);
+        rename(getterMethod, JavaNamingConvention.ECLIPSE_STANDARD.getGetterMethodName(getArguments().getNewName(),
+                policyCmptTypeAttribute.getIpsProject().findDatatype(policyCmptTypeAttribute.getDatatype())),
+                IJavaRefactorings.RENAME_METHOD, pm);
+        rename(setterMethod, JavaNamingConvention.ECLIPSE_STANDARD.getSetterMethodName(getArguments().getNewName(),
+                policyCmptTypeAttribute.getIpsProject().findDatatype(policyCmptTypeAttribute.getDatatype())),
+                IJavaRefactorings.RENAME_METHOD, pm);
+        rename(implAttribute, JavaNamingConvention.ECLIPSE_STANDARD.getMemberVarName(getArguments().getNewName()),
+                IJavaRefactorings.RENAME_FIELD, pm);
         return null;
     }
 
-    private void executeRenameField(IProgressMonitor pm) throws OperationCanceledException, CoreException {
-        RefactoringContribution contribution = RefactoringCore
-                .getRefactoringContribution(IJavaRefactorings.RENAME_FIELD);
-        RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
-        descriptor.setJavaElement(generatedJavaElements.get(0));
+    private void rename(IJavaElement javaElement,
+            String newName,
+            String javaRefactoringContributionId,
+            final IProgressMonitor pm) throws OperationCanceledException, CoreException {
 
-        // TODO AW: naming convention duplicate
-        descriptor.setNewName(JavaNamingConvention.ECLIPSE_STANDARD.getMemberVarName(getArguments().getNewName()));
+        RefactoringContribution contribution = RefactoringCore
+                .getRefactoringContribution(javaRefactoringContributionId);
+        RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
+        descriptor.setJavaElement(javaElement);
+        descriptor.setNewName(newName);
         descriptor.setUpdateReferences(getArguments().getUpdateReferences());
+
         RefactoringStatus status = new RefactoringStatus();
-        Refactoring renameFieldRefactoring = descriptor.createRefactoring(status);
+        Refactoring renameRefactoring = descriptor.createRefactoring(status);
         if (status.isOK()) {
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(renameFieldRefactoring,
+            final PerformRefactoringOperation operation = new PerformRefactoringOperation(renameRefactoring,
                     CheckConditionsOperation.ALL_CONDITIONS);
-            Runnable runnable = new Runnable() {
+            Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
+            display.syncExec(new Runnable() {
                 public void run() {
                     try {
-                        operation.run(null);
+                        ResourcesPlugin.getWorkspace().run(operation, pm);
                     } catch (CoreException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }
-            };
-            Workbench.getInstance().getDisplay().asyncExec(runnable);
-        }
-    }
-
-    private void executeRenameGetter(IProgressMonitor pm) throws OperationCanceledException, CoreException {
-        RefactoringContribution contribution = RefactoringCore
-                .getRefactoringContribution(IJavaRefactorings.RENAME_METHOD);
-        RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
-        descriptor.setJavaElement(generatedJavaElements.get(1));
-
-        // TODO AW: naming convention duplicate
-        descriptor.setNewName(JavaNamingConvention.ECLIPSE_STANDARD.getGetterMethodName(getArguments().getNewName(),
-                policyCmptTypeAttribute.getIpsProject().findDatatype(policyCmptTypeAttribute.getDatatype())));
-        descriptor.setUpdateReferences(getArguments().getUpdateReferences());
-        RefactoringStatus status = descriptor.validateDescriptor();
-        Refactoring renameMethodRefactoring = descriptor.createRefactoring(status);
-        if (status.isOK()) {
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(renameMethodRefactoring,
-                    CheckConditionsOperation.ALL_CONDITIONS);
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    try {
-                        operation.run(null);
-                    } catch (CoreException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Workbench.getInstance().getDisplay().asyncExec(runnable);
+            });
         }
     }
 
@@ -121,10 +116,27 @@ public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant 
         if (!(element instanceof IPolicyCmptTypeAttribute)) {
             return false;
         }
+
         policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)element;
         StandardBuilderSet builderSet = (StandardBuilderSet)policyCmptTypeAttribute.getIpsProject()
                 .getIpsArtefactBuilderSet();
-        generatedJavaElements = builderSet.getGeneratedJavaElements(policyCmptTypeAttribute);
+        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(policyCmptTypeAttribute)) {
+            String javaElementName = javaElement.getElementName();
+            if (javaElement instanceof IMethod) {
+                if (javaElementName.startsWith("set")) {
+                    setterMethod = javaElement;
+                } else if (javaElementName.startsWith("get")) {
+                    getterMethod = javaElement;
+                }
+            } else if (javaElement instanceof IField) {
+                if (javaElementName.startsWith("PROPERTY_")) {
+                    propertyConstant = javaElement;
+                } else {
+                    implAttribute = javaElement;
+                }
+            }
+        }
+
         return true;
     }
 
