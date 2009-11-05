@@ -13,22 +13,22 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -36,29 +36,35 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.w3c.dom.Element;
 
 /**
  * <p>
@@ -90,11 +96,13 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     private TableViewer tableViewer;
     private InstanceContentProvider contentProvider = new InstanceContentProvider();
     private Composite panel;
-    private SelectedElementLabel selectedElementLabel;
+    private CLabel selectedElementLabel;
 
     private SubtypeSearchAction subtypeSearchAction;
 
     private Label errormsg;
+
+    private Display display;
 
     /**
      * The default constructor setup the listener and loads the default view.
@@ -113,6 +121,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
      */
     @Override
     public void createPartControl(Composite parent) {
+        display = parent.getDisplay();
         panel = new Composite(parent, SWT.NONE);
         panel.setLayout(new GridLayout());
         panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -123,11 +132,25 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         labelProvider = new InstanceLabelProvider();
 
-        selectedElementLabel = new SelectedElementLabel(panel, SWT.LEFT);
+        selectedElementLabel = new CLabel(panel, SWT.LEFT);
         selectedElementLabel.setLayout(new GridLayout());
         selectedElementLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        selectedElementLabel.setLabelProvider(labelProvider);
-        selectedElementLabel.addMouseListener(new EditorOpener());
+        // selectedElementLabel.setLabelProvider(labelProvider);
+        selectedElementLabel.addMouseListener(new MouseListener() {
+
+            public void mouseDoubleClick(MouseEvent e) {
+                if (contentProvider.getActualElement() != null) {
+                    IpsUIPlugin.getDefault().openEditor(contentProvider.getActualElement());
+                }
+            }
+
+            public void mouseDown(MouseEvent e) {
+            }
+
+            public void mouseUp(MouseEvent e) {
+            }
+
+        });
 
         tableViewer = new TableViewer(panel);
         tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -172,11 +195,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
             @Override
             public void run() {
-                try {
-                    refreshAll();
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                setInputData(contentProvider.getActualElement());
             }
 
             @Override
@@ -194,12 +213,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         toolBarManager.add(new Action() {
             @Override
             public void run() {
-                try {
-                    showInstancesOf(null);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    e.printStackTrace();
-                }
+                setInputData(null);
             }
 
             @Override
@@ -222,31 +236,24 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
      */
     public void showInstancesOf(IIpsObject element) throws CoreException {
         if (element != null && !element.getEnclosingResource().isAccessible()) {
-            element = null;
-        }
-        if (element instanceof IIpsMetaObject) {
+            setInputData(null);
+        } else if (element instanceof IIpsMetaObject) {
             IIpsMetaObject metaObject = (IIpsMetaObject)element;
             IIpsSrcFile metaClassSrcFile = metaObject.findMetaClassSrcFile(metaObject.getIpsProject());
             if (metaClassSrcFile != null) {
-                element = metaClassSrcFile.getIpsObject();
+                setInputData((IIpsMetaClass)metaClassSrcFile.getIpsObject());
             } else {
-                setInputData(null);
-                selectedElementLabel.setText(Messages.InstanceExplorer_noMetaClassFound);
-                updateView();
-                return;
+                setInputData(new NotFoundMetaClass(metaObject));
             }
+        } else if (element instanceof IIpsMetaClass) {
+            setInputData((IIpsMetaClass)element);
         }
-        if (element instanceof IIpsMetaClass || element == null) {
-            setInputData(element);
-        }
-        updateView();
     }
 
-    private void setInputData(IIpsObject element) {
+    private void setInputData(final IIpsMetaClass element) {
+        IJobChangeListener jobListener = new RefreshWhenDone();
         if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
-            tableViewer.setInput(element);
-            selectedElementLabel.setData(element);
-            selectedElementLabel.pack();
+            contentProvider.asyncSetInputData(element, jobListener);
         }
     }
 
@@ -288,14 +295,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-     */
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFocus() {
         // nothing to do.
@@ -305,53 +304,35 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
      * {@inheritDoc}
      */
     public void resourceChanged(IResourceChangeEvent event) {
-        IResource resources = null;
-        if (event != null) {
-            IResourceDelta delta = event.getDelta();
-            resources = delta.getResource();
-        }
-        try {
-            refreshAll(resources);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-    }
+        display.syncExec(new Runnable() {
 
-    private void refreshAll() throws CoreException {
-        refreshAll(null);
-    }
-
-    private void refreshAll(IResource resources) throws CoreException {
-        if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
-            selectedElementLabel.getDisplay().asyncExec(new Runnable() {
-
-                public void run() {
-                    if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
-                        selectedElementLabel.refresh();
-                    }
-                }
-            });
-        }
-
-        Runnable runnable = new RunnableTableViewerRefresh(resources);
-        if (tableViewer != null) {
-            Control ctrl = tableViewer.getControl();
-            if (ctrl != null && !ctrl.isDisposed()) {
-                ctrl.getDisplay().asyncExec(runnable);
+            public void run() {
+                refreshAll();
             }
+        });
+    }
+
+    private void refreshAll() {
+        if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
+            IIpsMetaClass element = contentProvider.getActualElement();
+            if (element != null) {
+                selectedElementLabel.setText(labelProvider.getText(element));
+            } else {
+                selectedElementLabel.setText("");
+            }
+            selectedElementLabel.setImage(labelProvider.getImage(element));
+        }
+        if (tableViewer != null && !tableViewer.getControl().isDisposed()) {
+            tableViewer.refresh();
         }
     }
 
-    private void updateView() throws CoreException {
+    private void updateView() {
         Object element = tableViewer.getInput();
         if (element == null) {
             showEmptyMessage();
         } else if (element instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)element;
-            if (!ipsObject.getEnclosingResource().isAccessible()) {
-                showInstancesOf(null);
-                return;
-            }
             subtypeSearchAction.setEnabled(supportsSubtypes(ipsObject));
             if (tableViewer.getTable().getItemCount() == 0) {
                 showEmptyTableMessage(ipsObject);
@@ -454,11 +435,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         public void run() {
             labelProvider.setSubTypeSearch(isChecked());
             contentProvider.setSubTypeSearch(isChecked());
-            try {
-                refreshAll();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            setInputData(contentProvider.getActualElement());
             super.run();
         }
 
@@ -479,27 +456,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     }
 
-    private class EditorOpener implements MouseListener {
-
-        public void mouseDoubleClick(MouseEvent e) {
-            if (e.getSource() instanceof SelectedElementLabel) {
-                SelectedElementLabel selectedElementLabel = (SelectedElementLabel)e.getSource();
-                Object obj = selectedElementLabel.getData();
-                if (obj instanceof IIpsObject) {
-                    IIpsObject ipsObject = (IIpsObject)obj;
-                    IpsUIPlugin.getDefault().openEditor(ipsObject);
-                }
-            }
-        }
-
-        public void mouseDown(MouseEvent e) {
-        }
-
-        public void mouseUp(MouseEvent e) {
-        }
-
-    }
-
     private enum MessageTableSwitch {
         MESSAGE,
         TABLE;
@@ -510,44 +466,94 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     }
 
-    private class RunnableTableViewerRefresh implements Runnable {
+    private class RefreshWhenDone implements IJobChangeListener {
 
-        private IResource resource;
-
-        /**
-		 * 
-		 */
-        public RunnableTableViewerRefresh(IResource resource) {
-            this.resource = resource;
+        public void sleeping(IJobChangeEvent event) {
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.lang.Runnable#run()
-         */
-        /**
-         * {@inheritDoc}
-         */
-        public void run() {
-            if (tableViewer != null && !tableViewer.getControl().isDisposed()) {
-                tableViewer.refresh();
-                IIpsElement element = null;
-                if (resource != null) {
-                    element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
-                }
-                // performs full refresh if element is null
-                tableViewer.refresh(element);
+        public void scheduled(IJobChangeEvent event) {
+        }
 
-                if (element != null) {
-                    tableViewer.setSelection(new StructuredSelection(element), true);
-                }
+        public void running(IJobChangeEvent event) {
+        }
+
+        public void done(IJobChangeEvent event) {
+            if (display != null && !display.isDisposed()) {
+                display.syncExec(new Runnable() {
+                    public void run() {
+                        selectedElementLabel.pack();
+                        tableViewer.setInput(contentProvider.getActualElement());
+                        updateView();
+                        refreshAll();
+                    }
+                });
             }
-            try {
-                updateView();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+        }
+
+        public void awake(IJobChangeEvent event) {
+        }
+
+        public void aboutToRun(IJobChangeEvent event) {
+        }
+    };
+
+    private static class NotFoundMetaClass extends IpsObject implements IIpsMetaClass {
+
+        private final IIpsMetaObject metaObject;
+
+        public NotFoundMetaClass(IIpsMetaObject metaObject) {
+            this.metaObject = metaObject;
+        }
+
+        @Override
+        public String getName() {
+            return Messages.InstanceExplorer_noMetaClassFound;
+        }
+
+        @Override
+        public Image getImage() {
+            return null;
+        }
+
+        @Override
+        public String getQualifiedName() {
+            return getName();
+        }
+
+        @Override
+        protected void addPart(IIpsObjectPart part) {
+        }
+
+        @Override
+        public IIpsElement[] getChildren() {
+            return new IIpsElement[] { metaObject };
+        }
+
+        @Override
+        protected IIpsObjectPart newPart(Element xmlTag, int id) {
+            return null;
+        }
+
+        @Override
+        protected void reinitPartCollections() {
+        }
+
+        @Override
+        protected void removePart(IIpsObjectPart part) {
+        }
+
+        public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
+                throws CoreException {
+            return new IIpsSrcFile[] { metaObject.getIpsSrcFile() };
+        }
+
+        public IpsObjectType getIpsObjectType() {
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        public IIpsObjectPart newPart(Class partType) {
+            return null;
         }
 
     }
