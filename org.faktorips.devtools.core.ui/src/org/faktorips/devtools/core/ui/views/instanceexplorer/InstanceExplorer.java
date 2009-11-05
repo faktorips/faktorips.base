@@ -19,6 +19,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -466,17 +467,9 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     }
 
-    private class RefreshWhenDone implements IJobChangeListener {
+    private class RefreshWhenDone extends JobChangeAdapter {
 
-        public void sleeping(IJobChangeEvent event) {
-        }
-
-        public void scheduled(IJobChangeEvent event) {
-        }
-
-        public void running(IJobChangeEvent event) {
-        }
-
+        @Override
         public void done(IJobChangeEvent event) {
             if (display != null && !display.isDisposed()) {
                 display.syncExec(new Runnable() {
@@ -490,11 +483,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             }
         }
 
-        public void awake(IJobChangeEvent event) {
-        }
-
-        public void aboutToRun(IJobChangeEvent event) {
-        }
     };
 
     private static class NotFoundMetaClass extends IpsObject implements IIpsMetaClass {

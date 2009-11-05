@@ -60,6 +60,9 @@ public class InstanceContentProvider implements IStructuredContentProvider {
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
+        if (inputElement != ipsMetaClass) {
+            throw new AssertionError("input element not correct");
+        }
         return items;
     }
 
@@ -71,7 +74,7 @@ public class InstanceContentProvider implements IStructuredContentProvider {
         if (newInput instanceof IIpsMetaClass) {
             IIpsMetaClass newIpsMetaClass = (IIpsMetaClass)newInput;
             if (ipsMetaClass != newIpsMetaClass) {
-                asyncSetInputData(newIpsMetaClass, null); // TODO
+                asyncSetInputData(newIpsMetaClass, null);
             }
         }
     }
@@ -106,7 +109,9 @@ public class InstanceContentProvider implements IStructuredContentProvider {
                 return Status.OK_STATUS;
             }
         };
-        updatereJob.addJobChangeListener(jobListener);
+        if (jobListener != null) {
+            updatereJob.addJobChangeListener(jobListener);
+        }
         updatereJob.schedule();
     }
 
