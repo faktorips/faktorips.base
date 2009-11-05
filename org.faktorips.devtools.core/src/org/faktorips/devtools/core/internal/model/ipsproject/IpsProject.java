@@ -1469,28 +1469,25 @@ public class IpsProject extends IpsElement implements IIpsProject {
             throws CoreException {
 
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        List result = new ArrayList(ipsSrcFiles.length);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
         for (int i = 0; i < ipsSrcFiles.length; i++) {
             String strProductCmptTypeOfCandidate = ipsSrcFiles[i]
                     .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (productCmptType == null || productCmptType.getQualifiedName().equals(strProductCmptTypeOfCandidate)) {
                 result.add(ipsSrcFiles[i]);
             } else if (includeCmptsForSubtypes) {
-                // TODO Joerg v2 performance verbessern?
-                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFiles[i].getIpsObject();
-                // ASK wieso wird hier nicht direkt der Typ gesucht?:
-                // IProductCmptType type = findProductCmptType(strProductCmptTypeOfCandidate);
-                IProductCmptType type = productCmpt.findProductCmptType(this);
+                IProductCmptType type = ipsSrcFiles[i].getIpsProject().findProductCmptType(
+                        strProductCmptTypeOfCandidate);
                 if (type == null) {
                     continue;
                 }
-                if (type.isSubtypeOrSameType(productCmptType, this)) {
+                if (type.isSubtypeOrSameType(productCmptType, type.getIpsProject())) {
                     result.add(ipsSrcFiles[i]);
                 }
             }
         }
 
-        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
     /**
