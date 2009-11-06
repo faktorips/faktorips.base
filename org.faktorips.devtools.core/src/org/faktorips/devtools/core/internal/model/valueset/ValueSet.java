@@ -20,6 +20,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -147,6 +148,14 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     /**
+     * Returns the data type this value set is based on or <code>null</code>, if the data type is
+     * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+        return ((IValueSetOwner)parent).findValueDatatype(ipsProject);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public final void setValuesOf(IValueSet source) {
@@ -238,6 +247,31 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      */
     public boolean isAbstractAndNotUnrestricted() {
         return !isUnrestricted() && isAbstract();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final boolean containsValue(String value) {
+        return containsValue(value, new MessageList(), null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+        try {
+            return containsValue(value, list, invalidObject, invalidProperty, getIpsProject());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
+        return containsValue(value, new MessageList(), null, null, ipsProject);
     }
 
     /**

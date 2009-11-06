@@ -91,18 +91,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws CoreException
      */
-    public boolean containsValue(String value) {
-        return containsValue(value, new MessageList(), null, null);
-    }
+    public boolean containsValue(String value,
+            MessageList list,
+            Object invalidObject,
+            String invalidProperty,
+            IIpsProject ipsProject) throws CoreException {
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         ArgumentCheck.notNull(list);
-
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
                     invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
@@ -117,7 +116,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return true;
         }
         /*
-         * An abstract valueset is considered containing all values. See #isAbstract()
+         * An abstract value set is considered containing all values. See #isAbstract()
          */
         if (isAbstract()) {
             return true;
