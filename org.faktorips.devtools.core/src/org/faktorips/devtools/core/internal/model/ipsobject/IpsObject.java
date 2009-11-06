@@ -71,7 +71,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     void markAsFromUnparsableFile() {
         fromParsableFile = false;
-        this.reinitPartCollections();
+        reinitPartCollections();
     }
 
     /**
@@ -179,6 +179,17 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
+     * This is a not published method to set the description from outside of this class without
+     * triggering the object changed event handler. It is used by TableContentsSaxHandler to load
+     * the description.
+     * 
+     * @param newDescription
+     */
+    public void setDescriptionInternal(String newDescription) {
+        description = newDescription;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public String getDescription() {
@@ -188,6 +199,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * Notifies the model that the object has changed.
      */
+    @Override
     protected void objectHasChanged() {
         ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
         objectHasChanged(event);
@@ -217,6 +229,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final Element createElement(Document doc) {
         return doc.createElement(getIpsObjectType().getXmlElementName());
     }
@@ -224,6 +237,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         DescriptionHelper.setDescription(element, description);
     }
@@ -231,6 +245,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(Element element) {
         fromParsableFile = true;
         super.initFromXml(element);
@@ -239,10 +254,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         description = DescriptionHelper.getDescription(element);
     }
 
+    @Override
     public String toString() {
         if (getParent() == null) {
             return "unnamed object"; // can only happen in test cases.  //$NON-NLS-1$
@@ -295,7 +312,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
                 getIpsObjectType(), nameToValidate));
         for (Iterator<Message> iter = mlForNameValidation.iterator(); iter.hasNext();) {
             // Create new messages related to this object and the given property
-            Message msg = (Message)iter.next();
+            Message msg = iter.next();
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);
         }
