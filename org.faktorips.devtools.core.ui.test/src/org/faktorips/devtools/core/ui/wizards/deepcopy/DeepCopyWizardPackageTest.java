@@ -91,11 +91,11 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
 
         ReferenceAndPreviewPage referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside,
                 DeepCopyWizard.TYPE_NEW_VERSION);
-        String newName = referenceAndPreviewPage.getNewName(oldName);
+        String newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
         assertFalse(newName.equals(oldName));
 
         referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside, DeepCopyWizard.TYPE_COPY_PRODUCT);
-        newName = referenceAndPreviewPage.getNewName(oldName);
+        newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
         assertFalse(newName.equals(oldName));
     }
 
