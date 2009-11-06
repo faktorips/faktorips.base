@@ -684,7 +684,7 @@ public class GenAssociationToMany extends GenAssociation {
 
         IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
                 getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         String methodName = getMethodNameGetNumOfRefObjectsInternal();
@@ -741,7 +741,7 @@ public class GenAssociationToMany extends GenAssociation {
 
         IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
                 getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
         generateSignatureGetAllRefObjects(methodsBuilder);
         String classname = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
 

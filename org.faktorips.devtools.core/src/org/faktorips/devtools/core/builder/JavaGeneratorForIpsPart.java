@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,33 +20,35 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Base class for Java source code generators for an ips object part container (ips object or ips part).
+ * Base class for Java source code generators for an ips object part container (ips object or ips
+ * part).
  * 
  * @author Jan Ortmann
  */
 public abstract class JavaGeneratorForIpsPart {
 
-    // the ips elements this generator generates sourcecode for 
+    // the ips elements this generator generates sourcecode for
     private IIpsObjectPartContainer ipsPart;
-    
-    private LocalizedTextHelper localizedTextHelper; 
-    
+
+    private LocalizedTextHelper localizedTextHelper;
+
     public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, LocalizedStringsSet localizedStringsSet) {
         super();
         ArgumentCheck.notNull(part);
         ArgumentCheck.notNull(localizedStringsSet);
-        this.ipsPart = part;
-        this.localizedTextHelper = new LocalizedTextHelper(localizedStringsSet);
+        ipsPart = part;
+        localizedTextHelper = new LocalizedTextHelper(localizedStringsSet);
     }
-    
+
     public IIpsObjectPartContainer getIpsPart() {
         return ipsPart;
     }
-    
+
     /**
      * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
      * level is greater than 1.5. It takes into account the fine differences regarding the
@@ -57,14 +59,10 @@ public abstract class JavaGeneratorForIpsPart {
      *            be generated it must be known if the the generated method is an implementation of
      *            an interface method or an override of a super class method.
      */
-    //TODO duplicate code with JavaSourceFileBuilder
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation){
-        if(ComplianceCheck.isComplianceLevel5(getIpsPart().getIpsProject()) && !interfaceMethodImplementation){
-            fragmentBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
-        }
-        if(ComplianceCheck.isComplianceLevelGreaterJava5(getIpsPart().getIpsProject())){
-            fragmentBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
-        }
+    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
+            IIpsProject iIpsProject,
+            boolean interfaceMethodImplementation) {
+        JavaGeneratiorHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
     }
 
     /**
@@ -75,8 +73,8 @@ public abstract class JavaGeneratorForIpsPart {
     public abstract Locale getLanguageUsedInGeneratedSourceCode();
 
     /**
-     * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)}
-     * without a description that is expected to be provided by the model.
+     * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)} without a
+     * description that is expected to be provided by the model.
      */
     protected void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, builder, getLanguageUsedInGeneratedSourceCode());
@@ -99,7 +97,8 @@ public abstract class JavaGeneratorForIpsPart {
             Object replacement,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
-        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, builder, getLanguageUsedInGeneratedSourceCode());
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, builder,
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -107,10 +106,9 @@ public abstract class JavaGeneratorForIpsPart {
      * {@link #appendLocalizedJavaDoc(String, Object, String, IIpsElement, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
-    protected void appendLocalizedJavaDoc(String keyPrefix,
-            Object replacement,
-            JavaCodeFragmentBuilder builder) {
-        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, builder, getLanguageUsedInGeneratedSourceCode());
+    protected void appendLocalizedJavaDoc(String keyPrefix, Object replacement, JavaCodeFragmentBuilder builder) {
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, builder,
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -137,7 +135,8 @@ public abstract class JavaGeneratorForIpsPart {
             Object[] replacements,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
-        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder, getLanguageUsedInGeneratedSourceCode());
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder,
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -145,12 +144,11 @@ public abstract class JavaGeneratorForIpsPart {
      * {@link #appendLocalizedJavaDoc(String, Object[], String, IIpsElement, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
-    protected void appendLocalizedJavaDoc(String keyPrefix,
-            Object[] replacements,
-            JavaCodeFragmentBuilder builder) {
-        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder, getLanguageUsedInGeneratedSourceCode());
+    protected void appendLocalizedJavaDoc(String keyPrefix, Object[] replacements, JavaCodeFragmentBuilder builder) {
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder,
+                getLanguageUsedInGeneratedSourceCode());
     }
-    
+
     /**
      * Returns the localized text for the provided key.
      * 
@@ -160,7 +158,7 @@ public abstract class JavaGeneratorForIpsPart {
     protected String getLocalizedText(String key) {
         return localizedTextHelper.getLocalizedText(key, getLanguageUsedInGeneratedSourceCode());
     }
-    
+
     /**
      * Returns the localized text for the provided key. Calling this method is only allowed during
      * the build cycle.
@@ -175,7 +173,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
-     * Returns the localized text for the provided key. 
+     * Returns the localized text for the provided key.
      * 
      * @param key the key that identifies the requested text
      * @param replacements indicated regions within the text are replaced by the string
@@ -186,44 +184,48 @@ public abstract class JavaGeneratorForIpsPart {
         return localizedTextHelper.getLocalizedText(key, replacements, getLanguageUsedInGeneratedSourceCode());
     }
 
-    //TODO duplicate in JavaSourceFileBuilder
     public String getJavaDocCommentForOverriddenMethod() {
-        return "{@inheritDoc}"; //$NON-NLS-1$
+        return JavaGeneratiorHelper.getJavaDocCommentForOverriddenMethod();
     }
 
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the language for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement the rule xyz.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the language for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      * @param replacements Any objects to replace wildcards in the message text.
      */
     public String getLocalizedToDo(String keyPrefix, Object replacement) {
         return localizedTextHelper.getLocalizedToDo(keyPrefix, replacement, getLanguageUsedInGeneratedSourceCode());
     }
 
-//  TODO duplicate in JavaSourceFileBuilder
     public JavaNamingConvention getJavaNamingConvention() {
-        return JavaNamingConvention.ECLIPSE_STANDARD;
+        return JavaGeneratiorHelper.getJavaNamingConvention();
     }
-    
+
     /**
      * Returns the getter method to access a property/attribute value.
      */
-    protected String getMethodNameGetPropertyValue(String propName, Datatype datatype){
+    protected String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
-    
+
     /**
      * Returns the setter method to access a property/attribute value.
      */
-    protected String getMethodNametSetPropertyValue(String propName, Datatype datatype){
+    protected String getMethodNametSetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getSetterMethodName(propName, datatype);
     }
-    
+
+    @Override
     public String toString() {
         return "Generator for " + ipsPart.toString();
     }
-    
+
 }

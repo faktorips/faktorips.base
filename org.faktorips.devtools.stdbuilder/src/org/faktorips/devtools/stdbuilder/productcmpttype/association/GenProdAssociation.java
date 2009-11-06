@@ -106,7 +106,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
-        appendOverrideAnnotation(builder, supertype == null || supertype.isAbstract());
+        appendOverrideAnnotation(builder, getIpsProject(), supertype == null || supertype.isAbstract());
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
         String internalMethodName = getMethodNameGetNumOfRelatedCmptsInternal();
@@ -291,7 +291,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
 
         generateSignatureDerivedUnionAssociation(methodsBuilder);
 

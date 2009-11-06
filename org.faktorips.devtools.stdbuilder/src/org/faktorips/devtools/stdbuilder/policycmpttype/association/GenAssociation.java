@@ -114,10 +114,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         }
     }
 
-    protected IIpsProject getIpsProject() {
-        return getGenPolicyCmptType().getPolicyCmptType().getIpsProject();
-    }
-
     private void generateMethodNewChild(boolean generatesInterface,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException {

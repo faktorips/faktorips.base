@@ -270,9 +270,9 @@ public class GenChangeableAttribute extends GenAttribute {
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             if (getPolicyCmptTypeAttribute().isOverwrite()) {
-                appendOverrideAnnotation(methodsBuilder, false);
+                appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
             } else if (attribute.getModifier().isPublished()) {
-                appendOverrideAnnotation(methodsBuilder, true);
+                appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
             }
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.openBracket();
@@ -301,7 +301,7 @@ public class GenChangeableAttribute extends GenAttribute {
     protected void generateSetterMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (attribute.getModifier().isPublished()) {
-            appendOverrideAnnotation(methodsBuilder, true);
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
         }
         generateSetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
@@ -342,10 +342,10 @@ public class GenChangeableAttribute extends GenAttribute {
         GenChangeableAttribute genOverwritten = getGeneratorForOverwrittenChangeableAttribute();
         if (genOverwritten != null) {
             if (genOverwritten.shouldGetAllowedSetOfValuesBeGenerated()) {
-                appendOverrideAnnotation(methodBuilder, false);
+                appendOverrideAnnotation(methodBuilder, getIpsProject(), false);
             }
         } else if (attribute.getModifier().isPublished()) {
-            appendOverrideAnnotation(methodBuilder, true);
+            appendOverrideAnnotation(methodBuilder, getIpsProject(), true);
         }
         generateSignatureGetSetOfAllowedValues(methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -375,9 +375,9 @@ public class GenChangeableAttribute extends GenAttribute {
             throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
-            appendOverrideAnnotation(methodsBuilder, false);
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
         } else if (attribute.getModifier().isPublished()) {
-            appendOverrideAnnotation(methodsBuilder, true);
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
         }
         generateSignatureGetSetOfAllowedValues(methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
