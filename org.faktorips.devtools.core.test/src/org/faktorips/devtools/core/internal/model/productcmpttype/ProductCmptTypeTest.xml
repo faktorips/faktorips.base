@@ -24,7 +24,7 @@
 	    <TableStructureUsage roleName="role1">
     		<TableStructure tableStructure="tableStructure1" />
     	</TableStructureUsage>
-		<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true" implementationType="formula">
+		<Method id="44" name="calcPremium" datatype="Money" modifier="public" abstract="true" implementationType="formula">
 		</Method>
 	</ProductCmptType>
 
