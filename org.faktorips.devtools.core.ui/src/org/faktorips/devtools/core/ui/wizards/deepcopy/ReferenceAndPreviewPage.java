@@ -73,7 +73,7 @@ import org.faktorips.util.message.MessageList;
 public class ReferenceAndPreviewPage extends WizardPage {
 
     // The ID to identify this page.
-    private static final String PAGE_ID = "deepCopyWizard.preview"; //$NON-NLS-1$
+    public static final String PAGE_ID = "deepCopyWizard.preview"; //$NON-NLS-1$
 
     // The page where the source for the deep copy operation is defined
     private SourcePage sourcePage;
@@ -363,7 +363,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * Constructs the new name. If at least one of search pattern and replace text is empty, the new
      * name is the old name.
      */
-    private String getNewName(String oldName) {
+    public String getNewName(String oldName) {
         String newName = oldName;
         IProductCmptNamingStrategy namingStrategy = sourcePage.getNamingStrategy();
         String kindId = null;
