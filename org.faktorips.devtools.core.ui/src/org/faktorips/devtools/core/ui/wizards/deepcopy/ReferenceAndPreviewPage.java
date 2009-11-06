@@ -422,21 +422,22 @@ public class ReferenceAndPreviewPage extends WizardPage {
         return newName;
     }
 
-    public String computeNewName(int uniqueCopyOfCounter, String newName) {
+    public static String computeNewName(int uniqueCopyOfCounter, String nameCandidate) {
         String uniqueCopyOfCounterText = uniqueCopyOfCounter == 0 ? "" : "(" + (uniqueCopyOfCounter + 1) + ")_";
         String nameWithoutCopyOfPrefix;
-        if (newName.startsWith(Messages.ReferenceAndPreviewPage_namePrefixCopyOf)) {
+        if (nameCandidate.startsWith(Messages.ReferenceAndPreviewPage_namePrefixCopyOf)) {
             // remove copyOf from the name
-            nameWithoutCopyOfPrefix = StringUtils.substringAfter(newName,
+            nameWithoutCopyOfPrefix = StringUtils.substringAfter(nameCandidate,
                     Messages.ReferenceAndPreviewPage_namePrefixCopyOf);
             // remove copyOf counter prefix e.g. "(2)_" if exists
             nameWithoutCopyOfPrefix = nameWithoutCopyOfPrefix.replaceAll("^\\([0-9]*\\)_", "");
         } else {
-            nameWithoutCopyOfPrefix = newName;
+            nameWithoutCopyOfPrefix = nameCandidate;
         }
         // add new copyOf and counter prefix
-        newName = Messages.ReferenceAndPreviewPage_namePrefixCopyOf + uniqueCopyOfCounterText + nameWithoutCopyOfPrefix;
-        return newName;
+        nameCandidate = Messages.ReferenceAndPreviewPage_namePrefixCopyOf + uniqueCopyOfCounterText
+                + nameWithoutCopyOfPrefix;
+        return nameCandidate;
     }
 
     /**
