@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -477,6 +479,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
+        Set<Integer> idSet = new HashSet<Integer>();
         reinitPartCollections();
         NodeList nl = element.getChildNodes();
         int nextId = getMaxIdUsedInXml(element) + 1;
@@ -500,6 +503,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (part != null) {
                 // part might may be null if the element does not represent a part!
                 part.initFromXml(partEl);
+                if (!idSet.add(part.getId())) {
+                    throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: "
+                            + part.getId());
+                }
             }
         }
         return;
