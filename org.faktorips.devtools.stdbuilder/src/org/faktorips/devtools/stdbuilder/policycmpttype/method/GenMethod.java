@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,8 +35,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenMethod extends GenPolicyCmptTypePart {
 
-    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenMethod.class); 
-        
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenMethod.class);
+
     public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) throws CoreException {
         super(genPolicyCmptType, method, LOCALIZED_STRINGS);
     }
@@ -44,6 +44,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
@@ -52,6 +53,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -61,6 +63,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
 
@@ -98,12 +101,12 @@ public class GenMethod extends GenPolicyCmptTypePart {
         } else {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
-        
+
         IMethod overiddenMethod = method.findOverriddenMethod(getIpsPart().getIpsProject());
-        if(method.getModifier().isPublished()){
-            appendOverrideAnnotation(methodsBuilder, overiddenMethod == null);
-        } else if(method.getModifier().isPublic() && overiddenMethod != null){
-            appendOverrideAnnotation(methodsBuilder, false);
+        if (method.getModifier().isPublished()) {
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), overiddenMethod == null);
+        } else if (method.getModifier().isPublic() && overiddenMethod != null) {
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
         }
         generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(), returnType, paramTypes,
                 methodsBuilder);

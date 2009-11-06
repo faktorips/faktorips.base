@@ -18,6 +18,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
@@ -40,6 +41,10 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
 
     public StandardBuilderSet getBuilderSet() {
         return genPolicyCmptType.getBuilderSet();
+    }
+
+    protected IIpsProject getIpsProject() {
+        return getGenPolicyCmptType().getPolicyCmptType().getIpsProject();
     }
 
     /**

@@ -226,7 +226,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the Java naming convention to be used.
      */
     public JavaNamingConvention getJavaNamingConvention() {
-        return JavaNamingConvention.ECLIPSE_STANDARD;
+        return JavaGeneratiorHelper.getJavaNamingConvention();
     }
 
     /**
@@ -770,7 +770,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return "{@inheritDoc}"; //$NON-NLS-1$
+        return JavaGeneratiorHelper.getJavaDocCommentForOverriddenMethod();
     }
 
     /**
@@ -784,13 +784,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            an interface method or an override of a super class method.
      */
     public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation) {
-        if (ComplianceCheck.isComplianceLevel5(getIpsProject()) && !interfaceMethodImplementation) {
-            fragmentBuilder.annotationLn(ANNOTATION_OVERRIDE);
-            return;
-        }
-        if (ComplianceCheck.isComplianceLevelGreaterJava5(getIpsProject())) {
-            fragmentBuilder.annotationLn(ANNOTATION_OVERRIDE);
-        }
+        JavaGeneratiorHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
     }
 
     /**
