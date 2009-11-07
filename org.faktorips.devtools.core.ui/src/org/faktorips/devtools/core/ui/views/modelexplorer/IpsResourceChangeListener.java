@@ -36,11 +36,6 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     private ITreeContentProvider contentProvider;
 
     /**
-     * The layout style used by the viewer
-     */
-    private LayoutStyle layoutStyle = LayoutStyle.HIERACHICAL;
-
-    /**
      * Creates a new ResourceChangeListener which will update the given StructuredViewer if a
      * resource change event occurs.
      * 
@@ -51,17 +46,8 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
      */
     public IpsResourceChangeListener(StructuredViewer viewer) {
         ArgumentCheck.notNull(viewer);
-        ArgumentCheck.notNull(layoutStyle);
         this.viewer = viewer;
         contentProvider = (ITreeContentProvider)viewer.getContentProvider();
-    }
-
-    public LayoutStyle getLayoutStyle() {
-        return layoutStyle;
-    }
-
-    public void setLayoutStyle(LayoutStyle layoutStyle) {
-        this.layoutStyle = layoutStyle;
     }
 
     /**

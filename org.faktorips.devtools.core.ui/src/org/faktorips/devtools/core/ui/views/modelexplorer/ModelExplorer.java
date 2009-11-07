@@ -360,7 +360,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         ipsDecorator.setFlatLayout(isFlatLayout());
         contentProvider.setLayoutStyle(newStyle);
         labelProvider.setIsFlatLayout(isFlatLayout());
-        resourceListener.setLayoutStyle(layoutStyle);
 
         treeViewer.getControl().setRedraw(false);
         treeViewer.refresh();
