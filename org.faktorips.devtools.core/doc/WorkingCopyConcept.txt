@@ -1,0 +1,33 @@
+Working Copy Konzept
+====================
+
+Notizen zum WorkingCopy Konzept, analog zum Konzept im Eclipse-JDT.
+
+Ein IpsObjekt existiert immer in einer gueltigen Version, zusätzlich kann es beliebig viele WorkingCopies zu einem Objekt geben.
+Eine WorkingCopy ist eine Kopie eines IpsObjektes, an der Änderungen an dem IpsObject durchgeführt werden. Eine WorkingCopy representiert einen
+Arbeitsstand. Dieser kann entweder verworfen werden oder abgeschlossen/commited werden. In letzterem Fall wird die WorkingCopy zur neuen
+gueltigen Version.
+
+Jede WorkingCopy gehört zu genau einem WorkingCopyOwner. Der WorkingCopyOwner kann pro IpsObject jeweils genau eine (oder keine) Copy
+halten. Ueber den WorkingCopyOwner hat man also einen Arbeitsstand des Gesamtmodells von IpsObjects.
+
+Wozu braucht man WorkingCopies und WorkingCopyOwners?
+
+1.) Refactoring
+Beim Durchführen eines Refactoring, werden unter Umständen mehrere IpsObjects geaendert. Die Aenderungen werden zunaechst in WorkingCopies der 
+betroffenen Objekte durchgefuehrt. Nach dem das Refactoring durchgefuhert in einem (nicht committeten) Arbeitsstand wurde, kann das Ergebnis dem
+Benutzer praesentiert werden. Moechte der das Refactoring jetzt abschliessen, werden die WorkingCopies committed, andernfalls verworfen. 
+WorkingCopyOwner ist in diesem Fall das Refactoring.
+
+2.) Editoren
+Aenderungen in Editoren werden ebenfalls auf WorkingCopies durchgefuehrt. Es gibt einen StandardWorkingCopyOwner, der den Arbeitstand des Modells
+in den Editoren (es kann in mehreren Editoren nicht gespeicherte Aenderungen geben!) repraesentiert. Beim Speichern im Editor, wird die WorkingCopy
+committed.
+
+Implementierung:
+IpsObjectContent enthaelt den Inhalt der WorkingCopy bzw. des gueltigen IpsObjekt-Zustands.
+Es muss zusaetzliche Methoden geben, die den WorkingCopyOwner als Parameter mitbekommmen, z. B.
+
+    public IIpsObject findIpsObject(QualifiedNameType nameType, IIpsWorkingCopyOwner owner) throws CoreException;
+
+Uebergaben von null gibt den gueltigen IpsObject-Zustand zurueck. Die bisherigen Methoden, delegieren an die neuen Methoden mit Owner und uebergeben null.

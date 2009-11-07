@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>20</x><y>270</y><w>190</w><h>60</h></coordinates><panel_attributes>SachpoliceExt
+&lt;&lt;Vertragskomponente&gt;&gt;
+&lt;&lt;Extensionsimplementierung&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>30</x><y>160</y><w>170</w><h>60</h></coordinates><panel_attributes>SachpoliceImpl
+&lt;&lt;Vertragskomponente&gt;&gt;
+&lt;&lt;Basisimplementierung&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>340</x><y>160</y><w>160</w><h>60</h></coordinates><panel_attributes>SachpolicePkImpl
+&lt;&lt;Produktkomponente&gt;&gt;
+&lt;&lt;Basisimplementierung&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>340</x><y>50</y><w>150</w><h>70</h></coordinates><panel_attributes>SachpolicePk
+&lt;&lt;Produktkomponente&gt;&gt;
+&lt;&lt;Published Interface&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>30</x><y>50</y><w>170</w><h>60</h></coordinates><panel_attributes>Sachpolice
+&lt;&lt;Vertragskomponente&gt;&gt;
+&lt;&lt;Published Interface&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>100</x><y>90</y><w>40</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;70</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>100</x><y>200</y><w>40</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;70</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>400</x><y>100</y><w>40</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;60</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>180</x><y>50</y><w>180</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=1
+m2=0..n</panel_attributes><additional_attributes>160;20;20;20</additional_attributes></element></umlet_diagram>

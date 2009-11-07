@@ -23,9 +23,16 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchMatch;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -34,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -1320,22 +1328,59 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
-
+    // TODO AW: How will clients be able to know what kind of IJavaElement each list entry is?
+    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        final List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsObjectPartContainer;
+            try {
+                IIpsObjectPath ipsObjectPath = policyCmptTypeAttribute.getIpsProject().getIpsObjectPath();
+                IJavaProject javaProject = policyCmptTypeAttribute.getIpsProject().getJavaProject();
+                IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(ipsObjectPath
+                        .getOutputFolderForMergableSources());
+                IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { root });
+                SearchRequestor requestor = new SearchRequestor() {
 
-            IField field = javaType.getField(getJavaNamingConvention().getMemberVarName(
-                    policyCmptTypeAttribute.getName()));
-            javaElements.add(field);
+                    @Override
+                    public void acceptSearchMatch(SearchMatch match) throws CoreException {
+                        javaElements.add((IJavaElement)match.getElement());
+                    }
+                };
+
+                SearchPattern compositeSearchPattern = SearchPattern.createOrPattern(createSearchPatternForField(
+                        policyCmptTypeAttribute, ipsObjectPath), createSearchPatternForGetter(policyCmptTypeAttribute,
+                        ipsObjectPath));
+                new SearchEngine().search(compositeSearchPattern, new SearchParticipant[] { SearchEngine
+                        .getDefaultSearchParticipant() }, scope, requestor, null);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        return javaElements;
     }
 
-    @Override
-    protected boolean isBuildingPublishedSourceFile() {
-        return false;
+    private SearchPattern createSearchPatternForField(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
+            IIpsObjectPath ipsObjectPath) {
+
+        return SearchPattern.createPattern(ipsObjectPath.getBasePackageNameForMergableJavaClasses() + ".internal."
+                + policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName() + '.'
+                + policyCmptTypeAttribute.getName() + ' ' + policyCmptTypeAttribute.getDatatype(),
+                IJavaSearchConstants.FIELD, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH
+                        | SearchPattern.R_CASE_SENSITIVE);
+    }
+
+    private SearchPattern createSearchPatternForGetter(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
+            IIpsObjectPath ipsObjectPath) throws CoreException {
+
+        return SearchPattern.createPattern(ipsObjectPath.getBasePackageNameForMergableJavaClasses()
+                + ".internal."
+                + policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName()
+                + '.'
+                + getJavaNamingConvention().getGetterMethodName(policyCmptTypeAttribute.getName(),
+                        policyCmptTypeAttribute.getIpsProject().findDatatype(policyCmptTypeAttribute.getDatatype()))
+                + "() " + policyCmptTypeAttribute.getDatatype(), IJavaSearchConstants.METHOD,
+                IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
     }
 
     private class CheckForOverrideAnnotationForNewCopyMethod extends PolicyCmptTypeHierarchyVisitor {

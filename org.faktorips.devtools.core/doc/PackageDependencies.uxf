@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Package</type><coordinates><x>290</x><y>880</y><w>380</w><h>120</h></coordinates><panel_attributes>org.faktorips.util
+--
+Utilityklassen
+Wird aufegelöst werden.</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>950</x><y>400</y><w>240</w><h>370</h></coordinates><panel_attributes>lt=&lt;.
+Money, Decimal werden zur Zeit
+in einigen Testfällen referenziert.
+Keine wirkliche Abhängigkeit.</panel_attributes><additional_attributes>120;350;120;20</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>30</x><y>160</y><w>290</w><h>110</h></coordinates><panel_attributes>org.faktorips.devtools.stdbuilder
+--
+Standard-Codegeneratoren
+Abhängig von Eclipse-API</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>30</x><y>350</y><w>230</w><h>80</h></coordinates><panel_attributes>org.faktorips.devtools.core
+--
+Developmenttool. 
+Modell, Editoren etc.
+Abhängig von Eclipse-API</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>510</x><y>350</y><w>230</w><h>70</h></coordinates><panel_attributes>org.faktorips.fl
+--
+Formelcompiler
+Unabhängig von Eclipse-API</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>880</x><y>350</y><w>230</w><h>70</h></coordinates><panel_attributes>org.faktorips.runtime
+--
+Runtimeklassen
+Unabhängig von Eclipse-API</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>20</x><y>250</y><w>260</w><h>120</h></coordinates><panel_attributes>lt=&lt;.
+Stellt eine Extension des BuilderSet
+Extension Points zur Verfügung.</panel_attributes><additional_attributes>130;100;130;20</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>880</x><y>730</y><w>260</w><h>120</h></coordinates><panel_attributes>org.faktorips.valuetypes
+--
+Money, Decimal
+ValueSets
+Unabhängig von Eclipse-API
+
+Decimal und Money muss noch in ein 
+eigenes Package verschoben werden.</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Note</type><coordinates><x>20</x><y>20</y><w>340</w><h>110</h></coordinates><panel_attributes>Projektstruktur von FaktorIPS
+--
+Nur die direkten Abhängigkeiten werden hier gezeigt.</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>340</x><y>640</y><w>40</w><h>260</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>20;240;20;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>300</x><y>156</y><w>923</w><h>234</h></coordinates><panel_attributes>lt=&lt;.
+Der Standardbuilder generiert Sourcecode,
+der von Klassen der Standard-Runtime
+ableitet. Diese werden im Builder referenziert
+(um die Namen nicht hart verdrahten zu müssen).</panel_attributes><additional_attributes>750;214;750;34;20;34</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>300</x><y>216</y><w>419</w><h>174</h></coordinates><panel_attributes>lt=&lt;.
+Compiler wird aufgerufen, 
+um aus den Formeln 
+Java-Sourcecode
+zu generieren.</panel_attributes><additional_attributes>330;154;330;34;310;34;20;34</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>357</x><y>630</y><w>543</w><h>147</h></coordinates><panel_attributes>lt=&lt;.
+Hilfsklassen für die Codegenerierung
+für Decimal und Money.</panel_attributes><additional_attributes>523;110;133;110;133;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>680</x><y>400</y><w>375</w><h>350</h></coordinates><panel_attributes>lt=&lt;.
+Compiler unterstützt Money und Decimal</panel_attributes><additional_attributes>230;330;230;250;20;20</additional_attributes></element><element><type>com.umlet.element.base.Package</type><coordinates><x>250</x><y>510</y><w>280</w><h>140</h></coordinates><panel_attributes>org.faktorips.dtfl-common
+--
+Basisklassen fuer DevelopmentTool 
+und Formelcompiler.
+
+ - JavaCodeFragment
+ - Datatype
+
+Unabhängig von Eclipse-API
+Besser Name evtl.: org.faktorips.codegen?</panel_attributes><additional_attributes>transparentSelection=true</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>410</x><y>400</y><w>250</w><h>150</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>20;130;230;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>240</x><y>356</y><w>290</w><h>71</h></coordinates><panel_attributes>lt=&lt;.
+Compiler wird aufgerufen, 
+um die Formeln zu prüfen</panel_attributes><additional_attributes>270;34;20;34</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>130</x><y>410</y><w>140</w><h>120</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>120;100;20;20</additional_attributes></element></umlet_diagram>
