@@ -84,8 +84,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         allowedTypes.remove(IpsObjectType.PRODUCT_CMPT_TYPE);
         config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
 
-        flatProvider = new ModelContentProvider(config, true);
-        hierarchyProvider = new ModelContentProvider(config, false);
+        flatProvider = new ModelContentProvider(config, LayoutStyle.FLAT);
+        hierarchyProvider = new ModelContentProvider(config, LayoutStyle.HIERACHICAL);
 
         proj = newIpsProject("TestProject");
         setModelProjectProperty(proj, true);
@@ -271,8 +271,9 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         parent = hierarchyProvider.getParent(modelPackage);
         assertEquals(subPackage, parent);
         parent = hierarchyProvider.getParent(subPackage);
-        assertEquals(defaultPackage, parent);
-        parent = hierarchyProvider.getParent(defaultPackage);
+        // TODO Stefan: wenn Review ok, dann koennen folgende 2 Zeilen entfernt werden.
+        // assertEquals(defaultPackage, parent);
+        // parent = hierarchyProvider.getParent(defaultPackage);
         assertEquals(root, parent);
         // tests for flat layout
         parent = flatProvider.getParent(emptyPackage);
