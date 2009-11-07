@@ -20,19 +20,30 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 
 /**
- * A resource delta visitor that computed the ips elements and the resources that needs to be
+ * A resource delta visitor that computes the ips elements and the resources that needs to be
  * refreshed in the model / product definition explorer.
  * 
  * @author Jan Ortmann
  */
-class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
+public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
-    private Set<IIpsElement> ipsElementsToRefresh = new HashSet<IIpsElement>();
-    private Set<IResource> resourcesToRefresh = new HashSet<IResource>();
+    private Set<Object> objectsToRefresh = new HashSet<Object>();
+    private Set<Object> objectsToUpdate = new HashSet<Object>();
+
+    private ITreeContentProvider contentProvider;
+
+    public IpsViewRefreshVisitor(ITreeContentProvider contentProvider) {
+        super();
+        ArgumentCheck.notNull(contentProvider);
+        this.contentProvider = contentProvider;
+    }
 
     public boolean visit(IResourceDelta delta) throws CoreException {
         IResource resource = delta.getResource();
@@ -44,69 +55,87 @@ class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     /**
-     * Returns the ips elements that needs to be refreshed for the givne delta.
+     * Returns the elements (IpsElements and Resources) that needs to be refreshed for the given
+     * delta.
      */
-    Set<IIpsElement> getIpsElementsToRefresh() {
-        return ipsElementsToRefresh;
+    public Set<Object> getElementsToRefresh() {
+        return objectsToRefresh;
     }
 
     /**
-     * Returns the resources that needs to be refreshed for the givne delta.
+     * Returns the elements (IpsElements and Resources) that needs to be updates for the givne
+     * delta.
      */
-    Set<IResource> getResourcesToRefresh() {
-        return resourcesToRefresh;
+    public Set<Object> getElementsToUpdate() {
+        return objectsToUpdate;
     }
 
     private boolean handleResource(IResourceDelta delta) {
-        IResource parentResource = delta.getResource().getParent();
-        IIpsElement parentIpsElement = getIpsElement(parentResource);
+        IResource resource = delta.getResource();
+        if (isIpsProjectPropertiesFile(resource)) {
+            // we have to return the ips-model here, as a change might lead to removal or addition
+            // of the project. Also before the ips nature is added to a project, the element
+            // displayed in the explorer is an IProject not an IIpsProject. So registering the new
+            // IpsProject for refresh has no effect.
+            registerForRefresh(IpsPlugin.getDefault().getIpsModel());
+            return false;
+        }
         if (isAddedOrRemoved(delta)) {
-            if (parentIpsElement != null) {
-                // if the parent resource is an ips element, the parent ips element must be
-                // refreshed
-                // e.g. a package containing a JPEG or an ips project containing a "normal"
-                // folder
-                registerIpsElementForRefresh(parentIpsElement);
-            } else {
-                registerResourceForRefresh(parentResource);
-            }
+            registerForRefresh(getParent(resource));
+            return false;
         } else {
-            if (parentIpsElement != null) {
-                registerResourceForRefresh(delta.getResource());
-            }
+            registerForUpdate(delta.getResource());
+            return true;
         }
-        return true;
-    }
-
-    private void registerResourceForRefresh(IResource resource) {
-        if (resourcesToRefresh.contains(resource.getParent())) {
-            return;
-        }
-        if (ipsElementsToRefresh.contains(getIpsElement(resource.getParent()))) {
-            return;
-        }
-        resourcesToRefresh.add(resource);
     }
 
     private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) {
         if (isAddedOrRemoved(delta)) {
-            registerIpsElementForRefresh(ipsElement.getParent());
+            registerForRefresh(ipsElement.getParent());
             return false;
         } else { // changed ips element
             if (delta.getResource().getType() == IResource.FILE) {
                 // this applies for ips source files *and* ips package fragment roots based on
                 // ips archives!
-                registerIpsElementForRefresh(ipsElement);
+                registerForRefresh(ipsElement);
                 return false;
             }
         }
         return true;
     }
 
-    private void registerIpsElementForRefresh(IIpsElement ipsElement) {
-        if (!ipsElementsToRefresh.contains(ipsElement.getParent())) {
-            ipsElementsToRefresh.add(ipsElement);
+    private IIpsProject getIpsProject(IResource resource) {
+        return IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+    }
+
+    private boolean isIpsProjectPropertiesFile(IResource resource) {
+        IIpsProject ipsProject = getIpsProject(resource);
+        if (ipsProject == null) {
+            return false;
         }
+        return resource.equals(ipsProject.getIpsProjectPropertiesFile());
+    }
+
+    private void registerForRefresh(Object resourceOrIpsElement) {
+        if (resourceOrIpsElement == null) {
+            return;
+        }
+        if (!objectsToRefresh.add(resourceOrIpsElement)) {
+            return;
+        }
+        objectsToUpdate.remove(resourceOrIpsElement); // if the element is refresh, no need to
+        // update it.
+        registerForUpdate(getParent(resourceOrIpsElement));
+    }
+
+    private void registerForUpdate(Object resourceOrIpsElement) {
+        if (resourceOrIpsElement == null) {
+            return;
+        }
+        if (!objectsToUpdate.add(resourceOrIpsElement)) {
+            return;
+        }
+        registerForUpdate(getParent(resourceOrIpsElement));
     }
 
     private boolean isAddedOrRemoved(IResourceDelta delta) {
@@ -120,5 +149,26 @@ class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
         return element;
     }
+
+    private Object getParent(Object resourceOrIpsElement) {
+        return contentProvider.getParent(resourceOrIpsElement);
+    }
+
+    // private Object getParent(Object resourceOrIpsElement) {
+    // if (resourceOrIpsElement instanceof IIpsPackageFragment) {
+    // return layoutStyle.getParent((IIpsPackageFragment)resourceOrIpsElement);
+    //
+    // }
+    // if (resourceOrIpsElement instanceof IIpsElement) {
+    // return ((IIpsElement)resourceOrIpsElement).getParent();
+    // }
+    // IResource resource = (IResource)resourceOrIpsElement;
+    // IResource parentResource = resource.getParent();
+    // IIpsElement parentElement = getIpsElement(parentResource);
+    // if (parentElement != null) {
+    // return parentElement;
+    // }
+    // return parentResource;
+    // }
 
 }

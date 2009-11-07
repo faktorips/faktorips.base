@@ -59,7 +59,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     // A map with the values as keys and the index positions of the occurences of a value as
     // "map value". If a value occurs once, the "map value" the index is stored as single Integer.
     // If a value occurs more than once, the "map value" is a list containing the indexes of the
-    // occurences.
+    // occurrences.
     private Map<String, Object> valuesToIndexMap = new HashMap<String, Object>();
 
     public EnumValueSet(IIpsObjectPart parent, int partId) {
@@ -91,18 +91,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws CoreException
      */
-    public boolean containsValue(String value) {
-        return containsValue(value, new MessageList(), null, null);
-    }
+    public boolean containsValue(String value,
+            MessageList list,
+            Object invalidObject,
+            String invalidProperty,
+            IIpsProject ipsProject) throws CoreException {
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         ArgumentCheck.notNull(list);
-
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
                     invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
@@ -117,7 +116,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return true;
         }
         /*
-         * An abstract valueset is considered containing all values. See #isAbstract()
+         * An abstract value set is considered containing all values. See #isAbstract()
          */
         if (isAbstract()) {
             return true;
@@ -506,9 +505,21 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public IValueSet copy(IIpsObjectPart parent, int id) {
-        EnumValueSet retValue = new EnumValueSet(parent, id);
-        retValue.values = new ArrayList<String>(values);
-        return retValue;
+        EnumValueSet copy = new EnumValueSet(parent, id);
+        copy.values = new ArrayList<String>(values);
+        copy.refillValuesToIndexMap();
+        return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void copyPropertiesFrom(IValueSet source) {
+        values.clear();
+        values.addAll(((EnumValueSet)source).values);
+        refillValuesToIndexMap();
+        objectHasChanged();
     }
 
     /**
@@ -519,16 +530,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         for (int i = 0; i < valueIds.length; i++) {
             addValue(valueIds[i]);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void copyPropertiesFrom(IValueSet source) {
-        values.clear();
-        values.addAll(((EnumValueSet)source).values);
-        objectHasChanged();
     }
 
     /**

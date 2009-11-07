@@ -671,7 +671,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                                 enumHelper.getEnumType(), expression, new JavaCodeFragment("productRepository")));
                         body.append(';');
                         body.appendln();
-                        break;
+                        i++;
+                        continue;
                     }
                 }
                 body.append(helper.newInstanceFromExpression(expression));

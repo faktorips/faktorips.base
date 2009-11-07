@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -25,14 +26,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
-import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -40,7 +39,7 @@ import org.faktorips.values.DateUtil;
 
 /**
  * Editor to a edit a product component.
- *
+ * 
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
@@ -52,8 +51,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     /*
-     * Setting key for the working date used in the editor. This might differ from the one
-     * defined in the preferences.
+     * Setting key for the working date used in the editor. This might differ from the one defined
+     * in the preferences.
      */
     private final static String SETTING_WORKING_DATE = "workingDate"; //$NON-NLS-1$
 
@@ -69,71 +68,59 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private boolean isHandlingWorkingDateMismatch = false;
 
     /**
-	 * Creates a new editor for product components.
-	 */
-	public ProductCmptEditor() {
-		super();
-	}
+     * Creates a new editor for product components.
+     */
+    public ProductCmptEditor() {
+        super();
+    }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
         // if the editor was opened by using the generation
         // then no generation mismatch dialog should be displayed
-        if (input instanceof ProductCmptEditorInput){
+        if (input instanceof ProductCmptEditorInput) {
             ignoreHandlingOfWorkingDateMissmatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMissmatch();
         }
     }
-    
+
     /**
-	 * {@inheritDoc}
-	 */
-	protected void addPagesForParsableSrcFile() throws PartInitException , CoreException {
-		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-        IIpsObjectEditorSettings settings = getSettings();
-        // open the select template dialog if the template is missing and the data is changeable
-		if (getProductCmpt().findProductCmptType(getIpsProject()) == null
-                && couldDateBeChangedIfProductCmptTypeWasntMissing()
-                && !IpsPlugin.getDefault().isTestMode()
-                && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
-            String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getProductCmptType());
-            SetTemplateDialog d = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
-            int rc = d.open();
-            if (rc==Dialog.CANCEL) {
-                getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
-            }
-        }
-        this.generationPropertiesPage = new GenerationPropertiesPage(this);
-		addPage(generationPropertiesPage);
-		addPage(new ProductCmptPropertiesPage(this));
-		addPage(new DescriptionPage(this));
+     * {@inheritDoc}
+     */
+    @Override
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+        generationPropertiesPage = new GenerationPropertiesPage(this);
+        addPage(generationPropertiesPage);
+        addPage(new ProductCmptPropertiesPage(this));
+        addPage(new DescriptionPage(this));
         IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
-        if (gen==null) {
-            gen = cmpt.getGenerationsOrderedByValidDate()[cmpt.getNumOfGenerations()-1];
+        if (gen == null) {
+            gen = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt().getNumOfGenerations() - 1];
         }
         setActiveGeneration(gen, false);
-	}
+    }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {
-        if (generationPropertiesPage.getPartControl()==null || generationPropertiesPage.getPartControl().isDisposed()) {
+        if (generationPropertiesPage.getPartControl() == null || generationPropertiesPage.getPartControl().isDisposed()) {
             return null;
         }
         return generationPropertiesPage;
     }
 
-	/**
-	 * Returns the product component for the sourcefile edited with this editor.
-	 */
-	IProductCmpt getProductCmpt() {
-		try {
-			return (IProductCmpt) getIpsSrcFile().getIpsObject();
-		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-			throw new RuntimeException(e);
-		}
-	}
+    /**
+     * Returns the product component for the sourcefile edited with this editor.
+     */
+    IProductCmpt getProductCmpt() {
+        try {
+            return (IProductCmpt)getIpsObject();
+        } catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            throw new RuntimeException(e);
+        }
+    }
 
     private GregorianCalendar getWorkingDateUsedInEditor() {
         String s = getSettings().get(getIpsSrcFile(), SETTING_WORKING_DATE);
@@ -149,53 +136,75 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         getSettings().put(getIpsSrcFile(), SETTING_WORKING_DATE, DateUtil.gregorianCalendarToIsoDateString(date));
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void editorActivated() {
-	    if (TRACE) {
-         logMethodStarted("editorActivated()");    //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void editorActivated() {
+        if (TRACE) {
+            logMethodStarted("editorActivated()"); //$NON-NLS-1$
         }
         updateChosenActiveGeneration();
-		super.editorActivated();
+        super.editorActivated();
         if (TRACE) {
-             logMethodFinished("editorActivated()");    //$NON-NLS-1$
+            logMethodFinished("editorActivated()"); //$NON-NLS-1$
         }
-	}
+    }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * The method is overridden, to enable access from classes in same package.
      */
+    @Override
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
+        }
+        try {
+            checkMissingType();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         super.checkForInconsistenciesToModel();
         if (TRACE) {
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	protected String getUniformPageTitle() {
-		if (!isSrcFileUsable()) {
-			String filename = getIpsSrcFile()==null?"null":getIpsSrcFile().getName(); //$NON-NLS-1$
-			return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
-		}
-		return Messages.ProductCmptEditor_productComponent
-				+ getProductCmpt().getName();
-	}
 
-	/**
-	 * Checks if the currently active generations valid-from-date matches exactly the currently set
-	 * working date. If not so, a search for a matching generation is started. If nothing is found, the user
-	 * is asked to create a new one.
-	 */
-	private void updateChosenActiveGeneration() {
+    private void checkMissingType() throws CoreException {
+        // open the select template dialog if the template is missing and the data is changeable
+        if (getProductCmpt().findProductCmptType(getIpsProject()) == null
+                && couldDateBeChangedIfProductCmptTypeWasntMissing() && !IpsPlugin.getDefault().isTestMode()
+                && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
+            String msg = NLS
+                    .bind(Messages.ProductCmptEditor_msgTemplateNotFound, getProductCmpt().getProductCmptType());
+            SetTemplateDialog d = new SetTemplateDialog(getProductCmpt(), getSite().getShell(), msg);
+            int rc = d.open();
+            if (rc == Window.CANCEL) {
+                getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getUniformPageTitle() {
+        if (!isSrcFileUsable()) {
+            String filename = getIpsSrcFile() == null ? "null" : getIpsSrcFile().getName(); //$NON-NLS-1$
+            return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
+        }
+        return Messages.ProductCmptEditor_productComponent + getProductCmpt().getName();
+    }
+
+    /**
+     * Checks if the currently active generations valid-from-date matches exactly the currently set
+     * working date. If not so, a search for a matching generation is started. If nothing is found,
+     * the user is asked to create a new one.
+     */
+    private void updateChosenActiveGeneration() {
         try {
             if (!getIpsSrcFile().isContentParsable()) {
                 return;
@@ -205,16 +214,16 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return;
         }
 
-        if (ignoreHandlingOfWorkingDateMissmatch){
+        if (ignoreHandlingOfWorkingDateMissmatch) {
             return;
         }
         ignoreHandlingOfWorkingDateMissmatch = true;
-        
-        IProductCmpt prod = getProductCmpt();
-		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-		IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
 
-        if (generation!=null) {
+        IProductCmpt prod = getProductCmpt();
+        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
+
+        if (generation != null) {
             setWorkingDateUsedInEditor(workingDate);
             if (!generation.equals(getActiveGeneration())) {
                 // we found a generation matching the working date, but the found one is not active,
@@ -224,74 +233,76 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return;
         }
         // no generation for the _exact_ current working date.
-		if (workingDate.equals(getWorkingDateUsedInEditor())) {
-			// check happned before and user decided not to create a new generation - dont bother
-			// the user with repeating questions.
+        if (workingDate.equals(getWorkingDateUsedInEditor())) {
+            // check happned before and user decided not to create a new generation - dont bother
+            // the user with repeating questions.
             return;
-		}
-		IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-		if (prefs.isWorkingModeBrowse()) {
-			// just browsing - show the generation valid at working date
-			if (!getSettings().getBoolean(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET)) {
-				showGenerationEffectiveOn(prefs.getWorkingDate());
-			}
-			return;
-		}
-        if (!getIpsSrcFile().isMutable()){
+        }
+        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+        if (prefs.isWorkingModeBrowse()) {
+            // just browsing - show the generation valid at working date
+            if (!getSettings().getBoolean(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET)) {
+                showGenerationEffectiveOn(prefs.getWorkingDate());
+            }
+            return;
+        }
+        if (!getIpsSrcFile().isMutable()) {
             // no check of working date mismatch
             // because product component is read only
             return;
-        }		
+        }
         handleWorkingDateMissmatch();
-	}
+    }
 
     /**
      * {@inheritDoc}
      */
-	public void propertyChange(PropertyChangeEvent event) {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
         if (!isActive()) {
             super.propertyChange(event);
             return;
         }
-		String property = event.getProperty();
-		if (property.equals(IpsPreferences.WORKING_DATE)) {
-			getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
-			updateChosenActiveGeneration();
-		} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-		    refresh();
-		} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+        String property = event.getProperty();
+        if (property.equals(IpsPreferences.WORKING_DATE)) {
+            getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
+            updateChosenActiveGeneration();
+        } else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+            refresh();
+        } else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             // refresh is done in superclass
-		} else if (event.getProperty().equals(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW)){
+        } else if (event.getProperty().equals(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW)) {
             refreshInclStructuralChanges();
             refresh();
-		}
+        }
         super.propertyChange(event);
-	}
-    
-	public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
-		if (generation == null) {
-			return;
-		}
-		if (generation!=getActiveGeneration()) {
-			super.setActiveGeneration(generation);
-            if (getGenerationPropertiesPage()!=null) {
+    }
+
+    public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
+        if (generation == null) {
+            return;
+        }
+        if (generation != getActiveGeneration()) {
+            super.setActiveGeneration(generation);
+            if (getGenerationPropertiesPage() != null) {
                 generationPropertiesPage.rebuildInclStructuralChanges();
             }
             refresh();
-		}
+        }
         getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, manuallySet);
-	}
+    }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean computeDataChangeableState() {
         if (!couldDateBeChangedIfProductCmptTypeWasntMissing()) {
             return false;
         }
         try {
-            return getProductCmpt().findProductCmptType(getIpsProject())!=null;
+            return getProductCmpt().findProductCmptType(getIpsProject()) != null;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
@@ -313,55 +324,55 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Returns <code>true</code> if the given generation is editable, otherwise <code>false</code>.
      */
     public boolean isGenerationEditable(IProductCmptGeneration gen) {
-        if (gen==null) {
+        if (gen == null) {
             return false;
         }
-		// if generation is not effective in the current effective date, no editing is possible
-		if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
-			return false;
-		}
+        // if generation is not effective in the current effective date, no editing is possible
+        if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
+            return false;
+        }
         if (!gen.getIpsSrcFile().isMutable()) {
             return false;
         }
-        if (gen.isValidFromInPast()!=null && gen.isValidFromInPast().booleanValue()) {
+        if (gen.isValidFromInPast() != null && gen.isValidFromInPast().booleanValue()) {
             IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
             return pref.canEditRecentGeneration();
-		}
-		return true;
-	}
+        }
+        return true;
+    }
 
     /**
      * Shows the generation wich is effective on the given date
      */
-	public void showGenerationEffectiveOn(GregorianCalendar date) {
-		IIpsObjectGeneration generation = getProductCmpt().findGenerationEffectiveOn(date);
-		if (generation == null) {
-			generation = getProductCmpt().getFirstGeneration();
-		}
-		setActiveGeneration(generation, false);
-	}
+    public void showGenerationEffectiveOn(GregorianCalendar date) {
+        IIpsObjectGeneration generation = getProductCmpt().findGenerationEffectiveOn(date);
+        if (generation == null) {
+            generation = getProductCmpt().getFirstGeneration();
+        }
+        setActiveGeneration(generation, false);
+    }
 
-	private void handleWorkingDateMissmatch() {
+    private void handleWorkingDateMissmatch() {
         IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-        
+
         // following if statement is there as closing the dialog triggers a window activated event
         // and handling the event calls this method.
         if (isHandlingWorkingDateMismatch) {
             return;
         }
         isHandlingWorkingDateMismatch = true;
-		IProductCmpt cmpt = getProductCmpt();
-        
+        IProductCmpt cmpt = getProductCmpt();
+
         GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt);
-        
+
         dialog.open(); // closing the dialog triggers an window activation event
-        
+
         isHandlingWorkingDateMismatch = false;
         int choice = -1;
         if (IpsPlugin.getDefault().isTestMode()) {
             choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
         } else {
-            if (dialog.getReturnCode() == GenerationSelectionDialog.OK) {
+            if (dialog.getReturnCode() == Window.OK) {
                 choice = dialog.getChoice();
                 prefs.setEditRecentGeneration(dialog.isCanEditRecentGenerations());
             }
@@ -383,28 +394,30 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 // show generation valid on current working date or if there is no valid generation,
                 // show the first generation
                 IIpsObjectGeneration currGeneration = cmpt.findGenerationEffectiveOn(workingDate);
-                if (currGeneration == null){
+                if (currGeneration == null) {
                     currGeneration = cmpt.getFirstGeneration();
                 }
                 setActiveGeneration(currGeneration, false);
                 break;
         }
-	}
-    
+    }
+
     /**
      * {@inheritDoc}
+     * 
      * @throws CoreException
      */
+    @Override
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
 
-        IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerationsOrderedByValidDate();
+        IIpsObjectGeneration[] gen = getProductCmpt().getGenerationsOrderedByValidDate();
         IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
         for (int i = 0; i < generations.length; i++) {
             generations[i] = (IProductCmptGeneration)gen[i];
         }
         IGenerationToTypeDelta[] deltas = new IGenerationToTypeDelta[generations.length];
         for (int i = 0; i < generations.length; i++) {
-                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToModel(getIpsProject());
+            deltas[i] = (generations[i]).computeDeltaToModel(getIpsProject());
         }
 
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
@@ -413,9 +426,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(final ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
-            if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+            if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
                 setWorkingDateUsedInEditor(null);
                 getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             }
@@ -426,6 +440,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void refreshInclStructuralChanges() {
         try {
             getIpsSrcFile().getIpsObject();
@@ -433,7 +448,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        if (getGenerationPropertiesPage()!=null) {
+        if (getGenerationPropertiesPage() != null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
         }
     }
@@ -447,20 +462,21 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     private void logInternal(String msg) {
-        String file = getIpsSrcFile()==null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$ //$NON-NLS-1$
-        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+        String file = getIpsSrcFile() == null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$ //$NON-NLS-1$
+        System.out.println(getLogPrefix() + msg
+                + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
 
     private String getLogPrefix() {
         return "ProductCmptEditor"; //$NON-NLS-1$
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPage createModelDescriptionPage() throws CoreException {
-		return new ProductCmptModelDescriptionPage(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new ProductCmptModelDescriptionPage(this);
+    }
 
     /**
      * Set if a mismatch of a working date will be handled or ignored.
@@ -468,5 +484,5 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     public void setIgnoreHandlingOfWorkingDateMissmatch(boolean ignoreHandlingOfWorkingDateMissmatch) {
         this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
     }
-    
+
 }

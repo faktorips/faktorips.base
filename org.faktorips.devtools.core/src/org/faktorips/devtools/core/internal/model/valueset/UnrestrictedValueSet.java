@@ -13,9 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -64,19 +66,17 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value) {
-        return containsValue(value, new MessageList(), null, null);
-    }
+    public boolean containsValue(String value,
+            MessageList list,
+            Object invalidObject,
+            String invalidProperty,
+            IIpsProject ipsProject) throws CoreException {
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
 
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknownDatatype,
                     invalidObject, invalidProperty);

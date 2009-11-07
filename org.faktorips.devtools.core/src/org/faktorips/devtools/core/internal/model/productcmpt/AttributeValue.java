@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,19 +42,19 @@ import org.w3c.dom.Element;
 public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
 
     final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
-    
+
     private String attribute = ""; //$NON-NLS-1$
     private String value = ""; //$NON-NLS-1$
-    
+
     public AttributeValue(IIpsObjectPart parent, int id) {
         super(parent, id);
-        this.descriptionChangable = false;
+        descriptionChangable = false;
     }
 
     public AttributeValue(IIpsObjectPart parent, int id, String attribute, String value) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
-        this.descriptionChangable = false;
+        descriptionChangable = false;
         this.attribute = attribute;
         this.value = value;
     }
@@ -69,6 +69,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -119,7 +120,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String getPropertyName() {
         return attribute;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -140,13 +141,13 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String getPropertyValue() {
         return value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = getProductCmptGeneration().findProductCmptType(ipsProject);
-        if (type==null) {
+        if (type == null) {
             return null;
         }
         return type.findProductCmptTypeAttribute(attribute, ipsProject);
@@ -155,38 +156,42 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        this.attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
-        this.value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
+        attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
+        value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_ATTRIBUTE, this.attribute);
-        ValueToXmlHelper.addValueToElement(this.value, element, "Value"); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
+        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
-        if (attr==null) {
-            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, getProductCmptGeneration().getProductCmpt().getProductCmptType());
+        if (attr == null) {
+            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, getProductCmptGeneration()
+                    .getProductCmpt().getProductCmptType());
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
         if (!ValidationUtils.checkValue(attr.getDatatype(), value, this, PROPERTY_VALUE, list)) {
             return;
         }
-        if (!attr.getValueSet().containsValue(value)) {
+        if (!attr.getValueSet().containsValue(value, ipsProject)) {
             String text;
-            if (attr.getValueSet().getValueSetType()==ValueSetType.RANGE) {
+            if (attr.getValueSet().getValueSetType() == ValueSetType.RANGE) {
                 text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, value, attr.getValueSet().toShortString());
             } else {
                 text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, value);
@@ -195,6 +200,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         }
     }
 
+    @Override
     public String toString() {
         return attribute + "=" + value; //$NON-NLS-1$
     }

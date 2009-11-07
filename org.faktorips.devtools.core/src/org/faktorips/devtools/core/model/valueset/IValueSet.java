@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.valueset;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -95,8 +97,23 @@ public interface IValueSet extends IIpsObjectPart {
      * @param value The value to check.
      * 
      * @throws NullPointerException if datatype is <code>null</code>.
+     * 
+     * @deprecated use {@link #containsValue(String, IIpsProject)}
      */
+    @Deprecated
     public boolean containsValue(String value);
+
+    /**
+     * Returns <code>true</code> if the value set contains the indicated value, otherwise
+     * <code>false</code>.
+     * 
+     * @param value The value to check.
+     * @param ipsProject The project to look up the data type.
+     * 
+     * @throws NullPointerException if data type is <code>null</code>.
+     * @throws CoreException if an error occurs while checking
+     */
+    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> it the value set contains the indicated value, otherwise
@@ -109,8 +126,31 @@ public interface IValueSet extends IIpsObjectPart {
      * @param invalidProperty The property of the object the message refers to. Ignored if
      *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
      * @throws NullPointerException if list is <code>null</code>.
+     * 
+     * @deprecated use {@link #containsValue(String, MessageList, Object, String, IIpsProject)}
      */
+    @Deprecated
     public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty);
+
+    /**
+     * Returns <code>true</code> it the value set contains the indicated value, otherwise
+     * <code>false</code>. A message is stored in the message list, if the value set doesn't contain
+     * the indicated value.
+     * 
+     * @param value The value to check.
+     * @param list The list to add messages, if any (might not be <code>null</code>).
+     * @param invalidObject The object the message refers to. Can be <code>null</code>.
+     * @param invalidProperty The property of the object the message refers to. Ignored if
+     *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
+     * @param ipsProject The project to look up the data type.
+     * 
+     * @throws NullPointerException if list is <code>null</code>.
+     */
+    public boolean containsValue(String value,
+            MessageList list,
+            Object invalidObject,
+            String invalidProperty,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise
@@ -134,6 +174,7 @@ public interface IValueSet extends IIpsObjectPart {
      *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
      * 
      * @throws NullPointerException if subset or list is <code>null</code>.
+     * @throws CoreException if an error occurs while checking
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty);
 
@@ -144,9 +185,9 @@ public interface IValueSet extends IIpsObjectPart {
     public IValueSet copy(IIpsObjectPart newParent, int id);
 
     /**
-     * Copy all values including the abstract-flag -if applicable- (but not the parent or the id) of
-     * the given source to this value set. If this given source value set is of a different type,
-     * only the abstract flag is copied. If this value set is an ALL_VALUES value set, this method
+     * Copies all values including the abstract-flag -if applicable- (but not the parent or the id)
+     * of the given source to this value set. If this given source value set is of a different type,
+     * only the abstract flag is copied. If this value set is an Unrestricted value set, this method
      * does nothing.
      */
     public void setValuesOf(IValueSet source);

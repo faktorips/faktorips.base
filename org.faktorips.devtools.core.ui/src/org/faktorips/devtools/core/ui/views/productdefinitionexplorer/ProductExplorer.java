@@ -101,7 +101,7 @@ public class ProductExplorer extends ModelExplorer {
      */
     @Override
     protected ModelContentProvider createContentProvider() {
-        return new ProductContentProvider(config, isFlatLayout);
+        return new ProductContentProvider(config, layoutStyle);
     }
 
     @Override

@@ -13,15 +13,14 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.util.ArgumentCheck;
 
 public class IpsResourceChangeListener implements IResourceChangeListener {
@@ -32,16 +31,23 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     private StructuredViewer viewer;
 
     /**
+     * The viewer's tree content provider
+     */
+    private ITreeContentProvider contentProvider;
+
+    /**
      * Creates a new ResourceChangeListener which will update the given StructuredViewer if a
      * resource change event occurs.
      * 
      * @param viewer The viewer to update.
      * 
      * @throws NullPointerException if viewer is <code>null</code>.
+     * @throws ClassCastException if viewer has no tree content provider
      */
     public IpsResourceChangeListener(StructuredViewer viewer) {
         ArgumentCheck.notNull(viewer);
         this.viewer = viewer;
+        contentProvider = (ITreeContentProvider)viewer.getContentProvider();
     }
 
     /**
@@ -55,13 +61,13 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
                 public void run() {
                     IResourceDelta delta = event.getDelta();
                     try {
-                        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor();
+                        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
                         delta.accept(visitor);
-                        for (IIpsElement ipsElement : visitor.getIpsElementsToRefresh()) {
-                            viewer.refresh(ipsElement);
+                        for (Object element : visitor.getElementsToRefresh()) {
+                            viewer.refresh(element);
                         }
-                        for (IResource resource : visitor.getResourcesToRefresh()) {
-                            viewer.refresh(resource);
+                        for (Object element : visitor.getElementsToUpdate()) {
+                            viewer.update(element, null);
                         }
                     } catch (CoreException e) {
                         IpsPlugin.log(e);

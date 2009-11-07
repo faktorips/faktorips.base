@@ -465,7 +465,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IIpsProject ipsProject = getIpsProject(resource.getProject().getName());
         String[] segments = resource.getProjectRelativePath().segments();
-        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(segments[0]);
+        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(segments[0]);
         if (root == null) {
             return null;
         }

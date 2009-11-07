@@ -128,20 +128,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value) {
-        MessageList dummy = new MessageList();
-        return containsValue(value, dummy, null, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+    public boolean containsValue(String value,
+            MessageList list,
+            Object invalidObject,
+            String invalidProperty,
+            IIpsProject ipsProject) throws CoreException {
         if (list == null) {
             throw new NullPointerException("MessageList required."); //$NON-NLS-1$
         }
 
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
 
         if (datatype == null) {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.RangeValueSet_msgDatatypeUnknown,

@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The <tt>ModelExplorer</tt> is a <tt>ViewPart</tt> for displaying <tt>IIpsObject</tt>s along with
@@ -95,12 +96,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
 
-    /** Identification number for hierarchical layout. */
-    private static final int HIERARCHICAL_LAYOUT = 0;
-
-    /** Identification number for flat layout. */
-    private static final int FLAT_LAYOUT = 1;
-
     private static final String MEMENTO = "modelExplorer.memento"; //$NON-NLS-1$
 
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
@@ -115,10 +110,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     protected ModelExplorerConfiguration config;
 
     /**
-     * Flag that indicates whether the current layout style is flat (<code>true</code>) or
-     * hierarchical (<code>false</code>).
+     * LayoutStyle flat or hierarchical.
      */
-    protected boolean isFlatLayout = false;
+    protected LayoutStyle layoutStyle = LayoutStyle.HIERACHICAL;
 
     /** Flag that indicates whether linking is enabled. */
     protected boolean linkingEnabled;
@@ -171,7 +165,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * contents.
      */
     protected ModelContentProvider createContentProvider() {
-        return new ModelContentProvider(config, isFlatLayout);
+        return new ModelContentProvider(config, layoutStyle);
     }
 
     @Override
@@ -205,10 +199,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE);
 
         /*
-         * Use the current value of isFlatLayout, which is set by loading the memento/viewState
+         * Use the current value of layoutStyle, which is set by loading the memento/viewState
          * before this method is called
          */
-        setFlatLayout(isFlatLayout);
+        setLayoutStyle(layoutStyle);
 
         // Create 'link with editor' ection
         toggleLinking = new ToggleLinkingAction(this);
@@ -353,18 +347,18 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     /** Answers whether this part shows the packagFragments flat or hierarchical */
     private boolean isFlatLayout() {
-        return isFlatLayout;
+        return layoutStyle == LayoutStyle.FLAT;
     }
 
     /**
-     * Sets the layout style to flat respectively hierarchical. Informs label and contentProvider,
-     * activates emptyPackageFilter for flat layout to hide empty PackageFragments.
+     * Sets the new layout style. Informs label and contentProvider, activates emptyPackageFilter
+     * for flat layout to hide empty PackageFragments.
      */
-    private void setFlatLayout(boolean flatLayout) {
-        isFlatLayout = flatLayout;
-
+    private void setLayoutStyle(LayoutStyle newStyle) {
+        ArgumentCheck.notNull(newStyle);
+        layoutStyle = newStyle;
         ipsDecorator.setFlatLayout(isFlatLayout());
-        contentProvider.setIsFlatLayout(isFlatLayout());
+        contentProvider.setLayoutStyle(newStyle);
         labelProvider.setIsFlatLayout(isFlatLayout());
 
         treeViewer.getControl().setRedraw(false);
@@ -387,7 +381,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 Integer filterValue = layout.getInteger(FILTER_KEY);
                 Integer groupByValue = layout.getInteger(GROUP_BY_KEY);
                 Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
-                isFlatLayout = layoutValue == null ? false : layoutValue.intValue() == FLAT_LAYOUT;
+                layoutStyle = layoutValue == null ? LayoutStyle.HIERACHICAL : LayoutStyle.getById(layoutValue);
                 excludeNoIpsProjects = filterValue == null ? false : filterValue.intValue() == 1;
                 supportCategories = groupByValue == null ? supportCategories : groupByValue.intValue() == 1;
                 linkingEnabled = linkingValue == null ? false : linkingValue.intValue() == 1;
@@ -425,7 +419,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     public void saveState(IMemento memento) {
         super.saveState(memento);
         IMemento layout = memento.createChild(MEMENTO);
-        layout.putInteger(LAYOUT_STYLE_KEY, isFlatLayout() ? FLAT_LAYOUT : HIERARCHICAL_LAYOUT);
+        layout.putInteger(LAYOUT_STYLE_KEY, layoutStyle.getId());
         layout.putInteger(FILTER_KEY, excludeNoIpsProjects ? 1 : 0);
         layout.putInteger(GROUP_BY_KEY, supportCategories ? 1 : 0);
         layout.putInteger(LINK_TO_EDITOR_KEY, linkingEnabled ? 1 : 0);
@@ -660,7 +654,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         @Override
         public void run() {
             if (modelExplorer.isFlatLayout() != isFlatLayout) {
-                modelExplorer.setFlatLayout(isFlatLayout);
+                modelExplorer.setLayoutStyle(isFlatLayout ? LayoutStyle.FLAT : LayoutStyle.HIERACHICAL);
             }
         }
 

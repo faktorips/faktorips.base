@@ -25,11 +25,9 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
- * This class contributes a simple viewer for product cmpt type attributes and
- * {@link ITableStructure}:
+ * This class contributes a simple viewer for object classes implementing IModelDescriptionSupport
  * <ul>
  * <li>Show the qualified name as title
  * <li>list specified attributes with their description
@@ -54,6 +52,7 @@ public class ModelDescriptionView extends PageBookView {
      * The <code>PageBookView</code> implementation of this <code>IWorkbenchPart</code> method
      * creates a <code>PageBook</code> control with its default page showing.
      */
+    @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
     }
@@ -61,6 +60,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IPage createDefaultPage(PageBook book) {
         MessagePage page = new MessagePage();
         initPage(page);
@@ -84,6 +84,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
 
         if (part instanceof IModelDescriptionSupport) {
@@ -113,6 +114,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec rec) {
         IPage page = rec.page;
         page.dispose();
@@ -122,6 +124,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
         if (page != null) {
@@ -134,6 +137,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean isImportant(IWorkbenchPart part) {
         /*
          * care for all editors. If an editor does not support IModelDescriptionSupport we'll show a
@@ -146,6 +150,7 @@ public class ModelDescriptionView extends PageBookView {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);
     }
