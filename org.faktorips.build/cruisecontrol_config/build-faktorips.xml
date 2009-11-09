@@ -581,6 +581,9 @@ ${faktoripsProductLinuxZipPath}
              <param name="dest.name" value="${faktoripsProductWinZipPath}" />
         </antcall>
         <echo message="finished. Product build: ${productProject}"/>
+		<antcall inheritall="true" target="-publish.product.info"/>
+	</target>
+	<target name="-publish.product.info" unless="isSkipPublish">
         <echo message="   1. ${faktoripsProductLinuxZipPath}"/>		
         <echo message="   2. ${faktoripsProductWinZipPath}"/>		
 	</target>
