@@ -186,35 +186,22 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
-        String title = "";
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-            if (ipsSrcFile == null) {
-                return;
-            }
-
-            title = ipsSrcFile.getName();
         } else if (input instanceof IpsArchiveEditorInput) {
             ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
-            title = ipsSrcFile.getName();
         } else if (input instanceof IStorageEditorInput) {
             initFromStorageEditorInput((IStorageEditorInput)input);
-            title = ((IStorageEditorInput)input).getName();
+            setPartName(((IStorageEditorInput)input).getName());
         }
-
-        /*
-         * For what ever reason they made setTitle deprecated. This method does something different
-         * than the offered alternatives.
-         */
-        // TODO AW: What does it do different?
-        // setPartName(title);
-        // setContentDescription(title);
-        setTitle(title);
-
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
+
+        String title = ipsSrcFile.getIpsObjectName();
+        setPartName(title);
+        setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getFullPath().toOSString());
 
         if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
             try {
