@@ -27,8 +27,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
+import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -83,12 +84,22 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
     @Override
     protected void buttonClicked() {
-        final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), dialogTitle, dialogMessage,
-                labelProvider);
+        /*
+         * using the StaticContentSelectIpsObjectContext is not the recommended way to use the
+         * OpenIpsObjectSelecitonDialog. It is only used for older implementation If you have a
+         * choice use your own implementation of SelectIpsObjectContext for better performance and
+         * correct progress monitoring
+         */
+
+        final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
+        final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), context);
+        // final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(),
+        // dialogTitle, dialogMessage,
+        // labelProvider);
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
             public void run() {
                 try {
-                    dialog.setElements(getIpsSrcFiles());
+                    context.setElements(getIpsSrcFiles());
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }

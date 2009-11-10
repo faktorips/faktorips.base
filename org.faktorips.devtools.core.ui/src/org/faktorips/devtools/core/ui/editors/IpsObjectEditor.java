@@ -241,6 +241,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             activationListener = new ActivationListener(site.getPage());
             selectionProviderDispatcher = new SelectionProviderDispatcher();
             site.setSelectionProvider(selectionProviderDispatcher);
+            IpsUIPlugin.getDefault().addHistoryItem(ipsSrcFile);
         }
 
         setDataChangeable(computeDataChangeableState());

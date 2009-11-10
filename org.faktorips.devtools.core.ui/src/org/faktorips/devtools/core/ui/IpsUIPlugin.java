@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +29,10 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -36,12 +41,16 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.ImageDescriptorRegistry;
@@ -60,6 +69,7 @@ import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumTypeDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
+import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
@@ -81,6 +91,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
 
+    /**
+     * Setting key for the open ips object history
+     */
+    private static final String OPEN_IPS_OBJECT_HISTORY_SETTINGS = PLUGIN_ID + "OpenTypeHistory"; //$NON-NLS-1$
+
+    /** key for the history setting entry in the open ips object history settings */
+    private static final String HISTORY_SETTING = "History";
+
     /** The shared instance. */
     private static IpsUIPlugin plugin;
 
@@ -101,6 +119,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /** Registry for image descriptors. */
     private ImageDescriptorRegistry imageDescriptorRegistry;
+
+    private IpsObjectSelectionHistory openIpsObjectHistory;
 
     /**
      * The constructor.
@@ -554,10 +574,69 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Must use lazy initialization, as the current display is not necessarily available when
          * the plug-in is started.
          */
-        if (this.imageDescriptorRegistry == null) {
+        if (imageDescriptorRegistry == null) {
             imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
         }
         return imageDescriptorRegistry;
+    }
+
+    public void addHistoryItem(IIpsSrcFile ipsSrcFile) {
+        getOpenIpsObjectHistory().accessed(ipsSrcFile);
+        saveOpenIpsObjectHistory();
+    }
+
+    public IpsObjectSelectionHistory getOpenIpsObjectHistory() {
+        if (openIpsObjectHistory == null) {
+            loadOpenIpsObjectHistory();
+        }
+        return openIpsObjectHistory;
+
+    }
+
+    public void loadOpenIpsObjectHistory() {
+        openIpsObjectHistory = new IpsObjectSelectionHistory();
+
+        IDialogSettings settings = getHistorySettings();
+        try {
+            String setting = settings.get(HISTORY_SETTING);
+            if (setting != null) {
+                IMemento memento = XMLMemento.createReadRoot(new StringReader(setting));
+                openIpsObjectHistory.load(memento);
+            }
+        } catch (WorkbenchException e) {
+            StatusManager.getManager().handle(
+                    new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
+                            "Could not load OpenIpsObjecHistory", e));
+        }
+    }
+
+    public void saveOpenIpsObjectHistory(IpsObjectSelectionHistory selectionHistory) {
+        XMLMemento memento = XMLMemento.createWriteRoot(HISTORY_SETTING);
+        selectionHistory.save(memento);
+        StringWriter writer = new StringWriter();
+        IDialogSettings settings = getHistorySettings();
+        try {
+            memento.save(writer);
+            settings.put(HISTORY_SETTING, writer.getBuffer().toString());
+        } catch (IOException e) {
+            // Simply don't store the settings
+            StatusManager.getManager().handle(
+                    new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
+                            "Could not write OpenIpsObjecHistory", e));
+        }
+    }
+
+    public void saveOpenIpsObjectHistory() {
+        saveOpenIpsObjectHistory(openIpsObjectHistory);
+    }
+
+    private IDialogSettings getHistorySettings() {
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(
+                OPEN_IPS_OBJECT_HISTORY_SETTINGS);
+        if (settings == null) {
+            settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
+        }
+        return settings;
     }
 
 }

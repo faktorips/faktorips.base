@@ -13,9 +13,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -28,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.StyledString;
@@ -48,35 +47,49 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
+ * Dialog showing a list of IpsObjects to select a single one. This object is used for the open ips
+ * object shortcut as well as for selecting an object for any reference. The filter supports camel
+ * case shortcuts. The dialog also supports a history function showing last opened objects on top of
+ * the list. The history is implemented global for plugin in IpsUIPlugin to allow other actions like
+ * open an editor to add objects to the history. The content of the dialog is configured by an
+ * {@link ISelectIpsObjectContext}.
+ * 
+ * NOTE: In eclipse 3.5 there are some new features for {@link FilteredItemsSelectionDialog}. The
+ * new feature highlighting filter entries in the list is implemented in this dialog but not
+ * activated until eclipse 3.5 support.
  * 
  * @author Daniel Hohenberger
  * @author Cornelius Dirmeier
  */
 public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
-    private static final String DIALOG_SETTINGS = "org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog"; //$NON-NLS-1$
+    public static final String DIALOG_SETTINGS = "org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog"; //$NON-NLS-1$
 
-    private IpsObjectTypeFilter filter;
+    private IpsSrcFileFilter filter;
 
-    private final boolean onlyProductDefinitionOptions;
+    private final ISelectIpsObjectContext context;
 
     /**
      * Creates a list selection dialog.
      * 
      * @param parent the parent widget.
      * @param onlyProductDefinitionOptions
+     * @throws CoreException
      */
-    public OpenIpsObjectSelectionDialog(Shell parent, boolean onlyProductDefinitionOptions) {
+    public OpenIpsObjectSelectionDialog(Shell parent, ISelectIpsObjectContext context) {
         super(parent);
-        this.onlyProductDefinitionOptions = onlyProductDefinitionOptions;
+        this.context = context;
         setListLabelProvider(new OpenIpsObjectLabelProvider());
         setDetailsLabelProvider(new PackageFragmentLabelProvider());
         setTitle(Messages.OpenIpsObjectAction_dialogTitle);
         setMessage(Messages.OpenIpsObjectAction_dialogMessage);
-        setSelectionHistory(new IpsObjectSelectionHistory());
+        if (context != null && context.getContextFilter() != null) {
+            addListFilter(context.getContextFilter());
+        }
     }
 
     private static String getPackageSrcLabel(IIpsPackageFragment frgmt) {
@@ -97,7 +110,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     @Override
     protected ItemsFilter createFilter() {
-        filter = new IpsObjectTypeFilter();
+        filter = new IpsSrcFileFilter();
         return filter;
     }
 
@@ -108,29 +121,39 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         if (progressMonitor == null) {
             progressMonitor = new NullProgressMonitor();
         }
-        List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
-        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-        progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, projects.length + 1);
-        for (int i = 0; i < projects.length; i++) {
-            IIpsProject project = projects[i];
-            project.findAllIpsSrcFiles(list);
-            progressMonitor.worked(1);
+        progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, 100);
+        SubProgressMonitor subMonitor = new SubProgressMonitor(progressMonitor, 90);
+        List<IIpsSrcFile> srcFiles = context.getIpsSrcFiles(subMonitor);
+        for (IIpsSrcFile srcFile : srcFiles) {
+            contentProvider.add(srcFile, itemsFilter);
         }
-        for (Iterator<IIpsSrcFile> iter = list.iterator(); iter.hasNext();) {
-            IIpsSrcFile object = iter.next();
-            contentProvider.add(object, itemsFilter);
-        }
-        progressMonitor.worked(1);
+        progressMonitor.worked(10);
         progressMonitor.done();
     }
 
     @Override
     protected IDialogSettings getDialogSettings() {
-        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
+        return getStaticDialogSettings();
+    }
+
+    public static IDialogSettings getStaticDialogSettings() {
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
         if (settings == null) {
-            settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
+            settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
         }
         return settings;
+    }
+
+    @Override
+    protected void restoreDialog(IDialogSettings settings) {
+        super.restoreDialog(settings);
+        setSelectionHistory(IpsUIPlugin.getDefault().getOpenIpsObjectHistory());
+    }
+
+    @Override
+    protected void storeDialog(IDialogSettings settings) {
+        super.storeDialog(settings);
+        IpsUIPlugin.getDefault().saveOpenIpsObjectHistory((IpsObjectSelectionHistory)getSelectionHistory());
     }
 
     @Override
@@ -173,7 +196,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         return null;
     }
 
-    private class IpsObjectTypeFilter extends ItemsFilter {
+    private class IpsSrcFileFilter extends ItemsFilter {
 
         @Override
         public boolean isConsistentItem(Object object) {
@@ -188,9 +211,8 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         public boolean matchItem(Object object) {
             if (object instanceof IIpsSrcFile) {
                 IIpsSrcFile srcFile = (IIpsSrcFile)object;
-                if (!onlyProductDefinitionOptions || srcFile.getIpsObjectType().isProductDefinitionType()) {
-                    return matches(srcFile.getName());
-                }
+                return matches(srcFile.getName());
+                // }
             }
             return false;
         }
@@ -354,7 +376,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     }
 
-    private static class IpsObjectSelectionHistory extends SelectionHistory {
+    public static class IpsObjectSelectionHistory extends SelectionHistory {
 
         private static final String TAG_PATH = "path"; //$NON-NLS-1$
 

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.util.StringUtil;
 
@@ -60,7 +61,8 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
             if (perspective.equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) { //$NON-NLS-1$
                 return;
             }
-            OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent, onlyProdDefs);
+            OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent, new OpenIpsObjectContext(
+                    onlyProdDefs));
             dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (dialog.open() == Window.OK) {
                 IIpsElement object = dialog.getSelectedObject();
