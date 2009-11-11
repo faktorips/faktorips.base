@@ -46,6 +46,12 @@ public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant 
 
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
+    /*
+     * TODO AW: this is not good, the information about what java elements are exactly generated
+     * should remain in the generators. Could be fixed by implementing a Wrapper for an IJavaElement
+     * with methods isSetterMethod(), isGetterMethod() etc.
+     */
+
     private IJavaElement propertyConstant;
 
     private IJavaElement setterMethod;
