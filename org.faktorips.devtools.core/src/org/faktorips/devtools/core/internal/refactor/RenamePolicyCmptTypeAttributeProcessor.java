@@ -24,8 +24,13 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -70,8 +75,30 @@ public class RenamePolicyCmptTypeAttributeProcessor extends RenameProcessor {
     public Change postCreateChange(Change[] participantChanges, IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
+        String oldAttributeName = policyCmptTypeAttribute.getName();
+
+        // Change the name of the attribute.
         policyCmptTypeAttribute.setName(newName);
         policyCmptTypeAttribute.getIpsSrcFile().save(true, pm);
+
+        // Search and change all test case types dependent on the attribute.
+        IIpsSrcFile[] testSrcFiles = policyCmptTypeAttribute.getIpsProject().findIpsSrcFiles(
+                IpsObjectType.TEST_CASE_TYPE);
+        for (IIpsSrcFile ipsSrcFile : testSrcFiles) {
+            ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
+            ITestPolicyCmptTypeParameter[] testParameters = testCaseType.getTestPolicyCmptTypeParameters();
+            for (ITestPolicyCmptTypeParameter parameter : testParameters) {
+                // TODO AW: contains test attribute would be nice
+                ITestAttribute attribute = parameter.getTestAttribute(oldAttributeName);
+                if (attribute != null) {
+                    attribute.setAttribute(policyCmptTypeAttribute);
+                }
+            }
+            if (ipsSrcFile.isDirty()) {
+                ipsSrcFile.save(true, null);
+            }
+        }
+
         return null;
     }
 

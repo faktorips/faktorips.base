@@ -34,7 +34,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     public RenameRefactoringWizard(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         super(new RenameRefactoring(new RenamePolicyCmptTypeAttributeProcessor(policyCmptTypeAttribute)),
                 DIALOG_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageTitle("Rename Attribute");
+        setDefaultPageTitle("Rename Policy Component Type Attribute");
     }
 
     @Override
