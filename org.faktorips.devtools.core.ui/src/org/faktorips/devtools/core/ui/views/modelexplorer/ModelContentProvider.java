@@ -427,11 +427,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         if (element instanceof IIpsElement) {
             IIpsElement parent;
             if (element instanceof IIpsPackageFragment) {
-                // TODO Stefan: an dieser Stelle wird jetzt auch fuer Style Hierarchical, nicht mehr
-                // das Default Package als Parent von Toplevel Packages wie "org" oder "com"
-                // zurueckgegeben.
-                // Das scheint mir Consistent mit der getChildren Methode() und dem Verhalten des
-                // Package-Explorers.
+                // LayoutStyle#getParent() never returns the default package
                 parent = layoutStyle.getParent((IIpsPackageFragment)element);
             } else {
                 parent = ((IIpsElement)element).getParent();
@@ -447,11 +443,11 @@ public class ModelContentProvider implements ITreeContentProvider {
             return parent;
 
         } else if (element instanceof IResource) {
-            // TODO Stefan: alter code ist die folgende Zeile.
-            // return ((IResource)element).getParent();
-            // Die Berücksichtigt aber nicht, dass
-            // Resourcen in Packages enthalten
-            // sein koennen. Neu ist korrekt, oder?
+            /*
+             * If the given element is the underlying resource of an IpsElement, the (IPS-)parent
+             * must be returned; e.g. an IpsPackageFragment for a ProductCmpt. Thus
+             * (IResource)element).getParent() alone is not sufficient.
+             */
             IResource parentResource = ((IResource)element).getParent();
             IIpsElement parentIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(parentResource);
             if (parentIpsElement != null) {

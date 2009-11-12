@@ -15,10 +15,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -56,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -328,7 +328,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     /**
-     * {@inheritDoc
+     * {@inheritDoc}
      */
     public IConfigElement[] getConfigElements() {
         return (IConfigElement[])configElements.toArray(new IConfigElement[configElements.size()]);
@@ -740,53 +740,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
 
-        IAssociation[] relationTypes = type.getAssociations();
-        for (int i = 0; i < relationTypes.length; i++) {
-            IProductCmptLink[] relations = getLinks(relationTypes[i].getTargetRoleSingular());
-
-            // get all messages for the relation types and add them
-            MessageList relMessages = relationTypes[i].validate(ipsProject);
-            if (!relMessages.isEmpty()) {
-                list.add(relMessages, new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null), true);
-            }
-
-            if (relationTypes[i].getMinCardinality() > relations.length) {
-                Object[] params = { new Integer(relations.length), relationTypes[i].getTargetRoleSingular(),
-                        new Integer(relationTypes[i].getMinCardinality()) };
-                String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
-                ObjectProperty prop1 = new ObjectProperty(this, null);
-                ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null);
-                list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] { prop1,
-                        prop2 }));
-            }
-
-            int maxCardinality = relationTypes[i].getMaxCardinality();
-            if (maxCardinality < relations.length) {
-                Object[] params = { new Integer(relations.length),
-                        "" + maxCardinality, relationTypes[i].getTargetRoleSingular() }; //$NON-NLS-1$
-                String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
-                ObjectProperty prop1 = new ObjectProperty(this, null);
-                ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null);
-                list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] { prop1,
-                        prop2 }));
-            }
-
-            Map targets = new Hashtable();
-            String msg = null;
-            for (int j = 0; j < relations.length; j++) {
-                String target = relations[j].getTarget();
-                if (targets.get(target) != null) {
-                    if (msg == null) {
-                        msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, relationTypes[i]
-                                .getTargetRoleSingular(), target);
-                    }
-                    list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR, relationTypes[i]
-                            .getTargetRoleSingular()));
-                } else {
-                    targets.put(target, target);
-                }
-            }
-        }
+        new AssociationsValidator(ipsProject, list).start(type);
 
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
@@ -835,6 +789,72 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
         return null;
+    }
+
+    class AssociationsValidator extends ProductCmptTypeHierarchyVisitor {
+
+        private final MessageList list;
+
+        public AssociationsValidator(IIpsProject ipsProject, MessageList list) {
+            super(ipsProject);
+            this.list = list;
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+
+            IAssociation[] associations = currentType.getAssociations();
+            for (IAssociation association : associations) {
+                if (association.isDerivedUnion()) {
+                    continue;
+                }
+                IProductCmptLink[] relations = getLinks(association.getTargetRoleSingular());
+
+                // get all messages for the relation types and add them
+                MessageList relMessages = association.validate(ipsProject);
+                if (!relMessages.isEmpty()) {
+                    list.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
+                }
+
+                if (association.getMinCardinality() > relations.length) {
+                    Object[] params = { new Integer(relations.length), association.getTargetRoleSingular(),
+                            new Integer(association.getMinCardinality()) };
+                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
+                    ObjectProperty prop1 = new ObjectProperty(this, null);
+                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
+                    list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {
+                            prop1, prop2 }));
+                }
+
+                int maxCardinality = association.getMaxCardinality();
+                if (maxCardinality < relations.length) {
+                    Object[] params = { new Integer(relations.length),
+                            "" + maxCardinality, association.getTargetRoleSingular() }; //$NON-NLS-1$
+                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
+                    ObjectProperty prop1 = new ObjectProperty(this, null);
+                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
+                    list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] { prop1,
+                            prop2 }));
+                }
+
+                Set<String> targets = new HashSet<String>();
+                String msg = null;
+                for (int j = 0; j < relations.length; j++) {
+                    String target = relations[j].getTarget();
+                    if (!targets.add(target)) {
+                        if (msg == null) {
+                            msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, association
+                                    .getTargetRoleSingular(), target);
+                        }
+                        list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR, association
+                                .getTargetRoleSingular()));
+                    }
+                }
+            }
+
+            return true;
+        }
+
     }
 
 }

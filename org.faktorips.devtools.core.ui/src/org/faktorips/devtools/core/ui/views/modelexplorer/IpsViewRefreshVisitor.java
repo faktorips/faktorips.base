@@ -154,21 +154,4 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         return contentProvider.getParent(resourceOrIpsElement);
     }
 
-    // private Object getParent(Object resourceOrIpsElement) {
-    // if (resourceOrIpsElement instanceof IIpsPackageFragment) {
-    // return layoutStyle.getParent((IIpsPackageFragment)resourceOrIpsElement);
-    //
-    // }
-    // if (resourceOrIpsElement instanceof IIpsElement) {
-    // return ((IIpsElement)resourceOrIpsElement).getParent();
-    // }
-    // IResource resource = (IResource)resourceOrIpsElement;
-    // IResource parentResource = resource.getParent();
-    // IIpsElement parentElement = getIpsElement(parentResource);
-    // if (parentElement != null) {
-    // return parentElement;
-    // }
-    // return parentResource;
-    // }
-
 }
