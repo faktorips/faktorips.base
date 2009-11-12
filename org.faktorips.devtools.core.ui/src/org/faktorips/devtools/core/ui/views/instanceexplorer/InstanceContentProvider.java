@@ -24,10 +24,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.ui.views.IpsSrcFileViewItem;
 
 /**
  * The content provider for the instance explorer
@@ -44,7 +42,7 @@ public class InstanceContentProvider implements IStructuredContentProvider {
      */
     private boolean subTypeSearch = true;
 
-    private InstanceViewerItem[] items;
+    private IpsSrcFileViewItem[] items;
 
     private IIpsMetaClass ipsMetaClass;
 
@@ -79,23 +77,6 @@ public class InstanceContentProvider implements IStructuredContentProvider {
         }
     }
 
-    /**
-     * To get the name of the meta class defining the internal source file. At the moment this only
-     * is implemented for <code>ProductCmpt</code> and <code>EnumContent</code>.
-     * 
-     * @return the meta class name of the internal source file
-     * @throws CoreException
-     */
-    private static String getMetaClassName(IIpsSrcFile srcFile) throws CoreException {
-        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-            return srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_CONTENT)) {
-            return srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
-        } else {
-            return null;
-        }
-    }
-
     public void asyncSetInputData(final IIpsMetaClass element, IJobChangeListener jobListener) {
         Job updatereJob = new Job("Loading Items") {
 
@@ -118,43 +99,17 @@ public class InstanceContentProvider implements IStructuredContentProvider {
     private void fillContentProvider(IIpsMetaClass ipsMetaClass, IProgressMonitor monitor) {
         this.ipsMetaClass = ipsMetaClass;
         if (ipsMetaClass == null) {
-            items = new InstanceViewerItem[0];
+            items = new IpsSrcFileViewItem[0];
             monitor.done();
             return;
-        }
-        monitor.beginTask("selecting items", 130);
-        boolean breaknow = true;
-        while (!breaknow) {
-
         }
         try {
             IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.findAllMetaObjectSrcFiles(ipsMetaClass.getIpsProject(),
                     subTypeSearch);
-            monitor.worked(30);
-            items = new InstanceViewerItem[metaObjectsSrcFiles.length];
-            int workStep = 100 / (metaObjectsSrcFiles.length + 1); // + 1 preventing divide zero
-            int i = 0;
-            for (IIpsSrcFile srcFile : metaObjectsSrcFiles) {
-                try {
-                    items[i] = new InstanceViewerItem(srcFile);
-                    if (i > 0) {
-                        if (items[i - 1].getIpsSrcFile().getName().equals(items[i].getIpsSrcFile().getName())) {
-                            items[i - 1].setDuplicateName(true);
-                            items[i].setDuplicateName(true);
-                        }
-                    }
-                    String defMetaClassName = getMetaClassName(srcFile);
-                    if (defMetaClassName != null && !ipsMetaClass.getQualifiedName().equals(defMetaClassName)) {
-                        items[i].setDefiningMetaClass(defMetaClassName);
-                    }
-                } finally {
-                    i++;
-                    monitor.worked(workStep);
-                }
-            }
-            monitor.done();
+            items = IpsSrcFileViewItem.createItems(metaObjectsSrcFiles, ipsMetaClass);
         } catch (CoreException e) {
             IpsPlugin.log(e);
+            items = new IpsSrcFileViewItem[0];
         }
     }
 
