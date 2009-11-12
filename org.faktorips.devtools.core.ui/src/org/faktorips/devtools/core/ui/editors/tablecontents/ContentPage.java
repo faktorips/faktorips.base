@@ -17,16 +17,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -35,17 +32,13 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -72,13 +65,6 @@ import org.faktorips.util.message.MessageList;
  * @author Stefan Widmaier
  */
 public class ContentPage extends IpsObjectEditorPage {
-
-    /*
-     * SWT event type for the measure item event
-     * 
-     * @since 3.2 defined here to ensure compatibility to lower SWT versions
-     */
-    private static final int SWT_MeasureItem = 41;
 
     final static String PAGE_ID = "Contents"; //$NON-NLS-1$
 
@@ -227,7 +213,8 @@ public class ContentPage extends IpsObjectEditorPage {
             }
         });
 
-        // TODO VIRTUAL table causes exceptions when creating / deleting rows dynamically, FS#533
+        // FIXME TODO VIRTUAL table causes exceptions when creating / deleting rows dynamically,
+        // FS#533
         // table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
 
         return table;
@@ -245,7 +232,6 @@ public class ContentPage extends IpsObjectEditorPage {
     private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody) {
         try {
             table.removeAll();
-            increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
 
             tableViewer = new TableViewer(table);
             tableViewer.setUseHashlookup(true);
@@ -290,7 +276,6 @@ public class ContentPage extends IpsObjectEditorPage {
             }
             labelProvider.setValueDatatypes(datatypes);
             tableViewer.setSorter(new TableSorter());
-            tableViewer.addSelectionChangedListener(new RowDeletor());
 
             new TableMessageHoverService(tableViewer) {
                 @Override
@@ -322,112 +307,6 @@ public class ContentPage extends IpsObjectEditorPage {
         table.setMenu(menu);
         // do not register to avoid mb additions
         // getSite().registerContextMenu(menuMgr, tableViewer);
-    }
-
-    private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
-        // add paint lister to increase the height of the table row,
-        // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
-        // text is hidden
-        Listener paintListener = new Listener() {
-            public void handleEvent(Event event) {
-                switch (event.type) {
-                    case SWT_MeasureItem: {
-                        if (numOfColumns == 0) {
-                            return;
-                        }
-                        TableItem item = (TableItem)event.item;
-                        // column 0 will be used to determine the height,
-                        // <code>event.index<code> couldn't be used because it is only available
-                        // @since 3.2, that's ok because the height is always the same, even if the
-                        // column contains no text, the height only depends on the font
-                        String text = getText(item, 0);
-                        Point size = event.gc.textExtent(text);
-                        // the height will be increased by 5 pixel
-                        event.height = Math.max(event.height, size.y + 5);
-                        break;
-                    }
-                }
-            }
-
-            String getText(TableItem item, int column) {
-                String text = item.getText(column);
-                return text;
-            }
-        };
-        table.addListener(SWT_MeasureItem, paintListener);
-    }
-
-    /**
-     * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows at the
-     * bottom of the table.
-     * <p>
-     * The mechanism to create new row dynamically is realized in the <code>TableCellEditor</code>.
-     * 
-     * @see TableCellEditor
-     * @author Stefan Widmaier
-     */
-    private class RowDeletor implements ISelectionChangedListener {
-        public void selectionChanged(SelectionChangedEvent event) {
-            removeRedundantRows();
-        }
-
-        /**
-         * Checks every row from the last up to the currently selected row for emptiness and deletes
-         * every empty row until a non-empty row is found.
-         * <p>
-         * Only tries to delete rows if table has more than one row.
-         * 
-         */
-        private void removeRedundantRows() {
-            int selectionIndex = tableViewer.getTable().getSelectionIndex();
-            if (tableViewer.getTable().getItemCount() <= 1) {
-                return;
-            }
-
-            if (selectionIndex != tableViewer.getTable().getItemCount() - 2) {
-                return;
-            }
-
-            for (int i = tableViewer.getTable().getItemCount() - 1; i > selectionIndex; i--) {
-                IRow row = (IRow)tableViewer.getElementAt(i);
-                // delete the row if the row is empty
-                // note that the decision if a row is empty or not must
-                // use the cell editors instead of the row itself, because if this
-                // method is called the column value isn't currently transported to the row value
-                // object, this will be performed later FS#
-                if (areCellEditorEmpty(tableViewer.getCellEditors())) {
-                    tableViewer.remove(row);
-                    row.delete();
-                } else {
-                    break;
-                }
-            }
-            /*
-             * TODO Bug in TableViewer: CellEditor position is not updated after deletion of rows.
-             * The fix is to update the position artificially by scrolling the table/Tableviewer.
-             * Problem: tableViewer#scrollDown(x, y) calls the Viewer implementation which does
-             * nothing.
-             */
-        }
-
-    }
-
-    /*
-     * Checks whether all cell editors are empty or not. Returns <code>true</code> if all cell
-     * editors. This method is used to decide if a row, which is visible in the editor, is empty or
-     * not.
-     */
-    private boolean areCellEditorEmpty(CellEditor[] cellEditors) {
-        if (cellEditors.length == 0) {
-            return false;
-        }
-        for (int i = 0; i < cellEditors.length; i++) {
-            Object value = cellEditors[i].getValue();
-            if (StringUtils.isNotEmpty(value == null ? "" : "" + value)) { //$NON-NLS-1$ //$NON-NLS-2$
-                return false;
-            }
-        }
-        return true;
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
