@@ -32,13 +32,17 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -232,6 +236,7 @@ public class ContentPage extends IpsObjectEditorPage {
     private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody) {
         try {
             table.removeAll();
+            increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
 
             tableViewer = new TableViewer(table);
             tableViewer.setUseHashlookup(true);
@@ -307,6 +312,39 @@ public class ContentPage extends IpsObjectEditorPage {
         table.setMenu(menu);
         // do not register to avoid mb additions
         // getSite().registerContextMenu(menuMgr, tableViewer);
+    }
+
+    private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
+        // add paint lister to increase the height of the table row,
+        // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
+        // text is hidden
+        Listener paintListener = new Listener() {
+            public void handleEvent(Event event) {
+                switch (event.type) {
+                    case SWT.MeasureItem: {
+                        if (numOfColumns == 0) {
+                            return;
+                        }
+                        TableItem item = (TableItem)event.item;
+                        // column 0 will be used to determine the height,
+                        // <code>event.index<code> couldn't be used because it is only available
+                        // @since 3.2, that's ok because the height is always the same, even if the
+                        // column contains no text, the height only depends on the font
+                        String text = getText(item, 0);
+                        Point size = event.gc.textExtent(text);
+                        // the height will be increased by 5 pixel
+                        event.height = Math.max(event.height, size.y + 5);
+                        break;
+                    }
+                }
+            }
+
+            String getText(TableItem item, int column) {
+                String text = item.getText(column);
+                return text;
+            }
+        };
+        table.addListener(SWT.MeasureItem, paintListener);
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
