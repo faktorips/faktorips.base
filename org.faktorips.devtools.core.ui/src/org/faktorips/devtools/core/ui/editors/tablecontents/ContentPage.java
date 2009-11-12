@@ -217,10 +217,6 @@ public class ContentPage extends IpsObjectEditorPage {
             }
         });
 
-        // FIXME TODO VIRTUAL table causes exceptions when creating / deleting rows dynamically,
-        // FS#533
-        // table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
-
         return table;
     }
 
