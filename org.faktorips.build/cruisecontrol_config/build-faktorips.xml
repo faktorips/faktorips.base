@@ -775,6 +775,7 @@ ${faktoripsProductLinuxZipPath}
     <cvs command="co" package="org.faktorips.nls.devtools.ormext.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
 	<cvs command="co" package="de.qv.ormext" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
 	<cvs command="co" package="de.qv.ormext.builder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
+	<cvs command="co" package="de.qv.ormext.builder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
 
 	<!-- checkout de.qv.faktorips.feature and plugin -->
 	<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>

@@ -90,6 +90,7 @@ FORCE_TAGCVS=false
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
+CUSTOMER_PRODUCT_PROJECT=de.qv.faktorips.feature.product
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
 LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Lizenzvertrag.pdf
@@ -576,7 +577,10 @@ tagProjects()
     tagProject $FETCH_TAG $project $BRANCH
   done
 
-  # c) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
+  # c) tag customer product project
+  tagProject $FETCH_TAG $CUSTOMER_PRODUCT_PROJECT $BRANCH
+
+  # d) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
     tagProject $FETCH_TAG $project $BRANCH
