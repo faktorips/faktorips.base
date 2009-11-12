@@ -167,10 +167,10 @@ public class IpsObjectType {
     private final String fileExtension;
 
     // Name of the image file with enabled look
-    private final String enabledImage;
+    private final Image enabledImage;
 
     // Name of the image file with disabled look
-    private final String disabledImage;
+    private final Image disabledImage;
 
     // Flag indicating whether this type defines a datatype
     private final boolean datatype;
@@ -317,7 +317,7 @@ public class IpsObjectType {
      * @return SWT image of this ips object type with enabled look.
      */
     public Image getEnabledImage() {
-        return IpsPlugin.getDefault().getImage(enabledImage);
+        return enabledImage;
     }
 
     /**
@@ -326,10 +326,7 @@ public class IpsObjectType {
      * @return SWT image of this ips object type with disabled look.
      */
     public Image getDisabledImage() {
-        if (disabledImage == null) {
-            return getEnabledImage();
-        }
-        return IpsPlugin.getDefault().getImage(disabledImage);
+        return disabledImage;
     }
 
     /**
@@ -371,9 +368,32 @@ public class IpsObjectType {
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */
-    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
+    private IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
             String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage,
             String disabledImage) {
+        this(id, xmlElementName, displayName, displayNamePlural, fileExtension, datatype, productDefinitionType,
+                IpsPlugin.getDefault().getImage(enabledImage), IpsPlugin.getDefault().getImage(disabledImage, true));
+    }
+
+    /**
+     * Creates a new ips object type.
+     * 
+     * @param id The name of the new ips object type.
+     * @param xmlElementName The name for the xml element.
+     * @param displayName A human readable name for the new ips object type.
+     * @param displayNamePlural TODO
+     * @param fileExtension The file extension for the new ips object type.
+     * @param datatype Flag indicating whether this new ips object type represents a datatype.
+     * @param productDefinitionType Flag indicating whether this new ips object type is a product
+     *            definition type.
+     * @param enabledImage Image file for enabled look.
+     * @param disabledImage Image file for disabled look.
+     * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
+     *             <code>null</code>.
+     */
+    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
+            String fileExtension, boolean datatype, boolean productDefinitionType, Image enabledImage,
+            Image disabledImage) {
 
         ArgumentCheck.notNull(xmlElementName);
         ArgumentCheck.notNull(id);
@@ -390,5 +410,4 @@ public class IpsObjectType {
         this.enabledImage = enabledImage;
         this.disabledImage = disabledImage;
     }
-
 }
