@@ -355,6 +355,10 @@ public class IpsObjectType {
     /**
      * Creates a new ips object type.
      * 
+     * @deprecated use and override
+     *             {@link #IpsObjectType(String, String, String, String, String, boolean, boolean, Image, Image)}
+     *             instead of this one
+     * 
      * @param id The name of the new ips object type.
      * @param xmlElementName The name for the xml element.
      * @param displayName A human readable name for the new ips object type.
@@ -368,7 +372,8 @@ public class IpsObjectType {
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */
-    private IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
+    @Deprecated
+    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
             String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage,
             String disabledImage) {
         this(id, xmlElementName, displayName, displayNamePlural, fileExtension, datatype, productDefinitionType,
