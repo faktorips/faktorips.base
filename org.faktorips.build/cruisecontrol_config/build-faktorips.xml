@@ -403,10 +403,16 @@
     	<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
         <!-- download zip file names -->
-    	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
+        <!--   core -->
+		<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-nls1-${build.version}.zip"/>
-        <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
+        <!--   uml -->
+		<property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
+        <!--   ormext -->
+		<property name="faktoripsOrmextReleaseDownloadZipPath" value="${downloadDir}/faktorips-ormext-${build.version}.zip"/>
+        <property name="faktoripsOrmextNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-ormext-nls1-${build.version}.zip"/>
+        <!--   updatesite -->
         <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
         <!--    product zip -->
 		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-win32.x86-${productProject}-${build.version}.zip"/>
@@ -419,6 +425,7 @@
     	<!-- features to integrate in site.xml -->
     	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
+    	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
     	
       <condition property="isUseCvs" value="true">
         <equals arg1="${noCvs}" arg2="false"/>
@@ -508,6 +515,8 @@ ${faktoripsReleaseDownloadZipPath}
 ${faktoripsNls1ReleaseDownloadZipPath}
 ${faktoripsUmlReleaseDownloadZipPath}
 ${faktoripsUmlNls1ReleaseDownloadZipPath}
+${faktoripsOrmextReleaseDownloadZipPath}
+${faktoripsOrmextNls1ReleaseDownloadZipPath}
 ${faktoripsUpdateSiteZipPath}
 ${faktoripsRuntimeAndValuetypesZipPath}
 		</echo>
@@ -568,6 +577,12 @@ ${faktoripsProductLinuxZipPath}
              <param name="file" value="${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
          </antcall>
          <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsOrmextReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsOrmextNls1ReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
              <param name="file" value="${faktoripsUpdateSiteZipPath}"/>
          </antcall>
 	</target>
@@ -611,6 +626,16 @@ ${faktoripsProductLinuxZipPath}
             <param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
         </antcall>
+        <!-- ormext -->
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.ormext.feature-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsOrmextReleaseDownloadZipPath}" />
+        </antcall>
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.ormext.feature.nls1-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsOrmextNls1ReleaseDownloadZipPath}" />
+        </antcall>
+        <!-- updatesite -->
         <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
             <param name="source" value="updateSite-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
@@ -634,11 +659,26 @@ ${faktoripsProductLinuxZipPath}
             <param name="site.xml" value="site_tmp.xml"/> 
         </antcall> 
     
-        <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <!--  uml features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteDescription" value="FaktorIPS update site"/>
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
+        </ant>
+        <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
+        <antcall inheritall="true" target="-merge.updatesite.xml">
+            <param name="site.xml" value="site_uml_tmp.xml"/> 
+        </antcall> 
+		
+        <!--  ormext features -->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
+            <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_ormext_tmp.xml"/>
+            <property name="pluginbuilder.features" value="${pluginbuilder.features.ormext}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
@@ -666,6 +706,7 @@ ${faktoripsProductLinuxZipPath}
         <echo message="finished. Release: ${build.version}"/>
         <echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
         <echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
+        <echo message="-> new faktorips ormext features: ${pluginbuilder.features.ormext}"/>
         <antcall inheritall="true" target="-print.publish.info"/>    	
     </target>
 	<target name="-print.publish.info" unless="isSkipPublish">
@@ -675,8 +716,10 @@ ${faktoripsProductLinuxZipPath}
         <echo message="   2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
         <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
-        <echo message="   5. ${faktoripsUpdateSiteZipPath}"/>    	
-        <echo message="   6. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
+        <echo message="   5. ${faktoripsOrmextReleaseDownloadZipPath}"/>
+        <echo message="   6. ${faktoripsOrmextNls1ReleaseDownloadZipPath}"/>    	
+        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>    	
+        <echo message="   8. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
     </target>
 	
 	<target name="-checkout.all" >
@@ -730,6 +773,8 @@ ${faktoripsProductLinuxZipPath}
     <cvs command="co" package="org.faktorips.devtools.ormext.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
     <cvs command="co" package="org.faktorips.nls.devtools.ormext.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
     <cvs command="co" package="org.faktorips.nls.devtools.ormext.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
+	<cvs command="co" package="de.qv.ormext" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
+	<cvs command="co" package="de.qv.ormext.builder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" /><!-- tag="${cvsTag}" -->
 
 	<!-- checkout de.qv.faktorips.feature and plugin -->
 	<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
