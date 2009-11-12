@@ -92,10 +92,8 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
          */
 
         final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
-        final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), context);
-        // final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(),
-        // dialogTitle, dialogMessage,
-        // labelProvider);
+        final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), dialogTitle, context);
+        dialog.setMessage(dialogMessage);
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
             public void run() {
                 try {

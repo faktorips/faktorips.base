@@ -80,12 +80,12 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
      * @param onlyProductDefinitionOptions
      * @throws CoreException
      */
-    public OpenIpsObjectSelectionDialog(Shell parent, ISelectIpsObjectContext context) {
+    public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
         super(parent);
         this.context = context;
         setListLabelProvider(new OpenIpsObjectLabelProvider());
         setDetailsLabelProvider(new PackageFragmentLabelProvider());
-        setTitle(Messages.OpenIpsObjectAction_dialogTitle);
+        setTitle(title);
         setMessage(Messages.OpenIpsObjectAction_dialogMessage);
         if (context != null && context.getContextFilter() != null) {
             addListFilter(context.getContextFilter());

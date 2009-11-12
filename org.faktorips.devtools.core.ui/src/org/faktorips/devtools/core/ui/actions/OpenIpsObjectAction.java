@@ -61,8 +61,8 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
             if (perspective.equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) { //$NON-NLS-1$
                 return;
             }
-            OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent, new OpenIpsObjectContext(
-                    onlyProdDefs));
+            OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
+                    Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs));
             dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (dialog.open() == Window.OK) {
                 IIpsElement object = dialog.getSelectedObject();
