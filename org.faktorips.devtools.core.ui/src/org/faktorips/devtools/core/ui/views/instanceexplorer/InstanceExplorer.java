@@ -401,6 +401,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         public void dropAccept(DropTargetEvent event) {
             event.detail = DND.DROP_NONE;
             Object[] transferred = super.getTransferedElements(event.currentDataType);
+            if (transferred == null) {
+                if (super.getTrasfer().isSupportedType(event.currentDataType)) {
+                    event.detail = DND.DROP_LINK;
+                }
+                return;
+            }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
                 try {
@@ -414,7 +420,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
             }
         }
-
     }
 
     private class SubtypeSearchAction extends Action {

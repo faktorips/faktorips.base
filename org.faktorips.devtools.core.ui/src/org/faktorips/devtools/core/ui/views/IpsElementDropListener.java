@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -27,56 +28,63 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * Abstract default implementation of a drop target listener. Drag over and drag leave
- * are ignored by this implementation, dargOperationChanged too.  
+ * Abstract default implementation of a drop target listener. Drag over and drag leave are ignored
+ * by this implementation, dargOperationChanged too.
  * 
  * @author Thorsten Guenther
  */
 public abstract class IpsElementDropListener implements DropTargetListener {
 
-	/**
-	 * Empty default implementation.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public void dragLeave(DropTargetEvent event) {
-		// nothing done as default
-	}
+    /**
+     * Empty default implementation.
+     * 
+     * {@inheritDoc}
+     */
+    public void dragLeave(DropTargetEvent event) {
+        // nothing done as default
+    }
 
-	/**
-	 * Empty default implementation.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public void dragOperationChanged(DropTargetEvent event) {
-		// nothing done as default
-	}
+    /**
+     * Empty default implementation.
+     * 
+     * {@inheritDoc}
+     */
+    public void dragOperationChanged(DropTargetEvent event) {
+        // nothing done as default
+    }
 
-	/**
-	 * Empty default implementation.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public void dragOver(DropTargetEvent event) {
-		// nothing done as default
-	}
+    /**
+     * Empty default implementation.
+     * 
+     * {@inheritDoc}
+     */
+    public void dragOver(DropTargetEvent event) {
+        // nothing done as default
+    }
 
-	/**
-	 * Returns all <code>IIpsElement</code>s transferred as files by the given transferData
-	 * object as array.
-	 */
-	protected Object[] getTransferedElements(TransferData transferData) {
-		String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(transferData);
-		ArrayList elements = new ArrayList();
-		for (int i = 0; i < filenames.length; i++) {
-			Path path = new Path(filenames[i]);
-			
+    /**
+     * Returns all <code>IIpsElement</code>s transferred as files by the given transferData object
+     * as array. Note for Linux: If this method is called during drag action (e.g. called by
+     * dropAccept method) the transferData is not set correctly and this method returns null. If you
+     * want to check files during drag action you have to use the method
+     * {@link ByteArrayTransfer#isSupportedType(TransferData)}
+     * 
+     */
+    protected Object[] getTransferedElements(TransferData transferData) {
+        String[] filenames = (String[])getTrasfer().nativeToJava(transferData);
+        if (filenames == null) {
+            return null;
+        }
+        ArrayList<Object> elements = new ArrayList<Object>();
+        for (int i = 0; i < filenames.length; i++) {
+            Path path = new Path(filenames[i]);
+
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
-            if(file!=null){
+            if (file != null) {
                 // getFileForLocation returns a file even if the path points to a folder.
                 // In this case file.exists() returns false.s
-                if(file.exists()){
+                if (file.exists()) {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
                     if (element != null && element.exists()) {
                         elements.add(element);
@@ -87,8 +95,8 @@ public abstract class IpsElementDropListener implements DropTargetListener {
             } else {
                 elements.add(filenames[i]);
             }
-            if(container!=null){ 
-                if(container.exists()){
+            if (container != null) {
+                if (container.exists()) {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
                     if (element != null && element.exists()) {
                         elements.add(element);
@@ -97,8 +105,12 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                     }
                 }
             }
-		}
-		return (Object[])elements.toArray(new Object[elements.size()]);
-	}
-	
+        }
+        return elements.toArray(new Object[elements.size()]);
+    }
+
+    protected FileTransfer getTrasfer() {
+        return FileTransfer.getInstance();
+    }
+
 }

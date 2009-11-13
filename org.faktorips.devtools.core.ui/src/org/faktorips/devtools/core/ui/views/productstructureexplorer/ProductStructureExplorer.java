@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-
-
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
@@ -23,6 +21,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -88,7 +87,7 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  * Navigate all Products defined in the active Project.
  * 
  * @author guenther
- *
+ * 
  */
 public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource,
         IResourceChangeListener, IPropertyChangeListener {
@@ -99,12 +98,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
     private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
-    
+
     // Used for saving the current layout style in a eclipse memento.
     private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
     private static final String CHECK_MENU_STATE = "checkedmenus"; //$NON-NLS-1$
-    
-    private TreeViewer tree; 
+
+    private TreeViewer tree;
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
     private ProductStructureLabelProvider labelProvider;
@@ -114,9 +113,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private boolean showAssociationNode = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
-    
+
     /*
-     * Class to handle double clicks. Doubleclicks of ProductCmptTypeRelationReference will be ignored.
+     * Class to handle double clicks. Doubleclicks of ProductCmptTypeRelationReference will be
+     * ignored.
      */
     private class ProdStructExplTreeDoubleClickListener extends TreeViewerDoubleclickListener {
         public ProdStructExplTreeDoubleClickListener(TreeViewer tree) {
@@ -126,14 +126,15 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         /**
          * {@inheritDoc}
          */
+        @Override
         public void doubleClick(DoubleClickEvent event) {
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeRelationReference){
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeRelationReference) {
                 return;
             }
             super.doubleClick(event);
         }
     }
-    
+
     /*
      * Class to represent the root tree node to inform about the current working date.
      */
@@ -141,31 +142,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         private IProductCmpt productCmpt;
         private GregorianCalendar workingDate;
         private String generationText;
-        
+
         public GenerationRootNode() {
             super("", null); //$NON-NLS-1$
         }
-        
+
         public void refreshText() {
             if (productCmpt == null) {
                 return;
             }
             workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-            generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
-            
+            generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular();
+
             DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             String formatedWorkingDate = format.format(workingDate.getTime());
             String label = NLS.bind(Messages.ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate,
                     formatedWorkingDate);
-            this.setText(label);
-            this.setImage(IpsPlugin.getDefault().getImage("WorkingDate.gif")); //$NON-NLS-1$
+            setText(label);
+            setImage(IpsPlugin.getDefault().getImage("WorkingDate.gif")); //$NON-NLS-1$
         }
 
-        public void storeProductCmpt(IProductCmpt productCmpt){
+        public void storeProductCmpt(IProductCmpt productCmpt) {
             this.productCmpt = productCmpt;
             refreshText();
         }
-        
+
         public String getGenerationText() {
             return generationText;
         }
@@ -173,18 +175,19 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         public GregorianCalendar getWorkingDate() {
             return workingDate;
         }
-        
-        public String getProductCmptNoGenerationLabel(IProductCmpt productCmpt){
+
+        public String getProductCmptNoGenerationLabel(IProductCmpt productCmpt) {
             String label = productCmpt.getName();
             if (null == productCmpt.findGenerationEffectiveOn(getWorkingDate())) {
                 // no generations avaliable,
                 // show additional text to inform that no generations exists
-                label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label, getGenerationText());
+                label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label,
+                        getGenerationText());
             }
             return label;
         }
     }
-    
+
     private class ProductCmptDropListener extends IpsElementDropListener {
 
         public void dragEnter(DropTargetEvent event) {
@@ -203,15 +206,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
 
         public void dropAccept(DropTargetEvent event) {
-        	Object[] transferred = super.getTransferedElements(event.currentDataType);
-        	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile && isSupported((IIpsSrcFile) transferred[0])) {
-        		event.detail = DND.DROP_LINK;
-        	} else {
-        		event.detail = DND.DROP_NONE;
-        	}
+            Object[] transferred = super.getTransferedElements(event.currentDataType);
+            // in linux transferred is always null while drag action
+            if (transferred == null || transferred.length > 0 && transferred[0] instanceof IIpsSrcFile
+                    && isSupported((IIpsSrcFile)transferred[0])) {
+                event.detail = DND.DROP_LINK;
+            } else {
+                event.detail = DND.DROP_NONE;
+            }
         }
     }
-    
+
     /**
      * Default Constructor
      */
@@ -220,43 +225,49 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         // add as resource listener because refactoring-actions like move or rename
         // does not cause a model-changed-event.
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+
         IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IViewSite site) throws PartInitException {
-    	super.init(site);
+        super.init(site);
     }
-    
+
     private void initMenu(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_INFO_GROUP));
         Action showAssociationNodeAction = createShowAssociationNodeAction();
         showAssociationNodeAction.setChecked(showAssociationNode);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
-        Action showRoleNameAction = createShowTableRoleNameAction();        
+        Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);        
-        
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
+
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showReferencedTableAction = createShowReferencedTables();
         showReferencedTableAction.setChecked(showReferencedTable);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);        
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);
     }
 
     private Action createShowReferencedTables() {
-        return new Action(Messages.ProductStructureExplorer_menuShowReferencedTables_name, Action.AS_CHECK_BOX) {
+        return new Action(Messages.ProductStructureExplorer_menuShowReferencedTables_name, IAction.AS_CHECK_BOX) {
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
             }
+
+            @Override
             public void run() {
                 contentProvider.setShowTableContents(!contentProvider.isShowTableContents());
                 showReferencedTable = contentProvider.isShowTableContents();
                 refresh();
             }
+
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_menuShowReferencedTables_tooltip;
             }
@@ -264,15 +275,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private Action createShowTableRoleNameAction() {
-        return new Action(Messages.ProductStructureExplorer_menuShowTableRoleName_name, Action.AS_CHECK_BOX) {
+        return new Action(Messages.ProductStructureExplorer_menuShowTableRoleName_name, IAction.AS_CHECK_BOX) {
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
             }
+
+            @Override
             public void run() {
                 labelProvider.setShowTableStructureUsageName(!labelProvider.isShowTableStructureUsageName());
                 showTableStructureRoleName = labelProvider.isShowTableStructureUsageName();
                 refresh();
             }
+
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_menuShowTableRoleName_tooltip;
             }
@@ -280,15 +296,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private Action createShowAssociationNodeAction() {
-        return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, Action.AS_CHECK_BOX) {
+        return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, IAction.AS_CHECK_BOX) {
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
             }
+
+            @Override
             public void run() {
                 contentProvider.setAssociationTypeShowing(!contentProvider.isAssociationTypeShowing());
                 showAssociationNode = contentProvider.isAssociationTypeShowing();
                 refresh();
             }
+
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
             }
@@ -296,16 +317,19 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
-        Action refreshAction= new Action() {
+        Action refreshAction = new Action() {
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
             }
-            
+
+            @Override
             public void run() {
                 refresh();
                 tree.expandAll();
             }
 
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_tooltipRefreshContents;
             }
@@ -318,31 +342,37 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         // collapse all action
         toolBarManager.add(new Action() {
+            @Override
             public void run() {
                 tree.collapseAll();
             }
-        
+
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
             }
 
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_menuCollapseAll_toolkit;
             }
         });
-        
+
         // clear action
         toolBarManager.add(new Action() {
+            @Override
             public void run() {
                 tree.setInput(null);
                 tree.refresh();
                 showEmptyMessage();
             }
-        
+
+            @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
             }
 
+            @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_tooltipClear;
             }
@@ -352,7 +382,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
-	public void createPartControl(Composite parent) {
+    @Override
+    public void createPartControl(Composite parent) {
         parent.setLayout(new GridLayout(1, true));
         errormsg = new Label(parent, SWT.WRAP);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -363,15 +394,15 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         // dnd for label
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new ProductCmptDropListener());
-        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance()});
-        
+        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+
         tree = new TreeViewer(parent);
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         rootNode = new GenerationRootNode();
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setAssociationTypeShowing(showAssociationNode);
         contentProvider.setShowTableContents(showReferencedTable);
-        
+
         contentProvider.setGenerationRootNode(rootNode);
         tree.setContentProvider(contentProvider);
 
@@ -379,16 +410,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setGenerationRootNode(rootNode);
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
-        
+
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
         tree.expandAll();
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(tree));
+        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
+                tree));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(true);
-        menumanager.addMenuListener(new IMenuListener(){
+        menumanager.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
-                if (isReferenceAndOpenActionSupportedForSelection()){
+                if (isReferenceAndOpenActionSupportedForSelection()) {
                     manager.add(new OpenEditorAction(tree));
                     manager.add(new FindProductReferencesAction(tree));
                     manager.add(new ShowInstanceAction(tree));
@@ -399,17 +431,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
         getSite().setSelectionProvider(tree);
-        
+
         showEmptyMessage();
 
         IActionBars actionBars = getViewSite().getActionBars();
         initMenu(actionBars.getMenuManager());
-        initToolBar(actionBars.getToolBarManager());        
+        initToolBar(actionBars.getToolBarManager());
     }
 
-    private boolean isReferenceAndOpenActionSupportedForSelection(){
+    private boolean isReferenceAndOpenActionSupportedForSelection() {
         Object selectedRef = getSelectedObjectFromSelection(tree.getSelection());
-        if (selectedRef == null){
+        if (selectedRef == null) {
             return false;
         }
         return (selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
@@ -426,56 +458,58 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
-	public void setFocus() {
-        //nothing to do.
-	}
-
-    /**
-     * Displays the structure of the product component defined by the given file. 
-     * 
-     * @param file The selection to display
-     * @throws CoreException 
-     */
-    public void showStructure(IIpsSrcFile file) throws CoreException {
-    	if(isSupported(file)){
-    		showStructure((IProductCmpt) file.getIpsObject());
-    	}
+    @Override
+    public void setFocus() {
+        // nothing to do.
     }
 
-	private boolean isSupported(IIpsSrcFile file) {
-		return file!=null && file.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT;
-	}
+    /**
+     * Displays the structure of the product component defined by the given file.
+     * 
+     * @param file The selection to display
+     * @throws CoreException
+     */
+    public void showStructure(IIpsSrcFile file) throws CoreException {
+        if (isSupported(file)) {
+            showStructure((IProductCmpt)file.getIpsObject());
+        }
+    }
+
+    private boolean isSupported(IIpsSrcFile file) {
+        return file != null && file.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT;
+    }
 
     /**
      * Displays the structure of the given product component.
+     * 
      * @param product The product to show the structure from
      */
     public void showStructure(IProductCmpt product) {
-    	if (product == null) {
-    		return;
-    	}
-        
+        if (product == null) {
+            return;
+        }
+
         if (errormsg == null) {
             // return if called before the explorer is shown
             return;
         }
-        
-    	this.file = product.getIpsSrcFile();
+
+        file = product.getIpsSrcFile();
         try {
             rootNode.storeProductCmpt(product);
             showTreeInput(product.getStructure(product.getIpsProject()));
-		} catch (CycleInProductStructureException e) {
-			handleCircle(e);
-		}
+        } catch (CycleInProductStructureException e) {
+            handleCircle(e);
+        }
     }
 
     private void refresh() {
         Control ctrl = tree.getControl();
-        
+
         if (ctrl == null || ctrl.isDisposed()) {
-        	return;
+            return;
         }
-        
+
         try {
             Runnable runnable = new Runnable() {
                 public void run() {
@@ -502,7 +536,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             ctrl.setRedraw(true);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -510,34 +544,33 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         ShowInContext context = new ShowInContext(null, tree.getSelection());
         return context;
     }
-    
+
     private void handleCircle(CycleInProductStructureException e) {
-		IpsPlugin.log(e);
-		((GridData)tree.getTree().getLayoutData()).exclude = true;
-		String msg = Messages.ProductStructureExplorer_labelCircleRelation;
-		IIpsElement[] cyclePath = e.getCyclePath();
-		StringBuffer path = new StringBuffer();
-		
+        IpsPlugin.log(e);
+        ((GridData)tree.getTree().getLayoutData()).exclude = true;
+        String msg = Messages.ProductStructureExplorer_labelCircleRelation;
+        IIpsElement[] cyclePath = e.getCyclePath();
+        StringBuffer path = new StringBuffer();
+
         // don't show first element if the first elemet is no product relevant node (e.g. effective
         // date info node)
         IIpsElement[] cyclePathCpy;
         if (cyclePath[0] == null) {
-            cyclePathCpy = new IIpsElement[cyclePath.length -1];
-            System.arraycopy(cyclePath, 1, cyclePathCpy, 0, cyclePath.length -1);
+            cyclePathCpy = new IIpsElement[cyclePath.length - 1];
+            System.arraycopy(cyclePath, 1, cyclePathCpy, 0, cyclePath.length - 1);
         } else {
             cyclePathCpy = new IIpsElement[cyclePath.length];
             System.arraycopy(cyclePath, 0, cyclePathCpy, 0, cyclePath.length);
         }
-        
-        for (int i = cyclePathCpy.length-1; i >= 0; i--) {
-			path.append(cyclePathCpy[i] == null?"":cyclePathCpy[i].getName()); //$NON-NLS-1$
-			if (i%2 != 0) {
-				path.append(" -> "); //$NON-NLS-1$
-			}
-			else if (i%2 == 0 && i > 0) {
-				path.append(":"); //$NON-NLS-1$
-			}
-		}
+
+        for (int i = cyclePathCpy.length - 1; i >= 0; i--) {
+            path.append(cyclePathCpy[i] == null ? "" : cyclePathCpy[i].getName()); //$NON-NLS-1$
+            if (i % 2 != 0) {
+                path.append(" -> "); //$NON-NLS-1$
+            } else if (i % 2 == 0 && i > 0) {
+                path.append(":"); //$NON-NLS-1$
+            }
+        }
 
         String message = msg + " " + path; //$NON-NLS-1$
         showErrorMsg(message);
@@ -553,7 +586,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
         int type = event.getEventType();
         IIpsObjectPart part = event.getPart();
-        
+
         // refresh only for relevant changes
         if (part instanceof ITableContentUsage || part instanceof IProductCmptLink
                 || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
@@ -562,30 +595,30 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void postRefresh() {
-        getViewSite().getShell().getDisplay().asyncExec(new Runnable(){
+        getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
                 refresh();
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
-	public void resourceChanged(IResourceChangeEvent event) {
+    public void resourceChanged(IResourceChangeEvent event) {
         if (file == null) {
             return;
         }
         postRefresh();
     }
-	
+
     /**
      * If the working date changed update the content of the view.
      * 
      * {@inheritDoc}
      */
     public void propertyChange(PropertyChangeEvent event) {
-        if (event.getProperty().equals(IpsPreferences.WORKING_DATE)){
+        if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
             try {
                 showStructure(file);
             } catch (CoreException e) {
@@ -597,6 +630,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
@@ -606,41 +640,42 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private void showErrorMsg(String message) {
         tree.getTree().setVisible(false);
-        errormsg.setText(message); 
+        errormsg.setText(message);
         errormsg.setVisible(true);
         ((GridData)errormsg.getLayoutData()).exclude = false;
         errormsg.getParent().layout();
     }
-    
+
     private void showTreeInput(Object input) {
         errormsg.setVisible(false);
         ((GridData)errormsg.getLayoutData()).exclude = true;
-        
+
         tree.getTree().setVisible(true);
         ((GridData)tree.getTree().getLayoutData()).exclude = false;
         tree.getTree().getParent().layout();
-        
+
         tree.setInput(input);
         tree.expandAll();
 
         rootNode.refreshText();
-    }    
+    }
 
     private void showEmptyMessage() {
-        showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1 +
-                Messages.ProductStructureExplorer_infoMessageEmptyView_2);
+        showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1
+                + Messages.ProductStructureExplorer_infoMessageEmptyView_2);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento != null) {
             IMemento layout = memento.getChild(LAYOUT_AND_FILTER_MEMENTO);
             if (layout != null) {
                 Integer checkedMenuState = layout.getInteger(CHECK_MENU_STATE);
-                if (checkedMenuState != null){
+                if (checkedMenuState != null) {
                     intitMenuStateFields(checkedMenuState.intValue());
                 }
             }
@@ -650,20 +685,21 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
         int checkedMenuState = evalMenuStates();
         IMemento layout = memento.createChild(LAYOUT_AND_FILTER_MEMENTO);
         layout.putInteger(CHECK_MENU_STATE, checkedMenuState);
     }
-    
-    private void intitMenuStateFields(int checkedMenuState){
+
+    private void intitMenuStateFields(int checkedMenuState) {
         showReferencedTable = (checkedMenuState & 1) > 0;
         showTableStructureRoleName = (checkedMenuState & 2) > 0;
         showAssociationNode = (checkedMenuState & 4) > 0;
     }
-    
-    private int evalMenuStates(){
-        return ((showReferencedTable?1:0) | (showTableStructureRoleName?2:0) | (showAssociationNode?4:0));
+
+    private int evalMenuStates() {
+        return ((showReferencedTable ? 1 : 0) | (showTableStructureRoleName ? 2 : 0) | (showAssociationNode ? 4 : 0));
     }
 }

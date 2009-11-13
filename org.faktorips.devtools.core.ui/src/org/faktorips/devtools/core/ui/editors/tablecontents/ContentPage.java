@@ -287,6 +287,7 @@ public class ContentPage extends IpsObjectEditorPage {
                     return null;
                 }
             };
+            tableViewer.getControl().setFocus();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
