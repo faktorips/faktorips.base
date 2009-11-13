@@ -123,7 +123,7 @@ public class ProductExplorer extends ModelExplorer {
         // do not register contextmenue to prevent insertion of MB-Additions
     }
 
-    private class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
+    protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
 
         private WrapperAction team_sync = new WrapperAction(treeViewer, Messages.ProductExplorer_actionSync_label,
                 Messages.ProductExplorer_actionSync_tooltip,

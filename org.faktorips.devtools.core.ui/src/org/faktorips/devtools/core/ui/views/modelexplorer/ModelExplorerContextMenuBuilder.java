@@ -123,11 +123,11 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private IWorkbenchAction properties;
 
-    private ModelExplorerConfiguration modelExplorerConfig;
+    protected ModelExplorerConfiguration modelExplorerConfig;
 
     private ModelExplorer modelExplorer;
 
-    private IViewSite viewSite;
+    protected IViewSite viewSite;
 
     private TreeViewer treeViewer;
 
@@ -301,7 +301,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(newMenu);
     }
 
-    private Object mapIpsSrcFile2IpsObject(Object selected) {
+    public Object mapIpsSrcFile2IpsObject(Object selected) {
         if (selected instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selected;
             selected = ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
@@ -430,7 +430,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
-    private void createImportExportTableContentsActions(IMenuManager manager, Object selected) {
+    protected void createImportExportTableContentsActions(IMenuManager manager, Object selected) {
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_CONTENTS)
                 && selected instanceof ITableContents) {
             manager.add(TableImportExportAction.createTableImportAction(viewSite.getShell(), treeViewer));
@@ -439,7 +439,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
-    private void createImportExportEnumActions(IMenuManager manager, Object selected) {
+    protected void createImportExportEnumActions(IMenuManager manager, Object selected) {
         if ((modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE) && selected instanceof IEnumType)
                 || (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT) && selected instanceof IEnumContent)) {
             boolean show = true;
@@ -502,7 +502,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
-    private void createIpsArchiveAction(IMenuManager manager, Object selected) {
+    protected void createIpsArchiveAction(IMenuManager manager, Object selected) {
         // show ips archive menu only for the model explorer
         // TODO: should be moved to the configuration
         if (!(modelExplorer.isModelExplorer())) {
