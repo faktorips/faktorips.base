@@ -49,7 +49,10 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
             if (element instanceof IpsSrcFileViewItem) {
                 IpsSrcFileViewItem item = (IpsSrcFileViewItem)element;
                 updateCell(cell, item);
+            } else if (element instanceof String) {
+                cell.setText((String)element);
             }
+
         } catch (CoreException e) {
             IpsPlugin.log(e);
         } finally {

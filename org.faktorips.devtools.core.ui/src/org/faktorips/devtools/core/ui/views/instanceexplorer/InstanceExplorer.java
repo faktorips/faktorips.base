@@ -17,9 +17,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -252,10 +249,8 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void setInputData(final IIpsMetaClass element) {
-        IJobChangeListener jobListener = new RefreshWhenDone();
-        if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
-            contentProvider.asyncSetInputData(element, jobListener);
-        }
+        tableViewer.setInput(element);
+        updateView();
     }
 
     private void showEmptyTableMessage(IIpsObject element) {
@@ -308,37 +303,33 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         display.syncExec(new Runnable() {
 
             public void run() {
-                refreshAll();
+                updateView();
             }
         });
     }
 
-    private void refreshAll() {
-        if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
-            IIpsMetaClass element = contentProvider.getActualElement();
-            if (element != null) {
-                selectedElementLabel.setText(labelProvider.getText(element));
-            } else {
-                selectedElementLabel.setText("");
-            }
-            selectedElementLabel.setImage(labelProvider.getImage(element));
-        }
-        if (tableViewer != null && !tableViewer.getControl().isDisposed()) {
-            tableViewer.refresh();
-        }
-    }
-
     private void updateView() {
-        Object element = tableViewer.getInput();
-        if (element == null) {
-            showEmptyMessage();
-        } else if (element instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)element;
-            subtypeSearchAction.setEnabled(supportsSubtypes(ipsObject));
-            if (tableViewer.getTable().getItemCount() == 0) {
-                showEmptyTableMessage(ipsObject);
-            } else {
-                showMessgeOrTableView(MessageTableSwitch.TABLE);
+        if (tableViewer != null && !tableViewer.getControl().isDisposed()) {
+            Object element = tableViewer.getInput();
+            if (element == null) {
+                showEmptyMessage();
+            } else if (element instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)element;
+                subtypeSearchAction.setEnabled(supportsSubtypes(ipsObject));
+                if (tableViewer.getTable().getItemCount() == 0) {
+                    showEmptyTableMessage(ipsObject);
+                } else {
+                    showMessgeOrTableView(MessageTableSwitch.TABLE);
+                }
+                if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
+                    if (element != null) {
+                        selectedElementLabel.setText(labelProvider.getText(element));
+                    } else {
+                        selectedElementLabel.setText("");
+                    }
+                    selectedElementLabel.setImage(labelProvider.getImage(element));
+                }
+                tableViewer.refresh();
             }
         }
     }
@@ -472,23 +463,24 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     }
 
-    private class RefreshWhenDone extends JobChangeAdapter {
-
-        @Override
-        public void done(IJobChangeEvent event) {
-            if (display != null && !display.isDisposed()) {
-                display.syncExec(new Runnable() {
-                    public void run() {
-                        selectedElementLabel.pack();
-                        tableViewer.setInput(contentProvider.getActualElement());
-                        updateView();
-                        refreshAll();
-                    }
-                });
-            }
-        }
-
-    };
+    // XXX
+    // private class RefreshWhenDone extends JobChangeAdapter {
+    //
+    // @Override
+    // public void done(IJobChangeEvent event) {
+    // if (display != null && !display.isDisposed()) {
+    // display.syncExec(new Runnable() {
+    // public void run() {
+    // selectedElementLabel.pack();
+    // tableViewer.setInput(contentProvider.getActualElement());
+    // updateView();
+    // refreshAll();
+    // }
+    // });
+    // }
+    // }
+    //
+    // };
 
     private static class NotFoundMetaClass extends IpsObject implements IIpsMetaClass {
 
