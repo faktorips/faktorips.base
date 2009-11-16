@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -123,6 +123,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
@@ -131,6 +132,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -142,6 +144,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (!generatesInterface) {
@@ -279,8 +282,8 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
             if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), "value",
-                        new JavaCodeFragment("getRepository()")));
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
+                        enumHelper.getEnumType(), "value", new JavaCodeFragment("getRepository()")));
                 builder.appendln(";");
                 return;
             }
@@ -290,13 +293,18 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     }
 
     /**
-     * Generates the getter code for the attribute this is a generator for.
+     * Generates the getter code in the policy component type for the attribute this is a generator
+     * for.
      * 
      * Code sample:
      * 
      * <pre>
      * public Money getPremium() {
-     *     return getMotorProductGen().getPremium();
+     *     IMotorProductGen motorProductGen = getMotorProductGen();
+     *     if (motorProductGen == null) {
+     *         return null;
+     *     }
+     *     return motorProductGen.getPremium();
      * }
      * </pre>
      */
@@ -309,13 +317,38 @@ public class GenProdAttribute extends GenProductCmptTypePart {
                     new String[] { attributeName, description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
-            methodBuilder.append("return ");
+
+            // IMotorProductGen motorProductGen = getMotorProductGen();
+            String typeName = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(true);
+            String varName = StringUtils.uncapitalize(getGenProductCmptType()
+                    .getUnqualifiedClassNameForProductCmptTypeGen(false));
+            methodBuilder.appendClassName(typeName);
+            methodBuilder.append(' ');
+            methodBuilder.append(varName);
+            methodBuilder.append(" = ");
             methodBuilder.append(getGenProductCmptType().getMethodNameGetProductCmptGeneration());
-            methodBuilder.append("().");
+            methodBuilder.appendln("();");
+
+            // null handling for none primitive data types
+            if (!getDatatype().isPrimitive()) {
+                // if (motorProductGen == null) {
+                // return null;
+                // }
+                methodBuilder.append("if (");
+                methodBuilder.append(varName);
+                methodBuilder.appendln(" == null) {");
+                methodBuilder.appendln("return null;");
+                methodBuilder.appendln('}');
+            }
+
+            // return motorProductGen.getPremium();
+            methodBuilder.append("return ");
+            methodBuilder.append(varName);
+            methodBuilder.append('.');
             methodBuilder.append(getGetterMethodName());
-            methodBuilder.append("();");
+            methodBuilder.appendln("();");
+
             methodBuilder.closeBracket();
         }
     }
-
 }
