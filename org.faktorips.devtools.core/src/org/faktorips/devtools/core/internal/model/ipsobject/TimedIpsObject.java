@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,14 +36,13 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
-    
-    private List generations = new ArrayList(0);
-    private GregorianCalendar validTo; 
+
+    private List<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
+    private GregorianCalendar validTo;
 
     public TimedIpsObject(IIpsSrcFile file) {
         super(file);
@@ -55,10 +54,10 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     /**
      * {@inheritDoc}
-     */ 
+     */
     public boolean changesOn(GregorianCalendar date) {
-        for (Iterator it=generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration gen = (IIpsObjectGeneration)it.next();
+        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
+            IIpsObjectGeneration gen = it.next();
             if (gen.getValidFrom().equals(date)) {
                 return true;
             }
@@ -70,51 +69,53 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * {@inheritDoc}
      */
     public IIpsObjectGeneration getFirstGeneration() {
-    	if (this.generations.size() > 0) {
-    	return this.getGenerationsOrderedByValidDate()[0];
-    	}    	
-    	return null;
+        if (generations.size() > 0) {
+            return getGenerationsOrderedByValidDate()[0];
+        }
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsObjectGeneration getGeneration(int index) {
-        return (IIpsObjectGeneration)generations.get(index);
+        return generations.get(index);
     }
 
-    /** 
+    public List<IIpsObjectGeneration> getGenerations() {
+        return new ArrayList<IIpsObjectGeneration>(generations);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public IIpsObjectGeneration[] getGenerationsOrderedByValidDate() {
-        IIpsObjectGeneration[] gens = (IIpsObjectGeneration[])generations.toArray(new IIpsObjectGeneration[generations.size()]);
-        Arrays.sort(gens, new Comparator() {
+        IIpsObjectGeneration[] gens = generations.toArray(new IIpsObjectGeneration[generations.size()]);
+        Arrays.sort(gens, new Comparator<IIpsObjectGeneration>() {
 
-            public int compare(Object o1, Object o2) {
-                IIpsObjectGeneration gen1 = (IIpsObjectGeneration)o1;
-                IIpsObjectGeneration gen2 = (IIpsObjectGeneration)o2;
-                if (gen1.getValidFrom()==null) {
-                    return gen2.getValidFrom()==null ? 0 : -1;
+            public int compare(IIpsObjectGeneration gen1, IIpsObjectGeneration gen2) {
+                if (gen1.getValidFrom() == null) {
+                    return gen2.getValidFrom() == null ? 0 : -1;
                 }
                 return gen1.getValidFrom().after(gen2.getValidFrom()) ? 1 : -1;
             }
-            
+
         });
         return gens;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
-        if (date==null) {
+        if (date == null) {
             return null;
         }
         IIpsObjectGeneration generation = null;
-        for (Iterator it=generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration each = (IIpsObjectGeneration)it.next();
+        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
+            IIpsObjectGeneration each = it.next();
             if (!each.getValidFrom().after(date)) {
-                if (generation==null) {
+                if (generation == null) {
                     generation = each;
                 } else {
                     if (each.getValidFrom().after(generation.getValidFrom())) {
@@ -123,13 +124,13 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
                 }
             }
         }
-        
-        // exclude an (invalid) generation which has a valid-from date after the valid-to date 
+
+        // exclude an (invalid) generation which has a valid-from date after the valid-to date
         // of this IpsObject.
         if (generation != null && getValidTo() != null && generation.getValidFrom().after(getValidTo())) {
             return null;
         }
-        
+
         return generation;
     }
 
@@ -137,18 +138,18 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * {@inheritDoc}
      */
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
-        if (date==null) {
+        if (date == null) {
             return null;
         }
-        for (Iterator it=generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration each = (IIpsObjectGeneration)it.next();
+        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
+            IIpsObjectGeneration each = it.next();
             if (date.equals(each.getValidFrom())) {
                 return each;
             }
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -157,7 +158,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         objectHasChanged();
         return generation;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -167,13 +168,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     public IIpsObjectGeneration newGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
-    	int newId = getNextPartId();
+        int newId = getNextPartId();
         IpsObjectGeneration generation = newGenerationInternal(newId);
 
         if (source != null) {
-        	generation.initFromGeneration(source, validFrom);
-        }
-        else{
+            generation.initFromGeneration(source, validFrom);
+        } else {
             generation.setValidFromInternal(validFrom);
         }
         partWasAdded(generation);
@@ -183,16 +183,17 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     public int getNumOfGenerations() {
         return generations.size();
     }
-    
+
     protected IpsObjectGeneration newGenerationInternal(int id) {
         IpsObjectGeneration generation = createNewGeneration(id);
         generations.add(generation);
         return generation;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
             generations.remove(part);
@@ -200,71 +201,78 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     /**
-     * Creates a new generation instance. Subclass have to override to
-     * and return an instance of the correct subclass of IpsObjectGenerationImpl.
+     * Creates a new generation instance. Subclass have to override to and return an instance of the
+     * correct subclass of IpsObjectGenerationImpl.
      * 
      * @param id the unique id for the new generation.
      */
     protected abstract IpsObjectGeneration createNewGeneration(int id);
 
-    /** 
-     * Returns the object's generations. 
+    /**
+     * Returns the object's generations.
      * 
      * Overridden method.
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
+    @Override
     public IIpsElement[] getChildren() {
         return getGenerationsOrderedByValidDate();
     }
-    
+
     /**
      * Overridden.
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALID_TO));
+        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(ValueToXmlHelper.getValueFromElement(element,
+                PROPERTY_VALID_TO));
     }
-    
+
     /**
      * Overridden.
      */
+    @Override
     protected final IIpsObjectPart newPart(Element xmlTag, int id) {
-    	String xmlTagName = xmlTag.getNodeName();
+        String xmlTagName = xmlTag.getNodeName();
 
-        if (xmlTagName.equals(IpsObjectGeneration.TAG_NAME)) {
+        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
         }
         return null;
     }
-    
+
     /**
      * Overridden.
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         if (validTo == null) {
             ValueToXmlHelper.addValueToElement(null, element, PROPERTY_VALID_TO);
-        }
-        else {
-            ValueToXmlHelper.addValueToElement(XmlUtil.gregorianCalendarToXmlDateString(validTo), element, PROPERTY_VALID_TO);
+        } else {
+            ValueToXmlHelper.addValueToElement(XmlUtil.gregorianCalendarToXmlDateString(validTo), element,
+                    PROPERTY_VALID_TO);
         }
     }
-    
+
     /**
      * Overridden.
      */
+    @Override
     protected final void addPart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
-            generations.add(part);
+            generations.add((IIpsObjectGeneration)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
-    
+
     /**
      * Overridden.
      */
+    @Override
     protected final void reinitPartCollections() {
         generations.clear();
     }
@@ -288,15 +296,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         GregorianCalendar validTo = getValidTo();
-        
+
         if (validTo == null) {
             // empty validTo - valid forever.
             return;
         }
-        
+
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             if (generations[i].getValidFrom().after(validTo)) {
@@ -311,6 +320,5 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             }
         }
     }
-    
-    
+
 }
