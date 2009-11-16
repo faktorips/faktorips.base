@@ -167,10 +167,12 @@ public class IpsObjectType {
     private final String fileExtension;
 
     // Name of the image file with enabled look
-    private final Image enabledImage;
+    private final String enabledImageName;
+    private Image enabledImage = null;
 
     // Name of the image file with disabled look
-    private final Image disabledImage;
+    private final String disabledImageName;
+    private Image disabledImage;
 
     // Flag indicating whether this type defines a datatype
     private final boolean datatype;
@@ -317,6 +319,9 @@ public class IpsObjectType {
      * @return SWT image of this ips object type with enabled look.
      */
     public Image getEnabledImage() {
+        if (enabledImage == null) {
+            enabledImage = IpsPlugin.getDefault().getImage(enabledImageName);
+        }
         return enabledImage;
     }
 
@@ -326,6 +331,9 @@ public class IpsObjectType {
      * @return SWT image of this ips object type with disabled look.
      */
     public Image getDisabledImage() {
+        if (disabledImage == null) {
+            disabledImage = IpsPlugin.getDefault().getImage(disabledImageName);
+        }
         return disabledImage;
     }
 
@@ -355,10 +363,6 @@ public class IpsObjectType {
     /**
      * Creates a new ips object type.
      * 
-     * @deprecated use and override
-     *             {@link #IpsObjectType(String, String, String, String, String, boolean, boolean, Image, Image)}
-     *             instead of this one
-     * 
      * @param id The name of the new ips object type.
      * @param xmlElementName The name for the xml element.
      * @param displayName A human readable name for the new ips object type.
@@ -372,12 +376,24 @@ public class IpsObjectType {
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */
-    @Deprecated
     protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
             String fileExtension, boolean datatype, boolean productDefinitionType, String enabledImage,
             String disabledImage) {
-        this(id, xmlElementName, displayName, displayNamePlural, fileExtension, datatype, productDefinitionType,
-                IpsPlugin.getDefault().getImage(enabledImage), IpsPlugin.getDefault().getImage(disabledImage, true));
+
+        ArgumentCheck.notNull(xmlElementName);
+        ArgumentCheck.notNull(id);
+        ArgumentCheck.notNull(fileExtension);
+        ArgumentCheck.notNull(enabledImage);
+
+        this.id = id;
+        this.xmlElementName = xmlElementName;
+        this.displayName = displayName;
+        this.displayNamePlural = displayNamePlural;
+        this.fileExtension = fileExtension;
+        this.datatype = datatype;
+        this.productDefinitionType = productDefinitionType;
+        enabledImageName = enabledImage;
+        disabledImageName = disabledImage;
     }
 
     /**
@@ -414,5 +430,8 @@ public class IpsObjectType {
         this.productDefinitionType = productDefinitionType;
         this.enabledImage = enabledImage;
         this.disabledImage = disabledImage;
+        enabledImageName = "";
+        disabledImageName = "";
     }
+
 }

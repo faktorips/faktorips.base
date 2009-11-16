@@ -30,13 +30,11 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
     public final static String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
 
     public BusinessFunctionIpsObjectType() {
-        super(
-                ID,
-                "BusinessFunction", //xml element name $NON-NLS-1$   //$NON-NLS-1$
+        super(ID, "BusinessFunction", //xml element name $NON-NLS-1$   //$NON-NLS-1$
                 Messages.getString("BusinessFunctionIpsObjectType.displayName"), //display name //$NON-NLS-1$
                 Messages.getString("BusinessFunctionIpsObjectType.displayNamePlural"), //display name plural //$NON-NLS-1$
                 "ipsbusinessfunction", false, false, //$NON-NLS-1$
-                IpsPlugin.getDefault().getImage("BusinessFunction.gif"), IpsPlugin.getDefault().getImage("BusinessFunctionDisabled.gif")); //$NON-NLS-1$
+                "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$
     }
 
     /**
