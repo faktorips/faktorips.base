@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * An IPS object that changes over time. The changes are represented by generations. Each generation
@@ -43,6 +44,15 @@ public interface ITimedIpsObject extends IIpsObject {
     public boolean changesOn(GregorianCalendar date);
 
     /**
+     * Get all generations like they are stored in this container. The generations have no concrete
+     * order. If you want the generation ordered by valid date use
+     * {@link #getGenerationsOrderedByValidDate()} instead
+     * 
+     * @return array with all registered generations
+     */
+    public List<IIpsObjectGeneration> getGenerations();
+
+    /**
      * Returns the object's generations. Each generation contains the object's data for a certain
      * (none overlapping) period of time. The returned generations are ordered by their valid from
      * date with the oldest generations coming first.
@@ -55,7 +65,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * @throws IndexOutOfBoundsException if the index is out of bounds.
      */
     public IIpsObjectGeneration getGeneration(int index);
-    
+
     /**
      * @return Returns the first generation of this timed ips object or <code>null</code>, if no
      *         generation exists.
@@ -91,8 +101,8 @@ public interface ITimedIpsObject extends IIpsObject {
 
     /**
      * Creates a new generation that is valid from the specified validFrom date. If the timed ips
-     * object already has a generation that is valid on that date, the new generation is
-     * initialized with the data from that (existing) generation.
+     * object already has a generation that is valid on that date, the new generation is initialized
+     * with the data from that (existing) generation.
      * 
      * @throws NullPointerException if validFrom is <code>null</code>.
      */
@@ -104,8 +114,8 @@ public interface ITimedIpsObject extends IIpsObject {
     public int getNumOfGenerations();
 
     /**
-     * @return The date this IpsObject is valid on or <code>null</code> if this
-     *         IpsObject is valid forever.
+     * @return The date this IpsObject is valid on or <code>null</code> if this IpsObject is valid
+     *         forever.
      */
     public GregorianCalendar getValidTo();
 
