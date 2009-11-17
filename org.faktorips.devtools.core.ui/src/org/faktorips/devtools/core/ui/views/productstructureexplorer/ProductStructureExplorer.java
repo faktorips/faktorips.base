@@ -96,7 +96,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
-import org.faktorips.devtools.core.ui.internal.DeferedStructuredContentProvider;
+import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
@@ -860,7 +860,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     }
 
-    private static class AdjustmentDateContent extends DeferedStructuredContentProvider {
+    private static class AdjustmentDateContent extends DeferredStructuredContentProvider {
 
         @Override
         protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {

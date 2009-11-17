@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.internal.DeferedStructuredContentProvider;
+import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.IpsSrcFileViewItem;
 
 /**
@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.views.IpsSrcFileViewItem;
  * @author dirmeier
  * 
  */
-public class InstanceContentProvider extends DeferedStructuredContentProvider {
+public class InstanceContentProvider extends DeferredStructuredContentProvider {
 
     protected static final IIpsSrcFile[] EMPTY_ARRAY = new IIpsSrcFile[0];
 

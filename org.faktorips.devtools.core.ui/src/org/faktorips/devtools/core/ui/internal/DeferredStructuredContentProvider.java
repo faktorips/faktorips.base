@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Cornelius Dirmeier
  */
-public abstract class DeferedStructuredContentProvider extends Observable implements IStructuredContentProvider {
+public abstract class DeferredStructuredContentProvider extends Observable implements IStructuredContentProvider {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
