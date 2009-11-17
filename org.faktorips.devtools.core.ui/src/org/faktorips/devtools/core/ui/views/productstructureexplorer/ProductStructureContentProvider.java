@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer.GenerationRootNode;
 
 /**
  * Provides the elements of product structure
@@ -30,33 +29,31 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  * @author Thorsten Guenther
  */
 public class ProductStructureContentProvider implements ITreeContentProvider {
-	
-	/**
-	 * The root-node this content provider starts to evaluate the content.
-	 */
-	private IProductCmptTreeStructure structure;
-	
-	/**
-	 * Flag to tell the content provider to show (<code>true</code>) or not to show the
-	 * Association-Type as Node.
-	 */
-	private boolean fShowAssociationType = true;
-	
-	private IProductCmptReference root;
-	
-    private GenerationRootNode generationRootNode;
+
+    /**
+     * The root-node this content provider starts to evaluate the content.
+     */
+    private IProductCmptTreeStructure structure;
+
+    /**
+     * Flag to tell the content provider to show (<code>true</code>) or not to show the
+     * Association-Type as Node.
+     */
+    private boolean fShowAssociationType = true;
+
+    private IProductCmptReference root;
 
     private boolean showTableContents = true;
-    
-	/**
-	 * Creates a new content provider.
-	 * 
-	 * @param showAssociationType <code>true</code> to show the association types as nodes.
-	 */
-	public ProductStructureContentProvider(boolean showAssociationType) {
-		this.fShowAssociationType = showAssociationType;
-	}
-	
+
+    /**
+     * Creates a new content provider.
+     * 
+     * @param showAssociationType <code>true</code> to show the association types as nodes.
+     */
+    public ProductStructureContentProvider(boolean showAssociationType) {
+        fShowAssociationType = showAssociationType;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -82,12 +79,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             children.addAll(Arrays.asList(structure
                     .getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
         }
-        
-        // add root node
-        if (parentElement instanceof GenerationRootNode){
-            children.add(root);
-        }
-        
+
         return children.toArray();
     }
 
@@ -95,35 +87,33 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object getParent(Object element) {
-    	if (structure == null) {
-    		return null;
-    	}
-    	
-    	if (!fShowAssociationType && element instanceof IProductCmptReference) {
-    		return structure.getParentProductCmptReference((IProductCmptReference)element);
-    	}
-    	else if (element instanceof IProductCmptReference) {
-    		return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
-    	}
-    	else if (element instanceof IProductCmptStructureReference) {
-    		return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
-    	}
+        if (structure == null) {
+            return null;
+        }
 
-    	return null;
+        if (!fShowAssociationType && element instanceof IProductCmptReference) {
+            return structure.getParentProductCmptReference((IProductCmptReference)element);
+        } else if (element instanceof IProductCmptReference) {
+            return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
+        } else if (element instanceof IProductCmptStructureReference) {
+            return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
+        }
+
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean hasChildren(Object element) {
-    	return getChildren(element).length > 0;
+        return getChildren(element).length > 0;
     }
 
     /**
      * {@inheritDoc}
      */
     public void dispose() {
-    	structure = null;
+        structure = null;
     }
 
     /**
@@ -131,9 +121,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
-            return new Object[] { generationRootNode};
-        }
-        else {
+            return new Object[] { root };
+        } else {
             return new Object[0];
         }
     }
@@ -143,40 +132,36 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {
-        	structure = null;
+            structure = null;
             return;
         }
-        
+
         structure = (IProductCmptTreeStructure)newInput;
         root = structure.getRoot();
     }
 
     /**
-     * Returns <code>true</code> if the association type will be displayed besides the related product cmpt.
+     * Returns <code>true</code> if the association type will be displayed besides the related
+     * product cmpt.
+     * 
      * @return true if association type showing is on
      */
     public boolean isAssociationTypeShowing() {
-    	return fShowAssociationType;
+        return fShowAssociationType;
     }
 
     /**
      * Sets if the association type will be shown or hidden.
+     * 
      * @param showAssociationType set true for showing association type
      */
     public void setAssociationTypeShowing(boolean showAssociationType) {
-    	fShowAssociationType = showAssociationType;
-    }
-
-    /**
-     * Sets the root node.
-     * @param generationRootNode 
-     */
-    public void setGenerationRootNode(GenerationRootNode generationRootNode) {
-        this.generationRootNode = generationRootNode;
+        fShowAssociationType = showAssociationType;
     }
 
     /**
      * Returns <code>true</code> if the related table contents cmpts will be shown or hidden.
+     * 
      * @return true if show table contents components are shown
      */
     public boolean isShowTableContents() {
@@ -185,7 +170,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Set <code>true</code> to show related table contents.
-     * @param showTableContents 
+     * 
+     * @param showTableContents
      */
     public void setShowTableContents(boolean showTableContents) {
         this.showTableContents = showTableContents;

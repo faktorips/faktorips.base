@@ -16,12 +16,13 @@ package org.faktorips.devtools.core.ui.internal.adjustmentdate;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 
 public class AdjustmentDateViewer extends ComboViewer {
 
-    public AdjustmentDateViewer(Combo list) {
-        super(list);
+    public AdjustmentDateViewer(Composite parent) {
+        super(parent, SWT.READ_ONLY);
     }
 
     public AdjustmentDate getSelectedDate() {

@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-import java.text.DateFormat;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -44,7 +43,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -57,7 +55,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -124,9 +121,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private TreeViewer tree;
     private IIpsSrcFile file;
-    private ProductStructureContentProvider contentProvider;
+    private IProductCmpt productComponent;
     private ProductStructureLabelProvider labelProvider;
-    private GenerationRootNode rootNode;
     private Label errormsg;
 
     private boolean showAssociationNode = false;
@@ -140,6 +136,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private Button prevButton;
 
     private Button nextButton;
+
+    private ProductStructureContentProvider contentProvider;
 
     /*
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeRelationReference will be
@@ -159,65 +157,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 return;
             }
             super.doubleClick(event);
-        }
-    }
-
-    /*
-     * Class to represent the root tree node to inform about the current working date.
-     */
-    class GenerationRootNode extends ViewerLabel {
-        private IProductCmpt productCmpt;
-        private String generationText;
-        private AdjustmentDate adjustmentDate;
-
-        public GenerationRootNode() {
-            super("", null); //$NON-NLS-1$
-        }
-
-        public void refreshText() {
-            if (productCmpt == null) {
-                return;
-            }
-            adjustmentDate = adjustmentDateViewer.getSelectedDate();
-            generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                    .getGenerationConceptNameSingular();
-            String label;
-            if (adjustmentDate == null) {
-                label = Messages.ProductStructureExplorer_collectingAdjustmentDates;
-            } else {
-
-                DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-                String formatedWorkingDate = format.format(adjustmentDate.getValidFrom().getTime());
-                label = NLS.bind(Messages.ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate,
-                        formatedWorkingDate);
-            }
-            setText(label);
-            setImage(IpsPlugin.getDefault().getImage("WorkingDate.gif")); //$NON-NLS-1$
-        }
-
-        public void storeProductCmpt(IProductCmpt productCmpt) {
-            this.productCmpt = productCmpt;
-            refreshText();
-        }
-
-        public String getGenerationText() {
-            return generationText;
-        }
-
-        public AdjustmentDate getAdjustmentDate() {
-            return adjustmentDate;
-        }
-
-        public String getProductCmptNoGenerationLabel(IProductCmpt productCmpt) {
-            String label = productCmpt.getName();
-            if (getAdjustmentDate() != null
-                    && null == productCmpt.findGenerationEffectiveOn(getAdjustmentDate().getValidFrom())) {
-                // no generations avaliable,
-                // show additional text to inform that no generations exists
-                label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label,
-                        getGenerationText());
-            }
-            return label;
         }
     }
 
@@ -259,8 +198,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         // add as resource listener because refactoring-actions like move or rename
         // does not cause a model-changed-event.
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-
-        // IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
     }
 
     /**
@@ -439,7 +376,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         Label adjustmentDateLabel = new Label(labelPanel, SWT.NONE);
         adjustmentDateLabel.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
-        adjustmentDateLabel.setText(Messages.ProductStructureExplorer_adjustmentDate);
+        adjustmentDateLabel.setText(IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular()
+                + ":");
 
         prevButton = new Button(labelPanel, SWT.NONE);;
         prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
@@ -449,9 +388,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
         nextButton.setEnabled(false);
 
-        Combo adjustmentDateCombo = new Combo(viewerPanel, SWT.NONE);
-        adjustmentDateViewer = new AdjustmentDateViewer(adjustmentDateCombo);
-        adjustmentDateCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        adjustmentDateViewer = new AdjustmentDateViewer(viewerPanel);
+        adjustmentDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         AdjustmentDateContentProvider adjustmentContentProvider = new AdjustmentDateContentProvider();
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
@@ -498,23 +436,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             public void selectionChanged(SelectionChangedEvent event) {
                 AdjustmentDate adjDate = adjustmentDateViewer.getSelectedDate();
                 if (adjDate != null) {
-                    setAdjustmentDate(adjDate.getValidFrom());
+                    setAdjustmentDate(adjDate);
                 }
             }
         });
 
         tree = new TreeViewer(viewerPanel);
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        rootNode = new GenerationRootNode();
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setAssociationTypeShowing(showAssociationNode);
         contentProvider.setShowTableContents(showReferencedTable);
 
-        contentProvider.setGenerationRootNode(rootNode);
         tree.setContentProvider(contentProvider);
 
         labelProvider = new ProductStructureLabelProvider();
-        labelProvider.setGenerationRootNode(rootNode);
 
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
@@ -602,20 +537,25 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             return;
         }
 
+        productComponent = product;
         file = product.getIpsSrcFile();
         adjustmentDateViewer.setInput(product);
         adjustmentDateViewer.setSelection(0);
-        rootNode.storeProductCmpt(product);
         // setting the adjustment date to null updates the tree content with latest adjustment
         // until the valid adjustment dates are collected
         setAdjustmentDate(null);
     }
 
-    public void setAdjustmentDate(GregorianCalendar date) {
+    public void setAdjustmentDate(AdjustmentDate adjustmentDate) {
         try {
-            IProductCmpt product = rootNode.productCmpt;
-            IProductCmptTreeStructure structure = product.getStructure(date, product.getIpsProject());
+            GregorianCalendar validFrom = null;
+            if (adjustmentDate != null) {
+                validFrom = adjustmentDate.getValidFrom();
+            }
+            IProductCmptTreeStructure structure = productComponent.getStructure(validFrom, productComponent
+                    .getIpsProject());
             updateButtons();
+            labelProvider.setAdjustmentDate(adjustmentDate);
             showTreeInput(structure);
         } catch (CycleInProductStructureException e) {
             handleCircle(e);
@@ -737,21 +677,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         postRefresh();
     }
 
-    // /**
-    // * If the working date changed update the content of the view.
-    // *
-    // * {@inheritDoc}
-    // */
-    // public void propertyChange(PropertyChangeEvent event) {
-    // if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
-    // try {
-    // showStructure(file);
-    // } catch (CoreException e) {
-    // IpsPlugin.log(e);
-    // }
-    // }
-    // }
-
     /**
      * {@inheritDoc}
      */
@@ -783,9 +708,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         tree.setInput(input);
         tree.expandAll();
-
-        rootNode.refreshText();
-        tree.refresh(true);
     }
 
     private void showEmptyMessage() {
@@ -849,7 +771,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         @Override
         protected String getWaitingLabel() {
-            return Messages.ProductStructureExplorer_collectingAdjustmentDates;
+            return NLS.bind(Messages.ProductStructureExplorer_collectingAdjustmentDates, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
         }
 
         private TreeSet<AdjustmentDate> collectAdjustmentDates(IProductCmpt productCmpt,

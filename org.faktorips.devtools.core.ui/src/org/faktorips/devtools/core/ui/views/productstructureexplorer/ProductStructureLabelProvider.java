@@ -16,21 +16,23 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerLabel;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer.GenerationRootNode;
+import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider extends LabelProvider {
 
-    private boolean showTableStructureUsageName = false;
+    private AdjustmentDate adjustmentDate;
 
-    private GenerationRootNode generationRootNode;
+    private boolean showTableStructureUsageName = false;
 
     /**
      * {@inheritDoc}
@@ -55,8 +57,7 @@ public class ProductStructureLabelProvider extends LabelProvider {
     @Override
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
-            return generationRootNode
-                    .getProductCmptNoGenerationLabel(((IProductCmptReference)element).getProductCmpt());
+            return getProductCmptNoGenerationLabel(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeRelationReference) {
             IProductCmptTypeAssociation association = ((IProductCmptTypeRelationReference)element).getRelation();
             // if the cardinality of the association is "toMany" then show the name (target role
@@ -77,8 +78,18 @@ public class ProductStructureLabelProvider extends LabelProvider {
         return Messages.ProductStructureLabelProvider_undefined;
     }
 
-    public void setGenerationRootNode(GenerationRootNode generationRootNode) {
-        this.generationRootNode = generationRootNode;
+    public String getProductCmptNoGenerationLabel(IProductCmpt productCmpt) {
+        String label = productCmpt.getName();
+        if (getAdjustmentDate() != null
+                && null == productCmpt.findGenerationEffectiveOn(getAdjustmentDate().getValidFrom())) {
+            // no generations avaliable,
+            // show additional text to inform that no generations exists
+            String generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular();
+            label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label,
+                    generationText);
+        }
+        return label;
     }
 
     /**
@@ -95,5 +106,13 @@ public class ProductStructureLabelProvider extends LabelProvider {
      */
     public boolean isShowTableStructureUsageName() {
         return showTableStructureUsageName;
+    }
+
+    public void setAdjustmentDate(AdjustmentDate adjustmentDate) {
+        this.adjustmentDate = adjustmentDate;
+    }
+
+    public AdjustmentDate getAdjustmentDate() {
+        return adjustmentDate;
     }
 }

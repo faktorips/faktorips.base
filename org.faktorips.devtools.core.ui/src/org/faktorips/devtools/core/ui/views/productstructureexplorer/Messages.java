@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,8 +25,6 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    public static String ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate;
-    public static String ProductStructureExplorer_adjustmentDate;
     public static String ProductStructureExplorer_collectingAdjustmentDates;
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
     public static String ProductStructureExplorer_infoMessageEmptyView_2;
@@ -38,8 +36,8 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_menuShowTableRoleName_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_tooltip;
     public static String ProductStructureLabelProvider_undefined;
-	public static String ProductStructureExplorer_labelCircleRelation;
-	public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;
-	public static String ProductStructureExplorer_tooltipClear;
-	public static String ProductStructureExplorer_tooltipRefreshContents;
+    public static String ProductStructureExplorer_labelCircleRelation;
+    public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+    public static String ProductStructureExplorer_tooltipClear;
+    public static String ProductStructureExplorer_tooltipRefreshContents;
 }
