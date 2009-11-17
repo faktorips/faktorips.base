@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.StringUtil;
 
 /**
- *
+ * 
  * @author Markus Blum
  */
 public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPluginTest {
@@ -43,56 +43,57 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
     private IIpsPackageFragment packLeistungFix;
     private IIpsPackageFragment packLeistung;
 
+    @Override
     protected void setUp() throws Exception {
-         super.setUp();
+        super.setUp();
 
-         sorter = new IpsPackageFragmentArbitrarySortDefinition();
-         ipsProject = this.newIpsProject("TestProject");
-         rootPackage = ipsProject.getIpsPackageFragmentRoots()[0];
+        sorter = new IpsPackageFragmentArbitrarySortDefinition();
+        ipsProject = this.newIpsProject("TestProject");
+        rootPackage = ipsProject.getIpsPackageFragmentRoots()[0];
 
-         packLeistung = rootPackage.createPackageFragment("products.kranken.leistungsarten", true, null);
-         packLeistungFix = rootPackage.createPackageFragment("products.kranken.leistungsarten.fix", true, null);
-         rootPackage.createPackageFragment("products.kranken.leistungsarten.optional", true, null);
-         rootPackage.createPackageFragment("products.hausrat.deckungen.grundeckung", true, null);
-         rootPackage.createPackageFragment("products.hausrat.deckungen.zusatzdeckungen", true, null);
+        packLeistung = rootPackage.createPackageFragment("products.kranken.leistungsarten", true, null);
+        packLeistungFix = rootPackage.createPackageFragment("products.kranken.leistungsarten.fix", true, null);
+        rootPackage.createPackageFragment("products.kranken.leistungsarten.optional", true, null);
+        rootPackage.createPackageFragment("products.hausrat.deckungen.grundeckung", true, null);
+        rootPackage.createPackageFragment("products.hausrat.deckungen.zusatzdeckungen", true, null);
 
-         IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products.hausrat");
-         IIpsPackageFragment packHausratDeckungen = rootPackage.getIpsPackageFragment("products.hausrat.deckungen");
+        IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products.hausrat");
+        IIpsPackageFragment packHausratDeckungen = rootPackage.getIpsPackageFragment("products.hausrat.deckungen");
 
-         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
+        IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
-         // create files
-         ArrayList list = new ArrayList(2);
-         list.add("products");
+        // create files
+        ArrayList list = new ArrayList(2);
+        list.add("products");
 
-         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
-         list.clear();
+        createPackageOrderFile((IFolder)rootPackage.getCorrespondingResource(), list);
+        list.clear();
 
-         list.add("unfall");
-         list.add("kranken");
-         list.add("folder");
-         list.add("haftpflicht");
-         list.add("hausrat");
+        list.add("unfall");
+        list.add("kranken");
+        list.add("folder");
+        list.add("haftpflicht");
+        list.add("hausrat");
 
-         createPackageOrderFile((IFolder) products.getCorrespondingResource(), list);
-         list.clear();
+        createPackageOrderFile((IFolder)products.getCorrespondingResource(), list);
+        list.clear();
 
-         list.add("optional");
-         list.add("fix");
+        list.add("optional");
+        list.add("fix");
 
-         createPackageOrderFile((IFolder) packLeistung.getCorrespondingResource(), list);
-         list.clear();
+        createPackageOrderFile((IFolder)packLeistung.getCorrespondingResource(), list);
+        list.clear();
 
-         list.add("deckungen");
+        list.add("deckungen");
 
-         createPackageOrderFile((IFolder) packHausrat.getCorrespondingResource(), list);
-         list.clear();
+        createPackageOrderFile((IFolder)packHausrat.getCorrespondingResource(), list);
+        list.clear();
 
-         list.add("grunddeckung");
-         list.add("zusatzdeckungen");
+        list.add("grunddeckung");
+        list.add("zusatzdeckungen");
 
-         createPackageOrderFile((IFolder) packHausratDeckungen.getCorrespondingResource(), list);
-         list.clear();
+        createPackageOrderFile((IFolder)packHausratDeckungen.getCorrespondingResource(), list);
+        list.clear();
     }
 
     public void testCompare() throws CoreException {
@@ -137,7 +138,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
 
     }
 
-    public void testGetSegmentNames () throws CoreException {
+    public void testGetSegmentNames() throws CoreException {
         // not initialized
         assertEquals(0, sorter.getSegmentNames().length);
 
@@ -155,12 +156,23 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(0, sorter.getSegmentNames().length);
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
+
+        // to test different line separators, add some fictive packages
+
+        packageNames += "\nunix"; // Unix standard
+        packageNames += "\rmac"; // old Mac standard
+        packageNames += "\r\nwin";
+
         sorter.initPersistenceContent(packageNames);
 
         String[] segments = sorter.getSegmentNames();
-        assertEquals(2, segments.length);
+        assertEquals(5, segments.length);
         assertEquals("optional", segments[0]);
         assertEquals("fix", segments[1]);
+
+        assertEquals("unix", segments[2]);
+        assertEquals("mac", segments[3]);
+        assertEquals("win", segments[4]);
     }
 
     public void testSetSegmentNames() throws CoreException {
@@ -220,16 +232,17 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         IFolder folder;
 
         if (fragment.isDefaultPackage()) {
-            folder = (IFolder) fragment.getRoot().getCorrespondingResource();
+            folder = (IFolder)fragment.getRoot().getCorrespondingResource();
         } else {
-            folder = (IFolder) fragment.getParentIpsPackageFragment().getCorrespondingResource();
+            folder = (IFolder)fragment.getParentIpsPackageFragment().getCorrespondingResource();
         }
 
         IFile file = folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
         String content;
 
         try {
-             content = StringUtil.readFromInputStream(file.getContents(), fragment.getIpsProject().getPlainTextFileCharset());
+            content = StringUtil.readFromInputStream(file.getContents(), fragment.getIpsProject()
+                    .getPlainTextFileCharset());
         } catch (IOException e) {
             IpsPlugin.log(e);
             return null;
