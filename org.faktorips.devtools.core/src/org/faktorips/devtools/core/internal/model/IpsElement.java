@@ -97,6 +97,8 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
      * 
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
+    // IAdaptable uses unchecked Class
     public Object getAdapter(Class adapter) {
         if (adapter == null) {
             return null;
