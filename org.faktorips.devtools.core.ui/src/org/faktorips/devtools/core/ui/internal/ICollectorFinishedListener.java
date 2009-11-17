@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.internal;
 
 import java.util.Observer;
 
+/**
+ * This is just another name for the {@link Observer} interface to mark a listener for the
+ * {@link DeferredStructuredContentProvider}
+ * 
+ * @author Cornelius Dirmeier
+ */
 public interface ICollectorFinishedListener extends Observer {
 
 }

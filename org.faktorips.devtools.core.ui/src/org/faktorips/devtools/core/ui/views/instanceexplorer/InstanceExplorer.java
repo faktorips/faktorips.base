@@ -463,25 +463,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     }
 
-    // XXX
-    // private class RefreshWhenDone extends JobChangeAdapter {
-    //
-    // @Override
-    // public void done(IJobChangeEvent event) {
-    // if (display != null && !display.isDisposed()) {
-    // display.syncExec(new Runnable() {
-    // public void run() {
-    // selectedElementLabel.pack();
-    // tableViewer.setInput(contentProvider.getActualElement());
-    // updateView();
-    // refreshAll();
-    // }
-    // });
-    // }
-    // }
-    //
-    // };
-
     private static class NotFoundMetaClass extends IpsObject implements IIpsMetaClass {
 
         private final IIpsMetaObject metaObject;
