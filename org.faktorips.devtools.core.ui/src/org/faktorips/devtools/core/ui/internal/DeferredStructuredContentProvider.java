@@ -18,6 +18,7 @@ import java.util.Observable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -122,12 +123,17 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
 
         @Override
         protected IStatus run(IProgressMonitor monitor) {
-            Object[] result = collectElements(inputElement, monitor);
-            // only set the result if this is still the active job!
-            if (this == collector) {
-                elements = result;
+            try {
+                monitor.beginTask(getWaitingLabel(), 1);
+                SubProgressMonitor collectMonitor = new SubProgressMonitor(monitor, 1);
+                Object[] result = collectElements(inputElement, collectMonitor);
+                // only set the result if this is still the active job!
+                if (this == collector) {
+                    elements = result;
+                }
+            } finally {
+                monitor.done();
             }
-            monitor.done();
             return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, null);
         }
     };
