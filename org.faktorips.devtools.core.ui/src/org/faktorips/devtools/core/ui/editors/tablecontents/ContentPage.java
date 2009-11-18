@@ -141,6 +141,7 @@ public class ContentPage extends IpsObjectEditorPage {
         // Workaround see
         TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), true);
+        importAction.setControlWithDataChangeableSupport(this);
         TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), false);
 
@@ -532,4 +533,5 @@ public class ContentPage extends IpsObjectEditorPage {
     public void refreshTable() {
         tableViewer.refresh();
     }
+
 }
