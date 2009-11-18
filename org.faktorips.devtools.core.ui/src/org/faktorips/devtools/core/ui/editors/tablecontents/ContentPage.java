@@ -265,7 +265,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
                     ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
-                            tableStructure.getIpsProject());
+                            getTableContents().getIpsProject());
                     ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                             dataType);
                     TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
