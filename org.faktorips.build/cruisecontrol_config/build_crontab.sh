@@ -16,7 +16,7 @@ cvsUpdate()
 
 generateCruiseControlConfig()
 {
-  $ANT_HOME/bin/ant -buildfile $CVS_CHECKOUT/generate.cc.config.xml generate.config.xml -Dskip.pretty.print=true
+  $ANT_HOME/bin/ant -buildfile $CVS_CHECKOUT/generate.cc.config.xml generate.config.xml -Dskip.pretty.print=true -Dconfig.xml=config.xml
 }
 
 cvsUpdate
