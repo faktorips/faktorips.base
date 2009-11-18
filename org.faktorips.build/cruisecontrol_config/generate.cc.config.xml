@@ -4,13 +4,14 @@
 <project name="runXslt" basedir="." default="generate.config.xml">
 
 	<!-- Cruise Control config.xml -->
-
+	<property name="config.xml" value="config_example.xml"/>
+	
 	<target name="generate.config.xml" depends="-xslt.config.xml,-config.xml.pretty.print" 
 		description="generates the cc config.xml file" />
 	
 	<target name="-xslt.config.xml">
 		<!-- xsl file is stored in the subdirectory ./xsl -->
-		<xslt in="faktorips.projects.xml" out="config.xml"
+		<xslt in="faktorips.projects.xml" out="${config.xml}"
 		      style="xsl/createcruisecontrolconfig.xsl"
 			  force="true">
 		  <outputproperty name="method" value="xml"/>
