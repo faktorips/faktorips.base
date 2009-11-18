@@ -23,12 +23,12 @@ public class AdjustmentDate {
 
     private final GregorianCalendar validFrom;
 
-    private final GregorianCalendar validTo;
+    private GregorianCalendar validTo;
 
     public AdjustmentDate(GregorianCalendar validFrom, GregorianCalendar validTo) {
         Assert.isNotNull(validFrom);
         this.validFrom = validFrom;
-        this.validTo = validTo;
+        setValidTo(validTo);
     }
 
     public GregorianCalendar getValidFrom() {
@@ -39,12 +39,17 @@ public class AdjustmentDate {
         return validTo;
     }
 
+    public void setValidTo(GregorianCalendar validTo) {
+        this.validTo = validTo;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof AdjustmentDate) {
             AdjustmentDate other = (AdjustmentDate)obj;
             return validFrom.equals(other.validFrom)
-                    && (validTo != null ? validTo.equals(other.validTo) : validTo == other.validTo);
+                    && (getValidTo() != null ? getValidTo().equals(other.getValidTo()) : getValidTo() == other
+                            .getValidTo());
         } else {
             return false;
         }
@@ -54,8 +59,8 @@ public class AdjustmentDate {
     public int hashCode() {
         int result = 17;
         result = 31 * result + validFrom.hashCode();
-        if (validTo != null) {
-            result = 31 * result + validTo.hashCode();
+        if (getValidTo() != null) {
+            result = 31 * result + getValidTo().hashCode();
         }
         return result;
     }
@@ -66,11 +71,15 @@ public class AdjustmentDate {
     }
 
     public String getText() {
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        StringBuffer result = new StringBuffer(format.format(getValidFrom().getTime()));
-        if (validTo != null) {
-            result.append(" - ").append(format.format(getValidTo().getTime())); //$NON-NLS-1$
+        StringBuffer result = new StringBuffer(getDateFormat().format(getValidFrom().getTime()));
+        if (getValidTo() != null) {
+            result.append(" - ").append(getDateFormat().format(getValidTo().getTime())); //$NON-NLS-1$
         }
         return result.toString();
     }
+
+    public DateFormat getDateFormat() {
+        return IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+    }
+
 }

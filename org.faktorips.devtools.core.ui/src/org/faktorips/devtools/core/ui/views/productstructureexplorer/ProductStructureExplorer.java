@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Set;
@@ -370,27 +373,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         viewerPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewerPanel.setLayout(new GridLayout(1, true));
 
-        Composite labelPanel = new Composite(viewerPanel, SWT.NONE);
-        labelPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        labelPanel.setLayout(new GridLayout(3, false));
+        Composite adjustmentDatePanel = new Composite(viewerPanel, SWT.NONE);
+        adjustmentDatePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        adjustmentDatePanel.setLayout(new GridLayout(3, false));
 
-        Label adjustmentDateLabel = new Label(labelPanel, SWT.NONE);
-        adjustmentDateLabel.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
-        adjustmentDateLabel.setText(IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNameSingular()
-                + ":");
-
-        prevButton = new Button(labelPanel, SWT.NONE);;
-        prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
-        prevButton.setEnabled(false);
-
-        nextButton = new Button(labelPanel, SWT.NONE);;
-        nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
-        nextButton.setEnabled(false);
-
-        adjustmentDateViewer = new AdjustmentDateViewer(viewerPanel);
+        adjustmentDateViewer = new AdjustmentDateViewer(adjustmentDatePanel);
         adjustmentDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         AdjustmentDateContentProvider adjustmentContentProvider = new AdjustmentDateContentProvider();
+
+        prevButton = new Button(adjustmentDatePanel, SWT.NONE);
+        prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft_small.gif")); //$NON-NLS-1$
+        prevButton.setEnabled(false);
+
+        nextButton = new Button(adjustmentDatePanel, SWT.NONE);
+        nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight_small.gif")); //$NON-NLS-1$
+        nextButton.setEnabled(false);
+
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
             public void update(Observable o, Object arg) {
@@ -671,6 +669,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * {@inheritDoc}
      */
     public void resourceChanged(IResourceChangeEvent event) {
+        // TODO update AdjustmentDateContent, wenn neue Anpassungsstufe hinzugekommen ist
         if (file == null) {
             return;
         }
@@ -760,8 +759,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             if (inputElement instanceof IProductCmpt) {
                 IProductCmpt productCmpt = (IProductCmpt)inputElement;
                 try {
-                    return collectAdjustmentDates(productCmpt, new HashSet<IProductCmpt>(),
-                            productCmpt.getIpsProject(), monitor).toArray();
+                    TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
+                            new HashSet<IProductCmpt>(), productCmpt.getIpsProject(), monitor);
+                    List<AdjustmentDate> result = new ArrayList<AdjustmentDate>();
+                    GregorianCalendar lastDate = null;
+                    AdjustmentDate lastAdjDate = null;
+                    for (Iterator<GregorianCalendar> validFromIterator = validFromDates.iterator(); validFromIterator
+                            .hasNext();) {
+                        GregorianCalendar nextDate = validFromIterator.next();
+                        lastAdjDate = new AdjustmentDate(nextDate, lastDate);
+                        lastDate = (GregorianCalendar)nextDate.clone();
+                        lastDate.add(Calendar.DATE, -1);
+                        result.add(lastAdjDate);
+                    }
+                    return result.toArray();
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -775,16 +786,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
         }
 
-        private TreeSet<AdjustmentDate> collectAdjustmentDates(IProductCmpt productCmpt,
+        private TreeSet<GregorianCalendar> collectValidFromDates(IProductCmpt productCmpt,
                 Set<IProductCmpt> alreadyPassed,
                 IIpsProject ipsProject,
                 IProgressMonitor monitor) throws CoreException {
 
-            TreeSet<AdjustmentDate> result = new TreeSet<AdjustmentDate>(new Comparator<AdjustmentDate>() {
+            TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
 
-                public int compare(AdjustmentDate o1, AdjustmentDate o2) {
+                public int compare(GregorianCalendar o1, GregorianCalendar o2) {
                     // descending order
-                    return o2.getValidFrom().getTime().compareTo(o1.getValidFrom().getTime());
+                    return o2.getTime().compareTo(o1.getTime());
                 }
 
             });
@@ -795,7 +806,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     if (monitor.isCanceled()) {
                         return result;
                     }
-                    result.add(new AdjustmentDate(generation.getValidFrom(), generation.getValidTo()));
+                    result.add(generation.getValidFrom());
                     if (generation instanceof ProductCmptGeneration) {
                         ProductCmptGeneration prodCmptGeneration = (ProductCmptGeneration)generation;
                         IProductCmptLink[] links = prodCmptGeneration.getLinks();
@@ -810,7 +821,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                                     IProductCmpt target = link.findTarget(ipsProject);
                                     if (alreadyPassed.add(target)) {
                                         IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
-                                        result.addAll(collectAdjustmentDates(target, alreadyPassed, ipsProject,
+                                        result.addAll(collectValidFromDates(target, alreadyPassed, ipsProject,
                                                 recMonitor));
                                     }
                                 }
