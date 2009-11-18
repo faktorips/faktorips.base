@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -288,35 +289,62 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateNotEnoughRelations() throws Exception {
+        validateNotEnoughRelationsTest(generation);
+    }
+
+    private void validateNotEnoughRelationsTest(IProductCmptGeneration baseGeneration) throws Exception {
         association.setMinCardinality(1);
         association.setMaxCardinality(2);
 
-        MessageList ml = generation.validate(ipsProject);
+        MessageList ml = baseGeneration.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
 
-        generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate(ipsProject);
+        baseGeneration.newLink(association.getTargetRoleSingular());
+        ml = baseGeneration.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
 
-        generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate(ipsProject);
+        baseGeneration.newLink(association.getTargetRoleSingular());
+        ml = baseGeneration.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
+
     }
 
     public void testValidateTooManyRelations() throws Exception {
+        validateTooManyRelationsTest(generation);
+    }
+
+    private void validateTooManyRelationsTest(IProductCmptGeneration baseGeneration) throws Exception {
         association.setMinCardinality(0);
         association.setMaxCardinality(1);
 
-        MessageList ml = generation.validate(ipsProject);
+        MessageList ml = baseGeneration.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
 
-        generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate(ipsProject);
+        baseGeneration.newLink(association.getTargetRoleSingular());
+        ml = baseGeneration.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
 
-        generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate(ipsProject);
+        baseGeneration.newLink(association.getTargetRoleSingular());
+        ml = baseGeneration.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+    }
+
+    public void testValidateNotEnoughRelationsHierarchy() throws Exception {
+        validateNotEnoughRelationsTest(getSubGenertation());
+    }
+
+    public void testValidateTooManyRelationsHierarchy() throws Exception {
+        validateTooManyRelationsTest(getSubGenertation());
+    }
+
+    private IProductCmptGeneration getSubGenertation() throws CoreException {
+        PolicyCmptType subPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy", "SubProduct");
+        subPolicyCmptType.setSupertype(policyCmptType.getName());
+        IProductCmptType subProductCmptType = subPolicyCmptType.findProductCmptType(ipsProject);
+        subProductCmptType.setSupertype(productCmptType.getName());
+        ProductCmpt subProductCmpt = newProductCmpt(subProductCmptType, "SubTestProduct");
+        IProductCmptGeneration subGeneration = subProductCmpt.getProductCmptGeneration(0);
+        return subGeneration;
     }
 
     public void testValidateAttributeWithMissingConfigElement() throws Exception {
