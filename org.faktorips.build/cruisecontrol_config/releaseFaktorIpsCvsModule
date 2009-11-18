@@ -129,9 +129,19 @@ checkoutModule()
       cvs -d $CVS_ROOT co -d $_TARGET -r $_TAG $_MODULE >> $CVS_LOG 2>&1
       RC=$?
       set $BASH_PARAM
-      if [ $RC -eq 0 ] ; then
+
+      _AT_LEAST_ONE_FILE_FOUND=true
+      # maybe cvs returns 0 but no file was found, thus check if at least one file was found
+      if [ $(find $_TARGET -type f | grep -v "CVS" | wc -l) -eq 0 ] ; then
+        _AT_LEAST_ONE_FILE_FOUND=false
+      fi
+
+      if [ $RC -eq 0 -a "$_AT_LEAST_ONE_FILE_FOUND" = "true" ] ; then
+        # note if the tag doesn't exists in the repository then rc is equal 1
+        # but if the tag is used anywhere then we must check for files using the find command  
         return
       fi
+      
       # nothing found using tag, checkout without using tag
       if [ -d $_TARGET ] ; then
 	    rm -r $_TARGET # delete is necessary because CVS stores the previous used tag
@@ -150,9 +160,19 @@ checkoutModule()
       cvs -d $CVS_ROOT co -d $_TARGET -r $_TAG $_MODULE >> $CVS_LOG 2>&1
       RC=$?
       set $BASH_PARAM
-      if [ $RC -eq 0 ] ; then
-        return
+      
+      _AT_LEAST_ONE_FILE_FOUND=true
+      # maybe cvs returns 0 but no file was found, thus check if at least one file was found
+      if [ $(find $_TARGET -type f | grep -v "CVS" | wc -l) -eq 0 ] ; then
+        _AT_LEAST_ONE_FILE_FOUND=false
       fi
+      
+      if [ $RC -eq 0 -a "$_AT_LEAST_ONE_FILE_FOUND" = "true" ] ; then
+        # note if the tag doesn't exists in the repository then rc is equal 1
+        # but if the tag is used anywhere then we must check for files using the find command       
+        return
+      fi      
+      
       # nothing found using tag, checkout without using tag
       if [ -d $_TARGET ] ; then
         rm -r $_TARGET # delete is necessary because CVS stores the previous used tag

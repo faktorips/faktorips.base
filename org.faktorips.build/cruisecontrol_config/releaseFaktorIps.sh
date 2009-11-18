@@ -532,7 +532,7 @@ assertBundleVersionAndMigrationClass()
 
   if [ "$MIGRATION_EXISTS" = "false" ] ; then
     echo "=> Cancel build: Migrationstrategy not exists (wrong branch name or migration class not tagged)! "
-    echo "   no class found in $MIGRATION_STRATEGY_PATH with target version = $BUILD_VERSION found"
+    echo "   no class found in $MIGRATION_STRATEGY_PATH with target version = $BUILD_VERSION"
     exit 1
   else
     echo "Ok migration strategy class found"
@@ -670,7 +670,8 @@ checkAndCreateReleaseProperty()
   #    - if release property already exists then tagging Cvs is not allowed, must be deleted manually
   if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" -a ! "$FORCE_TAGCVS" = "true" ] ; then
     echo "=> Cancel build: tagging is not allowed if the release already exists!"
-    echo "   Please use -skipTaggingCvs or remove the release.properties in the pluginbuilder project and try again."
+    echo "   Please use -skipTaggingCvs or remove the release properties in the pluginbuilder project and try again."
+    echo "   Optional you can use -forceTaggingCvs to move the tag, but notice that the previous release will be overwritten!"
     echo "   Existing file: "$RELEASE_PROPERTIES
     exit 1
   fi
@@ -761,13 +762,6 @@ cd $WORKING_DIR
 
 checkoutPluginbuilderParts
 
-# asserts for release builds (not active if product build, product exists will be checked in the ant build file)
-if [ ! "$SKIPTAGCVS" = "true" -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
-  echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
-  echo "   delete the previous release build or use parameter -overwrite"
-  exit 1
-fi
-
 # assert license script in pluginbuilder project
 if [ ! -f $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT ] ; then
   echo "error: the create license script not exists: "$PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT
@@ -775,6 +769,13 @@ if [ ! -f $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT ] ; then
 fi   
 
 checkAndCreateReleaseProperty
+
+# asserts for release builds (not active if product build, product exists will be checked in the ant build file)
+if [ ! "$SKIPTAGCVS" = "true" -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
+  echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
+  echo "   delete the previous release build or use parameter -overwrite"
+  exit 1
+fi
 
 # 3. tag all projects defined in the pluginbuilder project (move tag if already exists)
 #    if skip tag is true then don't tag project, the previous tagged versions are used for the build
@@ -794,7 +795,9 @@ BUILD_CATEGORY_PATH="faktorips-"$BUILD_CATEGORY
 DOWNLOAD_DIR=$PUBLISH_DOWNLOAD_DIR"/"$BUILD_CATEGORY_PATH
 
 # create download dir if not exists
-test -d $DOWNLOAD_DIR || mkdir $DOWNLOAD_DIR
+if [ ! "$SKIPPUBLISH" = "true" ] ; then
+  test -d $DOWNLOAD_DIR || mkdir $DOWNLOAD_DIR
+fi 
 
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
