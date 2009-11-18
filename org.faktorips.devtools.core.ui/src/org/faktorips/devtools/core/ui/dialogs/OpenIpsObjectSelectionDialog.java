@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -198,6 +199,16 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     private class IpsSrcFileFilter extends ItemsFilter {
 
+        private static final String ALL_PATTERN = "?";
+
+        public IpsSrcFileFilter() {
+            // empty string should match all columns
+            super();
+            if (StringUtils.isEmpty(patternMatcher.getPattern())) {
+                patternMatcher.setPattern(ALL_PATTERN);
+            }
+        }
+
         @Override
         public boolean isConsistentItem(Object object) {
             if (object instanceof IIpsSrcFile) {
@@ -378,8 +389,11 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     public static class IpsObjectSelectionHistory extends SelectionHistory {
 
+        // In memento the path to the IpsSrcFile is stored with this tag
         private static final String TAG_PATH = "path"; //$NON-NLS-1$
 
+        // If the resource is an archive, the IpsSrcFile is stored in an Archive
+        // Store the qualified name type of the IpsSrcFile within the archive with this tag
         private static final String TAG_NAMETYPE = "nameType"; //$NON-NLS-1$
 
         @Override
