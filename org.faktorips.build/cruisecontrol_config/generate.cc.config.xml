@@ -21,7 +21,7 @@
 		</xslt>
 	</target>
 	
-	<target name="-config.xml.pretty.print" unless="${skip.pretty.print}">
+	<target name="-config.xml.pretty.print" unless="skip.pretty.print">
 		<!-- using xmlbeans PrettyPrinter to format the generated xml file in a pretty style -->
         <ant dir=".." antfile="build.xml" target="xml.pretty.print">
             <property name="input.xml" value="${basedir}/config.xml"/>
