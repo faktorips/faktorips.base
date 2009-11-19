@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 /*******************************************************************************
  * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
@@ -93,18 +94,18 @@ public class ReferenceDropListener extends DropTargetAdapter {
 
                     IProductCmpt draggedCmpt = getProductCmpt(file);
 
-                    String association = null;
+                    IAssociation association = null;
                     IProductCmptGeneration generation = null;
                     if (insertAt instanceof IProductCmptTypeRelationReference) {
                         IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)insertAt;
                         IProductCmpt parentCmpt = ((IProductCmptReference)reference.getParent()).getProductCmpt();
                         generation = (IProductCmptGeneration)parentCmpt.getGenerationByEffectiveDate(reference
                                 .getStructure().getValidAt());
-                        association = reference.getRelation().getName();
+                        association = reference.getRelation();
                     } else if (insertAt instanceof IProductCmptLink) {
                         IProductCmptLink link = ((IProductCmptLink)insertAt);
                         generation = link.getProductCmptGeneration();
-                        association = link.getAssociation();
+                        association = link.findAssociation(generation.getIpsProject());
                     }
 
                     if (generation != null
@@ -251,7 +252,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
      */
     private boolean insert(IProductCmpt cmpt, Object insertAt) {
         String target = cmpt.getQualifiedName();
-        String association = null;
+        IAssociation association = null;
         IProductCmptLink insertBefore = null;
         try {
             IProductCmptGeneration generation = null;
@@ -263,11 +264,11 @@ public class ReferenceDropListener extends DropTargetAdapter {
                 IProductCmpt parentCmpt = ((IProductCmptReference)reference.getParent()).getProductCmpt();
                 generation = (IProductCmptGeneration)parentCmpt.findGenerationEffectiveOn(reference.getStructure()
                         .getValidAt());
-                association = reference.getRelation().getName();
+                association = reference.getRelation();
             } else if (insertAt instanceof IProductCmptLink) {
                 IProductCmptLink link = (IProductCmptLink)insertAt;
                 generation = link.getProductCmptGeneration();
-                association = link.getAssociation();
+                association = link.findAssociation(generation.getIpsProject());
                 insertBefore = link;
             }
             if (generation != null && generation.canCreateValidLink(cmpt, association, generation.getIpsProject())) {
@@ -285,13 +286,13 @@ public class ReferenceDropListener extends DropTargetAdapter {
      */
     private IProductCmptLink newLink(IProductCmptGeneration generation,
             String target,
-            String association,
+            IAssociation association,
             IProductCmptLink insertBefore) {
         IProductCmptLink newLink = null;
         if (insertBefore != null) {
-            newLink = generation.newLink(association, insertBefore);
+            newLink = generation.newLink(association.getName(), insertBefore);
         } else {
-            newLink = generation.newLink(association);
+            newLink = generation.newLink(association.getName());
         }
         newLink.setTarget(target);
         newLink.setMaxCardinality(1);

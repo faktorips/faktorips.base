@@ -457,24 +457,25 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public boolean canCreateValidLink(IProductCmpt target, String associationName, IIpsProject ipsProject)
+    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException {
-        if (associationName == null || target == null || !getIpsSrcFile().isMutable()) {
+        if (association == null || target == null || !getIpsSrcFile().isMutable()) {
             return false;
         }
         IProductCmptType type = findProductCmptType(ipsProject);
         if (type == null) {
             return false;
         }
-        IAssociation association = type.findAssociation(associationName, ipsProject);
-        if (association == null) {
-            return false;
-        }
         // it is not valid to create more than one relation with the same type and target.
         if (!isFirstRelationOfThisType(association, target, ipsProject)) {
             return false;
         }
-        return this.getLinks(associationName).length < association.getMaxCardinality()
+        // is correct type
+        if (!target.findProductCmptType(ipsProject).isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
+            return false;
+        }
+
+        return this.getLinks(association.getName()).length < association.getMaxCardinality()
                 && ProductCmptLink.willBeValid(target, association, ipsProject);
     }
 

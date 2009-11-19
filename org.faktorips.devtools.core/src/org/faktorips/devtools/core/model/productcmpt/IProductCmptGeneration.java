@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
  * 
@@ -274,7 +275,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * 
      * @throws CoreException if a problem occur during the search of the type hierarchy.
      */
-    public boolean canCreateValidLink(IProductCmpt target, String association, IIpsProject ipsProject)
+    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException;
 
     /**

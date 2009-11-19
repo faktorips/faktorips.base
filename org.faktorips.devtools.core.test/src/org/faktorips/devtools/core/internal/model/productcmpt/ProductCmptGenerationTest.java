@@ -365,7 +365,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertFalse(generation.canCreateValidLink(null, null, ipsProject));
         assertFalse(generation.canCreateValidLink(productCmpt, null, ipsProject));
 
-        assertTrue(generation.canCreateValidLink(target, "testRelationProductSide", ipsProject));
+        assertTrue(generation.canCreateValidLink(target, association, ipsProject));
     }
 
     /**
@@ -383,7 +383,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt2 = newProductCmpt(subProductCmptType, "TestProduct2");
         IProductCmptGeneration generation2 = productCmpt2.getProductCmptGeneration(0);
 
-        assertTrue(generation2.canCreateValidLink(target, "testRelationProductSide", ipsProject));
+        assertTrue(generation2.canCreateValidLink(target, association, ipsProject));
     }
 
     public void testGetChildren() throws CoreException {
