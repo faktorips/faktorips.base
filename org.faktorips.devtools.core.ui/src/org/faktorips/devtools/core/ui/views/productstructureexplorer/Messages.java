@@ -37,6 +37,9 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_menuShowTableRoleName_tooltip;
     public static String ProductStructureLabelProvider_undefined;
     public static String ProductStructureExplorer_labelCircleRelation;
+    public static String ProductStructureExplorer_nextAdjustmentToolTip;
+    public static String ProductStructureExplorer_prevAdjustmentToolTip;
+    public static String ProductStructureExplorer_selectAdjustmentToolTip;
     public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;
     public static String ProductStructureExplorer_tooltipClear;
     public static String ProductStructureExplorer_tooltipRefreshContents;

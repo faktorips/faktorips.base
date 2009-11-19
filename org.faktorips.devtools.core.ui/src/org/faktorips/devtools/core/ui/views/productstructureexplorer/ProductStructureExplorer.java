@@ -373,22 +373,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         viewerPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewerPanel.setLayout(new GridLayout(1, true));
 
+        String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
+
         Composite adjustmentDatePanel = new Composite(viewerPanel, SWT.NONE);
         adjustmentDatePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         adjustmentDatePanel.setLayout(new GridLayout(3, false));
 
         adjustmentDateViewer = new AdjustmentDateViewer(adjustmentDatePanel);
         adjustmentDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        adjustmentDateViewer.getCombo().setToolTipText(NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
         AdjustmentDateContentProvider adjustmentContentProvider = new AdjustmentDateContentProvider();
-
-        prevButton = new Button(adjustmentDatePanel, SWT.NONE);
-        prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft_small.gif")); //$NON-NLS-1$
-        prevButton.setEnabled(false);
-
-        nextButton = new Button(adjustmentDatePanel, SWT.NONE);
-        nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight_small.gif")); //$NON-NLS-1$
-        nextButton.setEnabled(false);
-
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
             public void update(Observable o, Object arg) {
@@ -406,6 +401,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 return super.getText(element);
             }
         });
+
+        prevButton = new Button(adjustmentDatePanel, SWT.NONE);
+        prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft_small.gif")); //$NON-NLS-1$
+        prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip, generationConceptName));
+        prevButton.setEnabled(false);
+
+        nextButton = new Button(adjustmentDatePanel, SWT.NONE);
+        nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight_small.gif")); //$NON-NLS-1$
+        nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip, generationConceptName));
+        nextButton.setEnabled(false);
 
         prevButton.addSelectionListener(new SelectionListener() {
 
