@@ -16,10 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -39,7 +36,6 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -61,7 +57,6 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -75,7 +70,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.devtools.core.ui.ReferenceDropListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -119,10 +116,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     private boolean generationDirty;
 
-    /**
-     * Field to store the product component relation that should be moved using drag and drop.
-     */
-    private IProductCmptLink toMove;
+    // XXX
+    // /**
+    // * Field to store the product component relation that should be moved using drag and drop.
+    // */
+    // private IProductCmptLink toMove;
 
     /**
      * <code>true</code> if this section is enabled, <code>false</code> otherwise. This flag is used
@@ -146,6 +144,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private SelectionChangedListener selectionChangedListener;
 
     private OpenReferencedProductCmptInEditorAction openAction;
+
+    private ReferenceDropListener dropListener;
+
+    private DragListener dragListener;
 
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
@@ -204,10 +206,18 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setContentProvider(new LinksContentProvider());
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
+            dropListener = new ReferenceDropListener();
+            dropListener.addDropDoneListener(new IDropDoneListener() {
+
+                public void dropDone(DropTargetEvent event, boolean changedSomething) {
+                    treeViewer.refresh();
+                    treeViewer.expandAll();
+                }
+            });
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
-                    TextTransfer.getInstance() }, new DropListener());
-            treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, new DragListener(
-                    treeViewer));
+                    TextTransfer.getInstance() }, dropListener);
+            dragListener = new DragListener(treeViewer);
+            treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, dragListener);
             treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
             treeViewer.expandAll();
 
@@ -365,23 +375,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
 
     /**
-     * Creates a new link which connects the currently displayed generation with the given target.
-     * The new link is placed before the the given one.
-     */
-    private IProductCmptLink newLink(String target, String association, IProductCmptLink insertBefore) {
-        IProductCmptLink newLink = null;
-        if (insertBefore != null) {
-            newLink = generation.newLink(association, insertBefore);
-        } else {
-            newLink = generation.newLink(association);
-        }
-        newLink.setTarget(target);
-        newLink.setMaxCardinality(1);
-        newLink.setMinCardinality(0);
-        return newLink;
-    }
-
-    /**
      * Listener for updating the cardinality triggerd by the selection of another link.
      */
     private class SelectionChangedListener implements ISelectionChangedListener {
@@ -452,216 +445,12 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
 
     /**
-     * Listener for Drop-Actions to create new relations.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class DropListener implements DropTargetListener {
-
-        private int oldDetail = DND.DROP_NONE;
-
-        public void dragEnter(DropTargetEvent event) {
-            if (!enabled) {
-                event.detail = DND.DROP_NONE;
-                return;
-            }
-
-            if (event.detail == 0) {
-                event.detail = DND.DROP_LINK;
-            }
-
-            oldDetail = event.detail;
-
-            event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER
-                    | DND.FEEDBACK_SCROLL;
-        }
-
-        public void dragLeave(DropTargetEvent event) {
-            // nothing to do
-        }
-
-        public void dragOperationChanged(DropTargetEvent event) {
-            // nothing to do
-        }
-
-        public void dragOver(DropTargetEvent event) {
-            Object insertAt = getInsertAt(event);
-            if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-                // we have a file transfer
-                String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
-
-                // Under some platforms, the data is not available during dragOver.
-                if (filenames == null) {
-                    return;
-                }
-
-                boolean accept = false;
-
-                for (int i = 0; i < filenames.length; i++) {
-                    IFile file = getFile(filenames[i]);
-                    try {
-                        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-
-                        if (element == null || !element.exists()) {
-                            event.detail = DND.DROP_NONE;
-                            return;
-                        }
-
-                        IProductCmpt target = getProductCmpt(file);
-
-                        String association = null;
-                        if (insertAt instanceof String) { // product component type association
-                            association = (String)insertAt;
-                        } else if (insertAt instanceof IProductCmptLink) {
-                            association = ((IProductCmptLink)insertAt).getAssociation();
-                        }
-
-                        if (generation.canCreateValidLink(target, association, generation.getIpsProject())) {
-                            accept = true;
-                        }
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
-                }
-
-                if (accept == true) {
-                    // we can create at least on of the requested Relations - so we accept the drop
-                    event.detail = oldDetail;
-                } else {
-                    event.detail = DND.DROP_NONE;
-                }
-
-            } else if (!(toMove != null && insertAt instanceof IProductCmptLink)) {
-                event.detail = DND.DROP_NONE;
-            }
-        }
-
-        public void drop(DropTargetEvent event) {
-            Object insertAt = getInsertAt(event);
-
-            // found no relation or relationtype which gives us the information
-            // about
-            // the position of the insert, so dont drop.
-            if (insertAt == null) {
-                return;
-            }
-
-            if (event.operations == DND.DROP_MOVE) {
-                move(insertAt);
-            } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-                // we have a file transfer
-                String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
-                for (int i = 0; i < filenames.length; i++) {
-                    IFile file = getFile(filenames[i]);
-                    insert(file, insertAt);
-                }
-            }
-            treeViewer.refresh();
-            treeViewer.expandAll();
-        }
-
-        public void dropAccept(DropTargetEvent event) {
-            if (!isDataChangeable()) {
-                event.detail = DND.DROP_NONE;
-            }
-        }
-
-        private IFile getFile(String filename) {
-            return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
-        }
-
-        private IProductCmpt getProductCmpt(IFile file) throws CoreException {
-            if (file == null) {
-                return null;
-            }
-
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-
-            if (element == null || !element.exists()) {
-                return null;
-            }
-
-            if (element instanceof IIpsSrcFile
-                    && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
-            }
-
-            return null;
-        }
-
-        private void move(Object insertBefore) {
-            if (insertBefore instanceof IProductCmptLink) {
-                generation.moveLink(toMove, (IProductCmptLink)insertBefore);
-            }
-        }
-
-        private Object getInsertAt(DropTargetEvent event) {
-            if (event.item != null && event.item.getData() != null) {
-                return event.item.getData();
-            } else {
-                // event happened on the treeview, but not targeted at an entry
-                TreeItem[] items = treeViewer.getTree().getItems();
-                if (items.length > 0) {
-                    return items[items.length - 1].getData();
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Insert a new relation to the product component contained in the given file. If the file
-         * is <code>null</code> or does not contain a product component, the insert is aborted.
-         * 
-         * @param file The file describing a product component (can be null, no insert takes place
-         *            then).
-         * @param insertAt The relation or relation type to insert at.
-         */
-        private void insert(IFile file, Object insertAt) {
-            try {
-                IProductCmpt cmpt = getProductCmpt(file);
-                if (cmpt != null) {
-                    insert(cmpt, insertAt);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-
-        /**
-         * Inserts a new relation to the product component identified by the given target name.
-         * 
-         * @param target The qualified name for the target product component
-         * @param insertAt The product component relation or product component type relation the new
-         *            relations has to be inserted. The type of the new relation is determined from
-         *            this object (which means the new relation has the same product component
-         *            relation type as the given one or is of the given type).
-         */
-        private void insert(IProductCmpt cmpt, Object insertAt) {
-            String target = cmpt.getQualifiedName();
-            String association = null;
-            IProductCmptLink insertBefore = null;
-            try {
-                if (insertAt instanceof String) { // product component type relation
-                    association = (String)insertAt;
-                } else if (insertAt instanceof IProductCmptLink) {
-                    association = ((IProductCmptLink)insertAt).getAssociation();
-                    insertBefore = (IProductCmptLink)insertAt;
-                }
-                if (generation.canCreateValidLink(cmpt, association, generation.getIpsProject())) {
-                    newLink(target, association, insertBefore);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-    }
-
-    /**
      * Listener to handle the move of relations.
      * 
      * @author Thorsten Guenther
      */
     private class DragListener implements DragSourceListener {
+
         ISelectionProvider selectionProvider;
 
         public DragListener(ISelectionProvider selectionProvider) {
@@ -675,7 +464,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             // we provide the event data yet so we can decide if we will
             // accept a drop at drag-over time.
             if (selected instanceof IProductCmptLink) {
-                toMove = (IProductCmptLink)selected;
+                dropListener.setToMove((IProductCmptLink)selected);
                 event.data = "local"; //$NON-NLS-1$
             }
         }
@@ -683,13 +472,13 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         public void dragSetData(DragSourceEvent event) {
             Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
             if (selected instanceof IProductCmptLink) {
-                toMove = (IProductCmptLink)selected;
+                dropListener.setToMove((IProductCmptLink)selected);
                 event.data = "local"; //$NON-NLS-1$
             }
         }
 
         public void dragFinished(DragSourceEvent event) {
-            toMove = null;
+            dropListener.setToMove(null);
         }
 
     }
@@ -742,6 +531,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (dropListener != null) {
+            dropListener.setEnabled(enabled);
+        }
+
         if (treeViewer == null) {
             // no relations defined, so no tree to disable.
             return;

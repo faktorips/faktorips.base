@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,70 +26,66 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * 
  * @author Thorsten Guenther
  */
-public abstract class ProductCmptStructureReference implements
-		IProductCmptStructureReference {
+public abstract class ProductCmptStructureReference implements IProductCmptStructureReference {
 
-	private IProductCmptTreeStructure structure;
+    private IProductCmptTreeStructure structure;
 
-	private ProductCmptStructureReference parent;
+    private ProductCmptStructureReference parent;
 
-	private ProductCmptStructureReference[] children;
+    private ProductCmptStructureReference[] children;
 
-	public ProductCmptStructureReference(IProductCmptTreeStructure structure,
-			ProductCmptStructureReference parent) throws CycleInProductStructureException {
-		this.structure = structure;
-		this.parent = parent;
-		this.children = new ProductCmptStructureReference[0];
-		detectCycle(new ArrayList());
-	}
+    public ProductCmptStructureReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent)
+            throws CycleInProductStructureException {
+        this.structure = structure;
+        this.parent = parent;
+        children = new ProductCmptStructureReference[0];
+        detectCycle(new ArrayList<IIpsElement>());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmptTreeStructure getStructure() {
-		return structure;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptTreeStructure getStructure() {
+        return structure;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmptStructureReference getParent() {
-		return parent;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptStructureReference getParent() {
+        return parent;
+    }
 
-	/**
-	 * @return The children of this reference
-	 */
-	ProductCmptStructureReference[] getChildren() {
-		return children;
-	}
+    /**
+     * @return The children of this reference
+     */
+    ProductCmptStructureReference[] getChildren() {
+        return children;
+    }
 
-	/**
-	 * Set the children for this reference.
-	 * 
-	 * @param children
-	 *            The new children.
-	 */
-	void setChildren(ProductCmptStructureReference[] children) {
-		this.children = children;
-	}
+    /**
+     * Set the children for this reference.
+     * 
+     * @param children The new children.
+     */
+    void setChildren(ProductCmptStructureReference[] children) {
+        this.children = children;
+    }
 
-	private void detectCycle(ArrayList seenElements) throws CycleInProductStructureException {
-		if (!(getWrapped() instanceof IProductCmptTypeAssociation)
-				&& seenElements.contains(getWrapped())) {
-			seenElements.add(getWrapped());
-			throw new CycleInProductStructureException((IIpsElement[]) seenElements
-					.toArray(new IIpsElement[seenElements.size()]));
-		} else {
-			seenElements.add(getWrapped());
-			if (parent != null) {
-				parent.detectCycle(seenElements);
-			}
-		}
-	}
-	
-	/**
+    private void detectCycle(ArrayList<IIpsElement> seenElements) throws CycleInProductStructureException {
+        if (!(getWrapped() instanceof IProductCmptTypeAssociation) && seenElements.contains(getWrapped())) {
+            seenElements.add(getWrapped());
+            throw new CycleInProductStructureException(seenElements.toArray(new IIpsElement[seenElements.size()]));
+        } else {
+            seenElements.add(getWrapped());
+            if (parent != null) {
+                parent.detectCycle(seenElements);
+            }
+        }
+    }
+
+    /**
      * @return The <code>IIpsElement</code> referenced by this object.
      */
-	abstract IIpsElement getWrapped();
+    abstract IIpsElement getWrapped();
 }

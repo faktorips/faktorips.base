@@ -52,6 +52,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -90,6 +91,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.ReferenceDropListener;
+import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
@@ -382,7 +385,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         adjustmentDateViewer = new AdjustmentDateViewer(adjustmentDatePanel);
         adjustmentDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        adjustmentDateViewer.getCombo().setToolTipText(NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
+        adjustmentDateViewer.getCombo().setToolTipText(
+                NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
         AdjustmentDateContentProvider adjustmentContentProvider = new AdjustmentDateContentProvider();
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
@@ -404,12 +408,14 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         prevButton = new Button(adjustmentDatePanel, SWT.NONE);
         prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft_small.gif")); //$NON-NLS-1$
-        prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip, generationConceptName));
+        prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip,
+                generationConceptName));
         prevButton.setEnabled(false);
 
         nextButton = new Button(adjustmentDatePanel, SWT.NONE);
         nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight_small.gif")); //$NON-NLS-1$
-        nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip, generationConceptName));
+        nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip,
+                generationConceptName));
         nextButton.setEnabled(false);
 
         prevButton.addSelectionListener(new SelectionListener() {
@@ -446,6 +452,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         tree = new TreeViewer(viewerPanel);
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        ReferenceDropListener dropListener = new ReferenceDropListener();
+        tree.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
+                TextTransfer.getInstance() }, dropListener);
+        dropListener.addDropDoneListener(new IDropDoneListener() {
+
+            public void dropDone(DropTargetEvent event, boolean changedSomething) {
+                refresh();
+            }
+        });
+
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setAssociationTypeShowing(showAssociationNode);
         contentProvider.setShowTableContents(showReferencedTable);
@@ -693,12 +710,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void showErrorMsg(String message) {
-        // XXX
         viewerPanel.setVisible(false);
         errormsg.setText(message);
         errormsg.setVisible(true);
         ((GridData)errormsg.getLayoutData()).exclude = false;
-        // ((GridData)viewerPanel.getLayoutData()).exclude = true;
         errormsg.getParent().layout();
     }
 
