@@ -107,7 +107,8 @@ public class ReferenceDropListener extends DropTargetAdapter {
                         association = link.getAssociation();
                     }
 
-                    if (generation.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
+                    if (generation != null
+                            && generation.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
                         accept = true;
                     }
                 } catch (CoreException e) {
@@ -119,7 +120,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
                 // we can create at least on of the requested Relations - so we accept the drop
                 event.detail = oldDetail;
             } else {
-                event.detail = DND.DROP_NONE;
+                // event.detail = DND.DROP_NONE;
             }
 
         } else if (toMove != null && insertAt instanceof IProductCmptLink) {
