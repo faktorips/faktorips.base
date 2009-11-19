@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,7 +26,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Implementation of {@link IIpsPackageFragmentArbitrarySortDefinition}.
- *
+ * 
  * @author Markus Blum
  */
 public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFragmentArbitrarySortDefinition {
@@ -67,8 +67,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     public int compare(String segment1, String segment2) {
 
         if (sortOrderLookup.containsKey(segment1) && sortOrderLookup.containsKey(segment2)) {
-            Integer pos1 = (Integer) sortOrderLookup.get(segment1);
-            Integer pos2 = (Integer) sortOrderLookup.get(segment2);
+            Integer pos1 = (Integer)sortOrderLookup.get(segment1);
+            Integer pos2 = (Integer)sortOrderLookup.get(segment2);
 
             return pos1.compareTo(pos2);
         } else {
@@ -104,7 +104,9 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
      */
     public void initPersistenceContent(String content) throws CoreException {
 
-        String[] segments = StringUtils.split(content, StringUtil.getSystemLineSeparator());
+        // do not use system line seperator here because the file could be transfered from another
+        // system. This regext splits the content at \r\n (windows), \n (unix) or \r (old mac)
+        String[] segments = content.split("[\r\n]++");
 
         int pos = 0;
         sortOrderLookup.clear();
@@ -122,12 +124,13 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
     /**
      * Skip empty lines and lines starting with a comment ('#').
-     *
+     * 
      * @param line Onje single line (String) of the sort order.
-     * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a comment
+     * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a
+     *         comment
      */
     private boolean checkLine(String line) {
-        if ((line.length() > 0 ) && (line.trim().length() > 0)) {
+        if ((line.length() > 0) && (line.trim().length() > 0)) {
             // skip comments
             return !line.startsWith("#"); //$NON-NLS-1$
         }
@@ -142,8 +145,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
         IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
 
-        sortDef.sortOrder = (List)((ArrayList)this.sortOrder).clone();
-        sortDef.sortOrderLookup = (Map)((HashMap) sortOrderLookup).clone();
+        sortDef.sortOrder = (List)((ArrayList)sortOrder).clone();
+        sortDef.sortOrderLookup = (Map)((HashMap)sortOrderLookup).clone();
 
         return sortDef;
     }

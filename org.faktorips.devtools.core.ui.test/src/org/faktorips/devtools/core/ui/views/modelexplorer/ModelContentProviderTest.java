@@ -270,10 +270,9 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(modelPackage, parent);
         parent = hierarchyProvider.getParent(modelPackage);
         assertEquals(subPackage, parent);
+        // The default package, as opposed to other packages, is only a valid parent for files and
+        // IpsObjects
         parent = hierarchyProvider.getParent(subPackage);
-        // TODO Stefan: wenn Review ok, dann koennen folgende 2 Zeilen entfernt werden.
-        // assertEquals(defaultPackage, parent);
-        // parent = hierarchyProvider.getParent(defaultPackage);
         assertEquals(root, parent);
         // tests for flat layout
         parent = flatProvider.getParent(emptyPackage);

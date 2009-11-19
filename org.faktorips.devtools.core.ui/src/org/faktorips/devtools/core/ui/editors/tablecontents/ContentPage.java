@@ -141,6 +141,7 @@ public class ContentPage extends IpsObjectEditorPage {
         // Workaround see
         TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), true);
+        importAction.setControlWithDataChangeableSupport(this);
         TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), false);
 
@@ -264,7 +265,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
                     ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
-                            tableStructure.getIpsProject());
+                            getTableContents().getIpsProject());
                     ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                             dataType);
                     TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
@@ -287,7 +288,6 @@ public class ContentPage extends IpsObjectEditorPage {
                     return null;
                 }
             };
-            tableViewer.getControl().setFocus();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -533,4 +533,5 @@ public class ContentPage extends IpsObjectEditorPage {
     public void refreshTable() {
         tableViewer.refresh();
     }
+
 }
