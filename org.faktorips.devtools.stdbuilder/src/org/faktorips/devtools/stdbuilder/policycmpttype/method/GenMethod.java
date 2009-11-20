@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.method;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -41,28 +46,21 @@ public class GenMethod extends GenPolicyCmptTypePart {
         super(genPolicyCmptType, method, LOCALIZED_STRINGS);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        // nothing to do
+
+        // Nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do
+
+        // Nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -120,9 +118,6 @@ public class GenMethod extends GenPolicyCmptTypePart {
         methodsBuilder.closeBracket();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void generateInterfaceCodeForMethodDefinedInModelInterface(IMethod method,
             Datatype returnType,
             Datatype[] paramTypes,
@@ -159,6 +154,15 @@ public class GenMethod extends GenPolicyCmptTypePart {
         String returnClassName = builderset.getJavaClassName(returnType);
         methodsBuilder.signature(javaModifier, returnClassName, method.getName(), method.getParameterNames(),
                 paramClassNames);
+    }
+
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        // TODO AW: Not implemented yet.
     }
 
 }

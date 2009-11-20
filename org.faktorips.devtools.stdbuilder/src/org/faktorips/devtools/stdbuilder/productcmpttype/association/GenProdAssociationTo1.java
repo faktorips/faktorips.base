@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,14 +16,18 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 import java.lang.reflect.Modifier;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -45,21 +49,24 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociationTo1(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association) throws CoreException {
+    public GenProdAssociationTo1(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
+            throws CoreException {
         super(genProductCmptType, association);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -76,8 +83,9 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
             generateMethodInterfaceGet1RelatedCmptGen(builder);
@@ -185,7 +193,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     }
 
     private void generateMethodGetCardinalityFor1To1Association(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc("@inheritDoc", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
@@ -220,11 +228,13 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.append(frag);
     }
 
+    @Override
     protected void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
-    throws CoreException {
+            throws CoreException {
         builder.append(getFieldNameTo1Association() + "==null ? 0 : 1;");
     }
 
+    @Override
     protected void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append(getFieldNameTo1Association());
         builder.appendln(" ==null ? 0 : 1;");
@@ -251,7 +261,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE,
                 isUseTypesafeCollections() ? Java5ClassNames.ILink_QualifiedName + "<"
                         + getQualifiedInterfaceClassNameForTarget() + ">" : String.class.getName(),
-                        getFieldNameTo1Association(), new JavaCodeFragment("null"));
+                getFieldNameTo1Association(), new JavaCodeFragment("null"));
     }
 
     /**
@@ -452,6 +462,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Association(), Datatype.INTEGER);
     }
 
+    @Override
     protected void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String accessCode;
         if (association.isDerivedUnion()) {
@@ -491,6 +502,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void generateCodeForMethodDoInitReferencesFromXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
             JavaCodeFragmentBuilder builder) throws CoreException {
         String cardinalityFieldName = policyCmptTypeAssociation == null ? "" : getFieldNameCardinalityForAssociation();
@@ -533,11 +545,21 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * Java 5 code sample:
      * 
      * <pre>
-     *  list.addAll(getLinkForProduct());
+     * list.addAll(getLinkForProduct());
      * </pre>
      */
+    @Override
     public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) {
-        methodsBuilder.appendln("list.add("+getMethodNameGet1RelatedCmptLink()+"());");
+        methodsBuilder.appendln("list.add(" + getMethodNameGet1RelatedCmptLink() + "());");
+    }
+
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        // TODO AW: Not implemented yet.
     }
 
 }

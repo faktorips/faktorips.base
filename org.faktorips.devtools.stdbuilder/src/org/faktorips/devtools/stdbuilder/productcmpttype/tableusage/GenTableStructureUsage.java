@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,11 +14,15 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype.tableusage;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -36,27 +40,29 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenTableStructureUsage extends GenProductCmptTypePart {
 
-    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenTableStructureUsage.class);  
-    
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenTableStructureUsage.class);
+
     private ITableStructureUsage tableStructureUsage;
-    
+
     public GenTableStructureUsage(GenProductCmptType genProductCmptType, ITableStructureUsage tsu) throws CoreException {
         super(genProductCmptType, tsu, LOCALIZED_STRINGS);
-        this.tableStructureUsage = tsu;
+        tableStructureUsage = tsu;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        
+
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -72,12 +78,13 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        
+
         if (!generatesInterface) {
             generateMethodGetTable(builder);
-            generateMethodSetTableName(builder);        
+            generateMethodSetTableName(builder);
         }
 
     }
@@ -95,15 +102,15 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
      * }
      * </pre>
      */
-    private void generateMethodGetTable(JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
-        
+    private void generateMethodGetTable(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+
         appendLocalizedJavaDoc("METHOD_GET_TABLE", tableStructureUsage.getRoleName(), codeBuilder);
-        
+
         String methodName = getMethodNameGetTableUsage();
         String tableStructureClassName = getReturnTypeOfMethodGetTableUsage();
         String roleName = getMemberVarName();
-        codeBuilder.signature(Modifier.PUBLIC, tableStructureClassName, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        codeBuilder.signature(Modifier.PUBLIC, tableStructureClassName, methodName, EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY);
         codeBuilder.openBracket();
         codeBuilder.append("if (");
         codeBuilder.append(roleName);
@@ -120,22 +127,22 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         codeBuilder.appendln(");");
         codeBuilder.closeBracket();
     }
-    
+
     /**
-     * Get the class name of the instance which will be returned,
-     * if the usage contains only one table structure then the returned class will be the
-     * generated class of this table structure, otherwise the return class will be the ITable
-     * interface class
+     * Get the class name of the instance which will be returned, if the usage contains only one
+     * table structure then the returned class will be the generated class of this table structure,
+     * otherwise the return class will be the ITable interface class
      */
     public String getReturnTypeOfMethodGetTableUsage() throws CoreException {
         String[] tss = tableStructureUsage.getTableStructures();
         if (tss.length == 1) {
-            IIpsSrcFile tsuFile = getGenProductCmptType().getBuilderSet().getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, tss[0]);
+            IIpsSrcFile tsuFile = getGenProductCmptType().getBuilderSet().getIpsProject().findIpsSrcFile(
+                    IpsObjectType.TABLE_STRUCTURE, tss[0]);
             if (tsuFile == null) {
                 return "";
             }
             return TableImplBuilder.getQualifiedClassName(tsuFile, getGenProductCmptType().getBuilderSet());
-        } 
+        }
         return ITable.class.getName();
     }
 
@@ -164,7 +171,7 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         methodsBuilder.appendln(" = tableName;");
         methodsBuilder.closeBracket();
     }
-    
+
     public String getMethodNameGetTableUsage() {
         return "get" + StringUtils.capitalize(tableStructureUsage.getRoleName());
     }
@@ -177,5 +184,13 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         return StringUtils.uncapitalize(tableStructureUsage.getRoleName()) + "Name";
     }
 
- 
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        // TODO AW: Not implemented yet.
+    }
+
 }

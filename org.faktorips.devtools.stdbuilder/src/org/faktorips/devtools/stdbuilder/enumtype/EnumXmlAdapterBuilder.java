@@ -14,8 +14,11 @@
 package org.faktorips.devtools.stdbuilder.enumtype;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -23,6 +26,7 @@ import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -205,5 +209,19 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         builder.method(Modifier.PUBLIC, enumTypeBuilder.getQualifiedClassName(getEnumType()), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
 
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 }

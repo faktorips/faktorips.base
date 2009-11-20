@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -32,7 +35,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class JavaGeneratorForIpsPart {
 
-    // the ips elements this generator generates sourcecode for
+    /** The <tt>IIpsObjectPartContainer</tt> this generator generates source code for. */
     private IIpsObjectPartContainer ipsPart;
 
     private LocalizedTextHelper localizedTextHelper;
@@ -222,6 +225,22 @@ public abstract class JavaGeneratorForIpsPart {
     protected String getMethodNametSetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getSetterMethodName(propName, datatype);
     }
+
+    /**
+     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
+     * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * 
+     * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
+     * @param generatedJavaType The Java type that this builder is generating.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
+     *            requested the generated <tt>IJavaElement</tt>s.
+     * @param Flag indicating whether the <tt>IJavaElement</tt> for the published interface are
+     *            requested.
+     */
+    public abstract void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface);
 
     @Override
     public String toString() {

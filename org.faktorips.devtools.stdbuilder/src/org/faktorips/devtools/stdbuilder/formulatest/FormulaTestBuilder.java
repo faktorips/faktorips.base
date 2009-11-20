@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -39,6 +41,7 @@ import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -73,6 +76,7 @@ import org.faktorips.values.DateUtil;
  * @author Joerg Ortmann
  */
 public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
+
     private static final String FORMULA_TEST_CASE_NAME = "formulaTestCaseName";
     private static final String RUNTIME_EXTENSION = "_formulaTest";
     private static final String TEST_METHOD_PREFIX = "test";
@@ -118,9 +122,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         this.productCmptBuilder = productCmptBuilder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
             return false;
@@ -145,9 +146,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
@@ -161,25 +159,16 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return IpsFormulaTestCase.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedClassName() throws CoreException {
         return getQualifiedClassName(productCmpt.getIpsSrcFile());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedClassName(IIpsObject ipsObject) throws CoreException {
         return getQualifiedClassName(ipsObject.getIpsSrcFile());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObject());
@@ -188,17 +177,11 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return qualifiedClassName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUnqualifiedClassName() throws CoreException {
         return StringUtil.unqualifiedName(getQualifiedClassName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getFile(ipsSrcFile);
@@ -233,9 +216,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         if (productCmpt == null) {
@@ -562,5 +542,19 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     private String getJavaMethodSuffix(String name) {
         return name.replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_");
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 }

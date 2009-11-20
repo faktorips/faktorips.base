@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,12 +33,17 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
+/*
+ * TODO AW: This class wants to be a base class for all IPS-Type source builders but makes far too
+ * many assumptions about subclasses (product component type and policy component type).
+ */
 public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     public AbstractTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 
+    @Override
     protected final void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(getClassModifier());
@@ -63,49 +68,44 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Returns the abbreviation for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the necessary configuration
-     * information is stored.
+     * @param element An ips element needed to access the ipsproject where the necessary
+     *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsElement element) {
-        return getChangesInTimeNamingConvention(element).
-            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
-    }
-    
-    protected abstract void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException;
-    
-    /**
-     * Template method to extend the generateCodeForJavatype() method.
-     */
-    protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
+        return getChangesInTimeNamingConvention(element).getGenerationConceptNameAbbreviation(
+                getLanguageUsedInGeneratedSourceCode());
     }
 
-    /**
-     * A hook to generate code that is not based on attributes, associations, rules and
-     * methods.
-     */
-    protected abstract void generateOtherCode(
-            JavaCodeFragmentBuilder constantsBuilder,
+    protected abstract void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException;
+
+    /** Template method to extend the <tt>generateCodeForJavatype()</tt> method. */
+    protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
+
+    }
+
+    /** A hook to generate code that is not based on attributes, associations, rules and methods. */
+    protected abstract void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-
     /**
-     * Constructors are supposed to be generated within this method. Especially the generated
-     * code should be passed to the provided builder.
+     * Constructors are supposed to be generated within this method. Especially the generated code
+     * should be passed to the provided builder.
      * 
-     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions and 
-     *  propagated by this method
+     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions
+     *             and propagated by this method
      */
     protected abstract void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException;
 
     /**
-     * Generates the sourcecode for all methods defined in the policy component type.
+     * Generates the source code for all methods defined in the policy component type.
      * 
      * @throws CoreException
      */
-    protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
         IMethod[] methods = ((IType)getIpsObject()).getMethods();
         for (int i = 0; i < methods.length; i++) {
             IMethod method = methods[i];
@@ -118,11 +118,9 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the sourcecode for the indicated method.
      */
-    protected abstract void generateCodeForMethodDefinedInModel(
-            IMethod method,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-    
-    
+    protected abstract void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException;
+
     protected abstract void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
@@ -151,6 +149,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      *             and propagated by this method
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+
     }
 
     /**
@@ -166,8 +165,9 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @param builder The builder to use to generate the annotations via its annotation method.
      */
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
+
     }
-    
+
     /**
      * Returns true if an interface is generated, false if a class is generated.
      */
@@ -190,14 +190,13 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     protected abstract String[] getExtendedInterfaces() throws CoreException;
 
     protected abstract IProductCmptType getProductCmptType() throws CoreException;
-    
-    /*
+
+    /**
      * Generates the code for all product component type attributes.
      */
     private void generateCodeForProductCmptTypeAttributes(TypeSection typeSection) throws CoreException {
-        
         IProductCmptType productCmptType = getProductCmptType();
-        if (productCmptType==null) {
+        if (productCmptType == null) {
             return;
         }
         IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
@@ -210,9 +209,10 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
                 Datatype datatype = a.findDatatype(getIpsProject());
                 DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
                 if (helper == null) {
-                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$
+                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype)); //$NON-NLS-1$
                 }
-                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection
+                        .getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
@@ -222,22 +222,21 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * This method is called from the abstract builder if the product component attribute is valid and
-     * therefore code can be generated.
+     * This method is called from the abstract builder if the product component attribute is valid
+     * and therefore code can be generated.
      * <p>
-     * @param attribute The attribute sourcecode should be generated for.
+     * 
+     * @param attribute The attribute source code should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
      * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForProductCmptTypeAttribute(
-            org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute, 
+    protected abstract void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     protected abstract IPolicyCmptType getPcType() throws CoreException;
-    
 
 }

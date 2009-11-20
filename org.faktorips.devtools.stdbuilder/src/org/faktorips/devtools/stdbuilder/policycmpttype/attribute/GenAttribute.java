@@ -13,16 +13,24 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -34,6 +42,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -390,6 +399,42 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     public String getMethodNameGetRangeFor() throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(
                 getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
+    }
+
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        ArgumentCheck.isTrue(ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute);
+
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsObjectPartContainer;
+
+        if (!(forInterface)) {
+            IField attribute = generatedJavaType.getField(getJavaNamingConvention().getMemberVarName(
+                    policyCmptTypeAttribute.getName()));
+            javaElements.add(attribute);
+        }
+
+        if (forInterface) {
+            IField propertyConstant = generatedJavaType.getField(getJavaNamingConvention().getConstantClassVarName(
+                    "PROPERTY_" + policyCmptTypeAttribute.getName()));
+            javaElements.add(propertyConstant);
+        }
+
+        try {
+            Datatype datatype = ipsObjectPartContainer.getIpsProject().findDatatype(
+                    policyCmptTypeAttribute.getDatatype());
+            IMethod getterMethod = generatedJavaType.getMethod(getJavaNamingConvention().getGetterMethodName(
+                    policyCmptTypeAttribute.getName(), datatype), new String[] {});
+            IMethod setterMethod = generatedJavaType.getMethod(getJavaNamingConvention().getSetterMethodName(
+                    policyCmptTypeAttribute.getName(), datatype), new String[] { "Q" + datatype.getName() + ";" });
+            javaElements.add(getterMethod);
+            javaElements.add(setterMethod);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

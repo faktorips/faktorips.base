@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IImportContainer;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -32,6 +37,7 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
         super(builderSet, kindId, new LocalizedStringsSet(TableRowBuilder.class));
     }
 
+    @Override
     protected String generate() throws CoreException {
         if (((ITableStructure)getIpsObject()).isModelEnumType()) {
             return null;
@@ -49,14 +55,15 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
         return false;
     }
 
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
     }
 
-    public String getFieldNameForNullRow(){
+    public String getFieldNameForNullRow() {
         return "NULL_ROW";
     }
-    
+
     private IImportContainer getImportContainer() throws CoreException {
         IFile file = getJavaFile(getIpsSrcFile());
         ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
@@ -64,6 +71,20 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
             return null;
         }
         return cu.getImportContainer();
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 
 }

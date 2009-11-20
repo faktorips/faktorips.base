@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,7 +13,12 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -25,8 +30,8 @@ import org.faktorips.util.StringUtil;
  * A specialization of JavaSourceFileBuilder that accepts a generator class provided by JET. This
  * builder can be configured an instantiation time. There is no need for so subclassing. This
  * builder creates and keeps a <code>LocalizedStringSet</code> that is assigned to the content
- * generator when content generation starts. The <code>LocalizedStringSet</code> is created based
- * on the content generator class. If one wants to use the string set within the content generator a
+ * generator when content generation starts. The <code>LocalizedStringSet</code> is created based on
+ * the content generator class. If one wants to use the string set within the content generator a
  * property file with the name as the content generator java source file has to be created and keep
  * in the same directory.
  * 
@@ -53,9 +58,8 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * @param classNameSuffix is used to create the unqualified name. IpsObject.getName() + suffix =
      *            unqualified name. The classNamePrefix can be applied in addition to the suffix.
      */
-    public JetJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            Class generatorClass, IpsObjectType ipsObjectType, boolean enableMerge,
-            String classNamePrefix, String classNameSuffix) {
+    public JetJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Class generatorClass,
+            IpsObjectType ipsObjectType, boolean enableMerge, String classNamePrefix, String classNameSuffix) {
         super(builderSet, kindId, new LocalizedStringsSet(generatorClass));
         ArgumentCheck.notNull(generatorClass, this);
         ArgumentCheck.notNull(ipsObjectType, this);
@@ -65,25 +69,26 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
         this.classNameSuffix = classNameSuffix;
         setMergeEnabled(enableMerge);
     }
-    
-    /**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return Messages.JetJavaSourceFileBuilder_name;
-	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return Messages.JetJavaSourceFileBuilder_name;
+    }
+
+    /**
      * Instantiates a content generator, assigns this builder and a <code>LocalizedStringSet</code>
      * to it and calls the generate method of it.
      * 
      * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#generate(org.eclipse.core.runtime.IProgressMonitor)
      */
+    @Override
     public String generate() throws CoreException {
 
         try {
-            JetJavaContentGenerator generator = (JetJavaContentGenerator)generatorClass
-                    .newInstance();
+            JetJavaContentGenerator generator = (JetJavaContentGenerator)generatorClass.newInstance();
             generator.setJavaSourceFileBuilder(this);
             return generator.generate(getIpsSrcFile());
         } catch (InstantiationException e) {
@@ -95,7 +100,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     /**
      * Overridden IMethod.
-     *
+     * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
@@ -108,6 +113,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * 
      * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getUnqualifiedClassName(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
+    @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
         StringBuffer buf = new StringBuffer();
 
@@ -121,5 +127,19 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
             buf.append(classNameSuffix);
         }
         return buf.toString();
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 }

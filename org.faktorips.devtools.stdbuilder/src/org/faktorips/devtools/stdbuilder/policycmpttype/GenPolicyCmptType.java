@@ -21,8 +21,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -302,6 +305,25 @@ public class GenPolicyCmptType extends GenType {
             return changeListenerSupportBuilder.getNotificationSupportInterfaceName();
         }
         return null;
+    }
+
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        try {
+            if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
+                getGenerator((IPolicyCmptTypeAttribute)ipsObjectPartContainer).getGeneratedJavaElements(javaElements,
+                        generatedJavaType, ipsObjectPartContainer, forInterface);
+            } else if (ipsObjectPartContainer instanceof IMethod) {
+                getGenerator((IMethod)ipsObjectPartContainer).getGeneratedJavaElements(javaElements, generatedJavaType,
+                        ipsObjectPartContainer, forInterface);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

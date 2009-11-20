@@ -38,8 +38,12 @@ import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -57,6 +61,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -81,7 +86,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a javadoc annotation. It becomes relevant if the
@@ -981,17 +986,75 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
+    /**
+     * Returns a list containing all <tt>IJavaElement</tt>s this builder generates for the given
+     * <tt>IIpsObjectPartContainer</tt>.
+     * <p>
+     * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
+     * <tt>IIpsObjectPartContainer</tt>.
+     * 
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
+     *            <tt>IJavaElement</tt>s for.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If this builder is no builder for the <tt>IIpsSrcFile</tt>
+     *             the given <tt>IIpsObjectPartContainer</tt> is stored in.
+     */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        try {
+            ArgumentCheck.isTrue(isBuilderFor(ipsObjectPartContainer.getIpsSrcFile()));
+        } catch (CoreException e1) {
+            throw new RuntimeException(e1);
+        }
+
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
-        // TODO AW: We need to introduce the generator concept for all builders with a common
-        // interface.
+        IIpsProject ipsProject = ipsObjectPartContainer.getIpsProject();
+        try {
+            IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+            IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(
+                    ipsObjectPath.getOutputFolderForMergableSources());
+            String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
+            IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
+                    .getBasePackageNameForMergableJavaClasses()
+                    + internalPackageSeparator
+                    + "."
+                    + ipsObjectPartContainer.getIpsObject().getIpsPackageFragment().getName());
+            String unitName = isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
+                    ipsObjectPartContainer.getIpsObject().getName())
+                    + ".java" : getJavaNamingConvention().getImplementationClassName(
+                    ipsObjectPartContainer.getIpsObject().getName())
+                    + ".java";
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(unitName);
+            String interfaceIdentificator = isBuildingPublishedSourceFile() ? "I" : "";
+            IType javaType = compilationUnit.getType(interfaceIdentificator
+                    + ipsObjectPartContainer.getIpsObject().getName());
+            javaElements.add(javaType);
+            getGeneratedJavaElementsThis(javaElements, javaType, ipsObjectPartContainer);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+
         return javaElements;
     }
 
-    // TODO make abstract during stdbuilder cleanup
-    protected boolean isBuildingPublishedSourceFile() {
-        return false;
-    }
+    /**
+     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
+     * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * 
+     * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
+     * @param generatedJavaType The Java type that this builder is generating.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
+     *            requested the generated <tt>IJavaElement</tt>s.
+     */
+    protected abstract void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer);
+
+    /**
+     * Must return <tt>true</tt> if the source file generated by this builder is considered
+     * published, <tt>false</tt> if not.
+     */
+    protected abstract boolean isBuildingPublishedSourceFile();
 
 }

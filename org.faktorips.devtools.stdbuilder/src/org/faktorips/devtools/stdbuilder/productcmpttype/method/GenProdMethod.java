@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,11 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -52,6 +55,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
@@ -60,6 +64,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -69,6 +74,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (generatesInterface) {
@@ -115,7 +121,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
         }
 
         generateSignatureForModelMethod(method.isAbstract(), false, methodsBuilder, ipsProject);
-        if(!method.isAbstract()){
+        if (!method.isAbstract()) {
             methodsBuilder.openBracket();
             methodsBuilder.appendln("// TODO implement method!");
             Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
@@ -181,7 +187,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
                     parametersWithoutTypes.add(parameters[i]);
                 }
             }
-            parameters = (IParameter[])parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
+            parameters = parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
         }
         parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
@@ -216,6 +222,15 @@ public class GenProdMethod extends GenProductCmptTypePart {
         System.arraycopy(source1, 0, dest, 0, source1.length);
         System.arraycopy(source2, 0, dest, source1.length, source2.length);
         return dest;
+    }
+
+    @Override
+    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean forInterface) {
+
+        // TODO AW: Not implemented yet.
     }
 
 }

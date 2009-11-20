@@ -23,14 +23,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -1318,21 +1314,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", getUnqualifiedClassName());
     }
 
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
-
-        if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsObjectPartContainer;
-
-            IField field = javaType.getField(getJavaNamingConvention().getMemberVarName(
-                    policyCmptTypeAttribute.getName()));
-            javaElements.add(field);
-        }
-    }
-
     @Override
     protected boolean isBuildingPublishedSourceFile() {
         return false;
@@ -1351,4 +1332,5 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             return true;
         }
     }
+
 }

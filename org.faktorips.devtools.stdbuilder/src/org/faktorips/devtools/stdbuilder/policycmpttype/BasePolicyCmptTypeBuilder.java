@@ -13,25 +13,20 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -47,6 +42,8 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
 /**
+ * Abstract base class for the policy component type interface and policy component type
+ * implementation builders.
  * 
  * @author Jan Ortmann
  */
@@ -57,9 +54,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         super(builderSet, kindId, stringsSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
@@ -90,9 +84,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return !msgList.getMessagesFor(type, IIpsElement.PROPERTY_NAME).containsErrorMsg();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
@@ -129,9 +120,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForAssociation(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -160,55 +148,34 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport();
     }
 
-    /**
-     * Returns the GenProductCmptType for this builder.
-     */
+    /** Returns the GenProductCmptType for this builder. */
     public GenProductCmptType getGenProductCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
 
-    /**
-     * Returns the GenProductCmptType for this builder.
-     */
+    /** Returns the GenProductCmptType for this builder. */
     public GenPolicyCmptType getGenPolicyCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
     }
 
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
     @Override
-    // TODO AW: this code is likely needed to be moved elsewhere
-    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
-        List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
-        IIpsProject ipsProject = ipsObjectPartContainer.getIpsProject();
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        IPolicyCmptType policyCmptType = null;
+        if (ipsObjectPartContainer instanceof IPolicyCmptType) {
+            policyCmptType = (IPolicyCmptType)ipsObjectPartContainer;
+        } else if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute
+                || ipsObjectPartContainer instanceof IMethod) {
+            policyCmptType = (IPolicyCmptType)((IIpsObjectPart)ipsObjectPartContainer).getIpsObject();
+        }
         try {
-            IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-            IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(
-                    ipsObjectPath.getOutputFolderForMergableSources());
-            String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
-            IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
-                    .getBasePackageNameForMergableJavaClasses()
-                    + internalPackageSeparator
-                    + "."
-                    + ipsObjectPartContainer.getIpsObject().getIpsPackageFragment().getName());
-            String unitName = isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
-                    ipsObjectPartContainer.getIpsObject().getName())
-                    + ".java" : getJavaNamingConvention().getImplementationClassName(
-                    ipsObjectPartContainer.getIpsObject().getName())
-                    + ".java";
-            ICompilationUnit compilationUnit = fragment.getCompilationUnit(unitName);
-            String interfaceIdentificator = isBuildingPublishedSourceFile() ? "I" : "";
-            IType javaType = compilationUnit.getType(interfaceIdentificator
-                    + ipsObjectPartContainer.getIpsObject().getName());
-            getGeneratedJavaElementsThis(javaElements, javaType, ipsObjectPartContainer);
+            ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType).getGeneratedJavaElements(javaElements,
+                    generatedJavaType, ipsObjectPartContainer, isBuildingPublishedSourceFile());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-
-        return javaElements;
     }
-
-    protected abstract void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException;
 
 }

@@ -41,16 +41,9 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * 
  * @author Alexander Weickmann
  */
-// XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
 public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant {
 
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
-
-    /*
-     * TODO AW: this is not good, the information about what java elements are exactly generated
-     * should remain in the generators. Could be fixed by implementing a Wrapper for an IJavaElement
-     * with methods isSetterMethod(), isGetterMethod() etc.
-     */
 
     private IJavaElement propertyConstant;
 
@@ -127,7 +120,6 @@ public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant 
         StandardBuilderSet builderSet = (StandardBuilderSet)policyCmptTypeAttribute.getIpsProject()
                 .getIpsArtefactBuilderSet();
 
-        policyCmptTypeAttribute.setName("newName");
         for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(policyCmptTypeAttribute)) {
             String javaElementName = javaElement.getElementName();
             if (javaElement instanceof IMethod) {

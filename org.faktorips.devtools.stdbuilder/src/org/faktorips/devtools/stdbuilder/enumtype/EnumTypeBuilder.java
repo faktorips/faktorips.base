@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -35,6 +37,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -46,7 +49,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Builder that generates the java source for <code>EnumType</code> ips objects.
+ * Builder that generates the java source for <code>EnumType</code>s.
  * 
  * @author Alexander Weickmann
  * 
@@ -54,7 +57,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
-    /** The package id identifiying the builder */
+    /** The package id identifying the builder */
     public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumTypeBuilder.enumtype.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
     /** The builder config property name that indicates whether to use java 5 enum types. */
@@ -1107,6 +1110,20 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Returns the enum type for that code is being generated. */
     private IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 
 }

@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Abstract base class that can be used for builders generating Java sourcecode for a policy
+ * Abstract base class that can be used for builders generating Java source code for a policy
  * component type.
  * 
  * @author Jan Ortmann
@@ -60,19 +60,15 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
         return getPcType().findProductCmptType(getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
     }
 
     /**
-     * Generates the sourcecode of the generated Java class or interface.
+     * Generates the source code of the generated Java class or interface.
      */
     @Override
     protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
-
         generateCodeForValidationRules(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection
                 .getMethodBuilder());
         generateInnerClasses();
@@ -90,9 +86,6 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
     }
 
-    /*
-     * Generates the code for all attributes.
-     */
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection mainSection) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
@@ -127,7 +120,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * This method is called from the build attributes method if the attribute is valid and
      * therefore code can be generated.
      * 
-     * @param attribute The attribute sourcecode should be generated for.
+     * @param attribute The attribute source code should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
      * @param constantBuilder The code fragment builder for the static section
      * @param memberVarsBuilder The code fragment builder to build the member variables section.
@@ -171,7 +164,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      */
     protected abstract void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException;
 
-    /*
+    /**
      * Loops over the associations and generates code for a association if it is valid. Takes care
      * of proper exception handling.
      */
@@ -209,7 +202,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
     /**
      * Generates the code for a association. The method is called for every valid association
-     * defined in the policy component type we currently build sourcecode for.
+     * defined in the policy component type we currently build source code for.
      * 
      * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the member variables section.
@@ -255,9 +248,6 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
             this.derivedUnionMap = derivedUnionMap;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAssociation[] associations = currentType.getPolicyCmptTypeAssociations();
@@ -280,4 +270,5 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
         }
 
     }
+
 }

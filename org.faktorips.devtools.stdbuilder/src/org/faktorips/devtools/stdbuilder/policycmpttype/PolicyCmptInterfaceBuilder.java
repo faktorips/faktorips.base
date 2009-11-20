@@ -18,20 +18,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -66,9 +59,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return StringUtils.capitalize(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getSuperclass() throws CoreException {
         return null;
@@ -81,9 +71,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         List<String> interfaces = new ArrayList<String>();
@@ -118,33 +105,21 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return interfaces.toArray(new String[interfaces.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean generatesInterface() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("INTERFACE", getIpsObject().getName(), getIpsObject().getDescription(), getIpsObject(),
                 builder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -189,51 +164,27 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln(";");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // empty implementation
+
+        // Empty implementation.
     }
 
     /**
      * Empty implementation.
      * 
-     * overidden
+     * Overridden
      */
     @Override
     protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation derivedUnionAssociation,
             List<IAssociation> subAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-    }
 
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
-
-        if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsObjectPartContainer;
-
-            IField propertyConstant = javaType.getField(getJavaNamingConvention().getConstantClassVarName(
-                    "PROPERTY_" + policyCmptTypeAttribute.getName()));
-            Datatype datatype = ipsObjectPartContainer.getIpsProject().findDatatype(
-                    policyCmptTypeAttribute.getDatatype());
-            IMethod getterMethod = javaType.getMethod(getJavaNamingConvention().getGetterMethodName(
-                    policyCmptTypeAttribute.getName(), datatype), new String[] {});
-            IMethod setterMethod = javaType.getMethod(getJavaNamingConvention().getSetterMethodName(
-                    policyCmptTypeAttribute.getName(), datatype), new String[] { "Q" + datatype.getName() + ";" });
-            javaElements.add(propertyConstant);
-            javaElements.add(getterMethod);
-            javaElements.add(setterMethod);
-        }
     }
 
     @Override
