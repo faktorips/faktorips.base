@@ -144,17 +144,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         initVersion();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterBuildProcess(int buildKind) throws CoreException {
         clearGenerators();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeBuildProcess(int buildKind) throws CoreException {
         clearGenerators();
@@ -174,9 +168,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // version = buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportTableAccess() {
         return true;
@@ -229,9 +220,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return generator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult getTableAccessCode(ITableContents tableContents,
             ITableAccessFunction fct,
@@ -263,9 +251,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
@@ -303,9 +288,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
@@ -321,9 +303,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                         .getRuntimeRepositoryExpression()));
             }
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
@@ -344,9 +323,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 return null;
             }
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
                 CompilationResult compile = super.compile(param, attributeName, locale);
@@ -389,9 +365,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, published, mergable);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         String returnValue = super.getPackage(kind, ipsSrcFile);
@@ -421,17 +394,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + objectType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportFlIdentifierResolver() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
@@ -545,9 +512,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return new EnumTypeDatatypeHelper(enumTypeBuilder, datatypeAdapter);
@@ -596,32 +560,35 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return datatype.getJavaClassName();
     }
 
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
+    /**
+     * Returns a list containing all <tt>IJavaElement</tt>s this builder set generates for the given
+     * <tt>IIpsObjectPartContainer</tt>.
+     * <p>
+     * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
+     * <tt>IIpsObjectPartContainer</tt>.
+     * 
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
+     *            <tt>IJavaElement</tt>s for.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
-        for (JavaSourceFileBuilder builder : getBuilders()) {
+        for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
+            if (!(builder instanceof JavaSourceFileBuilder)) {
+                break;
+            }
             try {
                 if (builder.isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
-                    javaElements.addAll(builder.getGeneratedJavaElements(ipsObjectPartContainer));
+                    JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
         }
         return javaElements;
-    }
-
-    // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
-    private List<JavaSourceFileBuilder> getBuilders() {
-        List<JavaSourceFileBuilder> builders = new ArrayList<JavaSourceFileBuilder>(6);
-        builders.add(tableImplBuilder);
-        builders.add(tableRowBuilder);
-        builders.add(policyCmptInterfaceBuilder);
-        builders.add(policyCmptImplClassBuilder);
-        builders.add(productCmptGenInterfaceBuilder);
-        builders.add(enumClassesBuilder);
-        builders.add(enumTypeBuilder);
-        return builders;
     }
 
 }

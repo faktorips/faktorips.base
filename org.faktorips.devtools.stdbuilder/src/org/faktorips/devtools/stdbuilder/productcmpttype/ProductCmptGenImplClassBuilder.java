@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -27,6 +29,7 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -778,6 +781,20 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 + IProductComponent.class.getName() + ">>";
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
                 "getLinks", new String[0], new String[0]);
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
     }
 
 }

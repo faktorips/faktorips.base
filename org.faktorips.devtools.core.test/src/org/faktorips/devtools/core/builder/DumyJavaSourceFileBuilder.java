@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,23 +13,27 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 
 class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     public boolean generateCalled = false;
     public boolean isBuilderFor = false;
-    
 
     public DumyJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 
+    @Override
     protected String generate() throws CoreException {
         generateCalled = true;
         return "";
@@ -42,5 +46,17 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
     void reset() {
         generateCalled = false;
         isBuilderFor = false;
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        return false;
     }
 }

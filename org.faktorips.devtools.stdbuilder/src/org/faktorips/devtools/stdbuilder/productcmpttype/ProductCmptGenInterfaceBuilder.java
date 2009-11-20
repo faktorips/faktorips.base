@@ -16,8 +16,11 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -47,26 +50,17 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         setMergeEnabled(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = ipsSrcFile.getIpsObjectName() + getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean generatesInterface() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         String javaSupertype = IProductComponentGeneration.class.getName();
@@ -78,9 +72,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         return new String[] { javaSupertype };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getSuperclass() throws CoreException {
         return null;
@@ -106,9 +97,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do, building an interface.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void generateCodeForMethod(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -126,9 +114,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -137,9 +122,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -148,9 +130,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         generator.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
             List<IAssociation> implementationAssociations,
@@ -159,9 +138,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -169,9 +145,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do, table usage methods are not published.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -182,4 +155,19 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType javaType,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        // TODO AW: Not implemented yet.
+    }
+
+    @Override
+    protected boolean isBuildingPublishedSourceFile() {
+        // TODO AW: Not implemented yet.
+        throw new RuntimeException("Not implemented yet.");
+    }
+
 }

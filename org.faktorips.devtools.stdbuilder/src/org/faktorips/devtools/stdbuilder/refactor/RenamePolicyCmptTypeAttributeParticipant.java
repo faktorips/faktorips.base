@@ -126,6 +126,8 @@ public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant 
         policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)element;
         StandardBuilderSet builderSet = (StandardBuilderSet)policyCmptTypeAttribute.getIpsProject()
                 .getIpsArtefactBuilderSet();
+
+        policyCmptTypeAttribute.setName("newName");
         for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(policyCmptTypeAttribute)) {
             String javaElementName = javaElement.getElementName();
             if (javaElement instanceof IMethod) {
