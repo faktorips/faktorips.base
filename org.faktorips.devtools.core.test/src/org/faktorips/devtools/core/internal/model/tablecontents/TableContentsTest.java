@@ -47,6 +47,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
     private IIpsSrcFile pdSrcFile;
     private ITableContents table;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -221,7 +222,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         IRow row = gen1.newRow();
         row.setValue(0, "value");
 
-        Element element = table.toXml(this.newDocument());
+        Element element = table.toXml(newDocument());
         table.setDescription("");
         table.setTableStructure("");
         table.deleteColumn(0);
@@ -250,6 +251,52 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         } catch (IllegalArgumentException e) {
             // nothing to do :-)
         }
+    }
+
+    public void testValidateKeyValuesFromTo() throws Exception {
+        MessageList msgList = null;
+
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
+        IColumn column1 = structure.newColumn();
+        column1.setDatatype(Datatype.STRING.getQualifiedName());
+        column1.setName("first");
+        IColumn column2 = structure.newColumn();
+        column2.setDatatype(Datatype.STRING.getQualifiedName());
+        column2.setName("second");
+        IColumn column3 = structure.newColumn();
+        column3.setDatatype(Datatype.STRING.getQualifiedName());
+        column3.setName("third");
+
+        IColumnRange range = structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("first");
+        range.setToColumn("second");
+
+        structure.newUniqueKey().addKeyItem(range.getName());
+
+        table.setTableStructure(structure.getQualifiedName());
+        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        table.newColumn("1");
+        table.newColumn("2");
+        table.newColumn("3");
+
+        msgList = table.validate(project);
+        assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+
+        IRow newRow = tableGen.newRow();
+        msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+        assertEquals(2, msgList.getNoOfMessages());
+
+        newRow.setValue(0, "1");
+        msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+        assertEquals(1, msgList.getNoOfMessages());
+
+        newRow.setValue(1, "2");
+        msgList = table.validate(project);
+        assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+        assertEquals(0, msgList.getNoOfMessages());
     }
 
     public void testValidateRowRangeFromGreaterToValue() throws Exception {
@@ -311,7 +358,6 @@ public class TableContentsTest extends AbstractIpsPluginTest {
 
         tableGen.newRow();
         MessageList msgList = table.validate(project);
-        System.out.println(msgList.toString());
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
 
         table.deleteColumn(0);
