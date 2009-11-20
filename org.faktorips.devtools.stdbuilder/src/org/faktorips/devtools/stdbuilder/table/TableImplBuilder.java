@@ -841,9 +841,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
+            innerClassBody.getMemberVarBuilder().javaDoc("", ANNOTATION_GENERATED);
             innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i], keyNames[i]);
         }
         // create hashCode field
+        innerClassBody.getMemberVarBuilder().javaDoc("Cached hashcode.", ANNOTATION_GENERATED);
         innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();
