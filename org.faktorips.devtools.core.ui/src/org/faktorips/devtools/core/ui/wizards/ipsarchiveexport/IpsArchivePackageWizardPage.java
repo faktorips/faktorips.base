@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -30,12 +32,15 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.StandardJavaElementContentProvider;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -52,6 +57,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -64,38 +70,39 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Wizard page to select projects and package fragment root element which will be exported
- * as ips archive.
+ * Wizard page to select projects and package fragment root element which will be exported as ips
+ * archive.
  * 
  * @author Joerg Ortmann
  */
-public class IpsArchivePackageWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener, ICheckStateListener {
+public class IpsArchivePackageWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
+        ICheckStateListener {
 
-    private static final String PAGE_NAME= "IpsArchivePackageWizardPage"; //$NON-NLS-1$
-    
+    private static final String PAGE_NAME = "IpsArchivePackageWizardPage"; //$NON-NLS-1$
+
     // Stored widget contents
     private static final String SELECTED_TREE_ELEMENTS = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
     private static final String STORE_DESTINATION_NAMES = PAGE_NAME + ".DESTINATION_NAMES_ID"; //$NON-NLS-1$
     private static final String OPTION_INCLUDE_JAVA_SOURCES = PAGE_NAME + ".OPTION_INCLUDE_JAVA_SOURCES"; //$NON-NLS-1$
     private static final String OPTION_INCLUDE_JAVA_BINARIES = PAGE_NAME + ".OPTION_INCLUDE_JAVA_BINARIES"; //$NON-NLS-1$
-    
+
     private IStructuredSelection selection;
 
     private CheckboxTreeViewer treeViewer;
-    
+
     private Combo destinationNamesCombo;
 
     private Checkbox includeJavaBinaries;
-    
+
     private Checkbox includeJavaSources;
-    
+
     private UIToolkit toolkit = new UIToolkit(null);
 
     private ILabelProvider labelProvider;
-    
-    private HashMap elementsInTree = new HashMap();
-    
-    private class IpsPackageFragmentRootTreeViewer extends ContainerCheckedTreeViewer{
+
+    private Map<Object, Object> elementsInTree = new HashMap<Object, Object>();
+
+    private class IpsPackageFragmentRootTreeViewer extends ContainerCheckedTreeViewer {
         public IpsPackageFragmentRootTreeViewer(Composite parent) {
             super(parent);
         }
@@ -108,57 +115,61 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterDestination);
         setPageComplete(false);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
 
         ITreeContentProvider treeContentProvider = new StandardJavaElementContentProvider() {
             private Object[] EMPTY_ARRAY = new Object[0];
+
             /**
              * {@inheritDoc}
              */
+            @Override
             public boolean hasChildren(Object element) {
                 // prevent the + from being shown in front of packages
                 return !(element instanceof IPackageFragmentRoot) && super.hasChildren(element);
             }
+
             /**
              * {@inheritDoc}
              */
+            @Override
             public Object[] getChildren(Object element) {
                 // show only ips projects and ips package fragment roots
                 if (element instanceof IJavaModel) {
                     Object[] children = super.getChildren(element);
-                    List result = new ArrayList(children.length);
+                    List<Object> result = new ArrayList<Object>(children.length);
                     for (int i = 0; i < children.length; i++) {
-                        if (children[i] instanceof IJavaProject){
+                        if (children[i] instanceof IJavaProject) {
                             IProject project = ((IJavaProject)children[i]).getProject();
                             try {
-                                if (project.hasNature(IIpsProject.NATURE_ID)){
-                                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                                if (project.hasNature(IIpsProject.NATURE_ID)) {
+                                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(
+                                            project.getName());
                                     elementsInTree.put(project, ipsProject);
                                     result.add(ipsProject);
                                 }
-                            }
-                            catch (CoreException e) {
+                            } catch (CoreException e) {
                                 IpsPlugin.logAndShowErrorDialog(e);
                             }
                         }
                     }
                     return result.toArray();
-                }
-                else if (element instanceof IIpsProject) {
+                } else if (element instanceof IIpsProject) {
                     // store elements for product definition view
                     elementsInTree.put(element, element);
                     // store to be mapped objects
                     try {
                         IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                        List rootResult = new ArrayList(roots.length);
+                        List<Object> rootResult = new ArrayList<Object>(roots.length);
                         for (int i = 0; i < roots.length; i++) {
-                            if (roots[i].getIpsArchive() != null){
+                            if (roots[i].getIpsArchive() != null) {
                                 continue;
                             }
                             rootResult.add(roots[i]);
@@ -168,15 +179,14 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                             elementsInTree.put(roots[i].getEnclosingResource(), roots[i]);
                         }
                         return rootResult.toArray();
-                    }
-                    catch (CoreException e) {
+                    } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
                 return EMPTY_ARRAY;
             }
         };
-        
+
         treeViewer = new IpsPackageFragmentRootTreeViewer(composite);
         treeViewer.setContentProvider(treeContentProvider);
         labelProvider = new ModelLabelProvider();
@@ -185,36 +195,63 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         treeViewer.setInput(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
         treeViewer.expandAll();
         treeViewer.addCheckStateListener(this);
-        List selectedObjects = new ArrayList();
-        for (Iterator iter = selection.iterator(); iter.hasNext();) {
-            Object selectedObject = iter.next();
-            Object objectInTree = elementsInTree.get(selectedObject);
-            if (objectInTree != null){
+        List<Object> selectedObjects = new ArrayList<Object>();
+        for (Iterator<Object> iter = selection.iterator(); iter.hasNext();) {
+            Object objectInTree = findCorrespondingObjectInTree(iter.next());
+            if (objectInTree != null) {
                 selectedObjects.add(objectInTree);
             }
         }
-        treeViewer.setCheckedElements(selectedObjects.toArray());
-        
-        includeJavaSources = toolkit.createCheckbox(composite, Messages.IpsArchivePackageWizardPage_Label_IncludeJavaSources); 
-        includeJavaBinaries = toolkit.createCheckbox(composite, Messages.IpsArchivePackageWizardPage_Label_IncludeJavaBinaries);
+        if (selectedObjects.size() == 0) {
+            setMessage(Messages.IpsArchivePackageWizardPage_WarningNoIpsProjectSelected, IMessageProvider.WARNING);
+        } else {
+            treeViewer.setCheckedElements(selectedObjects.toArray());
+        }
+        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                setMessage(null);
+            }
+        });
 
-        
+        includeJavaSources = toolkit.createCheckbox(composite,
+                Messages.IpsArchivePackageWizardPage_Label_IncludeJavaSources);
+        includeJavaBinaries = toolkit.createCheckbox(composite,
+                Messages.IpsArchivePackageWizardPage_Label_IncludeJavaBinaries);
+
         toolkit.createLabel(composite, ""); //$NON-NLS-1$
-        
+
         createDestinationGroup(composite);
-        
+
         restoreWidgetValues();
-        
+
         setControl(composite);
     }
-    
+
+    private Object findCorrespondingObjectInTree(Object selectedObject) {
+        Object objectInTree = elementsInTree.get(selectedObject);
+        if (objectInTree != null) {
+            return objectInTree;
+        }
+        if (selectedObject instanceof IIpsElement) {
+            return ((IIpsElement)selectedObject).getIpsProject();
+        }
+        if (selectedObject instanceof IProject) {
+            return null;
+        }
+        if (selectedObject instanceof IResource) {
+            return findCorrespondingObjectInTree(((IResource)selectedObject).getProject());
+        }
+        return null;
+    }
+
     private void createDestinationGroup(Composite parent) {
         // destination specification group
-        Composite destinationSelectionGroup= new Composite(parent, SWT.NONE);
-        GridLayout layout= new GridLayout();
-        layout.numColumns= 3;
+        Composite destinationSelectionGroup = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
         destinationSelectionGroup.setLayout(layout);
-        destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL));
+        destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_FILL));
 
         new Label(destinationSelectionGroup, SWT.NONE).setText(Messages.IpsArchivePackageWizardPage_Label_Target);
 
@@ -224,48 +261,47 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         destinationNameComboField.addChangeListener(this);
         destinationNamesCombo.addModifyListener(this);
         destinationNamesCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         // destination browse button
-        Button destinationBrowseButton= new Button(destinationSelectionGroup, SWT.PUSH);
+        Button destinationBrowseButton = new Button(destinationSelectionGroup, SWT.PUSH);
         destinationBrowseButton.setText(Messages.IpsArchivePackageWizardPage_Label_Browse);
         destinationBrowseButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleDestinationBrowseButtonPressed();
             }
         });
     }
-    
+
     /**
-     *  Open an appropriate destination browser so that the user can specify a source
-     *  to import from
+     * Open an appropriate destination browser so that the user can specify a source to import from
      */
     protected void handleDestinationBrowseButtonPressed() {
-        FileDialog dialog= new FileDialog(getContainer().getShell(), SWT.SAVE);
-        dialog.setFilterExtensions(new String[] {"*." + IIpsArchiveEntry.FILE_EXTENSION, "*.zip", "*.jar"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
+        dialog.setFilterExtensions(new String[] { "*." + IIpsArchiveEntry.FILE_EXTENSION, "*.zip", "*.jar" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        String currentSourceString= getDestinationValue();
-        int lastSeparatorIndex= currentSourceString.lastIndexOf(File.separator);
+        String currentSourceString = getDestinationValue();
+        int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
             dialog.setFileName(currentSourceString.substring(lastSeparatorIndex + 1, currentSourceString.length()));
-        }
-        else{
+        } else {
             dialog.setFileName(currentSourceString);
         }
-        String selectedFileName= dialog.open();
-        if (selectedFileName != null){
+        String selectedFileName = dialog.open();
+        if (selectedFileName != null) {
             destinationNamesCombo.setText(selectedFileName);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
         canFinish();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -277,56 +313,55 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         canFinish();
     }
 
-    public Object[] getCheckedElements(){
+    public Object[] getCheckedElements() {
         return treeViewer.getCheckedElements();
     }
-    
-    public File getDestinationFile(){
+
+    public File getDestinationFile() {
         return new Path(getDestinationValue()).toFile();
     }
-    
+
     public boolean isInclJavaBinaries() {
         return includeJavaBinaries.isChecked();
     }
 
     public boolean isInclJavaSources() {
-        return  includeJavaSources.isChecked();
+        return includeJavaSources.isChecked();
     }
-    
+
     /*
-     *  Answer the contents of the destination specification widget. If this
-     *  value does not have the required suffix then add it first.
+     * Answer the contents of the destination specification widget. If this value does not have the
+     * required suffix then add it first.
      */
     private String getDestinationValue() {
-        String destinationText= destinationNamesCombo.getText().trim();
-        if (destinationText.indexOf('.') < 0)
+        String destinationText = destinationNamesCombo.getText().trim();
+        if (destinationText.indexOf('.') < 0) {
             destinationText += "." + IIpsArchiveEntry.FILE_EXTENSION; //$NON-NLS-1$
+        }
         return destinationText;
     }
-    
+
     /*
-     * Sets if the page could be finished or not.
-     * The page could be finished if an archive name is given and a selection is set.
+     * Sets if the page could be finished or not. The page could be finished if an archive name is
+     * given and a selection is set.
      */
-    private void canFinish(){
-        boolean canFinish = false;
+    private void canFinish() {
+        boolean canFinish = true;
         String target = destinationNamesCombo.getText().trim();;
         Path destPath = new Path(target);
-        
-        if (StringUtils.isNotEmpty(target) && destPath.isValidPath(target)){
-            canFinish = true;
-        } else {
-            setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterValidDestination);
-        }
-        
-        if (canFinish && getCheckedElements().length > 0){
-            canFinish = true;
-        } else if (canFinish){
+
+        if (getCheckedElements().length == 0) {
             canFinish = false;
             setDescription(Messages.IpsArchivePackageWizardPage_Description_DefineWhichResource);
         }
+
+        if (canFinish && (StringUtils.isEmpty(target) || !destPath.isValidPath(target))) {
+            canFinish = false;
+            setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterValidDestination);
+        }
+
         setPageComplete(canFinish);
-        if (canFinish){
+        if (canFinish) {
             setDescription(Messages.IpsArchivePackageWizardPage_Description);
         }
     }
@@ -334,10 +369,11 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDescription(String description) {
         // to avoid flickering set description only if the description changed
         ArgumentCheck.notNull(description);
-        if (!description.equals(getDescription())){
+        if (!description.equals(getDescription())) {
             super.setDescription(description);
         }
     }
@@ -345,23 +381,27 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
-    public void restoreWidgetValues(){
+    @Override
+    public void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
-        if (settings == null)
+        if (settings == null) {
             return;
+        }
 
-        // restore prev selected elements only if the selection which was given when creating the wizard is empty
-        if (selection == null || selection.isEmpty()){
+        // restore previous selected elements only if the selection which was given when creating
+        // the
+        // wizard is empty
+        if (selection == null || selection.isEmpty()) {
             String[] selectedElements = settings.getArray(SELECTED_TREE_ELEMENTS);
-            List prevSelectedObject = new ArrayList(selectedElements.length);
+            List<Object> prevSelectedObject = new ArrayList<Object>(selectedElements.length);
             for (int i = 0; i < selectedElements.length; i++) {
-                for (Iterator iter = elementsInTree.values().iterator(); iter.hasNext();) {
+                for (Iterator<Object> iter = elementsInTree.values().iterator(); iter.hasNext();) {
                     Object objectInTree = iter.next();
-                    if (labelProvider.getText(objectInTree).equals(selectedElements[i])){
+                    if (labelProvider.getText(objectInTree).equals(selectedElements[i])) {
                         prevSelectedObject.add(objectInTree);
                         continue;
                     }
-                    
+
                 }
             }
             treeViewer.setCheckedElements(prevSelectedObject.toArray());
@@ -379,15 +419,16 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         for (int i = 0; i < directoryNames.length; i++) {
             destinationNamesCombo.add(directoryNames[i]);
         }
-        
+
         // restore options
-       includeJavaSources.setChecked(settings.getBoolean(OPTION_INCLUDE_JAVA_SOURCES));
-       includeJavaBinaries.setChecked(settings.getBoolean(OPTION_INCLUDE_JAVA_BINARIES));
+        includeJavaSources.setChecked(settings.getBoolean(OPTION_INCLUDE_JAVA_SOURCES));
+        includeJavaBinaries.setChecked(settings.getBoolean(OPTION_INCLUDE_JAVA_BINARIES));
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveWidgetValues() {
         // store selected elements
         Object[] checkedElements = treeViewer.getCheckedElements();
@@ -396,15 +437,15 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
             selectedElements[i] = labelProvider.getText(checkedElements[i]);
         }
         getDialogSettings().put(SELECTED_TREE_ELEMENTS, selectedElements);
-        
-        // store detination history
-        IDialogSettings settings= getDialogSettings();
+
+        // store destination history
+        IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-            String[] directoryNames= settings.getArray(STORE_DESTINATION_NAMES);
-            if (directoryNames == null){
-                directoryNames= new String[0];
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES);
+            if (directoryNames == null) {
+                directoryNames = new String[0];
             }
-            directoryNames= addToHistory(directoryNames, getDestinationValue());
+            directoryNames = addToHistory(directoryNames, getDestinationValue());
             settings.put(STORE_DESTINATION_NAMES, directoryNames);
         }
         // options
@@ -415,6 +456,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean allowNewContainerName() {
         return false;
     }

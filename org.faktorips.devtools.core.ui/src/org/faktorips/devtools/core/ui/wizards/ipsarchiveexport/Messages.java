@@ -37,5 +37,6 @@ public class Messages extends NLS {
     public static String IpsArchivePackageWizardPage_Description_EnterValidDestination;
     public static String IpsArchivePackageWizardPage_Description_DefineWhichResource;
     public static String IpsArchivePackageWizardPage_Description;
+    public static String IpsArchivePackageWizardPage_WarningNoIpsProjectSelected;
 
 }
