@@ -138,8 +138,10 @@ initDefaultParameter()
   fi
   # convert to absolut path
   WORKINGDIR=$(cd $WORKINGDIR; pwd)
-  PROJECTSROOTDIR=$WORKINGDIR/checkout_release
-
+  if [ -z $PROJECTSROOTDIR ] ; then
+    PROJECTSROOTDIR=$WORKINGDIR/checkout_release
+  fi
+  
   PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
   PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
   PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
