@@ -99,16 +99,6 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         assertFalse(newName.equals(oldName));
     }
 
-    public void testComputeNewName() {
-        String oldName = "test";
-        assertEquals(Messages.ReferenceAndPreviewPage_namePrefixCopyOf + oldName, ReferenceAndPreviewPage
-                .computeNewName(0, oldName));
-        assertEquals(Messages.ReferenceAndPreviewPage_namePrefixCopyOf + "(2)_" + oldName, ReferenceAndPreviewPage
-                .computeNewName(1, Messages.ReferenceAndPreviewPage_namePrefixCopyOf + oldName));
-        assertEquals(Messages.ReferenceAndPreviewPage_namePrefixCopyOf + "(3)_" + oldName, ReferenceAndPreviewPage
-                .computeNewName(2, Messages.ReferenceAndPreviewPage_namePrefixCopyOf + "(2)_" + oldName));
-    }
-
     private SourcePage getSourcePageFor(IProductCmpt cmpt) {
         DeepCopyWizard wizard = new DeepCopyWizard(cmpt, DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
