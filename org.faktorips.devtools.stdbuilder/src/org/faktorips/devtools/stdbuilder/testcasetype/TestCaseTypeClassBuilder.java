@@ -72,7 +72,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private final static String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
     private final static String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
     private static final String EXECUTEASSERTS_JAVADOC = "EXECUTEASSERTS_JAVADOC";
-    private static final String EXECUTEBUSINESSLOGIC_TODO = "EXECUTEBUSINESSLOGIC_TODO";
+    private static final String EXECUTEBUSINESSLOGIC_TODO_0 = "EXECUTEBUSINESSLOGIC_TODO_0";
+    private static final String EXECUTEBUSINESSLOGIC_TODO_1 = "EXECUTEBUSINESSLOGIC_TODO_1";
     private static final String ASSERT_TODO_0 = "ASSERT_TODO_0";
     private static final String ASSERT_TODO_1 = "ASSERT_TODO_1";
     private static final String ASSERT_TODO_2 = "ASSERT_TODO_2";
@@ -82,6 +83,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String ASSERT_TODO_6 = "ASSERT_TODO_6";
     private static final String ASSERT_TODO_7 = "ASSERT_TODO_7";
     private static final String ASSERT_TODO_8 = "ASSERT_TODO_8";
+    private static final String ASSERT_TODO_9 = "ASSERT_TODO_9";
     private static final String RUNTIME_EXCEPTION_NO_ASSERTS = "RUNTIME_EXCEPTION_NO_ASSERTS";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
@@ -642,7 +644,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodExecuteBusinessLogic(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
-        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO));
+        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO_0));
+        body.appendln(getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO_1));
         codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY,
@@ -668,6 +671,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_6));
         body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_7));
         body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_8));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_9));
         body.appendln("throw new ");
         body.appendClassName(RuntimeException.class);
         body.append("(\"");
