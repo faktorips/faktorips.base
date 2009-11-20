@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,8 +27,8 @@ import org.faktorips.util.StringUtil;
 
 public class DeepCopyLabelProvider implements ILabelProvider {
 
-    private List listeners = new ArrayList();
-    
+    private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
+
     /**
      * {@inheritDoc}
      */
@@ -40,14 +40,14 @@ public class DeepCopyLabelProvider implements ILabelProvider {
      * {@inheritDoc}
      */
     public void dispose() {
-        this.listeners = null;
+        listeners = null;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isLabelProperty(Object element, String property) {
-        return true; 
+        return true;
     }
 
     /**
@@ -66,9 +66,9 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         } else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
-            }   
-        
+            return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
+        }
+
         return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$
     }
 
@@ -81,11 +81,12 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         } else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getTableContentName());
+            return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage()
+                    .getTableContentName());
         }
         return Messages.DeepCopyLabelProvider_textUndefined;
     }
-	
+
     public Image getErrorImage() {
         return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
     }

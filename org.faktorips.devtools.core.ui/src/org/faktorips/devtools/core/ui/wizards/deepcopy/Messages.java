@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,7 +28,6 @@ public class Messages extends NLS {
 
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
-    public static String ReferenceAndPreviewPage_namePrefixCopyOf;
     public static String SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt;
     public static String SourcePage_errorLabelInsert;
     public static String SourcePage_errorPrefixWorkingDateFormat;
@@ -46,27 +45,27 @@ public class Messages extends NLS {
     public static String SourcePage_title;
     public static String SourcePage_description;
     public static String SourcePage_msgSelect;
-	public static String ReferenceAndPreviewPage_title;
-	public static String ReferenceAndPreviewPage_description;
-	public static String ReferenceAndPreviewPage_labelValidFrom;
-	public static String ReferenceAndPreviewPage_labelTargetPackage;
-	public static String ReferenceAndPreviewPage_labelSearchPattern;
-	public static String ReferenceAndPreviewPage_labelReplacePattern;
-	public static String ReferenceAndPreviewPage_msgCopyNotPossible;
-	public static String ReferenceAndPreviewPage_msgCanNotCreateFile;
-	public static String ReferenceAndPreviewPage_msgFileAllreadyExists;
-	public static String ReferenceAndPreviewPage_msgNameCollision;
-	public static String ReferenceAndPreviewPage_errorLabelInsert;
-	public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
-	public static String SourcePage_msgCircleRelation;
-	public static String SourcePage_msgCircleRelationShort;
-	public static String ReferenceAndPreviewPage_msgCircleDetected;
-	public static String DeepCopyWizard_titleNewVersion;
-	public static String SourcePage_titleNewVersion;
-	public static String ReferenceAndPreviewPage_titleNewVersion;
-	public static String ReferenceAndPreviewPage_labelVersionId;
-	public static String DeepCopyWizard_titleWorkingDateNotUsed;
-	public static String DeepCopyWizard_msgWorkingDateNotUsedSimple;
-	public static String DeepCopyWizard_msgWorkingDateNotUsed;
+    public static String ReferenceAndPreviewPage_title;
+    public static String ReferenceAndPreviewPage_description;
+    public static String ReferenceAndPreviewPage_labelValidFrom;
+    public static String ReferenceAndPreviewPage_labelTargetPackage;
+    public static String ReferenceAndPreviewPage_labelSearchPattern;
+    public static String ReferenceAndPreviewPage_labelReplacePattern;
+    public static String ReferenceAndPreviewPage_msgCopyNotPossible;
+    public static String ReferenceAndPreviewPage_msgCanNotCreateFile;
+    public static String ReferenceAndPreviewPage_msgFileAllreadyExists;
+    public static String ReferenceAndPreviewPage_msgNameCollision;
+    public static String ReferenceAndPreviewPage_errorLabelInsert;
+    public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
+    public static String SourcePage_msgCircleRelation;
+    public static String SourcePage_msgCircleRelationShort;
+    public static String ReferenceAndPreviewPage_msgCircleDetected;
+    public static String DeepCopyWizard_titleNewVersion;
+    public static String SourcePage_titleNewVersion;
+    public static String ReferenceAndPreviewPage_titleNewVersion;
+    public static String ReferenceAndPreviewPage_labelVersionId;
+    public static String DeepCopyWizard_titleWorkingDateNotUsed;
+    public static String DeepCopyWizard_msgWorkingDateNotUsedSimple;
+    public static String DeepCopyWizard_msgWorkingDateNotUsed;
     public static String ReferenceAndPreviewPage_msgValidateCopy;
 }

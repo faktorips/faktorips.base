@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -389,7 +388,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 // could't determine kind id, thus add copy of in front of the name
                 // to get an unique new name
                 if (targetPackage != null) {
-                    newName = computeNewName(uniqueCopyOfCounter, newName);
+                    newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
+                            newName);
                 }
             }
         }
@@ -420,24 +420,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         return newName;
-    }
-
-    public static String computeNewName(int uniqueCopyOfCounter, String nameCandidate) {
-        String uniqueCopyOfCounterText = uniqueCopyOfCounter == 0 ? "" : "(" + (uniqueCopyOfCounter + 1) + ")_";
-        String nameWithoutCopyOfPrefix;
-        if (nameCandidate.startsWith(Messages.ReferenceAndPreviewPage_namePrefixCopyOf)) {
-            // remove copyOf from the name
-            nameWithoutCopyOfPrefix = StringUtils.substringAfter(nameCandidate,
-                    Messages.ReferenceAndPreviewPage_namePrefixCopyOf);
-            // remove copyOf counter prefix e.g. "(2)_" if exists
-            nameWithoutCopyOfPrefix = nameWithoutCopyOfPrefix.replaceAll("^\\([0-9]*\\)_", "");
-        } else {
-            nameWithoutCopyOfPrefix = nameCandidate;
-        }
-        // add new copyOf and counter prefix
-        nameCandidate = Messages.ReferenceAndPreviewPage_namePrefixCopyOf + uniqueCopyOfCounterText
-                + nameWithoutCopyOfPrefix;
-        return nameCandidate;
     }
 
     /**

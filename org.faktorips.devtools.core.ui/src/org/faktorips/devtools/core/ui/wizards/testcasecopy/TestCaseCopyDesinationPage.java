@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -89,7 +89,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     private UIToolkit toolkit;
 
     final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
-    
+
     // indicates the initial state, no changes
     private boolean initialState = true;
 
@@ -110,17 +110,16 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     private CheckboxField checkboxFieldCopyExpectedTestValues;
 
     // Cache of available product cmpt to replace with
-    private Map rootParameterProductCmpt = new HashMap(10);
-    private Map rootParameterProductCmptCandidates = new HashMap(10);
+    private Map<ITestPolicyCmpt, IIpsSrcFile> rootParameterProductCmpt = new HashMap<ITestPolicyCmpt, IIpsSrcFile>(10);
+    private Map<ITestPolicyCmpt, IIpsSrcFile[]> rootParameterProductCmptCandidates = new HashMap<ITestPolicyCmpt, IIpsSrcFile[]>(
+            10);
 
-
-    
     public TestCaseCopyDesinationPage(UIToolkit toolkit) {
         super("TestCaseCopyDesionationPage"); //$NON-NLS-1$
         super.setTitle(Messages.TestCaseCopyDesinationPage_Title);
-        
+
         this.toolkit = toolkit;
-        
+
         setPageComplete(true);
         setMessage(Messages.TestCaseCopyDesinationPage_InfoMessage);
     }
@@ -129,22 +128,22 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         Composite main = toolkit.createComposite(parent);
         main.setLayout(new GridLayout(1, false));
         main.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         createTargetControls(main);
         createTestCaseCopyTypeControls(main);
         createTestValueControls(main);
-        
+
         setControl(main);
     }
-    
+
     private void createTargetControls(Composite parent) {
         ITestCase sourceTestCase = getTestCaseCopyWizard().getSourceTestCase();
         IIpsPackageFragment targetIpsPackageFragment = sourceTestCase.getIpsPackageFragment();
 
         Composite root = toolkit.createLabelEditColumnComposite(parent);
-        
+
         Group group = toolkit.createGridGroup(root, Messages.TestCaseCopyDesinationPage_TitleTargetGroup, 2, false);
-        
+
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelSrcFolder);
         targetPackageRootControl = toolkit.createPdPackageFragmentRootRefControl(group, true);
 
@@ -154,28 +153,26 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             IIpsPackageFragmentRoot srcRoots[];
             try {
                 srcRoots = sourceTestCase.getIpsProject().getSourceIpsPackageFragmentRoots();
-                if (srcRoots.length>0) {
+                if (srcRoots.length > 0) {
                     packRoot = srcRoots[0];
                 } else {
                     packRoot = null;
                 }
-            }
-            catch (CoreException e1) {
+            } catch (CoreException e1) {
                 packRoot = null;
             }
         }
-        
+
         targetPackageRootControl.setPdPckFragmentRoot(packRoot);
         targetPackageRootField = new TextButtonField(targetPackageRootControl);
         targetPackageRootField.addChangeListener(this);
-        
-        
+
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelDestinationPackage);
         targetInput = toolkit.createPdPackageFragmentRefControl(packRoot, group);
-        
+
         // set target default
-        if (targetIpsPackageFragment.getRoot() != packRoot){
-            // no valid default because target isn't based on a ips src folder (maybe an archive), 
+        if (targetIpsPackageFragment.getRoot() != packRoot) {
+            // no valid default because target isn't based on a ips src folder (maybe an archive),
             // thus clear target package
             targetIpsPackageFragment = null;
         }
@@ -185,27 +182,44 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelTargetName);
         targetName = toolkit.createText(group);
         new TextField(targetName).addChangeListener(this);
-        
+
+        // set target name default
+        targetName.setText(evalUniqueTestCaseName(targetIpsPackageFragment, sourceTestCase, 0));
         targetName.setFocus();
     }
-    
+
+    private String evalUniqueTestCaseName(IIpsPackageFragment targetIpsPackageFragment,
+            ITestCase sourceTestCase,
+            int uniqueCopyOfCounter) {
+        String newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
+                sourceTestCase.getUnqualifiedName());
+        String fileExtension = sourceTestCase.getIpsSrcFile().getIpsObjectType().getFileExtension();
+        IIpsSrcFile ipsSrcFile = targetIpsPackageFragment.getIpsSrcFile(newName + "." + fileExtension);
+        if (ipsSrcFile != null && ipsSrcFile.exists()) {
+            return evalUniqueTestCaseName(targetIpsPackageFragment, sourceTestCase, uniqueCopyOfCounter + 1);
+        }
+        return newName;
+    }
+
     private void createTestCaseCopyTypeControls(Composite parent) {
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        RadiobuttonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN , Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
+
+        RadiobuttonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
+                Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
         group.getGroup().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         String label = NLS.bind(Messages.TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion, IpsPlugin
                 .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNamePlural());
         Radiobutton radiobuttonReplaceAutomatically = group.addRadiobutton(label);
         checkboxFieldReplaceProductCmptAutomatically = new CheckboxField(radiobuttonReplaceAutomatically);
         checkboxFieldReplaceProductCmptAutomatically.addChangeListener(this);
-        
+
         createRootParameterTable(group.getGroup());
 
-        Radiobutton radiobuttonReplaceProductCmptManual = group.addRadiobutton(Messages.TestCaseCopyDesinationPage_LabelRadioBtnManualReplace);
+        Radiobutton radiobuttonReplaceProductCmptManual = group
+                .addRadiobutton(Messages.TestCaseCopyDesinationPage_LabelRadioBtnManualReplace);
         checkboxFieldReplaceProductCmptManual = new CheckboxField(radiobuttonReplaceProductCmptManual);
         checkboxFieldReplaceProductCmptManual.addChangeListener(this);
         radiobuttonReplaceAutomatically.setChecked(true);
@@ -215,35 +229,36 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
 
         Group group = toolkit.createGroup(parent, Messages.TestCaseCopyDesinationPage_LabelCopyTestValues);
         group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        Checkbox checkBoxCopyInputTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyInputValues);
+
+        Checkbox checkBoxCopyInputTestValues = toolkit.createCheckbox(group,
+                Messages.TestCaseCopyDesinationPage_LabelCopyInputValues);
         checkboxFieldCopyInputTestValues = new CheckboxField(checkBoxCopyInputTestValues);
         checkboxFieldCopyInputTestValues.addChangeListener(this);
-        
-        Checkbox checkBoxCopyExpectedTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyExpectedResultValues);
+
+        Checkbox checkBoxCopyExpectedTestValues = toolkit.createCheckbox(group,
+                Messages.TestCaseCopyDesinationPage_LabelCopyExpectedResultValues);
         checkboxFieldCopyExpectedTestValues = new CheckboxField(checkBoxCopyExpectedTestValues);
         checkboxFieldCopyExpectedTestValues.addChangeListener(this);
-        
+
         checkBoxCopyInputTestValues.setChecked(true);
         checkBoxCopyExpectedTestValues.setChecked(true);
     }
-    
+
     private void createRootParameterTable(Composite parent) {
         Composite tableComposite = toolkit.createComposite(parent);
         tableComposite.setLayout(new GridLayout(1, true));
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalIndent = 11;
         tableComposite.setLayoutData(gridData);
-        
+
         tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         tableViewer.setUseHashlookup(true);
         tableViewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tableViewer.getTable().setLinesVisible(true);
-        
+
         TableLayout layout = new TableLayout();
         layout.addColumnData(new ColumnWeightData(ColumnWeightData.MINIMUM_WIDTH));
         layout.addColumnData(new ColumnWeightData(ColumnWeightData.MINIMUM_WIDTH));
@@ -252,14 +267,14 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         gd.minimumHeight = 100;
         tableViewer.getTable().setLayoutData(gd);
         tableViewer.getTable().setHeaderVisible(true);
-        
+
         TableColumn column1 = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         TableColumn column2 = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         column1.setText(Messages.TestCaseCopyDesinationPage_ColumnTitleToReplace);
         column2.setText(Messages.TestCaseCopyDesinationPage_ColumnReplaceWith);
 
-        tableViewer.setColumnProperties(new String[]{COLUMN_ROOT_PARAMETER_PRODUCTCMPT, COLUMN_NEW_PRODUCTCMPT});
-        
+        tableViewer.setColumnProperties(new String[] { COLUMN_ROOT_PARAMETER_PRODUCTCMPT, COLUMN_NEW_PRODUCTCMPT });
+
         // create content provider
         tableViewer.setContentProvider(new IStructuredContentProvider() {
             public Object[] getElements(Object inputElement) {
@@ -276,57 +291,62 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
         });
-        
+
         // create label provider
         tableViewer.setLabelProvider(new ITableLabelProvider() {
             public Image getColumnImage(Object element, int columnIndex) {
-                if (columnIndex == 0){
+                if (columnIndex == 0) {
                     return defaultLabelProvider.getImage(element);
-                } else if (columnIndex == 1){
+                } else if (columnIndex == 1) {
                     return defaultLabelProvider.getImage(rootParameterProductCmpt.get(element));
                 }
                 return null;
             }
+
             public String getColumnText(Object element, int columnIndex) {
-                if (columnIndex == 0){
+                if (columnIndex == 0) {
                     return defaultLabelProvider.getText(element);
-                } else if (columnIndex == 1){
+                } else if (columnIndex == 1) {
                     return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
                 }
                 return null;
             }
+
             public void addListener(ILabelProviderListener listener) {
             }
+
             public void dispose() {
             }
+
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
+
             public void removeListener(ILabelProviderListener listener) {
             }
-        });        
-        
+        });
+
         // create cell editor/modifier
         CellEditor delegateCellEditor;
         try {
-            List relevantTestPolicyCmpts = getRelevantRootTestPolicyCmpts();
-            tableViewer.setInput((ITestPolicyCmpt[])relevantTestPolicyCmpts.toArray(new ITestPolicyCmpt[relevantTestPolicyCmpts.size()]));
+            List<ITestPolicyCmpt> relevantTestPolicyCmpts = getRelevantRootTestPolicyCmpts();
+            tableViewer.setInput(relevantTestPolicyCmpts.toArray(new ITestPolicyCmpt[relevantTestPolicyCmpts.size()]));
             delegateCellEditor = createCellEditor(tableViewer, relevantTestPolicyCmpts);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
-        tableViewer.setCellEditors(new CellEditor[]{ null, delegateCellEditor});
-        tableViewer.setCellModifier(new ICellModifier(){
+        tableViewer.setCellEditors(new CellEditor[] { null, delegateCellEditor });
+        tableViewer.setCellModifier(new ICellModifier() {
             public boolean canModify(Object element, String property) {
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)){
+                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
                     return true;
                 }
                 return false;
             }
 
             public Object getValue(Object element, String property) {
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)){
+                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
                     return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
                 }
                 return null;
@@ -334,21 +354,21 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
             public void modify(Object element, String property, Object value) {
                 ITestPolicyCmpt rootTestPolicyCmpt = null;
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)){
+                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
                     rootTestPolicyCmpt = (ITestPolicyCmpt)((TableItem)element).getData();
-                    IIpsSrcFile[] canditates = (IIpsSrcFile[])rootParameterProductCmptCandidates.get(rootTestPolicyCmpt);
+                    IIpsSrcFile[] canditates = rootParameterProductCmptCandidates.get(rootTestPolicyCmpt);
                     IIpsSrcFile changedValue = null;
                     for (int i = 0; i < canditates.length; i++) {
-                        if (defaultLabelProvider.getText(canditates[i]).equals(value)){
+                        if (defaultLabelProvider.getText(canditates[i]).equals(value)) {
                             changedValue = canditates[i];
                             break;
                         }
                     }
-                    if (changedValue == null){
+                    if (changedValue == null) {
                         throw new RuntimeException("Wrong table content!"); //$NON-NLS-1$
                     }
                     Object oldValue = rootParameterProductCmpt.get(rootTestPolicyCmpt);
-                    if (oldValue != changedValue){
+                    if (oldValue != changedValue) {
                         rootParameterProductCmpt.put(rootTestPolicyCmpt, changedValue);
                         needRecreateTarget = true;
                     }
@@ -358,25 +378,26 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 setInfoMessageVersionIdChange(rootTestPolicyCmpt);
             }
         });
-        
+
         column1.pack();
         column2.pack();
         tableViewer.refresh();
-        
+
         // add selection listener to inform about replaced version
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener(){
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection){
-                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)((IStructuredSelection)event.getSelection()).getFirstElement();
+                if (event.getSelection() instanceof IStructuredSelection) {
+                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)((IStructuredSelection)event.getSelection())
+                            .getFirstElement();
                     setInfoMessageVersionIdChange(testPolicyCmpt);
                 }
             }
         });
     }
 
-    private List getRelevantRootTestPolicyCmpts() throws CoreException {
+    private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
-        List result = new ArrayList(testPolicyCmpts.length);
+        List<ITestPolicyCmpt> result = new ArrayList<ITestPolicyCmpt>(testPolicyCmpts.length);
         for (int i = 0; i < testPolicyCmpts.length; i++) {
             IProductCmpt productCmpt = testPolicyCmpts[i].findProductCmpt(testPolicyCmpts[i].getIpsProject());
             if (productCmpt != null && StringUtils.isNotEmpty(testPolicyCmpts[i].getProductCmpt())) {
@@ -388,122 +409,130 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
     private void setInfoMessageVersionIdChange(ITestPolicyCmpt testPolicyCmpt) {
         try {
-            IProductCmptNamingStrategy productCmptNamingStrategy = testPolicyCmpt.getIpsProject().getProductCmptNamingStrategy();
+            IProductCmptNamingStrategy productCmptNamingStrategy = testPolicyCmpt.getIpsProject()
+                    .getProductCmptNamingStrategy();
             IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
             IIpsSrcFile productCmptToReplaceSrcFile = getProductCmptToReplace(testPolicyCmpt);
             IProductCmpt productCmptToReplace = (IProductCmpt)productCmptToReplaceSrcFile.getIpsObject();
-            
+
             String versionId = productCmptNamingStrategy.getVersionId(productCmptToReplace.getName());
-            if (!productCmpt.equals(productCmptToReplace)){
+            if (!productCmpt.equals(productCmptToReplace)) {
                 setMessage(NLS.bind(Messages.TestCaseCopyDesinationPage_InfoMessageReplacedVersion, versionId));
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
-    private CellEditor createCellEditor(TableViewer tableViewer, List testObjects) throws CoreException {
+
+    private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects)
+            throws CoreException {
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
-        List cellEditors = new ArrayList(10);;
+        List<ComboCellEditor> cellEditors = new ArrayList<ComboCellEditor>(10);;
         DelegateCellEditor delegateCellEditor = new DelegateCellEditor(tableViewer, 1);
         ITestCase sourceTestCase = getTestCaseCopyWizard().getSourceTestCase();
-        IProductCmptNamingStrategy productCmptNamingStrategy = sourceTestCase.getIpsProject().getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy productCmptNamingStrategy = sourceTestCase.getIpsProject()
+                .getProductCmptNamingStrategy();
 
-        for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
-            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)iter.next();
-            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
-            if (parameter == null || !parameter.isRequiresProductCmpt()){
+        for (Iterator<ITestPolicyCmpt> iter = testObjects.iterator(); iter.hasNext();) {
+            ITestPolicyCmpt testPolicyCmpt = iter.next();
+            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt
+                    .getIpsProject());
+            if (parameter == null || !parameter.isRequiresProductCmpt()) {
                 cellEditors.add(null);
                 continue;
             }
             IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
-            if (productCmpt != null){
+            if (productCmpt != null) {
                 // add only candidates with same kind id
                 String kindId = productCmptNamingStrategy.getKindId(productCmpt.getName());
-                IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(sourceTestCase.getIpsProject(), 
-                        null);
-                
-                List content = new ArrayList(allowedProductCmpt.length);
-                List allowedProductCmptList = new ArrayList(allowedProductCmpt.length);
+                IIpsSrcFile[] allowedProductCmpt = parameter
+                        .getAllowedProductCmpt(sourceTestCase.getIpsProject(), null);
+
+                List<String> content = new ArrayList<String>(allowedProductCmpt.length);
+                List<IIpsSrcFile> allowedProductCmptList = new ArrayList<IIpsSrcFile>(allowedProductCmpt.length);
                 for (int j = 0; j < allowedProductCmpt.length; j++) {
                     IProductCmpt productCmptCandidate = (IProductCmpt)allowedProductCmpt[j].getIpsObject();
                     String kindIdCandidate = productCmptNamingStrategy.getKindId(productCmptCandidate.getName());
-                    if (kindId.equals(kindIdCandidate)){
+                    if (kindId.equals(kindIdCandidate)) {
                         content.add(provider.getText(allowedProductCmpt[j]));
                         allowedProductCmptList.add(allowedProductCmpt[j]);
                     }
                 }
-                
+
                 Combo combo = toolkit.createCombo(tableViewer.getTable());
-                combo.setItems((String[])content.toArray(new String[content.size()]));
+                combo.setItems(content.toArray(new String[content.size()]));
                 cellEditors.add(new ComboCellEditor(tableViewer, 1, combo));
-                
-                // store current product cmpt and all found candidates 
+
+                // store current product cmpt and all found candidates
                 rootParameterProductCmpt.put(testPolicyCmpt, productCmpt.getIpsSrcFile());
-                rootParameterProductCmptCandidates.put(testPolicyCmpt, (IIpsSrcFile[])allowedProductCmptList.toArray(new IIpsSrcFile[allowedProductCmptList.size()]));
+                rootParameterProductCmptCandidates.put(testPolicyCmpt, allowedProductCmptList
+                        .toArray(new IIpsSrcFile[allowedProductCmptList.size()]));
             }
         }
-        delegateCellEditor.setCellEditors((CellEditor[])cellEditors.toArray(new TableCellEditor[cellEditors.size()]));
+        delegateCellEditor.setCellEditors(cellEditors.toArray(new TableCellEditor[cellEditors.size()]));
         return delegateCellEditor;
     }
 
     private TestCaseCopyWizard getTestCaseCopyWizard() {
-        return (TestCaseCopyWizard) super.getWizard();
+        return (TestCaseCopyWizard)super.getWizard();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canFlipToNextPage() {
         return validatePage();
     }
-    
-    private boolean validatePage(){
-        if (initialState){
+
+    private boolean validatePage() {
+        if (initialState) {
             return false;
         }
         setMessage(null);
         setErrorMessage(null);
-        
+
         // don't validate if the target hasn't changed - after creating the new target test case
         ITestCase targetTestCase = getTestCaseCopyWizard().getTargetTestCase();
         if (targetTestCase != null
                 && targetTestCase.getQualifiedName().equals(getTestCaseCopyWizard().getTargetTestCaseQualifiedName())) {
             return true;
         }
-        
-        if (!validateTargetName()){
+
+        if (!validateTargetName()) {
             return false;
         }
-        
-        if (!validateTargetPackageFragment()){
+
+        if (!validateTargetPackageFragment()) {
             return false;
         }
-        
-        if (!validateTargetExists()){
+
+        if (!validateTargetExists()) {
             return false;
         }
-        
+
         return true;
     }
 
     private boolean validateTargetName() {
         String targetTestCaseName = targetName.getText();
-        IIpsProjectNamingConventions namingConventions = getTestCaseCopyWizard().getSourceTestCase().getIpsProject().getNamingConventions();
+        IIpsProjectNamingConventions namingConventions = getTestCaseCopyWizard().getSourceTestCase().getIpsProject()
+                .getNamingConventions();
         MessageList messageList = null;
         try {
-            messageList = namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.TEST_CASE, targetTestCaseName);
+            messageList = namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.TEST_CASE,
+                    targetTestCaseName);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
         Message message = messageList.getFirstMessage(Message.ERROR);
-        if (message != null){
+        if (message != null) {
             setErrorMessage(message.getText());
             return false;
         }
         message = messageList.getFirstMessage(Message.WARNING);
-        if (message != null){
+        if (message != null) {
             setMessage(message.getText(), WARNING);
         }
         message = messageList.getFirstMessage(Message.INFO);
@@ -512,42 +541,41 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         }
         return true;
     }
-    
-    private boolean validateTargetPackageFragment(){
+
+    private boolean validateTargetPackageFragment() {
         if (getTargetIpsPackageFragment() != null && !getTargetIpsPackageFragment().exists()) {
             setMessage(NLS.bind(Messages.TestCaseCopyDesinationPage_ValidationWarningTargetPackageWillBeCreated,
-                    getTargetIpsPackageFragment().getName()),
-                    WARNING);
-        } else if (getTargetIpsPackageFragment() == null){
+                    getTargetIpsPackageFragment().getName()), WARNING);
+        } else if (getTargetIpsPackageFragment() == null) {
             setErrorMessage(Messages.TestCaseCopyDesinationPage_ValidationErrorBadTarget);
             return false;
         }
         return true;
     }
-    
+
     private boolean validateTargetExists() {
-        IIpsSrcFile ipsSrcFile = getTargetIpsPackageFragment().getIpsSrcFile(getTargetTestCaseName(), IpsObjectType.TEST_CASE);
-        if (ipsSrcFile != null && 
-                ipsSrcFile.exists()){
+        IIpsSrcFile ipsSrcFile = getTargetIpsPackageFragment().getIpsSrcFile(getTargetTestCaseName(),
+                IpsObjectType.TEST_CASE);
+        if (ipsSrcFile != null && ipsSrcFile.exists()) {
             setErrorMessage(Messages.TestCaseCopyDesinationPage_ValidationTargetAlreadyExists);
             return false;
         }
         return true;
     }
-    
+
     public String getTargetTestCaseName() {
         return targetName.getText();
     }
-    
-    public IIpsPackageFragment getTargetIpsPackageFragment(){
+
+    public IIpsPackageFragment getTargetIpsPackageFragment() {
         return targetInput.getIpsPackageFragment();
     }
-    
-    public IIpsSrcFile getProductCmptToReplace(ITestPolicyCmpt testPolicyCmpt){
-        if (!checkboxFieldReplaceProductCmptAutomatically.getCheckbox().isChecked()){
+
+    public IIpsSrcFile getProductCmptToReplace(ITestPolicyCmpt testPolicyCmpt) {
+        if (!checkboxFieldReplaceProductCmptAutomatically.getCheckbox().isChecked()) {
             return null;
         }
-        return (IIpsSrcFile)rootParameterProductCmpt.get(testPolicyCmpt);
+        return rootParameterProductCmpt.get(testPolicyCmpt);
     }
 
     /**
@@ -563,13 +591,13 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     public void setNeedRecreateTarget(boolean needRecreateTarget) {
         this.needRecreateTarget = needRecreateTarget;
     }
-    
-    public boolean isClearInputTestValues(){
-        return ! checkboxFieldCopyInputTestValues.getCheckbox().isChecked();
+
+    public boolean isClearInputTestValues() {
+        return !checkboxFieldCopyInputTestValues.getCheckbox().isChecked();
     }
 
-    public boolean isClearExpectedTestValues(){
-        return ! checkboxFieldCopyExpectedTestValues.getCheckbox().isChecked();
+    public boolean isClearExpectedTestValues() {
+        return !checkboxFieldCopyExpectedTestValues.getCheckbox().isChecked();
     }
 
     public void valueChanged(FieldValueChangedEvent e) {
@@ -578,16 +606,16 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         } else if (e.field == checkboxFieldReplaceProductCmptManual) {
             tableViewer.getTable().setEnabled(false);
             needRecreateTarget = true;
-        } else if (e.field == checkboxFieldReplaceProductCmptAutomatically){
+        } else if (e.field == checkboxFieldReplaceProductCmptAutomatically) {
             tableViewer.getTable().setEnabled(true);
         }
         pageChanged();
     }
-    
+
     private void pageChanged() {
         initialState = false;
         boolean pageComplete = validatePage();
         setPageComplete(pageComplete);
         getContainer().updateButtons();
-    }    
+    }
 }

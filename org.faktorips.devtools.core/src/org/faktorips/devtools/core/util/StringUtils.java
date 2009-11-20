@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,11 +20,11 @@ package org.faktorips.devtools.core.util;
  */
 public class StringUtils {
 
-    private StringUtils(){
+    private StringUtils() {
     }
-    
+
     /**
-     * Wraps the provide text according to the split length and tabSize. 
+     * Wraps the provide text according to the split length and tabSize.
      * 
      * @param text the text that needs to be wrapped up
      * @param length the length after which a line break should occur
@@ -33,7 +33,7 @@ public class StringUtils {
      */
     public final static String wrapText(String text, int length, String lineSeparator) {
 
-        if (text == null || "".equals(text)) {
+        if (text == null || "".equals(text)) { //$NON-NLS-1$
             return text;
         }
         String[] lines = text.split(lineSeparator);
@@ -48,7 +48,7 @@ public class StringUtils {
                         buf.append(lineSeparator);
                         lineText = lineText.substring(index + 1, lineText.length());
                     } else {
-                        lineText = "";
+                        lineText = ""; //$NON-NLS-1$
                         break;
                     }
                 } else {
@@ -56,11 +56,49 @@ public class StringUtils {
                 }
             }
             buf.append(lineText);
-            if(i+1 < lines.length && !"".equals(lines[i+1])){
+            if (i + 1 < lines.length && !"".equals(lines[i + 1])) { //$NON-NLS-1$
                 buf.append(lineSeparator);
             }
         }
         return buf.toString();
+    }
+
+    /**
+     * Returns the given name with a "copyOf_" and counter prefix that can be used to make the name
+     * unique. Example:
+     * <table border="true">
+     * <tr>
+     * <th>uniqueCopyOfCounter</th>
+     * <th>nameCandidate</th>
+     * <th>result</th>
+     * </tr>
+     * <tr>
+     * <td>0</td>
+     * <td>Test</td>
+     * <td>CopyOf_Test</td>
+     * </tr>
+     * <tr>
+     * <td>1</td>
+     * <td>Test</td>
+     * <td>CopyOf_(2)_Test</td>
+     * </tr>
+     * </table>
+     */
+    public static String computeCopyOfName(int uniqueCopyOfCounter, String nameCandidate) {
+        String uniqueCopyOfCounterText = uniqueCopyOfCounter == 0 ? "" : "(" + (uniqueCopyOfCounter + 1) + ")_"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String nameWithoutCopyOfPrefix;
+        if (nameCandidate.startsWith(Messages.StringUtils_copyOfNamePrefix)) {
+            // remove copyOf from the name
+            nameWithoutCopyOfPrefix = org.apache.commons.lang.StringUtils.substringAfter(nameCandidate,
+                    Messages.StringUtils_copyOfNamePrefix);
+            // remove copyOf counter prefix e.g. "(2)_" if exists
+            nameWithoutCopyOfPrefix = nameWithoutCopyOfPrefix.replaceAll("^\\([0-9]*\\)_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            nameWithoutCopyOfPrefix = nameCandidate;
+        }
+        // add new copyOf and counter prefix
+        nameCandidate = Messages.StringUtils_copyOfNamePrefix + uniqueCopyOfCounterText + nameWithoutCopyOfPrefix;
+        return nameCandidate;
     }
 
 }
