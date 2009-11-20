@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,32 +18,40 @@ import junit.framework.TestCase;
 public class StringUtilsTest extends TestCase {
 
     public final void testWrapText() {
-        
-        String text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden \n"
-            + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene \n"
-            + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n"
-            + "Bonus, Ansammlungsguthaben und Schlussüberschuss.";
-        
-        String expectedText = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden\n"
-            + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene\n"
-            + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n"
-            + "Bonus, Ansammlungsguthaben und Schlussüberschuss.";
+
+        String text = "Diese Klasse enthï¿½lt die Kontostï¿½nde, die fï¿½r die Bestimmung der abzufï¿½hrenden \n"
+                + "Kapitalertragssteuer gegebenenfalls benï¿½tigt werden. Sie wird auf Deckungsebene \n"
+                + "gefï¿½hrt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n"
+                + "Bonus, Ansammlungsguthaben und Schlussï¿½berschuss.";
+
+        String expectedText = "Diese Klasse enthï¿½lt die Kontostï¿½nde, die fï¿½r die Bestimmung der abzufï¿½hrenden\n"
+                + "Kapitalertragssteuer gegebenenfalls benï¿½tigt werden. Sie wird auf Deckungsebene\n"
+                + "gefï¿½hrt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n"
+                + "Bonus, Ansammlungsguthaben und Schlussï¿½berschuss.";
 
         String wrappedText = StringUtils.wrapText(text, 73, "\n");
         assertEquals(expectedText, wrappedText);
-        
-        text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden "
-            + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene "
-            + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, "
-            + "Bonus, Ansammlungsguthaben und Schlussüberschuss.";
 
-        expectedText = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden\n" +
-                "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene\n" +
-                "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, Bonus,\n" +
-                "Ansammlungsguthaben und Schlussüberschuss.";
-        
+        text = "Diese Klasse enthï¿½lt die Kontostï¿½nde, die fï¿½r die Bestimmung der abzufï¿½hrenden "
+                + "Kapitalertragssteuer gegebenenfalls benï¿½tigt werden. Sie wird auf Deckungsebene "
+                + "gefï¿½hrt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, "
+                + "Bonus, Ansammlungsguthaben und Schlussï¿½berschuss.";
+
+        expectedText = "Diese Klasse enthï¿½lt die Kontostï¿½nde, die fï¿½r die Bestimmung der abzufï¿½hrenden\n"
+                + "Kapitalertragssteuer gegebenenfalls benï¿½tigt werden. Sie wird auf Deckungsebene\n"
+                + "gefï¿½hrt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, Bonus,\n"
+                + "Ansammlungsguthaben und Schlussï¿½berschuss.";
+
         wrappedText = StringUtils.wrapText(text, 73, "\n");
         assertEquals(expectedText, wrappedText);
     }
 
+    public void testComputeCopyOfName() {
+        String oldName = "test";
+        assertEquals(Messages.StringUtils_copyOfNamePrefix + oldName, StringUtils.computeCopyOfName(0, oldName));
+        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName, StringUtils.computeCopyOfName(1,
+                Messages.StringUtils_copyOfNamePrefix + oldName));
+        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(3)_" + oldName, StringUtils.computeCopyOfName(2,
+                Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName));
+    }
 }
