@@ -13,11 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.type;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.type.IType;
@@ -34,17 +40,23 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class GenType extends JavaGeneratorForIpsPart {
 
-    private StandardBuilderSet builderSet;
-    private IType type;
-
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    private final Map<IIpsObjectPart, GenTypePart> generatorsByPart;
+
+    private final StandardBuilderSet builderSet;
+
+    private final IType type;
 
     public GenType(IType type, StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(type, localizedStringsSet);
+
         ArgumentCheck.notNull(type, this);
         ArgumentCheck.notNull(builderSet, this);
+
         this.type = type;
         this.builderSet = builderSet;
+        generatorsByPart = new HashMap<IIpsObjectPart, GenTypePart>();
     }
 
     public IType getType() {
@@ -167,6 +179,61 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     @Override
     public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
+    }
+
+    protected final Map<IIpsObjectPart, GenTypePart> getGeneratorsByPart() {
+        return generatorsByPart;
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
+                false);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
+                true);
+    }
+
+    private void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren,
+            boolean forInterface) {
+
+        if (ipsObjectPartContainer instanceof IType) {
+            javaElements.add(generatedJavaType);
+            if (recursivelyIncludeChildren) {
+                for (GenTypePart genTypePart : getGeneratorsByPart().values()) {
+                    if (forInterface) {
+                        genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
+                                ipsObjectPartContainer, recursivelyIncludeChildren);
+                    } else {
+                        genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                                ipsObjectPartContainer, recursivelyIncludeChildren);
+                    }
+                }
+            }
+
+        } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
+            if (forInterface) {
+                getGeneratorsByPart().get(ipsObjectPartContainer).getGeneratedJavaElementsForPublishedInterface(
+                        javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+            } else {
+                getGeneratorsByPart().get(ipsObjectPartContainer).getGeneratedJavaElementsForImplementation(
+                        javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+            }
+        }
     }
 
 }

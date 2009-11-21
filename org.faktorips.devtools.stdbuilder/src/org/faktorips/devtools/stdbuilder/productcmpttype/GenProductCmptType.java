@@ -16,20 +16,14 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -46,7 +40,6 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttrib
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -64,16 +57,13 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenProductCmptType extends GenType {
 
-    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProductCmptType.class);
-
-    private Map<IIpsObjectPart, GenTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenTypePart>();
     private List<GenProdAttribute> genProdAttributes = new ArrayList<GenProdAttribute>();
     private List<GenProdAssociation> genProdAssociations = new ArrayList<GenProdAssociation>();
     private List<GenProdMethod> genMethods = new ArrayList<GenProdMethod>();
     private List<GenTableStructureUsage> genTableStructureUsages = new ArrayList<GenTableStructureUsage>();
 
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet) throws CoreException {
-        super(productCmptType, builderSet, LOCALIZED_STRINGS);
+        super(productCmptType, builderSet, new LocalizedStringsSet(GenProductCmptType.class));
         createGeneratorsForProdAttributes();
         createGeneratorsForProdAssociations();
         createGeneratorsForMethods();
@@ -84,9 +74,6 @@ public class GenProductCmptType extends GenType {
         return (IProductCmptType)getType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getUnqualifiedClassNameForProductCmptTypeGen(boolean forInterface) throws CoreException {
         if (forInterface) {
             String name = getType().getName() + getAbbreviationForGenerationConcept();
@@ -157,7 +144,7 @@ public class GenProductCmptType extends GenType {
             if (attrs[i].isValid()) {
                 GenProdAttribute generator = new GenProdAttribute(this, attrs[i]);
                 genProdAttributes.add(generator);
-                generatorsByPart.put(attrs[i], generator);
+                getGeneratorsByPart().put(attrs[i], generator);
             }
         }
     }
@@ -168,7 +155,7 @@ public class GenProductCmptType extends GenType {
             if (ass[i].isValid()) {
                 GenProdAssociation generator = createGenerator(ass[i]);
                 genProdAssociations.add(generator);
-                generatorsByPart.put(ass[i], generator);
+                getGeneratorsByPart().put(ass[i], generator);
             }
         }
     }
@@ -179,7 +166,7 @@ public class GenProductCmptType extends GenType {
             if (methods[i].isValid()) {
                 GenProdMethod generator = new GenProdMethod(this, methods[i]);
                 genMethods.add(generator);
-                generatorsByPart.put(methods[i], generator);
+                getGeneratorsByPart().put(methods[i], generator);
             }
         }
     }
@@ -190,7 +177,7 @@ public class GenProductCmptType extends GenType {
             if (tsus[i].isValid()) {
                 GenTableStructureUsage generator = new GenTableStructureUsage(this, tsus[i]);
                 genTableStructureUsages.add(generator);
-                generatorsByPart.put(tsus[i], generator);
+                getGeneratorsByPart().put(tsus[i], generator);
             }
         }
     }
@@ -203,7 +190,7 @@ public class GenProductCmptType extends GenType {
     }
 
     public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
-        GenProdAttribute generator = (GenProdAttribute)generatorsByPart.get(a);
+        GenProdAttribute generator = (GenProdAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid()) {
             // generators for supertype attributes will be created on demand since it is expected
             // that
@@ -212,14 +199,14 @@ public class GenProductCmptType extends GenType {
             // attribute because of performance reasons.
             generator = new GenProdAttribute(this, a);
             genProdAttributes.add(generator);
-            generatorsByPart.put(a, generator);
+            getGeneratorsByPart().put(a, generator);
         }
 
         return generator;
     }
 
     public GenProdMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
-        GenProdMethod generator = (GenProdMethod)generatorsByPart.get(method);
+        GenProdMethod generator = (GenProdMethod)getGeneratorsByPart().get(method);
         if (generator == null && method.isValid()) {
             // generators for supertype methods will be created on demand since it is expected that
             // only a few exit. It will not be checked if the provided method is actually a
@@ -227,13 +214,13 @@ public class GenProductCmptType extends GenType {
             // method because of performance reasons.
             generator = new GenProdMethod(this, method);
             genMethods.add(generator);
-            generatorsByPart.put(method, generator);
+            getGeneratorsByPart().put(method, generator);
         }
         return generator;
     }
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
-        GenProdAssociation generator = (GenProdAssociation)generatorsByPart.get(a);
+        GenProdAssociation generator = (GenProdAssociation)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid()) {
             // generators for supertype associations will be created on demand since it is expected
             // that
@@ -242,13 +229,13 @@ public class GenProductCmptType extends GenType {
             // assocation because of performance reasons.
             generator = createGenerator(a);
             genProdAssociations.add(generator);
-            generatorsByPart.put(a, generator);
+            getGeneratorsByPart().put(a, generator);
         }
         return generator;
     }
 
     public GenTableStructureUsage getGenerator(ITableStructureUsage tsu) throws CoreException {
-        return (GenTableStructureUsage)generatorsByPart.get(tsu);
+        return (GenTableStructureUsage)getGeneratorsByPart().get(tsu);
     }
 
     public Iterator<GenProdAttribute> getGenProdAttributes() {
@@ -342,24 +329,6 @@ public class GenProductCmptType extends GenType {
      */
     public String[] getMethodParamNamesSetProductCmpt() throws CoreException {
         return new String[] { StringUtils.uncapitalize(getType().getName()), "initPropertiesWithConfiguratedDefaults" };
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        // TODO AW: Not implemented yet.
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        // TODO AW: Not implemented yet.
     }
 
 }

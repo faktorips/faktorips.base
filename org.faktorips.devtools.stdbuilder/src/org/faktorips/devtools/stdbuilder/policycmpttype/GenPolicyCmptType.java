@@ -15,17 +15,11 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -49,7 +43,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -70,7 +63,6 @@ import org.faktorips.util.StringUtil;
  */
 public class GenPolicyCmptType extends GenType {
 
-    private final Map<IIpsObjectPart, GenTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenTypePart>();
     private final List<GenAttribute> genAttributes = new ArrayList<GenAttribute>();
     private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
     private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
@@ -99,7 +91,7 @@ public class GenPolicyCmptType extends GenType {
             if (methods[i].isValid()) {
                 GenMethod generator = new GenMethod(this, methods[i]);
                 genMethods.add(generator);
-                generatorsByPart.put(methods[i], generator);
+                getGeneratorsByPart().put(methods[i], generator);
             }
         }
     }
@@ -110,7 +102,7 @@ public class GenPolicyCmptType extends GenType {
             if (validationRules[i].isValid()) {
                 GenValidationRule generator = new GenValidationRule(this, validationRules[i]);
                 genValidationRules.add(generator);
-                generatorsByPart.put(validationRules[i], generator);
+                getGeneratorsByPart().put(validationRules[i], generator);
             }
         }
     }
@@ -121,7 +113,7 @@ public class GenPolicyCmptType extends GenType {
             if (attrs[i].isValid()) {
                 GenAttribute generator = createGenerator(attrs[i]);
                 genAttributes.add(generator);
-                generatorsByPart.put(attrs[i], generator);
+                getGeneratorsByPart().put(attrs[i], generator);
             }
         }
     }
@@ -133,7 +125,7 @@ public class GenPolicyCmptType extends GenType {
             if (ass[i].isValid()) {
                 GenAssociation generator = createGenerator(ass[i]);
                 genAssociations.add(generator);
-                generatorsByPart.put(ass[i], generator);
+                getGeneratorsByPart().put(ass[i], generator);
             }
         }
     }
@@ -160,35 +152,35 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public GenMethod getGenerator(IMethod method) throws CoreException {
-        GenMethod generator = (GenMethod)generatorsByPart.get(method);
+        GenMethod generator = (GenMethod)getGeneratorsByPart().get(method);
         if (generator == null && method.isValid()) {
             generator = new GenMethod(this, method);
             genMethods.add(generator);
-            generatorsByPart.put(method, generator);
+            getGeneratorsByPart().put(method, generator);
         }
         return generator;
     }
 
     public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
-        GenAttribute generator = (GenAttribute)generatorsByPart.get(a);
+        GenAttribute generator = (GenAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid()) {
             generator = createGenerator(a);
             genAttributes.add(generator);
-            generatorsByPart.put(a, generator);
+            getGeneratorsByPart().put(a, generator);
         }
         return generator;
     }
 
     public GenValidationRule getGenerator(IValidationRule a) {
-        return (GenValidationRule)generatorsByPart.get(a);
+        return (GenValidationRule)getGeneratorsByPart().get(a);
     }
 
     public GenAssociation getGenerator(IPolicyCmptTypeAssociation a) throws CoreException {
-        GenAssociation generator = (GenAssociation)generatorsByPart.get(a);
+        GenAssociation generator = (GenAssociation)getGeneratorsByPart().get(a);
         if (null == generator && a.isValid()) {
             generator = createGenerator(a);
             genAssociations.add(generator);
-            generatorsByPart.put(a, generator);
+            getGeneratorsByPart().put(a, generator);
         }
         return generator;
     }
@@ -305,57 +297,6 @@ public class GenPolicyCmptType extends GenType {
             return changeListenerSupportBuilder.getNotificationSupportInterfaceName();
         }
         return null;
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
-                false);
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
-                true);
-    }
-
-    private void getGeneratedJavaElements(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren,
-            boolean forInterface) {
-
-        if (ipsObjectPartContainer instanceof IPolicyCmptType) {
-            javaElements.add(generatedJavaType);
-            if (recursivelyIncludeChildren) {
-                for (GenTypePart genTypePart : generatorsByPart.values()) {
-                    if (forInterface) {
-                        genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
-                                ipsObjectPartContainer, recursivelyIncludeChildren);
-                    } else {
-                        genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
-                                ipsObjectPartContainer, recursivelyIncludeChildren);
-                    }
-                }
-            }
-
-        } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
-            if (forInterface) {
-                generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElementsForPublishedInterface(
-                        javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
-            } else {
-                generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElementsForImplementation(javaElements,
-                        generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
-            }
-        }
     }
 
 }
