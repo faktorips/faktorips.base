@@ -73,14 +73,14 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
     protected final String getJavaParameterTypeSignature(Datatype datatype) {
         char typeIdentifier = 'Q';
         if (datatype.isVoid()) {
-            typeIdentifier = 'V';
+            return "V";
         } else if (datatype.isPrimitive()) {
             if (datatype.equals(Datatype.PRIMITIVE_INT)) {
-                typeIdentifier = 'I';
+                return "I";
             } else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-                typeIdentifier = 'Z';
+                return "Z";
             } else if (datatype.equals(Datatype.PRIMITIVE_LONG)) {
-                typeIdentifier = 'J';
+                return "J";
             }
         }
 
