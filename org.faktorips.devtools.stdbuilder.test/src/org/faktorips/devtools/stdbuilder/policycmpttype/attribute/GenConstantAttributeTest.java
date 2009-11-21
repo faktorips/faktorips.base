@@ -27,15 +27,19 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
  */
 public class GenConstantAttributeTest extends GenAttributeTest {
 
+    /** <tt>GenConstantAttribute</tt> generator for the published attribute. */
     private GenConstantAttribute genPublishedConstantAttribute;
 
+    /** <tt>GenConstantAttribute</tt> generator for the public attribute. */
     private GenConstantAttribute genPublicConstantAttribute;
+
+    public GenConstantAttributeTest() {
+        super(AttributeType.CONSTANT);
+    }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        publishedAttribute.setAttributeType(AttributeType.CONSTANT);
-        publicAttribute.setAttributeType(AttributeType.CONSTANT);
         genPublishedConstantAttribute = new GenConstantAttribute(genPolicyCmptType, publishedAttribute);
         genPublicConstantAttribute = new GenConstantAttribute(genPolicyCmptType, publicAttribute);
     }
@@ -54,7 +58,7 @@ public class GenConstantAttributeTest extends GenAttributeTest {
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publicAttribute, true);
-        assertEquals(0, generatedJavaElements.size());
+        assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() {
@@ -62,7 +66,7 @@ public class GenConstantAttributeTest extends GenAttributeTest {
 
         genPublishedConstantAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publishedAttribute, false);
-        assertEquals(0, generatedJavaElements.size());
+        assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),

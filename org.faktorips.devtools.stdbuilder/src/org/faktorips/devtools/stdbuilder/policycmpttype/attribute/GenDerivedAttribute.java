@@ -13,7 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -45,6 +49,7 @@ public class GenDerivedAttribute extends GenAttribute {
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         if (generatesInterface) {
             if (!isOverwritten()) {
                 generateAttributeNameConstant(builder);
@@ -60,6 +65,7 @@ public class GenDerivedAttribute extends GenAttribute {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
+
         if (!generatesInterface) {
             if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
                     && !isOverwritten()) {
@@ -71,6 +77,7 @@ public class GenDerivedAttribute extends GenAttribute {
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         if (generatesInterface) {
             if (!isOverwritten()) {
                 generateGetterInterface(builder);
@@ -88,6 +95,7 @@ public class GenDerivedAttribute extends GenAttribute {
 
     private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject) throws CoreException {
+
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getPolicyCmptTypeAttribute().isOverwrite()) {
             appendOverrideAnnotation(builder, getIpsProject(), false);
@@ -148,6 +156,27 @@ public class GenDerivedAttribute extends GenAttribute {
         }
 
         builder.closeBracket();
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
+
+        if (isPublished()) {
+            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
+
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        if (isDerivedByExplicitMethodCall()) {
+            addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
     }
 
 }

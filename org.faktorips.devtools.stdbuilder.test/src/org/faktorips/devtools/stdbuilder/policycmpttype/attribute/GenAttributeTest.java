@@ -24,8 +24,10 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Abstract base class for tests concerning the generators for <tt>IPolicyCmptTypeAttribute</tt>s.
@@ -36,9 +38,27 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTes
  */
 public abstract class GenAttributeTest extends PolicyCmptTypeBuilderTest {
 
+    /** A published <tt>IPolicyCmptTypeAttribute</tt> that can be used for tests. */
     protected IPolicyCmptTypeAttribute publishedAttribute;
 
+    /** A public <tt>IPolicyCmptTypeAttribute</tt> that can be used for tests. */
     protected IPolicyCmptTypeAttribute publicAttribute;
+
+    /** The <tt>AttributeType</tt> set by subclasses for the test attributes. */
+    private AttributeType attributeType;
+
+    /**
+     * Creates a <tt>GenAttributeTest</tt>.
+     * 
+     * @param attributeType The <tt>AttributeType</tt> to apply to the
+     *            <tt>IPolicyCmptTypeAttribute</tt>s provided for testing.
+     * 
+     * @throws NullPointerException If <tt>attributeType</tt> is <tt>null</tt>.
+     */
+    protected GenAttributeTest(AttributeType attributeType) {
+        ArgumentCheck.notNull(attributeType);
+        this.attributeType = attributeType;
+    }
 
     @Override
     protected void setUp() throws Exception {
@@ -48,11 +68,13 @@ public abstract class GenAttributeTest extends PolicyCmptTypeBuilderTest {
         publishedAttribute.setName("publishedAttribute");
         publishedAttribute.setDatatype(Datatype.STRING.getName());
         publishedAttribute.setModifier(Modifier.PUBLISHED);
+        publishedAttribute.setAttributeType(attributeType);
 
         publicAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         publicAttribute.setName("publicAttribute");
         publicAttribute.setDatatype(Datatype.STRING.getName());
         publicAttribute.setModifier(Modifier.PUBLIC);
+        publicAttribute.setAttributeType(attributeType);
     }
 
     /**

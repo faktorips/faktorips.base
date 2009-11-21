@@ -19,17 +19,26 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 
+/**
+ * 
+ * 
+ * @author Alexander Weickmann
+ */
 public class GenChangeableAttributeTest extends GenAttributeTest {
 
+    /** <tt>GenChangeableAttribute</tt> generator for the published attribute. */
     private GenChangeableAttribute genPublishedChangeableAttribute;
 
+    /** <tt>GenChangeableAttribute</tt> generator for the public attribute. */
     private GenChangeableAttribute genPublicChangeableAttribute;
+
+    public GenChangeableAttributeTest() {
+        super(AttributeType.CHANGEABLE);
+    }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        publishedAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        publicAttribute.setAttributeType(AttributeType.CHANGEABLE);
         genPublishedChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publishedAttribute);
         genPublicChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publicAttribute);
     }
@@ -47,11 +56,12 @@ public class GenChangeableAttributeTest extends GenAttributeTest {
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publicAttribute, true);
-        assertEquals(0, generatedJavaElements.size());
+        assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
         genPublishedChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publishedAttribute, false);
         expectMemberVar(generatedJavaElements, genPublishedChangeableAttribute);

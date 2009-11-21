@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
  * 
  * @author Alexander Weickmann
  */
-public class GenDerivedAttributeTest extends GenAttributeTest {
+public class GenDerivedCachedAttributeTest extends GenAttributeTest {
 
     /** <tt>GenDerivedAttribute</tt> generator for the published attribute. */
     private GenDerivedAttribute genPublishedDerivedAttribute;
@@ -32,8 +32,8 @@ public class GenDerivedAttributeTest extends GenAttributeTest {
     /** <tt>GenDerivedAttribute</tt> generator for the public attribute. */
     private GenDerivedAttribute genPublicDerivedAttribute;
 
-    public GenDerivedAttributeTest() {
-        super(AttributeType.DERIVED_ON_THE_FLY);
+    public GenDerivedCachedAttributeTest() {
+        super(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     }
 
     @Override
@@ -63,15 +63,17 @@ public class GenDerivedAttributeTest extends GenAttributeTest {
 
         genPublishedDerivedAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publishedAttribute, false);
+        expectMemberVar(generatedJavaElements, genPublishedDerivedAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute);
-        assertEquals(1, generatedJavaElements.size());
+        assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicDerivedAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
                 publicAttribute, false);
         expectPropertyConstant(generatedJavaElements, genPublicDerivedAttribute);
+        expectMemberVar(generatedJavaElements, genPublicDerivedAttribute);
         expectGetterMethod(generatedJavaElements, genPublicDerivedAttribute);
-        assertEquals(2, generatedJavaElements.size());
+        assertEquals(3, generatedJavaElements.size());
     }
 
 }
