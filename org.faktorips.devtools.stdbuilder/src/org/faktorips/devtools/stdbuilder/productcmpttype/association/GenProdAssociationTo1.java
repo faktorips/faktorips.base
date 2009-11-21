@@ -417,7 +417,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, argNames, argTypes);
         String fieldName = getFieldNameTo1Association();
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append(fieldName + " = (" + argNames[0] + "==null ? null : ");
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("new ");
@@ -452,7 +452,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     void generateSignatureGet1RelatedCmptGen(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGet1RelatedCmpt();
-        String returnType = getGenProductCmptType().getBuilderSet().getGenerator(target)
+        String returnType = getGenType().getBuilderSet().getGenerator(target)
                 .getQualifiedClassNameForProductCmptTypeGen(true);
         builder.signature(Modifier.PUBLIC, returnType, methodName, new String[] { "effectiveDate" },
                 new String[] { Calendar.class.getName() });

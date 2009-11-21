@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -38,7 +38,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public class GenTableStructureUsage extends GenProductCmptTypePart {
+public class GenTableStructureUsage extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenTableStructureUsage.class);
 
@@ -49,9 +49,6 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         tableStructureUsage = tsu;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -59,9 +56,6 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -75,9 +69,6 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         builder.varDeclaration(Modifier.PROTECTED, String.class, getMemberVarName(), expression);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -136,12 +127,12 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
     public String getReturnTypeOfMethodGetTableUsage() throws CoreException {
         String[] tss = tableStructureUsage.getTableStructures();
         if (tss.length == 1) {
-            IIpsSrcFile tsuFile = getGenProductCmptType().getBuilderSet().getIpsProject().findIpsSrcFile(
+            IIpsSrcFile tsuFile = getGenType().getBuilderSet().getIpsProject().findIpsSrcFile(
                     IpsObjectType.TABLE_STRUCTURE, tss[0]);
             if (tsuFile == null) {
                 return "";
             }
-            return TableImplBuilder.getQualifiedClassName(tsuFile, getGenProductCmptType().getBuilderSet());
+            return TableImplBuilder.getQualifiedClassName(tsuFile, getGenType().getBuilderSet());
         }
         return ITable.class.getName();
     }
@@ -166,7 +157,7 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         String[] paramTypes = new String[] { String.class.getName() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append("this." + getMemberVarName());
         methodsBuilder.appendln(" = tableName;");
         methodsBuilder.closeBracket();

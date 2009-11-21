@@ -46,6 +46,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttrib
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -65,7 +66,7 @@ public class GenProductCmptType extends GenType {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProductCmptType.class);
 
-    private Map<IIpsObjectPart, GenProductCmptTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenProductCmptTypePart>();
+    private Map<IIpsObjectPart, GenTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenTypePart>();
     private List<GenProdAttribute> genProdAttributes = new ArrayList<GenProdAttribute>();
     private List<GenProdAssociation> genProdAssociations = new ArrayList<GenProdAssociation>();
     private List<GenProdMethod> genMethods = new ArrayList<GenProdMethod>();

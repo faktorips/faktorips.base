@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.IntegerRange;
 
@@ -41,11 +41,12 @@ import org.faktorips.valueset.IntegerRange;
  * 
  * @author Daniel Hohenberger
  */
-public abstract class GenProdAssociation extends GenProductCmptTypePart {
+public abstract class GenProdAssociation extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAssociation.class);
 
     protected IProductCmptTypeAssociation association;
+
     protected IProductCmptType target;
 
     /**
@@ -104,8 +105,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
-                getGenProductCmptType().getProductCmptType().getIpsProject());
+        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
+                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
         appendOverrideAnnotation(builder, getIpsProject(), supertype == null || supertype.isAbstract());
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
@@ -139,8 +140,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         builder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[] {}, new String[] {});
         builder.openBracket();
         builder.appendln("int num = 0;");
-        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
-                getGenProductCmptType().getProductCmptType().getIpsProject());
+        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
+                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
             String methodName2 = getMethodNameGetNumOfRelatedCmpts();
             builder.appendln("num += super." + methodName2 + "();");
@@ -148,7 +149,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
             builder.append("num += ");
-            getGenProductCmptType().getGenerator(association).generateCodeGetNumOfRelatedProductCmptsInternal(builder);
+            ((GenProductCmptType)getGenType()).getGenerator(association)
+                    .generateCodeGetNumOfRelatedProductCmptsInternal(builder);
         }
         builder.appendln("return num;");
         builder.closeBracket();
@@ -189,7 +191,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * Code sample for 1-1 associations:
      * 
      * <pre>
-     * [javadoc]
+     * [Javadoc]
      * public CoverageType getNumOfCoverageTypes() {
      *     return coverageType==null ? 0 : 1;
      * }
@@ -199,7 +201,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * Code sample for 1-many associations:
      * 
      * <pre>
-     * [javadoc]
+     * [Javadoc]
      * public CoverageType getNumOfCoverageTypes() {
      *     return coverageTypes.length;
      * }
@@ -209,7 +211,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * Java 5 Code sample for 1-many associations:
      * 
      * <pre>
-     * [javadoc]
+     * [Javadoc]
      * public CoverageType getNumOfCoverageTypes() {
      *     return coverageTypes.size();
      * }
@@ -223,7 +225,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
         builder.append("return ");
-        getGenProductCmptType().getGenerator(association).generateCodeGetNumOfRelatedProductCmpts(builder);
+        ((GenProductCmptType)getGenType()).getGenerator(association).generateCodeGetNumOfRelatedProductCmpts(builder);
         builder.closeBracket();
     }
 
@@ -289,8 +291,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
-                getGenProductCmptType().getProductCmptType().getIpsProject());
+        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
+                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
         appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
 
         generateSignatureDerivedUnionAssociation(methodsBuilder);
@@ -344,8 +346,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         }
         for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)it.next();
-            getGenProductCmptType().getGenerator(implAssociation)
-                    .generateCodeGetRelatedCmptsInContainer(methodsBuilder);
+            ((GenProductCmptType)getGenType()).getGenerator(implAssociation).generateCodeGetRelatedCmptsInContainer(
+                    methodsBuilder);
         }
         methodsBuilder.appendln("return result;");
         methodsBuilder.closeBracket();
@@ -392,9 +394,9 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         String returnType;
         if (isUseTypesafeCollections()) {
             returnType = List.class.getName() + "<"
-                    + getGenProductCmptType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
+                    + getGenType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
         } else {
-            returnType = getGenProductCmptType().getBuilderSet().getGenerator(target).getQualifiedName(true) + "[]";
+            returnType = getGenType().getBuilderSet().getGenerator(target).getQualifiedName(true) + "[]";
         }
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
                 EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
@@ -421,11 +423,11 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         if (isUseTypesafeCollections()) {
             returnType = List.class.getName()
                     + "<"
-                    + getGenProductCmptType().getBuilderSet().getGenerator(target)
+                    + getGenType().getBuilderSet().getGenerator(target)
                             .getQualifiedClassNameForProductCmptTypeGen(true) + ">";
         } else {
-            returnType = getGenProductCmptType().getBuilderSet().getGenerator(target)
-                    .getQualifiedClassNameForProductCmptTypeGen(true)
+            returnType = getGenType().getBuilderSet().getGenerator(target).getQualifiedClassNameForProductCmptTypeGen(
+                    true)
                     + "[]";
         }
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
@@ -467,7 +469,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @throws CoreException
      */
     protected String getQualifiedInterfaceClassNameForTarget() throws CoreException {
-        return getGenProductCmptType().getBuilderSet().getGenerator(
+        return getGenType().getBuilderSet().getGenerator(
                 (IProductCmptType)association.findTarget(association.getIpsProject())).getQualifiedName(true);
     }
 
@@ -476,7 +478,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @throws CoreException
      */
     protected String getQualifiedInterfaceClassNameForTargetGen() throws CoreException {
-        return getGenProductCmptType().getBuilderSet().getGenerator(
+        return getGenType().getBuilderSet().getGenerator(
                 (IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getQualifiedClassNameForProductCmptTypeGen(true);
     }
@@ -486,7 +488,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @throws CoreException
      */
     protected String getMethodNameGetProductCmptGenerationForTarget() throws CoreException {
-        return getGenProductCmptType().getBuilderSet().getGenerator(
+        return getGenType().getBuilderSet().getGenerator(
                 (IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getMethodNameGetProductCmptGeneration();
     }

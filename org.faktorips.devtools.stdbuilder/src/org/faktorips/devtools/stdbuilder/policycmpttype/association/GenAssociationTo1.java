@@ -292,8 +292,8 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.appendClassName(targetImplClassName);
         methodsBuilder.append(")" + paramName + ";");
         if (reverseAssociation != null) {
-            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
-                    reverseAssociation).generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
+            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
+                    .generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.closeBracket();
@@ -330,9 +330,9 @@ public class GenAssociationTo1 extends GenAssociation {
         code.append(getMethodNameGetRefObject());
         code.append("() != this");
         code.append(") {");
-        if (!varClassName.equals(getGenPolicyCmptType().getQualifiedName(false))) {
+        if (!varClassName.equals(getGenType().getQualifiedName(false))) {
             code.append("((");
-            code.appendClassName(getGenPolicyCmptType().getQualifiedName(false));
+            code.appendClassName(getGenType().getQualifiedName(false));
             code.append(")" + varName + ").");
         } else {
             code.append(varName + ".");
@@ -482,7 +482,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.openBracket();
         for (int i = 0; i < subAssociations.size(); i++) {
             IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
-            GenAssociation subrelGenerator = getGenPolicyCmptType().getGenerator(subrel);
+            GenAssociation subrelGenerator = ((GenPolicyCmptType)getGenType()).getGenerator(subrel);
             String accessCode;
             accessCode = subrelGenerator.getMethodNameGetRefObject() + "()";
             methodsBuilder.appendln("if (" + accessCode + "!=null) {");

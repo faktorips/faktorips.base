@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.w3c.dom.Element;
@@ -41,14 +41,18 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class GenProdAttribute extends GenProductCmptTypePart {
+public class GenProdAttribute extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAttribute.class);
 
     protected IProductCmptTypeAttribute attribute;
+
     protected String attributeName;
+
     protected DatatypeHelper datatypeHelper;
+
     protected String staticConstantPropertyName;
+
     protected String memberVarName;
 
     public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a) throws CoreException {
@@ -124,18 +128,12 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         return memberVarName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -145,9 +143,6 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -218,7 +213,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         String[] paramTypes = new String[] { datatypeHelper.getJavaClassName() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append("this." + getMemberVarName());
         methodsBuilder.appendln(" = newValue;");
         methodsBuilder.closeBracket();
@@ -317,7 +312,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");
-            methodBuilder.append(getGenProductCmptType().getMethodNameGetProductCmptGeneration());
+            methodBuilder.append(((GenProductCmptType)getGenType()).getMethodNameGetProductCmptGeneration());
             methodBuilder.append("().");
             methodBuilder.append(getGetterMethodName());
             methodBuilder.append("();");

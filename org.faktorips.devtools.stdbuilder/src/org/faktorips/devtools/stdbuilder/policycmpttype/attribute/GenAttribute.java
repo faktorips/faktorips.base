@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -51,7 +51,7 @@ import org.faktorips.valueset.ValueSet;
  * 
  * @author Jan Ortmann
  */
-public abstract class GenAttribute extends GenPolicyCmptTypePart {
+public abstract class GenAttribute extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAttribute.class);
 
@@ -156,7 +156,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.append('.');
         methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE);
         methodsBuilder.append("(");
-        methodsBuilder.appendClassName(getGenPolicyCmptType().getQualifiedName(true));
+        methodsBuilder.appendClassName(getGenType().getQualifiedName(true));
         methodsBuilder.append(".");
         methodsBuilder.append(staticConstantPropertyName);
         methodsBuilder.append(", ");
@@ -342,7 +342,8 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         if (overwritten == null) {
             return null;
         }
-        GenPolicyCmptType typeGenerator = new GenPolicyCmptType(overwritten.getPolicyCmptType(), getBuilderSet());
+        GenPolicyCmptType typeGenerator = new GenPolicyCmptType(overwritten.getPolicyCmptType(), getGenType()
+                .getBuilderSet());
         return typeGenerator.getGenerator(overwritten);
     }
 

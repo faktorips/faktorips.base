@@ -263,7 +263,7 @@ public class GenChangeableAttribute extends GenAttribute {
         }
         generateSetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
-        getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder,
+        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportBeforeChange(methodsBuilder,
                 ChangeEventType.MUTABLE_PROPERTY_CHANGED, getDatatype().getJavaClassName(), getMemberVarName(),
                 getParamNameForSetterMethod(), getStaticConstantPropertyName());
         methodsBuilder.append("this.");
@@ -271,14 +271,14 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append(" = ");
         methodsBuilder.append(datatypeHelper.referenceOrSafeCopyIfNeccessary(getParamNameForSetterMethod()));
         methodsBuilder.appendln(";");
-        getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder,
+        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportAfterChange(methodsBuilder,
                 ChangeEventType.MUTABLE_PROPERTY_CHANGED, getDatatype().getJavaClassName(), getMemberVarName(),
                 getParamNameForSetterMethod(), getStaticConstantPropertyName());
         methodsBuilder.closeBracket();
     }
 
     private void generateGenerationAccess(JavaCodeFragment body, IIpsProject ipsProject) throws CoreException {
-        GenProductCmptType genProductCmptType = getGenPolicyCmptType().getBuilderSet().getGenerator(
+        GenProductCmptType genProductCmptType = getGenType().getBuilderSet().getGenerator(
                 getProductCmptType(ipsProject));
         if (isPublished()) {
             body.append(genProductCmptType.getMethodNameGetProductCmptGeneration());
@@ -286,7 +286,7 @@ public class GenChangeableAttribute extends GenAttribute {
         } else { // Public
             body.append("((");
             body.append(getProductCmptType(ipsProject).getName()
-                    + getGenPolicyCmptType().getAbbreviationForGenerationConcept());
+                    + ((GenPolicyCmptType)getGenType()).getAbbreviationForGenerationConcept());
             body.append(")");
             body.append(genProductCmptType.getMethodNameGetProductCmptGeneration());
             body.append("()).");
@@ -315,7 +315,7 @@ public class GenChangeableAttribute extends GenAttribute {
             body.appendln("(context);");
         } else {
             if (attribute.isOverwrite()) {
-                body.appendClassName(getGenPolicyCmptType().getQualifiedName(true));
+                body.appendClassName(getGenType().getQualifiedName(true));
                 body.append('.');
             }
             body.append(getConstantName(getValueSet()));

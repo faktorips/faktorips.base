@@ -49,6 +49,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -69,7 +70,7 @@ import org.faktorips.util.StringUtil;
  */
 public class GenPolicyCmptType extends GenType {
 
-    private final Map<IIpsObjectPart, GenPolicyCmptTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenPolicyCmptTypePart>();
+    private final Map<IIpsObjectPart, GenTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenTypePart>();
     private final List<GenAttribute> genAttributes = new ArrayList<GenAttribute>();
     private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
     private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
@@ -335,13 +336,13 @@ public class GenPolicyCmptType extends GenType {
         if (ipsObjectPartContainer instanceof IPolicyCmptType) {
             javaElements.add(generatedJavaType);
             if (recursivelyIncludeChildren) {
-                for (GenPolicyCmptTypePart genPolicyCmptTypePart : generatorsByPart.values()) {
+                for (GenTypePart genTypePart : generatorsByPart.values()) {
                     if (forInterface) {
-                        genPolicyCmptTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements,
-                                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                        genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
+                                ipsObjectPartContainer, recursivelyIncludeChildren);
                     } else {
-                        genPolicyCmptTypePart.getGeneratedJavaElementsForImplementation(javaElements,
-                                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                        genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                                ipsObjectPartContainer, recursivelyIncludeChildren);
                     }
                 }
             }

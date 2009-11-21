@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,7 +27,8 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 /**
- * Base class for the generators of policy and product component type.
+ * Abstract base class for the generators for <tt>IPolicyCmptType</tt> and <tt>IProductCmptType</tt>
+ * .
  * 
  * @author Peter Erzberger
  */
@@ -60,6 +61,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
 
     private static String getPackageName(IType type, StandardBuilderSet builderSet, boolean forInterface)
             throws CoreException {
+
         if (type != null) {
             if (forInterface) {
                 return builderSet.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
@@ -75,6 +77,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
 
     public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface)
             throws CoreException {
+
         if (type != null) {
             return getQualifiedName(type, builderSet, getPackageName(type, builderSet, forInterface), forInterface);
         }
@@ -85,6 +88,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             StandardBuilderSet builderSet,
             String packageName,
             boolean forInterface) {
+
         StringBuffer buf = new StringBuffer();
         buf.append(packageName);
         buf.append('.');
@@ -139,6 +143,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * 
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
+    @Override
     public Locale getLanguageUsedInGeneratedSourceCode() {
         return builderSet.getLanguageUsedInGeneratedSourceCode();
     }
@@ -159,6 +164,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * 
      * @since 2.0
      */
+    @Override
     public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }

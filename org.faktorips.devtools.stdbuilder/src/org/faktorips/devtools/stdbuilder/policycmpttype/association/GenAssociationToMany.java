@@ -418,8 +418,8 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.appendln(".add(" + paramName + ");");
         if (association.isAssoziation() && reverseAssociation != null) {
-            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
-                    reverseAssociation).generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
+            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
+                    .generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.closeBracket();
@@ -485,13 +485,14 @@ public class GenAssociationToMany extends GenAssociation {
             body.append("if (" + varToCleanUp + "!=null) {");
         }
         if (reverseAssociation.is1ToMany()) {
-            String removeMethod = ((GenAssociationToMany)getGenPolicyCmptType().getGenerator(reverseAssociation))
-                    .getMethodNameRemoveObject();
+            String removeMethod = ((GenAssociationToMany)((GenPolicyCmptType)getGenType())
+                    .getGenerator(reverseAssociation)).getMethodNameRemoveObject();
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
-            String targetClass = getGenPolicyCmptType().getBuilderSet().getGenerator(
+            String targetClass = getGenType().getBuilderSet().getGenerator(
                     (IPolicyCmptType)association.findTarget(getIpsProject())).getQualifiedName(false);
-            String setMethod = getGenPolicyCmptType().getGenerator(reverseAssociation).getMethodNameSetObject();
+            String setMethod = ((GenPolicyCmptType)getGenType()).getGenerator(reverseAssociation)
+                    .getMethodNameSetObject();
             body.append("((");
             body.appendClassName(targetClass);
             body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
@@ -685,8 +686,8 @@ public class GenAssociationToMany extends GenAssociation {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
-                getIpsProject());
+        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
+                .findSupertype(getIpsProject());
         appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
@@ -742,8 +743,8 @@ public class GenAssociationToMany extends GenAssociation {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
-                getIpsProject());
+        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
+                .findSupertype(getIpsProject());
         appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
         generateSignatureGetAllRefObjects(methodsBuilder);
         String classname = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
@@ -790,7 +791,7 @@ public class GenAssociationToMany extends GenAssociation {
         boolean elementsVarDefined = false;
         for (int i = 0; i < subAssociations.size(); i++) {
             IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
-            GenAssociation subrelGenerator = getGenPolicyCmptType().getGenerator(subrel);
+            GenAssociation subrelGenerator = ((GenPolicyCmptType)getGenType()).getGenerator(subrel);
             if (subrel.is1ToMany()) {
                 String method = subrelGenerator.getMethodNameGetAllRefObjects();
                 if (isUseTypesafeCollections()) {
@@ -843,8 +844,8 @@ public class GenAssociationToMany extends GenAssociation {
                 new String[] {});
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
-        IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
-                getIpsProject());
+        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
+                .findSupertype(getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
             String methodName2 = getMethodNameGetNumOfRefObjects();
             methodsBuilder.appendln("num += super." + methodName2 + "();");
@@ -852,7 +853,7 @@ public class GenAssociationToMany extends GenAssociation {
         for (int i = 0; i < implAssociations.size(); i++) {
             methodsBuilder.appendln();
             IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)implAssociations.get(i);
-            GenAssociation gen = getGenPolicyCmptType().getGenerator(association);
+            GenAssociation gen = ((GenPolicyCmptType)getGenType()).getGenerator(association);
             methodsBuilder.append("num += ");
             if (association.is1ToMany()) {
                 methodsBuilder.append(gen.getMethodNameGetNumOfRefObjects() + "();");

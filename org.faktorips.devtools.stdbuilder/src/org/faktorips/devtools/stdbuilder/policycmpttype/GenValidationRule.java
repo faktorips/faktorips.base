@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -44,7 +45,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-public class GenValidationRule extends GenPolicyCmptTypePart {
+public class GenValidationRule extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
 
@@ -141,7 +142,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                     .getValidatedAttributeAt(0));
             body.append('!');
 
-            GenAttribute genAttribute = getGenPolicyCmptType().getGenerator(attr);
+            GenAttribute genAttribute = ((GenPolicyCmptType)getGenType()).getGenerator(attr);
             if (!attr.getValueSet().isUnrestricted()) {
                 body.append(genAttribute.getMethodNameGetSetOfAllowedValues());
             }
@@ -287,6 +288,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties,
             String[] validatedAttributes,
             IIpsProject ipsProject) throws CoreException {
+
         JavaCodeFragment code = new JavaCodeFragment();
         if (validatedAttributes.length > 0) {
             code.appendClassName(ObjectProperty.class);
@@ -298,7 +300,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             for (int j = 0; j < validatedAttributes.length; j++) {
                 IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
                         .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
-                String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
+                String propertyConstName = ((GenPolicyCmptType)getGenType()).getGenerator(attr)
+                        .getStaticConstantPropertyName();
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");

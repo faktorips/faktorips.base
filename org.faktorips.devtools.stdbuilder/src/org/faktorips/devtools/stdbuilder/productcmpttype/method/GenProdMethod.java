@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -41,7 +41,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Daniel Hohenberger
  */
-public class GenProdMethod extends GenProductCmptTypePart {
+public class GenProdMethod extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdMethod.class);
 
@@ -52,18 +52,12 @@ public class GenProdMethod extends GenProductCmptTypePart {
         this.method = method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -71,9 +65,6 @@ public class GenProdMethod extends GenProductCmptTypePart {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -101,8 +92,8 @@ public class GenProdMethod extends GenProductCmptTypePart {
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(),
                         JavaSourceFileBuilder.ANNOTATION_GENERATED);
-                getGenProductCmptType().getGenerator(overloadedFormulaMethod).generateSignatureForModelMethod(false,
-                        false, methodsBuilder, ipsProject);
+                ((GenProductCmptType)getGenType()).getGenerator(overloadedFormulaMethod)
+                        .generateSignatureForModelMethod(false, false, methodsBuilder, ipsProject);
                 methodsBuilder.openBracket();
                 methodsBuilder.appendln("// TODO a delegation to the method " + method.getSignatureString()
                         + " needs to be implemented here");
@@ -176,7 +167,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
-                resolveTypesToPublishedInterface, getGenProductCmptType().getBuilderSet(), method.getIpsProject());
+                resolveTypesToPublishedInterface, getGenType().getBuilderSet(), method.getIpsProject());
 
         String[] parameterNames = null;
         if (formulaTest) {
@@ -191,7 +182,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
         }
         parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
-                resolveTypesToPublishedInterface, getGenProductCmptType().getBuilderSet(), method.getIpsProject());
+                resolveTypesToPublishedInterface, getGenType().getBuilderSet(), method.getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
         if (formulaTest) {

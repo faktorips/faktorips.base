@@ -115,7 +115,7 @@ public class GenDerivedAttribute extends GenAttribute {
             boolean resolveTypesToPublishedInterface = formulaSignature.getModifier().isPublished();
             String[] paramNames = BuilderHelper.extractParameterNames(parameters);
             String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
-                    resolveTypesToPublishedInterface, getGenPolicyCmptType().getBuilderSet(), ipsProject);
+                    resolveTypesToPublishedInterface, getGenType().getBuilderSet(), ipsProject);
 
             builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
             JavaCodeFragment paramFragment = new JavaCodeFragment();
@@ -145,10 +145,10 @@ public class GenDerivedAttribute extends GenAttribute {
             }
             paramFragment.append(")");
             builder.append(" return ((");
-            builder.appendClassName(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
+            builder.appendClassName(getGenType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
                     .getQualifiedClassNameForProductCmptTypeGen(false));
             builder.append(')');
-            builder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
+            builder.append(getGenType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
                     .getMethodNameGetProductCmptGeneration());
             builder.append("()).");
             builder.append(formulaSignature.getName());

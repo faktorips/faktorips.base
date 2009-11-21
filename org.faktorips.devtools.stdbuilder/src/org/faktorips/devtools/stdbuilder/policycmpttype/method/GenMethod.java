@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -38,7 +38,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-public class GenMethod extends GenPolicyCmptTypePart {
+public class GenMethod extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenMethod.class);
 
@@ -82,7 +82,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
 
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building method " + method.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
-                    + getGenPolicyCmptType().getQualifiedName(generatesInterface), e));
+                    + getGenType().getQualifiedName(generatesInterface), e));
         }
     }
 
@@ -146,7 +146,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
             Datatype[] paramTypes,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        StandardBuilderSet builderset = getGenPolicyCmptType().getBuilderSet();
+        StandardBuilderSet builderset = getGenType().getBuilderSet();
         String[] paramClassNames = new String[paramTypes.length];
         for (int i = 0; i < paramClassNames.length; i++) {
             paramClassNames[i] = builderset.getJavaClassName(paramTypes[i]);

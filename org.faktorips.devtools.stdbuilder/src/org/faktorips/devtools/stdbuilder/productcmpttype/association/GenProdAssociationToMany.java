@@ -634,7 +634,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 argNames, argTypes);
         String fieldName = getFieldNameToManyAssociation();
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("this." + fieldName + ".put(target.getId(), new ");
             methodsBuilder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
@@ -700,7 +700,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 argNames, argTypes);
         String fieldName = getFieldNameToManyAssociation();
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("this." + fieldName + ".put(target.getId(), new ");
             methodsBuilder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
