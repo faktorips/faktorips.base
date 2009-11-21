@@ -87,8 +87,8 @@ public class GenConstantAttribute extends GenAttribute {
     }
 
     @Override
-    protected void getGeneratedJavaElementsForInterface(List<IJavaElement> javaElements, IType generatedJavaType) {
-        super.getGeneratedJavaElementsForInterface(javaElements, generatedJavaType);
+    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements, IType generatedJavaType) {
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
         if (isPublished()) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
             javaElements.add(constantMember);

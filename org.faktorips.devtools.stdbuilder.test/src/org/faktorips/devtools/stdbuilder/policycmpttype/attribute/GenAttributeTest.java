@@ -13,8 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
@@ -23,7 +28,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 
 /**
- * 
+ * Abstract base class for tests concerning the generators for <tt>IPolicyCmptTypeAttribute</tt>s.
+ * <p>
+ * Provides convenient methods.
  * 
  * @author Alexander Weickmann
  */
@@ -48,84 +55,40 @@ public abstract class GenAttributeTest extends PolicyCmptTypeBuilderTest {
         publicAttribute.setModifier(Modifier.PUBLIC);
     }
 
-    protected IType getGeneratedJavaType() {
+    /**
+     * Creates and returns a Java type that can be used to test whether the generator correctly
+     * returns generated <tt>IJavaElement</tt>s.
+     */
+    protected final IType getGeneratedJavaType() {
         IFile javaSourceFile = ipsProject.getProject().getFile("Type.java");
         ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(javaSourceFile);
         return compilationUnit.getType("Type");
     }
 
-    // public void testGetGeneratedJavaElementsInterface() throws CoreException {
-    // List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-    // genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-    // policyCmptTypeAttribute,
-    // true);
-    //
-    // IField expectedPropertyConstant =
-    // getGeneratedJavaType().getField(genAttribute.getStaticConstantPropertyName());
-    // IMethod expectedGetterMethodDeclaration =
-    // getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
-    // new String[] {});
-    // IMethod expectedSetterMethodDeclaration =
-    // getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
-    // new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
-    //
-    // assertTrue(generatedJavaElements.contains(expectedPropertyConstant));
-    // assertTrue(generatedJavaElements.contains(expectedGetterMethodDeclaration));
-    // assertTrue(generatedJavaElements.contains(expectedSetterMethodDeclaration));
-    //
-    // assertEquals(3, generatedJavaElements.size());
-    //
-    // }
-    //
-    // public void testGetGeneratedJavaElementsImpl() throws CoreException {
-    // List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-    // genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-    // policyCmptTypeAttribute,
-    // false);
-    //
-    // IField expectedMemberVar = getGeneratedJavaType().getField(genAttribute.getMemberVarName());
-    // IMethod expectedGetterMethod =
-    // getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
-    // new String[] {});
-    // IMethod expectedSetterMethod =
-    // getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
-    // new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
-    //
-    // assertTrue(generatedJavaElements.contains(expectedMemberVar));
-    // assertTrue(generatedJavaElements.contains(expectedGetterMethod));
-    // assertTrue(generatedJavaElements.contains(expectedSetterMethod));
-    //
-    // assertEquals(3, generatedJavaElements.size());
-    // }
-    //
-    // private static class GenAttributeDummy extends GenAttribute {
-    //
-    // public GenAttributeDummy(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a)
-    // throws CoreException {
-    // super(genPolicyCmptType, a);
-    // }
-    //
-    // @Override
-    // protected void generateConstants(JavaCodeFragmentBuilder builder,
-    // IIpsProject ipsProject,
-    // boolean generatesInterface) throws CoreException {
-    //
-    // }
-    //
-    // @Override
-    // protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
-    // IIpsProject ipsProject,
-    // boolean generatesInterface) throws CoreException {
-    //
-    // }
-    //
-    // @Override
-    // protected void generateMethods(JavaCodeFragmentBuilder builder,
-    // IIpsProject ipsProject,
-    // boolean generatesInterface) throws CoreException {
-    //
-    // }
-    //
-    // }
+    /** Expects, that the property constant field is contained in the given list. */
+    protected final void expectPropertyConstant(List<IJavaElement> javaElements, GenAttribute genAttribute) {
+        IField expectedPropertyConstant = getGeneratedJavaType().getField(genAttribute.getStaticConstantPropertyName());
+        assertTrue(javaElements.contains(expectedPropertyConstant));
+    }
+
+    /** Expects, that the getter method is contained in the given list. */
+    protected final void expectGetterMethod(List<IJavaElement> javaElements, GenAttribute genAttribute) {
+        IMethod expectedGetterMethod = getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
+                new String[] {});
+        assertTrue(javaElements.contains(expectedGetterMethod));
+    }
+
+    /** Expects, that the setter method is contained in the given list. */
+    protected final void expectSetterMethod(List<IJavaElement> javaElements, GenAttribute genAttribute) {
+        IMethod expectedSetterMethod = getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
+                new String[] { "Q" + genAttribute.getDatatype().getName() + ";" });
+        assertTrue(javaElements.contains(expectedSetterMethod));
+    }
+
+    /** Expects, that the member variable is contained in the given list. */
+    protected final void expectMemberVar(List<IJavaElement> javaElements, GenAttribute genAttribute) {
+        IField expectedMemberVar = getGeneratedJavaType().getField(genAttribute.getMemberVarName());
+        assertTrue(javaElements.contains(expectedMemberVar));
+    }
 
 }

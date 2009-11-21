@@ -14,10 +14,13 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -529,6 +532,25 @@ public class GenChangeableAttribute extends GenAttribute {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
+        if (isPublished()) {
+            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
+        addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
 }
