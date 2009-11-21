@@ -66,9 +66,6 @@ public class GenChangeableAttribute extends GenAttribute {
         generateMethodsForProductCmptType(mainSection.getMethodBuilder(), ipsProject, generatesInterface);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -93,43 +90,6 @@ public class GenChangeableAttribute extends GenAttribute {
         String paramName = getParamNameForSetterMethod();
         methodsBuilder.signature(modifier, "void", methodName, new String[] { paramName },
                 new String[] { getJavaClassName() });
-    }
-
-    protected String getMethodNametSetPropertyValue() {
-        return getJavaNamingConvention().getSetterMethodName(getAttributeName(), datatypeHelper.getDatatype());
-    }
-
-    /**
-     * Returns the name of the parameter in the setter method for a property, e.g. newValue.
-     */
-    protected String getParamNameForSetterMethod() {
-        return getLocalizedText("PARAM_NEWVALUE_NAME", attributeName);
-    }
-
-    protected boolean isAbstractValueSet() {
-        return getPolicyCmptTypeAttribute().getValueSet().isAbstract();
-    }
-
-    protected boolean isRangeValueSet() {
-        return getPolicyCmptTypeAttribute().getValueSet().isRange();
-    }
-
-    protected boolean isEnumValueSet() {
-        return getPolicyCmptTypeAttribute().getValueSet().isEnum();
-    }
-
-    protected boolean isUnrestrictedValueSet() {
-        return ValueSetType.UNRESTRICTED == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
-    }
-
-    protected boolean shouldGetAllowedSetOfValuesBeGenerated() {
-        if (isUnrestrictedValueSet() && !isConfigurableByProduct()) {
-            return false;
-        }
-        if (isEnumValueSet() && DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype())) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -177,9 +137,6 @@ public class GenChangeableAttribute extends GenAttribute {
                 datatypeHelper.getDatatype());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -206,9 +163,6 @@ public class GenChangeableAttribute extends GenAttribute {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -538,6 +492,43 @@ public class GenChangeableAttribute extends GenAttribute {
             return (GenChangeableAttribute)gen;
         }
         return null;
+    }
+
+    protected String getMethodNametSetPropertyValue() {
+        return getJavaNamingConvention().getSetterMethodName(getAttributeName(), datatypeHelper.getDatatype());
+    }
+
+    /**
+     * Returns the name of the parameter in the setter method for a property, e.g. newValue.
+     */
+    protected String getParamNameForSetterMethod() {
+        return getLocalizedText("PARAM_NEWVALUE_NAME", attributeName);
+    }
+
+    protected boolean isAbstractValueSet() {
+        return getPolicyCmptTypeAttribute().getValueSet().isAbstract();
+    }
+
+    protected boolean isRangeValueSet() {
+        return getPolicyCmptTypeAttribute().getValueSet().isRange();
+    }
+
+    protected boolean isEnumValueSet() {
+        return getPolicyCmptTypeAttribute().getValueSet().isEnum();
+    }
+
+    protected boolean isUnrestrictedValueSet() {
+        return ValueSetType.UNRESTRICTED == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
+    }
+
+    protected boolean shouldGetAllowedSetOfValuesBeGenerated() {
+        if (isUnrestrictedValueSet() && !isConfigurableByProduct()) {
+            return false;
+        }
+        if (isEnumValueSet() && DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype())) {
+            return false;
+        }
+        return true;
     }
 
 }

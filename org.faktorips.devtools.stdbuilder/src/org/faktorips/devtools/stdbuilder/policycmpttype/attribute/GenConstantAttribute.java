@@ -35,35 +35,29 @@ public class GenConstantAttribute extends GenAttribute {
         ArgumentCheck.isTrue(a.getAttributeType() == AttributeType.CONSTANT);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         if (isPublished() == generatesInterface) {
             generateAttributeNameConstant(builder);
             generateConstant(builder);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do
+
+        // Nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        // nothing to do
+
+        // Nothing to do.
     }
 
     /**

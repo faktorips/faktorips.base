@@ -42,9 +42,6 @@ public class GenDerivedAttribute extends GenAttribute {
         ArgumentCheck.isTrue(a.isDerived());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -59,9 +56,6 @@ public class GenDerivedAttribute extends GenAttribute {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -74,9 +68,6 @@ public class GenDerivedAttribute extends GenAttribute {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -155,6 +146,7 @@ public class GenDerivedAttribute extends GenAttribute {
             builder.append(paramFragment);
             builder.append(";");
         }
+
         builder.closeBracket();
     }
 

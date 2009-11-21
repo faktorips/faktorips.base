@@ -100,20 +100,15 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
-    /**
-	 *
-	 */
     public AbstractIpsPluginTest() {
         super();
     }
 
-    /**
-     * @param name
-     */
     public AbstractIpsPluginTest(String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(
@@ -143,6 +138,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     }
 
+    @Override
     protected final void tearDown() throws Exception {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < projects.length; i++) {
@@ -524,7 +520,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName)
             throws CoreException {
-        
+
         EnumType enumType = newEnumType(ipsProject, qualifiedName);
         enumType.setContainingValues(true);
         enumType.newEnumLiteralNameAttribute();
@@ -533,12 +529,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         idAttr.setDatatype(Datatype.STRING.getQualifiedName());
         idAttr.setUnique(true);
         idAttr.setIdentifier(true);
-        IEnumAttribute nameAttr = (IEnumAttribute)enumType.newEnumAttribute();
+        IEnumAttribute nameAttr = enumType.newEnumAttribute();
         nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
         nameAttr.setName("name");
         nameAttr.setUsedAsNameInFaktorIpsUi(true);
         nameAttr.setUnique(true);
-        
+
         return enumType;
     }
 

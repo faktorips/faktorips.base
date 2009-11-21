@@ -1029,7 +1029,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String interfaceIdentificator = isBuildingPublishedSourceFile() ? "I" : "";
             IType javaType = compilationUnit.getType(interfaceIdentificator
                     + ipsObjectPartContainer.getIpsObject().getName());
-            javaElements.add(javaType);
             getGeneratedJavaElementsThis(javaElements, javaType, ipsObjectPartContainer);
         } catch (CoreException e) {
             throw new RuntimeException(e);

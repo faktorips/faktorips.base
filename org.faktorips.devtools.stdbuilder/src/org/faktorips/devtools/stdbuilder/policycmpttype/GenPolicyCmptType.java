@@ -64,7 +64,6 @@ import org.faktorips.util.StringUtil;
  * for those overridden parts in this generator and not to delegate to the generator of the super
  * class since otherwise it would not be possible to determine if code has to be generated with
  * respect to the super type.
- * </p>
  * 
  * @author Peter Erzberger
  */
@@ -313,16 +312,11 @@ public class GenPolicyCmptType extends GenType {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean forInterface) {
 
-        try {
-            if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
-                getGenerator((IPolicyCmptTypeAttribute)ipsObjectPartContainer).getGeneratedJavaElements(javaElements,
-                        generatedJavaType, ipsObjectPartContainer, forInterface);
-            } else if (ipsObjectPartContainer instanceof IMethod) {
-                getGenerator((IMethod)ipsObjectPartContainer).getGeneratedJavaElements(javaElements, generatedJavaType,
-                        ipsObjectPartContainer, forInterface);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (ipsObjectPartContainer instanceof IPolicyCmptType) {
+            javaElements.add(generatedJavaType);
+        } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
+            generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElements(javaElements, generatedJavaType,
+                    ipsObjectPartContainer, forInterface);
         }
     }
 
