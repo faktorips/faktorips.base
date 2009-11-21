@@ -569,10 +569,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * 
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
      *            <tt>IJavaElement</tt>s for.
+     * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
+     *            <tt>IJavaElement</tt>s of the whole model tree with the given
+     *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
      * 
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      */
-    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
         ArgumentCheck.notNull(ipsObjectPartContainer);
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
@@ -582,7 +587,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             try {
                 if (builder.isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
                     JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer,
+                            recursivelyIncludeChildren));
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);

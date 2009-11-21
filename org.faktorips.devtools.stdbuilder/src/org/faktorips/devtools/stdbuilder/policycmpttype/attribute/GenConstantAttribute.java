@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -87,18 +88,30 @@ public class GenConstantAttribute extends GenAttribute {
     }
 
     @Override
-    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements, IType generatedJavaType) {
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
-        if (isPublished()) {
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
+
+        if (isNotPublished()) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
             javaElements.add(constantMember);
         }
     }
 
     @Override
-    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
-        if (isNotPublished()) {
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
+
+        if (isPublished()) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
             javaElements.add(constantMember);
         }

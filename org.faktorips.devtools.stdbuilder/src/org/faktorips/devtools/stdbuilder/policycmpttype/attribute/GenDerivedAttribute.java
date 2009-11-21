@@ -25,6 +25,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -159,23 +160,31 @@ public class GenDerivedAttribute extends GenAttribute {
     }
 
     @Override
-    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType) {
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
-
-        if (isPublished()) {
-            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
 
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isDerivedByExplicitMethodCall()) {
             addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
+
+        if (isPublished()) {
+            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
     }
 

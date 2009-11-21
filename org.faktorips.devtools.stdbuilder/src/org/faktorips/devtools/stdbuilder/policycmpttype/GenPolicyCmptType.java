@@ -197,7 +197,7 @@ public class GenPolicyCmptType extends GenType {
      * source file.
      * 
      * @param forInterface
-     * @return the qualified class name
+     * 
      * @throws CoreException is delegated from calls to other methods
      */
     @Override
@@ -307,16 +307,53 @@ public class GenPolicyCmptType extends GenType {
     }
 
     @Override
-    public void getGeneratedJavaElements(List<IJavaElement> javaElements,
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
+                false);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren,
+                true);
+    }
+
+    private void getGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren,
             boolean forInterface) {
 
         if (ipsObjectPartContainer instanceof IPolicyCmptType) {
             javaElements.add(generatedJavaType);
+            if (recursivelyIncludeChildren) {
+                for (GenPolicyCmptTypePart genPolicyCmptTypePart : generatorsByPart.values()) {
+                    if (forInterface) {
+                        genPolicyCmptTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements,
+                                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                    } else {
+                        genPolicyCmptTypePart.getGeneratedJavaElementsForImplementation(javaElements,
+                                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                    }
+                }
+            }
+
         } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
-            generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElements(javaElements, generatedJavaType,
-                    ipsObjectPartContainer, forInterface);
+            if (forInterface) {
+                generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElementsForPublishedInterface(
+                        javaElements, generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+            } else {
+                generatorsByPart.get(ipsObjectPartContainer).getGeneratedJavaElementsForImplementation(javaElements,
+                        generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+            }
         }
     }
 

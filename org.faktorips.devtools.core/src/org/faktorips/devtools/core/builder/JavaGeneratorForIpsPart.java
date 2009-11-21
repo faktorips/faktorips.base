@@ -227,20 +227,54 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
+     * Collects all <tt>IJavaElement</tt>s generated for the published interface by this generator
+     * into the provided list.
+     * <p>
      * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
      * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * <p>
+     * Only <tt>IJavaElement</tt>s generated for the published interface shall be added to the list.
+     * 
+     * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsObjectPartContainer,
+     *      boolean)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
      * @param generatedJavaType The Java type that this builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
-     * @param Flag indicating whether the <tt>IJavaElement</tt> for the published interface are
-     *            requested.
+     * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
+     *            <tt>IJavaElement</tt>s of the whole model tree with the given
+     *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
      */
-    public abstract void getGeneratedJavaElements(List<IJavaElement> javaElements,
+    public abstract void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean forInterface);
+            boolean recursivelyIncludeChildren);
+
+    /**
+     * Collects all <tt>IJavaElement</tt>s generated for the implementation by this generator into
+     * the provided list.
+     * <p>
+     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
+     * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * <p>
+     * Only <tt>IJavaElement</tt>s generated for the implementation shall be added to the list.
+     * 
+     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsObjectPartContainer,
+     *      boolean)
+     * 
+     * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
+     * @param generatedJavaType The Java type that this builder is generating.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
+     *            requested the generated <tt>IJavaElement</tt>s.
+     * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
+     *            <tt>IJavaElement</tt>s of the whole model tree with the given
+     *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
+     */
+    public abstract void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren);
 
     @Override
     public String toString() {

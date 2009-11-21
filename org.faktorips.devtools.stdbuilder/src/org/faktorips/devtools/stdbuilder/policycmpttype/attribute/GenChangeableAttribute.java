@@ -29,6 +29,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -535,22 +536,32 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     @Override
-    protected void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType) {
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType);
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
+
+        addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
+                recursivelyIncludeChildren);
+
         if (isPublished()) {
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
-        addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
-        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
 }

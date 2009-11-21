@@ -1315,7 +1315,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     @Override
-    protected boolean isBuildingPublishedSourceFile() {
+    public boolean isBuildingPublishedSourceFile() {
         return false;
     }
 

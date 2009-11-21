@@ -51,12 +51,13 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
 
     }
 
     @Override
-    protected boolean isBuildingPublishedSourceFile() {
+    public boolean isBuildingPublishedSourceFile() {
         return false;
     }
 }

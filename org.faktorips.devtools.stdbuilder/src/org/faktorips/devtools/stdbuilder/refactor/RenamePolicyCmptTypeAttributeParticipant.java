@@ -120,7 +120,7 @@ public class RenamePolicyCmptTypeAttributeParticipant extends RenameParticipant 
         StandardBuilderSet builderSet = (StandardBuilderSet)policyCmptTypeAttribute.getIpsProject()
                 .getIpsArtefactBuilderSet();
 
-        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(policyCmptTypeAttribute)) {
+        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(policyCmptTypeAttribute, false)) {
             String javaElementName = javaElement.getElementName();
             if (javaElement instanceof IMethod) {
                 if (javaElementName.startsWith("set")) {

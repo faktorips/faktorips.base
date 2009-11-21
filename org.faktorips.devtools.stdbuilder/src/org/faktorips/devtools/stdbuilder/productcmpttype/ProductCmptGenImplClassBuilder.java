@@ -786,13 +786,14 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
 
         // TODO AW: Not implemented yet.
     }
 
     @Override
-    protected boolean isBuildingPublishedSourceFile() {
+    public boolean isBuildingPublishedSourceFile() {
         // TODO AW: Not implemented yet.
         throw new RuntimeException("Not implemented yet.");
     }

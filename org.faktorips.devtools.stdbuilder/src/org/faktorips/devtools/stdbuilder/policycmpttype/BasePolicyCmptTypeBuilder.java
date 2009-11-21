@@ -168,7 +168,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
 
         IPolicyCmptType policyCmptType = null;
         if (ipsObjectPartContainer instanceof IPolicyCmptType) {
@@ -180,7 +181,14 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         } else if (ipsObjectPartContainer instanceof IMethod) {
             policyCmptType = (IPolicyCmptType)((IMethod)ipsObjectPartContainer).getIpsObject();
         }
-        getGenPolicyCmptType(policyCmptType).getGeneratedJavaElements(javaElements, generatedJavaType,
-                ipsObjectPartContainer, isBuildingPublishedSourceFile());
+
+        if (isBuildingPublishedSourceFile()) {
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
+                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+        } else {
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(javaElements,
+                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+        }
     }
+
 }

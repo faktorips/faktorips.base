@@ -46,32 +46,32 @@ public class GenChangeableAttributeTest extends GenAttributeTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-                publishedAttribute, true);
+        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                getGeneratedJavaType(), publishedAttribute, false);
         expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         assertEquals(3, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-                publicAttribute, true);
+        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                getGeneratedJavaType(), publicAttribute, false);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-                publishedAttribute, false);
+        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
+                getGeneratedJavaType(), publishedAttribute, false);
         expectMemberVar(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         assertEquals(3, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
-                publicAttribute, false);
+        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
+                getGeneratedJavaType(), publicAttribute, false);
         expectPropertyConstant(generatedJavaElements, genPublicChangeableAttribute);
         expectMemberVar(generatedJavaElements, genPublicChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublicChangeableAttribute);
