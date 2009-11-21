@@ -20,7 +20,6 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -410,21 +409,25 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean forInterface) {
 
-        if (!(forInterface)) {
-            IField memberVar = generatedJavaType.getField(memberVarName);
-            javaElements.add(memberVar);
-        }
-
         if (forInterface) {
-            IField propertyConstant = generatedJavaType.getField(staticConstantPropertyName);
+            getGeneratedJavaElementsForInterface(javaElements, generatedJavaType);
+        } else {
+            getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
+        }
+    }
+
+    protected void getGeneratedJavaElementsForInterface(List<IJavaElement> javaElements, IType generatedJavaType) {
+        if (isPublished()) {
+            IField propertyConstant = generatedJavaType.getField(getStaticConstantPropertyName());
             javaElements.add(propertyConstant);
         }
+    }
 
-        IMethod getterMethod = generatedJavaType.getMethod(getGetterMethodName(), new String[] {});
-        IMethod setterMethod = generatedJavaType.getMethod(getSetterMethodName(), new String[] { "Q"
-                + getDatatype().getName() + ";" });
-        javaElements.add(getterMethod);
-        javaElements.add(setterMethod);
+    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
+        if (isNotPublished()) {
+            IField propertyConstant = generatedJavaType.getField(getStaticConstantPropertyName());
+            javaElements.add(propertyConstant);
+        }
     }
 
 }

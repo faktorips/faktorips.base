@@ -13,7 +13,12 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -71,11 +76,32 @@ public class GenConstantAttribute extends GenAttribute {
     protected void generateConstant(JavaCodeFragmentBuilder builder) throws CoreException {
         String comment = getLocalizedText("FIELD_VALUE_JAVADOC", attributeName);
         builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        String varName = getJavaNamingConvention().getConstantClassVarName(attributeName);
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
                 | java.lang.reflect.Modifier.STATIC;
         JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
-        builder.varDeclaration(modifier, getJavaClassName(), varName, initialValueExpression);
+        builder.varDeclaration(modifier, getJavaClassName(), getConstantMemberVarName(), initialValueExpression);
+    }
+
+    public String getConstantMemberVarName() {
+        return getJavaNamingConvention().getConstantClassVarName(attributeName);
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForInterface(List<IJavaElement> javaElements, IType generatedJavaType) {
+        super.getGeneratedJavaElementsForInterface(javaElements, generatedJavaType);
+        if (isPublished()) {
+            IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
+            javaElements.add(constantMember);
+        }
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements, IType generatedJavaType) {
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType);
+        if (isNotPublished()) {
+            IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
+            javaElements.add(constantMember);
+        }
     }
 
 }

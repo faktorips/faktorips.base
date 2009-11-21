@@ -13,22 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
-import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 
 /**
@@ -36,91 +27,105 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTes
  * 
  * @author Alexander Weickmann
  */
-public class GenAttributeTest extends PolicyCmptTypeBuilderTest {
+public abstract class GenAttributeTest extends PolicyCmptTypeBuilderTest {
 
-    private GenAttribute genAttribute;
+    protected IPolicyCmptTypeAttribute publishedAttribute;
 
-    private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
+    protected IPolicyCmptTypeAttribute publicAttribute;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.setName("foo");
-        policyCmptTypeAttribute.setDatatype(Datatype.STRING.getName());
-        genAttribute = new GenAttributeDummy(genPolicyCmptType, policyCmptTypeAttribute);
+
+        publishedAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        publishedAttribute.setName("publishedAttribute");
+        publishedAttribute.setDatatype(Datatype.STRING.getName());
+        publishedAttribute.setModifier(Modifier.PUBLISHED);
+
+        publicAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        publicAttribute.setName("publicAttribute");
+        publicAttribute.setDatatype(Datatype.STRING.getName());
+        publicAttribute.setModifier(Modifier.PUBLIC);
     }
 
-    private IType getGeneratedJavaType() {
+    protected IType getGeneratedJavaType() {
         IFile javaSourceFile = ipsProject.getProject().getFile("Type.java");
         ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(javaSourceFile);
         return compilationUnit.getType("Type");
     }
 
-    public void testGetGeneratedJavaElementsInterface() throws CoreException {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-        genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(), policyCmptTypeAttribute,
-                true);
-
-        IField expectedPropertyConstant = getGeneratedJavaType().getField(genAttribute.getStaticConstantPropertyName());
-        IMethod expectedGetterMethodDeclaration = getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
-                new String[] {});
-        IMethod expectedSetterMethodDeclaration = getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
-                new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
-
-        assertTrue(generatedJavaElements.contains(expectedPropertyConstant));
-        assertTrue(generatedJavaElements.contains(expectedGetterMethodDeclaration));
-        assertTrue(generatedJavaElements.contains(expectedSetterMethodDeclaration));
-
-        assertEquals(3, generatedJavaElements.size());
-
-    }
-
-    public void testGetGeneratedJavaElementsImpl() throws CoreException {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-        genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(), policyCmptTypeAttribute,
-                false);
-
-        IField expectedMemberVar = getGeneratedJavaType().getField(genAttribute.getMemberVarName());
-        IMethod expectedGetterMethod = getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
-                new String[] {});
-        IMethod expectedSetterMethod = getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
-                new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
-
-        assertTrue(generatedJavaElements.contains(expectedMemberVar));
-        assertTrue(generatedJavaElements.contains(expectedGetterMethod));
-        assertTrue(generatedJavaElements.contains(expectedSetterMethod));
-
-        assertEquals(3, generatedJavaElements.size());
-    }
-
-    private static class GenAttributeDummy extends GenAttribute {
-
-        public GenAttributeDummy(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
-            super(genPolicyCmptType, a);
-        }
-
-        @Override
-        protected void generateConstants(JavaCodeFragmentBuilder builder,
-                IIpsProject ipsProject,
-                boolean generatesInterface) throws CoreException {
-
-        }
-
-        @Override
-        protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
-                IIpsProject ipsProject,
-                boolean generatesInterface) throws CoreException {
-
-        }
-
-        @Override
-        protected void generateMethods(JavaCodeFragmentBuilder builder,
-                IIpsProject ipsProject,
-                boolean generatesInterface) throws CoreException {
-
-        }
-
-    }
+    // public void testGetGeneratedJavaElementsInterface() throws CoreException {
+    // List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+    // genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
+    // policyCmptTypeAttribute,
+    // true);
+    //
+    // IField expectedPropertyConstant =
+    // getGeneratedJavaType().getField(genAttribute.getStaticConstantPropertyName());
+    // IMethod expectedGetterMethodDeclaration =
+    // getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
+    // new String[] {});
+    // IMethod expectedSetterMethodDeclaration =
+    // getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
+    // new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
+    //
+    // assertTrue(generatedJavaElements.contains(expectedPropertyConstant));
+    // assertTrue(generatedJavaElements.contains(expectedGetterMethodDeclaration));
+    // assertTrue(generatedJavaElements.contains(expectedSetterMethodDeclaration));
+    //
+    // assertEquals(3, generatedJavaElements.size());
+    //
+    // }
+    //
+    // public void testGetGeneratedJavaElementsImpl() throws CoreException {
+    // List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+    // genAttribute.getGeneratedJavaElements(generatedJavaElements, getGeneratedJavaType(),
+    // policyCmptTypeAttribute,
+    // false);
+    //
+    // IField expectedMemberVar = getGeneratedJavaType().getField(genAttribute.getMemberVarName());
+    // IMethod expectedGetterMethod =
+    // getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
+    // new String[] {});
+    // IMethod expectedSetterMethod =
+    // getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
+    // new String[] { "Q" + policyCmptTypeAttribute.getDatatype() + ";" });
+    //
+    // assertTrue(generatedJavaElements.contains(expectedMemberVar));
+    // assertTrue(generatedJavaElements.contains(expectedGetterMethod));
+    // assertTrue(generatedJavaElements.contains(expectedSetterMethod));
+    //
+    // assertEquals(3, generatedJavaElements.size());
+    // }
+    //
+    // private static class GenAttributeDummy extends GenAttribute {
+    //
+    // public GenAttributeDummy(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a)
+    // throws CoreException {
+    // super(genPolicyCmptType, a);
+    // }
+    //
+    // @Override
+    // protected void generateConstants(JavaCodeFragmentBuilder builder,
+    // IIpsProject ipsProject,
+    // boolean generatesInterface) throws CoreException {
+    //
+    // }
+    //
+    // @Override
+    // protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+    // IIpsProject ipsProject,
+    // boolean generatesInterface) throws CoreException {
+    //
+    // }
+    //
+    // @Override
+    // protected void generateMethods(JavaCodeFragmentBuilder builder,
+    // IIpsProject ipsProject,
+    // boolean generatesInterface) throws CoreException {
+    //
+    // }
+    //
+    // }
 
 }
