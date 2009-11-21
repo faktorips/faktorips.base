@@ -442,8 +442,8 @@ public abstract class GenAttribute extends GenTypePart {
      */
     protected final void addSetterMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
         ArgumentCheck.notNull(new Object[] { javaElements, generatedJavaType });
-        IMethod setterMethod = generatedJavaType.getMethod(getSetterMethodName(), new String[] { "Q"
-                + getDatatype().getName() + ";" });
+        IMethod setterMethod = generatedJavaType.getMethod(getSetterMethodName(),
+                new String[] { getJavaParameterTypeSignature(getDatatype()) });
         javaElements.add(setterMethod);
     }
 
