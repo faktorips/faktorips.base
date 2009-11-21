@@ -15,13 +15,9 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -75,16 +71,6 @@ public abstract class GenAttributeTest extends PolicyCmptTypeBuilderTest {
         publicAttribute.setDatatype(Datatype.STRING.getName());
         publicAttribute.setModifier(Modifier.PUBLIC);
         publicAttribute.setAttributeType(attributeType);
-    }
-
-    /**
-     * Creates and returns a Java type that can be used to test whether the generator correctly
-     * returns generated <tt>IJavaElement</tt>s.
-     */
-    protected final IType getGeneratedJavaType() {
-        IFile javaSourceFile = ipsProject.getProject().getFile("Type.java");
-        ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(javaSourceFile);
-        return compilationUnit.getType("Type");
     }
 
     /** Expects, that the property constant field is contained in the given list. */

@@ -13,9 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -23,26 +22,15 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * 
  * @author Alexander Weickmann
  */
-public abstract class PolicyCmptTypeBuilderTest extends AbstractIpsPluginTest {
-
-    protected IIpsProject ipsProject;
+public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
 
     protected IPolicyCmptType policyCmptType;
 
     protected GenPolicyCmptType genPolicyCmptType;
 
-    public PolicyCmptTypeBuilderTest() {
-
-    }
-
-    public PolicyCmptTypeBuilderTest(String name) {
-        super(name);
-    }
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "PolicyCmptType");
         genPolicyCmptType = new GenPolicyCmptType(policyCmptType, (StandardBuilderSet)ipsProject
                 .getIpsArtefactBuilderSet());
