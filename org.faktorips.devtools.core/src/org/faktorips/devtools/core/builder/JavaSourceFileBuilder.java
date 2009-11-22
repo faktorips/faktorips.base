@@ -1000,8 +1000,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         try {
             ArgumentCheck.isTrue(isBuilderFor(ipsObjectPartContainer.getIpsSrcFile()));
-        } catch (CoreException e1) {
-            throw new RuntimeException(e1);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
