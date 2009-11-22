@@ -266,7 +266,9 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
-        // TODO AW: Not implemented yet.
+        addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     @Override
@@ -275,7 +277,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
-        // TODO AW: Not implemented yet.
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
 }

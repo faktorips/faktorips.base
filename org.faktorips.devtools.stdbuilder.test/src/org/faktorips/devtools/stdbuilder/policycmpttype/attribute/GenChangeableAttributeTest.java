@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
  * 
  * @author Alexander Weickmann
  */
-public class GenChangeableAttributeTest extends GenAttributeTest {
+public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     /** <tt>GenChangeableAttribute</tt> generator for the published attribute. */
     private GenChangeableAttribute genPublishedChangeableAttribute;

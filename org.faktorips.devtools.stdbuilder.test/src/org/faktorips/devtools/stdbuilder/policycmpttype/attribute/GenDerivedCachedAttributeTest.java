@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
  * 
  * @author Alexander Weickmann
  */
-public class GenDerivedCachedAttributeTest extends GenAttributeTest {
+public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     /** <tt>GenDerivedAttribute</tt> generator for the published attribute. */
     private GenDerivedAttribute genPublishedDerivedAttribute;
