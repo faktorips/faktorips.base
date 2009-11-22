@@ -75,6 +75,10 @@ public abstract class GenAttribute extends GenTypePart {
         return getAttribute().getModifier().isPublished();
     }
 
+    public final boolean isOverwrite() {
+        return getAttribute().isOverwrite();
+    }
+
     public final String getGetterMethodName() {
         return getJavaNamingConvention().getGetterMethodName(getAttribute().getName(), getDatatype());
     }

@@ -28,7 +28,7 @@ configured by a ProductCmptType "Product" (where differing from generated_code).
 --
 + getPrice() : Integer
 + setPrice(Integer) : void
-+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>110</y><w>480</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>110</y><w>480</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/
 --
 _+ PROPERTY_PRICE : String_
@@ -36,7 +36,7 @@ _+ PROPERTY_PRICE : String_
 --
 /+ getPrice() : Integer/
 /+ setPrice(Integer) : void/
-/+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>450</y><w>1030</w><h>340</h></coordinates><panel_attributes>Changeable &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>490</y><w>480</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/+ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>450</y><w>1030</w><h>340</h></coordinates><panel_attributes>Changeable &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>490</y><w>480</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>490</y><w>480</w><h>140</h></coordinates><panel_attributes>Policy
 --
 _+ PROPERTY_PRICE : String_
@@ -45,24 +45,24 @@ _+ PROPERTY_PRICE : String_
 --
 + getPrice() : Integer
 + setPrice(Integer) : void
-+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>270</y><w>480</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>270</y><w>480</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IProductGen/
 --
  
  
 --
 /+ getDefaultPrice() : Integer/
-/+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>270</y><w>480</w><h>120</h></coordinates><panel_attributes>ProductGen
+/+ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>270</y><w>480</w><h>120</h></coordinates><panel_attributes>ProductGen
 --
 - defaultPrice : Integer
 - setOfAllowedValuesPrice : ValueSet&lt;Integer&gt; 
 --
 + getDefaultPrice() : Integer
-+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>650</y><w>480</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>650</y><w>480</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IProductGen/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>650</y><w>480</w><h>120</h></coordinates><panel_attributes>ProductGen
 --
 - defaultPrice : Integer
 - setOfAllowedValuesPrice : ValueSet&lt;Integer&gt; 
 --
 + getDefaultPrice() : Integer
-+ getSetOfAllowedValuesForPreis(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element></umlet_diagram>
++ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element></umlet_diagram>

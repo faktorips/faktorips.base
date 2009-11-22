@@ -166,12 +166,22 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
-                recursivelyIncludeChildren);
-
-        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isDerivedByExplicitMethodCall()) {
-            addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+            if (!(isPublished()) || !(isOverwrite())) {
+                super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                        ipsObjectPartContainer, recursivelyIncludeChildren);
+            }
+            if (!(isOverwrite())) {
+                addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+                addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
+
+        } else {
+            if (!(isOverwrite())) {
+                super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                        ipsObjectPartContainer, recursivelyIncludeChildren);
+            }
+            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
     }
 
@@ -180,6 +190,10 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
             IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
+
+        if (isOverwrite()) {
+            return;
+        }
 
         super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
                 recursivelyIncludeChildren);

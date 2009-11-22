@@ -551,6 +551,10 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
                 recursivelyIncludeChildren);
 
+        if (isOverwrite()) {
+            return;
+        }
+
         addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
@@ -568,12 +572,14 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
                 recursivelyIncludeChildren);
 
-        if (isPublished()) {
-            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            if (isProductRelevant()) {
-                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            }
+        if (isOverwrite() || !(isPublished())) {
+            return;
+        }
+
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        if (isProductRelevant()) {
+            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
     }
 

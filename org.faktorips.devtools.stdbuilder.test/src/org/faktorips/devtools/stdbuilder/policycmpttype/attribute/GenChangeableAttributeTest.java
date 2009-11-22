@@ -80,6 +80,22 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
+        publishedAttribute.setOverwrite(true);
+        publicAttribute.setOverwrite(true);
+        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
+        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                getGeneratedJavaType(), publishedAttribute, false);
+        expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
+        assertEquals(1, generatedJavaElements.size());
+
+        generatedJavaElements.clear();
+        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                getGeneratedJavaType(), publicAttribute, false);
+        assertTrue(generatedJavaElements.isEmpty());
+    }
+
     public void testGetGeneratedJavaElementsForImplementation() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
@@ -124,8 +140,25 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertEquals(5, generatedJavaElements.size());
     }
 
+    public void testGetGeneratedJavaElementsForImplementationOverwritten() {
+        publishedAttribute.setOverwrite(true);
+        publicAttribute.setOverwrite(true);
+        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
+        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
+                getGeneratedJavaType(), publishedAttribute, false);
+        assertTrue(generatedJavaElements.isEmpty());
+
+        generatedJavaElements.clear();
+        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
+                getGeneratedJavaType(), publicAttribute, false);
+        expectPropertyConstant(generatedJavaElements, genPublicChangeableAttribute);
+        assertEquals(1, generatedJavaElements.size());
+    }
+
     private void expectGetSetOfAllowedValuesMethod(List<IJavaElement> javaElements,
             GenChangeableAttribute genChangeableAttribute) {
+
         IMethod expectedGetSetOfAllowedValuesMethod = getGeneratedJavaType().getMethod(
                 genChangeableAttribute.getMethodNameGetSetOfAllowedValues(),
                 new String[] { "Q" + IValidationContext.class.getName() + ";" });
