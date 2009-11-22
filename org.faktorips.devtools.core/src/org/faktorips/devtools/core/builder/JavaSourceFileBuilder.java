@@ -82,14 +82,14 @@ import org.faktorips.util.StringUtil;
 public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     /**
-     * This constant is supposed to be used as a javadoc annotation. If the merging capabilities are
+     * This constant is supposed to be used as a Javadoc annotation. If the merging capabilities are
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
     public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
 
     /**
-     * This constant is supposed to be used as a javadoc annotation. It becomes relevant if the
+     * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
      * merging capabilities are activated. It indicates that within a generated piece of code only
      * the parts that are outside the braces defined by the markers <code>//begin-user-code</code>
      * and <code>//end-user-code</code> are regenerated with the next generation.
@@ -188,27 +188,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return javaOptionsTabSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         model = null;
         versionSection = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         initJControlModel(project);
         createVersionSection();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return StringUtil.unqualifiedName(getClass().getName());
     }

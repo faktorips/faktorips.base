@@ -48,7 +48,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     }
 
     /**
-     * Returns the policy component type this builder builds an artefact for.
+     * Returns the policy component type this builder builds an artifact for.
      */
     @Override
     public IPolicyCmptType getPcType() {
@@ -121,7 +121,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * therefore code can be generated.
      * 
      * @param attribute The attribute source code should be generated for.
-     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
+     * @param datatypeHelper The data type code generation helper for the attribute's data type.
      * @param constantBuilder The code fragment builder for the static section
      * @param memberVarsBuilder The code fragment builder to build the member variables section.
      * @param memberVarsBuilder The code fragment builder to build the method section.

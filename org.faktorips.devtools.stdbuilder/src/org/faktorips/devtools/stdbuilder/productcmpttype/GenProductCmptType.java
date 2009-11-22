@@ -47,7 +47,7 @@ import org.faktorips.util.LocalizedStringsSet;
 /**
  * A generator for <code>IProductCmptType</code>s. It provides access to generators for attributes,
  * methods and associations of the product component type. Typically when the generator is created
- * all the generators of its parts are also greated accept the ones in the super type hierarchy.
+ * all the generators of its parts are also created except the ones in the super type hierarchy.
  * These are created on demand since it is expected that only a few of them will be overridden. It
  * is necessary to provide an own generator instance for those overridden parts in this generator
  * and not to delegate to the generator of the super class since otherwise it would not be possible

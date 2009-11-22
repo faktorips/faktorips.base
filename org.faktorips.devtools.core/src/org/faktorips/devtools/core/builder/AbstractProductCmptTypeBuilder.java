@@ -42,27 +42,17 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder {
 
-    /**
-     * @param packageStructure
-     * @param kindId
-     * @param localizedStringsSet
-     */
     public AbstractProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
     /**
-     * Returns the product component type this builder builds an artefact for.
-     * 
-     * @throws CoreException
+     * Returns the product component type this builder builds an artifact for.
      */
     @Override
     public IProductCmptType getProductCmptType() {
@@ -74,15 +64,15 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         return getProductCmptType().findPolicyCmptType(getIpsProject());
     }
 
-    /*
-     * Generates the sourcecode of the generated Java class or interface.
+    /**
+     * Generates the source code of the generated Java class or interface.
      */
     @Override
     protected final void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
         generateCodeForTableUsages(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
     }
 
-    /*
+    /**
      * Loops over the attributes and generates code for an attribute if it is valid. Takes care of
      * proper exception handling.
      */
@@ -112,7 +102,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         }
     }
 
-    /*
+    /**
      * Loops over all table structure usages and generates code for the table content access method.
      */
     private void generateCodeForTableUsages(JavaCodeFragmentBuilder fieldCodeBuilder,
@@ -132,11 +122,10 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
     /**
      * This method is called from the abstract builder if the policy component attribute is valid
      * and therefore code can be generated.
-     * <p>
      * 
-     * @param attribute The attribute sourcecode should be generated for.
-     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param attribute The attribute source code should be generated for.
+     * @param datatypeHelper The data type code generation helper for the attribute's data type.
+     * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
@@ -148,7 +137,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    /*
+    /**
      * Loops over the associations and generates code for a association if it is valid. Takes care
      * of proper exception handling.
      */
@@ -193,10 +182,10 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
     /**
      * Generates the code for a none-container association definition. The method is called for
      * every valid none-container association defined in the product component type we currently
-     * build sourcecode for.
+     * build source code for.
      * 
      * @param association the association source code should be generated for
-     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the member variables section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      * 
      * @throws Exception implementations of this method don't have to take care about rising checked
@@ -214,11 +203,11 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
 
     /**
      * Generates the code for a container association definition. The method is called for every
-     * valid container association defined in the product component type we currently build
-     * sourcecode for.
+     * valid container association defined in the product component type we currently build source
+     * code for.
      * 
      * @param containerAssociation the container association source code should be generated for.
-     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the member variables section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
@@ -227,12 +216,12 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
 
     /**
      * Generates code for a container association implementation. The method is called for every
-     * valid container association in the product component type we currently build sourcecode for
+     * valid container association in the product component type we currently build source code for
      * and for each valid container association in one of it's supertypes.
      * 
      * @param derivedUnionAssociation the container association source code should be generated for.
      * @param implementationAssociations the association implementing the container association.
-     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the member variables section.
      * @param methodsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
@@ -274,4 +263,5 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         }
 
     }
+
 }

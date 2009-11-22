@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -29,7 +27,6 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -64,7 +61,7 @@ import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.Element;
 
 /**
- * Builder that generates Java sourcefiles (compilation units) containing the sourcecode for the
+ * Builder that generates Java source files (compilation units) containing the source code for the
  * published interface of a product component generation.
  * 
  * @author Jan Ortmann
@@ -95,26 +92,17 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return fct.getModifier();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName() + generationAbb);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean generatesInterface() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getSuperclass() throws CoreException {
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
@@ -125,9 +113,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return ProductComponentGeneration.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
@@ -135,18 +120,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 .getQualifiedClassNameForProductCmptTypeGen(true) };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(), builder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder);
@@ -161,9 +140,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.closeBracket();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -340,6 +316,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateExtractEnumSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
             throws CoreException {
+
         frag.appendClassName(EnumValues.class);
         frag.append(" values = ");
         frag.appendClassName(ValueToXmlHelper.class);
@@ -376,6 +353,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateExtractRangeFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
             throws CoreException {
+
         frag.appendClassName(Range.class);
         frag.append(" range = ");
         frag.appendClassName(ValueToXmlHelper.class);
@@ -595,9 +573,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -615,9 +590,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return generator.getMemberVarName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -626,9 +598,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation derivedUnionAssociation,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -636,9 +605,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation derivedUnionAssociation,
             List<IAssociation> implAssociations,
@@ -658,9 +624,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             this.modifier = modifier;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IProductCmptType type) {
             IProductCmptTypeMethod[] methods = type.getProductCmptTypeMethods();
@@ -784,18 +747,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        // TODO AW: Not implemented yet.
-    }
-
-    @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return false;
     }
 
 }

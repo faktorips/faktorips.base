@@ -13,15 +13,23 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
@@ -36,19 +44,11 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptTypeBuilder {
 
-    /**
-     * @param packageStructure
-     * @param kindId
-     * @param localizedStringsSet
-     */
     public BaseProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
@@ -61,11 +61,10 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     /**
      * This method is called from the abstract builder if the policy component attribute is valid
      * and therefore code can be generated.
-     * <p>
      * 
-     * @param attribute The attribute sourcecode should be generated for.
-     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param attribute The attribute source code should be generated for.
+     * @param datatypeHelper The data type code generation helper for the attribute's data type.
+     * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     @Override
@@ -84,11 +83,10 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     /**
      * This method is called from the abstract builder if the product component attribute is valid
      * and therefore code can be generated.
-     * <p>
      * 
-     * @param attribute The attribute sourcecode should be generated for.
-     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param attribute The attribute source code should be generated for.
+     * @param datatypeHelper The data type code generation helper for the attribute's data type.
+     * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     @Override
@@ -112,4 +110,39 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     public StandardBuilderSet getStandardBuilderSet() {
         return (StandardBuilderSet)getBuilderSet();
     }
+
+    private GenProductCmptType getGenProductCmptType(IProductCmptType productCmptType) {
+        try {
+            return ((StandardBuilderSet)getBuilderSet()).getGenerator(productCmptType);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        IProductCmptType productCmptType = null;
+        if (ipsObjectPartContainer instanceof IProductCmptType) {
+            productCmptType = (IProductCmptType)ipsObjectPartContainer;
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
+            productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
+            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
+        }
+
+        if (isBuildingPublishedSourceFile()) {
+            getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
+                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+        } else {
+            getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements,
+                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+        }
+    }
+
 }
