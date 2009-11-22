@@ -19,7 +19,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -31,12 +33,15 @@ import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IValidationContext;
@@ -128,7 +133,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     void generateSignatureGetDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
             throws CoreException {
-        String methodName = getMethodNameGetDefaultValue(datatypeHelper);
+
+        String methodName = getMethodNameGetDefaultValue();
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
     }
@@ -136,9 +142,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     /**
      * Returns the name of the method that returns the default value for the attribute.
      */
-    public String getMethodNameGetDefaultValue(DatatypeHelper datatypeHelper) {
+    public String getMethodNameGetDefaultValue() {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(),
-                datatypeHelper.getDatatype());
+                getDatatypeHelper().getDatatype());
     }
 
     @Override
@@ -345,7 +351,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        body.append(getFieldNameForSetOfAllowedValues());
+        body.append(getFieldNameSetOfAllowedValues());
         body.appendln(';');
         body.appendCloseBracket();
         methodsBuilder.append(body);
@@ -355,7 +361,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         String lookup = getLookupPrefixForFieldSetOfAllowedValues();
         appendLocalizedJavaDoc(lookup, getAttribute().getName(), memberVarBuilder);
         String fieldType = getJavaTypeForValueSet(getValueSet());
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, fieldType, getFieldNameForSetOfAllowedValues());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, fieldType, getFieldNameSetOfAllowedValues());
     }
 
     /**
@@ -380,7 +386,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         builder.append(" = ");
         JavaCodeFragment body = new JavaCodeFragment();
         generateGenerationAccess(body, ipsProject);
-        body.append(getMethodNameGetDefaultValue(getDatatypeHelper()));
+        body.append(getMethodNameGetDefaultValue());
         builder.append(body);
         builder.append("();");
         builder.appendln();
@@ -560,6 +566,14 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            addDefaultValueMemberVarToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(false));
+            addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(false));
+            addGetDefaultValueMethodToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(false));
+            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(false));
         }
     }
 
@@ -580,7 +594,48 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            addGetDefaultValueMethodToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(true));
+            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements,
+                    getGeneratedJavaTypeForProductCmptTypeGen(true));
         }
+    }
+
+    private IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
+        StandardBuilderSet builderSet = getGenType().getBuilderSet();
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? builderSet.getPolicyCmptInterfaceBuilder()
+                : builderSet.getPolicyCmptImplClassBuilder();
+        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptTypeGen((IPolicyCmptType)getGenType()
+                .getIpsPart());
+    }
+
+    private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IField expectedField = generatedJavaType.getField(getFieldNameDefaultValue());
+        javaElements.add(expectedField);
+    }
+
+    private void addSetOfAllowedValuesMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IField expectedField = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
+        javaElements.add(expectedField);
+    }
+
+    private void addGetSetOfAllowedValuesMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IMethod method = generatedJavaType.getMethod(getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
+                + IValidationContext.class.getName() + ";" });
+        javaElements.add(method);
+    }
+
+    private void addGetDefaultValueMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IMethod method = generatedJavaType.getMethod(getMethodNameGetDefaultValue(), new String[] {});
+        javaElements.add(method);
     }
 
 }

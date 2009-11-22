@@ -38,6 +38,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociati
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -195,6 +196,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     public IType getGeneratedJavaTypeForProductCmptTypeGen(IPolicyCmptType policyCmptType) {
+        ArgumentCheck.isTrue(policyCmptType.isConfigurableByProductCmptType());
+
         StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getBuilderSet();
         JavaSourceFileBuilder relevantProductCmptTypeGenBuilder = isBuildingPublishedSourceFile() ? standardBuilderSet
                 .getProductCmptGenInterfaceBuilder() : standardBuilderSet.getProductCmptGenImplClassBuilder();

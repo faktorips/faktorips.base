@@ -16,9 +16,13 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -71,8 +75,13 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
-        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute);
-        assertEquals(4, generatedJavaElements.size());
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaType());
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(true));
+        expectGetDefaultValueMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(true));
+        assertEquals(6, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
@@ -126,8 +135,17 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         expectMemberVar(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
-        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute);
-        assertEquals(4, generatedJavaElements.size());
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaType());
+        expectDefaultMemberVariable(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectSetOfAllowedValuesMemberVariable(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectGetDefaultValueMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublishedChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        assertEquals(8, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
@@ -136,8 +154,16 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         expectMemberVar(generatedJavaElements, genPublicChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublicChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublicChangeableAttribute);
-        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublicChangeableAttribute);
-        assertEquals(5, generatedJavaElements.size());
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublicChangeableAttribute, getGeneratedJavaType());
+        expectDefaultMemberVariable(generatedJavaElements, genPublicChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectSetOfAllowedValuesMemberVariable(generatedJavaElements, genPublicChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectGetDefaultValueMethod(generatedJavaElements, genPublicChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        expectGetSetOfAllowedValuesMethod(generatedJavaElements, genPublicChangeableAttribute,
+                getGeneratedJavaTypeForProductCmptTypeGen(false));
+        assertEquals(9, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
@@ -157,12 +183,45 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     private void expectGetSetOfAllowedValuesMethod(List<IJavaElement> javaElements,
-            GenChangeableAttribute genChangeableAttribute) {
+            GenChangeableAttribute genChangeableAttribute,
+            IType javaType) {
 
-        IMethod expectedGetSetOfAllowedValuesMethod = getGeneratedJavaType().getMethod(
-                genChangeableAttribute.getMethodNameGetSetOfAllowedValues(),
-                new String[] { "Q" + IValidationContext.class.getName() + ";" });
+        IMethod expectedGetSetOfAllowedValuesMethod = javaType.getMethod(genChangeableAttribute
+                .getMethodNameGetSetOfAllowedValues(), new String[] { "Q" + IValidationContext.class.getName() + ";" });
         assertTrue(javaElements.contains(expectedGetSetOfAllowedValuesMethod));
+    }
+
+    private void expectGetDefaultValueMethod(List<IJavaElement> javaElements,
+            GenChangeableAttribute genChangeableAttribute,
+            IType javaType) {
+
+        IMethod expectedGetDefaultValueMethod = javaType.getMethod(genChangeableAttribute
+                .getMethodNameGetDefaultValue(), new String[] {});
+        assertTrue(javaElements.contains(expectedGetDefaultValueMethod));
+    }
+
+    private void expectDefaultMemberVariable(List<IJavaElement> javaElements,
+            GenChangeableAttribute genChangeableAttribute,
+            IType javaType) {
+
+        IField expectedDefaultMemberVariable = javaType.getField(genChangeableAttribute.getFieldNameDefaultValue());
+        assertTrue(javaElements.contains(expectedDefaultMemberVariable));
+    }
+
+    private void expectSetOfAllowedValuesMemberVariable(List<IJavaElement> javaElements,
+            GenChangeableAttribute genChangeableAttribute,
+            IType javaType) {
+
+        IField expectedSetOfAllowedValuesMemberVariable = javaType.getField(genChangeableAttribute
+                .getFieldNameSetOfAllowedValues());
+        assertTrue(javaElements.contains(expectedSetOfAllowedValuesMemberVariable));
+    }
+
+    private IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
+        StandardBuilderSet builderSet = genPolicyCmptType.getBuilderSet();
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? builderSet.getPolicyCmptInterfaceBuilder()
+                : builderSet.getPolicyCmptImplClassBuilder();
+        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptTypeGen(policyCmptType);
     }
 
 }

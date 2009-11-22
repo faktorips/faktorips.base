@@ -306,7 +306,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             DatatypeHelper helper,
             JavaCodeFragment frag) throws CoreException {
 
-        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(attribute.getFieldNameSetOfAllowedValues());
         frag.append(" = new ");
         frag.appendClassName(UnrestrictedValueSet.class);
         if (isUseTypesafeCollections()) {
@@ -351,7 +351,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         frag.append(getCodeToGetValueFromExpression(helper, "values.getValue(i)"));
         frag.appendln(");");
         frag.appendCloseBracket();
-        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(attribute.getFieldNameSetOfAllowedValues());
         frag.append(" = ");
         frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
                 "values.containsNull()"), isUseTypesafeCollections()));
@@ -369,7 +369,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
         frag.append("if (range != null)");
         frag.appendOpenBracket();
-        frag.append(attribute.getFieldNameForSetOfAllowedValues());
+        frag.append(attribute.getFieldNameSetOfAllowedValues());
         frag.append(" = ");
         JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
                 new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
