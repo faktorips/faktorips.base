@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -198,14 +197,14 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
-            throws CoreException {
+    protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a,
+            LocalizedStringsSet localizedStringsSet) throws CoreException {
         // return null, as this builder does not need code for product component type attributes
         return null;
     }
 
-    protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
-            throws CoreException {
+    protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a,
+            LocalizedStringsSet localizedStringsSet) throws CoreException {
         // return null, as this builder does not need code for policy component type attributes
         return null;
     }
@@ -218,7 +217,6 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 

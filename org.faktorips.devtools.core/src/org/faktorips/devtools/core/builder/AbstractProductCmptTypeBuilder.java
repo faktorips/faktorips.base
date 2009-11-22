@@ -44,6 +44,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
 
     public AbstractProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
+
         super(builderSet, kindId, localizedStringsSet);
     }
 
@@ -78,7 +79,6 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      */
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
-
         IPolicyCmptType policyCmptType = getPcType();
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0]
                 : policyCmptType.getPolicyCmptTypeAttributes();

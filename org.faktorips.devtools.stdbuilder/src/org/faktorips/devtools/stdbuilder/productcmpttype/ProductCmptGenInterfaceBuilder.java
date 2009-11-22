@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -158,8 +158,16 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
+    protected String getGeneratedJavaTypeName(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        // TODO AW: Is there an option to ask for a generation name for a given product name?
+        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
+                ipsObjectPartContainer.getIpsObject().getName() + "Gen") : getJavaNamingConvention()
+                .getImplementationClassName(ipsObjectPartContainer.getIpsObject().getName() + "Gen");
+    }
+
+    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
@@ -175,7 +183,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         }
 
         getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer, recursivelyIncludeChildren);
     }
 
     @Override

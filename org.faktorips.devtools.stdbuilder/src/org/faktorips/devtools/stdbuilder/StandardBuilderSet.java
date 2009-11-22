@@ -79,7 +79,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
- * artefact builders.
+ * <tt>IIpsArtefactBuilder</tt>s.
  * 
  * @author Peter Erzberger
  */
@@ -131,31 +131,29 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport";
 
     private TableImplBuilder tableImplBuilder;
+
     private TableRowBuilder tableRowBuilder;
+
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
+
     private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
+
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
+
+    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
+
     private EnumClassesBuilder enumClassesBuilder;
+
     private EnumTypeBuilder enumTypeBuilder;
-    private String version;
-    private final Map<IType, GenType> ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
+
+    private final String version;
+
+    private final Map<IType, GenType> ipsObjectTypeGenerators;
 
     public StandardBuilderSet() {
-        initVersion();
-    }
-
-    @Override
-    public void afterBuildProcess(int buildKind) throws CoreException {
-        clearGenerators();
-    }
-
-    @Override
-    public void beforeBuildProcess(int buildKind) throws CoreException {
-        clearGenerators();
-    }
-
-    private void initVersion() {
+        ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
         version = "2.4.0";
+        // TODO AW: out commented code, please fix
         // Version versionObj =
         // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org
         // .osgi.framework.Constants.BUNDLE_VERSION));
@@ -166,6 +164,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // buf.append('.');
         // buf.append(versionObj.getMicro());
         // version = buf.toString();
+    }
+
+    @Override
+    public void afterBuildProcess(int buildKind) throws CoreException {
+        clearGenerators();
+    }
+
+    @Override
+    public void beforeBuildProcess(int buildKind) throws CoreException {
+        clearGenerators();
     }
 
     @Override
@@ -412,7 +420,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 KIND_PRODUCT_CMPT_IMPL);
         productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this,
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
-        ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
+        productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL);
 
         // product component builders
@@ -579,6 +587,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             boolean recursivelyIncludeChildren) {
 
         ArgumentCheck.notNull(ipsObjectPartContainer);
+
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             if (!(builder instanceof JavaSourceFileBuilder)) {
@@ -594,7 +603,40 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 throw new RuntimeException(e);
             }
         }
+
         return javaElements;
+    }
+
+    /**
+     * Returns the <tt>ProductCmptGenImplClassBuilder</tt> or <tt>null</tt> if non has been
+     * assembled yet.
+     */
+    public final ProductCmptGenImplClassBuilder getProductCmptGenImplClassBuilder() {
+        return productCmptGenImplClassBuilder;
+    }
+
+    /**
+     * Returns the <tt>ProductCmptGenInterfaceBuilder</tt> or <tt>null</tt> if non has been
+     * assembled yet.
+     */
+    public final ProductCmptGenInterfaceBuilder getProductCmptGenInterfaceBuilder() {
+        return productCmptGenInterfaceBuilder;
+    }
+
+    /**
+     * Returns the <tt>PolicyCmptImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
+     * yet.
+     */
+    public final PolicyCmptImplClassBuilder getPolicyCmptImplClassBuilder() {
+        return policyCmptImplClassBuilder;
+    }
+
+    /**
+     * Returns the <tt>PolicyCmptInterfaceBuilder</tt> or <tt>null</tt> if non has been assembled
+     * yet.
+     */
+    public final PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() {
+        return policyCmptInterfaceBuilder;
     }
 
 }

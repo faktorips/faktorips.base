@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -50,6 +51,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet)
             throws CoreException {
+
         super(builderSet, kindId, stringsSet);
     }
 
@@ -104,7 +106,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenPolicyCmptTypeMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(method);
+        GenPolicyCmptTypeMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
+                .getGenerator(method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
@@ -167,7 +170,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
@@ -182,12 +184,25 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             policyCmptType = (IPolicyCmptType)((IMethod)ipsObjectPartContainer).getIpsObject();
         }
 
+        IType generatedJavaType = getGeneratedJavaType(ipsObjectPartContainer);
         if (isBuildingPublishedSourceFile()) {
             getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
                     generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
         } else {
             getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(javaElements,
                     generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+        }
+    }
+
+    public IType getGeneratedJavaTypeForProductCmptTypeGen(IPolicyCmptType policyCmptType) {
+        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getBuilderSet();
+        JavaSourceFileBuilder relevantProductCmptTypeGenBuilder = isBuildingPublishedSourceFile() ? standardBuilderSet
+                .getProductCmptGenInterfaceBuilder() : standardBuilderSet.getProductCmptGenImplClassBuilder();
+        try {
+            return relevantProductCmptTypeGenBuilder.getGeneratedJavaType(policyCmptType
+                    .findProductCmptType(policyCmptType.getIpsProject()));
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
     }
 

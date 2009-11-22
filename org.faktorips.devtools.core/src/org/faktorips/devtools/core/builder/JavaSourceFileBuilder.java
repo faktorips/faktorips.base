@@ -1005,6 +1005,23 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
+        getGeneratedJavaElementsThis(javaElements, ipsObjectPartContainer, recursivelyIncludeChildren);
+
+        return javaElements;
+    }
+
+    /**
+     * Returns the Java type that is generated for the given <tt>IIpsObjectPartContainer</tt> by
+     * this builder.
+     * 
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
+     *            Java type for.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     */
+    public final IType getGeneratedJavaType(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+
         IIpsProject ipsProject = ipsObjectPartContainer.getIpsProject();
         try {
             IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
@@ -1016,21 +1033,33 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     + internalPackageSeparator
                     + "."
                     + ipsObjectPartContainer.getIpsObject().getIpsPackageFragment().getName());
-            String unitName = isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
-                    ipsObjectPartContainer.getIpsObject().getName())
-                    + ".java" : getJavaNamingConvention().getImplementationClassName(
-                    ipsObjectPartContainer.getIpsObject().getName())
-                    + ".java";
-            ICompilationUnit compilationUnit = fragment.getCompilationUnit(unitName);
-            String interfaceIdentificator = isBuildingPublishedSourceFile() ? "I" : "";
-            IType javaType = compilationUnit.getType(interfaceIdentificator
-                    + ipsObjectPartContainer.getIpsObject().getName());
-            getGeneratedJavaElementsThis(javaElements, javaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+            String typeName = getGeneratedJavaTypeName(ipsObjectPartContainer);
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + ".java");
+
+            return compilationUnit.getType(typeName);
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        return javaElements;
+    /**
+     * Returns the name of the Java type this builder generates for the given
+     * <tt>IIpsObjectPartContainer</tt>.
+     * <p>
+     * May be overwritten by subclasses. This method is used by
+     * <tt>getGeneratedJavaType(IIpsObjectPartContainer)</tt>.
+     * 
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the name of the
+     *            generated Java type for.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     */
+    protected String getGeneratedJavaTypeName(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
+                ipsObjectPartContainer.getIpsObject().getName()) : getJavaNamingConvention()
+                .getImplementationClassName(ipsObjectPartContainer.getIpsObject().getName());
     }
 
     /**
@@ -1038,7 +1067,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
-     * @param generatedJavaType The Java type that this builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
      * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
@@ -1046,7 +1074,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
      */
     protected abstract void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren);
 

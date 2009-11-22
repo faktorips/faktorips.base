@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -59,6 +58,7 @@ import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -756,8 +756,16 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
+    protected String getGeneratedJavaTypeName(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        // TODO AW: Is there an option to ask for a generation name for a given product name?
+        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
+                ipsObjectPartContainer.getIpsObject().getName() + "Gen") : getJavaNamingConvention()
+                .getImplementationClassName(ipsObjectPartContainer.getIpsObject().getName() + "Gen");
+    }
+
+    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
@@ -773,7 +781,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
 
         getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements,
-                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
+                getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer, recursivelyIncludeChildren);
     }
 
     @Override

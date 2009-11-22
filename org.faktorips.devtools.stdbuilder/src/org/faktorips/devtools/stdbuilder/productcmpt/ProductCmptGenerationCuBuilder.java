@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -302,7 +301,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     /**
      * {@inheritDoc}
      * 
-     * Returns true.
+     * Returns <tt>true</tt>.
      */
     @Override
     public boolean buildsDerivedArtefacts() {
@@ -311,7 +310,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType javaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
