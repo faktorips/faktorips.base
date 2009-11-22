@@ -22,10 +22,10 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
+import org.faktorips.devtools.stdbuilder.type.GenMethod;
 
 /**
- * Abstract base class for tests concerning the generators for <tt>IMethod</tt>s for
- * <tt>IPolicyCmptType</tt>s.
+ * Tests concerning the generators for <tt>IMethod</tt>s for <tt>IPolicyCmptType</tt>s.
  * 
  * @author Alexander Weickmann
  */
@@ -108,9 +108,10 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethod(List<IJavaElement> javaElements, GenPolicyCmptTypeMethod genPolicyCmptTypeMethod) {
-        org.eclipse.jdt.core.IMethod expectedMethod = getGeneratedJavaType().getMethod(
-                genPolicyCmptTypeMethod.getMethod().getName(), new String[] { "I", "V", "QString;" });
+    private void expectMethod(List<IJavaElement> javaElements, GenMethod genMethod) {
+        org.eclipse.jdt.core.IMethod expectedMethod = getGeneratedJavaType().getMethod(genMethod.getMethod().getName(),
+                new String[] { "I", "V", "QString;" });
         assertTrue(javaElements.contains(expectedMethod));
     }
+
 }

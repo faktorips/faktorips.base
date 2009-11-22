@@ -215,7 +215,13 @@ public class GenProductCmptTypeMethod extends GenMethod {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
-        // TODO AW: Not implemented yet.
+        if (((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition()) {
+            if (!(isPublished())) {
+                addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
+        } else {
+            addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
     }
 
     @Override
@@ -224,7 +230,9 @@ public class GenProductCmptTypeMethod extends GenMethod {
             IIpsObjectPartContainer ipsObjectPartContainer,
             boolean recursivelyIncludeChildren) {
 
-        // TODO AW: Not implemented yet.
+        if (isPublished()) {
+            addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
     }
 
 }
