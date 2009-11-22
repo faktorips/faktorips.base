@@ -203,6 +203,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     protected void generateMethodsForProductCmptType(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
+
         if (!generatesInterface) {
             generateMethodGetDefaultValue(getDatatypeHelper(), builder, generatesInterface);
             generateMethodGetSetOfAllowedValuesForProductCmptType(builder);
@@ -226,6 +227,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     private void generateMethodGetDefaultValue(DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder,
             boolean generatesInterface) throws CoreException {
+
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             if (((IPolicyCmptTypeAttribute)getAttribute()).isOverwrite()) {
@@ -310,7 +312,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        if (isConfigurableByProduct()) {
+        if (isProductRelevant()) {
             generateGenerationAccess(body, ipsProject);
             body.append(getMethodNameGetSetOfAllowedValues());
             body.appendln("(context);");
@@ -327,7 +329,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     /**
-     * Gnerates a product component type's method that returns the set of allowed values for an
+     * Generates a product component type's method that returns the set of allowed values for an
      * attribute
      */
     private void generateMethodGetSetOfAllowedValuesForProductCmptType(JavaCodeFragmentBuilder methodsBuilder)
@@ -531,7 +533,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     protected boolean shouldGetAllowedSetOfValuesBeGenerated() {
-        if (isUnrestrictedValueSet() && !isConfigurableByProduct()) {
+        if (isUnrestrictedValueSet() && !isProductRelevant()) {
             return false;
         }
         if (isEnumValueSet() && DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype())) {
@@ -552,6 +554,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        if (isProductRelevant()) {
+            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
     }
 
     @Override
@@ -566,6 +571,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         if (isPublished()) {
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            if (isProductRelevant()) {
+                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
         }
     }
 
