@@ -52,7 +52,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
+import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.EnumValues;
@@ -575,7 +575,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+        GenProductCmptTypeMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getGenerator((IProductCmptTypeMethod)method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());

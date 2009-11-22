@@ -37,7 +37,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAsso
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
+import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
@@ -59,7 +59,7 @@ public class GenProductCmptType extends GenType {
 
     private List<GenProductCmptTypeAttribute> genProductCmptTypeAttributes = new ArrayList<GenProductCmptTypeAttribute>();
     private List<GenProdAssociation> genProdAssociations = new ArrayList<GenProdAssociation>();
-    private List<GenProdMethod> genMethods = new ArrayList<GenProdMethod>();
+    private List<GenProductCmptTypeMethod> genMethods = new ArrayList<GenProductCmptTypeMethod>();
     private List<GenTableStructureUsage> genTableStructureUsages = new ArrayList<GenTableStructureUsage>();
 
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet) throws CoreException {
@@ -164,7 +164,7 @@ public class GenProductCmptType extends GenType {
         IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenProdMethod generator = new GenProdMethod(this, methods[i]);
+                GenProductCmptTypeMethod generator = new GenProductCmptTypeMethod(this, methods[i]);
                 genMethods.add(generator);
                 getGeneratorsByPart().put(methods[i], generator);
             }
@@ -205,14 +205,14 @@ public class GenProductCmptType extends GenType {
         return generator;
     }
 
-    public GenProdMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
-        GenProdMethod generator = (GenProdMethod)getGeneratorsByPart().get(method);
+    public GenProductCmptTypeMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
+        GenProductCmptTypeMethod generator = (GenProductCmptTypeMethod)getGeneratorsByPart().get(method);
         if (generator == null && method.isValid()) {
             // generators for supertype methods will be created on demand since it is expected that
             // only a few exit. It will not be checked if the provided method is actually a
             // supertype
             // method because of performance reasons.
-            generator = new GenProdMethod(this, method);
+            generator = new GenProductCmptTypeMethod(this, method);
             genMethods.add(generator);
             getGeneratorsByPart().put(method, generator);
         }

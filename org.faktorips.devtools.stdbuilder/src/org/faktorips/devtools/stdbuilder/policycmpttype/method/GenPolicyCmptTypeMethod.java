@@ -24,13 +24,11 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenMethod;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -38,92 +36,44 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-public class GenMethod extends GenTypePart {
+public class GenPolicyCmptTypeMethod extends GenMethod {
 
-    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) throws CoreException {
-        super(genPolicyCmptType, method, new LocalizedStringsSet(GenMethod.class));
-    }
-
-    @Override
-    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
-
-        // Nothing to do.
-    }
-
-    @Override
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
-            IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException {
-
-        // Nothing to do.
+    public GenPolicyCmptTypeMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) throws CoreException {
+        super(genPolicyCmptType, method, new LocalizedStringsSet(GenPolicyCmptTypeMethod.class));
     }
 
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
 
-        IMethod method = getMethod();
         try {
-            Datatype returnType = ipsProject.findDatatype(method.getDatatype());
+            Datatype returnType = ipsProject.findDatatype(getMethod().getDatatype());
             if (!generatesInterface) {
-                generateClassCodeForMethodDefinedInModel(method, returnType, builder);
+                generateClassCodeForMethodDefinedInModel(getMethod(), returnType, builder);
             }
             if (generatesInterface) {
-                generateInterfaceCodeForMethodDefinedInModelInterface(method, returnType, builder);
+                generateInterfaceCodeForMethodDefinedInModelInterface(getMethod(), returnType, builder);
             }
 
         } catch (CoreException e) {
-            throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building method " + method.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
-                    + getGenType().getQualifiedName(generatesInterface), e));
+            throw new CoreException(new IpsStatus(IStatus.ERROR,
+                    "Error building method " + getMethod().getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                            + getGenType().getQualifiedName(generatesInterface), e));
         }
     }
 
-    private Datatype[] getParameterDatatypes() {
-        try {
-            IParameter[] parameters = getMethod().getParameters();
-            Datatype[] parameterDatatypes = new Datatype[parameters.length];
-            for (int j = 0; j < parameterDatatypes.length; j++) {
-                parameterDatatypes[j] = getIpsProject().findDatatype(parameters[j].getDatatype());
-            }
-            return parameterDatatypes;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String[] getParameterClassNames(Datatype[] parameterDatatypes) {
-        try {
-            String[] parameterClassNames = new String[parameterDatatypes.length];
-            for (int i = 0; i < parameterClassNames.length; i++) {
-                parameterClassNames[i] = getGenType().getBuilderSet().getJavaClassName(parameterDatatypes[i]);
-            }
-            return parameterClassNames;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public IMethod getMethod() {
-        return (IMethod)getIpsPart();
-    }
-
-    public String getMethodName() {
-        return getMethod().getName();
-    }
-
-    protected void generateClassCodeForMethodDefinedInModel(IMethod method,
+    private void generateClassCodeForMethodDefinedInModel(IMethod method,
             Datatype returnType,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (method.getModifier() == org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED) {
+        if (isPublished()) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         } else {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
 
         IMethod overiddenMethod = method.findOverriddenMethod(getIpsPart().getIpsProject());
-        if (method.getModifier().isPublished()) {
+        if (isPublished()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), overiddenMethod == null);
         } else if (method.getModifier().isPublic() && overiddenMethod != null) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
@@ -139,11 +89,11 @@ public class GenMethod extends GenTypePart {
         methodsBuilder.closeBracket();
     }
 
-    protected void generateInterfaceCodeForMethodDefinedInModelInterface(IMethod method,
+    private void generateInterfaceCodeForMethodDefinedInModelInterface(IMethod method,
             Datatype returnType,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (method.getModifier() != Modifier.PUBLISHED) {
+        if (!(isPublished())) {
             return;
         }
         methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -159,19 +109,15 @@ public class GenMethod extends GenTypePart {
      * public ICoverage getCoverageWithHighestSumInsured()
      * </pre>
      */
-    protected void generateSignatureForMethodDefinedInModel(IMethod method,
+    private void generateSignatureForMethodDefinedInModel(IMethod method,
             int javaModifier,
             Datatype returnType,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         StandardBuilderSet builderset = getGenType().getBuilderSet();
         String returnClassName = builderset.getJavaClassName(returnType);
-        methodsBuilder.signature(javaModifier, returnClassName, getMethodName(), method.getParameterNames(),
+        methodsBuilder.signature(javaModifier, returnClassName, getMethod().getName(), method.getParameterNames(),
                 getParameterClassNames(getParameterDatatypes()));
-    }
-
-    public boolean isPublished() {
-        return getMethod().getModifier().isPublished();
     }
 
     @Override
@@ -192,16 +138,6 @@ public class GenMethod extends GenTypePart {
         if (isPublished()) {
             addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
-    }
-
-    private void addMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
-        Datatype[] parameterDatatypes = getParameterDatatypes();
-        String[] parameterTypeSignatures = new String[parameterDatatypes.length];
-        for (int i = 0; i < parameterTypeSignatures.length; i++) {
-            parameterTypeSignatures[i] = getJavaParameterTypeSignature(parameterDatatypes[i]);
-        }
-        org.eclipse.jdt.core.IMethod method = generatedJavaType.getMethod(getMethodName(), parameterTypeSignatures);
-        javaElements.add(method);
     }
 
 }

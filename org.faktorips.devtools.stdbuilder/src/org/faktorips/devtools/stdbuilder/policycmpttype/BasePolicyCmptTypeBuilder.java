@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
+import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
@@ -104,7 +104,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(method);
+        GenPolicyCmptTypeMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }

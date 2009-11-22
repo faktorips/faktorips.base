@@ -29,7 +29,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTes
  * 
  * @author Alexander Weickmann
  */
-public class GenMethodTest extends PolicyCmptTypeBuilderTest {
+public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
 
     /** A published <tt>IMethod</tt> that can be used for tests. */
     private IMethod publishedMethod;
@@ -37,11 +37,11 @@ public class GenMethodTest extends PolicyCmptTypeBuilderTest {
     /** A public <tt>IMethod</tt> that can be used for tests. */
     private IMethod publicMethod;
 
-    /** <tt>GenMethod</tt> generator for the published method. */
-    private GenMethod genPublishedMethod;
+    /** <tt>GenPolicyCmptTypeMethod</tt> generator for the published method. */
+    private GenPolicyCmptTypeMethod genPublishedMethod;
 
-    /** <tt>GenMethod</tt> generator for the public method. */
-    private GenMethod genPublicMethod;
+    /** <tt>GenPolicyCmptTypeMethod</tt> generator for the public method. */
+    private GenPolicyCmptTypeMethod genPublicMethod;
 
     @Override
     protected void setUp() throws Exception {
@@ -75,8 +75,8 @@ public class GenMethodTest extends PolicyCmptTypeBuilderTest {
         parameter3.setName("param3");
         parameter3.setDatatype(Datatype.STRING.getName());
 
-        genPublishedMethod = new GenMethod(genPolicyCmptType, publishedMethod);
-        genPublicMethod = new GenMethod(genPolicyCmptType, publicMethod);
+        genPublishedMethod = new GenPolicyCmptTypeMethod(genPolicyCmptType, publishedMethod);
+        genPublicMethod = new GenPolicyCmptTypeMethod(genPolicyCmptType, publicMethod);
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterface() {
@@ -108,9 +108,9 @@ public class GenMethodTest extends PolicyCmptTypeBuilderTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethod(List<IJavaElement> javaElements, GenMethod genMethod) {
-        org.eclipse.jdt.core.IMethod expectedMethod = getGeneratedJavaType().getMethod(genMethod.getMethodName(),
-                new String[] { "I", "V", "QString;" });
+    private void expectMethod(List<IJavaElement> javaElements, GenPolicyCmptTypeMethod genPolicyCmptTypeMethod) {
+        org.eclipse.jdt.core.IMethod expectedMethod = getGeneratedJavaType().getMethod(
+                genPolicyCmptTypeMethod.getMethod().getName(), new String[] { "I", "V", "QString;" });
         assertTrue(javaElements.contains(expectedMethod));
     }
 }

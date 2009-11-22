@@ -39,7 +39,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptT
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
+import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -66,7 +66,7 @@ public class GenPolicyCmptType extends GenType {
     private final List<GenPolicyCmptTypeAttribute> genPolicyCmptTypeAttributes = new ArrayList<GenPolicyCmptTypeAttribute>();
     private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
     private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
-    private final List<GenMethod> genMethods = new ArrayList<GenMethod>();
+    private final List<GenPolicyCmptTypeMethod> genPolicyCmptTypeMethods = new ArrayList<GenPolicyCmptTypeMethod>();
     private final IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) throws CoreException {
@@ -89,8 +89,8 @@ public class GenPolicyCmptType extends GenType {
         IMethod[] methods = getPolicyCmptType().getMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenMethod generator = new GenMethod(this, methods[i]);
-                genMethods.add(generator);
+                GenPolicyCmptTypeMethod generator = new GenPolicyCmptTypeMethod(this, methods[i]);
+                genPolicyCmptTypeMethods.add(generator);
                 getGeneratorsByPart().put(methods[i], generator);
             }
         }
@@ -151,11 +151,11 @@ public class GenPolicyCmptType extends GenType {
         return new GenAssociationTo1(this, association);
     }
 
-    public GenMethod getGenerator(IMethod method) throws CoreException {
-        GenMethod generator = (GenMethod)getGeneratorsByPart().get(method);
+    public GenPolicyCmptTypeMethod getGenerator(IMethod method) throws CoreException {
+        GenPolicyCmptTypeMethod generator = (GenPolicyCmptTypeMethod)getGeneratorsByPart().get(method);
         if (generator == null && method.isValid()) {
-            generator = new GenMethod(this, method);
-            genMethods.add(generator);
+            generator = new GenPolicyCmptTypeMethod(this, method);
+            genPolicyCmptTypeMethods.add(generator);
             getGeneratorsByPart().put(method, generator);
         }
         return generator;
