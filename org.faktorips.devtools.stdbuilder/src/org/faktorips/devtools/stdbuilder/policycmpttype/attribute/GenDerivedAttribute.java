@@ -40,7 +40,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class GenDerivedAttribute extends GenAttribute {
+public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
 
     public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a);
@@ -52,11 +52,11 @@ public class GenDerivedAttribute extends GenAttribute {
             throws CoreException {
 
         if (generatesInterface) {
-            if (!isOverwritten()) {
+            if (!getAttribute().isOverwrite()) {
                 generateAttributeNameConstant(builder);
             }
         } else {
-            if (isNotPublished()) {
+            if (!(isPublished())) {
                 generateAttributeNameConstant(builder);
             }
         }
@@ -68,8 +68,8 @@ public class GenDerivedAttribute extends GenAttribute {
             boolean generatesInterface) throws CoreException {
 
         if (!generatesInterface) {
-            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
-                    && !isOverwritten()) {
+            if (((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
+                    && !getAttribute().isOverwrite()) {
                 generateField(builder);
             }
         }
@@ -80,14 +80,14 @@ public class GenDerivedAttribute extends GenAttribute {
             throws CoreException {
 
         if (generatesInterface) {
-            if (!isOverwritten()) {
+            if (!getAttribute().isOverwrite()) {
                 generateGetterInterface(builder);
             }
         } else {
-            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+            if (((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
                 generateGetterImplementationForOnTheFlyComputation(builder, ipsProject);
             } else {
-                if (!isOverwritten()) {
+                if (!getAttribute().isOverwrite()) {
                     generateGetterImplementation(builder);
                 }
             }
@@ -98,17 +98,18 @@ public class GenDerivedAttribute extends GenAttribute {
             IIpsProject ipsProject) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        if (getPolicyCmptTypeAttribute().isOverwrite()) {
+        if (getAttribute().isOverwrite()) {
             appendOverrideAnnotation(builder, getIpsProject(), false);
         }
         generateGetterSignature(builder);
         builder.openBracket();
 
-        IProductCmptTypeMethod formulaSignature = getPolicyCmptTypeAttribute().findComputationMethod(ipsProject);
-        if (!getPolicyCmptTypeAttribute().isProductRelevant() || formulaSignature == null
+        IProductCmptTypeMethod formulaSignature = ((IPolicyCmptTypeAttribute)getAttribute())
+                .findComputationMethod(ipsProject);
+        if (!((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant() || formulaSignature == null
                 || formulaSignature.validate(ipsProject).containsErrorMsg()) {
             builder.append("return ");
-            builder.append(datatypeHelper.newInstance(attribute.getDefaultValue()));
+            builder.append(getDatatypeHelper().newInstance(getAttribute().getDefaultValue()));
             builder.appendln(";");
         } else {
             IParameter[] parameters = formulaSignature.getParameters();

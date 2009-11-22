@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,26 +29,25 @@ import org.faktorips.util.LocalizedStringsSet;
 public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIpsPart {
 
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
-    
-    public DefaultJavaGeneratorForIpsPart(
-            IIpsObjectPartContainer part, 
-            LocalizedStringsSet localizedStringsSet) throws CoreException {
+
+    public DefaultJavaGeneratorForIpsPart(IIpsObjectPartContainer part, LocalizedStringsSet localizedStringsSet) {
         super(part, localizedStringsSet);
     }
-    
+
     /**
      * Generates the source code for the ips object part this is a generator for.
      * 
      * @param generatesInterface TODO
      */
-    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection) throws CoreException {
+    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
+            throws CoreException {
         generateConstants(mainSection.getConstantBuilder(), ipsProject, generatesInterface);
         if (!generatesInterface) {
             generateMemberVariables(mainSection.getMemberVarBuilder(), ipsProject, generatesInterface);
         }
         generateMethods(mainSection.getMethodBuilder(), ipsProject, generatesInterface);
     }
-    
+
     /**
      * Subclasses have to implement generation of the methods here. Whether the generator is used
      * for generating the implementation class or the interface can be queried via
@@ -60,7 +59,9 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * @see #isGeneratingImplementationClass()
      * @see #isGeneratingInterface()
      */
-    protected abstract void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException;
+    protected abstract void generateMethods(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException;
 
     /**
      * Subclasses have to implement generation of the member variables here. This method is only
@@ -71,8 +72,10 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * @throws CoreException if an error occurs while generating the member variables
      * @see #isGeneratingImplementationClass()
      */
-    protected abstract void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException;
-    
+    protected abstract void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException;
+
     /**
      * Subclasses have to implement generation of the constants (final statics) here. Whether the
      * generator is used for generating the implementation class or the interface can be queried via
@@ -84,5 +87,7 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * @see #isGeneratingImplementationClass()
      * @see #isGeneratingInterface()
      */
-    protected abstract void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException;
+    protected abstract void generateConstants(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException;
 }

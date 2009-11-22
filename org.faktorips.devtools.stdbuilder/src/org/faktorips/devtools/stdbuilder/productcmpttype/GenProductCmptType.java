@@ -36,7 +36,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -57,7 +57,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenProductCmptType extends GenType {
 
-    private List<GenProdAttribute> genProdAttributes = new ArrayList<GenProdAttribute>();
+    private List<GenProductCmptTypeAttribute> genProductCmptTypeAttributes = new ArrayList<GenProductCmptTypeAttribute>();
     private List<GenProdAssociation> genProdAssociations = new ArrayList<GenProdAssociation>();
     private List<GenProdMethod> genMethods = new ArrayList<GenProdMethod>();
     private List<GenTableStructureUsage> genTableStructureUsages = new ArrayList<GenTableStructureUsage>();
@@ -142,8 +142,8 @@ public class GenProductCmptType extends GenType {
         IProductCmptTypeAttribute[] attrs = getProductCmptType().getProductCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenProdAttribute generator = new GenProdAttribute(this, attrs[i]);
-                genProdAttributes.add(generator);
+                GenProductCmptTypeAttribute generator = new GenProductCmptTypeAttribute(this, attrs[i]);
+                genProductCmptTypeAttributes.add(generator);
                 getGeneratorsByPart().put(attrs[i], generator);
             }
         }
@@ -189,16 +189,16 @@ public class GenProductCmptType extends GenType {
         return new GenProdAssociationTo1(this, association);
     }
 
-    public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
-        GenProdAttribute generator = (GenProdAttribute)getGeneratorsByPart().get(a);
+    public GenProductCmptTypeAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
+        GenProductCmptTypeAttribute generator = (GenProductCmptTypeAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid()) {
             // generators for supertype attributes will be created on demand since it is expected
             // that
             // only a few exit. It will not be checked if the provided attribute is actually a
             // supertype
             // attribute because of performance reasons.
-            generator = new GenProdAttribute(this, a);
-            genProdAttributes.add(generator);
+            generator = new GenProductCmptTypeAttribute(this, a);
+            genProductCmptTypeAttributes.add(generator);
             getGeneratorsByPart().put(a, generator);
         }
 
@@ -238,8 +238,8 @@ public class GenProductCmptType extends GenType {
         return (GenTableStructureUsage)getGeneratorsByPart().get(tsu);
     }
 
-    public Iterator<GenProdAttribute> getGenProdAttributes() {
-        return genProdAttributes.iterator();
+    public Iterator<GenProductCmptTypeAttribute> getGenProdAttributes() {
+        return genProductCmptTypeAttributes.iterator();
     }
 
     public JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {

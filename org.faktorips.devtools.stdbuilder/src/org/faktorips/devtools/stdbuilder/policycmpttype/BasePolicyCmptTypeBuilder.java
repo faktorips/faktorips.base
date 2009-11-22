@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
@@ -93,7 +93,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         if (attribute.isProductRelevant() && getProductCmptType() == null) {
             return;
         }
-        GenAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
+        GenPolicyCmptTypeAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
                 .getGenerator(attribute);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
@@ -157,7 +157,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
     }
 
-    private GenPolicyCmptType getGenPolicyCmptType(IPolicyCmptType policyCmptType) {
+    protected final GenPolicyCmptType getGenPolicyCmptType(IPolicyCmptType policyCmptType) {
         try {
             return ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType);
         } catch (CoreException e) {

@@ -40,8 +40,8 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -146,13 +146,13 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     modelTypeAttributes.appendChild(modelTypeAttribute);
                     modelTypeAttribute.setAttribute("name", attribute.getName());
                     if (model instanceof IPolicyCmptType) {
-                        GenAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                        GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
                                 (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
-                        if (genAttribute != null) {
-                            modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                        if (genPolicyCmptTypeAttribute != null) {
+                            modelTypeAttribute.setAttribute("datatype", genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
                         }
                     } else if (model instanceof IProductCmptType) {
-                        GenProdAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                        GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
                                 (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
                         if (genAttribute != null) {
                             modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());

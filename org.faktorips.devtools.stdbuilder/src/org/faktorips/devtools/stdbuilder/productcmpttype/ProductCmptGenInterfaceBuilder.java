@@ -16,13 +16,17 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -151,6 +155,27 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        IProductCmptType productCmptType = null;
+        if (ipsObjectPartContainer instanceof IProductCmptType) {
+            productCmptType = (IProductCmptType)ipsObjectPartContainer;
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
+            productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
+            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
+        }
+
+        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
+                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
     }
 
     @Override

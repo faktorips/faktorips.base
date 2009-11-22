@@ -35,13 +35,13 @@ import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBu
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -63,7 +63,7 @@ import org.faktorips.util.StringUtil;
  */
 public class GenPolicyCmptType extends GenType {
 
-    private final List<GenAttribute> genAttributes = new ArrayList<GenAttribute>();
+    private final List<GenPolicyCmptTypeAttribute> genPolicyCmptTypeAttributes = new ArrayList<GenPolicyCmptTypeAttribute>();
     private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
     private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
     private final List<GenMethod> genMethods = new ArrayList<GenMethod>();
@@ -111,8 +111,8 @@ public class GenPolicyCmptType extends GenType {
         IPolicyCmptTypeAttribute[] attrs = getPolicyCmptType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenAttribute generator = createGenerator(attrs[i]);
-                genAttributes.add(generator);
+                GenPolicyCmptTypeAttribute generator = createGenerator(attrs[i]);
+                genPolicyCmptTypeAttributes.add(generator);
                 getGeneratorsByPart().put(attrs[i], generator);
             }
         }
@@ -130,11 +130,11 @@ public class GenPolicyCmptType extends GenType {
         }
     }
 
-    public List<GenAttribute> getGenAttributes() {
-        return genAttributes;
+    public List<GenPolicyCmptTypeAttribute> getGenAttributes() {
+        return genPolicyCmptTypeAttributes;
     }
 
-    private GenAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
+    private GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
         if (a.isDerived()) {
             return new GenDerivedAttribute(this, a);
         }
@@ -161,11 +161,11 @@ public class GenPolicyCmptType extends GenType {
         return generator;
     }
 
-    public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
-        GenAttribute generator = (GenAttribute)getGeneratorsByPart().get(a);
+    public GenPolicyCmptTypeAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
+        GenPolicyCmptTypeAttribute generator = (GenPolicyCmptTypeAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid()) {
             generator = createGenerator(a);
-            genAttributes.add(generator);
+            genPolicyCmptTypeAttributes.add(generator);
             getGeneratorsByPart().put(a, generator);
         }
         return generator;
@@ -238,7 +238,7 @@ public class GenPolicyCmptType extends GenType {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
     }
 
-    public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
+    public GenProductCmptTypeAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
         return getBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
     }
 

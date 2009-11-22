@@ -24,14 +24,13 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.w3c.dom.Element;
@@ -41,70 +40,12 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class GenProdAttribute extends GenTypePart {
+public class GenProductCmptTypeAttribute extends GenAttribute {
 
-    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAttribute.class);
+    public GenProductCmptTypeAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a)
+            throws CoreException {
 
-    protected IProductCmptTypeAttribute attribute;
-
-    protected String attributeName;
-
-    protected DatatypeHelper datatypeHelper;
-
-    protected String staticConstantPropertyName;
-
-    protected String memberVarName;
-
-    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a) throws CoreException {
-        super(genProductCmptType, a, LOCALIZED_STRINGS);
-        attribute = a;
-        attributeName = a.getName();
-        datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());
-        if (datatypeHelper == null) {
-            throw new NullPointerException("No datatype helper found for " + a);
-        }
-        staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
-        memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
-    }
-
-    public IProductCmptTypeAttribute getProductCmptTypeAttribute() {
-        return attribute;
-    }
-
-    public DatatypeHelper getDatatypeHelper() {
-        return datatypeHelper;
-    }
-
-    public ValueDatatype getDatatype() {
-        return (ValueDatatype)datatypeHelper.getDatatype();
-    }
-
-    public String getJavaClassName() {
-        return datatypeHelper.getJavaClassName();
-    }
-
-    public boolean isPublished() {
-        return attribute.getModifier().isPublished();
-    }
-
-    public boolean isNotPublished() {
-        return !isPublished();
-    }
-
-    public boolean isOverwritten() {
-        return attribute.isOverwrite();
-    }
-
-    public boolean isDerived() {
-        return attribute.isDerived();
-    }
-
-    public String getGetterMethodName() {
-        return getJavaNamingConvention().getGetterMethodName(attributeName, getDatatype());
-    }
-
-    public String getSetterMethodName() {
-        return getJavaNamingConvention().getSetterMethodName(attributeName, getDatatype());
+        super(genProductCmptType, a, new LocalizedStringsSet(GenProductCmptTypeAttribute.class));
     }
 
     /**
@@ -116,41 +57,36 @@ public class GenProdAttribute extends GenTypePart {
      */
     protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getMethodNameGetPropertyValue(attributeName, datatypeHelper.getDatatype());
+        String methodName = getMethodNameGetPropertyValue(getAttribute().getName(), getDatatype());
         methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Returns the name of the field/member variable that stores the values for the
-     * property/attribute.
-     */
-    public String getMemberVarName() throws CoreException {
-        return memberVarName;
     }
 
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        // nothing to do
+
+        // Nothing to do.
     }
 
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
+
         if (!generatesInterface) {
-            generateFieldValue(datatypeHelper, builder);
+            generateFieldValue(getDatatypeHelper(), builder);
         }
     }
 
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         if (!generatesInterface) {
-            generateMethodGetValue(datatypeHelper, builder);
-            generateMethodSetValue(datatypeHelper, builder);
+            generateMethodGetValue(getDatatypeHelper(), builder);
+            generateMethodSetValue(getDatatypeHelper(), builder);
         } else {
-            generateMethodGetValueInterface(datatypeHelper, builder);
+            generateMethodGetValueInterface(getDatatypeHelper(), builder);
         }
     }
 
@@ -165,6 +101,7 @@ public class GenProdAttribute extends GenTypePart {
      */
     private void generateMethodGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
+
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetValue(datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
@@ -184,9 +121,10 @@ public class GenProdAttribute extends GenTypePart {
      */
     void generateMethodGetValueInterface(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
             throws CoreException {
-        String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>"
-                + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-        String[] replacements = new String[] { attributeName, description };
+
+        String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
+                + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+        String[] replacements = new String[] { getAttribute().getName(), description };
         appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, builder);
         generateSignatureGetValue(datatypeHelper, builder);
         builder.append(';');
@@ -207,7 +145,8 @@ public class GenProdAttribute extends GenTypePart {
      */
     private void generateMethodSetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        appendLocalizedJavaDoc("METHOD_SET_VALUE", attributeName, methodsBuilder);
+
+        appendLocalizedJavaDoc("METHOD_SET_VALUE", getAttribute().getName(), methodsBuilder);
         String methodName = getSetterMethodName();
         String[] paramNames = new String[] { "newValue" };
         String[] paramTypes = new String[] { datatypeHelper.getJavaClassName() };
@@ -242,14 +181,14 @@ public class GenProdAttribute extends GenTypePart {
      */
     private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
             throws CoreException {
-        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(attributeName), builder);
-        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
+        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(getAttribute().getName()), builder);
+        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getAttribute().getDefaultValue());
         builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(), getMemberVarName(),
                 defaultValueExpression);
     }
 
     public boolean isValidAttribute() throws CoreException {
-        return !attribute.validate(attribute.getIpsProject()).containsErrorMsg();
+        return !getAttribute().validate(getAttribute().getIpsProject()).containsErrorMsg();
     }
 
     public void generateDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -266,7 +205,7 @@ public class GenProdAttribute extends GenTypePart {
             builder.append(")");
         }
         builder.append("configMap.get(\"");
-        builder.append(attributeName);
+        builder.append(getAttribute().getName());
         builder.appendln("\");");
         builder.append("if (configElement != null) ");
         builder.openBracket();
@@ -304,11 +243,12 @@ public class GenProdAttribute extends GenTypePart {
      */
     public void generateCodeForPolicyCmptType(boolean generatesInterface, JavaCodeFragmentBuilder methodBuilder)
             throws CoreException {
+
         if (!generatesInterface) {
-            String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
-                    + "<p>" + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC",
-                    new String[] { attributeName, description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
+                    + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { getAttribute().getName(),
+                    description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");

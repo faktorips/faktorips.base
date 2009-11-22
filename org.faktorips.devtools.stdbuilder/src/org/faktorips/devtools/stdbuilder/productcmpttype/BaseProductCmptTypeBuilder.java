@@ -13,28 +13,21 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -96,7 +89,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
 
-        GenProdAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+        GenProductCmptTypeAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getGenerator(attribute);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
@@ -111,37 +104,11 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         return (StandardBuilderSet)getBuilderSet();
     }
 
-    private GenProductCmptType getGenProductCmptType(IProductCmptType productCmptType) {
+    protected final GenProductCmptType getGenProductCmptType(IProductCmptType productCmptType) {
         try {
             return ((StandardBuilderSet)getBuilderSet()).getGenerator(productCmptType);
         } catch (CoreException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
-
-        IProductCmptType productCmptType = null;
-        if (ipsObjectPartContainer instanceof IProductCmptType) {
-            productCmptType = (IProductCmptType)ipsObjectPartContainer;
-
-        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
-            productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
-
-        } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
-            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
-        }
-
-        if (isBuildingPublishedSourceFile()) {
-            getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
-        } else {
-            getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements,
-                    generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
         }
     }
 

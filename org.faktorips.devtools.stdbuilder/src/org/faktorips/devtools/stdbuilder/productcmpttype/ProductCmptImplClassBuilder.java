@@ -21,8 +21,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -36,9 +39,9 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarch
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -290,13 +293,13 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
+    protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException {
         // return null, as this builder does not need code for product component type attributes
         return null;
     }
 
-    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
+    protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException {
         // return null, as this builder does not need code for policy component type attributes
         return null;
@@ -306,6 +309,21 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             throws CoreException {
         // return null, as this builder does not need code for product component type associations
         return null;
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        /*
+         * TODO AW: I can't delegate this to the GenProductCmptType generator because this generator
+         * cannot be configured whether to generate the generation or the product itself. But this
+         * makes a lot of difference in the returned generated Java elements. Making the
+         * GenProductCmptType configurable in such a way would require many changes.
+         */
+
     }
 
     @Override

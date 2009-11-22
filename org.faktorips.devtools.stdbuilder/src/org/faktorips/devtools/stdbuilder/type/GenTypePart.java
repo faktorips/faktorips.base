@@ -33,9 +33,7 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
 
     private GenType genType;
 
-    public GenTypePart(GenType genType, IIpsObjectPartContainer ipsObjectPartContainer, LocalizedStringsSet stringsSet)
-            throws CoreException {
-
+    public GenTypePart(GenType genType, IIpsObjectPartContainer ipsObjectPartContainer, LocalizedStringsSet stringsSet) {
         super(ipsObjectPartContainer, stringsSet);
         ArgumentCheck.notNull(genType, this);
         this.genType = genType;

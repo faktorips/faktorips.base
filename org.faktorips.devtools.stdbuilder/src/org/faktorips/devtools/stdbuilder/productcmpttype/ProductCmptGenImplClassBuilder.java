@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -27,6 +29,7 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -35,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
@@ -45,9 +49,9 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.runtime.IProductComponent;
@@ -188,7 +192,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * </pre>
      */
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" },
@@ -199,8 +202,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         boolean attributeFound = false;
         GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
-        for (Iterator<GenProdAttribute> it = typeGenerator.getGenProdAttributes(); it.hasNext();) {
-            GenProdAttribute generator = it.next();
+        for (Iterator<GenProductCmptTypeAttribute> it = typeGenerator.getGenProdAttributes(); it.hasNext();) {
+            GenProductCmptTypeAttribute generator = it.next();
             if (attributeFound == false) {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
@@ -224,7 +227,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             }
             GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a
                     .getPolicyCmptType());
-            GenAttribute generator = genPolicyCmptType.getGenerator(a);
+            GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(a);
             ValueDatatype datatype = a.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
@@ -258,6 +261,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateExtractValueFromXml(String memberVar, DatatypeHelper helper, JavaCodeFragmentBuilder builder)
             throws CoreException {
+
         builder.append("value = ");
         builder.appendClassName(ValueToXmlHelper.class);
         builder.append(".getValueFromElement(configElement, \"Value\");");
@@ -269,6 +273,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private JavaCodeFragment getCodeToGetValueFromExpression(DatatypeHelper helper, String expression)
             throws CoreException {
+
         if (helper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
             IEnumType enumType = enumHelper.getEnumType();
@@ -280,25 +285,27 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return helper.newInstanceFromExpression(expression);
     }
 
-    private void generateExtractValueSetFromXml(GenAttribute attribute,
+    private void generateExtractValueSetFromXml(GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder builder) throws CoreException {
 
-        ValueSetType valueSetType = attribute.getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
+        ValueSetType valueSetType = genPolicyCmptTypeAttribute.getValueSet().getValueSetType();
         JavaCodeFragment frag = new JavaCodeFragment();
         helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), helper);
         if (valueSetType.isRange()) {
-            generateExtractRangeFromXml(attribute, helper, frag);
+            generateExtractRangeFromXml(genPolicyCmptTypeAttribute, helper, frag);
         } else if (valueSetType.isEnum()) {
-            generateExtractEnumSetFromXml(attribute, helper, frag);
+            generateExtractEnumSetFromXml(genPolicyCmptTypeAttribute, helper, frag);
         } else if (valueSetType.isUnrestricted()) {
-            generateExtractAnyValueSetFromXml(attribute, helper, frag);
+            generateExtractAnyValueSetFromXml(genPolicyCmptTypeAttribute, helper, frag);
         }
         builder.append(frag);
     }
 
-    private void generateExtractAnyValueSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
-            throws CoreException {
+    private void generateExtractAnyValueSetFromXml(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragment frag) throws CoreException {
+
         frag.append(attribute.getFieldNameForSetOfAllowedValues());
         frag.append(" = new ");
         frag.appendClassName(UnrestrictedValueSet.class);
@@ -314,8 +321,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
-    private void generateExtractEnumSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
-            throws CoreException {
+    private void generateExtractEnumSetFromXml(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragment frag) throws CoreException {
 
         frag.appendClassName(EnumValues.class);
         frag.append(" values = ");
@@ -351,8 +359,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         frag.appendCloseBracket();
     }
 
-    private void generateExtractRangeFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragment frag)
-            throws CoreException {
+    private void generateExtractRangeFromXml(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragment frag) throws CoreException {
 
         frag.appendClassName(Range.class);
         frag.append(" range = ");
@@ -744,6 +753,27 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 + IProductComponent.class.getName() + ">>";
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
                 "getLinks", new String[0], new String[0]);
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            boolean recursivelyIncludeChildren) {
+
+        IProductCmptType productCmptType = null;
+        if (ipsObjectPartContainer instanceof IProductCmptType) {
+            productCmptType = (IProductCmptType)ipsObjectPartContainer;
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
+            productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
+
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
+            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
+        }
+
+        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements,
+                generatedJavaType, ipsObjectPartContainer, recursivelyIncludeChildren);
     }
 
     @Override

@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class GenConstantAttribute extends GenAttribute {
+public class GenConstantAttribute extends GenPolicyCmptTypeAttribute {
 
     public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a);
@@ -75,16 +75,16 @@ public class GenConstantAttribute extends GenAttribute {
      * </pre>
      */
     protected void generateConstant(JavaCodeFragmentBuilder builder) throws CoreException {
-        String comment = getLocalizedText("FIELD_VALUE_JAVADOC", attributeName);
+        String comment = getLocalizedText("FIELD_VALUE_JAVADOC", getAttribute().getName());
         builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
                 | java.lang.reflect.Modifier.STATIC;
-        JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
+        JavaCodeFragment initialValueExpression = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
         builder.varDeclaration(modifier, getJavaClassName(), getConstantMemberVarName(), initialValueExpression);
     }
 
     public String getConstantMemberVarName() {
-        return getJavaNamingConvention().getConstantClassVarName(attributeName);
+        return getJavaNamingConvention().getConstantClassVarName(getAttribute().getName());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class GenConstantAttribute extends GenAttribute {
         super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
                 recursivelyIncludeChildren);
 
-        if (isNotPublished()) {
+        if (!(isPublished())) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
             javaElements.add(constantMember);
         }

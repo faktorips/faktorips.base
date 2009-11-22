@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
@@ -142,14 +142,14 @@ public class GenValidationRule extends GenTypePart {
                     .getValidatedAttributeAt(0));
             body.append('!');
 
-            GenAttribute genAttribute = ((GenPolicyCmptType)getGenType()).getGenerator(attr);
+            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((GenPolicyCmptType)getGenType()).getGenerator(attr);
             if (!attr.getValueSet().isUnrestricted()) {
-                body.append(genAttribute.getMethodNameGetSetOfAllowedValues());
+                body.append(genPolicyCmptTypeAttribute.getMethodNameGetSetOfAllowedValues());
             }
             body.append("(");
             body.append(parameterValidationContext);
             body.append(").contains(");
-            body.append(genAttribute.getGetterMethodName());
+            body.append(genPolicyCmptTypeAttribute.getGetterMethodName());
             body.append("()))");
         } else {
             body.append("true) ");
