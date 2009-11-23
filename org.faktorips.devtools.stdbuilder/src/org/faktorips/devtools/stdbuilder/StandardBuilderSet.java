@@ -591,7 +591,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             if (!(builder instanceof JavaSourceFileBuilder)) {
-                break;
+                continue;
             }
             try {
                 if (builder.isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {

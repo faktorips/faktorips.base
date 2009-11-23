@@ -35,13 +35,13 @@ _+ PROPERTY_PRICE : String_</panel_attributes><additional_attributes/></element>
 </panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>280</y><w>210</w><h>80</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>110</y><w>210</w><h>70</h></coordinates><panel_attributes>Policy
 --
-_+ PROPERTY_PRICE : String_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>410</y><w>480</w><h>150</h></coordinates><panel_attributes>Derived &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>540</x><y>410</y><w>480</w><h>150</h></coordinates><panel_attributes>Derived &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+_+ PROPERTY_PRICE : String_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>410</y><w>480</w><h>150</h></coordinates><panel_attributes>Derived &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>530</x><y>410</y><w>480</w><h>150</h></coordinates><panel_attributes>Derived &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>270</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>Policy
 --
  
 --
-+ getPrice() : Integer</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>560</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
-/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>790</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>Policy
++ getPrice() : Integer</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>450</y><w>210</w><h>90</h></coordinates><panel_attributes>Policy
 --
 
  

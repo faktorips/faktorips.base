@@ -612,15 +612,15 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
-        IField expectedField = generatedJavaType.getField(getFieldNameDefaultValue());
-        javaElements.add(expectedField);
+        IField field = generatedJavaType.getField(getFieldNameDefaultValue());
+        javaElements.add(field);
     }
 
     private void addSetOfAllowedValuesMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
-        IField expectedField = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
-        javaElements.add(expectedField);
+        IField field = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
+        javaElements.add(field);
     }
 
     private void addGetSetOfAllowedValuesMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
