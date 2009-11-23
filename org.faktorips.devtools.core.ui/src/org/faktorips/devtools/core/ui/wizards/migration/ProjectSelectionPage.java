@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,9 +14,10 @@
 package org.faktorips.devtools.core.ui.wizards.migration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -38,11 +39,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class ProjectSelectionPage extends WizardPage {
     private CheckboxTreeViewer treeViewer;
-    private ArrayList preSelected;
+    private List<IIpsProject> preSelected;
+
     /**
      * @param pageName
      */
-    protected ProjectSelectionPage(ArrayList preSelected) {
+    protected ProjectSelectionPage(List<IIpsProject> preSelected) {
         super(Messages.ProjectSelectionPage_titleSelectProjects);
         this.preSelected = preSelected;
     }
@@ -59,11 +61,11 @@ public class ProjectSelectionPage extends WizardPage {
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         treeViewer.setInput(""); //$NON-NLS-1$
-        
+
         treeViewer.setCheckedElements(preSelected.toArray());
-        
+
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-        
+
             public void selectionChanged(SelectionChangedEvent event) {
                 setPageComplete(getProjects().length > 0);
             }
@@ -83,13 +85,15 @@ public class ProjectSelectionPage extends WizardPage {
         }
         return projects;
     }
-    
+
     private class TreeLabelProvider extends LabelProvider {
 
+        @Override
         public String getText(Object element) {
             return ((IIpsProject)element).getName();
         }
 
+        @Override
         public Image getImage(Object element) {
             return ((IIpsProject)element).getImage();
         }
@@ -122,14 +126,13 @@ public class ProjectSelectionPage extends WizardPage {
          * {@inheritDoc}
          */
         public Object[] getElements(Object inputElement) {
-            ArrayList result = new ArrayList();
+            List<IIpsProject> result = new ArrayList<IIpsProject>();
             IIpsProject[] projects;
             try {
                 projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
-                setMessage("An internal error occurred while reading the projects", DialogPage.ERROR);
+                setMessage("An internal error occurred while reading the projects", IMessageProvider.ERROR);
                 return new Object[0];
             }
             for (int i = 0; i < projects.length; i++) {
@@ -142,12 +145,11 @@ public class ProjectSelectionPage extends WizardPage {
                 }
             }
             if (result.size() == 0) {
-                setMessage(Messages.ProjectSelectionPage_msgNoProjects, DialogPage.INFORMATION);
-            }
-            else {
+                setMessage(Messages.ProjectSelectionPage_msgNoProjects, IMessageProvider.INFORMATION);
+            } else {
                 setMessage(Messages.ProjectSelectionPage_msgSelectProjects);
             }
-            return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
+            return result.toArray(new IIpsProject[result.size()]);
         }
 
         /**

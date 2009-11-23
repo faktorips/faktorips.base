@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,17 +23,14 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -51,14 +48,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Daniel Hohenberger
  */
-public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implements IWorkbenchWindowActionDelegate,
+        IObjectActionDelegate {
     private IWorkbenchWindow window;
     // the last selection
     private ISelection selection;
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do
     }
@@ -73,30 +72,14 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
-        // check for open editors
-        boolean dirtyeditor = false;
-        if (PlatformUI.isWorkbenchRunning()) {
-            IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
-            for (int i = 0; i < windows.length && !dirtyeditor; i++) {
-                IWorkbenchPage[] pages = windows[i].getPages();
-                for (int j = 0; j < pages.length && !dirtyeditor; j++) {
-                    IEditorReference[] refs = pages[j].getEditorReferences();
-                    for (int k = 0; k < refs.length && !dirtyeditor; k++) {
-                        dirtyeditor = refs[k].isDirty();
-                    }
-                }
-            }
-        }
-
-        if (dirtyeditor) {
-            MessageDialog
-                    .openError(window.getShell(), Messages.OpenFixDifferencesToModelWizardAction_fixingNotPossibleTitle,
-                            Messages.OpenFixDifferencesToModelWizardAction_fixingNotPossibleReason);
+        // save dirty editors
+        if (!PlatformUI.getWorkbench().saveAllEditors(true)) {
             return;
         }
 
-        Set ipsElementsToFix = findObjectsToFix();
+        Set<IFixDifferencesToModelSupport> ipsElementsToFix = findObjectsToFix();
         FixDifferencesToModelWizard wizard = new FixDifferencesToModelWizard(ipsElementsToFix);
         wizard.init(window.getWorkbench(), getCurrentSelection());
         WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
@@ -123,6 +106,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
             action.setEnabled(false);
@@ -131,17 +115,16 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         this.selection = selection;
     }
 
-    private Set findObjectsToFix() {
-        Set ipsElementsToFix = new HashSet();
-        if (this.selection instanceof IStructuredSelection) {
+    private Set<IFixDifferencesToModelSupport> findObjectsToFix() {
+        Set<IFixDifferencesToModelSupport> ipsElementsToFix = new HashSet<IFixDifferencesToModelSupport>();
+        if (selection instanceof IStructuredSelection) {
             try {
-                IStructuredSelection sel = (IStructuredSelection)this.selection;
+                IStructuredSelection sel = (IStructuredSelection)selection;
                 for (Iterator iter = sel.iterator(); iter.hasNext();) {
                     Object selected = iter.next();
                     addElementToFix(ipsElementsToFix, selected);
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 // don't disturb
                 IpsPlugin.log(e);
             }
@@ -149,7 +132,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         return ipsElementsToFix;
     }
 
-    private void addElementToFix(Set ipsElementsToFix, Object selected) throws CoreException {
+    private void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected)
+            throws CoreException {
         if (selected instanceof IJavaProject) {
             IIpsProject project = getIpsProject((IJavaProject)selected);
             addIpsElement(project, ipsElementsToFix);
@@ -165,8 +149,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             IIpsProject project = getIpsProject(((IPackageFragment)selected).getJavaProject());
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
-                IIpsPackageFragment pack = roots[i].getIpsPackageFragment(((IPackageFragment)selected)
-                        .getElementName());
+                IIpsPackageFragment pack = roots[i]
+                        .getIpsPackageFragment(((IPackageFragment)selected).getElementName());
                 addIpsElement(pack, ipsElementsToFix);
             }
         } else if (selected instanceof IIpsPackageFragment) {
@@ -176,17 +160,17 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             if (ipsElementToFix.containsDifferenceToModel(ipsElementToFix.getIpsSrcFile().getIpsProject())) {
                 ipsElementsToFix.add(ipsElementToFix);
             }
-        } else if (selected instanceof IResource){
+        } else if (selected instanceof IResource) {
             Object objToAdd = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)selected);
-            if (objToAdd instanceof IIpsSrcFile){
+            if (objToAdd instanceof IIpsSrcFile) {
                 objToAdd = ((IIpsSrcFile)objToAdd).getIpsObject();
             }
-            if(objToAdd != null){
+            if (objToAdd != null) {
                 addElementToFix(ipsElementsToFix, objToAdd);
             }
         }
     }
-    
+
     private IIpsProject getIpsProject(IJavaProject jProject) {
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(jProject.getProject());
     }
@@ -207,14 +191,12 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
                     addIpsElements(packs[j], ipsElementsToFix);
                 }
             }
-        }
-        else if (element instanceof IIpsPackageFragmentRoot) {
+        } else if (element instanceof IIpsPackageFragmentRoot) {
             IIpsPackageFragment[] packs = ((IIpsPackageFragmentRoot)element).getIpsPackageFragments();
             for (int j = 0; j < packs.length; j++) {
                 addIpsElements(packs[j], ipsElementsToFix);
             }
-        }
-        else if (element instanceof IIpsPackageFragment) {
+        } else if (element instanceof IIpsPackageFragment) {
             addIpsElements((IIpsPackageFragment)element, ipsElementsToFix);
         }
     }
@@ -223,15 +205,15 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         IIpsElement[] elements = pack.getChildren();
         for (int i = 0; i < elements.length; i++) {
             IIpsElement element = elements[i];
-            if(element instanceof IIpsSrcFile){
+            if (element instanceof IIpsSrcFile) {
                 element = ((IIpsSrcFile)element).getIpsObject();
             }
-            if(element instanceof IFixDifferencesToModelSupport){
+            if (element instanceof IFixDifferencesToModelSupport) {
                 IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)element;
-                if(ipsElementToFix.containsDifferenceToModel(ipsElementToFix.getIpsSrcFile().getIpsProject())){
+                if (ipsElementToFix.containsDifferenceToModel(ipsElementToFix.getIpsSrcFile().getIpsProject())) {
                     ipsElementsToFix.add(ipsElementToFix);
                 }
-            }else if (element instanceof IIpsPackageFragment){
+            } else if (element instanceof IIpsPackageFragment) {
                 addIpsElements((IIpsPackageFragment)element, ipsElementsToFix);
             }
         }
