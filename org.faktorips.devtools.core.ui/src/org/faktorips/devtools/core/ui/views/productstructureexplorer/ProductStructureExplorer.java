@@ -90,6 +90,8 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ReferenceDropListener;
 import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
@@ -302,7 +304,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             @Override
             public void run() {
                 refresh();
-                tree.expandAll();
+                // XXX tree.expandAll();
+                expandTreeToReferences();
+
             }
 
             @Override
@@ -475,7 +479,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
-        tree.expandAll();
+        // XXX tree.expandAll();
+        expandTreeToReferences();
+
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
                 tree));
 
@@ -601,13 +607,14 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     if (!tree.getControl().isDisposed()) {
                         Object input = tree.getInput();
                         if (input instanceof IProductCmptTreeStructure) {
+                            IProductCmptTreeStructure structure = (IProductCmptTreeStructure)input;
                             try {
-                                ((IProductCmptTreeStructure)input).refresh();
+                                structure.refresh();
                             } catch (CycleInProductStructureException e) {
                                 handleCircle(e);
                                 return;
                             }
-                            showTreeInput(input);
+                            showTreeInput(structure);
                         } else {
                             showEmptyMessage();
                         }
@@ -717,7 +724,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         errormsg.getParent().layout();
     }
 
-    private void showTreeInput(Object input) {
+    private void showTreeInput(IProductCmptTreeStructure input) {
         errormsg.setVisible(false);
         ((GridData)errormsg.getLayoutData()).exclude = true;
 
@@ -726,7 +733,28 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         viewerPanel.getParent().layout();
 
         tree.setInput(input);
-        tree.expandAll();
+        // XXX tree.expandAll();
+        expandTreeToReferences();
+    }
+
+    private void expandTreeToReferences() {
+        if (tree.getInput() instanceof IProductCmptTreeStructure) {
+            IProductCmptTreeStructure structure = (IProductCmptTreeStructure)tree.getInput();
+            IProductCmptReference parent = structure.getRoot();
+            IProductCmptTypeRelationReference[] relationsReferences = structure
+                    .getChildProductCmptTypeRelationReferences(parent, true);
+            int level = 2; // first level is root node. Always expand at least the root node
+            while (relationsReferences.length <= 1) {
+                IProductCmptReference[] cmptReferences = structure.getChildProductCmptReferences(parent);
+                // because there are similar types in in one association i take anly the first one
+                // for better performance
+                parent = cmptReferences[0];
+                relationsReferences = structure.getChildProductCmptTypeRelationReferences(parent, true);
+                // one level for the product cmpt references and one for the associations
+                level++;
+            }
+            tree.expandToLevel(level);
+        }
     }
 
     private void showEmptyMessage() {
@@ -779,8 +807,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             if (inputElement instanceof IProductCmpt) {
                 IProductCmpt productCmpt = (IProductCmpt)inputElement;
                 try {
-                    TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
-                            new HashSet<IProductCmpt>(), productCmpt.getIpsProject(), monitor);
+                    TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt, null, productCmpt
+                            .getIpsProject(), monitor);
                     List<AdjustmentDate> result = new ArrayList<AdjustmentDate>();
                     GregorianCalendar lastDate = null;
                     AdjustmentDate lastAdjDate = null;
@@ -810,7 +838,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 Set<IProductCmpt> alreadyPassed,
                 IIpsProject ipsProject,
                 IProgressMonitor monitor) throws CoreException {
-
+            if (alreadyPassed == null) {
+                alreadyPassed = new HashSet<IProductCmpt>();
+            }
             TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
 
                 public int compare(GregorianCalendar o1, GregorianCalendar o2) {
@@ -819,6 +849,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 }
 
             });
+            if (productCmpt == null) {
+                return result;
+            }
+
             List<IIpsObjectGeneration> generations = productCmpt.getGenerations();
             try {
                 monitor.beginTask(productCmpt.getName(), generations.size());
@@ -837,7 +871,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                                 if (monitor.isCanceled()) {
                                     return result;
                                 }
-                                if (!link.findAssociation(ipsProject).isAssoziation()) {
+                                IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
+                                if (linkAssociation != null && !linkAssociation.isAssoziation()) {
                                     IProductCmpt target = link.findTarget(ipsProject);
                                     if (alreadyPassed.add(target)) {
                                         IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
