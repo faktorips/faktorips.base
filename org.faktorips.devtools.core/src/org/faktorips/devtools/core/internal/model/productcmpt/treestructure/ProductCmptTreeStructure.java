@@ -35,7 +35,9 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -227,9 +229,12 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
             // Sort links by association
             Hashtable<String, List<IProductCmptLink>> mapping = new Hashtable<String, List<IProductCmptLink>>();
-            List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
+
+            List<IAssociation> associations = new ArrayList<IAssociation>();
+            // new ArrayList<IProductCmptTypeAssociation>();
             for (int i = 0; i < links.length; i++) {
                 try {
+                    // TODO check for JAVA5 for iteration
                     IProductCmptTypeAssociation association = links[i].findAssociation(ipsProject);
                     if (association == null) {
                         // no relation type found - inconsinstent model or product definition -
@@ -240,7 +245,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                     if (linksForAssociation == null) {
                         linksForAssociation = new ArrayList<IProductCmptLink>();
                         mapping.put(association.getName(), linksForAssociation);
-                        associations.add(association);
+                        // associations.add(association);
                     }
                     linksForAssociation.add(links[i]);
                 } catch (CoreException e) {
@@ -248,13 +253,27 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 }
             }
 
-            for (Iterator<IProductCmptTypeAssociation> iter = associations.iterator(); iter.hasNext();) {
-                IProductCmptTypeAssociation association = iter.next();
-                ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, association);
-                List<IProductCmptLink> linksList = mapping.get(association.getName());
-                node.setChildren(buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node,
-                        association));
-                children.add(node);
+            try {
+                IProductCmptType cmptType = cmpt.findProductCmptType(ipsProject);
+                if (cmptType != null) {
+                    // get again all associations. in the previous constructed list there are only
+                    // not empty relations
+                    associations = cmptType.findAllNotDerivedAssociations();
+                }
+                for (Iterator<IAssociation> iter = associations.iterator(); iter.hasNext();) {
+                    IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iter.next();
+                    ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, association);
+                    List<IProductCmptLink> linksList = mapping.get(association.getName());
+                    if (linksList == null) {
+                        linksList = new ArrayList<IProductCmptLink>();
+                    }
+                    node.setChildren(buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node,
+                            association));
+                    children.add(node);
+                }
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
 
             ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();
@@ -325,12 +344,20 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * {@inheritDoc}
      */
     public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent) {
+        return getChildProductCmptTypeRelationReferences(parent, false);
+    }
+
+    public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent,
+            boolean includeEmptyAssociations) {
         if (parent instanceof IProductCmptReference) {
             List<IProductCmptTypeRelationReference> relationReferences = new ArrayList<IProductCmptTypeRelationReference>();
             IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
             for (int i = 0; i < children.length; i++) {
                 if (children[i] instanceof IProductCmptTypeRelationReference) {
-                    relationReferences.add((IProductCmptTypeRelationReference)children[i]);
+                    IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)children[i];
+                    if (includeEmptyAssociations || getChildProductCmptReferences(relationReference).length > 0) {
+                        relationReferences.add(relationReference);
+                    }
                 }
             }
             return relationReferences.toArray(new IProductCmptTypeRelationReference[relationReferences.size()]);
