@@ -803,11 +803,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
-            throws CoreException {
+    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
 
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+        IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
             result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
         }

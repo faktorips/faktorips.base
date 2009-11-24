@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
@@ -33,18 +32,15 @@ public interface IIpsMetaClass extends IIpsObject {
      * This method returns an array of <code>IIpsSrcFile</code>s for all meta objects found for this
      * meta class. When the meta class supports a type hierarchy, the parameter
      * <code>includeSubtypes</code> specifies whether to search in sub types for further instances
-     * or not. If the meta class does not support sub types, the parameter will be ignored.
+     * or not. If the meta class does not support sub types, the parameter will be ignored. The
+     * search finds meta classes in all projects referencing the ipsProject of this type
      * 
-     * @param ipsProject the project in which the search is started. Because of project references
-     *            are directed, the method has to find all projects, referencing this
-     *            <code>ipsProject</code>.
      * @param includeSubtypes for meta classes that support subtype hierarchy: true to include
      *            objects from meta class subtypes
      * @return An array of <code>IIpsSrcFile</code>s containing all meta objects that are instances
      *         of this meta class
      * @throws CoreException
      */
-    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
-            throws CoreException;
+    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException;
 
 }

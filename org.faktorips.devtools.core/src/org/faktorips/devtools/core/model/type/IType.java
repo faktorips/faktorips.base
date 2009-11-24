@@ -275,6 +275,13 @@ public interface IType extends IIpsObject, Datatype {
     public IAssociation[] getAssociations();
 
     /**
+     * Returns all not derived associations from this type and its super types
+     * 
+     * @throws CoreException
+     */
+    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
+
+    /**
      * Returns all associations that have the indicated target. Returns an empty array if no such
      * association exists or target is <code>null</code>.
      * <p>

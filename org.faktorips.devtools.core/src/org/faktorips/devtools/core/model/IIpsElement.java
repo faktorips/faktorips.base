@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -44,8 +44,9 @@ public interface IIpsElement {
     public IIpsProject getIpsProject();
 
     /**
-     * Returns true if this element exists. This is the case if every ancestor up to the <code>IIpsProject</code>
-     * does exist and, if this element has a corresponding resource, that resource exists as well.
+     * Returns true if this element exists. This is the case if every ancestor up to the
+     * <code>IIpsProject</code> does exist and, if this element has a corresponding resource, that
+     * resource exists as well.
      */
     public boolean exists();
 
@@ -59,9 +60,8 @@ public interface IIpsElement {
 
     /**
      * Returns the resource the element is stored in. In contrast to
-     * <code>getCorrespondingResource()</code> this methods never returns null. E.g. for a pd
-     * object contained in a source file, the method returns the file the source file corresponds
-     * to.
+     * <code>getCorrespondingResource()</code> this methods never returns null. E.g. for a pd object
+     * contained in a source file, the method returns the file the source file corresponds to.
      */
     public IResource getEnclosingResource();
 
@@ -86,9 +86,10 @@ public interface IIpsElement {
      * Returns the element's image.
      */
     public Image getImage();
-    
+
     /**
-     * Returns <code>true</code> if this element is contained in an archive, <code>false</code> otherwise. 
+     * Returns <code>true</code> if this element is contained in an archive, <code>false</code>
+     * otherwise.
      */
     public boolean isContainedInArchive();
 

@@ -872,7 +872,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         EnumContent enum2 = newEnumContent(enumType, enum2QName);
         EnumContent enum3 = newEnumContent(ipsProject, enum3QName);
 
-        Object[] result = enumType.findAllMetaObjectSrcFiles(ipsProject, true);
+        Object[] result = enumType.searchMetaObjectSrcFiles(true);
         List<Object> resultList = Arrays.asList(result);
         assertEquals(2, result.length);
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));
@@ -882,7 +882,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         EnumContent enumProj2 = newEnumContent(referencingProject, enumProj2QName);
         enumProj2.setEnumType(enumTypeQName);
 
-        result = enumType.findAllMetaObjectSrcFiles(ipsProject, true);
+        result = enumType.searchMetaObjectSrcFiles(true);
         resultList = Arrays.asList(result);
         assertEquals(3, result.length);
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));
@@ -892,17 +892,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         EnumType enumTypeProj2 = newEnumType(independentProject, enumTypeProj2QName);
 
-        result = enumTypeProj2.findAllMetaObjectSrcFiles(independentProject, true);
+        result = enumTypeProj2.searchMetaObjectSrcFiles(true);
         assertEquals(0, result.length);
 
         EnumType superEnum = newEnumType(ipsProject, "superEnum");
         superEnum.setAbstract(true);
         enumType.setSuperEnumType(superEnum.getQualifiedName());
 
-        result = enumTypeProj2.findAllMetaObjectSrcFiles(independentProject, false);
+        result = enumTypeProj2.searchMetaObjectSrcFiles(false);
         assertEquals(0, result.length);
 
-        result = superEnum.findAllMetaObjectSrcFiles(ipsProject, true);
+        result = superEnum.searchMetaObjectSrcFiles(true);
         resultList = Arrays.asList(result);
         assertEquals(3, result.length);
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));

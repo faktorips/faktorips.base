@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeRelationReference;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -33,7 +32,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
@@ -73,13 +71,11 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     private static IProductCmptTypeRelationReference[] getAssociationNodes(IProductCmptType type,
             IProductCmptGeneration productCmpGen) throws CoreException, CycleInProductStructureException {
-        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(productCmpGen.getIpsProject());
-        collector.start(type);
         List<IProductCmptTypeRelationReference> result = new ArrayList<IProductCmptTypeRelationReference>();
         IProductCmptTreeStructure structure = new ProductCmptTreeStructure(productCmpGen.getProductCmpt(),
                 productCmpGen.getValidFrom(), productCmpGen.getIpsProject());
         ProductCmptReference parent = new ProductCmptReference(structure, null, productCmpGen.getProductCmpt());
-        for (IAssociation association : collector.associations) {
+        for (IAssociation association : type.findAllNotDerivedAssociations()) {
             result
                     .add(new ProductCmptTypeRelationReference(structure, parent,
                             (IProductCmptTypeAssociation)association));
@@ -88,18 +84,12 @@ public class LinksContentProvider implements ITreeContentProvider {
     }
 
     private String[] getAssociationNames(IProductCmptGeneration gen) {
-        Set associations = new HashSet();
+        Set<String> associations = new HashSet<String>();
         IProductCmptLink[] links = gen.getLinks();
         for (int i = 0; i < links.length; i++) {
             associations.add(links[i].getAssociation());
         }
-        return (String[])associations.toArray(new String[associations.size()]);
-    }
-
-    private String[] getAssociationNames(IProductCmptType type, IIpsProject ipsProject) throws CoreException {
-        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(ipsProject);
-        collector.start(type);
-        return collector.associations.toArray(new String[collector.associations.size()]);
+        return associations.toArray(new String[associations.size()]);
     }
 
     /**
@@ -155,29 +145,4 @@ public class LinksContentProvider implements ITreeContentProvider {
         return children.length > 0;
     }
 
-    static class NoneDerivedAssociationsCollector extends ProductCmptTypeHierarchyVisitor {
-
-        private List<IAssociation> associations = new ArrayList<IAssociation>();
-
-        public NoneDerivedAssociationsCollector(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IAssociation[] typeAssociations = currentType.getAssociations();
-            int index = 0;
-            for (int i = 0; i < typeAssociations.length; i++) {
-                // to get the associations of the root type of the supertype hierarchy first,
-                // put in the list at first, but with unchanged order for all associations
-                // found in one type...
-                if (!typeAssociations[i].isDerived()) {
-                    associations.add(index, typeAssociations[i]);
-                    index++;
-                }
-            }
-            return true;
-        }
-
-    }
 }

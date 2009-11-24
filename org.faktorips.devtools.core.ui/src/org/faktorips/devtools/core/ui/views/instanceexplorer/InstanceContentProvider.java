@@ -46,6 +46,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         this.subTypeSearch = subTypeSearch;
     }
 
+    @Override
     public void dispose() {
 
     }
@@ -58,8 +59,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         }
         try {
             monitor.beginTask(getWaitingLabel(), 2);
-            IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.findAllMetaObjectSrcFiles(ipsMetaClass.getIpsProject(),
-                    subTypeSearch);
+            IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.searchMetaObjectSrcFiles(subTypeSearch);
             monitor.worked(1);
             IpsSrcFileViewItem[] result = IpsSrcFileViewItem.createItems(metaObjectsSrcFiles, ipsMetaClass);
             monitor.worked(1);

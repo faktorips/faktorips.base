@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -65,10 +65,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     private IProductCmptType productCmptType;
     private IProductCmptType superProductCmptType;
     private IProductCmptType superSuperProductCmptType;
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -80,14 +81,15 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
         ipsProject.getIpsModel().addChangeListener(this);
     }
-    
+
+    @Override
     protected void tearDownExtension() throws Exception {
         ipsProject.getIpsModel().removeChangeListener(this);
     }
 
     public void testValidateDuplicateFormulaName() throws CoreException {
         productCmptType.newFormulaSignature("formula");
-        
+
         // formula in same type
         IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("formula");
         MessageList result = productCmptType.validate(ipsProject);
@@ -96,7 +98,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         formula1.setFormulaName("formula1");
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE));
-        
+
         // formula in supertype
         IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("formula");
         result = productCmptType.validate(ipsProject);
@@ -106,30 +108,30 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY));
     }
-    
+
     public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
-        
+
         policyCmptType.setProductCmptType("OtherType");
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
-        
+
         policyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
         superProductCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
     }
-    
+
     public void testValidate_PolicyCmptTypeNotMarkedAsConfigurable() throws CoreException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
-        
+
         policyCmptType.setConfigurableByProductCmptType(false);
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
     }
-    
+
     /**
      * Additional, product component type specific tests
      */
@@ -142,43 +144,48 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         tsu1.setRoleName("property");
         MessageList result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        
+
         tsu1.setRoleName("table1");
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        
+
         // table structure usage in supertype
         ITableStructureUsage tsu2 = superProductCmptType.newTableStructureUsage();
         tsu2.setRoleName("property");
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        
+
         tsu2.setRoleName("table2");
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
-    
+
     public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         superProductCmptType.setConfigurationForPolicyCmptType(true);
         MessageList result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        assertNull(result
+                .getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
 
         productCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        assertNotNull(result
+                .getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
 
         superProductCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        assertNull(result
+                .getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
 
         productCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-        
+        assertNull(result
+                .getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+
         superProductCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        assertNull(result
+                .getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
     }
 
     public void testValidateTypeHierarchyMismatch() throws CoreException {
@@ -189,19 +196,19 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
-        
+
         superProductCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         superSuperProductCmptType.setConfigurationForPolicyCmptType(true);
         superSuperProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
-        
+
         // policy component type inherits from a type outside the hierarchy
         IPolicyCmptType otherType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SomeOtherType");
         superProductCmptType.setPolicyCmptType(otherType.getQualifiedName());
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
-        
+
         // an intermediate type exists in the policy hierarchy
         IPolicyCmptType intermediateType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "IntermediatePolicy");
         policyCmptType.setSupertype(intermediateType.getQualifiedName());
@@ -210,24 +217,25 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
     }
-    
+
     public void testSetConfigurationForPolicyCmptType() {
         Boolean newValue = Boolean.valueOf(!productCmptType.isConfigurationForPolicyCmptType());
-        testPropertyAccessReadWrite(IProductCmptType.class, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, productCmptType, newValue);
+        testPropertyAccessReadWrite(IProductCmptType.class,
+                IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, productCmptType, newValue);
     }
-    
+
     public void testFindProdDefProperties() throws CoreException {
         IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
         assertEquals(0, props.length);
 
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
         IProductCmptTypeAttribute typeAttribute1 = productCmptType.newProductCmptTypeAttribute("attrInType1");
         IProductCmptTypeAttribute typeAttribute2 = productCmptType.newProductCmptTypeAttribute("attrInType2");
-        
+
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(1, props.length);
         assertEquals(supertypeAttr, props[0]);
@@ -254,15 +262,24 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(supertypeTsu, props[3]);
         assertEquals(typeTsu1, props[4]);
         assertEquals(typeTsu2, props[5]);
-        
+
         // formula signatures
         IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
         supertypeSignature.setFormulaSignatureDefinition(true);
         supertypeSignature.setFormulaName("CalculatePremium");
         IProductCmptTypeMethod typeSignature1 = productCmptType.newFormulaSignature("CalculatePremium1");
         IProductCmptTypeMethod typeSignature2 = productCmptType.newFormulaSignature("CalculatePremium2");
-        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this method is not a product def property as it is not a formula signature
-        
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this
+        // method is
+        // not a
+        // product
+        // def
+        // property
+        // as it is
+        // not a
+        // formula
+        // signature
+
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(3, props.length);
         assertEquals(supertypeAttr, props[0]);
@@ -280,21 +297,28 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(supertypeSignature, props[6]);
         assertEquals(typeSignature1, props[7]);
         assertEquals(typeSignature2, props[8]);
-        
+
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+                .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType
+                .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr1.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType
+                .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr2.setProductRelevant(true);
-        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
+        // not a product def
+        // property as it is
+        // not product
+        // relevant!
         IPolicyCmptTypeAttribute derivedAttr = policyCmptType.newPolicyCmptTypeAttribute();
         derivedAttr.setProductRelevant(true);
         derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-        
+
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(4, props.length);
         assertEquals(supertypeAttr, props[0]);
@@ -317,30 +341,30 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(policyCmptTypeAttr1, props[10]);
         assertEquals(policyCmptTypeAttr2, props[11]);
     }
-    
+
     public void testFindProdDefProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
         IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr1.setProductRelevant(true);
         IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
         assertEquals(1, props.length); // make sure, setup is ok
-        
+
         IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
         subtype.setConfigurationForPolicyCmptType(true);
         subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
         props = subtype.findProdDefProperties(ipsProject);
-        assertEquals(1, props.length); // attribute  mustn't be inluded twice!!!
+        assertEquals(1, props.length); // attribute mustn't be inluded twice!!!
     }
-    
+
     public void testGetProdDefPropertiesMap() throws CoreException {
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
         IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
         typeAttribute.setDatatype("Money");
-        
+
         // table structure usages
         ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
         supertypeTsu.setRoleName("SuperTable");
@@ -350,18 +374,33 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         // formula signatures
         IProductCmptTypeMethod supertypeSignature = superProductCmptType.newFormulaSignature("CalculatePremium");
         IProductCmptTypeMethod typeSignature = productCmptType.newFormulaSignature("CalculatePremium2");
-        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this method is not a product def property as it is not a formula signature
-        
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this
+        // method is
+        // not a
+        // product
+        // def
+        // property
+        // as it is
+        // not a
+        // formula
+        // signature
+
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+                .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("PolicySuperAttribute");
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
+                .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("PolicyAttribute");
         policyCmptTypeAttr.setProductRelevant(true);
-        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
+        // not a product def
+        // property as it is
+        // not product
+        // relevant!
 
         // test property type = null
         Map propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(null, ipsProject);
@@ -374,47 +413,52 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
-        
+
         // test with specific property types
         propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.VALUE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
-        
-        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.TABLE_CONTENT_USAGE, ipsProject);
+
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(
+                ProdDefPropertyType.TABLE_CONTENT_USAGE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
         assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
-        
-        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.FORMULA, ipsProject);
+
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.FORMULA,
+                ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
         assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(
+                ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
-        
-        // test if two product component types configure the same policy component type, that the properties defined by the
+
+        // test if two product component types configure the same policy component type, that the
+        // properties defined by the
         // policy component type aren't considered twice.
         IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
         subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
-        propertyMap = ((ProductCmptType)subtype).getProdDefPropertiesMap(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
+        propertyMap = ((ProductCmptType)subtype).getProdDefPropertiesMap(
+                ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
     }
-    
+
     public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
         IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
-        
+
         // table structure usages
         ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
         supertypeTsu.setRoleName("SupertypeTsu");
@@ -428,50 +472,64 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
         typeSignature.setFormulaSignatureDefinition(true);
         typeSignature.setFormulaName("CalculatePremium2");
-        
+
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+                .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
+                .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
         policyCmptTypeAttr.setProductRelevant(true);
-        
-        assertEquals(typeAttribute, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeAttribute.getName(), ipsProject));
-        assertEquals(supertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, supertypeAttr.getName(), ipsProject));
-        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, typeAttribute.getName(), ipsProject));
-        
-        assertEquals(typeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE, typeTsu.getRoleName(), ipsProject));
-        assertEquals(supertypeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE, supertypeTsu.getRoleName(), ipsProject));
+
+        assertEquals(typeAttribute, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeAttribute
+                .getName(), ipsProject));
+        assertEquals(supertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, supertypeAttr
+                .getName(), ipsProject));
+        assertNull(productCmptType
+                .findProdDefProperty(ProdDefPropertyType.FORMULA, typeAttribute.getName(), ipsProject));
+
+        assertEquals(typeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE, typeTsu
+                .getRoleName(), ipsProject));
+        assertEquals(supertypeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE,
+                supertypeTsu.getRoleName(), ipsProject));
         assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeTsu.getRoleName(), ipsProject));
-        
-        assertEquals(typeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, typeSignature.getFormulaName(), ipsProject));
-        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, supertypeSignature.getFormulaName(), ipsProject));
-        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeSignature.getFormulaName(), ipsProject));
-        
-        assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
-        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptSupertypeAttr.getName(), ipsProject));
-        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, policyCmptTypeAttr.getName(), ipsProject));
-        
+
+        assertEquals(typeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, typeSignature
+                .getFormulaName(), ipsProject));
+        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA,
+                supertypeSignature.getFormulaName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeSignature.getFormulaName(),
+                ipsProject));
+
+        assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(
+                ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
+        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(
+                ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptSupertypeAttr.getName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, policyCmptTypeAttr.getName(),
+                ipsProject));
+
         productCmptType.setPolicyCmptType("");
-        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET,
+                policyCmptTypeAttr.getName(), ipsProject));
     }
-    
+
     public void testFindProdDefProperty_ByName() throws CoreException {
         IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
         assertEquals(0, props.length);
 
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
         IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
-        
+
         // table structure usages
         ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
         supertypeTsu.setRoleName("SupertypeTsu");
@@ -485,43 +543,46 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
         typeSignature.setFormulaSignatureDefinition(true);
         typeSignature.setFormulaName("CalculatePremium2");
-        
+
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+                .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
+                .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
         policyCmptTypeAttr.setProductRelevant(true);
-        
+
         assertEquals(typeAttribute, productCmptType.findProdDefProperty(typeAttribute.getName(), ipsProject));
         assertEquals(supertypeAttr, productCmptType.findProdDefProperty(supertypeAttr.getName(), ipsProject));
-        
+
         assertEquals(typeTsu, productCmptType.findProdDefProperty(typeTsu.getRoleName(), ipsProject));
         assertEquals(supertypeTsu, productCmptType.findProdDefProperty(supertypeTsu.getRoleName(), ipsProject));
-        
+
         assertEquals(typeSignature, productCmptType.findProdDefProperty(typeSignature.getFormulaName(), ipsProject));
-        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(supertypeSignature.getFormulaName(), ipsProject));
-        
+        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(supertypeSignature.getFormulaName(),
+                ipsProject));
+
         assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(policyCmptTypeAttr.getName(), ipsProject));
-        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(policyCmptSupertypeAttr.getName(), ipsProject));
+        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(policyCmptSupertypeAttr.getName(),
+                ipsProject));
 
         policyCmptTypeAttr.setProductRelevant(false);
         assertNull(productCmptType.findProdDefProperty(policyCmptTypeAttr.getName(), ipsProject));
     }
-    
+
     public void testFindFormulaSignature() throws CoreException {
         IProductCmptTypeMethod method1 = superSuperProductCmptType.newProductCmptTypeMethod();
         method1.setFormulaSignatureDefinition(true);
         method1.setFormulaName("Premium Calculation");
-        
+
         assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", ipsProject));
         assertSame(method1, productCmptType.findFormulaSignature("Premium Calculation", ipsProject));
-        
-        
+
         method1.setFormulaSignatureDefinition(false);
         assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", ipsProject));
         assertNull(productCmptType.findFormulaSignature("Unknown", ipsProject));
@@ -536,23 +597,22 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         method2.setFormulaSignatureDefinition(true);
         method2.setFormulaName("Premium Calculation");
         assertSame(method2, productCmptType.findFormulaSignature("Premium Calculation", ipsProject));
-        
-        
+
     }
-    
+
     public void testValidatePolicyCmptType() throws CoreException {
         MessageList ml = productCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
-        
+
         productCmptType.setPolicyCmptType("Unknown");
         ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
-        
+
         productCmptType.setPolicyCmptType(superProductCmptType.getQualifiedName());
         ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
     }
-    
+
     public void testNewMethod() {
         IMethod method = productCmptType.newMethod();
         assertNotNull(method);
@@ -561,8 +621,8 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(method, productCmptType.getMethods()[0]);
         assertEquals(1, productCmptType.getMethods().length);
         assertEquals(1, productCmptType.getProductCmptTypeMethods().length);
-    }    
-    
+    }
+
     public void testNewProductCmptTypeMethod() {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         assertNotNull(method);
@@ -572,7 +632,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getMethods().length);
         assertEquals(1, productCmptType.getProductCmptTypeMethods().length);
     }
-    
+
     public void testNewTableStructureUsage() {
         ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
         assertNotNull(tsu);
@@ -580,59 +640,60 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(tsu, productCmptType.getTableStructureUsages()[0]);
     }
-    
+
     public void testNewFormulaSignature() {
         IProductCmptTypeMethod formula = productCmptType.newFormulaSignature("premium");
         assertEquals("premium", formula.getFormulaName());
         assertEquals(formula.getDefaultMethodName(), formula.getName());
         assertTrue(formula.isFormulaSignatureDefinition());
     }
-    
+
     public void testFindSupertype() throws CoreException {
         assertEquals(superProductCmptType, productCmptType.findSupertype(ipsProject));
         assertNull(superSuperProductCmptType.findSupertype(ipsProject));
         productCmptType.setSupertype("unknownType");
         assertNull(productCmptType.findSupertype(ipsProject));
     }
-    
+
     public void testFindTableStructureUsageInSupertypeHierarchy() throws CoreException {
         assertNull(superSuperProductCmptType.findTableStructureUsage(null, ipsProject));
         assertNull(superSuperProductCmptType.findTableStructureUsage("someRole", ipsProject));
-        
+
         assertNull(productCmptType.findTableStructureUsage("someRole", ipsProject));
 
         ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
         tsu1.setRoleName("role1");
         assertEquals(tsu1, productCmptType.findTableStructureUsage("role1", ipsProject));
         assertNull(productCmptType.findTableStructureUsage("unkownRole", ipsProject));
-        
+
         ITableStructureUsage tsu2 = superSuperProductCmptType.newTableStructureUsage();
         tsu2.setRoleName("role2");
         assertEquals(tsu2, productCmptType.findTableStructureUsage("role2", ipsProject));
 
         tsu2.setRoleName("role1");
         assertEquals(tsu1, productCmptType.findTableStructureUsage("role1", ipsProject));
-        
+
     }
-    
+
     public void testNewMemento() {
         Memento memento = productCmptType.newMemento();
         assertNotNull(memento);
-        
+
         productCmptType.newProductCmptTypeAttribute();
         memento = productCmptType.newMemento();
         assertNotNull(memento);
     }
 
     public void testSetPolicyCmptType() {
-        testPropertyAccessReadWrite(ProductCmptType.class, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, productCmptType, "NewPolicy");
+        testPropertyAccessReadWrite(ProductCmptType.class, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, productCmptType,
+                "NewPolicy");
     }
-    
+
     public void testFindPolicyCmptType() throws CoreException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType("");
         assertNull(productCmptType.findPolicyCmptType(ipsProject));
-        
+
         productCmptType.setPolicyCmptType("UnknownType");
         assertNull(productCmptType.findPolicyCmptType(ipsProject));
 
@@ -648,23 +709,23 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfAttributes());
         assertEquals(a1, productCmptType.getProductCmptTypeAttributes()[0]);
         assertEquals(productCmptType, a1.getProductCmptType());
-        
+
         assertEquals(a1, lastEvent.getPart());
     }
 
     public void testGetAttribute() {
         assertNull(productCmptType.getProductCmptTypeAttribute("a"));
-        
+
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         productCmptType.newProductCmptTypeAttribute();
         IProductCmptTypeAttribute a3 = productCmptType.newProductCmptTypeAttribute();
         a1.setName("a1");
         a3.setName("a3");
-        
+
         assertEquals(a1, productCmptType.getProductCmptTypeAttribute("a1"));
         assertEquals(a3, productCmptType.getProductCmptTypeAttribute("a3"));
         assertNull(productCmptType.getProductCmptTypeAttribute("unkown"));
-        
+
         assertNull(productCmptType.getProductCmptTypeAttribute(null));
     }
 
@@ -674,7 +735,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a1, attributes[0]);
-        
+
         IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
         attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a1, attributes[0]);
@@ -683,10 +744,10 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
 
     public void testGetNumOfAttributes() {
         assertEquals(0, productCmptType.getNumOfAttributes());
-        
+
         productCmptType.newProductCmptTypeAttribute();
         assertEquals(1, productCmptType.getNumOfAttributes());
-        
+
         productCmptType.newProductCmptTypeAttribute();
         assertEquals(2, productCmptType.getNumOfAttributes());
     }
@@ -694,88 +755,89 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testDependsOn() throws CoreException {
         IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
-        
+
         IProductCmptType aProductType = a.findProductCmptType(ipsProject);
         IProductCmptType bProductType = b.findProductCmptType(ipsProject);
-        
+
         List dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(1, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
 
         aProductType.setPolicyCmptType(a.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(2, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                a.getQualifiedNameType(), DependencyType.REFERENCE)));
-        
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+
         IAssociation aProductTypeTobProductType = aProductType.newAssociation();
         aProductTypeTobProductType.setTarget(bProductType.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(3, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                a.getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
-        
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+
         IAttribute aAttr = aProductType.newAttribute();
         aAttr.setDatatype(Datatype.MONEY.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(4, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                a.getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY.getQualifiedName())));
-        
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY
+                .getQualifiedName())));
+
         IMethod aMethod = aProductType.newMethod();
         aMethod.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        
+
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(5, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                a.getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
-                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY.getQualifiedName())));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.DECIMAL.getQualifiedName())));
-        
-
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
+                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY
+                .getQualifiedName())));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.DECIMAL
+                .getQualifiedName())));
 
     }
-    
+
     public void testMoveAttributes() {
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
         IProductCmptTypeAttribute a3 = productCmptType.newProductCmptTypeAttribute();
-        
-        productCmptType.moveAttributes(new int[]{1, 2}, true);
+
+        productCmptType.moveAttributes(new int[] { 1, 2 }, true);
         IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a2, attributes[0]);
         assertEquals(a3, attributes[1]);
         assertEquals(a1, attributes[2]);
-        
+
         assertTrue(lastEvent.isAffected(a1));
         assertTrue(lastEvent.isAffected(a2));
         assertTrue(lastEvent.isAffected(a3));
     }
-    
+
     public void testInitFromXml() {
         Element rootEl = getTestDocument().getDocumentElement();
         productCmptType.setPolicyCmptType("Bla");
@@ -789,7 +851,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
     }
-    
+
     public void testToXml() throws CoreException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -797,12 +859,12 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");
-        
+
         Element el = productCmptType.toXml(newDocument());
         productCmptType = newProductCmptType(ipsProject, "Copy");
         productCmptType.setConfigurationForPolicyCmptType(false);
         productCmptType.initFromXml(el);
-        
+
         assertEquals(policyCmptType.getQualifiedName(), productCmptType.getPolicyCmptType());
         assertTrue(productCmptType.isConfigurationForPolicyCmptType());
         assertEquals(1, productCmptType.getNumOfAttributes());
@@ -810,14 +872,14 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
     }
-    
-    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException{
-        
+
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException {
+
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
         IIpsProject b = newIpsProject("bProject");
         IProductCmptType aProductTypeProjectB = newProductCmptType(b, "faktorzehn.example.APolicy");
-        
+
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
         ArrayList newbPathEntries = new ArrayList();
@@ -825,51 +887,55 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         for (int i = 0; i < bPathEntries.length; i++) {
             newbPathEntries.add(bPathEntries[i]);
         }
-        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries
+                .toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);
-        
+
         MessageList msgList = aPolicyProjectA.validate(a);
         assertNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
-        
+
         msgList = aProductTypeProjectB.validate(b);
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
     }
-    
-    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreException{
-        
+
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreException {
+
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
         IProductCmptType aProductTypeProjectB = newProductCmptType(a, "faktorzehn.example.APolicy");
-        
+
         MessageList msgList = aPolicyProjectA.validate(a);
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
-        
+
         msgList = aProductTypeProjectB.validate(a);
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
     }
-    
-    public void testValidateProductTypeAbstractWhenPcTypeAbstract() throws Exception{
+
+    public void testValidateProductTypeAbstractWhenPcTypeAbstract() throws Exception {
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfig");
         IProductCmptType aConfig = a.findProductCmptType(ipsProject);
         a.setAbstract(false);
         aConfig.setAbstract(false);
         MessageList msgList = aConfig.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
-        
+        assertNull(msgList
+                .getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+
         a.setAbstract(true);
         msgList = aConfig.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+        assertNotNull(msgList
+                .getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
 
         aConfig.setAbstract(true);
         msgList = aConfig.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+        assertNull(msgList
+                .getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
     }
-    
-    public void testFindSignaturesOfOverloadedFormulas() throws Exception{
-        
+
+    public void testFindSignaturesOfOverloadedFormulas() throws Exception {
+
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
 
-        //formula method that will be overloaded by subclass
+        // formula method that will be overloaded by subclass
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
         aMethod.setDatatype(Datatype.STRING.toString());
@@ -879,7 +945,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         aMethod.newParameter(Datatype.STRING.toString(), "param1");
         aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
 
-        //formula method that is no exp
+        // formula method that is no exp
         IProductCmptTypeMethod a2Method = aType.newProductCmptTypeMethod();
         a2Method.setName("calculate2");
         a2Method.setDatatype(Datatype.STRING.toString());
@@ -915,9 +981,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IProductCmptTypeMethod[] methods = bType.findSignaturesOfOverloadedFormulas(ipsProject);
         assertEquals(1, methods.length);
     }
-    
-    public void testFindOverrideMethodCandidates() throws Exception{
-        
+
+    public void testFindOverrideMethodCandidates() throws Exception {
+
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
 
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
@@ -929,7 +995,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         aMethod.newParameter(Datatype.STRING.toString(), "param1");
         aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
 
-        //formula method that is no exp
+        // formula method that is no exp
         IProductCmptTypeMethod a2Method = aType.newProductCmptTypeMethod();
         a2Method.setName("calculate2");
         a2Method.setDatatype(Datatype.STRING.toString());
@@ -959,92 +1025,94 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         methods = bType.findOverrideMethodCandidates(false, ipsProject);
         assertEquals(1, methods.length);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
     }
-    
+
     /**
      * Test for findAllMetaObjects(..)
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
     public void testFindAllMetaObjects() throws CoreException {
-		String productCmptTypeQName = "pack.MyProductCmptType";
-		String productCmptTypeProj2QName = "otherpack.MyProductCmptTypeProj2";
-		String productCmpt1QName = "pack.MyProductCmpt1";
-		String productCmpt2QName = "pack.MyProductCmpt2";
-		String productCmpt3QName = "pack.MyProductCmpt3";
-		String productCmptProj2QName = "otherpack.MyProductCmptProj2";
-		
-		IIpsProject referencingProject = newIpsProject("referencingProject");
-		IIpsObjectPath path = referencingProject.getIpsObjectPath();
-		path.newIpsProjectRefEntry(ipsProject);
-		referencingProject.setIpsObjectPath(path);
-		
-		IIpsProject independentProject = newIpsProject("independentProject");
-		
-		/* leaveProject1 and leaveProject2 are not directly integrated in any test.
-		 * But the tested instance search methods have to search in all project that
-		 * holds a reference to the project of the object. So the search for a Object
-		 * in e.g. ipsProject have to search for instances in leaveProject1 and
-		 * leaveProject2. The tests implicit that no duplicates are found.
-		 */
-		
-		IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
-		path = leaveProject1.getIpsObjectPath();
-		path.newIpsProjectRefEntry(referencingProject);
-		leaveProject1.setIpsObjectPath(path);
+        String productCmptTypeQName = "pack.MyProductCmptType";
+        String productCmptTypeProj2QName = "otherpack.MyProductCmptTypeProj2";
+        String productCmpt1QName = "pack.MyProductCmpt1";
+        String productCmpt2QName = "pack.MyProductCmpt2";
+        String productCmpt3QName = "pack.MyProductCmpt3";
+        String productCmptProj2QName = "otherpack.MyProductCmptProj2";
 
-		IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
-		path = leaveProject2.getIpsObjectPath();
-		path.newIpsProjectRefEntry(referencingProject);
-		leaveProject2.setIpsObjectPath(path);
-		
-		ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeQName);
-		ProductCmpt productCmpt1 = newProductCmpt(productCmptType, productCmpt1QName);
-		ProductCmpt productCmpt2 = newProductCmpt(productCmptType, productCmpt2QName);
-		ProductCmpt productCmpt3 = newProductCmpt(ipsProject, productCmpt3QName);
-		
-		Object[] result = productCmptType.findAllMetaObjectSrcFiles(ipsProject, true);
-		List<Object> resultList = Arrays.asList(result);
-		assertEquals(2, result.length);
-		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
-		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
-		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
-		
-		ProductCmpt productCmptProj2 = newProductCmpt(referencingProject, productCmptProj2QName);
-		productCmptProj2.setProductCmptType(productCmptTypeQName);
+        IIpsProject referencingProject = newIpsProject("referencingProject");
+        IIpsObjectPath path = referencingProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        referencingProject.setIpsObjectPath(path);
 
-		result = productCmptType.findAllMetaObjectSrcFiles(ipsProject, true);
-		resultList = Arrays.asList(result);
-		assertEquals(3, result.length);
-		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
-		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
-		assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
-		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
-		
-		ProductCmptType productCmptTypeProj2 = newProductCmptType(independentProject, productCmptTypeProj2QName);
-		
-		result = productCmptTypeProj2.findAllMetaObjectSrcFiles(independentProject, true);
-		assertEquals(0, result.length);
-		
-		ProductCmptType superProductCmpt = newProductCmptType(ipsProject, "superProductCmpt");
-		superProductCmpt.setAbstract(true);
-		productCmptType.setSupertype(superProductCmpt.getQualifiedName());
-		
-		result = productCmptTypeProj2.findAllMetaObjectSrcFiles(independentProject, false);
-		assertEquals(0, result.length);
-		
-		result = superProductCmpt.findAllMetaObjectSrcFiles(ipsProject, true);
-		resultList = Arrays.asList(result);
-		assertEquals(3, result.length);
-		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
-		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
-		assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
-		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
-		
-	}
+        IIpsProject independentProject = newIpsProject("independentProject");
+
+        /*
+         * leaveProject1 and leaveProject2 are not directly integrated in any test. But the tested
+         * instance search methods have to search in all project that holds a reference to the
+         * project of the object. So the search for a Object in e.g. ipsProject have to search for
+         * instances in leaveProject1 and leaveProject2. The tests implicit that no duplicates are
+         * found.
+         */
+
+        IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+        path = leaveProject1.getIpsObjectPath();
+        path.newIpsProjectRefEntry(referencingProject);
+        leaveProject1.setIpsObjectPath(path);
+
+        IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+        path = leaveProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(referencingProject);
+        leaveProject2.setIpsObjectPath(path);
+
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeQName);
+        ProductCmpt productCmpt1 = newProductCmpt(productCmptType, productCmpt1QName);
+        ProductCmpt productCmpt2 = newProductCmpt(productCmptType, productCmpt2QName);
+        ProductCmpt productCmpt3 = newProductCmpt(ipsProject, productCmpt3QName);
+
+        Object[] result = productCmptType.searchMetaObjectSrcFiles(true);
+        List<Object> resultList = Arrays.asList(result);
+        assertEquals(2, result.length);
+        assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+        assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+        assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+
+        ProductCmpt productCmptProj2 = newProductCmpt(referencingProject, productCmptProj2QName);
+        productCmptProj2.setProductCmptType(productCmptTypeQName);
+
+        result = productCmptType.searchMetaObjectSrcFiles(true);
+        resultList = Arrays.asList(result);
+        assertEquals(3, result.length);
+        assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+        assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+        assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
+        assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+
+        ProductCmptType productCmptTypeProj2 = newProductCmptType(independentProject, productCmptTypeProj2QName);
+
+        result = productCmptTypeProj2.searchMetaObjectSrcFiles(true);
+        assertEquals(0, result.length);
+
+        ProductCmptType superProductCmpt = newProductCmptType(ipsProject, "superProductCmpt");
+        superProductCmpt.setAbstract(true);
+        productCmptType.setSupertype(superProductCmpt.getQualifiedName());
+
+        result = productCmptTypeProj2.searchMetaObjectSrcFiles(false);
+        assertEquals(0, result.length);
+
+        result = superProductCmpt.searchMetaObjectSrcFiles(true);
+        resultList = Arrays.asList(result);
+        assertEquals(3, result.length);
+        assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+        assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+        assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
+        assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+
+    }
 }

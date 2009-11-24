@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -67,9 +68,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
-    
-    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, ITableStructureUsage.class, "TableStructureUsage"); //$NON-NLS-1$
-    
+
+    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class,
+            ITableStructureUsage.class, "TableStructureUsage"); //$NON-NLS-1$
+
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
     }
@@ -77,24 +79,29 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForAttributes() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, IProductCmptTypeAttribute.class, ProductCmptTypeAttribute.TAG_NAME);
+        return new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, IProductCmptTypeAttribute.class,
+                ProductCmptTypeAttribute.TAG_NAME);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForMethods() {
         return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method"); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPartCollection createCollectionForAssociations() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class, "Association"); //$NON-NLS-1$
+        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class,
+                "Association"); //$NON-NLS-1$
     }
-    
+
     protected Iterator getIteratorForTableStructureUsages() {
         return tableStructureUsages.iterator();
     }
@@ -102,17 +109,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IType findSupertype(IIpsProject project) throws CoreException {
         if (!hasSupertype()) {
             return null;
         }
         IProductCmptType supertype = findSuperProductCmptType(project);
-        if (supertype!=null) {
+        if (supertype != null) {
             return supertype;
         }
-        return null;  
+        return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -142,7 +150,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public boolean isConfigurationForPolicyCmptType() {
         return configurationForPolicyCmptType;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -164,14 +172,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         return ipsProject.findPolicyCmptType(policyCmptType);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -180,7 +188,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         collector.start(this);
         return collector.getProperties();
     }
-    
+
     /**
      * Returns a map containing the property names as keys and the properties as values. This method
      * searches the supertype hierarchy.
@@ -196,7 +204,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         collector.start(this);
         return collector.getPropertyMap();
     }
-    
 
     /**
      * {@inheritDoc}
@@ -205,7 +212,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         EnumValue[] types = ProdDefPropertyType.enumType.getValues();
         for (int i = 0; i < types.length; i++) {
             IProdDefProperty prop = findProdDefProperty((ProdDefPropertyType)types[i], propName, ipsProject);
-            if (prop!=null) {
+            if (prop != null) {
                 return prop;
             }
         }
@@ -215,25 +222,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject) throws CoreException {
-        if (ProdDefPropertyType.VALUE==type) {
+    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
+            throws CoreException {
+        if (ProdDefPropertyType.VALUE == type) {
             return findProductCmptTypeAttribute(propName, ipsProject);
         }
-        if (ProdDefPropertyType.FORMULA==type) {
+        if (ProdDefPropertyType.FORMULA == type) {
             return findFormulaSignature(propName, ipsProject);
         }
-        if (ProdDefPropertyType.TABLE_CONTENT_USAGE==type) {
+        if (ProdDefPropertyType.TABLE_CONTENT_USAGE == type) {
             return findTableStructureUsage(propName, ipsProject);
         }
-        if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET!=type) {
+        if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET != type) {
             throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
-        if(policyCmptType == null){
+        if (policyCmptType == null) {
             return null;
         }
         IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
-        if (attr!=null && attr.isProductRelevant()) {
+        if (attr != null && attr.isProductRelevant()) {
             return attr;
         }
         return null;
@@ -245,7 +253,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptTypeAttribute newProductCmptTypeAttribute() {
         return (IProductCmptTypeAttribute)newAttribute();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -261,11 +269,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name) {
         return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject)
+            throws CoreException {
         return (IProductCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
@@ -279,15 +288,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
-        configurationForPolicyCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
+        configurationForPolicyCmptType = Boolean.valueOf(
+                element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, "" + configurationForPolicyCmptType); //$NON-NLS-1$
@@ -328,7 +340,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public ITableStructureUsage[] getTableStructureUsages() {
-        return (ITableStructureUsage[])tableStructureUsages.toArray(new ITableStructureUsage[tableStructureUsages.size()]);
+        return (ITableStructureUsage[])tableStructureUsages.toArray(new ITableStructureUsage[tableStructureUsages
+                .size()]);
     }
 
     /**
@@ -342,7 +355,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public ITableStructureUsage newTableStructureUsage() {
-        return (ITableStructureUsage)tableStructureUsages.newPart();    
+        return (ITableStructureUsage)tableStructureUsages.newPart();
     }
 
     /**
@@ -356,7 +369,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IProductCmptTypeAssociation[] getProductCmptTypeAssociations() {
-        return (IProductCmptTypeAssociation[])associations.toArray(new IProductCmptTypeAssociation[associations.size()]);
+        return (IProductCmptTypeAssociation[])associations
+                .toArray(new IProductCmptTypeAssociation[associations.size()]);
     }
 
     /**
@@ -366,20 +380,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
         for (IMethod method : methods) {
-            if(!((IProductCmptTypeMethod)method).isFormulaSignatureDefinition()){
+            if (!((IProductCmptTypeMethod)method).isFormulaSignatureDefinition()) {
                 result.add((IProductCmptTypeMethod)method);
             }
         }
-        return (IProductCmptTypeMethod[])result.toArray(new IProductCmptTypeMethod[result.size()]);
+        return result.toArray(new IProductCmptTypeMethod[result.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IProductCmptTypeMethod newProductCmptTypeMethod() {
         return (IProductCmptTypeMethod)methods.newPart();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -394,20 +408,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException{
+    public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
         ArrayList overloadedMethods = new ArrayList();
-        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+        for (Iterator it = methods.iterator(); it.hasNext();) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
             if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
                 IProductCmptTypeMethod overloadedMethod = method.findOverloadedFormulaMethod(ipsProject);
-                if(overloadedMethod != null){
+                if (overloadedMethod != null) {
                     overloadedMethods.add(overloadedMethod);
                 }
             }
         }
-        return (IProductCmptTypeMethod[])overloadedMethods.toArray(new IProductCmptTypeMethod[overloadedMethods.size()]);
+        return (IProductCmptTypeMethod[])overloadedMethods
+                .toArray(new IProductCmptTypeMethod[overloadedMethods.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -415,7 +430,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
         }
-        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+        for (Iterator it = methods.iterator(); it.hasNext();) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
             if (method.isFormulaSignatureDefinition() && formulaName.equalsIgnoreCase(method.getFormulaName())) {
                 return method;
@@ -427,7 +442,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptTypeMethod[] getFormulaSignatures() {
 
         ArrayList result = new ArrayList();
-        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+        for (Iterator it = methods.iterator(); it.hasNext();) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
             if (method.isFormulaSignatureDefinition()) {
                 result.add(method);
@@ -435,25 +450,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         return (IProductCmptTypeMethod[])result.toArray(new IProductCmptTypeMethod[result.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
-        return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);  
+        return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException {
+    @Override
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+            throws CoreException {
         IMethod[] candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List overloadedMethods = Arrays.asList(findSignaturesOfOverloadedFormulas(ipsProject));
         ArrayList result = new ArrayList(candidates.length);
         for (int i = 0; i < candidates.length; i++) {
-            if(overloadedMethods.contains(candidates[i])){
+            if (overloadedMethods.contains(candidates[i])) {
                 continue;
             }
             result.add(candidates[i]);
@@ -461,53 +478,59 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return (IMethod[])result.toArray(new IMethod[result.size()]);
     }
 
-    
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
             validatePolicyCmptTypeReference(supertype, ipsProject, list);
         } else {
-            if (supertype!=null && supertype.isConfigurationForPolicyCmptType()) {
+            if (supertype != null && supertype.isConfigurationForPolicyCmptType()) {
                 String text = Messages.ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
-                list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
+                list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE,
+                        text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
-        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedName(), ipsProject, this));
+        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
+                getQualifiedName(), ipsProject, this));
     }
 
-    //TODO pk: write test case
-    private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) throws CoreException{
+    // TODO pk: write test case
+    private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject)
+            throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         IProductCmptTypeMethod[] formulaSignatures = getFormulaSignatures();
         for (int i = 0; i < formulaSignatures.length; i++) {
-            if(formulaSignatures[i].isOverloadsFormula()){
+            if (formulaSignatures[i].isOverloadsFormula()) {
                 IProductCmptTypeMethod method = formulaSignatures[i].findOverloadedFormulaMethod(ipsProject);
-                if(method != null){
+                if (method != null) {
                     overloadedSupertypeFormulaSignatures.add(method);
                 }
             }
         }
-        
+
         IProductCmptTypeMethod[] nonFormulas = getNonFormulaProductCmptTypeMethods();
         for (IProductCmptTypeMethod overloadedMethod : overloadedSupertypeFormulaSignatures) {
             for (int i = 0; i < nonFormulas.length; i++) {
-                if(nonFormulas[i].isSameSignature(overloadedMethod)){
-                    String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden, overloadedMethod.getFormulaName());
-                    msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR, nonFormulas[i], IProductCmptTypeMethod.PROPERTY_NAME));
+                if (nonFormulas[i].isSameSignature(overloadedMethod)) {
+                    String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
+                            overloadedMethod.getFormulaName());
+                    msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR,
+                            nonFormulas[i], IIpsElement.PROPERTY_NAME));
                 }
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new ProductCmptTypeDuplicatePropertyNameValidator(ipsProject);
     }
@@ -519,60 +542,69 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType != null) {
-            msgList.add(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(policyCmptType
-                    .isAbstract(), isAbstract(), this));
+            msgList.add(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
+                    policyCmptType.isAbstract(), isAbstract(), this));
         }
     }
-    
-    private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
+
+    private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list)
+            throws CoreException {
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
-        if (policyCmptTypeObj==null) {
+        if (policyCmptTypeObj == null) {
             String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
-            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
+                    PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!policyCmptTypeObj.isConfigurableByProductCmptType()) {
             String text = NLS.bind(Messages.ProductCmptType_notMarkedAsConfigurable, policyCmptType);
-            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this,
+                    PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
-        if (!this.isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
+        if (!isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
             String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType, policyCmptType);
-            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this,
+                    PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
-        if (supertype==null) {
+        if (supertype == null) {
             return;
         }
         IPolicyCmptType policyCmptTypeOfSupertype = supertype.findPolicyCmptType(ipsProject);
-        if (policyCmptTypeObj!=policyCmptTypeOfSupertype && policyCmptTypeObj.findSupertype(ipsProject)!=policyCmptTypeOfSupertype) {
+        if (policyCmptTypeObj != policyCmptTypeOfSupertype
+                && policyCmptTypeObj.findSupertype(ipsProject) != policyCmptTypeOfSupertype) {
             String text = Messages.ProductCmptType_InconsistentTypeHierarchies;
-            list.add(new Message(MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR, this, new String[]{PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE}));
+            list.add(new Message(MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR, this, new String[] {
+                    PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE }));
             return;
         }
     }
-  
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
-        if(!StringUtils.isEmpty(getPolicyCmptType())){
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+        if (!StringUtils.isEmpty(getPolicyCmptType())) {
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
         }
-//      to force a check is a policy component type exists with the same qualified name
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
+        // to force a check is a policy component type exists with the same qualified name
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
-            boolean includeSubtypes) throws CoreException {
+
+    public IIpsSrcFile[] searchProductComponents(boolean includeSubtypes) throws CoreException {
+        return searchMetaObjectSrcFiles(includeSubtypes);
+    }
+
+    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+        IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
             result.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(this, includeSubtypes)));
         }
@@ -583,7 +615,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         private String tsuName;
         private ITableStructureUsage tsu = null;
-        
+
         public TableStructureUsageFinder(IIpsProject project, String tsuName) {
             super(project);
             this.tsuName = tsuName;
@@ -592,27 +624,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IProductCmptType currentType) {
             tsu = currentType.getTableStructureUsage(tsuName);
-            return tsu==null;
+            return tsu == null;
         }
-        
+
     }
 
-    
     private static class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
 
         // if set, indicates the type of properties that are collected
         // if null, all properties are collected
         private ProdDefPropertyType propertyType;
-        
+
         private List myAttributes = new ArrayList();
         private List myTableStructureUsages = new ArrayList();
         private List myFormulaSignatures = new ArrayList();
         private List myPolicyCmptTypeAttributes = new ArrayList();
-        
+
         private Set visitedPolicyCmptTypes = new HashSet();
-        
+
         public ProdDefPropertyCollector(ProdDefPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
             this.propertyType = propertyType;
@@ -621,30 +653,31 @@ public class ProductCmptType extends Type implements IProductCmptType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ProductCmptType currType = (ProductCmptType)currentType;
-            if (propertyType==null || ProdDefPropertyType.VALUE.equals(propertyType)) {
+            if (propertyType == null || ProdDefPropertyType.VALUE.equals(propertyType)) {
                 addInReverseOrder(currType.attributes, myAttributes);
             }
-            if (propertyType==null || ProdDefPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
+            if (propertyType == null || ProdDefPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
                 addInReverseOrder(currType.tableStructureUsages, myTableStructureUsages);
             }
-            if (propertyType==null || ProdDefPropertyType.FORMULA.equals(propertyType)) {
-                for (int i=currType.methods.size()-1; i>=0; i--) {
+            if (propertyType == null || ProdDefPropertyType.FORMULA.equals(propertyType)) {
+                for (int i = currType.methods.size() - 1; i >= 0; i--) {
                     IProductCmptTypeMethod method = (IProductCmptTypeMethod)currType.methods.getPart(i);
                     if (method.isFormulaSignatureDefinition()) {
                         myFormulaSignatures.add(method);
                     }
                 }
             }
-            if (propertyType==null || ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+            if (propertyType == null || ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
                 IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
-                if (policyCmptType==null || visitedPolicyCmptTypes.contains(policyCmptType)) {
+                if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                     return true;
                 }
                 visitedPolicyCmptTypes.add(policyCmptType);
                 IPolicyCmptTypeAttribute[] polAttr = policyCmptType.getPolicyCmptTypeAttributes();
-                for (int i = polAttr.length-1; i>=0; i--) {
+                for (int i = polAttr.length - 1; i >= 0; i--) {
                     if (polAttr[i].isProductRelevant() && polAttr[i].isChangeable()) {
                         myPolicyCmptTypeAttributes.add(polAttr[i]);
                     }
@@ -652,28 +685,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
             return true;
         }
-        
+
         private void addInReverseOrder(IpsObjectPartCollection source, Collection target) {
             int size = source.size();
-            for (int i = size-1; i>=0; i--) {
+            for (int i = size - 1; i >= 0; i--) {
                 target.add(source.getPart(i));
             }
         }
-        
+
         public IProdDefProperty[] getProperties() {
             int size = size();
             IProdDefProperty[] props = new IProdDefProperty[size];
             int counter = 0;
-            for (int i=myAttributes.size()-1; i>=0; i--) {
+            for (int i = myAttributes.size() - 1; i >= 0; i--) {
                 props[counter++] = (IProdDefProperty)myAttributes.get(i);
             }
-            for (int i=myTableStructureUsages.size()-1; i>=0; i--) {
+            for (int i = myTableStructureUsages.size() - 1; i >= 0; i--) {
                 props[counter++] = (IProdDefProperty)myTableStructureUsages.get(i);
             }
-            for (int i=myFormulaSignatures.size()-1; i>=0; i--) {
+            for (int i = myFormulaSignatures.size() - 1; i >= 0; i--) {
                 props[counter++] = (IProdDefProperty)myFormulaSignatures.get(i);
             }
-            for (int i=myPolicyCmptTypeAttributes.size()-1; i>=0; i--) {
+            for (int i = myPolicyCmptTypeAttributes.size() - 1; i >= 0; i--) {
                 props[counter++] = (IProdDefProperty)myPolicyCmptTypeAttributes.get(i);
             }
             return props;
@@ -687,54 +720,56 @@ public class ProductCmptType extends Type implements IProductCmptType {
             add(propertyMap, myPolicyCmptTypeAttributes);
             return propertyMap;
         }
-        
+
         private void add(Map propertyMap, List propertyList) {
             for (Iterator it = propertyList.iterator(); it.hasNext();) {
                 IProdDefProperty property = (IProdDefProperty)it.next();
                 propertyMap.put(property.getPropertyName(), property);
             }
         }
-        
+
         private int size() {
-            return myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size() + myPolicyCmptTypeAttributes.size();
+            return myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size()
+                    + myPolicyCmptTypeAttributes.size();
         }
     }
 
-    
     private static class ProductCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
 
         public ProductCmptTypeDuplicatePropertyNameValidator(IIpsProject ipsProject) {
             super(ipsProject);
         }
 
-        protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties){
-            //test if only formulas are involved
+        @Override
+        protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
+            // test if only formulas are involved
             boolean onlyFormulas = true;
             boolean onlyFormulasInSameType = true;
             IProductCmptType prodType = null;
             for (int i = 0; i < invalidObjProperties.length; i++) {
                 Object obj = invalidObjProperties[i].getObject();
-                if(!(obj instanceof IProductCmptTypeMethod)){
+                if (!(obj instanceof IProductCmptTypeMethod)) {
                     onlyFormulas = false;
                     onlyFormulasInSameType = false;
                     break;
                 } else {
-                    if(prodType == null){
+                    if (prodType == null) {
                         prodType = ((IProductCmptTypeMethod)obj).getProductCmptType();
                         onlyFormulasInSameType = true;
                     }
-                    if(onlyFormulasInSameType && !prodType.equals(((IProductCmptTypeMethod)obj).getProductCmptType())){
+                    if (onlyFormulasInSameType && !prodType.equals(((IProductCmptTypeMethod)obj).getProductCmptType())) {
                         onlyFormulasInSameType = false;
                     }
                 }
             }
-            if(onlyFormulasInSameType){
+            if (onlyFormulasInSameType) {
                 String text = Messages.ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
-                return new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, invalidObjProperties);
-            }
-            else if(onlyFormulas){
+                return new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR,
+                        invalidObjProperties);
+            } else if (onlyFormulas) {
                 String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, propertyName);
-                return new Message(MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY, text, Message.ERROR, invalidObjProperties);
+                return new Message(MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY, text, Message.ERROR,
+                        invalidObjProperties);
             } else {
                 String text = NLS.bind(Messages.ProductCmptType_multiplePropertyNames, propertyName);
                 return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
@@ -744,34 +779,34 @@ public class ProductCmptType extends Type implements IProductCmptType {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             super.visit(currentType);
             ProductCmptType productCmptType = (ProductCmptType)currentType;
-            for (Iterator it=productCmptType.getIteratorForTableStructureUsages(); it.hasNext(); ) {
+            for (Iterator it = productCmptType.getIteratorForTableStructureUsages(); it.hasNext();) {
                 ITableStructureUsage tsu = (ITableStructureUsage)it.next();
                 add(tsu.getRoleName(), new ObjectProperty(tsu, ITableStructureUsage.PROPERTY_ROLENAME));
             }
             for (Iterator it = productCmptType.getIteratorForMethods(); it.hasNext();) {
                 IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
-                if (method.isFormulaSignatureDefinition() && 
-                        StringUtils.isNotEmpty(method.getFormulaName()) && 
-                        !method.isOverloadsFormula()) {
-                    add(method.getFormulaName(), new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+                if (method.isFormulaSignatureDefinition() && StringUtils.isNotEmpty(method.getFormulaName())
+                        && !method.isOverloadsFormula()) {
+                    add(method.getFormulaName(), new ObjectProperty(method,
+                            IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
             }
             return true;
-        }        
+        }
     }
-    
-    
-    private class CheckIfAbstractTypeInSupertypeHierarchy extends ProductCmptTypeHierarchyVisitor{
+
+    private class CheckIfAbstractTypeInSupertypeHierarchy extends ProductCmptTypeHierarchyVisitor {
 
         boolean check;
 
         public CheckIfAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) {
             super(ipsProject);
         }
-        
+
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             check = currentType.isAbstract();

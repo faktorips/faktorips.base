@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -305,6 +307,12 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     public IAssociation[] getAssociations() {
         return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
+    }
+
+    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
+        NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
+        collector.start(this);
+        return collector.associations;
     }
 
     /**
@@ -1005,5 +1013,31 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
     }
+
+    private static class NotDerivedAssociationCollector extends ProductCmptTypeHierarchyVisitor {
+
+        public NotDerivedAssociationCollector(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        private List<IAssociation> associations = new ArrayList<IAssociation>();
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            IAssociation[] typeAssociations = currentType.getAssociations();
+            int index = 0;
+            for (int i = 0; i < typeAssociations.length; i++) {
+                // to get the associations of the root type of the supertype hierarchy first,
+                // put in the list at first, but with unchanged order for all associations
+                // found in one type...
+                if (!typeAssociations[i].isDerived()) {
+                    associations.add(index, typeAssociations[i]);
+                    index++;
+                }
+            }
+            return true;
+        }
+
+    };
 
 }

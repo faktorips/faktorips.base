@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,26 +18,48 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
-
 
 /**
  * An abstract editor for timed objects.
  */
 public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
-    private List activeGenerationChangedListeners = new ArrayList(1);
+    private List<IActiveGenerationChangedListener> activeGenerationChangedListeners = new ArrayList<IActiveGenerationChangedListener>(
+            1);
 
     private IIpsObjectGeneration generation;
-	private Image uneditableGenerationImage;
+    private Image uneditableGenerationImage;
 
     public TimedIpsObjectEditor() {
         super();
+    }
+
+    @Override
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        super.init(site, input);
+        setContentDescription(Messages.TimedIpsObjectEditor_actualWorkingDate
+                + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
+                    setContentDescription(Messages.TimedIpsObjectEditor_actualWorkingDate
+                            + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+                }
+            }
+        });
     }
 
     /**
@@ -50,18 +72,18 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     }
 
     /**
-     * Removes the listener from the list of listeners that are informed about changes of
-     * the active generation.
+     * Removes the listener from the list of listeners that are informed about changes of the active
+     * generation.
      */
     public void removeListener(IActiveGenerationChangedListener listener) {
-       activeGenerationChangedListeners.remove(listener);
+        activeGenerationChangedListeners.remove(listener);
     }
 
     /**
      * Returns the generation currently selected to display and edit.
      */
     public IIpsObjectGeneration getActiveGeneration() {
-    	return generation;
+        return generation;
     }
 
     /**
@@ -71,7 +93,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         if (TRACE) {
             System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation); //$NON-NLS-1$
         }
-    	this.generation = generation;
+        this.generation = generation;
 
         notifyGenerationChanged();
     }
@@ -80,32 +102,33 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      *
      */
     private void notifyGenerationChanged() {
-        List copy = new ArrayList(activeGenerationChangedListeners);
-        for (Iterator it=copy.iterator(); it.hasNext(); ) {
-            IActiveGenerationChangedListener listener = (IActiveGenerationChangedListener)it.next();
+        List<IActiveGenerationChangedListener> copy = new ArrayList<IActiveGenerationChangedListener>(
+                activeGenerationChangedListeners);
+        for (Iterator<IActiveGenerationChangedListener> it = copy.iterator(); it.hasNext();) {
+            IActiveGenerationChangedListener listener = it.next();
             listener.activeGenerationChanged(generation);
         }
     }
 
     /**
-     * Returns <code>true</code> if the given generation is effective on the
-     * effective date currently set in the preferences.
+     * Returns <code>true</code> if the given generation is effective on the effective date
+     * currently set in the preferences.
      */
     public boolean isEffectiveOnCurrentEffectiveDate(IIpsObjectGeneration gen) {
-        if (gen==null) {
+        if (gen == null) {
             return false;
         }
         return gen.equals(getGenerationEffectiveOnCurrentEffectiveDate());
     }
 
     /**
-     * Returns the generation that is effective on the effective date currently set
-     * in the preferences.
+     * Returns the generation that is effective on the effective date currently set in the
+     * preferences.
      */
     public IIpsObjectGeneration getGenerationEffectiveOnCurrentEffectiveDate() {
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
-        if (object==null) {
+        if (object == null) {
             return null;
         }
         return object.getGenerationByEffectiveDate(workingDate);
@@ -115,7 +138,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      * Returns the image for uneditable generations.
      */
     public Image getUneditableGenerationImage(Image editableImage) {
-        if (uneditableGenerationImage==null) {
+        if (uneditableGenerationImage == null) {
             uneditableGenerationImage = new Image(Display.getDefault(), editableImage, SWT.IMAGE_DISABLE);
         }
         return uneditableGenerationImage;
@@ -124,8 +147,9 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void disposeInternal() {
-        if (uneditableGenerationImage!=null) {
+        if (uneditableGenerationImage != null) {
             uneditableGenerationImage.dispose();
         }
     }
