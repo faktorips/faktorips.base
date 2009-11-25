@@ -742,7 +742,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             IProductCmptTreeStructure structure = (IProductCmptTreeStructure)tree.getInput();
             IProductCmptReference parent = structure.getRoot();
             IProductCmptTypeRelationReference[] relationsReferences = structure
-                    .getChildProductCmptTypeRelationReferences(parent, true);
+                    .getChildProductCmptTypeRelationReferences(parent, false);
             int level = 2; // first level is root node. Always expand at least the root node
             while (relationsReferences.length <= 1) {
                 IProductCmptReference[] cmptReferences = structure.getChildProductCmptReferences(parent);

@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.resources.IFile;
@@ -14,11 +16,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /*******************************************************************************
@@ -38,6 +43,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * Listener for Drop-Actions to create new relations.
  * 
  * @author Thorsten Guenther
+ * @author Cornelius Dirmeier
  */
 public class ReferenceDropListener extends DropTargetAdapter {
 
@@ -244,35 +250,61 @@ public class ReferenceDropListener extends DropTargetAdapter {
     /**
      * Inserts a new relation to the product component identified by the given target name.
      * 
-     * @param target The qualified name for the target product component
+     * @param droppedCmpt The dropped product component
      * @param insertAt The product component relation or product component type relation the new
      *            relations has to be inserted. The type of the new relation is determined from this
      *            object (which means the new relation has the same product component relation type
      *            as the given one or is of the given type).
      */
-    private boolean insert(IProductCmpt cmpt, Object insertAt) {
-        String target = cmpt.getQualifiedName();
+    private boolean insert(IProductCmpt droppedCmpt, Object insertAt) {
+        String droppedCmptName = droppedCmpt.getQualifiedName();
         IAssociation association = null;
         IProductCmptLink insertBefore = null;
         try {
             IProductCmptGeneration generation = null;
-            if (insertAt instanceof IProductCmptTypeRelationReference) { // product
-                // component
-                // type
-                // association
+            if (insertAt instanceof IProductCmptTypeRelationReference) {
+                // association node in editor or view
                 IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)insertAt;
                 IProductCmpt parentCmpt = ((IProductCmptReference)reference.getParent()).getProductCmpt();
                 generation = (IProductCmptGeneration)parentCmpt.findGenerationEffectiveOn(reference.getStructure()
                         .getValidAt());
-                association = reference.getRelation();
+
+                if (generation.canCreateValidLink(droppedCmpt, reference.getRelation(), generation.getIpsProject())) {
+                    association = reference.getRelation();
+                }
+            } else if (insertAt instanceof IProductCmptReference) {
+                // product cmpt reference in product structure view
+                IProductCmptReference reference = (IProductCmptReference)insertAt;
+                IIpsProject ipsProject = reference.getProductCmpt().getIpsProject();
+                generation = (IProductCmptGeneration)reference.getProductCmpt().findGenerationEffectiveOn(
+                        reference.getStructure().getValidAt());
+                IProductCmptType cmptType = reference.getProductCmpt().findProductCmptType(ipsProject);
+                if (generation == null || cmptType == null) {
+                    return false;
+                }
+                List<IAssociation> associations = cmptType.findAllNotDerivedAssociations();
+                List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
+                for (IAssociation aAssoziation : associations) {
+                    if (generation.canCreateValidLink(droppedCmpt, aAssoziation, generation.getIpsProject())) {
+                        possibleAssos.add(aAssoziation);
+                    }
+                }
+                if (possibleAssos.size() == 1) {
+                    association = possibleAssos.get(0);
+                }
+
             } else if (insertAt instanceof IProductCmptLink) {
+                // Product Cmpt Link in linkSection of product cmpt editor
                 IProductCmptLink link = (IProductCmptLink)insertAt;
                 generation = link.getProductCmptGeneration();
-                association = link.findAssociation(generation.getIpsProject());
+                IProductCmptTypeAssociation aAssoziation = link.findAssociation(generation.getIpsProject());
+                if (generation.canCreateValidLink(droppedCmpt, aAssoziation, generation.getIpsProject())) {
+                    association = aAssoziation;
+                }
                 insertBefore = link;
             }
-            if (generation != null && generation.canCreateValidLink(cmpt, association, generation.getIpsProject())) {
-                return newLink(generation, target, association, insertBefore) != null;
+            if (generation != null && association != null) {
+                return newLink(generation, droppedCmptName, association, insertBefore) != null;
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
