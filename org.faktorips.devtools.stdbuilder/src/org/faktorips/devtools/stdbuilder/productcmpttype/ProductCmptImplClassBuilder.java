@@ -312,8 +312,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         /*
          * TODO AW: I can't delegate this to the GenProductCmptType generator because this generator

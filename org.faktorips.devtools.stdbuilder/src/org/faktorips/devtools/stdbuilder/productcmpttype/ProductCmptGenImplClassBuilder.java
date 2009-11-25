@@ -766,8 +766,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         IProductCmptType productCmptType = null;
         if (ipsObjectPartContainer instanceof IProductCmptType) {
@@ -781,7 +780,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
 
         getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements,
-                getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer, recursivelyIncludeChildren);
+                getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer);
     }
 
     @Override

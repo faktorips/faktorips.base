@@ -163,13 +163,13 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (isDerivedByExplicitMethodCall()) {
             if (!(isPublished()) || !(isOverwrite())) {
-                super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
-                        ipsObjectPartContainer, recursivelyIncludeChildren);
+                super
+                        .getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                                ipsObjectPartContainer);
             }
             if (!(isOverwrite())) {
                 addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
@@ -178,8 +178,9 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
 
         } else {
             if (!(isOverwrite())) {
-                super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
-                        ipsObjectPartContainer, recursivelyIncludeChildren);
+                super
+                        .getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                                ipsObjectPartContainer);
             }
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
@@ -188,15 +189,13 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (isOverwrite()) {
             return;
         }
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
-                recursivelyIncludeChildren);
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer);
 
         if (isPublished()) {
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);

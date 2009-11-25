@@ -263,8 +263,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
@@ -274,8 +273,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }

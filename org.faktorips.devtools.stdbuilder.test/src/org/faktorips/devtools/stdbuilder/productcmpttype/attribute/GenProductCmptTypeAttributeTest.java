@@ -86,13 +86,13 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                publicAttribute, false);
+                publicAttribute);
         expectGetterMethod(generatedJavaElements, genPublicAttribute);
         assertEquals(1, generatedJavaElements.size());
     }
@@ -101,7 +101,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publishedAttribute, false);
+                publishedAttribute);
         expectMemberVar(generatedJavaElements, genPublishedAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedAttribute);
@@ -109,7 +109,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publicAttribute, false);
+                publicAttribute);
         expectMemberVar(generatedJavaElements, genPublicAttribute);
         expectGetterMethod(generatedJavaElements, genPublicAttribute);
         expectSetterMethod(generatedJavaElements, genPublicAttribute);

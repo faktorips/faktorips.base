@@ -142,7 +142,8 @@ public class GenValidationRule extends GenTypePart {
                     .getValidatedAttributeAt(0));
             body.append('!');
 
-            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((GenPolicyCmptType)getGenType()).getGenerator(attr);
+            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((GenPolicyCmptType)getGenType())
+                    .getGenerator(attr);
             if (!attr.getValueSet().isUnrestricted()) {
                 body.append(genPolicyCmptTypeAttribute.getMethodNameGetSetOfAllowedValues());
             }
@@ -391,8 +392,7 @@ public class GenValidationRule extends GenTypePart {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }
@@ -400,8 +400,7 @@ public class GenValidationRule extends GenTypePart {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }

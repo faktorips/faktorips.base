@@ -242,14 +242,10 @@ public abstract class JavaGeneratorForIpsPart {
      * @param generatedJavaType The Java type that this builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
-     * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
-     *            <tt>IJavaElement</tt>s of the whole model tree with the given
-     *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
      */
     public abstract void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren);
+            IIpsObjectPartContainer ipsObjectPartContainer);
 
     /**
      * Collects all <tt>IJavaElement</tt>s generated for the implementation by this generator into
@@ -267,14 +263,10 @@ public abstract class JavaGeneratorForIpsPart {
      * @param generatedJavaType The Java type that this builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
-     * @param recursivelyIncludeChildren If this flag is set to <tt>true</tt> the generated
-     *            <tt>IJavaElement</tt>s of the whole model tree with the given
-     *            <tt>IIpsObjectPartContainer</tt> as root will be contained in the result list.
      */
     public abstract void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren);
+            IIpsObjectPartContainer ipsObjectPartContainer);
 
     @Override
     public String toString() {

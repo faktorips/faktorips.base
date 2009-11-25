@@ -130,8 +130,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }

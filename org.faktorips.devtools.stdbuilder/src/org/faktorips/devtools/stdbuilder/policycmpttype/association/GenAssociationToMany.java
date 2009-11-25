@@ -982,8 +982,7 @@ public class GenAssociationToMany extends GenAssociation {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }
@@ -991,8 +990,7 @@ public class GenAssociationToMany extends GenAssociation {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }

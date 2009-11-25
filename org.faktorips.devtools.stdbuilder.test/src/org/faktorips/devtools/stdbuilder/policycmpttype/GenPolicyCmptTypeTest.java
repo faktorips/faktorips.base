@@ -23,7 +23,7 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
         genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                policyCmptType, false);
+                policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         assertEquals(1, generatedJavaElements.size());
     }
@@ -31,7 +31,7 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForImplementation() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
         genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                policyCmptType, false);
+                policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         assertEquals(1, generatedJavaElements.size());
     }

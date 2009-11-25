@@ -83,13 +83,13 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                publishedMethod, false);
+                publishedMethod);
         expectMethod(generatedJavaElements, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                publicMethod, false);
+                publicMethod);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -97,13 +97,13 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publishedMethod, false);
+                publishedMethod);
         expectMethod(generatedJavaElements, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publicMethod, false);
+                publicMethod);
         expectMethod(generatedJavaElements, genPublicMethod);
         assertEquals(1, generatedJavaElements.size());
     }

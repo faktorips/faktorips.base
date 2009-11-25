@@ -93,13 +93,13 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                publishedMethod, false);
+                publishedMethod);
         expectMethod(generatedJavaElements, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                publicMethod, false);
+                publicMethod);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -107,13 +107,13 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedFormulaMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedFormulaMethod, false);
+                getGeneratedJavaType(), publishedFormulaMethod);
         expectMethod(generatedJavaElements, genPublishedFormulaMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicFormulaMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publicFormulaMethod, false);
+                getGeneratedJavaType(), publicFormulaMethod);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -121,13 +121,13 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publishedMethod, false);
+                publishedMethod);
         expectMethod(generatedJavaElements, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publicMethod, false);
+                publicMethod);
         expectMethod(generatedJavaElements, genPublicMethod);
         assertEquals(1, generatedJavaElements.size());
     }
@@ -136,12 +136,12 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publishedFormulaMethod, false);
+                getGeneratedJavaType(), publishedFormulaMethod);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
         genPublicFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                publicFormulaMethod, false);
+                publicFormulaMethod);
         expectMethod(generatedJavaElements, genPublicFormulaMethod);
         assertEquals(1, generatedJavaElements.size());
     }

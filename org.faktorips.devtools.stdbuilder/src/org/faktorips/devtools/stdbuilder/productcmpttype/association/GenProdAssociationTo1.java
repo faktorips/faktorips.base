@@ -556,8 +556,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }
@@ -565,8 +564,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         // TODO AW: Not implemented yet.
     }

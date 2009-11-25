@@ -53,7 +53,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
@@ -61,7 +61,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -71,7 +71,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
@@ -85,7 +85,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -95,13 +95,13 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectPropertyConstant(generatedJavaElements, genPublishedChangeableAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -109,7 +109,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectMemberVar(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
@@ -117,7 +117,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         expectPropertyConstant(generatedJavaElements, genPublicChangeableAttribute);
         expectMemberVar(generatedJavaElements, genPublicChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublicChangeableAttribute);
@@ -131,7 +131,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectMemberVar(generatedJavaElements, genPublishedChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedChangeableAttribute);
@@ -149,7 +149,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         expectPropertyConstant(generatedJavaElements, genPublicChangeableAttribute);
         expectMemberVar(generatedJavaElements, genPublicChangeableAttribute);
         expectGetterMethod(generatedJavaElements, genPublicChangeableAttribute);
@@ -172,12 +172,12 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
         genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         expectPropertyConstant(generatedJavaElements, genPublicChangeableAttribute);
         assertEquals(1, generatedJavaElements.size());
     }

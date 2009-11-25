@@ -212,8 +212,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition()) {
             if (!(isPublished())) {
@@ -227,8 +226,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (isPublished()) {
             addMethodToGeneratedJavaElements(javaElements, generatedJavaType);

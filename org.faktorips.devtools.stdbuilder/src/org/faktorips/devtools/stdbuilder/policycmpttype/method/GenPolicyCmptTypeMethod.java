@@ -123,8 +123,7 @@ public class GenPolicyCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
@@ -132,8 +131,7 @@ public class GenPolicyCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (isPublished()) {
             addMethodToGeneratedJavaElements(javaElements, generatedJavaType);

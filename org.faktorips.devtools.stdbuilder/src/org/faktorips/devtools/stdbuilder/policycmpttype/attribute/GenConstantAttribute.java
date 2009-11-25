@@ -90,11 +90,9 @@ public class GenConstantAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer,
-                recursivelyIncludeChildren);
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer);
 
         if (!(isPublished())) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());
@@ -105,11 +103,9 @@ public class GenConstantAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer,
-                recursivelyIncludeChildren);
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer);
 
         if (isPublished()) {
             IField constantMember = generatedJavaType.getField(getConstantMemberVarName());

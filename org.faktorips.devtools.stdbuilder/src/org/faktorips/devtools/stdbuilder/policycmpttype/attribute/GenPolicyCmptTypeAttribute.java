@@ -348,8 +348,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (!(isPublished())) {
             IField propertyConstant = generatedJavaType.getField(getStaticConstantPropertyName());
@@ -360,8 +359,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
-            boolean recursivelyIncludeChildren) {
+            IIpsObjectPartContainer ipsObjectPartContainer) {
 
         if (isPublished()) {
             IField propertyConstant = generatedJavaType.getField(getStaticConstantPropertyName());

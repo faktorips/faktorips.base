@@ -48,7 +48,7 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         expectPropertyConstant(generatedJavaElements, genPublishedConstantAttribute);
         IField expectedMemberConstant = getGeneratedJavaType().getField(
                 genPublishedConstantAttribute.getConstantMemberVarName());
@@ -57,7 +57,7 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -65,12 +65,12 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publishedAttribute, false);
+                getGeneratedJavaType(), publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(), publicAttribute, false);
+                getGeneratedJavaType(), publicAttribute);
         expectPropertyConstant(generatedJavaElements, genPublicConstantAttribute);
         IField expectedMemberConstant = getGeneratedJavaType().getField(
                 genPublicConstantAttribute.getConstantMemberVarName());
