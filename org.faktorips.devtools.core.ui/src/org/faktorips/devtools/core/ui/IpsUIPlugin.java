@@ -73,6 +73,9 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.presentation.DefaultPresentationObject;
+import org.faktorips.devtools.core.ui.presentation.IPresentationObject;
+import org.faktorips.devtools.core.ui.presentation.IpsSrcFilePresentationObject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -637,6 +640,37 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
         }
         return settings;
+    }
+
+    public final static <T extends IIpsElement> Image getImage(T ipsElement) throws CoreException {
+        return getPresentationObject(ipsElement).getImage(ipsElement);
+    }
+
+    public final static Image getEnclosingImage(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getEnclosingPresentationObject(ipsSrcFile).getImage(ipsSrcFile);
+    }
+
+    public final static IPresentationObject getPresentationObject(IIpsElement ipsElement) {
+        IPresentationObject presentationObject = getPresentationObject(ipsElement.getClass());
+        return presentationObject;
+    }
+
+    public final static IPresentationObject getPresentationObject(Class<? extends IIpsElement> ipsElementClass) {
+        // TODO use registered presentation objects
+
+        if (IIpsSrcFile.class.isAssignableFrom(ipsElementClass)) {
+            IPresentationObject result = new IpsSrcFilePresentationObject();
+            return result;
+        }
+        // use default presentation object until complete refactoring
+        @SuppressWarnings("deprecation")
+        IPresentationObject result = new DefaultPresentationObject();
+        return result;
+    }
+
+    public final static IPresentationObject getEnclosingPresentationObject(IIpsSrcFile ipsSrcFile) {
+        Class<? extends IIpsObject> enclosingTypeClass = ipsSrcFile.getIpsObjectType().newObject(null).getClass();
+        return getPresentationObject(enclosingTypeClass);
     }
 
 }

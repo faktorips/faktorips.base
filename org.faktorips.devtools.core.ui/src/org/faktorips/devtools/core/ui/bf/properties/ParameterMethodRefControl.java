@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.bf.properties;
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version
- * 0.1 (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
@@ -38,7 +38,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -68,7 +70,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
     }
 
     public void setParameterType(IType type) {
-        this.parameterType = type;
+        parameterType = type;
     }
 
     private IMethod[] getSelectableMethods() throws CoreException {
@@ -87,10 +89,23 @@ public class ParameterMethodRefControl extends TextButtonControl {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void buttonClicked() {
         try {
-            DefaultLabelProvider lp = new DefaultLabelProvider();
-            lp.setShowAssociatedType(true);
+            // TODO use styled label to add the type information
+            // adding the attribute type to the labels
+            DefaultLabelProvider lp = new DefaultLabelProvider() {
+
+                @Override
+                public String getText(Object element) {
+                    String text = super.getText(element);
+                    if (element instanceof IAttribute || element instanceof IMethod) {
+                        text += (" - ") + ((IIpsObjectPart)element).getParent().getName();
+                    }
+                    return text;
+                }
+
+            };
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), lp);
             selectDialog.setTitle(Messages.getString("ParameterMethodRefControl.ChooseMethodTitle")); //$NON-NLS-1$
             selectDialog.setMessage(Messages.getString("ParameterMethodRefControl.dialogDescription") //$NON-NLS-1$

@@ -124,7 +124,7 @@ public class LinksContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object getParent(Object element) {
-        if (element instanceof IProductCmptTypeRelationReference) {
+        if (element instanceof IProductCmptTypeRelationReference || element instanceof String) {
             return generation;
         }
         if (element instanceof IProductCmptLink) {
