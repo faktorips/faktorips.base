@@ -12,19 +12,22 @@
 	<property name="manifest-vendor" value="${Bundle-Vendor}" />
 	
 	<!-- classes inside the client jar -->
+	<!-- TODO Abh. zu IEnumValue wieder entfernen! nach fix -->
 	<property name="clientJarClassDir" location="classes/java"/>
 	<property name="clientJarClasses" 
 		value="**/MessageList.class,
 			   **/Message.class,
 			   **/MsgReplacementParameter.class,
-			   **/ObjectProperty.class"/>
+			   **/ObjectProperty.class,
+	           **/IEnumValue.class"/>
 	
 	<property name="clientJarSrcDir" location="../src"/>
 	<property name="clientJarSrc" 
 		value="**/MessageList.java,
 			   **/Message.java,
 			   **/MsgReplacementParameter.java,
-			   **/ObjectProperty.java"/>
+			   **/ObjectProperty.java,
+               **/IEnumValue.java"/>
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
