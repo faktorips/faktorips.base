@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -44,24 +44,23 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
 /**
- * An identifier resolver that resolves identifiers against a set of
- * <code>Parameter</code>s that can be registered via the <code>add()</code>
- * methods.
+ * An identifier resolver that resolves identifiers against a set of <code>Parameter</code>s that
+ * can be registered via the <code>add()</code> methods.
  */
-public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver{
+public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver {
 
-	private IIpsProject ipsproject;
+    private IIpsProject ipsproject;
     private IFormula formula;
     private ExprCompiler exprCompiler;
 
-    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException{
+    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
         ArgumentCheck.notNull(formula, this);
         ArgumentCheck.notNull(exprCompiler, this);
         this.formula = formula;
         this.exprCompiler = exprCompiler;
         ipsproject = formula.getIpsProject();
     }
-    
+
     private IParameter[] getParameters() {
         try {
             return formula.findFormulaSignature(ipsproject).getParameters();
@@ -70,77 +69,76 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
         return new IParameter[0];
     }
-    
-    private IProductCmptType getProductCmptType() throws CoreException{
+
+    private IProductCmptType getProductCmptType() throws CoreException {
         return formula.findProductCmptType(ipsproject);
     }
-    
-	/**
-	 * Provides the name of the getter method for the provided attribute.
-	 */
-	protected abstract String getParameterAttributGetterName(
-			IAttribute attribute, Datatype datatype);
 
-    private Map createEnumMap() throws CoreException{
+    /**
+     * Provides the name of the getter method for the provided attribute.
+     */
+    protected abstract String getParameterAttributGetterName(IAttribute attribute, Datatype datatype);
+
+    private Map<String, EnumDatatype> createEnumMap() throws CoreException {
         EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
-        Map enumDatatypes = new HashMap(enumtypes.length);
+        Map<String, EnumDatatype> enumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
         for (int i = 0; i < enumtypes.length; i++) {
             enumDatatypes.put(enumtypes[i].getName(), enumtypes[i]);
         }
         return enumDatatypes;
     }
-    
+
     /**
      * {@inheritDoc}
-	 */
-	public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+     */
+    public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
 
-		if (ipsproject == null) {
-			throw new IllegalStateException(
-					Messages.AbstractParameterIdentifierResolver_msgResolverMustBeSet);
-		}
+        if (ipsproject == null) {
+            throw new IllegalStateException(Messages.AbstractParameterIdentifierResolver_msgResolverMustBeSet);
+        }
 
-		String paramName;
-		String attributeName;
-		int pos = identifier.indexOf('.');
-		if (pos == -1) {
-			paramName = identifier;
-			attributeName = ""; //$NON-NLS-1$
-		} else {
-			paramName = identifier.substring(0, pos);
-			attributeName = identifier.substring(pos + 1);
-		}
+        String paramName;
+        String attributeName;
+        int pos = identifier.indexOf('.');
+        if (pos == -1) {
+            paramName = identifier;
+            attributeName = ""; //$NON-NLS-1$
+        } else {
+            paramName = identifier.substring(0, pos);
+            attributeName = identifier.substring(pos + 1);
+        }
         IParameter[] params = getParameters();
-		for (int i = 0; i < params.length; i++) {
-			if (params[i].getName().equals(paramName)) {
-				return compile(params[i], attributeName, locale);
-			}
-		}
-		
-        //assuming that the identifier is an attribute of the product component type
-        //where the formula method is defined.
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].getName().equals(paramName)) {
+                return compile(params[i], attributeName, locale);
+            }
+        }
+
+        // assuming that the identifier is an attribute of the product component type
+        // where the formula method is defined.
         CompilationResult result = compileThis(identifier);
-        if(result != null){
+        if (result != null) {
             return result;
         }
-		result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
-		if(result != null){
-			return result;
-		}
-		return CompilationResultImpl.newResultUndefinedIdentifier(locale,
-				identifier);
-	}
+        result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
+        if (result != null) {
+            return result;
+        }
+        return CompilationResultImpl.newResultUndefinedIdentifier(locale, identifier);
+    }
 
-    private CompilationResult compileThis(String identifier){
+    private CompilationResult compileThis(String identifier) {
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProductCmptType();
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsproject);
             for (int i = 0; i < attributes.length; i++) {
-                if(attributes[i].getName().equals(identifier)){
+                if (attributes[i].getName().equals(identifier)) {
                     Datatype attrDatatype = attributes[i].findDatatype(ipsproject);
-                    if(attrDatatype == null){
-                        String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute, attributes[i].getName(), productCmptType.getQualifiedName());
+                    if (attrDatatype == null) {
+                        String text = NLS.bind(
+                                Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute,
+                                attributes[i].getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
                     String code = getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$
@@ -148,18 +146,21 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 }
             }
         } catch (CoreException e) {
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis, identifier, productCmptType.getQualifiedName());
+            String text = NLS.bind(
+                    Messages.AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis,
+                    identifier, productCmptType.getQualifiedName());
             IpsPlugin.log(new IpsStatus(text, e));
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
         }
         return null;
     }
-    
+
     /**
      * Returns the compilation result for the a parameter and attribute name
+     * 
      * @see #compile(String, Locale)
      */
-	protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
+    protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
         Datatype datatype;
         try {
             datatype = param.findDatatype(ipsproject);
@@ -189,32 +190,31 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * about the code generation the implementation is postponed to the generation implementation.
      * By default this method is an empty implementation.
      * 
-     * @param fragment the {@link JavaCodeFragment} to add the new instance expression for the provided
-     *          {@link IEnumType}
-     * @throws CoreException 
+     * @param fragment the {@link JavaCodeFragment} to add the new instance expression for the
+     *            provided {@link IEnumType}
+     * @throws CoreException
      */
-	protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
-	        EnumTypeDatatypeAdapter enumType,
+    protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+            EnumTypeDatatypeAdapter enumType,
             ExprCompiler exprCompiler,
             String value) throws CoreException {
     }
-	
-	private CompilationResult compileEnumDatatypeValueIdentifier(
-			String enumTypeName, String valueName, Locale locale) {
-		
-		try {
-            Map enumDatatypes = createEnumMap();
-            EnumDatatype enumType = (EnumDatatype)enumDatatypes.get(enumTypeName);
-            if(enumType == null){
+
+    private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName, Locale locale) {
+
+        try {
+            Map<String, EnumDatatype> enumDatatypes = createEnumMap();
+            EnumDatatype enumType = enumDatatypes.get(enumTypeName);
+            if (enumType == null) {
                 return null;
             }
-			String[] valueIds = enumType.getAllValueIds(true);
-			for (int i = 0; i < valueIds.length; i++) {
-			    String enumValueName = valueIds[i];
+            String[] valueIds = enumType.getAllValueIds(true);
+            for (int i = 0; i < valueIds.length; i++) {
+                String enumValueName = valueIds[i];
                 if (ObjectUtils.equals(enumValueName, valueName)) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumType.getJavaClassName());
-                    if(enumType instanceof EnumTypeDatatypeAdapter){
+                    if (enumType instanceof EnumTypeDatatypeAdapter) {
                         addNewInstanceForEnumType(frag, (EnumTypeDatatypeAdapter)enumType, exprCompiler, valueIds[i]);
                     } else {
                         DatatypeHelper helper = ipsproject.getDatatypeHelper(enumType);
@@ -223,54 +223,55 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     return new CompilationResultImpl(frag, enumType);
                 }
             }
-		} catch (Exception e) {
-			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving, enumTypeName);
-			return new CompilationResultImpl(Message.newError(
-					ExprCompiler.INTERNAL_ERROR, text));
-		}
-		return null;
-	}
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving,
+                    enumTypeName);
+            return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
+        }
+        return null;
+    }
 
-	private CompilationResult compileTypeAttributeIdentifier(IParameter param,
-			IType type, String attributeName, Locale locale) {
+    private CompilationResult compileTypeAttributeIdentifier(IParameter param,
+            IType type,
+            String attributeName,
+            Locale locale) {
 
         if (StringUtils.isEmpty(attributeName)) {
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                    Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
         }
-        
-		IAttribute attribute = null;
-		try {
-			attribute = type.findAttribute(attributeName, ipsproject);
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute, attributeName, type);
-			return new CompilationResultImpl(Message.newError(
-					ExprCompiler.INTERNAL_ERROR, text));
-		}
-		if (attribute == null) {
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {param.getName(), type.getName(), attributeName});
-			return new CompilationResultImpl(Message.newError(
-					ExprCompiler.UNDEFINED_IDENTIFIER, text));
-		}
 
-		try {
-			Datatype datatype = attribute.findDatatype(ipsproject);
-			if (datatype == null) {
-				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
-				return new CompilationResultImpl(Message.newError(
-						ExprCompiler.UNDEFINED_IDENTIFIER, text));
-			}
-			String code = param.getName() + '.'
-					+ getParameterAttributGetterName(attribute, type)
-					+ "()"; //$NON-NLS-1$
-			return new CompilationResultImpl(code, datatype);
-		} catch (Exception e) {
-			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
-			return new CompilationResultImpl(Message.newError(
-					ExprCompiler.INTERNAL_ERROR, text));
-		}
-	}
-    
+        IAttribute attribute = null;
+        try {
+            attribute = type.findAttribute(attributeName, ipsproject);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute,
+                    attributeName, type);
+            return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
+        }
+        if (attribute == null) {
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
+                    param.getName(), type.getName(), attributeName });
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+
+        try {
+            Datatype datatype = attribute.findDatatype(ipsproject);
+            if (datatype == null) {
+                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute,
+                        attribute.getDatatype(), attributeName);
+                return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            }
+            String code = param.getName() + '.' + getParameterAttributGetterName(attribute, type) + "()"; //$NON-NLS-1$
+            return new CompilationResultImpl(code, datatype);
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute,
+                    attribute.getDatatype(), attributeName);
+            return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
+        }
+    }
+
 }

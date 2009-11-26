@@ -235,8 +235,7 @@ public abstract class JavaGeneratorForIpsPart {
      * <p>
      * Only <tt>IJavaElement</tt>s generated for the published interface shall be added to the list.
      * 
-     * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsObjectPartContainer,
-     *      boolean)
+     * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsObjectPartContainer)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
@@ -256,8 +255,7 @@ public abstract class JavaGeneratorForIpsPart {
      * <p>
      * Only <tt>IJavaElement</tt>s generated for the implementation shall be added to the list.
      * 
-     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsObjectPartContainer,
-     *      boolean)
+     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsObjectPartContainer)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
