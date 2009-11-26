@@ -74,6 +74,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private final static String ADD_ROW_JAVADOC = "TABLE_IMPL_BUILDER_ADD_ROW_JAVADOC";
     private final static String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
 
+    private final static String INIT_KEY_MAPS = "initKeyMaps";
+
     // this method should be removed when the table generators are refactored to the new generator
     // design (Jan)
     public final static String getQualifiedClassName(IIpsSrcFile ipsSrcFile, IIpsArtefactBuilderSet builderSet)
@@ -314,6 +316,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
                 .getJavaDocForTypeBuilder());
         createFields(mainSection.getMemberVarBuilder());
+        generateConstructors(mainSection.getConstructorBuilder());
         createAddRowMethod(mainSection.getMethodBuilder());
         createInitKeyMapsMethod(mainSection.getMethodBuilder());
         // create single instance method only if no multi content is allowed
@@ -325,6 +328,47 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createAllRowsMethod(mainSection.getMethodBuilder());
         createFindMethods(mainSection.getMethodBuilder());
         createHashKeyClasses();
+    }
+
+    private void generateConstructors(JavaCodeFragmentBuilder code) throws CoreException {
+        generateDefaultConstructor(code);
+        generateConstructorWithRowsParameter(code);
+    }
+
+    private void generateDefaultConstructor(JavaCodeFragmentBuilder code) throws CoreException {
+        appendLocalizedJavaDoc("CONSTRUCTOR_DEFAULT", getTableStructure(), code);
+        code.appendJavaModifier(Modifier.PUBLIC);
+        code.append(' ');
+        code.append(getUnqualifiedClassName());
+        code.appendln("() {");
+        code.append("super();");
+        code.append("}");
+    }
+
+    private void generateConstructorWithRowsParameter(JavaCodeFragmentBuilder code) throws CoreException {
+        appendLocalizedJavaDoc("CONSTRUCTOR_WITH_ROWS", getTableStructure(), code);
+        if (isUseTypesafeCollections()) {
+            code.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
+        }
+        code.appendJavaModifier(Modifier.PUBLIC);
+        code.append(' ');
+        code.append(getUnqualifiedClassName());
+        code.appendln("(");
+        code.appendClassName(List.class);
+        if (isUseTypesafeCollections()) {
+            code.append('<');
+            code.appendClassName(qualifiedTableRowName);
+            code.append('>');
+        }
+        code.append(" content) {");
+        code.appendln("super();");
+        code.append("rows = new ");
+        code.appendClassName(ArrayList.class);
+        code.appendln("(content.size());");
+        code.appendln("rows.addAll(content);");
+        code.append(INIT_KEY_MAPS);
+        code.append("();");
+        code.appendln("}");
     }
 
     private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -545,7 +589,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (isUseTypesafeCollections() && methodBody.getSourcecode().indexOf("<") > 0) {
             codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
         }
-        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, "initKeyMaps", new String[0], new Class[0]);
+        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, INIT_KEY_MAPS, new String[0], new Class[0]);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
@@ -799,9 +843,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
+            innerClassBody.getMemberVarBuilder().javaDoc("", ANNOTATION_GENERATED);
             innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i], keyNames[i]);
         }
         // create hashCode field
+        innerClassBody.getMemberVarBuilder().javaDoc("Cached hashcode.", ANNOTATION_GENERATED);
         innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();

@@ -334,4 +334,9 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return enumType.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return enumContent.getQualifiedName();
+    }
+
 }
