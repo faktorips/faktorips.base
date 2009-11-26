@@ -184,25 +184,84 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             policyCmptType = (IPolicyCmptType)((IMethod)ipsObjectPartContainer).getIpsObject();
         }
 
-        IType generatedJavaType = getGeneratedJavaType(ipsObjectPartContainer);
         if (isBuildingPublishedSourceFile()) {
             getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                    generatedJavaType, ipsObjectPartContainer);
+                    getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer);
         } else {
             getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(javaElements,
-                    generatedJavaType, ipsObjectPartContainer);
+                    getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer);
         }
     }
 
-    public IType getGeneratedJavaTypeForProductCmptTypeGen(IPolicyCmptType policyCmptType) {
+    /**
+     * Returns the Java type that is generated for the product component type generation of the
+     * <tt>IProductCmptType</tt> configuring the provided <tt>IPolicyCmptType</tt>.
+     * <p>
+     * Whether the interface or the implementation type is returned depends on the fact whether this
+     * builder is building a published source file or not.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> configuring the given
+     * <tt>IPolicyCmptType</tt> could not be found.
+     * 
+     * @see #isBuildingPublishedSourceFile()
+     * 
+     * @param policyCmptType The <tt>IPolicyCmptType</tt> to find the Java type generated for the
+     *            generation of the configuring <tt>IProductCmptType</tt>.
+     * 
+     * @throws NullPointerException If <tt>policyCmptType</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If the provided <tt>policyCmptType</tt> is not marked as
+     *             being configured by a product.
+     */
+    public IType findGeneratedJavaTypeForProductCmptTypeGen(IPolicyCmptType policyCmptType) {
+        ArgumentCheck.notNull(policyCmptType);
         ArgumentCheck.isTrue(policyCmptType.isConfigurableByProductCmptType());
 
         StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getBuilderSet();
         JavaSourceFileBuilder relevantProductCmptTypeGenBuilder = isBuildingPublishedSourceFile() ? standardBuilderSet
                 .getProductCmptGenInterfaceBuilder() : standardBuilderSet.getProductCmptGenImplClassBuilder();
         try {
-            return relevantProductCmptTypeGenBuilder.getGeneratedJavaType(policyCmptType
-                    .findProductCmptType(policyCmptType.getIpsProject()));
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+            if (productCmptType == null) {
+                return null;
+            }
+            return relevantProductCmptTypeGenBuilder.getGeneratedJavaType(productCmptType);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the Java type that is generated for the <tt>IProductCmptType</tt> configuring the
+     * provided <tt>IPolicyCmptType</tt>.
+     * <p>
+     * Whether the interface or the implementation type is returned depends on the fact whether this
+     * builder is building a published source file or not.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> configuring the given
+     * <tt>IPolicyCmptType</tt> could not be found.
+     * 
+     * @see #isBuildingPublishedSourceFile()
+     * 
+     * @param policyCmptType The <tt>IPolicyCmptType</tt> to find the Java type generated for the
+     *            configuring <tt>IProductCmptType</tt>.
+     * 
+     * @throws NullPointerException If <tt>policyCmptType</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If the provided <tt>policyCmptType</tt> is not marked as
+     *             being configured by a product.
+     */
+    public IType findGeneratedJavaTypeForProductCmptType(IPolicyCmptType policyCmptType) {
+        ArgumentCheck.notNull(policyCmptType);
+        ArgumentCheck.isTrue(policyCmptType.isConfigurableByProductCmptType());
+
+        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getBuilderSet();
+        JavaSourceFileBuilder relevantProductCmptTypeBuilder = isBuildingPublishedSourceFile() ? standardBuilderSet
+                .getProductCmptInterfaceBuilder() : standardBuilderSet.getProductCmptImplClassBuilder();
+        try {
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+            if (productCmptType == null) {
+                return null;
+            }
+            return relevantProductCmptTypeBuilder.getGeneratedJavaType(productCmptType);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

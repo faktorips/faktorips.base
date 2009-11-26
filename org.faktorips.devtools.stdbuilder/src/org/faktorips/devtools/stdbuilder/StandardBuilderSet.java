@@ -142,6 +142,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
 
+    private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
+
+    private ProductCmptImplClassBuilder productCmptImplClassBuilder;
+
     private EnumClassesBuilder enumClassesBuilder;
 
     private EnumTypeBuilder enumTypeBuilder;
@@ -414,10 +418,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE);
 
         // create product component type builders
-        ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,
-                KIND_PRODUCT_CMPT_INTERFACE);
-        ProductCmptImplClassBuilder productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this,
-                KIND_PRODUCT_CMPT_IMPL);
+        productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this, KIND_PRODUCT_CMPT_INTERFACE);
+        productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_IMPL);
         productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this,
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
         productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
@@ -632,6 +634,22 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() {
         return policyCmptInterfaceBuilder;
+    }
+
+    /**
+     * Returns the <tt>ProductCmptImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
+     * yet.
+     */
+    public final ProductCmptImplClassBuilder getProductCmptImplClassBuilder() {
+        return productCmptImplClassBuilder;
+    }
+
+    /**
+     * Returns the <tt>ProductCmptInterfaceBuilder</tt> or <tt>null</tt> if non has been assembled
+     * yet.
+     */
+    public final ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return productCmptInterfaceBuilder;
     }
 
 }

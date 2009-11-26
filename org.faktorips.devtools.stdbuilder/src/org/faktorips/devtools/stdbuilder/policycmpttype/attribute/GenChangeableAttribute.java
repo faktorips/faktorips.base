@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
@@ -564,14 +563,13 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            addDefaultValueMemberVarToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(false));
-            addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(false));
-            addGetDefaultValueMethodToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(false));
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(false));
+            IType javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(false);
+            if (javaTypeProductCmptTypeGen != null) {
+                addDefaultValueMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            }
         }
     }
 
@@ -590,19 +588,41 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            addGetDefaultValueMethodToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(true));
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements,
-                    getGeneratedJavaTypeForProductCmptTypeGen(true));
+            IType javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
+            if (javaTypeProductCmptTypeGen != null) {
+                addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            }
         }
     }
 
-    private IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
-        StandardBuilderSet builderSet = getGenType().getBuilderSet();
-        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? builderSet.getPolicyCmptInterfaceBuilder()
-                : builderSet.getPolicyCmptImplClassBuilder();
-        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptTypeGen((IPolicyCmptType)getGenType()
-                .getIpsPart());
+    /**
+     * Finds and returns the Java type generated for the product component type generation of the
+     * <tt>IProductCmptType</tt> configuring the <tt>IPolicyCmptType</tt> of the
+     * <tt>IPolicyCmptTypeAttribute</tt> this generator is configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> configuring the
+     * <tt>IPolicyCmptType</tt> could not be found.
+     * 
+     * @param forInterface Flag indicating whether to search for the published interface of the
+     *            product component type generation (<tt>true</tt>) or for it's implementation (
+     *            <tt>false</tt>).
+     * 
+     * @throws IllegalStateException If this generator is configured for an
+     *             <tt>IPolicyCmptTypeAttribute</tt> that does not belong to an
+     *             <tt>IPolicyCmptType</tt> that is configured by a product.
+     */
+    public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
+        IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
+        if (!(policyCmptType.isConfigurableByProductCmptType())) {
+            throw new IllegalStateException(
+                    "Policy Component Type is not being configured by a Product Component Type.");
+        }
+
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+                .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
+
+        return policyCmptTypeBuilder.findGeneratedJavaTypeForProductCmptTypeGen(policyCmptType);
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,

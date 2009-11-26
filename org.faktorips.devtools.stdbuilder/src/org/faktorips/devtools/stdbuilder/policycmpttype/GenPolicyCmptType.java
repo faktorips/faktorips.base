@@ -19,8 +19,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -35,10 +36,10 @@ import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBu
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
@@ -64,9 +65,13 @@ import org.faktorips.util.StringUtil;
 public class GenPolicyCmptType extends GenType {
 
     private final List<GenPolicyCmptTypeAttribute> genPolicyCmptTypeAttributes = new ArrayList<GenPolicyCmptTypeAttribute>();
+
     private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
+
     private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
+
     private final List<GenPolicyCmptTypeMethod> genPolicyCmptTypeMethods = new ArrayList<GenPolicyCmptTypeMethod>();
+
     private final IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) throws CoreException {
@@ -239,19 +244,18 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public GenProductCmptTypeAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
-        return getBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
+        return getBuilderSet().getGenerator(findProductCmptType()).getGenerator(a);
     }
 
-    public IProductCmptType getProductCmptType() throws CoreException {
+    public IProductCmptType findProductCmptType() throws CoreException {
         return getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
     }
 
     public GenProductCmptType getGenProductCmptType() throws CoreException {
-        IIpsProject ipsProject = getBuilderSet().getIpsProject();
-        return getBuilderSet().getGenerator(getPolicyCmptType().findProductCmptType(ipsProject));
+        return getBuilderSet().getGenerator(findProductCmptType());
     }
 
-    public String getPolicyCmptTypeName() throws CoreException {
+    public String getPolicyCmptTypeName() {
         return StringUtils.capitalize(getPolicyCmptType().getName());
     }
 
@@ -272,7 +276,7 @@ public class GenPolicyCmptType extends GenType {
      * Returns the method name to create the concrete policy component class, e.g.
      * createMotorPolicy.
      */
-    public String getMethodNameCreatePolicyCmpt() throws CoreException {
+    public String getMethodNameCreatePolicyCmpt() {
         String policyCmptConceptName = getPolicyCmptTypeName();
         return getLocalizedText("METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
     }
@@ -286,6 +290,7 @@ public class GenPolicyCmptType extends GenType {
     public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodsBuilder,
             String parentModelObjectName,
             boolean generateParentNotification) {
+
         if (isGenerateChangeListenerSupport()) {
             changeListenerSupportBuilder.generateChangeListenerMethods(methodsBuilder, parentModelObjectName,
                     generateParentNotification);
@@ -297,6 +302,49 @@ public class GenPolicyCmptType extends GenType {
             return changeListenerSupportBuilder.getNotificationSupportInterfaceName();
         }
         return null;
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForType(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            boolean forInterface) {
+
+        if (getPolicyCmptType().isConfigurableByProductCmptType()) {
+            IType javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
+            if (javaTypeProductCmpt != null) {
+                org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
+                        getMethodNameCreatePolicyCmpt(), new String[] {});
+                javaElements.add(createPolicyCmptMethod);
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the Java type generated for the <tt>IProductCmptType</tt> configuring the
+     * <tt>IPolicyCmptType</tt> of the <tt>IPolicyCmptTypeAttribute</tt> this generator is
+     * configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> configuring the
+     * <tt>IPolicyCmptType</tt> could not be found.
+     * 
+     * @param forInterface Flag indicating whether to search for the published interface of the
+     *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
+     *            <tt>false</tt>).
+     * 
+     * @throws IllegalStateException If this generator is configured for an
+     *             <tt>IPolicyCmptTypeAttribute</tt> that does not belong to an
+     *             <tt>IPolicyCmptType</tt> that is configured by a product.
+     */
+    public IType findGeneratedJavaTypeForProductCmptType(boolean forInterface) {
+        if (!(getPolicyCmptType().isConfigurableByProductCmptType())) {
+            throw new IllegalStateException(
+                    "Policy Component Type is not being configured by a Product Component Type.");
+        }
+
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
+                .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
+
+        return policyCmptTypeBuilder.findGeneratedJavaTypeForProductCmptType(getPolicyCmptType());
     }
 
 }

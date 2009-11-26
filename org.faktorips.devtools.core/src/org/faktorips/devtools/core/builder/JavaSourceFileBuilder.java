@@ -992,7 +992,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *             the given <tt>IIpsObjectPartContainer</tt> is stored in.
      */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
-
         ArgumentCheck.notNull(ipsObjectPartContainer);
         try {
             ArgumentCheck.isTrue(isBuilderFor(ipsObjectPartContainer.getIpsSrcFile()));

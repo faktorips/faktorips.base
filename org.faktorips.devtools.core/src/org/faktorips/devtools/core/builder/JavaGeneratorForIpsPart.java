@@ -239,7 +239,7 @@ public abstract class JavaGeneratorForIpsPart {
      *      boolean)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
-     * @param generatedJavaType The Java type that this builder is generating.
+     * @param generatedJavaType The Java type that the calling builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
      */
@@ -260,7 +260,7 @@ public abstract class JavaGeneratorForIpsPart {
      *      boolean)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
-     * @param generatedJavaType The Java type that this builder is generating.
+     * @param generatedJavaType The Java type that the calling builder is generating.
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
      *            requested the generated <tt>IJavaElement</tt>s.
      */

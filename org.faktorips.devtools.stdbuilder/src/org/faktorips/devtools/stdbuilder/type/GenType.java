@@ -201,6 +201,10 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
         getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, true);
     }
 
+    /**
+     * Adds the generated <tt>IJavaElement</tt>s for the given <tt>IIpsObjectPartContainer</tt> to
+     * the provided list.
+     */
     private void getGeneratedJavaElements(List<IJavaElement> javaElements,
             org.eclipse.jdt.core.IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer,
@@ -208,6 +212,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
 
         if (ipsObjectPartContainer instanceof IType) {
             javaElements.add(generatedJavaType);
+            getGeneratedJavaElementsForType(javaElements, generatedJavaType, forInterface);
 
         } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
             if (forInterface) {
@@ -219,5 +224,18 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             }
         }
     }
+
+    /**
+     * Subclass implementation that must add the <tt>IJavaElement</tt>s that are generated for the
+     * IPS type to the provided list.
+     * 
+     * @param javaElements The list to add the generated <tt>IJavaElement</tt>s to.
+     * @param generatedJavaType The Java type that the calling builder is generating.
+     * @param forInterface Flag indicating whether the generated <tt>IJavaElement</tt>s for the
+     *            published interface instead of the implementation are requested.
+     */
+    protected abstract void getGeneratedJavaElementsForType(List<IJavaElement> javaElements,
+            org.eclipse.jdt.core.IType generatedJavaType,
+            boolean forInterface);
 
 }

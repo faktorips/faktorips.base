@@ -22,6 +22,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -329,6 +331,14 @@ public class GenProductCmptType extends GenType {
      */
     public String[] getMethodParamNamesSetProductCmpt() throws CoreException {
         return new String[] { StringUtils.uncapitalize(getType().getName()), "initPropertiesWithConfiguratedDefaults" };
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsForType(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            boolean forInterface) {
+
+        // TODO
     }
 
 }
