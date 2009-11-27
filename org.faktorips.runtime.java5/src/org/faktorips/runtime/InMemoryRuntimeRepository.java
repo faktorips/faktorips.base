@@ -15,6 +15,7 @@ package org.faktorips.runtime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,12 +55,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     // contains all test cases with their qualified name as key.
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
 
-    // contains all enumeration values for the faktor ips enumerations which content is deferred 
-    private Map<Class<IEnumValue>, List<IEnumValue>> enumValuesMap = new HashMap<Class<IEnumValue>, List<IEnumValue>>(); 
-    
-    private List<XmlAdapter<?, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<?,IEnumValue>>();
+    // contains all enumeration values for the faktor ips enumerations which content is deferred
+    private Map<Class<? extends IEnumValue>, List<? extends IEnumValue>> enumValuesMap = new HashMap<Class<? extends IEnumValue>, List<? extends IEnumValue>>();
 
-    
+    private List<XmlAdapter<?, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<?, IEnumValue>>();
+
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
     }
@@ -71,6 +71,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductComponent getProductComponentInternal(String id) {
         return productCmpts.get(id);
     }
@@ -78,6 +79,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductComponent getProductComponentInternal(String kindId, String versionId) {
         if (kindId == null) {
             return null;
@@ -97,6 +99,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void getAllProductComponents(String kindId, List<IProductComponent> result) {
         for (Iterator<IProductComponent> it = productCmpts.values().iterator(); it.hasNext();) {
             IProductComponent cmpt = it.next();
@@ -113,6 +116,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void getProductComponentGenerations(IProductComponent productCmpt, List<IProductComponentGeneration> result) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
         if (genSet != null) {
@@ -132,6 +136,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * 
      * {@inheritDoc}
      */
+    @Override
     public ITable getTableInternal(Class<?> tableClass) {
         for (Iterator<ITable> it = tables.iterator(); it.hasNext();) {
             ITable table = it.next();
@@ -170,13 +175,22 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         putTable(table);
     }
 
-    public void putEnumValue(Class<IEnumValue> clazz, List<IEnumValue> enumValues){
-        enumValuesMap.put(clazz, enumValues);
+    /**
+     * Puts the given enum values in the repository replacing all existing values for the given
+     * enumType.
+     * 
+     * @param enumType The Java class representing the enumeration type.
+     * @param enumValues The value of the enumeration type as list.
+     */
+    public <T extends IEnumValue> void putEnumValues(Class<T> enumType, List<T> enumValues) {
+        List<T> copy = new ArrayList<T>(enumValues);
+        enumValuesMap.put(enumType, copy);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITable getTableInternal(String qualifiedTableName) {
         return multipleContentTables.get(qualifiedTableName);
     }
@@ -184,6 +198,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void getAllProductComponents(List<IProductComponent> result) {
         result.addAll(productCmpts.values());
     }
@@ -191,6 +206,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void getAllProductComponentIds(List<String> result) {
         result.addAll(productCmpts.keySet());
     }
@@ -221,6 +237,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
         if (productCmptId == null) {
@@ -277,6 +294,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository) {
         // ignore the runtimeRepository to instantiate the test case because we using in memory
         result.addAll(testCasesByQName.values());
@@ -285,6 +303,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void getIpsTestCasesStartingWith(String qNamePrefix,
             List<IpsTest2> result,
             IRuntimeRepository runtimeRepository) {
@@ -299,6 +318,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
         // ignore the runtimeRepository to instantiate the test case because we using in memory
         return testCasesByQName.get(qName);
@@ -319,6 +339,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
                 .getProductComponent().getId());
@@ -339,6 +360,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
         return genSet.size();
@@ -347,6 +369,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
                 .getProductComponent().getId());
@@ -392,17 +415,21 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     @SuppressWarnings("unchecked")
     @Override
     protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz) {
-        return (List<T>)enumValuesMap.get(clazz);
+        List<T> values = (List<T>)enumValuesMap.get(clazz);
+        if (values == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(values);
     }
 
     /**
-     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content
-     * to a enumeration content to this repository. 
+     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a
+     * enumeration content to this repository.
      */
-    public void addEnumXmlAdapter(XmlAdapter<?, IEnumValue> enumXmlAdapter){
+    public void addEnumXmlAdapter(XmlAdapter<?, IEnumValue> enumXmlAdapter) {
         enumXmlAdapters.add(enumXmlAdapter);
     }
-    
+
     @Override
     protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         return enumXmlAdapters;

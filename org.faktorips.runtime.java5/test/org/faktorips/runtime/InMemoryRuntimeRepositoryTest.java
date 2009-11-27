@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -31,7 +32,6 @@ import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
-
 
 public class InMemoryRuntimeRepositoryTest extends TestCase {
 
@@ -53,6 +53,20 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         repository.putProductComponent(a);
         repository.putProductComponent(b);
         repository.putProductComponent(c);
+    }
+
+    public void testPutEnumValues() {
+        List<TestEnumValue> values = new ArrayList<TestEnumValue>();
+        TestEnumValue value1 = new TestEnumValue("1");
+        TestEnumValue value2 = new TestEnumValue("2");
+        values.add(value1);
+        values.add(value2);
+        repository.putEnumValues(TestEnumValue.class, values);
+
+        List<TestEnumValue> values2 = repository.getEnumValues(TestEnumValue.class);
+        assertEquals(2, values2.size());
+        assertEquals(value1, values2.get(0));
+        assertEquals(value2, values2.get(1));
     }
 
     public void testPutTable() {
@@ -97,7 +111,8 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     public void testGetProductComponent_KindId_VersionId() {
-        TestProductComponent cmpt = new TestProductComponent(repository, "MotorProduct 2005-01", "MotorProduct", "2005-01");
+        TestProductComponent cmpt = new TestProductComponent(repository, "MotorProduct 2005-01", "MotorProduct",
+                "2005-01");
         repository.putProductComponent(cmpt);
         assertEquals(cmpt, repository.getProductComponent("MotorProduct", "2005-01"));
 
@@ -106,9 +121,12 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     public void testGetAllProductComponents_KindId() {
-        TestProductComponent cmpt0 = new TestProductComponent(repository, "MotorProduct 2005-01", "MotorProduct", "2005-01");
-        TestProductComponent cmpt1 = new TestProductComponent(repository, "MotorProduct 2006-01", "MotorProduct", "2006-01");
-        TestProductComponent cmpt2 = new TestProductComponent(repository, "HomeProduct 2006-01", "HomeProduct", "2006-01");
+        TestProductComponent cmpt0 = new TestProductComponent(repository, "MotorProduct 2005-01", "MotorProduct",
+                "2005-01");
+        TestProductComponent cmpt1 = new TestProductComponent(repository, "MotorProduct 2006-01", "MotorProduct",
+                "2006-01");
+        TestProductComponent cmpt2 = new TestProductComponent(repository, "HomeProduct 2006-01", "HomeProduct",
+                "2006-01");
         repository.putProductComponent(cmpt0);
         repository.putProductComponent(cmpt1);
         repository.putProductComponent(cmpt2);
@@ -199,7 +217,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertEquals(gen2, result.get(1));
     }
 
-    public void testGetNumberOfProductComponentGenerations(){
+    public void testGetNumberOfProductComponentGenerations() {
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
         TestProductCmptGeneration aGen1 = new TestProductCmptGeneration(a);
@@ -224,7 +242,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertEquals(1, numberOfGens);
     }
 
-    public void testGetNextProductComponentGeneration(){
+    public void testGetNextProductComponentGeneration() {
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
         TestProductCmptGeneration aGen1 = new TestProductCmptGeneration(a);
@@ -247,8 +265,8 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertNull(expectedGen);
     }
 
-    //actually testing the AbstractRuntimeRepository
-    public void testGetNextProductComponentGenerationInReferencedRepository(){
+    // actually testing the AbstractRuntimeRepository
+    public void testGetNextProductComponentGenerationInReferencedRepository() {
 
         InMemoryRuntimeRepository subRepository1 = new InMemoryRuntimeRepository();
         a = new TestProductComponent(subRepository1, "a", "aKind", "aVersion");
@@ -298,7 +316,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
     }
 
-    public void testGetPreviousProductComponentGeneration(){
+    public void testGetPreviousProductComponentGeneration() {
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
         TestProductCmptGeneration aGen1 = new TestProductCmptGeneration(a);
@@ -321,7 +339,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertNull(expectedGen);
     }
 
-    public void testGetLatestProductComponentGeneration(){
+    public void testGetLatestProductComponentGeneration() {
 
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
@@ -337,15 +355,15 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         assertEquals(aGen3, repository.getLatestProductComponentGeneration(a));
 
-        try{
+        try {
             repository.getLatestProductComponentGeneration(null);
             fail();
+        } catch (NullPointerException e) {
         }
-        catch(NullPointerException e){}
     }
 
-    //actually testing the AbstractRuntimeRepository
-    public void testGetPreviousProductComponentGenerationInReferencedRepository(){
+    // actually testing the AbstractRuntimeRepository
+    public void testGetPreviousProductComponentGenerationInReferencedRepository() {
 
         InMemoryRuntimeRepository subRepository1 = new InMemoryRuntimeRepository();
         a = new TestProductComponent(subRepository1, "a", "aKind", "aVersion");
@@ -395,7 +413,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
     }
 
-    public void testGetIpsTestSuite(){
+    public void testGetIpsTestSuite() {
         IpsTestCase2 testCase1 = putIpsTestCase("pack.ipsTest1");
         IpsTestCase2 testCase2 = putIpsTestCase("pack.ipsTest2");
         IpsTestCase2 testCase3 = putIpsTestCase("pack.ipsTest3");
@@ -448,20 +466,21 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         IpsTestCase2 testCase6 = putIpsTestCase("pack2.ipsTest3");
         IpsTestCase2 testCase7 = putIpsTestCase("ipsTest1");
 
-        assertIpsTestCasesStartingWith("pack.", new IpsTestCase2[]{testCase1, testCase2, testCase3});
-        assertIpsTestCasesStartingWith("pack", new IpsTestCase2[]{testCase1, testCase2, testCase3, testCase4, testCase5, testCase6});
-        assertIpsTestCasesStartingWith("ipsTest1", new IpsTestCase2[]{testCase7});
+        assertIpsTestCasesStartingWith("pack.", new IpsTestCase2[] { testCase1, testCase2, testCase3 });
+        assertIpsTestCasesStartingWith("pack", new IpsTestCase2[] { testCase1, testCase2, testCase3, testCase4,
+                testCase5, testCase6 });
+        assertIpsTestCasesStartingWith("ipsTest1", new IpsTestCase2[] { testCase7 });
     }
 
-    public void testAddEnumXmlAdapter(){
+    public void testAddEnumXmlAdapter() {
         XmlAdapter<?, IEnumValue> xmlAdapter = new TestXmlAdapter();
         repository.addEnumXmlAdapter(xmlAdapter);
         List<XmlAdapter<?, IEnumValue>> xmlAdapterList = repository.getAllInternalEnumXmlAdapters(repository);
         assertEquals(1, xmlAdapterList.size());
         assertEquals(xmlAdapter, xmlAdapterList.get(0));
-        
+
     }
-    
+
     private void assertIpsTestCasesStartingWith(String qNamePrefix, IpsTestCase2[] testCasesExpected) {
         List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
         assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
@@ -479,8 +498,8 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     class TestTable2 extends TestTable {
 
     }
-    
-    private class TestXmlAdapter extends XmlAdapter<String, IEnumValue>{
+
+    private class TestXmlAdapter extends XmlAdapter<String, IEnumValue> {
 
         @Override
         public String marshal(IEnumValue value) throws Exception {
@@ -491,17 +510,17 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         public IEnumValue unmarshal(String value) throws Exception {
             return new TestEnumValue(value);
         }
-        
+
     }
-    
-    private class TestEnumValue implements IEnumValue{
-        
+
+    private class TestEnumValue implements IEnumValue {
+
         private String id;
-        
-        public TestEnumValue(String id){
+
+        public TestEnumValue(String id) {
             this.id = id;
         }
-        
+
         public String getEnumValueId() {
             return id;
         }
