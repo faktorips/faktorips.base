@@ -203,10 +203,11 @@
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/> 
 
-                <!-- customer plugins -->              
+                <!-- customer plugins # does not work in head yet               
                 <cvs module="de.qv.faktorips"/>
                 <cvs module="de.qv.ormext.builder"/>
                 <cvs module="de.qv.ormext.builder.test"/>
+                -->
             </depends>      
         </project>
 
