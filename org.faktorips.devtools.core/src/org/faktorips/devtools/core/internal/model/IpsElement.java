@@ -23,6 +23,7 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  *
  */
-public abstract class IpsElement implements IIpsElement, IAdaptable {
+public abstract class IpsElement extends PlatformObject implements IIpsElement, IAdaptable {
 
     protected String name;
     protected IIpsElement parent;
@@ -97,6 +98,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
      * 
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     // IAdaptable uses unchecked Class
     public Object getAdapter(Class adapter) {
@@ -110,7 +112,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         if (adapter.equals(ResourceMapping.class)) {
             return new IpsElementResourceMapping(this);
         }
-        return null;
+        return super.getAdapter(adapter);
     }
 
     /**
