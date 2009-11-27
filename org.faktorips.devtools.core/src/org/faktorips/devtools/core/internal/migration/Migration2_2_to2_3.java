@@ -13,11 +13,16 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -36,6 +41,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.internal.core.SourceType;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -128,8 +134,11 @@ public class Migration2_2_to2_3 {
             monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size());
         }
 
+        MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
+                "At least one exception occurred while migrating the ips project: \"" + ipsProject.getName()
+                        + "\" from faktor ips version 2.2 to 2.3.", null);
         // Add enumeration types for the table structures and replace the table contents.
-        addForTableStructures(enumTableStructures, monitor);
+        addForTableStructures(enumTableStructures, monitor, status);
         replaceTableContents(enumTableContents, ipsProject, monitor);
 
         migrateInitFromXmlMethods(ipsProject, monitor);
@@ -137,6 +146,9 @@ public class Migration2_2_to2_3 {
         // Finish the monitor if available.
         if (monitor != null) {
             monitor.done();
+        }
+        if (status.getChildren().length > 0) {
+            throw new CoreException(status);
         }
     }
 
@@ -215,8 +227,9 @@ public class Migration2_2_to2_3 {
     }
 
     /** Adds new <tt>IEnumType</tt>s for the given enumeration table structures. */
-    private static void addForTableStructures(List<ITableStructure> enumTableStructures, IProgressMonitor monitor)
-            throws CoreException {
+    private static void addForTableStructures(List<ITableStructure> enumTableStructures,
+            IProgressMonitor monitor,
+            MultiStatus status) throws CoreException {
 
         /*
          * Create a new EnumType object for each of the found enumeration type table structures. Do
@@ -254,10 +267,37 @@ public class Migration2_2_to2_3 {
                 newEnumAttribute.setDescription(currentColumn.getDescription());
             }
 
+            renameTableStructure(currentTableStructure, monitor, status);
+
             // Update monitor if available.
             if (monitor != null) {
                 monitor.worked(1);
             }
+        }
+    }
+
+    /**
+     * Renames the TableStructure. It puts an "Old_" in front of the name. If the renaming fails a
+     * status is written to the provided MultiStatus Object.
+     */
+    private static void renameTableStructure(ITableStructure currentTableStructure,
+            IProgressMonitor monitor,
+            MultiStatus status) {
+        try {
+            IFile correspondingFile = currentTableStructure.getIpsSrcFile().getCorrespondingFile();
+            String correspondingFileName = correspondingFile.getName();
+            String markedAsOldFileName = "Old_" + correspondingFileName;
+            InputStream correspondingFileContents;
+            correspondingFileContents = correspondingFile.getContents(true);
+            IContainer correspondingFileContainer = correspondingFile.getParent();
+            if (correspondingFileContainer instanceof IFolder) {
+                IFolder correspondingFileParentFolder = (IFolder)correspondingFileContainer;
+                IFile file = correspondingFileParentFolder.getFile(markedAsOldFileName);
+                file.create(correspondingFileContents, true, monitor);
+                correspondingFile.delete(true, monitor);
+            }
+        } catch (CoreException e) {
+            status.add(new IpsStatus(e));
         }
     }
 
