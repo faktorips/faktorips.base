@@ -743,8 +743,11 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             IProductCmptReference parent = structure.getRoot();
             IProductCmptTypeRelationReference[] relationsReferences = structure
                     .getChildProductCmptTypeRelationReferences(parent, false);
+            if (relationsReferences == null || relationsReferences.length == 0) {
+                return;
+            }
             int level = 2; // first level is root node. Always expand at least the root node
-            while (relationsReferences.length <= 1) {
+            while (relationsReferences.length == 1) {
                 IProductCmptReference[] cmptReferences = structure.getChildProductCmptReferences(parent);
                 // because there are similar types in in one association i take anly the first one
                 // for better performance
