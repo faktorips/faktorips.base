@@ -24,8 +24,8 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
 
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         policyCmptType.setConfigurableByProductCmptType(false);
-
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
         genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
@@ -34,8 +34,8 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
 
     public void testGetGeneratedJavaElementsForImplementation() {
         policyCmptType.setConfigurableByProductCmptType(false);
-
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
         genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
@@ -44,6 +44,7 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
 
     public void testGetGeneratedJavaElementsForPublishedInterfaceConfigured() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
         genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
@@ -52,8 +53,9 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
         assertEquals(2, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForImplementationConfiguredProductCmpt() {
+    public void testGetGeneratedJavaElementsForImplementationConfigured() {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
         genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));

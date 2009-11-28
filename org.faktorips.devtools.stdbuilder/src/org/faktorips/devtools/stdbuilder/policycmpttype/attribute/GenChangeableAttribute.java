@@ -40,8 +40,8 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.ArgumentCheck;
@@ -607,9 +607,10 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     public IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
-        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
-                .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
-        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptTypeGen(policyCmptType);
+        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+                .getProductCmptInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptImplClassBuilder();
+        return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), policyCmptType
+                .getIpsProject());
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,

@@ -78,18 +78,22 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public JavaNamingConvention getJavaNamingConvention() {
         return JavaNamingConvention.ECLIPSE_STANDARD;
     }
-    
+
     /**
-     * Returns the name of the (Java) package that contains the artefacts specified by the parameters
-     * generated for the given ips source file.
+     * Returns the name of the (Java) package that contains the artefacts specified by the
+     * parameters generated for the given ips source file.
      * 
-     * @param publishedArtefact <code>true</code> if the artefacts are published (ussable by clients), 
-     *                          <code>false</code> if they are internal.
-     * @param mergableArtefact <code>true</code> if the generated artefacte is mergable (at the moment this applies to Java Source files only).
-     *                         <code>false</code) if the artefact is 100% generated and can't be modified by the user.                          
+     * @param publishedArtefact <code>true</code> if the artefacts are published (ussable by
+     *            clients), <code>false</code> if they are internal.
+     * @param mergableArtefact <code>true</code> if the generated artefacte is mergable (at the
+     *            moment this applies to Java Source files only). <code>false</code) if the artefact is 100% generated and can't be modified by the user.
      */
-    public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile, boolean publishedArtefact, boolean mergableArtefact) throws CoreException {
-        String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile.getBasePackageNameForDerivedArtefacts();
+    public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
+            boolean publishedArtefact,
+            boolean mergableArtefact) throws CoreException {
+
+        String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
+                .getBasePackageNameForDerivedArtefacts();
         if (!publishedArtefact) {
             basePackName = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
         }
@@ -97,24 +101,21 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return QNameUtil.concat(basePackName, packageFragName);
     }
 
-
     /**
-     * Returns the name of the (Java) package name that contains the published artefacts that
-     * are generated for the given ips source file that (the artefacts) are also mergable.
+     * Returns the name of the (Java) package name that contains the published artefacts that are
+     * generated for the given ips source file that (the artefacts) are also mergable.
      */
     public String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, true, true);
     }
 
     /**
-     * Returns the name of the (Java) package name that contains the internal artefacts that
-     * are generated for the given ips source file that (the artefacts) are also mergable.
+     * Returns the name of the (Java) package name that contains the internal artefacts that are
+     * generated for the given ips source file that (the artefacts) are also mergable.
      */
     public String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
     }
-    
-    
 
     /**
      * {@inheritDoc}
@@ -283,14 +284,16 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
+            throws CoreException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
+            throws CoreException {
         return null;
     }
 

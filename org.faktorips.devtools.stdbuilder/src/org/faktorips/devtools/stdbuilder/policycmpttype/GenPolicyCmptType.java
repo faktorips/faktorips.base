@@ -41,6 +41,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAtt
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -318,18 +319,18 @@ public class GenPolicyCmptType extends GenType {
     }
 
     /**
-     * Finds and returns the Java type generated for the <tt>IProductCmptType</tt> configuring the
-     * <tt>IPolicyCmptType</tt> of the <tt>IPolicyCmptTypeAttribute</tt> this generator is
-     * configured for.
+     * Returns the Java type generated for the <tt>IProductCmptType</tt> configuring the
+     * <tt>IPolicyCmptType</tt> this generator is configured for.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
      */
     public IType getGeneratedJavaTypeForProductCmptType(boolean forInterface) {
-        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
-                .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
-        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptType(getPolicyCmptType());
+        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
+                .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
+        return productCmptTypeBuilder.getGeneratedJavaType(getPolicyCmptType().getProductCmptType(),
+                getPolicyCmptType().getIpsProject());
     }
 
 }

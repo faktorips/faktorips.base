@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
@@ -107,7 +109,7 @@ public class GenProductCmptType extends GenType {
      * Returns the name of the method to access the product component generation, e.g.
      * getMotorProductGen
      */
-    public String getMethodNameGetProductCmptGeneration() throws CoreException {
+    public String getMethodNameGetProductCmptGeneration() {
         String[] replacements = new String[] { getType().getName(), getAbbreviationForGenerationConcept(),
                 getNameForGenerationConcept() };
         return getLocalizedText("METHOD_GET_PRODUCTCMPT_GENERATION_NAME", replacements);
@@ -116,7 +118,7 @@ public class GenProductCmptType extends GenType {
     /**
      * Returns the name of the method to set the product component, e.g. setMotorProduct
      */
-    public String getMethodNameSetProductCmpt() throws CoreException {
+    public String getMethodNameSetProductCmpt() {
         return getLocalizedText("METHOD_SET_PRODUCTCMPT_NAME", getType().getName());
     }
 
@@ -136,7 +138,7 @@ public class GenProductCmptType extends GenType {
     /**
      * Returns the name of the method to access the product component, e.g. getMotorProduct
      */
-    public String getMethodNameGetProductCmpt() throws CoreException {
+    public String getMethodNameGetProductCmpt() {
         return getLocalizedText("METHOD_GET_PRODUCTCMPT_NAME", getProductCmptType().getName());
     }
 
@@ -326,9 +328,7 @@ public class GenProductCmptType extends GenType {
                 getMethodParamNamesSetProductCmpt(), paramTypes);
     }
 
-    /**
-     * Returns the method parameters for the method: setProductCmpt.
-     */
+    /** Returns the method parameters for the method: setProductCmpt. */
     public String[] getMethodParamNamesSetProductCmpt() throws CoreException {
         return new String[] { StringUtils.uncapitalize(getType().getName()), "initPropertiesWithConfiguratedDefaults" };
     }
@@ -338,7 +338,32 @@ public class GenProductCmptType extends GenType {
             IType generatedJavaType,
             boolean forInterface) {
 
-        // TODO
+        if (getProductCmptType().isConfigurationForPolicyCmptType()) {
+            IType javaTypePolicyCmpt = getGeneratedJavaTypeForPolicyCmptType(forInterface);
+            IMethod getProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmpt(), new String[] {});
+            javaElements.add(getProductCmptMethod);
+            IMethod getProductCmptGenMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmptGeneration(),
+                    new String[] {});
+            javaElements.add(getProductCmptGenMethod);
+            IMethod setProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameSetProductCmpt(), new String[] {
+                    "Q" + getQualifiedName(true) + ";", "Z" });
+            javaElements.add(setProductCmptMethod);
+        }
+    }
+
+    /**
+     * Returns the Java type generated for the <tt>IPolicyCmptType</tt> that is configured by the
+     * <tt>IProductCmptType</tt> this generator is configured for.
+     * 
+     * @param forInterface Flag indicating whether to search for the published interface of the
+     *            <tt>IPolicyCmptType</tt> (<tt>true</tt>) or for it's implementation (
+     *            <tt>false</tt>).
+     */
+    public IType getGeneratedJavaTypeForPolicyCmptType(boolean forInterface) {
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
+                .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
+        return policyCmptTypeBuilder.getGeneratedJavaType(getProductCmptType().getPolicyCmptType(),
+                getProductCmptType().getIpsProject());
     }
 
 }

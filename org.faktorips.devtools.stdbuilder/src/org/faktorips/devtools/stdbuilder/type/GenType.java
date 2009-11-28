@@ -67,29 +67,29 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
         return builderSet;
     }
 
-    public String getPackageName(boolean forInterface) throws CoreException {
+    public String getPackageName(boolean forInterface) {
         return getPackageName(type, builderSet, forInterface);
     }
 
-    private static String getPackageName(IType type, StandardBuilderSet builderSet, boolean forInterface)
-            throws CoreException {
-
+    private static String getPackageName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (type != null) {
-            if (forInterface) {
-                return builderSet.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
+            try {
+                if (forInterface) {
+                    return builderSet.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
+                }
+                return builderSet.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
-            return builderSet.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
         }
         return null;
     }
 
-    public String getQualifiedName(boolean forInterface) throws CoreException {
+    public String getQualifiedName(boolean forInterface) {
         return getQualifiedName(type, builderSet, getPackageName(forInterface), forInterface);
     }
 
-    public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface)
-            throws CoreException {
-
+    public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (type != null) {
             return getQualifiedName(type, builderSet, getPackageName(type, builderSet, forInterface), forInterface);
         }

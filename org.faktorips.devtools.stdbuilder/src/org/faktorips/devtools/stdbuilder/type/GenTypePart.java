@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.type;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -66,23 +65,6 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
 
     public String getUnqualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
         return genType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
-    }
-
-    protected final String getJavaParameterTypeSignature(Datatype datatype) {
-        char typeIdentifier = 'Q';
-        if (datatype.isVoid()) {
-            return "V";
-        } else if (datatype.isPrimitive()) {
-            if (datatype.equals(Datatype.PRIMITIVE_INT)) {
-                return "I";
-            } else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-                return "Z";
-            } else if (datatype.equals(Datatype.PRIMITIVE_LONG)) {
-                return "J";
-            }
-        }
-
-        return typeIdentifier + datatype.getName() + ";";
     }
 
 }

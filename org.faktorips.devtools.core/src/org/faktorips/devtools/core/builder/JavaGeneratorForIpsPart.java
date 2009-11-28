@@ -266,6 +266,23 @@ public abstract class JavaGeneratorForIpsPart {
             IType generatedJavaType,
             IIpsObjectPartContainer ipsObjectPartContainer);
 
+    protected final String getJavaParameterTypeSignature(Datatype datatype) {
+        char typeIdentifier = 'Q';
+        if (datatype.isVoid()) {
+            return "V";
+        } else if (datatype.isPrimitive()) {
+            if (datatype.equals(Datatype.PRIMITIVE_INT)) {
+                return "I";
+            } else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
+                return "Z";
+            } else if (datatype.equals(Datatype.PRIMITIVE_LONG)) {
+                return "J";
+            }
+        }
+
+        return typeIdentifier + datatype.getName() + ";";
+    }
+
     @Override
     public String toString() {
         return "Generator for " + ipsPart.toString();
