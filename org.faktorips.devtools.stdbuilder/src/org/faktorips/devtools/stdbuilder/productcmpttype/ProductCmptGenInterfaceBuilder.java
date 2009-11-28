@@ -158,12 +158,11 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected String getGeneratedJavaTypeName(IIpsObjectPartContainer ipsObjectPartContainer) {
-        ArgumentCheck.notNull(ipsObjectPartContainer);
+    protected String getGeneratedJavaTypeName(String ipsTypeName) {
+        ArgumentCheck.notNull(ipsTypeName);
         // TODO AW: Is there an option to ask for a generation name for a given product name?
         return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
-                ipsObjectPartContainer.getIpsObject().getName() + "Gen") : getJavaNamingConvention()
-                .getImplementationClassName(ipsObjectPartContainer.getIpsObject().getName() + "Gen");
+                ipsTypeName + "Gen") : getJavaNamingConvention().getImplementationClassName(ipsTypeName + "Gen");
     }
 
     @Override
@@ -181,8 +180,10 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
             productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
         }
 
-        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                getGeneratedJavaType(ipsObjectPartContainer), ipsObjectPartContainer);
+        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(
+                javaElements,
+                getGeneratedJavaType(ipsObjectPartContainer.getIpsObject().getQualifiedName(), ipsObjectPartContainer
+                        .getIpsProject()), ipsObjectPartContainer);
     }
 
     @Override

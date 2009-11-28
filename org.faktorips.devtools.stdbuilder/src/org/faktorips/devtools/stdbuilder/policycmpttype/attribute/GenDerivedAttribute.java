@@ -177,11 +177,7 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
             }
 
         } else {
-            if (!(isOverwrite())) {
-                super
-                        .getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
-                                ipsObjectPartContainer);
-            }
+            super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer);
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
     }

@@ -310,12 +310,10 @@ public class GenPolicyCmptType extends GenType {
             boolean forInterface) {
 
         if (getPolicyCmptType().isConfigurableByProductCmptType()) {
-            IType javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
-            if (javaTypeProductCmpt != null) {
-                org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
-                        getMethodNameCreatePolicyCmpt(), new String[] {});
-                javaElements.add(createPolicyCmptMethod);
-            }
+            IType javaTypeProductCmpt = getGeneratedJavaTypeForProductCmptType(forInterface);
+            org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
+                    getMethodNameCreatePolicyCmpt(), new String[] {});
+            javaElements.add(createPolicyCmptMethod);
         }
     }
 
@@ -323,28 +321,15 @@ public class GenPolicyCmptType extends GenType {
      * Finds and returns the Java type generated for the <tt>IProductCmptType</tt> configuring the
      * <tt>IPolicyCmptType</tt> of the <tt>IPolicyCmptTypeAttribute</tt> this generator is
      * configured for.
-     * <p>
-     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> configuring the
-     * <tt>IPolicyCmptType</tt> could not be found.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
-     * 
-     * @throws IllegalStateException If this generator is configured for an
-     *             <tt>IPolicyCmptTypeAttribute</tt> that does not belong to an
-     *             <tt>IPolicyCmptType</tt> that is configured by a product.
      */
-    public IType findGeneratedJavaTypeForProductCmptType(boolean forInterface) {
-        if (!(getPolicyCmptType().isConfigurableByProductCmptType())) {
-            throw new IllegalStateException(
-                    "Policy Component Type is not being configured by a Product Component Type.");
-        }
-
+    public IType getGeneratedJavaTypeForProductCmptType(boolean forInterface) {
         BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
                 .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
-
-        return policyCmptTypeBuilder.findGeneratedJavaTypeForProductCmptType(getPolicyCmptType());
+        return policyCmptTypeBuilder.getGeneratedJavaTypeForProductCmptType(getPolicyCmptType());
     }
 
 }

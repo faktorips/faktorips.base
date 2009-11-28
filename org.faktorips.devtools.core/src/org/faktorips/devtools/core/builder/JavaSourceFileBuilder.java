@@ -1006,18 +1006,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the Java type that is generated for the given <tt>IIpsObjectPartContainer</tt> by
-     * this builder.
+     * Returns the Java type that this builder generates for the <tt>IIpsObject</tt> identified by
+     * it's provided qualified name.
      * 
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
-     *            Java type for.
+     * @param qualifiedIpsObjectName The qualified name of the <tt>IIpsObject</tt> to obtain the
+     *            generated Java type for.
+     * @param ipsProject The <tt>IIpsProject</tt> that is used for the search.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public final IType getGeneratedJavaType(IIpsObjectPartContainer ipsObjectPartContainer) {
-        ArgumentCheck.notNull(ipsObjectPartContainer);
+    public final IType getGeneratedJavaType(String qualifiedIpsObjectName, IIpsProject ipsProject) {
+        ArgumentCheck.notNull(new Object[] { qualifiedIpsObjectName, ipsProject });
 
-        IIpsProject ipsProject = ipsObjectPartContainer.getIpsProject();
         try {
             IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
             IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(
@@ -1025,10 +1025,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
             IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
                     .getBasePackageNameForMergableJavaClasses()
-                    + internalPackageSeparator
-                    + "."
-                    + ipsObjectPartContainer.getIpsObject().getIpsPackageFragment().getName());
-            String typeName = getGeneratedJavaTypeName(ipsObjectPartContainer);
+                    + internalPackageSeparator + "." + qualifiedIpsObjectName);
+            String typeName = qualifiedIpsObjectName;
+            if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) {
+                typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName.substring(qualifiedIpsObjectName
+                        .lastIndexOf('.') + 1));
+            }
             ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + ".java");
 
             return compilationUnit.getType(typeName);
@@ -1039,22 +1041,19 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the name of the Java type this builder generates for the given
-     * <tt>IIpsObjectPartContainer</tt>.
+     * Returns the name of the Java type this builder generates for the given IPS type name.
      * <p>
      * May be overwritten by subclasses. This method is used by
-     * <tt>getGeneratedJavaType(IIpsObjectPartContainer)</tt>.
+     * <tt>getGeneratedJavaType(String, IIpsProject)</tt>.
      * 
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the name of the
-     *            generated Java type for.
+     * @param ipsTypeName The IPS type name to obtain the the Java type name for.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <tt>ipsTypeName</tt> is <tt>null</tt>.
      */
-    protected String getGeneratedJavaTypeName(IIpsObjectPartContainer ipsObjectPartContainer) {
-        ArgumentCheck.notNull(ipsObjectPartContainer);
-        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
-                ipsObjectPartContainer.getIpsObject().getName()) : getJavaNamingConvention()
-                .getImplementationClassName(ipsObjectPartContainer.getIpsObject().getName());
+    protected String getGeneratedJavaTypeName(String ipsTypeName) {
+        ArgumentCheck.notNull(ipsTypeName);
+        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(ipsTypeName)
+                : getJavaNamingConvention().getImplementationClassName(ipsTypeName);
     }
 
     /**
