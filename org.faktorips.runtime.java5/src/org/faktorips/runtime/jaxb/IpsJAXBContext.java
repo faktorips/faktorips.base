@@ -16,7 +16,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.w3c.dom.Node;
 
@@ -24,20 +23,19 @@ import org.w3c.dom.Node;
  * Wraps a given JAXBContext and provides marshallers/unmarshallers that resolve the reference from
  * configurable model objects to product components. Additionally it provides the marshalling of
  * Faktor-IPS enumerations that defer their values to an enumeration content that is hold by a
- * Faktor-IPS IRuntimeRepository. See {@link #createMarshaller()} and
- * {@link #createUnmarshaller()} for more details. All other methods just delegate to the wrapped
- * context.
+ * Faktor-IPS IRuntimeRepository. See {@link #createMarshaller()} and {@link #createUnmarshaller()}
+ * for more details. All other methods just delegate to the wrapped context.
  * 
  * @author Jan Ortmann
  */
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;
-    private List<? extends XmlAdapter<?, ? extends IEnumValue>> enumXmlAdapters;
+    private List<? extends XmlAdapter<?, ?>> enumXmlAdapters;
     private IRuntimeRepository repository;
 
-    public IpsJAXBContext(JAXBContext wrappedCtx,
-            List<? extends XmlAdapter<?, ? extends IEnumValue>> enumXmlAdapters, IRuntimeRepository repository) {
+    public IpsJAXBContext(JAXBContext wrappedCtx, List<? extends XmlAdapter<?, ?>> enumXmlAdapters,
+            IRuntimeRepository repository) {
         super();
         this.wrappedCtx = wrappedCtx;
         this.repository = repository;
@@ -55,7 +53,7 @@ public class IpsJAXBContext extends JAXBContext {
     public Marshaller createMarshaller() throws JAXBException {
         Marshaller marshaller = wrappedCtx.createMarshaller();
         marshaller.setAdapter(new ProductComponentXmlAdapter(repository));
-        for (XmlAdapter<?, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
+        for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             marshaller.setAdapter(xmlAdapter);
         }
         return marshaller;
@@ -65,12 +63,13 @@ public class IpsJAXBContext extends JAXBContext {
     public Unmarshaller createUnmarshaller() throws JAXBException {
         Unmarshaller unmarshaller = wrappedCtx.createUnmarshaller();
         unmarshaller.setAdapter(new ProductComponentXmlAdapter(repository));
-        for (XmlAdapter<?, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
+        for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             unmarshaller.setAdapter(xmlAdapter);
         }
         return unmarshaller;
     }
 
+    @Override
     public Validator createValidator() throws JAXBException {
         return wrappedCtx.createValidator();
     }

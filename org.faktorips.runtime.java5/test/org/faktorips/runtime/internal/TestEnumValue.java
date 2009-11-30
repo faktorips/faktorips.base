@@ -3,25 +3,25 @@
  */
 package org.faktorips.runtime.internal;
 
-import org.faktorips.runtime.IEnumValue;
 
 /**
  * @author ortmann
- *
+ * 
  */
-public class TestEnumValue implements IEnumValue {
+public class TestEnumValue {
 
     private String id;
-    
-    public TestEnumValue(String id){
+
+    public TestEnumValue(String id) {
         this.id = id;
     }
-    
+
     public String getEnumValueId() {
         return id;
     }
 
+    @Override
     public String toString() {
-    	return id;
+        return id;
     }
 }

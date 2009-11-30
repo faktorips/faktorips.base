@@ -73,7 +73,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
             throw new NullPointerException("The source for the ProductComponentLink may not be null.");
         }
         this.source = source;
-        if (targetId == null) {
+        if (target == null) {
             throw new NullPointerException("The targetId for the ProductComponentLink may not be null.");
         }
         this.targetId = target.getId();
