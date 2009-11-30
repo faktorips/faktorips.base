@@ -23,7 +23,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.DefaultCacheFactory;
-import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductDataProvider;
@@ -53,6 +52,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected AbstractReadonlyTableOfContents loadTableOfContents() {
         return dataProvider.loadToc();
     }
@@ -60,6 +60,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClass().getClassLoader());
         ProductComponent productCmpt;
@@ -77,6 +78,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
         IProductComponentGeneration productCmptGeneration = dataProvider.getProductCmptGeneration(tocEntryGeneration
                 .getParent().getIpsObjectId(), tocEntryGeneration.getValidFrom());
@@ -94,6 +96,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected ITable createTable(TocEntryObject tocEntry) {
         throw new UnsupportedOperationException();
     }
@@ -101,6 +104,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
         throw new UnsupportedOperationException();
     }
@@ -112,26 +116,29 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
         return false;
     }
 
-    //TODO duplicate code in this and the classloaderruntimerepository.
-    protected <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
-        
+    // TODO duplicate code in this and the classloaderruntimerepository.
+    @Override
+    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
-        if(is == null){
-            throw new RuntimeException("Cant't load the input stream for the enumeration content resource " + tocEntry.getXmlResourceName());
+        if (is == null) {
+            throw new RuntimeException("Cant't load the input stream for the enumeration content resource "
+                    + tocEntry.getXmlResourceName());
         }
         EnumSaxHandler saxhandler = new EnumSaxHandler();
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), saxhandler);
         } catch (Exception e) {
-            throw new RuntimeException("Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName());
-        }        
+            throw new RuntimeException("Can't parse the enumeration content of the resource "
+                    + tocEntry.getXmlResourceName());
+        }
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
         try {
-            Constructor<T> constructor = clazz.getConstructor(new Class[] { List.class});
+            Constructor<T> constructor = clazz.getConstructor(new Class[] { List.class });
             for (List<String> enumValuesAsStrings : saxhandler.getEnumValueList()) {
-                enumValue = constructor.newInstance(new Object[] {enumValuesAsStrings});
+                enumValue = constructor.newInstance(new Object[] { enumValuesAsStrings });
                 enumValues.add(enumValue);
             }
         } catch (Exception e) {
@@ -141,8 +148,8 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     }
 
     @Override
-    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className, IRuntimeRepository repository) throws Exception {
-        // TODO Auto-generated method stub
+    protected XmlAdapter<String, ?> createEnumXmlAdapter(String className, IRuntimeRepository repository)
+            throws Exception {
         return null;
     }
 

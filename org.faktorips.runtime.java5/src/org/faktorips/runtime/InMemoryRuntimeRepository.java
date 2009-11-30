@@ -56,9 +56,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
 
     // contains all enumeration values for the faktor ips enumerations which content is deferred
-    private Map<Class<? extends IEnumValue>, List<? extends IEnumValue>> enumValuesMap = new HashMap<Class<? extends IEnumValue>, List<? extends IEnumValue>>();
+    private Map<Class<?>, List<?>> enumValuesMap = new HashMap<Class<?>, List<?>>();
 
-    private List<XmlAdapter<?, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<?, IEnumValue>>();
+    private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
 
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
@@ -182,7 +182,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * @param enumType The Java class representing the enumeration type.
      * @param enumValues The value of the enumeration type as list.
      */
-    public <T extends IEnumValue> void putEnumValues(Class<T> enumType, List<T> enumValues) {
+    public <T> void putEnumValues(Class<T> enumType, List<T> enumValues) {
         List<T> copy = new ArrayList<T>(enumValues);
         enumValuesMap.put(enumType, copy);
     }
@@ -414,7 +414,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz) {
+    protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
         List<T> values = (List<T>)enumValuesMap.get(clazz);
         if (values == null) {
             return null;
@@ -426,12 +426,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a
      * enumeration content to this repository.
      */
-    public void addEnumXmlAdapter(XmlAdapter<?, IEnumValue> enumXmlAdapter) {
+    public void addEnumXmlAdapter(XmlAdapter<?, ?> enumXmlAdapter) {
         enumXmlAdapters.add(enumXmlAdapter);
     }
 
     @Override
-    protected List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
+    protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         return enumXmlAdapters;
     }
 

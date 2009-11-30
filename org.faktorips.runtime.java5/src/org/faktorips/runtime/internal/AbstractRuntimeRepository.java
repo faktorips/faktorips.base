@@ -15,6 +15,8 @@ package org.faktorips.runtime.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +36,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -61,7 +62,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     // The name of the repository
     private String name;
-    
+
     // list of repositories this one directly depends on
     private List<IRuntimeRepository> repositories = new ArrayList<IRuntimeRepository>(0);
 
@@ -71,8 +72,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
 
-    private Map<Class<? extends IEnumValue>, IEnumValueLookupService<? extends IEnumValue>> 
-    	enumValueLookups = new HashMap<Class<? extends IEnumValue>, IEnumValueLookupService<? extends IEnumValue>>();
+    private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new HashMap<Class<?>, IEnumValueLookupService<?>>();
 
     public AbstractRuntimeRepository(String name) {
         if (name == null) {
@@ -511,7 +511,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     private class IpsTestComparator implements Comparator<IpsTest2> {
         public int compare(IpsTest2 o1, IpsTest2 o2) {
-            return ((IpsTest2)o1).getQualifiedName().compareTo(((IpsTest2)o2).getQualifiedName());
+            return (o1).getQualifiedName().compareTo((o2).getQualifiedName());
         }
     }
 
@@ -548,7 +548,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     public IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation) {
-        if (this.equals(generation.getRepository())) {
+        if (equals(generation.getRepository())) {
             return getNextProductComponentGenerationInternal(generation);
         }
 
@@ -564,7 +564,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation);
 
     public int getNumberOfProductComponentGenerations(IProductComponent productCmpt) {
-        if (this.equals(productCmpt.getRepository())) {
+        if (equals(productCmpt.getRepository())) {
             return getNumberOfProductComponentGenerationsInternal(productCmpt);
         }
 
@@ -581,7 +581,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt);
 
     public IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
-        if (this.equals(generation.getRepository())) {
+        if (equals(generation.getRepository())) {
             return getPreviousProductComponentGenerationInternal(generation);
         }
 
@@ -615,7 +615,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             XMLStreamReader parser = factory.createXMLStreamReader(in);
 
             for (int event = parser.next(); event != XMLStreamConstants.START_ELEMENT && parser.hasNext(); event = parser
-                    .next());
+                    .next()) {
+                ;
+            }
             modelType.initFromXml(parser);
         } catch (IOException e) {
             throw new RuntimeException(
@@ -662,15 +664,15 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
     @SuppressWarnings("unchecked")
-    public IEnumValue getEnumValue(String uniqueId)  {
+    public Object getEnumValue(String uniqueId) {
         int index = uniqueId.indexOf('#');
-        if (index == -1){
+        if (index == -1) {
             return null;
         }
         String className = uniqueId.substring(0, index);
         String id = uniqueId.substring(index + 1);
         try {
-            Class<IEnumValue> clazz = (Class<IEnumValue>)getClassLoader().loadClass(className);
+            Class<?> clazz = getClassLoader().loadClass(className);
             return getEnumValue(clazz, id);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -680,37 +682,54 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      */
-	public final <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object value) {
+    public final <T> T getEnumValue(Class<T> clazz, Object value) {
         if (value == null) {
             return null;
         }
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
-        if (lookup!=null) {
-    		return lookup.getEnumValue(value);
-    	}
+        if (lookup != null) {
+            return lookup.getEnumValue(value);
+        }
         List<T> enumValues = getEnumValues(clazz);
         if (enumValues == null) {
-        	return null;
+            return null;
         }
-        for (T enumValue : enumValues) {
-            if (value.equals(enumValue.getEnumValueId())) {
-                return enumValue;
+        try {
+            Method enumValueIdMethod = clazz.getMethod("getEnumValueId", new Class[0]);
+            for (T enumValue : enumValues) {
+                Object idValue = enumValueIdMethod.invoke(enumValue, new Object[0]);
+                if (value.equals(idValue)) {
+                    return enumValue;
+                }
             }
+        } catch (SecurityException e) {
+            throwUnableToCallMethodException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(
+                    "The provided enumeration class doesn't provide an identifing method getEnumValueId.", e);
+        } catch (IllegalAccessException e) {
+            throwUnableToCallMethodException(e);
+        } catch (InvocationTargetException e) {
+            throwUnableToCallMethodException(e);
         }
         return null;
+    }
+
+    private void throwUnableToCallMethodException(Exception e) throws IllegalStateException {
+        throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e);
     }
 
     /**
      * {@inheritDoc}
      */
-    public final <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz) {
-    	List<T> values = null;
-    	IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
-    	if (lookup!=null) {
-    		return values = (List<T>) lookup.getEnumValues();
-    	} else {
+    public final <T> List<T> getEnumValues(Class<T> clazz) {
+        List<T> values = null;
+        IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
+        if (lookup != null) {
+            return values = lookup.getEnumValues();
+        } else {
             values = getEnumValuesInternal(clazz);
-    	}
+        }
         if (values != null) {
             return Collections.unmodifiableList(values);
         }
@@ -722,71 +741,73 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         return null;
     }
-    
+
     /**
-     * Returns the list of enumeration values of the enumeration type that is identified by its class
-     * which is provided to it.
+     * Returns the list of enumeration values of the enumeration type that is identified by its
+     * class which is provided to it.
      */
-    protected abstract <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz);
-    
+    protected abstract <T> List<T> getEnumValuesInternal(Class<T> clazz);
+
     /**
      * {@inheritDoc}
      */
     public void addEnumValueLookupService(IEnumValueLookupService<?> lookup) {
-		enumValueLookups.put(lookup.getEnumTypeClass(), lookup);
-	}
+        enumValueLookups.put(lookup.getEnumTypeClass(), lookup);
+    }
 
     /**
      * {@inheritDoc}
      */
-	@SuppressWarnings("unchecked")
-	public <T extends IEnumValue> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
-		return (IEnumValueLookupService<T>) enumValueLookups.get(enumClazz);
-	}
+    @SuppressWarnings("unchecked")
+    public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
+        return (IEnumValueLookupService<T>)enumValueLookups.get(enumClazz);
+    }
 
     /**
      * {@inheritDoc}
      */
-	public void removeEnumValueLookupService(IEnumValueLookupService<?> lookup) {
-		enumValueLookups.remove(lookup.getEnumTypeClass());
-	}
+    public void removeEnumValueLookupService(IEnumValueLookupService<?> lookup) {
+        enumValueLookups.remove(lookup.getEnumTypeClass());
+    }
 
-	/**
+    /**
      * Returns all enumeration XmlAdapters available in this repository that generated by
      * Faktor-IPS.
      * 
      * @param repository the runtime repository that needs to be used by the XmlAdapters that are
      *            returned by this method
      */
-    protected abstract List<XmlAdapter<?, IEnumValue>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository);
-   
+    protected abstract List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository);
+
     /**
      * Adds all enumeration XmlAdapters available in this repository to the provided list. These are
      * the internal adapters and the adapters specified by the enum value lookup services.
      * 
      * @param adapters the list where the adapters are added to
-     * @param repository the runtime repository that needs to be used by the XmlAdapters that are collected by this method
-     *  
+     * @param repository the runtime repository that needs to be used by the XmlAdapters that are
+     *            collected by this method
+     * 
      * @see #getAllInternalEnumXmlAdapters()
      * @see #addEnumValueLookupService(IEnumValueLookupService)
      * @see IEnumValueLookupService#getXmlAdapter()
      */
-    private void addAllEnumXmlAdapters(List<XmlAdapter<?, ? extends IEnumValue>> adapters, IRuntimeRepository repository) {
+    private void addAllEnumXmlAdapters(List<XmlAdapter<?, ?>> adapters, IRuntimeRepository repository) {
         adapters.addAll(getAllInternalEnumXmlAdapters(repository));
-        for (IEnumValueLookupService<? extends IEnumValue> lookupService : enumValueLookups.values()) {
-            XmlAdapter<?, ? extends IEnumValue> adapter = lookupService.getXmlAdapter();
+        for (IEnumValueLookupService<?> lookupService : enumValueLookups.values()) {
+            XmlAdapter<?, ?> adapter = lookupService.getXmlAdapter();
             if (adapter != null) {
                 adapters.add(adapter);
             }
         }
     }
-    
+
     /**
-     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling methods to provide
-     * marshaling of Faktor-IPS enumerations and model objects configured by product components.   
+     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling
+     * methods to provide marshaling of Faktor-IPS enumerations and model objects configured by
+     * product components.
      */
     public JAXBContext newJAXBContext(JAXBContext ctx) {
-        LinkedList<XmlAdapter<?, ? extends IEnumValue>> adapters = new LinkedList<XmlAdapter<?, ? extends IEnumValue>>();
+        LinkedList<XmlAdapter<?, ?>> adapters = new LinkedList<XmlAdapter<?, ?>>();
         addAllEnumXmlAdapters(adapters, this);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -794,13 +815,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         return new IpsJAXBContext(ctx, adapters, this);
     }
-    
+
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in this repository.
-     * If the repository references other repositories (directly or indirectly), the context can also handle the
-     * classes defined in those.  
-     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the class loader
-     *          or creating the jaxb context are wrapped into a runtime exception  
+     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in this
+     * repository. If the repository references other repositories (directly or indirectly), the
+     * context can also handle the classes defined in those.
+     * 
+     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
+     *             class loader or creating the jaxb context are wrapped into a runtime exception
      */
     @SuppressWarnings("unchecked")
     public JAXBContext newJAXBContext() {

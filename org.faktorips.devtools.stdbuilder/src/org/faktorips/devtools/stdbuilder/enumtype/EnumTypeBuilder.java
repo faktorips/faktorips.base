@@ -182,8 +182,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
                 }
             }
-        } else {
-            implementedInterfaces.add(org.faktorips.runtime.IEnumValue.class.getName());
         }
         if (useClassGeneration()) {
             if ((enumType.isAbstract() && !(enumType.hasSuperEnumType()))

@@ -473,9 +473,9 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     public void testAddEnumXmlAdapter() {
-        XmlAdapter<?, IEnumValue> xmlAdapter = new TestXmlAdapter();
+        XmlAdapter<?, TestEnumValue> xmlAdapter = new TestXmlAdapter();
         repository.addEnumXmlAdapter(xmlAdapter);
-        List<XmlAdapter<?, IEnumValue>> xmlAdapterList = repository.getAllInternalEnumXmlAdapters(repository);
+        List<XmlAdapter<?, ?>> xmlAdapterList = repository.getAllInternalEnumXmlAdapters(repository);
         assertEquals(1, xmlAdapterList.size());
         assertEquals(xmlAdapter, xmlAdapterList.get(0));
 
@@ -499,26 +499,26 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
     }
 
-    private class TestXmlAdapter extends XmlAdapter<String, IEnumValue> {
+    private class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
 
         @Override
-        public String marshal(IEnumValue value) throws Exception {
+        public String marshal(TestEnumValue value) throws Exception {
             return (String)value.getEnumValueId();
         }
 
         @Override
-        public IEnumValue unmarshal(String value) throws Exception {
+        public TestEnumValue unmarshal(String value) throws Exception {
             return new TestEnumValue(value);
         }
 
     }
 
-    private class TestEnumValue implements IEnumValue {
+    private class TestEnumValue {
 
         private String id;
 
         public TestEnumValue(String id) {
-            this.id = id;
+            id = id;
         }
 
         public String getEnumValueId() {

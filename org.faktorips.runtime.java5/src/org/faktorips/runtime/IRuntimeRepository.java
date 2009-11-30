@@ -124,7 +124,7 @@ public interface IRuntimeRepository {
      * 
      * @return The UNMODIFIABLE list of enum values.
      */
-    public <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz);
+    public <T> List<T> getEnumValues(Class<T> clazz);
 
     /**
      * Returns the enumeration value for the provided enumeration class and string representation of
@@ -136,33 +136,33 @@ public interface IRuntimeRepository {
      * @param clazz The enumeration class upon which the enumeration value is returned
      * @param id The enum value's identification
      */
-    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object id);
-    
+    public <T> T getEnumValue(Class<T> clazz, Object id);
+
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
      * follows <i>qualifiedClassName'#'valueId</i>. The valueId is the value that is returned by the
      * method {@link IEnumValue#getEnumValueId()}.
      */
-    public IEnumValue getEnumValue(String uniqueId);
+    public Object getEnumValue(String uniqueId);
 
     /**
-     * Adds the service to lookup enumeration values for the enumeration type specified by 
-     * {@link IEnumValueLookupService#getEnumTypeClass()}. If a service is already registered for the enumeration type,
-     * the new service replaces the old one.
-     *  
+     * Adds the service to lookup enumeration values for the enumeration type specified by
+     * {@link IEnumValueLookupService#getEnumTypeClass()}. If a service is already registered for
+     * the enumeration type, the new service replaces the old one.
+     * 
      * @param lookupService The new lookup service.
      */
     public void addEnumValueLookupService(IEnumValueLookupService<?> lookupService);
-    
+
     /**
-     * Returns the lookup service for the given enumeration type.
-     * Returns <code>null</code> if no service is registered for the given type. 
+     * Returns the lookup service for the given enumeration type. Returns <code>null</code> if no
+     * service is registered for the given type.
      */
-    public <T extends IEnumValue> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz);
-    
+    public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz);
+
     /**
-     * Removes the lookup service registered for the given enumeration type.
-     * Does nothing if no such service has been registered.
+     * Removes the lookup service registered for the given enumeration type. Does nothing if no such
+     * service has been registered.
      */
     public void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService);
 
@@ -371,11 +371,11 @@ public interface IRuntimeRepository {
      * Returns an empty set if no type is available.
      */
     public Set<String> getAllModelTypeImplementationClasses();
-    
+
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the given repository.
-     * If the repository references other repositories (directly or indirectly), the context can also handle the
-     * classes defined in these other repositories.  
+     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
+     * given repository. If the repository references other repositories (directly or indirectly),
+     * the context can also handle the classes defined in these other repositories.
      */
     public JAXBContext newJAXBContext();
 }

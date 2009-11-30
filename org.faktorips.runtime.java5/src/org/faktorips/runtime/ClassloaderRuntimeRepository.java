@@ -361,7 +361,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     }
 
     @Override
-    protected <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
 
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
