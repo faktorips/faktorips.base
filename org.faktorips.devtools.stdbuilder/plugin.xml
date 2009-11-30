@@ -83,13 +83,21 @@
    <extension
          point="org.eclipse.ltk.core.refactoring.renameParticipants">
       <renameParticipant
-            class="org.faktorips.devtools.stdbuilder.refactor.RenamePolicyCmptTypeAttributeParticipant"
-            id="org.faktorips.devtools.stdbuilder.renamePolicyCmptTypeAttributeParticipant"
-            name="RenamePolicyCmptTypeAttributeParticipant">
+            class="org.faktorips.devtools.stdbuilder.refactor.RenameParticipant"
+            id="org.faktorips.devtools.stdbuilder.renameParticipant"
+            name="RenameParticipant">
          <enablement>
-            <instanceof
-                  value="org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute">
-            </instanceof></enablement>
+            <or>
+               <instanceof
+                     value="org.faktorips.devtools.core.model.type.IAttribute">
+               </instanceof>
+               <instanceof
+                     value="org.faktorips.devtools.core.model.type.IMethod">
+               </instanceof>
+               <instanceof
+                     value="org.faktorips.devtools.core.model.type.IType">
+               </instanceof>
+            </or></enablement>
       </renameParticipant>
    </extension>
 

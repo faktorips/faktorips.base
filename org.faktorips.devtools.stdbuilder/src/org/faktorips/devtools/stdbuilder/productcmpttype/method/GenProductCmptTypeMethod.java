@@ -25,7 +25,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -212,7 +212,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
         if (((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition()) {
             if (!(isPublished())) {
@@ -226,7 +226,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
         if (isPublished()) {
             addMethodToGeneratedJavaElements(javaElements, generatedJavaType);

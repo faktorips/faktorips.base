@@ -22,7 +22,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -167,30 +166,27 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
-
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
         IPolicyCmptType policyCmptType = null;
-        if (ipsObjectPartContainer instanceof IPolicyCmptType) {
-            policyCmptType = (IPolicyCmptType)ipsObjectPartContainer;
+        if (ipsElement instanceof IPolicyCmptType) {
+            policyCmptType = (IPolicyCmptType)ipsElement;
 
-        } else if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
-            policyCmptType = ((IPolicyCmptTypeAttribute)ipsObjectPartContainer).getPolicyCmptType();
+        } else if (ipsElement instanceof IPolicyCmptTypeAttribute) {
+            policyCmptType = ((IPolicyCmptTypeAttribute)ipsElement).getPolicyCmptType();
 
-        } else if (ipsObjectPartContainer instanceof IMethod) {
-            policyCmptType = (IPolicyCmptType)((IMethod)ipsObjectPartContainer).getIpsObject();
+        } else if (ipsElement instanceof IMethod) {
+            policyCmptType = (IPolicyCmptType)((IMethod)ipsElement).getIpsObject();
+
+        } else {
+            return;
         }
 
         if (isBuildingPublishedSourceFile()) {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(
-                    javaElements,
-                    getGeneratedJavaType(ipsObjectPartContainer.getIpsObject().getQualifiedName(),
-                            ipsObjectPartContainer.getIpsProject()), ipsObjectPartContainer);
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
+                    getGeneratedJavaType(policyCmptType.getQualifiedName(), ipsElement.getIpsProject()), ipsElement);
         } else {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(
-                    javaElements,
-                    getGeneratedJavaType(ipsObjectPartContainer.getIpsObject().getQualifiedName(),
-                            ipsObjectPartContainer.getIpsProject()), ipsObjectPartContainer);
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(javaElements,
+                    getGeneratedJavaType(policyCmptType.getQualifiedName(), ipsElement.getIpsProject()), ipsElement);
         }
     }
 

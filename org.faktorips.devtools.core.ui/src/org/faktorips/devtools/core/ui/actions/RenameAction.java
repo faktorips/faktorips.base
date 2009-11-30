@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
 
 /**
- * Opens the move wizeard in rename-mode to allow the user to enter the new name for the object to
+ * Opens the move wizard in rename-mode to allow the user to enter the new name for the object to
  * rename.
  * 
  * @author Thorsten Guenther
@@ -43,14 +43,10 @@ public class RenameAction extends IpsAction implements IShellProvider {
         setText(Messages.RenameAction_name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
         if (selected instanceof IPolicyCmptTypeAttribute) {
-            // XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
             RefactoringWizard renameWizard = new RenameRefactoringWizard((IPolicyCmptTypeAttribute)selected);
             RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(renameWizard);
             try {

@@ -25,7 +25,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -163,13 +163,11 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
         if (isDerivedByExplicitMethodCall()) {
             if (!(isPublished()) || !(isOverwrite())) {
-                super
-                        .getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
-                                ipsObjectPartContainer);
+                super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
             }
             if (!(isOverwrite())) {
                 addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
@@ -177,7 +175,7 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
             }
 
         } else {
-            super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer);
+            super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
     }
@@ -185,13 +183,13 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
         if (isOverwrite()) {
             return;
         }
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer);
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
 
         if (isPublished()) {
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);

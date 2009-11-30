@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -572,32 +572,26 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     /**
      * Returns a list containing all <tt>IJavaElement</tt>s this builder set generates for the given
-     * <tt>IIpsObjectPartContainer</tt>.
+     * <tt>IIpsElement</tt>.
      * <p>
      * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
-     * <tt>IIpsObjectPartContainer</tt>.
+     * <tt>IIpsElement</tt>.
      * 
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
-     *            <tt>IJavaElement</tt>s for.
+     * @param ipsElement The <tt>IIpsElement</tt> to obtain the generated <tt>IJavaElement</tt>s
+     *            for.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
      */
-    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
-        ArgumentCheck.notNull(ipsObjectPartContainer);
+    public List<IJavaElement> getGeneratedJavaElements(IIpsElement ipsElement) {
+        ArgumentCheck.notNull(ipsElement);
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             if (!(builder instanceof JavaSourceFileBuilder)) {
                 continue;
             }
-            try {
-                if (builder.isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
-                    JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+            javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsElement));
         }
 
         return javaElements;

@@ -31,7 +31,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -550,9 +550,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsObjectPartContainer);
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
 
         if (isOverwrite() && !(isProductRelevant())) {
             return;
@@ -576,9 +576,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsObjectPartContainer);
+        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
 
         if ((isOverwrite() && !(isProductRelevant())) || !(isPublished())) {
             return;

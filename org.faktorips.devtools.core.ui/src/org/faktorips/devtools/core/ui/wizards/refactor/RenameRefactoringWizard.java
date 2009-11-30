@@ -19,7 +19,8 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeProcessor;
+import org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeRefactoringProcessor;
+import org.faktorips.devtools.core.internal.refactor.RenameRefactoringProcessor;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -28,11 +29,10 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Alexander Weickmann
  */
-// XXX AW: - REFACOTRING SUPPORT PROTOTYPE -
 public class RenameRefactoringWizard extends RefactoringWizard {
 
     public RenameRefactoringWizard(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        super(new RenameRefactoring(new RenamePolicyCmptTypeAttributeProcessor(policyCmptTypeAttribute)),
+        super(new RenameRefactoring(new RenamePolicyCmptTypeAttributeRefactoringProcessor(policyCmptTypeAttribute)),
                 DIALOG_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageTitle("Rename Policy Component Type Attribute");
     }
@@ -62,8 +62,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
         @Override
         protected boolean performFinish() {
             ProcessorBasedRefactoring refactoring = (ProcessorBasedRefactoring)getRefactoring();
-            RenamePolicyCmptTypeAttributeProcessor processor = (RenamePolicyCmptTypeAttributeProcessor)refactoring
-                    .getProcessor();
+            RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
             processor.setNewName(newNameTextField.getText());
             return super.performFinish();
         }
