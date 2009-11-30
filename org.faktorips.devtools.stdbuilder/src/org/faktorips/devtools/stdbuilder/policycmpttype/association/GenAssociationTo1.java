@@ -221,6 +221,9 @@ public class GenAssociationTo1 extends GenAssociation {
         generateSignatureSetObject(builder);
 
         builder.openBracket();
+
+        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
+
         if (target.isDependantType()) {
             builder.appendln("if(" + fieldName + " != null) {");
             builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));;
@@ -233,7 +236,6 @@ public class GenAssociationTo1 extends GenAssociation {
             builder.appendln("}");
         }
 
-        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         builder.append(fieldName);
         builder.append(" = (");
         builder.appendClassName(targetImplClassName);
