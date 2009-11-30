@@ -51,8 +51,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     protected final DatatypeHelper valuesetDatatypeHelper;
 
-    protected final String staticConstantPropertyName;
-
     private IProductCmptType productCmptType;
 
     public GenPolicyCmptTypeAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a)
@@ -60,7 +58,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
         super(genPolicyCmptType, a, new LocalizedStringsSet(GenPolicyCmptTypeAttribute.class));
         valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), getDatatypeHelper());
-        staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
     }
 
     @Override
@@ -86,7 +83,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.append("public final static ");
         builder.appendClassName(String.class);
         builder.append(' ');
-        builder.append(staticConstantPropertyName);
+        builder.append(getStaticConstantPropertyName());
         builder.append(" = ");
         builder.appendQuoted(getAttribute().getName());
         builder.appendln(";");
@@ -141,7 +138,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         methodsBuilder.append("(");
         methodsBuilder.appendClassName(getGenType().getQualifiedName(true));
         methodsBuilder.append(".");
-        methodsBuilder.append(staticConstantPropertyName);
+        methodsBuilder.append(getStaticConstantPropertyName());
         methodsBuilder.append(", ");
         methodsBuilder.append(getMemberVarName());
         methodsBuilder.append(", ");
@@ -342,7 +339,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     }
 
     public String getStaticConstantPropertyName() {
-        return staticConstantPropertyName;
+        return getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(getAttribute().getName()));
     }
 
     @Override

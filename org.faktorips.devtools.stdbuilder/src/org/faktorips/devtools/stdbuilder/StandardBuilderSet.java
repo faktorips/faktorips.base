@@ -583,7 +583,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
-
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();

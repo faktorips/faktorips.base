@@ -1023,14 +1023,16 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(
                     ipsObjectPath.getOutputFolderForMergableSources());
             String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
-            IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
-                    .getBasePackageNameForMergableJavaClasses()
-                    + internalPackageSeparator + "." + qualifiedIpsObjectName);
-            String typeName = qualifiedIpsObjectName;
+            String packageName = "";
+            String typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName);
             if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) {
+                packageName = qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.'));
                 typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName.substring(qualifiedIpsObjectName
                         .lastIndexOf('.') + 1));
             }
+            IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
+                    .getBasePackageNameForMergableJavaClasses()
+                    + internalPackageSeparator + "." + packageName);
             ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + ".java");
 
             return compilationUnit.getType(typeName);
