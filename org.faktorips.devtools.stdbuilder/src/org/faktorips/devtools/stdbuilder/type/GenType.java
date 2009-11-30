@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.type.IType;
@@ -188,39 +188,39 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             org.eclipse.jdt.core.IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
-        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, false);
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsElement, false);
     }
 
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             org.eclipse.jdt.core.IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
+            IIpsElement ipsElement) {
 
-        getGeneratedJavaElements(javaElements, generatedJavaType, ipsObjectPartContainer, true);
+        getGeneratedJavaElements(javaElements, generatedJavaType, ipsElement, true);
     }
 
     /**
-     * Adds the generated <tt>IJavaElement</tt>s for the given <tt>IIpsObjectPartContainer</tt> to
-     * the provided list.
+     * Adds the generated <tt>IJavaElement</tt>s for the given <tt>IIpsElement</tt> to the provided
+     * list.
      */
     private void getGeneratedJavaElements(List<IJavaElement> javaElements,
             org.eclipse.jdt.core.IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer,
+            IIpsElement ipsElement,
             boolean forInterface) {
 
-        if (ipsObjectPartContainer instanceof IType) {
+        if (ipsElement instanceof IType) {
             javaElements.add(generatedJavaType);
             getGeneratedJavaElementsForType(javaElements, generatedJavaType, forInterface);
 
-        } else if (ipsObjectPartContainer instanceof IIpsObjectPart) {
+        } else if (ipsElement instanceof IIpsObjectPart) {
             if (forInterface) {
-                getGeneratorsByPart().get(ipsObjectPartContainer).getGeneratedJavaElementsForPublishedInterface(
-                        javaElements, generatedJavaType, ipsObjectPartContainer);
+                getGeneratorsByPart().get(ipsElement).getGeneratedJavaElementsForPublishedInterface(javaElements,
+                        generatedJavaType, ipsElement);
             } else {
-                getGeneratorsByPart().get(ipsObjectPartContainer).getGeneratedJavaElementsForImplementation(
-                        javaElements, generatedJavaType, ipsObjectPartContainer);
+                getGeneratorsByPart().get(ipsElement).getGeneratedJavaElementsForImplementation(javaElements,
+                        generatedJavaType, ipsElement);
             }
         }
     }

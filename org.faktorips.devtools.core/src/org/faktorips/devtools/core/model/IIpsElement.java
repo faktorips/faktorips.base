@@ -34,6 +34,9 @@ public interface IIpsElement extends IAdaptable {
      */
     public String getName();
 
+    /** Sets the element's name. */
+    public void setName(String name);
+
     /**
      * Returns the model this element belongs to.
      */

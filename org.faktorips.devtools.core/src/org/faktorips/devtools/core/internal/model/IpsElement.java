@@ -39,7 +39,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
 
     final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
-    /*
+    /**
      * Resource mapping based on the mapping for the resource model
      */
     private class IpsElementResourceMapping extends ResourceMapping {
@@ -115,23 +115,18 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return super.getAdapter(adapter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public final IIpsElement getParent() {
         return parent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean exists() {
         if (!getParent().exists()) {
             return false;
@@ -146,9 +141,6 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getCorrespondingResource().exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource getEnclosingResource() {
         IResource resource = getCorrespondingResource();
         if (resource != null) {
@@ -157,16 +149,10 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().getEnclosingResource();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsModel getIpsModel() {
         return IpsPlugin.getDefault().getIpsModel();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject getIpsProject() {
         if (getParent() == null) {
             return null;
@@ -174,16 +160,10 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().getIpsProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsElement[] getChildren() throws CoreException {
         return NO_CHILDREN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasChildren() throws CoreException {
         return getChildren().length > 0;
     }
@@ -193,9 +173,6 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return name.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof IIpsElement)) {
@@ -207,9 +184,6 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
                         .equals(other.getParent())));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         if (getParent() == null) {
@@ -218,9 +192,6 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().toString() + "/" + getName(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isContainedInArchive() {
         return getParent().isContainedInArchive();
     }

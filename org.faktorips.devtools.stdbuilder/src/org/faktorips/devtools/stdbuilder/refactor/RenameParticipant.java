@@ -52,7 +52,7 @@ public class RenameParticipant extends org.eclipse.ltk.core.refactoring.particip
         RefactoringStatus status = new RefactoringStatus();
         for (IJavaElement javaElement : generatedJavaElements) {
             if (!(javaElement.exists())) {
-                status.addFatalError("Missing Java source code element for this IPS element: " + javaElement);
+                status.addFatalError("Missing Java source code element for IPS element: " + javaElement);
             }
         }
         return status;

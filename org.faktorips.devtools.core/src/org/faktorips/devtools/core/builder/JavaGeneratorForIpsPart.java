@@ -231,40 +231,40 @@ public abstract class JavaGeneratorForIpsPart {
      * into the provided list.
      * <p>
      * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
-     * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * <tt>IIpsElement</tt> to the provided list (collecting parameter pattern).
      * <p>
      * Only <tt>IJavaElement</tt>s generated for the published interface shall be added to the list.
      * 
-     * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsObjectPartContainer)
+     * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsElement)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
-     *            requested the generated <tt>IJavaElement</tt>s.
+     * @param ipsElement The <tt>IIpsElement</tt> for that the client requested the generated
+     *            <tt>IJavaElement</tt>s.
      */
     public abstract void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer);
+            IIpsElement ipsElement);
 
     /**
      * Collects all <tt>IJavaElement</tt>s generated for the implementation by this generator into
      * the provided list.
      * <p>
      * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
-     * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
+     * <tt>IIpsElement</tt> to the provided list (collecting parameter pattern).
      * <p>
      * Only <tt>IJavaElement</tt>s generated for the implementation shall be added to the list.
      * 
-     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsObjectPartContainer)
+     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsElement)
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
-     *            requested the generated <tt>IJavaElement</tt>s.
+     * @param ipsElement The <tt>IIpsElement</tt> for that the client requested the generated
+     *            <tt>IJavaElement</tt>s.
      */
     public abstract void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
-            IIpsObjectPartContainer ipsObjectPartContainer);
+            IIpsElement ipsElement);
 
     protected final String getJavaParameterTypeSignature(Datatype datatype) {
         char typeIdentifier = 'Q';
