@@ -73,6 +73,7 @@ import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.DelegateCellEditor;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -461,7 +462,11 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
                 Combo combo = toolkit.createCombo(tableViewer.getTable());
                 combo.setItems(content.toArray(new String[content.size()]));
-                cellEditors.add(new ComboCellEditor(tableViewer, 1, combo));
+                // TraversalStrategy was added when refactoring CellEditors (Dec 2009). Remove if
+                // not necessary.
+                ComboCellEditor comboCellEditor = new ComboCellEditor(combo);
+                comboCellEditor.setTraversalStrategy(new TableTraversalStrategy(comboCellEditor, tableViewer, 1));
+                cellEditors.add(comboCellEditor);
 
                 // store current product cmpt and all found candidates
                 rootParameterProductCmpt.put(testPolicyCmpt, productCmpt.getIpsSrcFile());

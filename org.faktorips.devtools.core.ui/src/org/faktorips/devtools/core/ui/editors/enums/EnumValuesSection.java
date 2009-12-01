@@ -76,6 +76,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -410,7 +411,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
              * option is not active.
              */
             for (CellEditor cellEditor : cellEditors) {
-                ((TableCellEditor)cellEditor).clearSkippedColumns();
+                clearSkippedColumnIndex((TableCellEditor)cellEditor);
             }
             return;
         }
@@ -421,8 +422,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         // Skip the literal name column in all cell editors.
+        int skippedColumnIndex = enumType.getIndexOfEnumLiteralNameAttribute();
         for (CellEditor cellEditor : cellEditors) {
-            ((TableCellEditor)cellEditor).addSkippedColumnIndex(enumType.getIndexOfEnumLiteralNameAttribute());
+            addSkippedColumnIndex((TableCellEditor)cellEditor, skippedColumnIndex);
         }
 
         getCellEditorForLiteralNameColumn().getControl().addFocusListener(new FocusListener() {
@@ -436,6 +438,20 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             }
         });
+    }
+
+    private void addSkippedColumnIndex(TableCellEditor cellEditor, int skippedColumnIndex) {
+        TableTraversalStrategy tableTraverseStrat = (TableTraversalStrategy)cellEditor.getTraversalStrategy();
+        if (tableTraverseStrat != null) {
+            tableTraverseStrat.addSkippedColumnIndex(skippedColumnIndex);
+        }
+    }
+
+    private void clearSkippedColumnIndex(TableCellEditor cellEditor) {
+        TableTraversalStrategy tableTraverseStrat = (TableTraversalStrategy)cellEditor.getTraversalStrategy();
+        if (tableTraverseStrat != null) {
+            tableTraverseStrat.clearSkippedColumns();
+        }
     }
 
     /**
@@ -455,8 +471,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /**
      * Reinitializes the contents of this section:
      * <ul>
-     * <li>The <tt>columnNames</tt> will be emptied and created anew. <li>Every table column of the
-     * table will be disposed and created anew. <li>The table viewer will be refreshed.
+     * <li>The <tt>columnNames</tt> will be emptied and created anew.
+     * <li>Every table column of the table will be disposed and created anew.
+     * <li>The table viewer will be refreshed.
      */
     public void reinit() throws CoreException {
         columnNames.clear();
@@ -729,7 +746,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * to be edited is an <tt>IEnumType</tt>.
      * <p>
      * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the <tt>
-     * enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
+     * enumValuesTableViewer</tt>
+     * when <tt>IEnumValue</tt>s have been added, moved or removed.
      */
     public void contentsChanged(ContentChangeEvent event) {
         // TODO AW: REFACTOR - this method is pretty awkward.

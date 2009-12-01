@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
@@ -84,7 +86,12 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
     /**
      * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given
      * columnIndex and a <code>Text</code> control. {@inheritDoc}
+     * 
+     * @deprecated use
+     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *             instead.
      */
+    @Deprecated
     @Override
     public TableCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
@@ -92,8 +99,39 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+        return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
+    }
+
+    /**
+     * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given
+     * columnIndex and a <code>Text</code> control. {@inheritDoc}
+     */
+    @Override
+    public TableCellEditor createTableCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            IValueSet valueSet,
+            TableViewer tableViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
         Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
-        return new TextCellEditor(tableViewer, columnIndex, textControl);
+        TextCellEditor cellEditor = new TextCellEditor(textControl);
+        cellEditor.setTraversalStrategy(new TableTraversalStrategy(cellEditor, tableViewer, columnIndex));
+        return cellEditor;
+    }
+
+    /**
+     * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given
+     * columnIndex and a <code>Text</code> control. {@inheritDoc}
+     */
+    @Override
+    public TableCellEditor createGridCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            IValueSet valueSet,
+            ColumnViewer columnViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        Text textControl = toolkit.createText((Composite)columnViewer.getControl(), SWT.SINGLE);
+        return new TextCellEditor(textControl);
     }
 
 }

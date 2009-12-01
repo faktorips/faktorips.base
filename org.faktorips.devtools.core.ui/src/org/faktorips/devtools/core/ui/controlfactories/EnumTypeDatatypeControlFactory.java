@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
 
 /**
  * A control factory for the {@link IEnumType} which implements the {@link EnumDatatype} interface.
@@ -71,7 +73,12 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
 
     /**
      * {@inheritDoc}
+     * 
+     * @deprecated use
+     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *             instead.
      */
+    @Deprecated
     @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
@@ -79,6 +86,22 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             IValueSet valueSet,
             IIpsProject ipsProject) {
         return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
+    }
+
+    /**
+     * @deprecated use
+     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *             instead.
+     */
+    @Deprecated
+    @Override
+    public TableCellEditor createCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            TableViewer tableViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        return createTableCellEditor(toolkit, datatype, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
     /**
@@ -90,7 +113,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
     @Override
-    public TableCellEditor createCellEditor(UIToolkit toolkit,
+    public TableCellEditor createTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -99,6 +122,29 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
 
         EditField editField = createEditField(toolkit, tableViewer.getTable(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
-        return new ComboCellEditor(tableViewer, columnIndex, (Combo)editField.getControl());
+        ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
+        cellEditor.setTraversalStrategy(new TableTraversalStrategy(cellEditor, tableViewer, columnIndex));
+        return cellEditor;
+    }
+
+    /**
+     * Creates a <code>ComboCellEditor</code> for the given valueset and Datatype. The created
+     * CellEditor contains a <code>Combo</code> control that is filled with the corresponding values
+     * from the given <code>ValueSet</code>. If the given valueset is either not an
+     * <code>EnumValueSet</code> or <code>null</code> a <code>ComboCellEditor</code> is created with
+     * a <code>Combo</code> control for the given <code>DataType</code>. In this case the Combo
+     * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
+     */
+    @Override
+    public TableCellEditor createGridCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            ColumnViewer columnViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        EditField editField = createEditField(toolkit, (Composite)columnViewer.getControl(), datatype, valueSet,
+                ipsProject);
+        editField.getControl().setData(editField);
+        return new ComboCellEditor((Combo)editField.getControl());
     }
 }

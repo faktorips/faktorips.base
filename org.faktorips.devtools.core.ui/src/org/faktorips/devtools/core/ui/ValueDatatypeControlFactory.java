@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -74,16 +75,49 @@ public abstract class ValueDatatypeControlFactory {
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
      * for.
      * 
+     * @deprecated use
+     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *             instead.
+     */
+    @Deprecated
+    public abstract TableCellEditor createCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            TableViewer tableViewer,
+            int columnIndex,
+            IIpsProject ipsProject);
+
+    /**
+     * Creates a cell editor that allows to edit a value of the value datatype this is a factory
+     * for.
+     * 
      * @param toolkit The ui toolkit to use for creating ui elements.
      * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
      * @param tableViewer
      * @param columnIndex The index of the column.
      */
-    public abstract TableCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
+    public abstract TableCellEditor createTableCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
+            int columnIndex,
+            IIpsProject ipsProject);
+
+    /**
+     * Creates a cell editor that allows to edit a value of the value datatype this is a factory
+     * for.
+     * 
+     * @param toolkit The ui toolkit to use for creating ui elements.
+     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param valueSet An optional valueset.
+     * @param grifViewer
+     * @param columnIndex The index of the column.
+     */
+    public abstract TableCellEditor createGridCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            ColumnViewer columnViewer,
             int columnIndex,
             IIpsProject ipsProject);
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,9 +20,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -30,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.table.AbstractTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -52,10 +51,8 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
      *            <code>IIpsProject.getProperties().getBuilderSetConfig()</code>)
      * @param builderSetId Id of the builderset
      */
-    public BuilderSetPropertyEditingSupport(TableViewer viewer, 
-            IIpsProject ipsProject,  
-            IIpsArtefactBuilderSetConfigModel builderSetConfigModel, 
-            String builderSetId) {
+    public BuilderSetPropertyEditingSupport(TableViewer viewer, IIpsProject ipsProject,
+            IIpsArtefactBuilderSetConfigModel builderSetConfigModel, String builderSetId) {
         super(viewer);
         ArgumentCheck.notNull(viewer);
         ArgumentCheck.notNull(ipsProject);
@@ -70,6 +67,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean canEdit(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
@@ -83,6 +81,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected CellEditor getCellEditor(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
@@ -99,7 +98,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
                 editor = new TextCellEditor(viewer.getTable());
                 editor.setValidator(new ICellEditorValidator() {
                     public String isValid(Object value) {
-                        if (value == null || ! value.toString().matches("[0-9]+")) { //$NON-NLS-1$
+                        if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
                             return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;
                         }
                         return null;
@@ -120,28 +119,30 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         return null;
     }
 
-    // override traverse strategy in ComboCellEditor since we use Eclipse 3.3 CellViewerEditorActivationStrategy
-    // this makes it possible to jump between editable cells and leave the tableViewer with CTRL-Tab or CTRL-Shift-Tab
+    // override traverse strategy in ComboCellEditor since we use Eclipse 3.3
+    // CellViewerEditorActivationStrategy
+    // this makes it possible to jump between editable cells and leave the tableViewer with CTRL-Tab
+    // or CTRL-Shift-Tab
     private ComboCellEditor getCellEditorInternal(Combo combo) {
-        return new ComboCellEditor(viewer, 0, combo) {
-            protected void initTraverseListener(Control control) {
-                control.addTraverseListener(new TraverseListener() {
-                    public void keyTraversed(TraverseEvent e) {
-                        if ((e.stateMask & SWT.CTRL) != 0) {
-                            deactivate();
-                        }
-                    }
-                });
+        ComboCellEditor cellEditor = new ComboCellEditor(combo);
+        cellEditor.setTraversalStrategy(new AbstractTraversalStrategy(cellEditor) {
+            @Override
+            public void keyTraversed(TraverseEvent e) {
+                if ((e.stateMask & SWT.CTRL) != 0) {
+                    getCellEditor().deactivate();
+                }
             }
-        };
+        });
+        return cellEditor;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Object getValue(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef) element;
+            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
             String propertyValue = builderSetConfigModel.getPropertyValue(propertyDef.getName());
             return propertyValue;
         }
@@ -151,13 +152,15 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setValue(Object element, Object value) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
             if (value == null) {
                 return;
             }
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef) element;
-            builderSetConfigModel.setPropertyValue(propertyDef.getName(), value.toString(), propertyDef.getDescription());
+            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+            builderSetConfigModel.setPropertyValue(propertyDef.getName(), value.toString(), propertyDef
+                    .getDescription());
             viewer.update(element, null);
         }
     }
