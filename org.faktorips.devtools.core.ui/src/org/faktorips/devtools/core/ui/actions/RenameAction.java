@@ -23,7 +23,9 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
 
@@ -46,8 +48,8 @@ public class RenameAction extends IpsAction implements IShellProvider {
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
-        if (selected instanceof IPolicyCmptTypeAttribute) {
-            RefactoringWizard renameWizard = new RenameRefactoringWizard((IPolicyCmptTypeAttribute)selected);
+        if (selected instanceof IAttribute || selected instanceof IMethod || selected instanceof IType) {
+            RefactoringWizard renameWizard = new RenameRefactoringWizard((IIpsElement)selected);
             RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(renameWizard);
             try {
                 op.run(getShell(), "");
