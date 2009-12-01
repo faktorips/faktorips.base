@@ -37,7 +37,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         ImageDescriptor result = null;
         // TODO get custom image for this prodCmpt from ProdCmptType
         if (result == null) {
-            return IpsUIPlugin.getDefault().getImageDescriptor("New.gif");
+            return IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
         }
         return result;
     }

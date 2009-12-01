@@ -125,7 +125,7 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
 
     private void initIpsObjectParts() {
         // Type
-        workbenchAdapterMap.put(Method.class, new IpsObjectPartWorkbenchAdapter("New"));
+        workbenchAdapterMap.put(Method.class, defaultWorkbenchAdapter);
         workbenchAdapterMap.put(Parameter.class, defaultWorkbenchAdapter);
 
         // BF
