@@ -13,24 +13,24 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.presentation.IPresentationObject;
+import org.faktorips.devtools.core.ui.workbenchadapters.IPresentationObject;
 import org.faktorips.fl.FlFunction;
 
 /**
  * Label provider that provides default images and labels (texts) for ips elements.
  * <p>
  * The default label provider known until version 2.4 is deprecated. Most of the implementation
- * could be found in {@link org.faktorips.devtools.core.ui.presentation.DefaultPresentationObject}.
+ * could be found in {@link org.faktorips.devtools.core.ui.workbenchadapters.DefaultPresentationObject}.
  * <p>
  * This label provider uses the {@link IPresentationObject} providedd by the {@link IpsUIPlugin} to
  * return icons and text labels. For {@link IIpsSrcFile}s you could specify whether to use icon and
@@ -43,6 +43,7 @@ import org.faktorips.fl.FlFunction;
  */
 public class DefaultLabelProvider extends LabelProvider {
 
+    // TODO actually not used
     /* indicates the mapping of an ips source files to the their corresponding ips objects */
     private boolean ispSourceFile2IpsObjectMapping = false;
 
@@ -72,16 +73,10 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     @Override
     public Image getImage(Object element) {
-        try {
-            if (ispSourceFile2IpsObjectMapping && element instanceof IIpsSrcFile) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)element;
-                return IpsUIPlugin.getEnclosingImage(srcFile);
-            } else if (element instanceof IIpsElement) {
-                IIpsElement ipsElement = (IIpsElement)element;
-                return IpsUIPlugin.getImage(ipsElement);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (element instanceof IIpsElement) {
+            IIpsElement ipsElement = (IIpsElement)element;
+            IWorkbenchAdapter presentation = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+            return presentation.getImageDescriptor(ipsElement).createImage();
         }
         if (element instanceof Datatype) {
             return IpsPlugin.getDefault().getImage("Datatype.gif");
@@ -103,16 +98,10 @@ public class DefaultLabelProvider extends LabelProvider {
         if (element == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
-        try {
-            if (ispSourceFile2IpsObjectMapping && element instanceof IIpsSrcFile) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)element;
-                return IpsUIPlugin.getEnclosingPresentationObject(srcFile).getLabel(srcFile);
-            } else if (element instanceof IIpsElement) {
-                IIpsElement ipsElement = (IIpsElement)element;
-                return IpsUIPlugin.getPresentationObject(ipsElement).getLabel(ipsElement);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (element instanceof IIpsElement) {
+            IIpsElement ipsElement = (IIpsElement)element;
+            IWorkbenchAdapter presentation = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+            return presentation.getLabel(ipsElement);
         }
         if (element instanceof IpsSrcFileProvider) {
             return getText(((IpsSrcFileProvider)element).getIpsSrcFile());
