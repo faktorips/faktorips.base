@@ -111,6 +111,8 @@ initEnvironment()
     mkdir $PROJECTSROOTDIR
   fi
 
+  # TODO checkoutdir aufraeumen removen
+
   # default java and ant environment
   ANT_HOME=$DEFAULT_ANT_HOME
   JAVA_HOME=$DEFAULT_JAVA_HOME
@@ -664,6 +666,13 @@ checkAndCreateReleaseProperty()
     RELEASE_PROPERTIES_EXISTS=true
   fi
 
+  # asserts for release builds (not active if product build, product exists will be checked in the ant build file)
+  if [ ! "$SKIPTAGCVS" = "true" -a  ! "$OVERWRITE" = "true" -a "$RELEASE_PROPERTIES_EXISTS" = "true" -a -z "$BUILDPRODUCT" ] ; then 
+    echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
+	echo "   delete the previous release build or use parameter -overwrite"
+    exit 1
+  fi
+
   # TODO Assert1 check property file in all branches and HEAD!
   # otherwise a build with tagging and no info about branches will move the release tag
   # from the branch to the head
@@ -771,13 +780,6 @@ if [ ! -f $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT ] ; then
 fi   
 
 checkAndCreateReleaseProperty
-
-# asserts for release builds (not active if product build, product exists will be checked in the ant build file)
-if [ ! "$SKIPTAGCVS" = "true" -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
-  echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
-  echo "   delete the previous release build or use parameter -overwrite"
-  exit 1
-fi
 
 # 3. tag all projects defined in the pluginbuilder project (move tag if already exists)
 #    if skip tag is true then don't tag project, the previous tagged versions are used for the build
