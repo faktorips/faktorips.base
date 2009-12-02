@@ -688,7 +688,7 @@ ${faktoripsProductLinuxZipPath}
         </ant>
         <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml">
-            <param name="site.xml" value="site_uml_tmp.xml"/> 
+            <param name="site.xml" value="site_ormext_tmp.xml"/> 
         </antcall> 
     
         <!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
