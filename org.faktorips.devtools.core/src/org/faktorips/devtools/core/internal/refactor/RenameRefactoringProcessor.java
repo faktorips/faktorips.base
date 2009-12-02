@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -20,30 +23,57 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
+ * This is the abstract base class for all Faktor-IPS rename refactorings.
+ * <p>
+ * This is a <tt>ProcessorBasedRefactoring</tt>.
+ * <p>
+ * Subclasses must use the method <tt>addModifiedSrcFile(IIpsSrcFile)</tt> in order to register all
+ * modified <tt>IIpsSrcFile</tt>s. All registered modified <tt>IIpsSrcFile</tt>s will be saved at
+ * the end of the refactoring.
  * 
+ * @see ProcessorBasedRefactoring
  * 
  * @author Alexander Weickmann
  */
 public abstract class RenameRefactoringProcessor extends RenameProcessor {
 
-    private final IIpsObjectPartContainer ipsObjectPartContainer;
+    /** The <tt>IIpsElement</tt> to be refactored. */
+    private final IIpsElement ipsElement;
 
-    private String newName;
+    /** Set containing all <tt>IIpsSrcFile</tt>s that have been modified by the refactoring. */
+    private final Set<IIpsSrcFile> modifiedSrcFiles;
 
-    protected RenameRefactoringProcessor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    /** The original name of the <tt>IIpsElement</tt> to be refactored. */
+    private final String originalElementName;
+
+    /** The new name for the <tt>IIpsElement</tt>, provided by the user. */
+    private String newElementName;
+
+    /**
+     * Creates a <tt>RenameRefactoringProcessor</tt>.
+     * 
+     * @param ipsElement The <tt>IIpsElement</tt> to be refactored.
+     * 
+     * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
+     */
+    protected RenameRefactoringProcessor(IIpsElement ipsElement) {
         super();
-        ArgumentCheck.notNull(ipsObjectPartContainer);
-        this.ipsObjectPartContainer = ipsObjectPartContainer;
-        newName = "";
+        ArgumentCheck.notNull(ipsElement);
+        this.ipsElement = ipsElement;
+        newElementName = "";
+        originalElementName = ipsElement.getName();
+        modifiedSrcFiles = new HashSet<IIpsSrcFile>();
     }
 
     @Override
@@ -70,39 +100,83 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
             OperationCanceledException {
 
         refactorModel(pm);
+        saveModifiedSourceFiles(pm);
         return null;
+    }
+
+    /** Saves all modified <tt>IIpsSrcFile</tt>s. */
+    private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+            if (ipsSrcFile.isDirty()) {
+                ipsSrcFile.save(true, pm);
+            }
+        }
     }
 
     @Override
     public final Object[] getElements() {
-        return new Object[] { ipsObjectPartContainer };
+        return new Object[] { ipsElement };
     }
 
-    @Override
-    public final boolean isApplicable() throws CoreException {
-        return ipsObjectPartContainer.exists();
+    /**
+     * Sets the new name for the <tt>IIpsElement</tt> to be refactored.
+     * 
+     * @param newElementName The new name for the <tt>IIpsElement</tt> to be refactored.
+     * 
+     * @throws NullPointerException If <tt>newElementName</tt> is <tt>null</tt>.
+     */
+    public final void setNewElementName(String newElementName) {
+        ArgumentCheck.notNull(newElementName);
+        this.newElementName = newElementName;
     }
 
-    public final void setNewName(String newName) {
-        this.newName = newName;
+    /** Returns the <tt>IIpsElement</tt> to be refactored. */
+    protected final IIpsElement getIpsElement() {
+        return ipsElement;
     }
 
-    protected final IIpsObjectPartContainer getIpsObjectPartContainer() {
-        return ipsObjectPartContainer;
+    /** Returns the new name for the <tt>IIpsElement</tt> to be refactored. */
+    public final String getNewElementName() {
+        return newElementName;
     }
 
-    protected final String getNewName() {
-        return newName;
+    /** Returns the original name of the <tt>IIpsElement</tt> to be refactored. */
+    public final String getOriginalElementName() {
+        return originalElementName;
     }
 
     @Override
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
             SharableParticipants sharedParticipants) throws CoreException {
 
-        return ParticipantManager.loadRenameParticipants(status, this, ipsObjectPartContainer, new RenameArguments(
-                newName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
+        return ParticipantManager.loadRenameParticipants(status, this, ipsElement, new RenameArguments(newElementName,
+                true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
+    /**
+     * Subclass implementation that is responsible for performing the necessary changes in the
+     * Faktor-IPS model.
+     * 
+     * @param pm Progress monitor to report progress to if necessary.
+     * 
+     * @throws CoreException Subclasses may throw this kind of exception any time.
+     */
     protected abstract void refactorModel(IProgressMonitor pm) throws CoreException;
+
+    /**
+     * Registers the given <tt>IIpsSrcFile</tt> as modified source file so it saved at the end of
+     * the refactoring.
+     * <p>
+     * If the provided <tt>IIpsSrcFile</tt> is already registered as modified source file, nothing
+     * will happen.
+     * 
+     * @param ipsSrcFile The <tt>IIpsSrcFile</tt> to register as modified.
+     * 
+     * @throws NullPointerException If <tt>ipsSrcFile</tt> is <tt>null</tt>.
+     */
+    protected final void addModifiedSrcFile(IIpsSrcFile ipsSrcFile) {
+        ArgumentCheck.notNull(ipsSrcFile);
+        modifiedSrcFiles.add(ipsSrcFile);
+    }
 
 }

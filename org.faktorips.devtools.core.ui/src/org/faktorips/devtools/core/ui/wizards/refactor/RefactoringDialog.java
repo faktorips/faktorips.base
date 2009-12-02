@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ltk.internal.ui.refactoring.RefactoringWizardDialog2;
+import org.eclipse.ltk.internal.ui.refactoring.RefactoringWizardDialog;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 
@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Shell;
  * This should not be a problem however because we only override the
  * <tt>run(boolean, boolean, IRunnableWithProgress)</tt> method declared in the
  * <tt>IRunnableContext</tt> interface. The alternative would be to copy the entire
- * <tt>RefactoringWizardDialog2</tt>.
+ * <tt>RefactoringWizardDialog</tt>.
  * 
  * @author Alexander Weickmann
  */
-public class RefactoringDialog extends RefactoringWizardDialog2 {
+public class RefactoringDialog extends RefactoringWizardDialog {
 
     /**
      * Creates a <tt>RefactoringDialog</tt>.
