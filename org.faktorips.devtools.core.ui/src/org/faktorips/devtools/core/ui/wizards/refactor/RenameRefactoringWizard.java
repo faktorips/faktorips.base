@@ -18,6 +18,8 @@ import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeRefactoringProcessor;
@@ -92,6 +94,14 @@ public class RenameRefactoringWizard extends RefactoringWizard {
             newNameTextField.setText(ipsElement.getName());
             newNameTextField.selectAll();
             newNameTextField.setFocus();
+            newNameTextField.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    setPageComplete(!(newNameTextField.getText().equals(ipsElement.getName())));
+                }
+
+            });
+            setPageComplete(false);
             setControl(control);
         }
 
