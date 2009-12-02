@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -259,8 +260,9 @@ public class IpsObjectPath implements IIpsObjectPath {
                 IIpsObjectPathEntry entry = entries[i];
                 if (entry instanceof IpsProjectRefEntry) {
                     IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
-                    if (ref.getReferencedIpsProject().equals(referencedIpsProject))
+                    if (ref.getReferencedIpsProject().equals(referencedIpsProject)) {
                         return ref;
+                    }
                 }
             }
         }
@@ -280,8 +282,9 @@ public class IpsObjectPath implements IIpsObjectPath {
             IIpsObjectPathEntry entry = entries[i];
             if (entry instanceof IpsProjectRefEntry) {
                 IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
-                if (ref.getReferencedIpsProject().equals(ipsProject))
+                if (ref.getReferencedIpsProject().equals(ipsProject)) {
                     return true;
+                }
             }
         }
         return false;
@@ -313,8 +316,9 @@ public class IpsObjectPath implements IIpsObjectPath {
             IIpsObjectPathEntry entry = entries[i];
             if (entry instanceof IpsArchiveEntry) {
                 IpsArchiveEntry ref = (IpsArchiveEntry)entry;
-                if (ref.getIpsArchive().equals(ipsArchive))
+                if (ref.getIpsArchive().equals(ipsArchive)) {
                     return true;
+                }
             }
         }
         return false;
@@ -346,8 +350,9 @@ public class IpsObjectPath implements IIpsObjectPath {
             IIpsObjectPathEntry entry = entries[i];
             if (entry instanceof IpsSrcFolderEntry) {
                 IpsSrcFolderEntry ref = (IpsSrcFolderEntry)entry;
-                if (ref.getSourceFolder().equals(folder))
+                if (ref.getSourceFolder().equals(folder)) {
                     return true;
+                }
             }
         }
         return false;
@@ -396,7 +401,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public void setOutputFolderForMergableSources(IFolder outputFolder) {
-        this.outputFolderMergableSources = outputFolder;
+        outputFolderMergableSources = outputFolder;
     }
 
     /**
@@ -434,7 +439,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public void setBasePackageNameForMergableJavaClasses(String name) {
-        this.basePackageMergable = name;
+        basePackageMergable = name;
     }
 
     /**
@@ -533,7 +538,8 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    public void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
+    public void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries)
+            throws CoreException {
         for (int i = 0; i < entries.length; i++) {
             ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
         }
@@ -683,7 +689,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         IIpsSrcFolderEntry[] srcEntries = getSourceFolderEntries();
         if (srcEntries.length == 0) {
             list.add(new Message(MSGCODE_SRC_FOLDER_ENTRY_MISSING, Messages.IpsObjectPath_srcfolderentrymissing,
-                    Message.ERROR)); //$NON-NLS-1$
+                    Message.ERROR));
         }
         IIpsObjectPathEntry[] objectPathEntries = getEntries();
         for (int i = 0; i < objectPathEntries.length; i++) {
@@ -771,4 +777,23 @@ public class IpsObjectPath implements IIpsObjectPath {
         return newSelection;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public InputStream getResourceAsStream(String path) {
+        IIpsObjectPathEntry[] entries = getEntries();
+        for (IIpsObjectPathEntry entry : entries) {
+            try {
+                InputStream inputStream = entry.getRessourceAsStream(path);
+                if (inputStream != null) {
+                    return inputStream;
+                }
+                continue;
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                continue;
+            }
+        }
+        return null;
+    }
 }

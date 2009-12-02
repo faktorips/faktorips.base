@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2041,6 +2042,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public boolean isContainedInArchive() {
         return false;
+    }
+
+    public InputStream getResourceAsStream(String path) {
+        try {
+            return getIpsObjectPath().getResourceAsStream(path);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return null;
     }
 
 }

@@ -1200,8 +1200,9 @@
          </propertySection>
       </propertySections>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.core.runtime.adapters">
+         NOTE: Factory is registered with the AdapterManager programmatically in IpsUIPlugin#start().
       <factory
             adaptableType="org.faktorips.devtools.core.model.IIpsElement"
             class="org.faktorips.devtools.core.ui.workbenchadapters.IpsWorkbenchAdapterFactory">
@@ -1212,5 +1213,5 @@
                type="org.eclipse.ui.model.IWorkbenchAdapter2">
          </adapter>
       </factory>
-   </extension>
+   </extension-->
 </plugin>

@@ -13,37 +13,29 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
-/**
- * 
- * @author Jan Ortmann
- */
-public class ProductCmptTypeEditor extends TypeEditor {
+public class CustomIconPage extends IpsObjectEditorPage {
+    final static String PAGE_ID = "CustomIconPage"; //$NON-NLS-1$
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getUniformPageTitle() {
-        return Messages.ProductCmptTypeEditor_title + getIpsObject().getName();
+    public CustomIconPage(IpsObjectEditor editor) {
+        super(editor, PAGE_ID, "Custom Icon");
+    }
+
+    private IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getIpsObject();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new StructurePage(this, false));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new StructurePage(this, true));
-        addPage(new BehaviourPage(this));
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        formBody.setLayout(createPageLayout(1, true));
+        new CustomIconSection(getProductCmptType(), formBody, toolkit);
     }
 }

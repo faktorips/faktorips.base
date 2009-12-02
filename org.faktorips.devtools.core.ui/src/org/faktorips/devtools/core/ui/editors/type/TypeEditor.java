@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpttype.CustomIconPage;
 
 /**
  * Provides common behavior for all type editors.
@@ -30,6 +31,7 @@ public abstract class TypeEditor extends IpsObjectEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
         if (IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
@@ -41,6 +43,7 @@ public abstract class TypeEditor extends IpsObjectEditor {
         if (hasDescriptionPage()) {
             addPage(new DescriptionPage(this));
         }
+        addPage(new CustomIconPage(this));
     }
 
     /**

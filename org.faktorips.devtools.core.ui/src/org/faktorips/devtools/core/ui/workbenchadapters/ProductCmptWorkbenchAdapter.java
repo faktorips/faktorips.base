@@ -23,10 +23,18 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
+/**
+ * TODO Support Disabled Icons
+ * 
+ * @author Cornelius Dirmeier, Stefan Widmaier, FaktorZehn AG
+ */
 public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
+
+    private ImageDescriptor prodCmptDefaultIcon;
 
     public ProductCmptWorkbenchAdapter() {
         super(null);
+        prodCmptDefaultIcon = IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
     }
 
     public String getEnclosingLabel(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -34,12 +42,23 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     }
 
     private ImageDescriptor getProductCmptImage(IProductCmptType type) {
-        ImageDescriptor result = null;
-        // TODO get custom image for this prodCmpt from ProdCmptType
-        if (result == null) {
-            return IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
+        if (type == null) {
+            return getDefaultImageDescriptor();
         }
-        return result;
+
+        if (type.isUseCustomInstanceIcons()) {
+            return getImageDescriptorForPath(type.getIpsProject(), type.getInstancesEnabledIcon());
+        } else if (type.hasSupertype()) {
+            IProductCmptType superType;
+            try {
+                superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
+            } catch (CoreException e) {
+                return getDefaultImageDescriptor();
+            }
+            return getProductCmptImage(superType);
+        } else {
+            return getDefaultImageDescriptor();
+        }
     }
 
     @Override
@@ -80,5 +99,13 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     @Override
     protected String getLabel(IIpsObject ipsObject) {
         return ipsObject.getName();
+    }
+
+    protected ImageDescriptor getDefaultImageDescriptor() {
+        return prodCmptDefaultIcon;
+    }
+
+    public ImageDescriptor getImageDescriptorForInstancesOf(IProductCmptType type) {
+        return getProductCmptImage(type);
     }
 }

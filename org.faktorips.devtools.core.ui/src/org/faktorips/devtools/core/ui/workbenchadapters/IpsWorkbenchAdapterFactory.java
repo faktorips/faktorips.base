@@ -105,7 +105,7 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     }
 
     private void initSrcFiles() {
-        workbenchAdapterMap.put(AbstractIpsSrcFile.class, defaultWorkbenchAdapter);
+        workbenchAdapterMap.put(AbstractIpsSrcFile.class, new IpsSrcFileWorkbenchAdapter());
     }
 
     private void initIpsObjects() {
@@ -190,9 +190,14 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     // AdapterFactory does not use generics
     public Object getAdapter(Object adaptableObject, Class adapterType) {
+        return getAdapter(adaptableObject.getClass(), adapterType);
+    }
+
+    @SuppressWarnings("unchecked")
+    // AdapterFactory does not use generics
+    public Object getAdapter(Class adaptableClass, Class adapterType) {
         // first check for direct match, faster
         IpsElementWorkbenchAdapter result = null;
-        Class<? extends Object> adaptableClass = adaptableObject.getClass();
         while (result == null) {
             result = workbenchAdapterMap.get(adaptableClass);
             if (result == null) {

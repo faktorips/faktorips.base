@@ -30,9 +30,10 @@ import org.faktorips.fl.FlFunction;
  * Label provider that provides default images and labels (texts) for ips elements.
  * <p>
  * The default label provider known until version 2.4 is deprecated. Most of the implementation
- * could be found in {@link org.faktorips.devtools.core.ui.workbenchadapters.DefaultPresentationObject}.
+ * could be found in
+ * {@link org.faktorips.devtools.core.ui.workbenchadapters.DefaultPresentationObject}.
  * <p>
- * This label provider uses the {@link IPresentationObject} providedd by the {@link IpsUIPlugin} to
+ * This label provider uses the {@link IPresentationObject} provided by the {@link IpsUIPlugin} to
  * return icons and text labels. For {@link IIpsSrcFile}s you could specify whether to use icon and
  * label from the source file itself or to look for the {@link IIpsObject} enclosed in the source
  * file.

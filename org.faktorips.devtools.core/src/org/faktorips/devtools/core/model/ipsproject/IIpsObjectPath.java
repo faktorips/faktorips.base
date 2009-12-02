@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -27,31 +30,33 @@ import org.faktorips.util.message.MessageList;
 public interface IIpsObjectPath {
 
     /**
-     * Message code constant identifying the message of a validation rule. 
+     * Message code constant identifying the message of a validation rule.
      */
-    public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING  = "SourceFolderEntryMissing"; //$NON-NLS-1$
+    public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING = "SourceFolderEntryMissing"; //$NON-NLS-1$
 
     /**
-     * Message code constant that indicates that the output folder for mergable java sources is not specified.
+     * Message code constant that indicates that the output folder for mergable java sources is not
+     * specified.
      */
-    public final static String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED  = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
+    public final static String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
-     * Message code constant that indicates that the output folder for derived java sources is not specified.
+     * Message code constant that indicates that the output folder for derived java sources is not
+     * specified.
      */
-    public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED  = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
-    
+    public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
+
     /**
      * Returns the ips project this path belongs to.
      */
     public IIpsProject getIpsProject();
-    
+
     /**
-     * Returns the entry for the given ips package fragment root name or <code>null</code>
-     * if no such entry exists.
+     * Returns the entry for the given ips package fragment root name or <code>null</code> if no
+     * such entry exists.
      */
     public IIpsObjectPathEntry getEntry(String rootName);
-    
+
     /**
      * Returns the path' entries.
      */
@@ -71,7 +76,7 @@ public interface IIpsObjectPath {
      * Returns the ips archive entries of this ips project path.
      */
     public IIpsArchiveEntry[] getArchiveEntries();
-    
+
     /**
      * Sets the path' entries.
      */
@@ -111,11 +116,11 @@ public interface IIpsObjectPath {
      * @return true if this path contains the given archive.
      */
     public boolean containsArchiveEntry(IIpsArchive ipsArchive);
-    
+
     /**
      * Removes the given archive from the list of entries if contained.
      */
-    public void removeArchiveEntry(IIpsArchive ipsArchive);    
+    public void removeArchiveEntry(IIpsArchive ipsArchive);
 
     /**
      * @return true if this path contains a reference to the given source folder.
@@ -125,8 +130,8 @@ public interface IIpsObjectPath {
     /**
      * Removes the given source folder from the list of entries if contained.
      */
-    public void removeSrcFolderEntry(IFolder srcFolder);    
-    
+    public void removeSrcFolderEntry(IFolder srcFolder);
+
     /**
      * Returns true if the output folder and base package are defined per source folder, otherwise
      * false.
@@ -180,14 +185,16 @@ public interface IIpsObjectPath {
     public void setOutputFolderForDerivedSources(IFolder outputFolder);
 
     /**
-     * Returns the name of the base package for generated Java source files that are considered derived.
+     * Returns the name of the base package for generated Java source files that are considered
+     * derived.
      * 
      * @see #getOutputFolderForDerivedSources()
      */
     public String getBasePackageNameForDerivedJavaClasses();
 
     /**
-     * Sets the name of the base package for generated Java source files that are considered derived.
+     * Sets the name of the base package for generated Java source files that are considered
+     * derived.
      * 
      * @see #getOutputFolderForDerivedSources()
      */
@@ -197,16 +204,27 @@ public interface IIpsObjectPath {
      * Validates the object path and returns the result as list of messages.
      */
     public MessageList validate() throws CoreException;
-    
-    /**
-     * Moves the entries at at the given indices up/down and adjusts the positions of the
-     * elements in between accordingly.
-     * 
-     * @param indices an array with indices of the entries to be moved. If it contains negative indices 
-     * or indices greater than the number of entries the resulted operation is undefined.
-     * @ param up entries will be moved up one position if true, down otherwise 
 
+    /**
+     * Moves the entries at at the given indices up/down and adjusts the positions of the elements
+     * in between accordingly.
+     * 
+     * @param indices an array with indices of the entries to be moved. If it contains negative
+     *            indices or indices greater than the number of entries the resulted operation is
+     *            undefined. @ param up entries will be moved up one position if true, down
+     *            otherwise
+     * 
      * @return the indices of the entries' positions after the move operation
      */
-    public int[] moveEntries(int[] indices, boolean up);    
+    public int[] moveEntries(int[] indices, boolean up);
+
+    /**
+     * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
+     * no resource is found at the given path. If the {@link IpsObjectPath} contains multiple
+     * resources with the same path the first find will be returned.
+     * 
+     * @param path
+     * @return
+     */
+    public InputStream getResourceAsStream(String path);
 }

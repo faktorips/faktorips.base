@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,6 +33,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
     public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
+    public String PROPERTY_ICON_FOR_ENABLED_INSTANCES = "customIconForEnabledInstances";
+    public String PROPERTY_ICON_FOR_DISABLED_INSTANCES = "customIconForDisabledInstances";
+    public String PROPERTY_USE_ICONS = "useCustomIcons";
 
     /**
      * Prefix for all message codes of this class.
@@ -332,6 +336,54 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @throws CoreException
      */
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the user has configured a custom icon for instances of this
+     * type, <code>false</code> otherwise.
+     * 
+     * @return
+     */
+    public boolean isUseCustomInstanceIcons();
+
+    /**
+     * Returns the string-presentation of the path of an Icon file used for enabled instances of
+     * this type. This method may return a valid path even though no custom Icon is configured.
+     * 
+     * @return
+     */
+    public String getInstancesEnabledIcon();
+
+    /**
+     * Returns the string-presentation of the path of an Icon file used for disabled instances of
+     * this type. This method may return a valid path even though no custom Icon is configured.
+     * 
+     * @return
+     */
+    public String getInstancesDisabledIcon();
+
+    /**
+     * Configures this {@link ProductCmptType} to use the icon at the given path as icon for enabled
+     * instances.
+     * 
+     * @param path
+     */
+    public void setInstancesEnabledIcon(String path);
+
+    /**
+     * Configures this {@link ProductCmptType} to use the icon at the given path as icon for
+     * disabled instances.
+     * 
+     * @param path
+     */
+    public void setInstancesDisabledIcon(String path);
+
+    /**
+     * Configures this {@link ProductCmptType} to use the instance icons set by
+     * {@link #setInstancesDisabledIcon(String)} and {@link #setInstancesEnabledIcon(String)}.
+     * 
+     * @param useCustomIcon
+     */
+    public void setUseCustomInstanceIcon(boolean useCustomIcon);
 
     /**
      * Delegating to @see #searchMetaObjectSrcFiles(boolean)

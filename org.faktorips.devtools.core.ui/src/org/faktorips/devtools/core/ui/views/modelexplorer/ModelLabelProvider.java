@@ -33,21 +33,20 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
  * This class provides the ModelExplorer with labels for its tree-elements. Label names for
- * PackageFragments are dependant on the current layout style indicated by the
+ * PackageFragments are dependent on the current layout style indicated by the
  * <code>isFlatLayout</code> flag.
  * 
  * @author Stefan Widmaier
  */
 public class ModelLabelProvider implements ILabelProvider {
 
-    private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
+    private DefaultLabelProvider defaultLabelProvider;
 
     private boolean isFlatLayout = false;
 
@@ -56,29 +55,22 @@ public class ModelLabelProvider implements ILabelProvider {
     private HashMap<ImageDescriptor, Image> imagesByDescriptor = new HashMap<ImageDescriptor, Image>();
 
     public ModelLabelProvider() {
-        super();
+        this(false);
     }
 
     public ModelLabelProvider(boolean flatLayout) {
         isFlatLayout = flatLayout;
+        defaultLabelProvider = new DefaultLabelProvider();
+        defaultLabelProvider.setIspSourceFile2IpsObjectMapping(true);
     }
 
     public Image getImage(Object element) {
         if (element instanceof IIpsElement) {
-
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                if (ipsSrcFile.exists()) {
-                    return getImage(ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile));
-                }
-            }
-
-            return ((IIpsElement)element).getImage();
-
+            return defaultLabelProvider.getImage(element);
         } else if (element instanceof IResource) {
             // check if the resource is an ips source file, in this case return the image of the ips
             // source,
-            // remark: if we use the IWorkbenchAdapter to retrieve the image, we get the
+            // Note: if we use the IWorkbenchAdapter to retrieve the image, we get the
             // standard icon of the ips object (resolved by the filename and defined in the
             // extension point)
             // - but the element is no valid ips object (e.g. not inside an ips package) -
@@ -87,7 +79,7 @@ public class ModelLabelProvider implements ILabelProvider {
             // a different icon
             IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)element);
             if (ipsElement != null && ipsElement instanceof IIpsSrcFile) {
-                return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
+                return defaultLabelProvider.getImage(ipsElement);
             }
 
             IWorkbenchAdapter adapter = null;
@@ -101,7 +93,7 @@ public class ModelLabelProvider implements ILabelProvider {
             if (descriptor == null) {
                 return null;
             }
-            Image image = (Image)imagesByDescriptor.get(descriptor);
+            Image image = imagesByDescriptor.get(descriptor);
             if (image == null) {
                 image = descriptor.createImage();
                 imagesByDescriptor.put(descriptor, image);
@@ -168,7 +160,7 @@ public class ModelLabelProvider implements ILabelProvider {
         for (Iterator<Entry<ImageDescriptor, Image>> it = entryList.iterator(); it.hasNext();) {
             Map.Entry<ImageDescriptor, Image> entry = it.next();
             imagesByDescriptor.remove(entry.getKey());
-            ((Image)entry.getValue()).dispose();
+            (entry.getValue()).dispose();
         }
     }
 
@@ -199,5 +191,5 @@ public class ModelLabelProvider implements ILabelProvider {
     public void setProductDefinitionLabelProvider(boolean productDefinitionLabelProvider) {
         this.productDefinitionLabelProvider = productDefinitionLabelProvider;
     }
-    
+
 }

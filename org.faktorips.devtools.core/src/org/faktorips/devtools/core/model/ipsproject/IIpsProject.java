@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +32,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -866,5 +868,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * <code>false</code>. Returns <code>false</code> if resource is <code>null</code>.
      */
     public boolean isResourceExcludedFromProductDefinition(IResource resource);
+
+    /**
+     * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
+     * no resource is found at the given path.
+     * 
+     * @param path
+     * @return
+     */
+    public InputStream getResourceAsStream(String path);
 
 }

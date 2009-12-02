@@ -68,6 +68,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
+    private boolean useInstanceIcons = false;
+    private String enabledInstancesIconPath = null;
+    private String disabledInstancesIconPath = null;
 
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class,
             ITableStructureUsage.class, "TableStructureUsage"); //$NON-NLS-1$
@@ -90,7 +93,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     @Override
     protected IpsObjectPartCollection createCollectionForMethods() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method"); //$NON-NLS-1$
+        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method");
     }
 
     /**
@@ -99,7 +102,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     protected IpsObjectPartCollection createCollectionForAssociations() {
         return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class,
-                "Association"); //$NON-NLS-1$
+                "Association");
     }
 
     protected Iterator getIteratorForTableStructureUsages() {
@@ -158,7 +161,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean oldValue = configurationForPolicyCmptType;
         configurationForPolicyCmptType = newValue;
         if (!newValue && oldValue) {
-            policyCmptType = ""; //$NON-NLS-1$
+            policyCmptType = "";
         }
         valueChanged(oldValue, newValue);
     }
@@ -234,7 +237,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return findTableStructureUsage(propName, ipsProject);
         }
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET != type) {
-            throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
+            throw new RuntimeException("Unknown type " + type);
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {
@@ -294,6 +297,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
         configurationForPolicyCmptType = Boolean.valueOf(
                 element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
+        useInstanceIcons = Boolean.valueOf(element.getAttribute(PROPERTY_USE_ICONS)).booleanValue();
+        enabledInstancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_ENABLED_INSTANCES);
+        disabledInstancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_DISABLED_INSTANCES);
     }
 
     /**
@@ -302,8 +308,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, "" + configurationForPolicyCmptType); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, String
+                .valueOf(configurationForPolicyCmptType));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
+
+        element.setAttribute(PROPERTY_USE_ICONS, String.valueOf(useInstanceIcons));
+        element.setAttribute(PROPERTY_ICON_FOR_ENABLED_INSTANCES, enabledInstancesIconPath);
+        element.setAttribute(PROPERTY_ICON_FOR_DISABLED_INSTANCES, disabledInstancesIconPath);
     }
 
     /**
@@ -813,4 +824,35 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return !check;
         }
     }
+
+    public String getInstancesEnabledIcon() {
+        return enabledInstancesIconPath;
+    }
+
+    public String getInstancesDisabledIcon() {
+        return disabledInstancesIconPath;
+    }
+
+    public boolean isUseCustomInstanceIcons() {
+        return useInstanceIcons;
+    }
+
+    public void setUseCustomInstanceIcon(boolean useCustomIcon) {
+        boolean oldValue = useInstanceIcons;
+        useInstanceIcons = useCustomIcon;
+        valueChanged(oldValue, useInstanceIcons);
+    }
+
+    public void setInstancesEnabledIcon(String path) {
+        String oldPath = enabledInstancesIconPath;
+        enabledInstancesIconPath = path;
+        valueChanged(oldPath, enabledInstancesIconPath);
+    }
+
+    public void setInstancesDisabledIcon(String path) {
+        String oldPath = disabledInstancesIconPath;
+        disabledInstancesIconPath = path;
+        valueChanged(oldPath, disabledInstancesIconPath);
+    }
+
 }

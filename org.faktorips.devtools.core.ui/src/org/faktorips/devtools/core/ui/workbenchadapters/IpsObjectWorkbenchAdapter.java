@@ -13,12 +13,18 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.io.InputStream;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
@@ -38,6 +44,23 @@ public class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
             return getImageDescriptor(ipsObject);
         }
         return null;
+    }
+
+    protected ImageDescriptor getImageDescriptorForPath(IIpsProject ipsProject, String path) {
+        ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
+        if (cachedImage == null) {
+            InputStream inputStream = ipsProject.getResourceAsStream(path);
+            if (inputStream != null) {
+                Image loadedImage = new Image(Display.getDefault(), inputStream);
+                IpsUIPlugin.getDefault().getImageRegistry().put(path, loadedImage);
+                return IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
+            } else {
+                // Return missing Icon
+                // return IpsUIPlugin.getDefault().getImageDescriptor(null);
+                return ImageDescriptor.getMissingImageDescriptor();
+            }
+        }
+        return cachedImage;
     }
 
     protected ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {

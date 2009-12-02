@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,11 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -46,30 +48,32 @@ import org.w3c.dom.Element;
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
 
     private final static String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
-    
+
     /**
      * Returns a description of the xml format.
      */
     public final static String getXmlFormatDescription() {
         return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
-             + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
-                                                        "the newly generated content during each build cycle." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
-                                                        "regenerated during a clean build cycle." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
-             + "    basePackageDerived=\"\">          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
+                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
+                "the newly generated content during each build cycle."
+                + SystemUtils.LINE_SEPARATOR
+                + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
+                "regenerated during a clean build cycle."
+                + SystemUtils.LINE_SEPARATOR
+                + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    basePackageDerived=\"\">          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     // the folder containig the ips objects
     private IFolder sourceFolder;
 
@@ -80,15 +84,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private String basePackageMergable = ""; //$NON-NLS-1$
 
     private String tocPath = DEFAULT_TOC_PATH;
-    
+
     // the output folder containing the Java files that are generated and derived.
     private IFolder outputFolderDerived;
 
-    // the name of the base package containing the Java files where the developer adds it's own code.
+    // the name of the base package containing the Java files where the developer adds it's own
+    // code.
     private String basePackageDerived = ""; //$NON-NLS-1$
 
     private IIpsPackageFragmentRoot root;
-    
+
     public IpsSrcFolderEntry(IpsObjectPath path) {
         super(path);
     }
@@ -98,10 +103,11 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         ArgumentCheck.notNull(sourceFolder);
         setSourceFolder(sourceFolder);
     }
-    
+
     private void setSourceFolder(IFolder newFolder) {
         sourceFolder = newFolder;
-        root = new IpsPackageFragmentRoot((IpsProject)getIpsObjectPath().getIpsProject(), getIpsPackageFragmentRootName());
+        root = new IpsPackageFragmentRoot((IpsProject)getIpsObjectPath().getIpsProject(),
+                getIpsPackageFragmentRootName());
     }
 
     /**
@@ -117,7 +123,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public IFolder getSourceFolder() {
         return sourceFolder;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -153,7 +159,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * {@inheritDoc}
      */
     public void setSpecificOutputFolderForMergableJavaFiles(IFolder outputFolder) {
-        this.outputFolderMergable = outputFolder;
+        outputFolderMergable = outputFolder;
     }
 
     /**
@@ -177,7 +183,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * {@inheritDoc}
      */
     public void setSpecificBasePackageNameForMergableJavaClasses(String name) {
-        this.basePackageMergable = name;
+        basePackageMergable = name;
     }
 
     /**
@@ -227,12 +233,13 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public void setSpecificBasePackageNameForDerivedJavaClasses(String name) {
         basePackageDerived = name;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
-        if (sourceFolder==null) {
+        if (sourceFolder == null) {
             return false;
         }
         return sourceFolder.getFile(qnt.toPath()).exists();
@@ -241,16 +248,19 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
+    @Override
+    public void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries)
+            throws CoreException {
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set visitedEntries) throws CoreException {
         IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
-        if (pack==null) {
+        if (pack == null) {
             return null;
         }
         IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
@@ -263,15 +273,20 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
-            throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase,
-                result);
+    @Override
+    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List result,
+            Set visitedEntries) throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFilesStartingWithInternal(type, prefix,
+                ignoreCase, result);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(Element element, IProject project) {
         String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
         setSourceFolder(project.getFolder(new Path(sourceFolderPath)));
@@ -292,17 +307,18 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
+    @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);
         element.setAttribute("type", TYPE_SRC_FOLDER); //$NON-NLS-1$
         element.setAttribute("sourceFolder", sourceFolder.getProjectRelativePath().toString()); //$NON-NLS-1$
         element.setAttribute("outputFolderMergable", outputFolderMergable == null ? "" : outputFolderMergable //$NON-NLS-1$ //$NON-NLS-2$
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageMergable", basePackageMergable==null ? "" : basePackageMergable); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute("tocPath", tocPath==null ? "" : tocPath); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("basePackageMergable", basePackageMergable == null ? "" : basePackageMergable); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("tocPath", tocPath == null ? "" : tocPath); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("outputFolderDerived", outputFolderDerived == null ? "" : outputFolderDerived //$NON-NLS-1$ //$NON-NLS-2$
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageDerived", basePackageDerived==null ? "" : basePackageDerived); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("basePackageDerived", basePackageDerived == null ? "" : basePackageDerived); //$NON-NLS-1$ //$NON-NLS-2$
         return element;
     }
 
@@ -313,47 +329,56 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         MessageList result = new MessageList();
         // the sourceFolder will never be null (see this#initFromXml)
         result.add(validateIfFolderExists(sourceFolder));
-        if (sourceFolder.getProjectRelativePath().segmentCount()>1){
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder.getProjectRelativePath().toString());
-            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR, this);
+        if (sourceFolder.getProjectRelativePath().segmentCount() > 1) {
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder
+                    .getProjectRelativePath().toString());
+            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR,
+                    this);
             result.add(msg);
         }
-        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable == null){
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING, Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR)); //$NON-NLS-1$
+        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable == null) {
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING,
+                    Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR));
         }
-        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived == null){
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING, Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR)); //$NON-NLS-1$
+        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived == null) {
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING,
+                    Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR));
         }
-        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null && !outputFolderMergable.exists()){
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable.getFullPath());
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
+        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null
+                && !outputFolderMergable.exists()) {
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable
+                    .getFullPath());
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR));
         }
-        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null && !outputFolderDerived.exists()){
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderDerived.getFullPath());
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
+        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null
+                && !outputFolderDerived.exists()) {
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderDerived
+                    .getFullPath());
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR));
         }
-        
+
         return result;
     }
-    
+
     /*
      * Validate that the given folder exists.
      */
     private MessageList validateIfFolderExists(IFolder folder) {
         MessageList result = new MessageList();
-        if (!folder.exists()){
+        if (!folder.exists()) {
             String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }
         return result;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return "SrcFolderEntry[" + this.sourceFolder.getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "SrcFolderEntry[" + sourceFolder.getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -369,7 +394,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public String getBasePackageRelativeTocPath() {
         return tocPath;
     }
- 
+
     /**
      * {@inheritDoc}
      */
@@ -381,5 +406,17 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return path + IPath.SEPARATOR + tocPath;
     }
 
-    
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Interprets the given path as relative to the referenced sourcefolder.
+     */
+    public InputStream getRessourceAsStream(String path) throws CoreException {
+        IFile file = getSourceFolder().getProject().getFile(path);
+        if (file.exists()) {
+            return file.getContents();
+        }
+        return null;
+    }
+
 }
