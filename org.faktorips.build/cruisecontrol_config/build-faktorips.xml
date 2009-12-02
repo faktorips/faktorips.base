@@ -676,6 +676,7 @@ ${faktoripsProductLinuxZipPath}
         </antcall> 
 		
         <!--  ormext features -->
+		<!-- TODO ormext auf die updatesite bringen (nach freigabe)
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_ormext_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features.ormext}"/>
@@ -686,11 +687,13 @@ ${faktoripsProductLinuxZipPath}
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
+        -->
         <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
-        <antcall inheritall="true" target="-merge.updatesite.xml">
+        <!-- TODO ormext auf die updatesite bringen (nach freigabe)
+		<antcall inheritall="true" target="-merge.updatesite.xml">
             <param name="site.xml" value="site_ormext_tmp.xml"/> 
         </antcall> 
-    
+    	-->
         <!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
         
