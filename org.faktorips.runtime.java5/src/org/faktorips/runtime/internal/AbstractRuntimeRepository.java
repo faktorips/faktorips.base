@@ -695,7 +695,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             return null;
         }
         try {
-            Method enumValueIdMethod = clazz.getMethod("getEnumValueId", new Class[0]);
+            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId", new Class[0]);
+            enumValueIdMethod.setAccessible(true);
             for (T enumValue : enumValues) {
                 Object idValue = enumValueIdMethod.invoke(enumValue, new Object[0]);
                 if (value.equals(idValue)) {
