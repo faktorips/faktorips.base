@@ -14,12 +14,15 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -27,6 +30,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
+import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
 
 /**
@@ -37,7 +41,7 @@ import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
  */
 public class RenameAction extends IpsAction implements IShellProvider {
 
-    private Shell shell;
+    private final Shell shell;
 
     public RenameAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
@@ -48,16 +52,22 @@ public class RenameAction extends IpsAction implements IShellProvider {
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
+
+        // Open refactoring wizard if supported for selection.
         if (selected instanceof IAttribute || selected instanceof IMethod || selected instanceof IType) {
             RefactoringWizard renameWizard = new RenameRefactoringWizard((IIpsElement)selected);
-            RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(renameWizard);
+            IJobManager jobManager = Job.getJobManager();
+            jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
             try {
-                op.run(getShell(), "");
-            } catch (InterruptedException e) {
-                // operation was canceled
+                Dialog dialog = new RefactoringDialog(getShell(), renameWizard);
+                dialog.create();
+                dialog.open();
+            } finally {
+                jobManager.endRule(ResourcesPlugin.getWorkspace().getRoot());
             }
             return;
         }
+
         if (selected instanceof IIpsElement) {
             MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_RENAME);
             WizardDialog wd = new WizardDialog(shell, move);
@@ -72,4 +82,5 @@ public class RenameAction extends IpsAction implements IShellProvider {
     public Shell getShell() {
         return shell;
     }
+
 }

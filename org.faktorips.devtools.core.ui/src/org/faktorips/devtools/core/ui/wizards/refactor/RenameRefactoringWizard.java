@@ -34,6 +34,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class RenameRefactoringWizard extends RefactoringWizard {
 
+    private final IIpsElement ipsElement;
+
     /**
      * Returns the <tt>RenameProcessor</tt> that is compatible to the provided <tt>IIpsElement</tt>.
      * <p>
@@ -59,6 +61,8 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     public RenameRefactoringWizard(IIpsElement ipsElement) {
         super(new RenameRefactoring(getRenameProcessor(ipsElement)), DIALOG_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageTitle("Rename Policy Component Type Attribute");
+        setChangeCreationCancelable(false);
+        this.ipsElement = ipsElement;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     }
 
     /** The one-and-only input page the rename refactoring needs. */
-    private static class RenamePage extends UserInputWizardPage {
+    private class RenamePage extends UserInputWizardPage {
 
         /**
          * Text field to enable the user provide a new name for the <tt>IIpsElement</tt> to be
@@ -85,6 +89,8 @@ public class RenameRefactoringWizard extends RefactoringWizard {
             Composite control = uiToolkit.createLabelEditColumnComposite(parent);
             uiToolkit.createLabel(control, "New name:");
             newNameTextField = uiToolkit.createText(control);
+            newNameTextField.setText(ipsElement.getName());
+            newNameTextField.selectAll();
             newNameTextField.setFocus();
             setControl(control);
         }
