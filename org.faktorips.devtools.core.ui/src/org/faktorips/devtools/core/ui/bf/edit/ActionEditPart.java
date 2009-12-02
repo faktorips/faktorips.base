@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,12 +26,13 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * A specialization of {@link NodeEditPart} that creates the figure for an action, creates the connection anchores and
- * implements the error display.
+ * A specialization of {@link NodeEditPart} that creates the figure for an action, creates the
+ * connection anchores and implements the error display.
  * 
  * @author Peter Erzberger
  */
@@ -39,16 +40,16 @@ public abstract class ActionEditPart extends NodeEditPart {
 
     private ImageDescriptor image;
     private IFigure errorDisplay;
-    
-    public ActionEditPart(ImageDescriptor image){
+
+    public ActionEditPart(ImageDescriptor image) {
         ArgumentCheck.notNull(image, this);
         this.image = image;
     }
-    
-    public IActionBFE getActionBFE(){
+
+    public IActionBFE getActionBFE() {
         return (IActionBFE)getModel();
     }
-    
+
     private void createConnectionAnchor(Figure figure) {
         setTargetConnectionAnchor(new ChopboxAnchor(figure));
         setSourceConnectionAnchor(new ChopboxAnchor(figure));
@@ -62,7 +63,7 @@ public abstract class ActionEditPart extends NodeEditPart {
     }
 
     private Figure createActionFigure() {
-        
+
         RoundedRectangle shape = new RoundedRectangle();
         shape.setCornerDimensions(new Dimension(16, 16));
         shape.setLayoutManager(new BorderLayout());
@@ -91,6 +92,7 @@ public abstract class ActionEditPart extends NodeEditPart {
 
     private IFigure createIconSection() {
         RectangleFigure iconSection = new RectangleFigure() {
+            @Override
             protected boolean useLocalCoordinates() {
                 return true;
             }
@@ -98,7 +100,7 @@ public abstract class ActionEditPart extends NodeEditPart {
         iconSection.setOutline(false);
         iconSection.setFill(false);
         Label iconLabel = new Label();
-        iconLabel.setIcon(image.createImage());
+        iconLabel.setIcon(IpsUIPlugin.getDefault().getImage(image));
         iconLabel.setLocation(new Point(0, 0));
         iconLabel.setSize(new Dimension(20, 20));
         iconSection.add(iconLabel);
@@ -108,6 +110,7 @@ public abstract class ActionEditPart extends NodeEditPart {
 
     private IFigure createErrorIconSection() {
         RectangleFigure iconSection = new RectangleFigure() {
+            @Override
             protected boolean useLocalCoordinates() {
                 return true;
             }
@@ -124,8 +127,9 @@ public abstract class ActionEditPart extends NodeEditPart {
         return iconSection;
     }
 
-    protected void showError(MessageList msgList){
-        if(!msgList.isEmpty()){
+    @Override
+    protected void showError(MessageList msgList) {
+        if (!msgList.isEmpty()) {
             errorDisplay.setVisible(true);
             return;
         }

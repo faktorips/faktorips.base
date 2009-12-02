@@ -259,7 +259,8 @@ public class DefaultLabelProvider extends LabelProvider {
 
     private static Image getAbstractMethodImage(IMethod method) {
         if (abstractMethodImage == null) {
-            abstractMethodImage = new AbstractPropertyImageDescriptor(method.getImage()).createImage();
+            abstractMethodImage = IpsUIPlugin.getDefault().getImage(
+                    new AbstractPropertyImageDescriptor(method.getImage()));
         }
 
         return abstractMethodImage;
@@ -267,7 +268,7 @@ public class DefaultLabelProvider extends LabelProvider {
 
     private static Image getOverloadedMethodImage(IMethod method) {
         if (overloadedMethodImage == null) {
-            overloadedMethodImage = new OverrideImageDescriptor(method.getImage()).createImage();
+            overloadedMethodImage = IpsUIPlugin.getDefault().getImage(new OverrideImageDescriptor(method.getImage()));
         }
 
         return overloadedMethodImage;
