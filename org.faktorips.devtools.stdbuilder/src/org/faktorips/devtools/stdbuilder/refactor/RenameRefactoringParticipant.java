@@ -44,7 +44,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * 
  * @author Alexander Weickmann
  */
-public class RenameParticipant extends org.eclipse.ltk.core.refactoring.participants.RenameParticipant {
+public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactoring.participants.RenameParticipant {
 
     /**
      * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be

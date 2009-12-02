@@ -608,7 +608,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     public IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
         BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
-                .getProductCmptInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptImplClassBuilder();
+                .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
         return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), policyCmptType
                 .getIpsProject());
     }
@@ -631,7 +631,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
-                + IValidationContext.class.getName() + ";" });
+                + IValidationContext.class.getSimpleName() + ";" });
         javaElements.add(method);
     }
 

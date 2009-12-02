@@ -83,7 +83,7 @@
    <extension
          point="org.eclipse.ltk.core.refactoring.renameParticipants">
       <renameParticipant
-            class="org.faktorips.devtools.stdbuilder.refactor.RenameParticipant"
+            class="org.faktorips.devtools.stdbuilder.refactor.RenameRefactoringParticipant"
             id="org.faktorips.devtools.stdbuilder.renameParticipant"
             name="RenameParticipant">
          <enablement>

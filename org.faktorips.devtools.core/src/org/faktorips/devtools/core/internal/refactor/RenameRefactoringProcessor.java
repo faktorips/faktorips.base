@@ -107,9 +107,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /** Saves all modified <tt>IIpsSrcFile</tt>s. */
     private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
-            if (ipsSrcFile.isDirty()) {
-                ipsSrcFile.save(true, pm);
-            }
+            ipsSrcFile.save(true, pm);
         }
     }
 
@@ -177,6 +175,11 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     protected final void addModifiedSrcFile(IIpsSrcFile ipsSrcFile) {
         ArgumentCheck.notNull(ipsSrcFile);
         modifiedSrcFiles.add(ipsSrcFile);
+    }
+
+    /** Returns the <tt>IIpsProject</tt> the <tt>IIpsElement</tt> to be refactored belongs to. */
+    protected final IIpsProject getIpsProject() {
+        return ipsElement.getIpsProject();
     }
 
 }

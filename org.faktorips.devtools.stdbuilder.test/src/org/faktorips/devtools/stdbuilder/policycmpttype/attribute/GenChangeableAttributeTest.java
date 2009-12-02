@@ -246,7 +246,8 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
             IType javaType) {
 
         IMethod expectedGetSetOfAllowedValuesMethod = javaType.getMethod(genChangeableAttribute
-                .getMethodNameGetSetOfAllowedValues(), new String[] { "Q" + IValidationContext.class.getName() + ";" });
+                .getMethodNameGetSetOfAllowedValues(), new String[] { "Q" + IValidationContext.class.getSimpleName()
+                + ";" });
         assertTrue(javaElements.contains(expectedGetSetOfAllowedValuesMethod));
     }
 
