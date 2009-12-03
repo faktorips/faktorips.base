@@ -242,7 +242,6 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         public OpenIpsObjectLabelProvider() {
             // TODO feature needs Eclipse 3.5
             // fBoldStyler = createBoldStyler();
-            setIspSourceFile2IpsObjectMapping(true);
         }
 
         @Override
