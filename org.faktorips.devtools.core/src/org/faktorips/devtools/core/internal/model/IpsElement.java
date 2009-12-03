@@ -92,27 +92,21 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
     public IpsElement() {
     }
 
-    /**
-     * This method does not query any <code>AdapterManager</code>s to get the adapter - if the
-     * requested adapter is an <code>IResource</code>, the enclosing resource is returned.
-     * 
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     // IAdaptable uses unchecked Class
-    public Object getAdapter(Class adapter) {
-        if (adapter == null) {
+    public Object getAdapter(Class adapterType) {
+        if (adapterType == null) {
             return null;
         }
         IResource enclosingResource = getEnclosingResource();
-        if (adapter.isInstance(enclosingResource)) {
+        if (adapterType.isInstance(enclosingResource)) {
             return enclosingResource;
         }
-        if (adapter.equals(ResourceMapping.class)) {
+        if (adapterType.equals(ResourceMapping.class)) {
             return new IpsElementResourceMapping(this);
         }
-        return super.getAdapter(adapter);
+        return super.getAdapter(adapterType);
     }
 
     public String getName() {

@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -120,12 +121,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     @Override
     public String getName() {
         String filename = getParent().getName();
-        int index = filename.indexOf('.');
-        if (index == -1) {
-            throw new RuntimeException("filename has no extension: " + filename); //$NON-NLS-1$
-        }
-
-        return filename.substring(0, index);
+        return StringUtil.getFilenameWithoutExtension(filename);
     }
 
     /**
