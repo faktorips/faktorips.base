@@ -41,11 +41,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -56,7 +54,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
 /**
  * This Section lets the user select icons that are used when instances of the edited type are
@@ -228,11 +225,12 @@ public class CustomIconSection extends IpsSection {
     }
 
     private void refreshIcons() {
-        ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault().getAdapterFactory()
-                .getAdapter(ProductCmpt.class, IWorkbenchAdapter.class);
+        // ProductCmptWorkbenchAdapter adapter =
+        // (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault().getAdapterFactory()
+        // .getAdapter(ProductCmpt.class, IWorkbenchAdapter.class);
         // try {
-        enabledIconLabel.setImage(IpsUIPlugin.getDefault().getImage(
-                adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+        // enabledIconLabel.setImage(IpsUIPlugin.getDefault().getImage(
+        // adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
         // FIXME DiabledIcon aktualisieren
         // Image disabledIconImage =
         // type.getIpsProject().getCustomInstanceDisabledIconOrDefault((IProductCmptType)type);

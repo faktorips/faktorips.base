@@ -61,7 +61,6 @@ public class ModelLabelProvider implements ILabelProvider {
     public ModelLabelProvider(boolean flatLayout) {
         isFlatLayout = flatLayout;
         defaultLabelProvider = new DefaultLabelProvider();
-        defaultLabelProvider.setIspSourceFile2IpsObjectMapping(true);
     }
 
     public Image getImage(Object element) {

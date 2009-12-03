@@ -31,7 +31,6 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
      * Default Constructor
      */
     public InstanceLabelProvider() {
-        defaultLabelProvider.setIspSourceFile2IpsObjectMapping(true);
     }
 
     protected boolean isSubTypeSearch() {

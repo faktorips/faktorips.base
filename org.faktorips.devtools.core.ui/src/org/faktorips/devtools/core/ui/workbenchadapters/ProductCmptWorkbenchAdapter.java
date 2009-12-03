@@ -16,12 +16,12 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.util.StringUtil;
 
 /**
  * TODO Support Disabled Icons
@@ -35,10 +35,6 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     public ProductCmptWorkbenchAdapter() {
         super(null);
         prodCmptDefaultIcon = IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
-    }
-
-    public String getEnclosingLabel(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getPropertyValue(IIpsElement.PROPERTY_NAME);
     }
 
     private ImageDescriptor getProductCmptImage(IProductCmptType type) {
@@ -88,12 +84,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     @Override
     protected String getLabel(IIpsSrcFile ipsSrcFile) {
-        try {
-            return ipsSrcFile.getPropertyValue(IIpsElement.PROPERTY_NAME);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return "";
-        }
+        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
     }
 
     @Override

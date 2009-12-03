@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -46,28 +45,28 @@ public class DefaultLabelProvider extends LabelProvider {
 
     // TODO actually not used
     /* indicates the mapping of an ips source files to the their corresponding ips objects */
-    private boolean ispSourceFile2IpsObjectMapping = false;
+    // private boolean ispSourceFile2IpsObjectMapping = false;
 
     /**
      * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an
      * IpsSourceFile the text and the image of the corresponding IpsObject will be returned.
      */
     public static ILabelProvider createWithIpsSourceFileMapping() {
-        return new DefaultLabelProvider(true);
+        return new DefaultLabelProvider();
     }
 
     public DefaultLabelProvider() {
         super();
     }
 
-    protected DefaultLabelProvider(boolean ispSourceFile2IpsObjectMapping) {
-        super();
-        this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
-    }
+    // protected DefaultLabelProvider(boolean ispSourceFile2IpsObjectMapping) {
+    // super();
+    // this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
+    // }
 
-    public void setIspSourceFile2IpsObjectMapping(boolean ispSourceFile2IpsObjectMapping) {
-        this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
-    }
+    // public void setIspSourceFile2IpsObjectMapping(boolean ispSourceFile2IpsObjectMapping) {
+    // this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
+    // }
 
     /**
      * {@inheritDoc}
@@ -76,8 +75,7 @@ public class DefaultLabelProvider extends LabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
-            IWorkbenchAdapter presentation = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
-            return presentation.getImageDescriptor(ipsElement).createImage();
+            return IpsUIPlugin.getImage(ipsElement);
         }
         if (element instanceof Datatype) {
             return IpsPlugin.getDefault().getImage("Datatype.gif");
@@ -101,8 +99,7 @@ public class DefaultLabelProvider extends LabelProvider {
         }
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
-            IWorkbenchAdapter presentation = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
-            return presentation.getLabel(ipsElement);
+            return IpsUIPlugin.getLabel(ipsElement);
         }
         if (element instanceof IpsSrcFileProvider) {
             return getText(((IpsSrcFileProvider)element).getIpsSrcFile());

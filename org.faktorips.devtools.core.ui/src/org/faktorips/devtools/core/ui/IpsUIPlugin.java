@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
-import org.faktorips.devtools.core.ui.workbenchadapters.IpsWorkbenchAdapterFactory;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -124,8 +123,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private IpsObjectSelectionHistory openIpsObjectHistory;
 
-    private IpsWorkbenchAdapterFactory adapterFactory;
-
     /**
      * The constructor.
      */
@@ -156,8 +153,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
                 new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new DefaultControlFactory() };
-        adapterFactory = new IpsWorkbenchAdapterFactory();
-        Platform.getAdapterManager().registerAdapters(adapterFactory, IIpsElement.class);
     }
 
     /**
@@ -645,13 +640,26 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return settings;
     }
 
-    public final static <T extends IIpsElement> Image getImage(T ipsElement) throws CoreException {
-        IWorkbenchAdapter presentation = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
-        return getDefault().getImage(presentation.getImageDescriptor(ipsElement));
+    public final static ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+        if (adapter == null) {
+            return null;
+        } else {
+            return adapter.getImageDescriptor(ipsElement);
+        }
     }
 
-    public IpsWorkbenchAdapterFactory getAdapterFactory() {
-        return adapterFactory;
+    public final static Image getImage(IIpsElement ipsElement) {
+        return getDefault().getImage(getImageDescriptor(ipsElement));
+    }
+
+    public final static String getLabel(IIpsElement ipsElement) {
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+        if (adapter == null) {
+            return "";
+        } else {
+            return adapter.getLabel(ipsElement);
+        }
     }
 
 }

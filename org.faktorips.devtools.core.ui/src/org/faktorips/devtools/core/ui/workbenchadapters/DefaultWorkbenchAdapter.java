@@ -56,7 +56,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
     public ImageDescriptor getImageDescriptor(IIpsElement element) {
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-            return getEnclosingImageDescriptor(ipsSrcFile);
+            return getInternalImageDescriptor(ipsSrcFile);
         } else if (element instanceof IMethod) {
             try {
                 return ImageDescriptor.createFromImage(getMethodImage((IMethod)element));
@@ -77,7 +77,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else if (element instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-            return getEnclosingLabel(ipsSrcFile);
+            return getInternalLabel(ipsSrcFile);
         } else if (element instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)element;
             return getEnumAttributeLabel(enumAttribute);
@@ -234,7 +234,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
         }
     }
 
-    public ImageDescriptor getEnclosingImageDescriptor(IIpsSrcFile ipsSrcFile) {
+    public ImageDescriptor getInternalImageDescriptor(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile.exists()) {
             return ImageDescriptor.createFromImage(ipsSrcFile.getIpsObjectType().getEnabledImage());
         } else {
@@ -243,7 +243,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
         }
     }
 
-    public String getEnclosingLabel(IIpsSrcFile ipsSrcFile) {
+    public String getInternalLabel(IIpsSrcFile ipsSrcFile) {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
     }
 

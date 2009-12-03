@@ -60,7 +60,9 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
         return null;
     }
 
-    protected abstract String getLabel(IIpsElement ipsElement);
+    protected String getLabel(IIpsElement ipsElement) {
+        return ipsElement.getName();
+    }
 
     public final Object getParent(Object o) {
         if (o instanceof IIpsElement) {

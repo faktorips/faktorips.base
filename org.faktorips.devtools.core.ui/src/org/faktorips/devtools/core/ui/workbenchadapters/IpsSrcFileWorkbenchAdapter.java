@@ -14,11 +14,8 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Returns image and label of the contained IpsObject.
@@ -28,19 +25,35 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class IpsSrcFileWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
     public IpsSrcFileWorkbenchAdapter() {
+        super();
     }
+
+    // private IWorkbenchAdapter getAdapter(IIpsElement ipsElement) {
+    // if (ipsElement instanceof IIpsSrcFile) {
+    // IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+    // return (IWorkbenchAdapter)ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile).getAdapter(
+    // IWorkbenchAdapter.class);
+    // }
+    // return null;
+    // }
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        Class ipsObjectClass = ProductCmpt.class;
-        IpsObjectWorkbenchAdapter adapter = (IpsObjectWorkbenchAdapter)IpsUIPlugin.getDefault().getAdapterFactory()
-                .getAdapter(ipsObjectClass, IWorkbenchAdapter.class);
-        return adapter.getImageDescriptor((IIpsSrcFile)ipsElement);
+        // IWorkbenchAdapter adapter = getAdapter(ipsElement);
+        // if (adapter != null) {
+        // return adapter.getImageDescriptor(ipsElement);
+        // }
+        // return null;
+        return IpsPlugin.getDefault().getImageDescriptor("IpsSrcFile.gif"); //$NON-NLS-1$
     }
 
-    @Override
-    protected String getLabel(IIpsElement ipsElement) {
-        return ((IIpsSrcFile)ipsElement).getIpsObjectName();
-    }
+    // @Override
+    // protected String getLabel(IIpsElement ipsElement) {
+    // IWorkbenchAdapter adapter = getAdapter(ipsElement);
+    // if (adapter != null) {
+    // return adapter.getLabel(ipsElement);
+    // }
+    // return "";
+    // }
 
 }
