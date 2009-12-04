@@ -76,11 +76,11 @@ public class DefaultIpsWorkbenchAdapterFactory extends AbstractIpsWorkbenchAdapt
 
     public DefaultIpsWorkbenchAdapterFactory() {
         super();
-        defaultWorkbenchAdapter = new DefaultWorkbenchAdapter();
-        init();
     }
 
-    private void init() {
+    @Override
+    protected void registerAdapters() {
+        defaultWorkbenchAdapter = new DefaultWorkbenchAdapter();
         initContainers();
         initSrcFiles();
         initIpsObjects();

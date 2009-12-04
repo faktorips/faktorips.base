@@ -23,14 +23,17 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-public class AbstractIpsWorkbenchAdapterFactory implements IAdapterFactory {
+public abstract class AbstractIpsWorkbenchAdapterFactory implements IAdapterFactory {
 
     Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
 
     public AbstractIpsWorkbenchAdapterFactory() {
         super();
         workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
+        registerAdapters();
     }
+
+    protected abstract void registerAdapters();
 
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {

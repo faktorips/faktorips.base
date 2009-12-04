@@ -79,7 +79,8 @@ Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.wizards.productcmpt,
  org.faktorips.devtools.core.ui.wizards.tablecontents,
  org.faktorips.devtools.core.ui.wizards.tableimport,
- org.faktorips.devtools.core.ui.wizards.tablestructure
+ org.faktorips.devtools.core.ui.wizards.tablestructure,
+ org.faktorips.devtools.core.ui.workbenchadapters
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn AG

@@ -13,25 +13,15 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import java.io.InputStream;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
+public abstract class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
-    private final ImageDescriptor imageDescriptor;
-
-    public IpsObjectWorkbenchAdapter(ImageDescriptor imageDescriptor) {
-        this.imageDescriptor = imageDescriptor;
+    public IpsObjectWorkbenchAdapter() {
+        super();
     }
 
     @Override
@@ -46,30 +36,9 @@ public class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
         return null;
     }
 
-    protected ImageDescriptor getImageDescriptorForPath(IIpsProject ipsProject, String path) {
-        ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-        if (cachedImage == null) {
-            InputStream inputStream = ipsProject.getResourceAsStream(path);
-            if (inputStream != null) {
-                Image loadedImage = new Image(Display.getDefault(), inputStream);
-                IpsUIPlugin.getDefault().getImageRegistry().put(path, loadedImage);
-                return IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-            } else {
-                // Return missing Icon
-                // return IpsUIPlugin.getDefault().getImageDescriptor(null);
-                return ImageDescriptor.getMissingImageDescriptor();
-            }
-        }
-        return cachedImage;
-    }
+    protected abstract ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile);
 
-    protected ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
-        return imageDescriptor;
-    }
-
-    protected ImageDescriptor getImageDescriptor(IIpsObject ipsObject) {
-        return imageDescriptor;
-    }
+    protected abstract ImageDescriptor getImageDescriptor(IIpsObject ipsObject);
 
     @Override
     protected final String getLabel(IIpsElement ipsElement) {
@@ -83,17 +52,8 @@ public class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
         return ipsElement.getName();
     }
 
-    protected String getLabel(IIpsSrcFile ipsSrcFile) {
-        try {
-            return ipsSrcFile.getPropertyValue(IIpsElement.PROPERTY_NAME);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return ipsSrcFile.getName();
-        }
-    }
+    protected abstract String getLabel(IIpsSrcFile ipsSrcFile);
 
-    protected String getLabel(IIpsObject ipsObject) {
-        return ipsObject.getName();
-    }
+    protected abstract String getLabel(IIpsObject ipsObject);
 
 }
