@@ -223,10 +223,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return "); //$NON-NLS-1$
         body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";"); //$NON-NLS-1$
-        methodBuilder
-                .javaDoc(
-                        "This method is used by the runtime repository implementation to identify this enumeration value. It is not supposed to be part of the published interface of this enumeration and therefore it is declared private. It is called via the java reflection mechanism.", //$NON-NLS-1$
-                        ANNOTATION_GENERATED);
+        appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", getEnumType(), methodBuilder);
         if (java5EnumsAvailable()) {
             methodBuilder.annotationLn(ANNOTATION_SUPPRESS_WARNINGS_UNUSED);
         }
