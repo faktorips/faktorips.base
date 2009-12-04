@@ -39,7 +39,8 @@ import org.faktorips.util.StringUtil;
  * This is the implementation of the DefaultLabelProvider until v2.4
  * <p>
  * In version 2.5 we changed the api for getting images and default labels of model objects to avoid
- * images in the core plugin. The new API provides the interface {@link IPresentationObject}.
+ * images in the core plugin. The new API provides the class {@link IpsElementWorkbenchAdapter}
+ * implementing the eclipse adapter interface IWorkbenchAdapter.
  * <p>
  * This DefaultPresentationObject is used until every IpsElement has its own presentation object
  * registered by extension.
@@ -47,7 +48,7 @@ import org.faktorips.util.StringUtil;
  * @author Cornelius Dirmeier
  * @author Jan Ortmann
  * 
- * @deprecated better you implement a specific {@link IPresentationObject}
+ * @deprecated better you implement a specific {@link IpsElementWorkbenchAdapter}
  */
 @Deprecated
 public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
