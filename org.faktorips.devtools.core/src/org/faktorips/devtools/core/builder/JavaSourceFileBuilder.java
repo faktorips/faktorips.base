@@ -107,6 +107,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public static final String ANNOTATION_OVERRIDE = "Override"; //$NON-NLS-1$
 
     /**
+     * This constant is supposed to be used as a Java 5 annotations. It contains the java annotation
+     * for suppressed warnings of unused code.
+     */
+    public static final String ANNOTATION_SUPPRESS_WARNINGS_UNUSED = "SuppressWarnings(\"unused\")"; //$NON-NLS-1$
+  
+    /**
      * This constant is supposed to be used to indicate the beginning of a section within generated
      * code that a user can modify and will not be overridden by the generator at the next
      * generation.
