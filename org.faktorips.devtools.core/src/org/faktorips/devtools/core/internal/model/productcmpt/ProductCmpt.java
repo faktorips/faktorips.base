@@ -387,8 +387,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public Image getImage() {
-        ImageDescriptor imageDescriptor = ((IWorkbenchAdapter)getAdapter(IWorkbenchAdapter.class))
-                .getImageDescriptor(this);
-        return IpsPlugin.getDefault().getImage(imageDescriptor);
+        // TODO remove all this shit
+        IWorkbenchAdapter adapter = ((IWorkbenchAdapter)getAdapter(IWorkbenchAdapter.class));
+        if (adapter != null) {
+            ImageDescriptor imageDescriptor = adapter.getImageDescriptor(this);
+            return IpsPlugin.getDefault().getImage(imageDescriptor);
+        }
+        return null;
     }
 }
