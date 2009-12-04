@@ -410,6 +410,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * {@inheritDoc}
      * <p>
      * Interprets the given path as relative to the referenced sourcefolder.
+     * <p>
+     * FIXME Pfad SrcFolder-relativ interpretieren
      */
     public InputStream getRessourceAsStream(String path) throws CoreException {
         IFile file = getSourceFolder().getProject().getFile(path);

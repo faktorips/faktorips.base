@@ -129,7 +129,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
-    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }

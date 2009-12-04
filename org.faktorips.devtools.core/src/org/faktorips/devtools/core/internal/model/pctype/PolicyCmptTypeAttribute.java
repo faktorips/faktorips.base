@@ -205,7 +205,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }

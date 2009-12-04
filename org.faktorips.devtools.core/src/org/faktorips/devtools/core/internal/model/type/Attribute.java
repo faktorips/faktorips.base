@@ -72,6 +72,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
@@ -215,7 +216,4 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
             }
         }
     }
-
-    protected abstract IValueSet getValueSet() throws CoreException;
-
 }
