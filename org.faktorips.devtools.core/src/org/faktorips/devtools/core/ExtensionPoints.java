@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,8 +31,7 @@ public class ExtensionPoints {
 
     private IExtensionRegistry registry;
     private String nameSpace;
-    
-    
+
     public ExtensionPoints(IExtensionRegistry registry, String nameSpace) {
         super();
         ArgumentCheck.notNull(registry, this);
@@ -51,10 +50,10 @@ public class ExtensionPoints {
      * @see IpsObjectType
      */
     public final static String IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
-    
+
     /**
      * Returns all extensions defined for the given point. The point id should be one of the
-     * constants defined in this class. 
+     * constants defined in this class.
      * 
      * @throws NullPointerException if pointId is <code>null</code>.
      * @throws IllegalArgumentException if no extension point with id pointId exists.
@@ -62,30 +61,30 @@ public class ExtensionPoints {
     public final IExtension[] getExtension(String pointId) {
         ArgumentCheck.notNull(pointId);
         IExtensionPoint point = registry.getExtensionPoint(nameSpace, pointId);
-        if (point==null) {
+        if (point == null) {
             IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
             throw new IllegalArgumentException("Unknown extension point " + pointId); //$NON-NLS-1$
         }
         return point.getExtensions();
     }
-    
+
     /**
      * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with detailed
      * logging. If the executable extension couldn't be created, the reason is logged, no exception
      * is thrown. The returned object is of the expected type.
      * 
-     * @param extension The extension to create an  
-     * @param element   
+     * @param extension The extension to create an
+     * @param element
      * @param propertyName
      * @param expectedType
      * 
      * @see IConfigurationElement#createExecutableExtension(String)
      */
-    public final static Object createExecutableExtension(IExtension extension,
+    public final static <T> T createExecutableExtension(IExtension extension,
             IConfigurationElement element,
             String propertyName,
-            Class expectedType) {
-        
+            Class<T> expectedType) {
+
         Object object = null;
         try {
             object = element.createExecutableExtension(propertyName);
@@ -102,8 +101,7 @@ public class ExtensionPoints {
                     + expectedType));
             return null;
         }
-        return object;
+        return expectedType.cast(object);
     }
 
-    
 }

@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -74,6 +76,7 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -91,6 +94,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <tt>extensionPropertyEditFieldFactory</tt>.
      */
     public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
+
+    /**
+     * The extension point id of the extension point <tt>adapterprovider</tt>.
+     */
+    public final static String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
+
+    /**
+     * The extension point id of the extension point property <tt>workbenchadapter</tt> in the
+     * extension point adapterprovider.
+     */
+    public final static String CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER = "workbenchadapter"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history
@@ -122,6 +136,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private ImageDescriptorRegistry imageDescriptorRegistry;
 
     private IpsObjectSelectionHistory openIpsObjectHistory;
+
+    private IWorkbenchAdapterProvider[] workbenchAdapterProviders;
 
     /**
      * The constructor.
@@ -241,7 +257,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                         // the current configuration element corresponds to the given table format
                         String configElGuiClass = configElement.getAttribute("guiClass"); //$NON-NLS-1$
                         if (!StringUtils.isEmpty(configElGuiClass)) {
-                            TableFormatConfigurationCompositeFactory factory = (TableFormatConfigurationCompositeFactory)ExtensionPoints
+                            TableFormatConfigurationCompositeFactory factory = ExtensionPoints
                                     .createExecutableExtension(extensions[i], configElement, "guiClass", //$NON-NLS-1$
                                             TableFormatConfigurationCompositeFactory.class);
 
@@ -511,9 +527,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                                         + extensions[i].getExtensionPointUniqueIdentifier()
                                         + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
-                    IExtensionPropertyEditFieldFactory factory = (IExtensionPropertyEditFieldFactory)ExtensionPoints
-                            .createExecutableExtension(extensions[i], configElements[0], "class", //$NON-NLS-1$
-                                    IExtensionPropertyEditFieldFactory.class);
+                    IExtensionPropertyEditFieldFactory factory = ExtensionPoints.createExecutableExtension(
+                            extensions[i], configElements[0], "class", //$NON-NLS-1$
+                            IExtensionPropertyEditFieldFactory.class);
                     if (factory != null) {
                         extensionPropertyEditFieldFactoryMap.put(configElPropertyId, factory);
                     }
@@ -526,6 +542,24 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             extensionPropertyEditFieldFactoryMap.put(propertyId, factory);
         }
         return factory;
+    }
+
+    public List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
+        List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
+        if (workbenchAdapterProviders == null) {
+            ExtensionPoints extPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
+            IExtension[] adapterProviders = extPoints.getExtension(EXTENSION_POINT_ID_ADAPTER_PROVIDER);
+            for (IExtension extension : adapterProviders) {
+                IConfigurationElement[] configElements = extension.getConfigurationElements();
+                for (IConfigurationElement configElement : configElements) {
+                    if (configElement.getName().equals(CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER)) {
+                        result.add(ExtensionPoints.createExecutableExtension(extension, configElement, "class",
+                                IWorkbenchAdapterProvider.class));
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public Image getImage(ImageDescriptor descriptor) {

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.bf.BFElement;
 import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
@@ -69,16 +72,27 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Parameter;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.IIpsElement;
 
-public class DefaultIpsWorkbenchAdapterFactory extends AbstractIpsWorkbenchAdapterFactory {
+public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvider {
 
     private DefaultWorkbenchAdapter defaultWorkbenchAdapter;
 
-    public DefaultIpsWorkbenchAdapterFactory() {
-        super();
+    private Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
+
+    public DefaultWorkbenchAdapterProvider() {
+        workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
+        registerAdapters();
     }
 
-    @Override
+    public Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> getAdapterMap() {
+        return workbenchAdapterMap;
+    }
+
+    private void register(Class<? extends IIpsElement> adaptableClass, IpsElementWorkbenchAdapter adapter) {
+        workbenchAdapterMap.put(adaptableClass, adapter);
+    }
+
     protected void registerAdapters() {
         defaultWorkbenchAdapter = new DefaultWorkbenchAdapter();
         initContainers();

@@ -6,6 +6,8 @@
   -->
    <extension-point id="extensionPropertyEditFieldFactory" name="Extension Property Edit Field Factory" schema="schema/extensionPropertyEditFieldFactory.exsd"/>
    
+   <extension-point id="adapterprovider" name="Adapter Provider" schema="schema/adapterprovider.exsd" />
+   
 <!-- 
     Product Definition Perspective
   -->
@@ -1204,7 +1206,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.faktorips.devtools.core.model.IIpsElement"
-            class="org.faktorips.devtools.core.ui.workbenchadapters.DefaultIpsWorkbenchAdapterFactory">
+            class="org.faktorips.devtools.core.ui.workbenchadapters.IpsWorkbenchAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
@@ -1212,5 +1214,11 @@
                type="org.eclipse.ui.model.IWorkbenchAdapter2">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.ui.adapterprovider">
+      <workbenchadapter
+            class="org.faktorips.devtools.core.ui.workbenchadapters.DefaultWorkbenchAdapterProvider">
+      </workbenchadapter>
    </extension>
 </plugin>

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IAdapterFactory;
@@ -22,18 +23,24 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public abstract class AbstractIpsWorkbenchAdapterFactory implements IAdapterFactory {
+public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
 
     Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
 
-    public AbstractIpsWorkbenchAdapterFactory() {
+    public IpsWorkbenchAdapterFactory() {
         super();
         workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
         registerAdapters();
     }
 
-    protected abstract void registerAdapters();
+    protected void registerAdapters() {
+        List<IWorkbenchAdapterProvider> providers = IpsUIPlugin.getDefault().getWorkbenchAdapterProviders();
+        for (IWorkbenchAdapterProvider provider : providers) {
+            workbenchAdapterMap.putAll(provider.getAdapterMap());
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {
