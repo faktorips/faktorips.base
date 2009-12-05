@@ -54,15 +54,6 @@ public final class RenamePolicyCmptTypeAttributeRefactoring extends RenameRefact
         changeAttributeName();
     }
 
-    /**
-     * Changes the name of the <tt>IPolicyCmptTypeAttribute</tt> to be refactored to the new name
-     * provided by the user.
-     */
-    private void changeAttributeName() {
-        getPolicyCmptTypeAttribute().setName(getNewElementName());
-        addModifiedSrcFile(getPolicyCmptTypeAttribute().getIpsSrcFile());
-    }
-
     /** Searches and updates all references to the <tt>IPolicyCmptTypeAttribute</tt>. */
     private void updateReferences(IpsObjectType ipsObjectType) throws CoreException {
         List<IIpsSrcFile> processedSrcFiles = new ArrayList<IIpsSrcFile>(40);
@@ -115,6 +106,15 @@ public final class RenamePolicyCmptTypeAttributeRefactoring extends RenameRefact
                 addModifiedSrcFile(testCaseType.getIpsSrcFile());
             }
         }
+    }
+
+    /**
+     * Changes the name of the <tt>IPolicyCmptTypeAttribute</tt> to be refactored to the new name
+     * provided by the user.
+     */
+    private void changeAttributeName() {
+        getPolicyCmptTypeAttribute().setName(getNewElementName());
+        addModifiedSrcFile(getPolicyCmptTypeAttribute().getIpsSrcFile());
     }
 
     /** Returns the <tt>IPolicyCmptTypeAttribute</tt> to be refactored. */
