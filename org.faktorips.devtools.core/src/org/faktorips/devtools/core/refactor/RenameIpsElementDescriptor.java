@@ -13,40 +13,53 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 public final class RenameIpsElementDescriptor extends IpsRefactoringDescriptor {
 
-    public static final String POLICY_CMPT_TYPE_ARGUMENT = "policyCmptType";
+    private static final String TYPE_ARGUMENT = "policyCmptType";
 
-    public static final String POLICY_CMPT_TYPE_ATTRIBUTE_ARGUMENT = "policyCmptTypeAttribute";
+    private static final String PART_ARGUMENT = "policyCmptTypeAttribute";
 
     private IIpsElement ipsElement;
 
-    public RenameIpsElementDescriptor(String id, Map<String, String> arguments) {
-        super(id, arguments);
+    public RenameIpsElementDescriptor(String contributionId) {
+        super(contributionId);
     }
 
-    public RenameIpsElementDescriptor(String id, String project, String description, String comment,
-            Map<String, String> arguments, int flags) {
+    public RenameIpsElementDescriptor(String contributionId, String project, String description, String comment,
+            int flags) {
 
-        super(id, project, description, comment, arguments, flags);
+        super(contributionId, project, description, comment, flags);
+    }
+
+    public void setTypeArgument(IPolicyCmptType policyCmptType) {
+        getArguments().put(TYPE_ARGUMENT, policyCmptType.getQualifiedName());
+    }
+
+    public void setPartArgument(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+        getArguments().put(PART_ARGUMENT, policyCmptTypeAttribute.getName());
+    }
+
+    public String getTypeArgument() {
+        return getArguments().get(TYPE_ARGUMENT);
+    }
+
+    public String getPartArgument() {
+        return getArguments().get(PART_ARGUMENT);
     }
 
     @Override
-    protected void initArguments() throws CoreException {
+    public void internalInit() throws CoreException {
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
         if (getID().equals(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE)) {
-            IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(getArguments()
-                    .get(POLICY_CMPT_TYPE_ARGUMENT));
-            ipsElement = policyCmptType.getPolicyCmptTypeAttribute(getArguments().get(
-                    POLICY_CMPT_TYPE_ATTRIBUTE_ARGUMENT));
+            IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(getTypeArgument());
+            ipsElement = policyCmptType.getPolicyCmptTypeAttribute(getPartArgument());
         }
     }
 

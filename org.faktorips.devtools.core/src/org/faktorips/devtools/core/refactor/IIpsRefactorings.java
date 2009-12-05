@@ -14,12 +14,13 @@
 package org.faktorips.devtools.core.refactor;
 
 /**
- * 
+ * Interface providing the refactoring IDs offered by Faktor-IPS.
  * 
  * @author Alexander Weickmann
  */
 public interface IIpsRefactorings {
 
-    String RENAME_POLICY_CMPT_TYPE_ATTRIBUTE = "org.faktorips.devtools.refactor.renamePolicyCmptTypeAttribute";
+    /** Unique ID for the "Rename Policy Component Type Attribute" - refactoring. */
+    public static final String RENAME_POLICY_CMPT_TYPE_ATTRIBUTE = "org.faktorips.devtools.refactor.renamePolicyCmptTypeAttribute";
 
 }

@@ -13,13 +13,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
@@ -51,31 +47,28 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 
     /** Creates the refactoring compatible to the given <tt>IIpsElement</tt>. */
     private static Refactoring createRefactoring(IIpsElement ipsElement) {
-        Map<String, String> arguments = new HashMap<String, String>();
         String contributionId = "";
 
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
             contributionId = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
-            arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ARGUMENT, policyCmptTypeAttribute
-                    .getPolicyCmptType().getQualifiedName());
-            arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ATTRIBUTE_ARGUMENT, policyCmptTypeAttribute
-                    .getName());
         }
 
         IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
                 .getRefactoringContribution(contributionId);
         RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setArguments(arguments);
         renameDescriptor.setProject(ipsElement.getIpsProject().getName());
 
+        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
+            renameDescriptor.setTypeArgument(policyCmptTypeAttribute.getPolicyCmptType());
+            renameDescriptor.setPartArgument(policyCmptTypeAttribute);
+        }
+
         try {
-            renameDescriptor.init();
+            return contribution.createRefactoring(renameDescriptor);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-
-        return contribution.createRefactoring(renameDescriptor, new RefactoringStatus());
     }
 
     /**
