@@ -65,10 +65,6 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
 
         RefactoringStatus status = new RefactoringStatus();
         for (IJavaElement javaElement : generatedJavaElements) {
-            if (!(javaElement.exists())) {
-                status.addFatalError("Missing Java source code element for IPS element in "
-                        + javaElement.getParent().getElementName() + ": " + javaElement.getElementName());
-            }
             try {
                 if (!(javaElement.isStructureKnown())) {
                     status.addFatalError("Syntax errors on Java source code element for IPS element in "
@@ -84,6 +80,20 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
         for (int i = 0; i < generatedJavaElements.size(); i++) {
+
+            /*
+             * Do not try to refactor non-existing Java elements as the user may want to try to
+             * start the refactoring when there is no source code at all. This also solves the
+             * problem of what should happen when there is a Java element that occurs in the
+             * implementation as well as in the published interface. If for example a setter method
+             * occurs in the implementation as well as in the published interface then the first
+             * encountered will be refactored. The second no longer exists then because the JDT
+             * rename method refactoring renamed it already.
+             */
+            if (!(generatedJavaElements.get(i).exists())) {
+                continue;
+            }
+
             String javaRefactoringContributionId;
             switch (generatedJavaElements.get(i).getElementType()) {
                 case IJavaElement.FIELD:
