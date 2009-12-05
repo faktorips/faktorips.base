@@ -31,4 +31,8 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractStdBuilderTest {
         attribute.setProductRelevant(true);
     }
 
+    public void testXX() {
+
+    }
+
 }
