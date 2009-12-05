@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * A wizard that is used to guide the user trough a Faktor-IPS rename refactoring.
+ * A wizard to guide the user trough a Faktor-IPS rename refactoring.
  * 
  * @author Alexander Weickmann
  */
@@ -52,27 +52,30 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     /** Creates the refactoring compatible to the given <tt>IIpsElement</tt>. */
     private static Refactoring createRefactoring(IIpsElement ipsElement) {
         Map<String, String> arguments = new HashMap<String, String>();
-        String id = "";
+        String contributionId = "";
+
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            id = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
+            contributionId = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
             arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ARGUMENT, policyCmptTypeAttribute
                     .getPolicyCmptType().getQualifiedName());
             arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ATTRIBUTE_ARGUMENT, policyCmptTypeAttribute
                     .getName());
         }
+
         IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(id);
+                .getRefactoringContribution(contributionId);
         RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
         renameDescriptor.setArguments(arguments);
         renameDescriptor.setProject(ipsElement.getIpsProject().getName());
 
         try {
             renameDescriptor.init();
-            return contribution.createRefactoring(renameDescriptor, new RefactoringStatus());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+
+        return contribution.createRefactoring(renameDescriptor, new RefactoringStatus());
     }
 
     /**
