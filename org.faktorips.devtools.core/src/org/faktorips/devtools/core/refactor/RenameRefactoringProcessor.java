@@ -85,7 +85,12 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
-        return new RefactoringStatus();
+        RefactoringStatus status = new RefactoringStatus();
+        if (!(ipsElement.exists())) {
+            // TODO AW: INTERNATIONALIZE
+            status.addFatalError("The IPS element to be renamed does not exist.");
+        }
+        return status;
     }
 
     @Override

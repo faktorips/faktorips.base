@@ -107,19 +107,15 @@ public class RenameRefactoringWizard extends RefactoringWizard {
         private RenamePage() {
             super("RenamePage");
             String ipsElementName = "";
-            String qualifiedName = "";
             if (ipsElement instanceof IAttribute) {
                 ipsElementName = Messages.RenameRefactoringWizard_Attribute;
-                qualifiedName = ((IAttribute)ipsElement).getType().getQualifiedName() + '.' + ipsElement.getName();
             } else if (ipsElement instanceof IMethod) {
                 ipsElementName = Messages.RenameRefactoringWizard_Method;
-                qualifiedName = ((IMethod)ipsElement).getType().getQualifiedName() + '.' + ipsElement.getName();
             } else if (ipsElement instanceof IType) {
                 ipsElementName = Messages.RenameRefactoringWizard_Type;
-                qualifiedName = ((IType)ipsElement).getQualifiedName();
             }
             setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, ipsElementName));
-            setMessage(NLS.bind(Messages.RenameRefactoringWizard_message, ipsElementName, qualifiedName));
+            setMessage(NLS.bind(Messages.RenameRefactoringWizard_message, ipsElementName, ipsElement.getName()));
         }
 
         public void createControl(Composite parent) {

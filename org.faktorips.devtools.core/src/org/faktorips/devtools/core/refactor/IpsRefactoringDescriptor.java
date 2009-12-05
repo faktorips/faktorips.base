@@ -69,7 +69,8 @@ public abstract class IpsRefactoringDescriptor extends RefactoringDescriptor {
      * @param contributionId The unique ID of the contributed Faktor-IPS refactoring.
      */
     protected IpsRefactoringDescriptor(String contributionId) {
-        this(contributionId, null, "Faktor-IPS Refactoring.", null, RefactoringDescriptor.BREAKING_CHANGE
+        // TODO AW: INTERNATIONALIZE
+        this(contributionId, null, "No description available.", null, RefactoringDescriptor.BREAKING_CHANGE
                 | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE);
     }
 

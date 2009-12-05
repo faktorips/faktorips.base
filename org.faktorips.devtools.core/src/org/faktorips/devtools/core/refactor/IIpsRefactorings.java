@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.refactor;
 
 /**
- * Interface providing the refactoring IDs offered by Faktor-IPS.
+ * Interface providing the refactoring contribution IDs offered by Faktor-IPS.
  * 
  * @author Alexander Weickmann
  */

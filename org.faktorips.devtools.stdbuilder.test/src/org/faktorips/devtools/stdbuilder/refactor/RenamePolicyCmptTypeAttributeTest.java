@@ -18,11 +18,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class RenamePolicyCmptTypeAttributeTest extends AbstractStdBuilderTest {
 
     @Override

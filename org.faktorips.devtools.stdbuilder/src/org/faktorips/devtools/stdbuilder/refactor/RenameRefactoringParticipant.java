@@ -67,7 +67,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         for (IJavaElement javaElement : generatedJavaElements) {
             try {
                 if (!(javaElement.isStructureKnown())) {
-                    status.addFatalError("Syntax errors on Java source code element for IPS element in "
+                    // TODO AW: INTERNATIONALIZE
+                    status.addFatalError("Syntax errors on Java source code element in "
                             + javaElement.getParent().getElementName() + ": " + javaElement.getElementName());
                 }
             } catch (JavaModelException e) {
