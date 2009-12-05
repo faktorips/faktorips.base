@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.refactor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,8 +35,6 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * This is the abstract base class for all Faktor-IPS rename refactorings.
- * <p>
- * This is a <tt>ProcessorBasedRefactoring</tt>.
  * <p>
  * Subclasses must use the method <tt>addModifiedSrcFile(IIpsSrcFile)</tt> in order to register all
  * modified <tt>IIpsSrcFile</tt>s. All registered modified <tt>IIpsSrcFile</tt>s will be saved at

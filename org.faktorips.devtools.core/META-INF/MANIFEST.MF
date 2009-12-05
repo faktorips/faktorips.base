@@ -79,6 +79,7 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.model.type,
  org.faktorips.devtools.core.model.valueset,
  org.faktorips.devtools.core.model.versionmanager,
+ org.faktorips.devtools.core.refactor,
  org.faktorips.devtools.core.util,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .,

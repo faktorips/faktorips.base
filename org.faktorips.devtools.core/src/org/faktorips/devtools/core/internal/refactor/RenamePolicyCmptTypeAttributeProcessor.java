@@ -28,20 +28,21 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
 /**
  * This is the "Rename Policy Component Type Attribute" - refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class RenamePolicyCmptTypeAttributeRefactoring extends RenameRefactoringProcessor {
+public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactoringProcessor {
 
     /**
-     * Creates a <tt>RenamePolicyCmptTypeAttributeRefactoring</tt>.
+     * Creates a <tt>RenamePolicyCmptTypeAttributeProcessor</tt>.
      * 
      * @param policyCmptTypeAttribute The <tt>IPolicyCmptTypeAttribute</tt> to be refactored.
      */
-    public RenamePolicyCmptTypeAttributeRefactoring(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+    public RenamePolicyCmptTypeAttributeProcessor(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         super(policyCmptTypeAttribute);
     }
 
@@ -134,7 +135,7 @@ public final class RenamePolicyCmptTypeAttributeRefactoring extends RenameRefact
 
     @Override
     public String getIdentifier() {
-        return "RenamePolicyCmptTypeAttributeRefactoring";
+        return "RenamePolicyCmptTypeAttributeProcessor";
     }
 
     @Override

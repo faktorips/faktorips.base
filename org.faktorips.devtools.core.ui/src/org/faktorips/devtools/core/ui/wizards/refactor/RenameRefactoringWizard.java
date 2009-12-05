@@ -13,9 +13,14 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -23,15 +28,16 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeRefactoring;
-import org.faktorips.devtools.core.internal.refactor.RenameRefactoringProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.refactor.IIpsRefactorings;
+import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
+import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
+import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A wizard that is used to guide the user trough a Faktor-IPS rename refactoring.
@@ -43,19 +49,30 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
 
-    /**
-     * Returns the <tt>RenameProcessor</tt> that is compatible to the provided <tt>IIpsElement</tt>.
-     * <p>
-     * This method must be static so that it is possible to call it in the constructor.
-     * 
-     * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
-     */
-    private static RenameProcessor getRenameProcessor(IIpsElement ipsElement) {
-        ArgumentCheck.notNull(ipsElement);
+    /** Creates the refactoring compatible to the given <tt>IIpsElement</tt>. */
+    private static Refactoring createRefactoring(IIpsElement ipsElement) {
+        Map<String, String> arguments = new HashMap<String, String>();
+        String id = "";
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            return new RenamePolicyCmptTypeAttributeRefactoring((IPolicyCmptTypeAttribute)ipsElement);
+            id = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
+            arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ARGUMENT, policyCmptTypeAttribute
+                    .getPolicyCmptType().getQualifiedName());
+            arguments.put(RenameIpsElementDescriptor.POLICY_CMPT_TYPE_ATTRIBUTE_ARGUMENT, policyCmptTypeAttribute
+                    .getName());
         }
-        throw new RuntimeException("The IPS element " + ipsElement + " is not supported by this RefactoringWizard.");
+        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
+                .getRefactoringContribution(id);
+        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
+        renameDescriptor.setArguments(arguments);
+        renameDescriptor.setProject(ipsElement.getIpsProject().getName());
+
+        try {
+            renameDescriptor.init();
+            return contribution.createRefactoring(renameDescriptor, new RefactoringStatus());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -66,7 +83,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
      * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
      */
     public RenameRefactoringWizard(IIpsElement ipsElement) {
-        super(new RenameRefactoring(getRenameProcessor(ipsElement)), WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+        super(createRefactoring(ipsElement), WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setChangeCreationCancelable(false);
         this.ipsElement = ipsElement;
     }
