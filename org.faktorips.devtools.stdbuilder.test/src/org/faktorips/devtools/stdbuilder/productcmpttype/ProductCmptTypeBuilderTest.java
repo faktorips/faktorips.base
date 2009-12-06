@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -26,12 +27,18 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
 
     protected IProductCmptType productCmptType;
 
+    protected IPolicyCmptType policyCmptType;
+
     protected GenProductCmptType genProductCmptType;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         productCmptType = newProductCmptType(ipsProject, "PolicyCmptType");
+        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         genProductCmptType = new GenProductCmptType(productCmptType, (StandardBuilderSet)ipsProject
                 .getIpsArtefactBuilderSet());
     }

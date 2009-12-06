@@ -27,8 +27,10 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -268,6 +270,10 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (getProductCmptType().isConfigurationForPolicyCmptType()) {
+            addGetterMethodToGeneratedJavaElements(javaElements, getGeneratedJavaTypeForPolicyCmptType(false));
+        }
     }
 
     @Override
@@ -276,6 +282,28 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             IIpsElement ipsElement) {
 
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    /**
+     * Returns the Java type generated for the <tt>IPolicyCmptType</tt> configured by the
+     * <tt>IProductCmptType</tt>.
+     * 
+     * @param forInterface Flag indicating whether to search for the published interface of the
+     *            <tt>IPolicyCmptType</tt> (<tt>true</tt>) or for it's implementation (
+     *            <tt>false</tt>).
+     */
+    public IType getGeneratedJavaTypeForPolicyCmptType(boolean forInterface) {
+        IProductCmptType productCmptType = getProductCmptType();
+        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+                .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
+        // TODO AW: Assumes that the policy component type is stored in the same root.
+        return policyCmptTypeBuilder.getGeneratedJavaType(productCmptType.getPolicyCmptType(), productCmptType
+                .getIpsPackageFragment().getRoot());
+    }
+
+    /** Returns the <tt>IProductCmptType</tt> of the parent <tt>GenType</tt>. */
+    private IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getGenType().getIpsPart();
     }
 
 }

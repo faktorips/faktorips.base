@@ -175,6 +175,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(productGenClass.getField("productAttribute").exists());
         assertTrue(productGenClass.getMethod("getProductAttribute", new String[] {}).exists());
         assertTrue(productGenClass.getMethod("setProductAttribute", new String[] { "QString;" }).exists());
+        assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Refactor the attribute.
         renameProductCmptTypeAttribute(productCmptTypeAttribute, "test");
@@ -185,6 +186,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertFalse(productGenClass.getField("productAttribute").exists());
         assertFalse(productGenClass.getMethod("getProductAttribute", new String[] {}).exists());
         assertFalse(productGenClass.getMethod("setProductAttribute", new String[] { "QString;" }).exists());
+        assertFalse(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Expect new Java elements for published interface.
         assertTrue(productGenInterface.getMethod("getTest", new String[] {}).exists());
@@ -193,6 +195,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(productGenClass.getField("test").exists());
         assertTrue(productGenClass.getMethod("getTest", new String[] {}).exists());
         assertTrue(productGenClass.getMethod("setTest", new String[] { "QString;" }).exists());
+        assertTrue(policyClass.getMethod("getTest", new String[] {}).exists());
     }
 
     private IType getJavaType(String typeName, boolean internal) {
