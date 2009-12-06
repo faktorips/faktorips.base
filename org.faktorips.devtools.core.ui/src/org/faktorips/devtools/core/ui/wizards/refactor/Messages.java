@@ -24,12 +24,13 @@ public class Messages extends NLS {
     public static String RenameRefactoringWizard_Type;
 
     public static String RenameRefactoringWizard_title;
-    public static String RenameRefactoringWizard_message;
 
-    public static String RenameRefactoringWizard_labelNewName;
+    public static String RenamePage_message;
+    public static String RenamePage_labelNewName;
 
-    public static String RenameRefactoringWizard_msgNewNameEmpty;
-    public static String RenameRefactoringWizard_msgNewNameEqualsElementName;
+    public static String RenamePage_msgNewNameEmpty;
+    public static String RenamePage_msgNewNameEqualsElementName;
+    public static String RenamePage_msgDuplicateAttribute;
 
     static {
         // initialize resource bundle

@@ -16,14 +16,8 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -33,8 +27,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IIpsRefactorings;
 import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
 import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
-import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS rename refactoring.
@@ -85,82 +77,26 @@ public class RenameRefactoringWizard extends RefactoringWizard {
         super(createRefactoring(ipsElement), WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setChangeCreationCancelable(false);
         this.ipsElement = ipsElement;
+
+        String ipsElementName = "";
+        if (ipsElement instanceof IAttribute) {
+            ipsElementName = Messages.RenameRefactoringWizard_Attribute;
+        } else if (ipsElement instanceof IMethod) {
+            ipsElementName = Messages.RenameRefactoringWizard_Method;
+        } else if (ipsElement instanceof IType) {
+            ipsElementName = Messages.RenameRefactoringWizard_Type;
+        }
+        setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, ipsElementName));
     }
 
     @Override
     protected void addUserInputPages() {
-        addPage(new RenamePage());
+        addPage(new RenamePage(ipsElement));
     }
 
     @Override
     public boolean needsPreviousAndNextButtons() {
         return false;
-    }
-
-    /** The one-and-only input page the rename refactoring needs. */
-    private class RenamePage extends UserInputWizardPage {
-
-        /**
-         * Text field to enable the user provide a new name for the <tt>IIpsElement</tt> to be
-         * refactored.
-         */
-        private Text newNameTextField;
-
-        /** Creates the <tt>RenamePage</tt>. */
-        private RenamePage() {
-            super("RenamePage");
-            String ipsElementName = "";
-            if (ipsElement instanceof IAttribute) {
-                ipsElementName = Messages.RenameRefactoringWizard_Attribute;
-            } else if (ipsElement instanceof IMethod) {
-                ipsElementName = Messages.RenameRefactoringWizard_Method;
-            } else if (ipsElement instanceof IType) {
-                ipsElementName = Messages.RenameRefactoringWizard_Type;
-            }
-            setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, ipsElementName));
-            setMessage(NLS.bind(Messages.RenameRefactoringWizard_message, ipsElementName, ipsElement.getName()));
-        }
-
-        public void createControl(Composite parent) {
-            UIToolkit uiToolkit = new UIToolkit(null);
-            Composite control = uiToolkit.createLabelEditColumnComposite(parent);
-            uiToolkit.createLabel(control, Messages.RenameRefactoringWizard_labelNewName);
-            newNameTextField = uiToolkit.createText(control);
-            newNameTextField.setText(ipsElement.getName());
-            newNameTextField.selectAll();
-            newNameTextField.setFocus();
-            newNameTextField.addModifyListener(new ModifyListener() {
-
-                public void modifyText(ModifyEvent e) {
-                    String text = newNameTextField.getText();
-                    boolean pageComplete = true;
-                    if (text.length() < 1) {
-                        pageComplete = false;
-                        setErrorMessage(Messages.RenameRefactoringWizard_msgNewNameEmpty);
-                    }
-                    if (text.equals(ipsElement.getName())) {
-                        pageComplete = false;
-                        setErrorMessage(Messages.RenameRefactoringWizard_msgNewNameEqualsElementName);
-                    }
-                    if (pageComplete) {
-                        setErrorMessage(null);
-                    }
-                    setPageComplete(pageComplete);
-                }
-
-            });
-            setPageComplete(false);
-            setControl(control);
-        }
-
-        @Override
-        protected boolean performFinish() {
-            ProcessorBasedRefactoring refactoring = (ProcessorBasedRefactoring)getRefactoring();
-            RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
-            processor.setNewElementName(newNameTextField.getText());
-            return super.performFinish();
-        }
-
     }
 
 }
