@@ -34,4 +34,6 @@ public class Messages extends NLS {
 
     public static String IpsRefactoringDescriptor_noDescriptionAvailable;
 
+    public static String RenameRefactoringProcessor_errorIpsElementDoesNotExist;
+
 }

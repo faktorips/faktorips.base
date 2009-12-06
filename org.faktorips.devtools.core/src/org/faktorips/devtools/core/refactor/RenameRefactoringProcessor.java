@@ -28,6 +28,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -87,8 +88,8 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
-            // TODO AW: INTERNATIONALIZE
-            status.addFatalError("The IPS element to be renamed does not exist.");
+            status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
+                    .getName()));
         }
         return status;
     }
