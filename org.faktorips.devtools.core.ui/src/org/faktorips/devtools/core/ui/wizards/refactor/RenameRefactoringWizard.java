@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -51,6 +52,8 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
             contributionId = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
+        } else if (ipsElement instanceof IProductCmptTypeAttribute) {
+            contributionId = IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE;
         }
 
         IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
@@ -58,10 +61,10 @@ public class RenameRefactoringWizard extends RefactoringWizard {
         RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
         renameDescriptor.setProject(ipsElement.getIpsProject().getName());
 
-        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
-            renameDescriptor.setTypeArgument(policyCmptTypeAttribute.getPolicyCmptType());
-            renameDescriptor.setPartArgument(policyCmptTypeAttribute);
+        if (ipsElement instanceof IAttribute) {
+            IAttribute attribute = (IAttribute)ipsElement;
+            renameDescriptor.setTypeArgument(attribute.getType());
+            renameDescriptor.setPartArgument(attribute);
         }
 
         try {

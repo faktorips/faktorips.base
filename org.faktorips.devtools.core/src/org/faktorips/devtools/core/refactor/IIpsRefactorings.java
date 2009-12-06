@@ -23,4 +23,7 @@ public interface IIpsRefactorings {
     /** Unique ID for the "Rename Policy Component Type Attribute" - refactoring. */
     public static final String RENAME_POLICY_CMPT_TYPE_ATTRIBUTE = "org.faktorips.devtools.refactor.renamePolicyCmptTypeAttribute";
 
+    /** Unique ID for the "Rename Product Component Type Attribute" - refactoring. */
+    public static final String RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE = "org.faktorips.devtools.refactor.renameProductCmptTypeAttribute";
+
 }

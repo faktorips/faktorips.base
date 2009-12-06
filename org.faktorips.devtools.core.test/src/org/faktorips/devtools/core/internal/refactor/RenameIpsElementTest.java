@@ -21,17 +21,26 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
+/**
+ * Tests the various Faktor-IPS rename refactorings concerning the Faktor-IPS model.
+ * 
+ * @author Alexander Weickmann
+ */
 public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
 
-    private static final String POLICY_CMPT_TYPE_ATTRIBUTE_NAME = "attribute";
+    private static final String POLICY_CMPT_TYPE_ATTRIBUTE_NAME = "policyAttribute";
+
+    private static final String PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME = "productAttribute";
 
     private IIpsProject ipsProject;
 
@@ -40,6 +49,8 @@ public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
     private IProductCmptType productCmptType;
+
+    private IProductCmptTypeAttribute productCmptTypeAttribute;
 
     private ITestCaseType testCaseType;
 
@@ -52,6 +63,8 @@ public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
     private IProductCmptGeneration productCmptGeneration;
 
     private IConfigElement productCmptGenerationConfigElement;
+
+    private IAttributeValue productCmptGenerationAttributeValue;
 
     @Override
     protected void setUp() throws Exception {
@@ -76,6 +89,12 @@ public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setProductRelevant(true);
 
+        // Create a product component type attribute.
+        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+        productCmptTypeAttribute.setName(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME);
+        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+
         // Create a test case type with a test attribute.
         testCaseType = newTestCaseType(ipsProject, "TestCaseType");
         testPolicyCmptTypeParameter = testCaseType.newCombinedPolicyCmptTypeParameter();
@@ -88,6 +107,7 @@ public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
         productCmpt = newProductCmpt(productCmptType, "ExampleProduct");
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGenerationConfigElement = productCmptGeneration.newConfigElement(policyCmptTypeAttribute);
+        productCmptGenerationAttributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
     }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
@@ -107,6 +127,21 @@ public class RenameIpsElementTest extends AbstractIpsRefactoringTest {
         assertNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
         assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
         assertEquals(newAttributeName, productCmptGenerationConfigElement.getPolicyCmptTypeAttribute());
+    }
+
+    public void testRenameProductCmptTypeAttribute() throws CoreException {
+        String newAttributeName = "test";
+        renameProductCmptTypeAttribute(productCmptTypeAttribute, newAttributeName);
+
+        // Check for changed attribute name.
+        assertNull(productCmptType.getAttribute(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
+        assertNotNull(productCmptType.getAttribute(newAttributeName));
+        assertTrue(productCmptTypeAttribute.getName().equals(newAttributeName));
+
+        // Check for product component attribute value update.
+        assertNull(productCmptGeneration.getAttributeValue(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
+        assertNotNull(productCmptGeneration.getAttributeValue(newAttributeName));
+        assertEquals(newAttributeName, productCmptGenerationAttributeValue.getAttribute());
     }
 
 }

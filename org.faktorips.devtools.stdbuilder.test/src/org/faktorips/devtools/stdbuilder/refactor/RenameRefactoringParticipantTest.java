@@ -28,13 +28,21 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.runtime.IValidationContext;
 
+/**
+ * Tests the various Faktor-IPS rename refactorings with regard to the generated Java source code.
+ * 
+ * @author Alexander Weickmann
+ */
 public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest {
 
     private static final String POLICY_TYPE_NAME = "Policy";
 
-    private static final String POLICY_ATTRIBUTE_NAME = "attribute";
+    private static final String POLICY_ATTRIBUTE_NAME = "policyAttribute";
+
+    private static final String PRODUCT_ATTRIBUTE_NAME = "productAttribute";
 
     private static final String PRODUCT_TYPE_NAME = "Product";
 
@@ -43,6 +51,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     private IPolicyCmptType policyCmptType;
 
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
+
+    private IProductCmptType productCmptType;
+
+    private IProductCmptTypeAttribute productCmptTypeAttribute;
 
     private IFolder modelFolder;
 
@@ -60,8 +72,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     protected void setUp() throws Exception {
         super.setUp();
 
+        // Create an IPS project.
         ipsProject = newIpsProject();
 
+        // Create a policy component type and a policy component type attribute.
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_TYPE_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
@@ -71,12 +85,18 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
 
-        IProductCmptType productCmptType = newProductCmptType(ipsProject, PRODUCT_TYPE_NAME);
+        // Create a product component type and a product component type attribute.
+        productCmptType = newProductCmptType(ipsProject, PRODUCT_TYPE_NAME);
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+        productCmptTypeAttribute.setName(PRODUCT_ATTRIBUTE_NAME);
+        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
 
+        // Initialize folders and Java elements.
         modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
         internalFolder = modelFolder.getFolder("internal");
         policyInterface = getJavaType(POLICY_TYPE_NAME, false);
@@ -89,41 +109,41 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
         // Expect Java elements for published interface.
-        assertTrue(policyInterface.getField("PROPERTY_ATTRIBUTE").exists());
-        assertTrue(policyInterface.getMethod("getAttribute", new String[] {}).exists());
-        assertTrue(policyInterface.getMethod("setAttribute", new String[] { "QString;" }).exists());
-        assertTrue(productGenInterface.getMethod("getDefaultValueAttribute", new String[] {}).exists());
-        assertTrue(productGenInterface.getMethod("getSetOfAllowedValuesForAttribute",
+        assertTrue(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
+        assertTrue(policyInterface.getMethod("getPolicyAttribute", new String[] {}).exists());
+        assertTrue(policyInterface.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertTrue(productGenInterface.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
+        assertTrue(productGenInterface.getMethod("getSetOfAllowedValuesForPolicyAttribute",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Expect Java elements for implementation.
-        assertTrue(policyClass.getField("attribute").exists());
-        assertTrue(policyClass.getMethod("getAttribute", new String[] {}).exists());
-        assertTrue(policyClass.getMethod("setAttribute", new String[] { "QString;" }).exists());
-        assertTrue(productGenClass.getField("defaultValueAttribute").exists());
-        assertTrue(productGenClass.getField("setOfAllowedValuesAttribute").exists());
-        assertTrue(productGenClass.getMethod("getDefaultValueAttribute", new String[] {}).exists());
-        assertTrue(productGenClass.getMethod("getSetOfAllowedValuesForAttribute",
+        assertTrue(policyClass.getField("policyAttribute").exists());
+        assertTrue(policyClass.getMethod("getPolicyAttribute", new String[] {}).exists());
+        assertTrue(policyClass.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertTrue(productGenClass.getField("defaultValuePolicyAttribute").exists());
+        assertTrue(productGenClass.getField("setOfAllowedValuesPolicyAttribute").exists());
+        assertTrue(productGenClass.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
+        assertTrue(productGenClass.getMethod("getSetOfAllowedValuesForPolicyAttribute",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
         renamePolicyCmptTypeAttribute(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
-        assertFalse(policyInterface.getField("PROPERTY_ATTRIBUTE").exists());
-        assertFalse(policyInterface.getMethod("getAttribute", new String[] {}).exists());
-        assertFalse(policyInterface.getMethod("setAttribute", new String[] { "QString;" }).exists());
-        assertFalse(productGenInterface.getMethod("getDefaultValueAttribute", new String[] {}).exists());
-        assertFalse(productGenInterface.getMethod("getSetOfAllowedValuesForAttribute",
+        assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
+        assertFalse(policyInterface.getMethod("getPolicyAttribute", new String[] {}).exists());
+        assertFalse(policyInterface.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertFalse(productGenInterface.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
+        assertFalse(productGenInterface.getMethod("getSetOfAllowedValuesForPolicyAttribute",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
-        assertFalse(policyClass.getField("attribute").exists());
-        assertFalse(policyClass.getMethod("getAttribute", new String[] {}).exists());
-        assertFalse(policyClass.getMethod("setAttribute", new String[] { "QString;" }).exists());
-        assertFalse(productGenClass.getField("defaultValueAttribute").exists());
-        assertFalse(productGenClass.getField("setOfAllowedValuesAttribute").exists());
-        assertFalse(productGenClass.getMethod("getDefaultValueAttribute", new String[] {}).exists());
-        assertFalse(productGenClass.getMethod("getSetOfAllowedValuesForAttribute",
+        assertFalse(policyClass.getField("policyAttribute").exists());
+        assertFalse(policyClass.getMethod("getPolicyAttribute", new String[] {}).exists());
+        assertFalse(policyClass.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertFalse(productGenClass.getField("defaultValuePolicyAttribute").exists());
+        assertFalse(productGenClass.getField("setOfAllowedValuesPolicyAttribute").exists());
+        assertFalse(productGenClass.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
+        assertFalse(productGenClass.getMethod("getSetOfAllowedValuesForPolicyAttribute",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Expect new Java elements for published interface.
@@ -143,6 +163,36 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(productGenClass.getMethod("getDefaultValueTest", new String[] {}).exists());
         assertTrue(productGenClass.getMethod("getSetOfAllowedValuesForTest",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+    }
+
+    public void testRenameProductCmptTypeAttribute() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        // Expect Java elements for published interface.
+        assertTrue(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
+
+        // Expect Java elements for implementation.
+        assertTrue(productGenClass.getField("productAttribute").exists());
+        assertTrue(productGenClass.getMethod("getProductAttribute", new String[] {}).exists());
+        assertTrue(productGenClass.getMethod("setProductAttribute", new String[] { "QString;" }).exists());
+
+        // Refactor the attribute.
+        renameProductCmptTypeAttribute(productCmptTypeAttribute, "test");
+
+        // The former Java elements must no longer exist.
+        assertFalse(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
+
+        assertFalse(productGenClass.getField("productAttribute").exists());
+        assertFalse(productGenClass.getMethod("getProductAttribute", new String[] {}).exists());
+        assertFalse(productGenClass.getMethod("setProductAttribute", new String[] { "QString;" }).exists());
+
+        // Expect new Java elements for published interface.
+        assertTrue(productGenInterface.getMethod("getTest", new String[] {}).exists());
+
+        // Expect new Java elements for implementation.
+        assertTrue(productGenClass.getField("test").exists());
+        assertTrue(productGenClass.getMethod("getTest", new String[] {}).exists());
+        assertTrue(productGenClass.getMethod("setTest", new String[] { "QString;" }).exists());
     }
 
     private IType getJavaType(String typeName, boolean internal) {

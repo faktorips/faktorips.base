@@ -13,14 +13,12 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -49,62 +47,44 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
     @Override
     protected void refactorModel(IProgressMonitor pm) throws CoreException {
         if (getPolicyCmptTypeAttribute().isProductRelevant()) {
-            updateReferences(IpsObjectType.PRODUCT_CMPT);
+            updateProductCmptReferences();
         }
-        updateReferences(IpsObjectType.TEST_CASE_TYPE);
+        updateTestCaseTypeReferences();
         changeAttributeName();
     }
 
-    /** Searches and updates all references to the <tt>IPolicyCmptTypeAttribute</tt>. */
-    private void updateReferences(IpsObjectType ipsObjectType) throws CoreException {
-        List<IIpsSrcFile> processedSrcFiles = new ArrayList<IIpsSrcFile>(40);
-
-        // Affects all referencing IPS projects open in the workspace.
-        IIpsProject[] ipsProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
-
-        for (IIpsProject ipsProject : ipsProjects) {
-            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
-            for (IIpsSrcFile ipsSrcFile : srcFiles) {
-
-                // Do not process an IPS source file twice.
-                if (processedSrcFiles.contains(ipsSrcFile)) {
-                    continue;
-                }
-                processedSrcFiles.add(ipsSrcFile);
-
-                if (ipsObjectType.equals(IpsObjectType.PRODUCT_CMPT)) {
-                    updateProductCmptReferences((IProductCmpt)ipsSrcFile.getIpsObject());
-                } else if (ipsObjectType.equals(IpsObjectType.TEST_CASE_TYPE)) {
-                    updateTestCaseTypeReferences((ITestCaseType)ipsSrcFile.getIpsObject());
+    /**
+     * Updates all references to the <tt>IPolicyCmptTypeAttribute</tt> in referencing
+     * <tt>IProductCmpt</tt>s.
+     */
+    private void updateProductCmptReferences() throws CoreException {
+        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.PRODUCT_CMPT);
+        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+                IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
+                IConfigElement configElement = generation.getConfigElement(getOriginalElementName());
+                if (configElement != null) {
+                    configElement.setPolicyCmptTypeAttribute(getNewElementName());
+                    addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
         }
     }
 
     /**
-     * Updates all references to the <tt>IPolicyCmptTypeAttribute</tt> in the given
-     * <tt>IProductCmpt</tt>.
+     * Updates all references to the <tt>IPolicyCmptTypeAttribute</tt> in referencing
+     * <tt>ITestCaseType</tt>s.
      */
-    private void updateProductCmptReferences(IProductCmpt productCmpt) throws CoreException {
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-            IConfigElement configElement = generation.getConfigElement(getOriginalElementName());
-            if (configElement != null) {
-                configElement.setPolicyCmptTypeAttribute(getNewElementName());
-                addModifiedSrcFile(productCmpt.getIpsSrcFile());
-            }
-        }
-    }
-
-    /**
-     * Updates all references to the <tt>IPolicyCmptTypeAttribute</tt> in the given
-     * <tt>ITestCaseType</tt>.
-     */
-    private void updateTestCaseTypeReferences(ITestCaseType testCaseType) throws CoreException {
-        for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
-            for (ITestAttribute testAttribute : parameter.getTestAttributes(getPolicyCmptTypeAttribute())) {
-                testAttribute.setAttribute(getNewElementName());
-                addModifiedSrcFile(testCaseType.getIpsSrcFile());
+    private void updateTestCaseTypeReferences() throws CoreException {
+        Set<IIpsSrcFile> testCaseTypeCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.TEST_CASE_TYPE);
+        for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
+            ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
+            for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
+                for (ITestAttribute testAttribute : parameter.getTestAttributes(getPolicyCmptTypeAttribute())) {
+                    testAttribute.setAttribute(getNewElementName());
+                    addModifiedSrcFile(testCaseType.getIpsSrcFile());
+                }
             }
         }
     }

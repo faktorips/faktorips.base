@@ -31,6 +31,7 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -108,6 +109,19 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         return null;
     }
 
+    @Override
+    public final Object[] getElements() {
+        return new Object[] { ipsElement };
+    }
+
+    @Override
+    public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
+            SharableParticipants sharedParticipants) throws CoreException {
+
+        return ParticipantManager.loadRenameParticipants(status, this, ipsElement, new RenameArguments(newElementName,
+                true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
+    }
+
     /** Saves all modified <tt>IIpsSrcFile</tt>s. */
     private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
@@ -115,9 +129,29 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         }
     }
 
-    @Override
-    public final Object[] getElements() {
-        return new Object[] { ipsElement };
+    /**
+     * Searches for all <tt>IIpsSrcFile</tt>s in the object path of all <tt>IIpsProject</tt>s
+     * referencing the <tt>IIpsProject</tt> that contains the <tt>IIpsElement</tt> to be renamed.
+     * The referenced <tt>IIpsProject</tt> is also searched.
+     * 
+     * @param ipsObjectType Only <tt>IIpsSrcFile</tt>s with this <tt>IpsObjectType</tt> are
+     *            searched.
+     * 
+     * @throws CoreException If an error occurs while searching for the source files.
+     * @throws NullPointerException If <tt>ipsObjectType</tt> is <tt>null</tt>.
+     */
+    protected final Set<IIpsSrcFile> findReferencingSourceFiles(IpsObjectType ipsObjectType) throws CoreException {
+        ArgumentCheck.notNull(ipsObjectType);
+
+        Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
+        IIpsProject[] ipsProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
+        for (IIpsProject ipsProject : ipsProjects) {
+            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
+            for (IIpsSrcFile ipsSrcFile : srcFiles) {
+                collectedSrcFiles.add(ipsSrcFile);
+            }
+        }
+        return collectedSrcFiles;
     }
 
     /**
@@ -145,14 +179,6 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /** Returns the original name of the <tt>IIpsElement</tt> to be refactored. */
     public final String getOriginalElementName() {
         return originalElementName;
-    }
-
-    @Override
-    public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-            SharableParticipants sharedParticipants) throws CoreException {
-
-        return ParticipantManager.loadRenameParticipants(status, this, ipsElement, new RenameArguments(newElementName,
-                true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
     /**

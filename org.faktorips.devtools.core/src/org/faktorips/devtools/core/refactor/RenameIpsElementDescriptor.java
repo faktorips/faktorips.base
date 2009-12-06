@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -38,10 +37,10 @@ import org.faktorips.devtools.core.model.type.IType;
 public final class RenameIpsElementDescriptor extends IpsRefactoringDescriptor {
 
     /** Argument identifying the <tt>IType</tt>. */
-    private static final String TYPE_ARGUMENT = "policyCmptType";
+    private static final String TYPE_ARGUMENT = "type";
 
     /** Argument identifying the <tt>IIpsObjectPart</tt>. */
-    private static final String PART_ARGUMENT = "policyCmptTypeAttribute";
+    private static final String PART_ARGUMENT = "part";
 
     /** The <tt>IIpsElement</tt> to be renamed. */
     private IIpsElement ipsElement;
@@ -102,9 +101,13 @@ public final class RenameIpsElementDescriptor extends IpsRefactoringDescriptor {
     @Override
     public void internalInit() throws CoreException {
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
+
         if (getID().equals(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE)) {
-            IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(getTypeArgument());
-            ipsElement = policyCmptType.getPolicyCmptTypeAttribute(getPartArgument());
+            ipsElement = ipsProject.findPolicyCmptType(getTypeArgument()).getPolicyCmptTypeAttribute(getPartArgument());
+
+        } else if (getID().equals(IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE)) {
+            ipsElement = ipsProject.findProductCmptType(getTypeArgument()).getProductCmptTypeAttribute(
+                    getPartArgument());
         }
     }
 

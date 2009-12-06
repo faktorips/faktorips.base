@@ -348,5 +348,9 @@
             class="org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeContribution"
             id="org.faktorips.devtools.refactor.renamePolicyCmptTypeAttribute">
       </contribution>
+      <contribution
+            class="org.faktorips.devtools.core.internal.refactor.RenameProductCmptTypeAttributeContribution"
+            id="org.faktorips.devtools.refactor.renameProductCmptTypeAttribute">
+      </contribution>
    </extension>
 </plugin>
