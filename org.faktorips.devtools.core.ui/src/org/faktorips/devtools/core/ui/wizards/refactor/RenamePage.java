@@ -113,11 +113,17 @@ class RenamePage extends UserInputWizardPage {
             if (ipsElement instanceof IAttribute) {
                 IAttribute attribute = (IAttribute)ipsElement;
                 String attributeName = attribute.getName();
+
                 attribute.setName(newName);
                 MessageList validationMessageList = attribute.validate(attribute.getIpsProject());
                 validationMessageList.add(attribute.getType().validate(attribute.getIpsProject()));
                 attribute.setName(attributeName);
+                /*
+                 * TODO AW: Stop broadcasting change events would be good here, it's no longer
+                 * available?
+                 */
                 attribute.getIpsSrcFile().markAsClean();
+
                 Message possibleErrorMessage = validationMessageList.getFirstMessage(Message.ERROR);
                 valid = (possibleErrorMessage == null);
                 if (!(valid)) {

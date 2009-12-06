@@ -17,6 +17,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -42,6 +45,23 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
      */
     public RenamePolicyCmptTypeAttributeProcessor(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         super(policyCmptTypeAttribute);
+    }
+
+    @Override
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+
+        RefactoringStatus status = super.checkInitialConditions(pm);
+        if (!(getPolicyCmptTypeAttribute().isValid())) {
+            status.addFatalError(NLS.bind(Messages.RenamePolicyCmptTypeAttributeProcessor_msgAttributeNotValid,
+                    getPolicyCmptTypeAttribute().getName()));
+        } else {
+            if (!(getPolicyCmptTypeAttribute().getPolicyCmptType().isValid())) {
+                status.addFatalError(NLS.bind(Messages.RenamePolicyCmptTypeAttributeProcessor_msgTypeNotValid,
+                        getPolicyCmptTypeAttribute().getPolicyCmptType().getName()));
+            }
+        }
+        return status;
     }
 
     @Override
@@ -115,12 +135,12 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
 
     @Override
     public String getIdentifier() {
-        return "RenamePolicyCmptTypeAttributeProcessor";
+        return "RenamePolicyCmptTypeAttribute";
     }
 
     @Override
     public String getProcessorName() {
-        return "Rename Policy Component Type Attribute Refactoring Processor";
+        return "Rename Policy Component Type Attribute";
     }
 
 }

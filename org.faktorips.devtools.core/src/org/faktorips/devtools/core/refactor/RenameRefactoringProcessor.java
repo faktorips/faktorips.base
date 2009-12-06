@@ -77,14 +77,14 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     }
 
     @Override
-    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
 
         return new RefactoringStatus();
     }
 
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
         RefactoringStatus status = new RefactoringStatus();

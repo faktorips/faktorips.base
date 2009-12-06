@@ -100,6 +100,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
                 throw new RuntimeException(e);
             }
         }
+
         return status;
     }
 
@@ -182,6 +183,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         }
 
         IIpsElement ipsElement = (IIpsElement)element;
+
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
         generatedJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
 

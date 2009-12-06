@@ -13,20 +13,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS rename refactoring.
@@ -38,43 +31,16 @@ public class RenameRefactoringWizard extends RefactoringWizard {
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Creates the refactoring compatible to the given <tt>IIpsElement</tt>. */
-    private static Refactoring createRefactoring(IIpsElement ipsElement) {
-        String contributionId = "";
-
-        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            contributionId = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
-        } else if (ipsElement instanceof IProductCmptTypeAttribute) {
-            contributionId = IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE;
-        }
-
-        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(contributionId);
-        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setProject(ipsElement.getIpsProject().getName());
-
-        if (ipsElement instanceof IAttribute) {
-            IAttribute attribute = (IAttribute)ipsElement;
-            renameDescriptor.setTypeArgument(attribute.getType());
-            renameDescriptor.setPartArgument(attribute);
-        }
-
-        try {
-            return contribution.createRefactoring(renameDescriptor);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Creates a <tt>RenameRefactoringWizard</tt>.
      * 
+     * @param refactoring The refactoring used by the wizard.
      * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
      * 
-     * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public RenameRefactoringWizard(IIpsElement ipsElement) {
-        super(createRefactoring(ipsElement), WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+    public RenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+        super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setChangeCreationCancelable(false);
         this.ipsElement = ipsElement;
 

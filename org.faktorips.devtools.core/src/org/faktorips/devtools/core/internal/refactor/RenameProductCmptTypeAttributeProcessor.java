@@ -17,6 +17,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -39,6 +42,23 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
      */
     protected RenameProductCmptTypeAttributeProcessor(IProductCmptTypeAttribute productCmptTypeAttribute) {
         super(productCmptTypeAttribute);
+    }
+
+    @Override
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+
+        RefactoringStatus status = super.checkInitialConditions(pm);
+        if (!(getProductCmptTypeAttribute().isValid())) {
+            status.addFatalError(NLS.bind(Messages.RenameProductCmptTypeAttributeProcessor_msgAttributeNotValid,
+                    getProductCmptTypeAttribute().getName()));
+        } else {
+            if (!(getProductCmptTypeAttribute().getProductCmptType().isValid())) {
+                status.addFatalError(NLS.bind(Messages.RenameProductCmptTypeAttributeProcessor_msgTypeNotValid,
+                        getProductCmptTypeAttribute().getProductCmptType().getName()));
+            }
+        }
+        return status;
     }
 
     @Override
@@ -82,12 +102,12 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
 
     @Override
     public String getIdentifier() {
-        return "RenameProductCmptTypeAttributeProcessor";
+        return "RenameProductCmptTypeAttribute";
     }
 
     @Override
     public String getProcessorName() {
-        return "Rename Product Component Type Attribute Refactoring Processor";
+        return "Rename Product Component Type Attribute";
     }
 
     @Override
