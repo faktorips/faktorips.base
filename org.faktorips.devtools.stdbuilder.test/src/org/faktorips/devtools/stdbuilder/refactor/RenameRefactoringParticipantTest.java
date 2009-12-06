@@ -15,38 +15,30 @@ package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
-import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.runtime.IValidationContext;
 
-public class RenameRefactoringParticipantTest extends AbstractStdBuilderTest {
+public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest {
 
     private static final String POLICY_TYPE_NAME = "Policy";
 
     private static final String POLICY_ATTRIBUTE_NAME = "attribute";
 
     private static final String PRODUCT_TYPE_NAME = "Product";
+
+    private IIpsProject ipsProject;
 
     private IPolicyCmptType policyCmptType;
 
@@ -67,6 +59,8 @@ public class RenameRefactoringParticipantTest extends AbstractStdBuilderTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        ipsProject = newIpsProject();
 
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_TYPE_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
@@ -113,7 +107,7 @@ public class RenameRefactoringParticipantTest extends AbstractStdBuilderTest {
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
-        renamePolicyCmptTypeAttribute("test");
+        renamePolicyCmptTypeAttribute(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_ATTRIBUTE").exists());
@@ -158,19 +152,4 @@ public class RenameRefactoringParticipantTest extends AbstractStdBuilderTest {
                 .getType(interfaceSeparator + typeName);
     }
 
-    private void renamePolicyCmptTypeAttribute(String newName) throws CoreException {
-        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE);
-        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setProject(ipsProject.getName());
-        renameDescriptor.setTypeArgument(policyCmptType);
-        renameDescriptor.setPartArgument(policyCmptTypeAttribute);
-        ProcessorBasedRefactoring renameRefactoring = (ProcessorBasedRefactoring)renameDescriptor
-                .createRefactoring(new RefactoringStatus());
-        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
-        processor.setNewElementName(newName);
-        PerformRefactoringOperation operation = new PerformRefactoringOperation(renameRefactoring,
-                CheckConditionsOperation.ALL_CONDITIONS);
-        ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
-    }
 }
