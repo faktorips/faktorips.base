@@ -36,6 +36,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -92,9 +93,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
 
                 if (!(type.getCompilationUnit().isStructureKnown())) {
                     invalidCompilationUnits.add(type.getCompilationUnit());
-                    // TODO AW: INTERNATIONALIZE
-                    status.addFatalError("Syntax errors in Java source file "
-                            + type.getCompilationUnit().getElementName());
+                    status.addFatalError(NLS.bind(Messages.RenameRefactoringParticipant_errorSyntaxErrors, type
+                            .getCompilationUnit().getElementName()));
                 }
             } catch (JavaModelException e) {
                 throw new RuntimeException(e);
