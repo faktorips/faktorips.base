@@ -182,11 +182,15 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
 
         if (isBuildingPublishedSourceFile()) {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                    getGeneratedJavaType(policyCmptType.getQualifiedName(), ipsElement.getIpsProject()), ipsElement);
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(
+                    javaElements,
+                    getGeneratedJavaType(policyCmptType.getQualifiedName(), policyCmptType.getIpsPackageFragment()
+                            .getRoot()), ipsElement);
         } else {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(javaElements,
-                    getGeneratedJavaType(policyCmptType.getQualifiedName(), ipsElement.getIpsProject()), ipsElement);
+            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(
+                    javaElements,
+                    getGeneratedJavaType(policyCmptType.getQualifiedName(), policyCmptType.getIpsPackageFragment()
+                            .getRoot()), ipsElement);
         }
     }
 

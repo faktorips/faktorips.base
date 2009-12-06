@@ -18,7 +18,6 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -34,9 +33,6 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-        ipsObjectPath.setOutputFolderForMergableSources(ipsProject.getProject().getFolder("output"));
-        ipsProject.setIpsObjectPath(ipsObjectPath);
     }
 
     /**

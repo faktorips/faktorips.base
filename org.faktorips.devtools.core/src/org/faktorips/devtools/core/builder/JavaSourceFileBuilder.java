@@ -61,7 +61,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -111,7 +113,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * for suppressed warnings of unused code.
      */
     public static final String ANNOTATION_SUPPRESS_WARNINGS_UNUSED = "SuppressWarnings(\"unused\")"; //$NON-NLS-1$
-  
+
     /**
      * This constant is supposed to be used to indicate the beginning of a section within generated
      * code that a user can modify and will not be overridden by the generator at the next
@@ -1009,28 +1011,42 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param qualifiedIpsObjectName The qualified name of the <tt>IIpsObject</tt> to obtain the
      *            generated Java type for.
-     * @param ipsProject The <tt>IIpsProject</tt> that is used for the search.
+     * @param ipsPackageFragmentRoot The <tt>IIpsPackageFragmentRoot</tt> the <tt>IIpsObject</tt>
+     *            identified by it's provided qualified name is stored in.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public final IType getGeneratedJavaType(String qualifiedIpsObjectName, IIpsProject ipsProject) {
-        ArgumentCheck.notNull(new Object[] { qualifiedIpsObjectName, ipsProject });
+    public final IType getGeneratedJavaType(String qualifiedIpsObjectName,
+            IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
 
+        ArgumentCheck.notNull(new Object[] { qualifiedIpsObjectName, ipsPackageFragmentRoot });
+
+        IIpsProject ipsProject = ipsPackageFragmentRoot.getIpsProject();
         try {
             IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-            IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(
-                    ipsObjectPath.getOutputFolderForMergableSources());
+            IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
+            String basePackageNameMergable = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+            if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+                for (IIpsSrcFolderEntry entry : ipsObjectPath.getSourceFolderEntries()) {
+                    if (entry.getIpsPackageFragmentRoot().equals(ipsPackageFragmentRoot)) {
+                        outputFolderMergable = entry.getOutputFolderForMergableJavaFiles();
+                        basePackageNameMergable = entry.getBasePackageNameForMergableJavaClasses();
+                        break;
+                    }
+                }
+            }
+
+            IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolderMergable);
             String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
             String packageName = "";
             String typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName);
             if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) {
-                packageName = qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.'));
+                packageName = "." + qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.'));
                 typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName.substring(qualifiedIpsObjectName
                         .lastIndexOf('.') + 1));
             }
-            IPackageFragment fragment = root.getPackageFragment(ipsObjectPath
-                    .getBasePackageNameForMergableJavaClasses()
-                    + internalPackageSeparator + "." + packageName);
+            IPackageFragment fragment = root.getPackageFragment(basePackageNameMergable + internalPackageSeparator
+                    + packageName);
             ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + ".java");
 
             return compilationUnit.getType(typeName);

@@ -609,8 +609,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
         BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
                 .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
+        // TODO AW: Assumes that the product component type is stored in the same root.
         return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), policyCmptType
-                .getIpsProject());
+                .getIpsPackageFragment().getRoot());
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,

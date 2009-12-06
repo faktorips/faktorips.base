@@ -13,13 +13,18 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
@@ -63,13 +68,33 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
+        // List to remember broken compilation units.
+        List<ICompilationUnit> invalidCompilationUnits = new LinkedList<ICompilationUnit>();
+
         RefactoringStatus status = new RefactoringStatus();
         for (IJavaElement javaElement : generatedJavaElements) {
             try {
-                if (!(javaElement.isStructureKnown())) {
+                IType type = null;
+                if (javaElement instanceof IType) {
+                    type = (IType)javaElement;
+                } else if (javaElement instanceof IField) {
+                    IField field = (IField)javaElement;
+                    type = (IType)field.getParent();
+                } else if (javaElement instanceof IMethod) {
+                    IMethod method = (IMethod)javaElement;
+                    type = (IType)method.getParent();
+                }
+
+                // Only report each broken compilation unit once.
+                if (invalidCompilationUnits.contains(type.getCompilationUnit())) {
+                    continue;
+                }
+
+                if (!(type.getCompilationUnit().isStructureKnown())) {
+                    invalidCompilationUnits.add(type.getCompilationUnit());
                     // TODO AW: INTERNATIONALIZE
-                    status.addFatalError("Syntax errors on Java source code element in "
-                            + javaElement.getParent().getElementName() + ": " + javaElement.getElementName());
+                    status.addFatalError("Syntax errors in Java source file "
+                            + type.getCompilationUnit().getElementName());
                 }
             } catch (JavaModelException e) {
                 throw new RuntimeException(e);
