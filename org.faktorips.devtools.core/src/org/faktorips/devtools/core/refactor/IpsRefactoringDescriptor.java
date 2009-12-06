@@ -61,7 +61,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 public abstract class IpsRefactoringDescriptor extends RefactoringDescriptor {
 
     /** A map containing all arguments configuring the refactoring. */
-    private Map<String, String> arguments;
+    private final Map<String, String> arguments;
 
     /**
      * Creates an <tt>IpsRefactoringDescriptor</tt>.
@@ -69,9 +69,9 @@ public abstract class IpsRefactoringDescriptor extends RefactoringDescriptor {
      * @param contributionId The unique ID of the contributed Faktor-IPS refactoring.
      */
     protected IpsRefactoringDescriptor(String contributionId) {
-        // TODO AW: INTERNATIONALIZE
-        this(contributionId, null, "No description available.", null, RefactoringDescriptor.BREAKING_CHANGE
-                | RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE);
+        this(contributionId, null, Messages.IpsRefactoringDescriptor_noDescriptionAvailable, null,
+                RefactoringDescriptor.BREAKING_CHANGE | RefactoringDescriptor.STRUCTURAL_CHANGE
+                        | RefactoringDescriptor.MULTI_CHANGE);
     }
 
     /**
