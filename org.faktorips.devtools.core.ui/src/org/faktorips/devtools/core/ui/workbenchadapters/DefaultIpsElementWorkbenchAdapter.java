@@ -14,37 +14,19 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.util.StringUtil;
+import org.faktorips.devtools.core.model.IIpsElement;
 
-public class DefaultIpsObjectWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
+public class DefaultIpsElementWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
     private final ImageDescriptor imageDescriptor;
 
-    public DefaultIpsObjectWorkbenchAdapter(ImageDescriptor imageDescriptor) {
-        super();
+    public DefaultIpsElementWorkbenchAdapter(ImageDescriptor imageDescriptor) {
         this.imageDescriptor = imageDescriptor;
     }
 
     @Override
-    protected ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
+    protected ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
         return imageDescriptor;
-    }
-
-    @Override
-    protected ImageDescriptor getImageDescriptor(IIpsObject ipsObject) {
-        return imageDescriptor;
-    }
-
-    @Override
-    protected String getLabel(IIpsSrcFile ipsSrcFile) {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-    }
-
-    @Override
-    protected String getLabel(IIpsObject ipsObject) {
-        return ipsObject.getName();
     }
 
 }

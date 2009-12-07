@@ -43,21 +43,29 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     }
 
     @SuppressWarnings("unchecked")
+    // IWorkbenchAdapter is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
-            Class<? extends IIpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
-            if (implementingClass != null) {
-                return getAdapter(implementingClass, adapterType);
-            } else {
-                // must return null so the adapter manager searches in other factories
-                return null;
+            if (ipsSrcFile.exists()) {
+                Class<? extends IIpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
+                if (implementingClass != null) {
+                    return getAdapter(implementingClass, adapterType);
+                }
+                /*
+                 * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
+                 * exists, thus the IPS object couldn't be linked to an IPS source file in the
+                 * workspace, return the image of the IPS source file to decide between valid and
+                 * invalid IPS objects.
+                 */
+
             }
         }
         return getAdapter(adaptableObject.getClass(), adapterType);
     }
 
     @SuppressWarnings("unchecked")
+    // IWorkbenchAdapter is not generic
     public Object getAdapter(Class adaptableClass, Class adapterType) {
         IpsElementWorkbenchAdapter result = null;
         while (result == null) {
@@ -81,6 +89,7 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     }
 
     @SuppressWarnings("unchecked")
+    // IWorkbenchAdapter is not generic
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class };
     }

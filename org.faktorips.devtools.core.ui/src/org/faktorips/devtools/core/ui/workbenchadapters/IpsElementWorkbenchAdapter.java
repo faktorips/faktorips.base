@@ -55,9 +55,14 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
     public final String getLabel(Object object) {
         if (object instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)object;
-            return getLabel(ipsElement);
+            String label = getLabel(ipsElement);
+            if (label == null) {
+                return "";
+            } else {
+                return label;
+            }
         }
-        return null;
+        return "";
     }
 
     protected String getLabel(IIpsElement ipsElement) {

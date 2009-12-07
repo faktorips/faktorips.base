@@ -107,6 +107,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public final static String CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER = "workbenchadapter"; //$NON-NLS-1$
 
     /**
+     * Class property in extension point config elements
+     */
+    public final static String CONFIG_PROPERTY_CLASS = "class";
+
+    /**
      * Setting key for the open ips object history
      */
     private static final String OPEN_IPS_OBJECT_HISTORY_SETTINGS = PLUGIN_ID + "OpenTypeHistory"; //$NON-NLS-1$
@@ -246,7 +251,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             for (int i = 0; i < extensions.length; i++) {
                 IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
                 for (IConfigurationElement configElement : configElements) {
-                    String configElClass = configElement.getAttribute("class"); //$NON-NLS-1$
+                    String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
                     if (StringUtils.isEmpty(configElClass)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
@@ -528,7 +533,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                                         + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertyEditFieldFactory factory = ExtensionPoints.createExecutableExtension(
-                            extensions[i], configElements[0], "class", //$NON-NLS-1$
+                            extensions[i], configElements[0], CONFIG_PROPERTY_CLASS,
                             IExtensionPropertyEditFieldFactory.class);
                     if (factory != null) {
                         extensionPropertyEditFieldFactoryMap.put(configElPropertyId, factory);
@@ -553,8 +558,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 IConfigurationElement[] configElements = extension.getConfigurationElements();
                 for (IConfigurationElement configElement : configElements) {
                     if (configElement.getName().equals(CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER)) {
-                        result.add(ExtensionPoints.createExecutableExtension(extension, configElement, "class",
-                                IWorkbenchAdapterProvider.class));
+                        result.add(ExtensionPoints.createExecutableExtension(extension, configElement,
+                                CONFIG_PROPERTY_CLASS, IWorkbenchAdapterProvider.class));
                     }
                 }
             }

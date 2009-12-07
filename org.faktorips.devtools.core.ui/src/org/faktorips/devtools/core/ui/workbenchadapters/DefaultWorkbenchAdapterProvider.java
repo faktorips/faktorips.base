@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.bf.BFElement;
 import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
@@ -73,6 +74,7 @@ import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Parameter;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvider {
 
@@ -102,15 +104,20 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
     }
 
     private void initContainers() {
-        register(IpsModel.class, defaultWorkbenchAdapter);
-        register(IpsProject.class, defaultWorkbenchAdapter);
-        register(IpsPackageFragmentRoot.class, defaultWorkbenchAdapter);
-        register(ArchiveIpsPackageFragmentRoot.class, defaultWorkbenchAdapter);
-        register(AbstractIpsPackageFragment.class, defaultWorkbenchAdapter);
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getDefault().getImageDescriptor("IpsModel.gif");
+        register(IpsModel.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
+        imageDescriptor = IpsUIPlugin.getDefault().getImageDescriptor("IpsProject.gif"); //$NON-NLS-1$
+        register(IpsProject.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
+        imageDescriptor = IpsUIPlugin.getDefault().getImageDescriptor("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
+        register(IpsPackageFragmentRoot.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
+        imageDescriptor = IpsUIPlugin.getDefault().getImageDescriptor("IpsAr.gif"); //$NON-NLS-1$
+        register(ArchiveIpsPackageFragmentRoot.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
+        register(AbstractIpsPackageFragment.class, new IpsPackageFragmentWorkbenchAdapter());
     }
 
     private void initSrcFiles() {
-        register(AbstractIpsSrcFile.class, new IpsSrcFileWorkbenchAdapter());
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getDefault().getImageDescriptor("IpsSrcFile.gif");
+        register(AbstractIpsSrcFile.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
     }
 
     private void initIpsObjects() {
