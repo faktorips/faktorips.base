@@ -1041,7 +1041,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String packageName = "";
             String typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName);
             if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) {
-                // TODO AW: naming convention needs to provide method getPackageName() (toLowerCase)
+                // FIXME FS#1684 AW: applied toLowerCase as a workaround.
                 packageName = "."
                         + qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.')).toLowerCase();
                 typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName.substring(qualifiedIpsObjectName
