@@ -49,7 +49,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A section to display and edit a type's attributes.
  */
-public class AttributesSection extends SimpleIpsPartsSection implements IMenuListener {
+public class AttributesSection extends SimpleIpsPartsSection {
 
     private IpsObjectEditorPage page;
 
@@ -59,37 +59,12 @@ public class AttributesSection extends SimpleIpsPartsSection implements IMenuLis
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
         this.page = page;
-
-        IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-        rename = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-        IActionBars actionBars = editorSite.getActionBars();
-        actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
-                getPartsComposite()));
-
-        createContextMenu();
-    }
-
-    private void createContextMenu() {
-        MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(this);
-        Menu contextMenu = manager.createContextMenu(getPartsComposite().getTableContol());
-        getPartsComposite().getTableContol().setMenu(contextMenu);
-        page.getEditor().getSite().registerContextMenu(manager, getPartsComposite());
+        ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new AttributesComposite(getIpsObject(), parent, toolkit);
-    }
-
-    public void menuAboutToShow(IMenuManager manager) {
-        manager.add(new Separator());
-        MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-        refactorSubmenu.add(rename);
-        manager.add(refactorSubmenu);
-
-        rename.setEnabled(getSelectedPart() != null);
     }
 
     /**
@@ -142,7 +117,30 @@ public class AttributesSection extends SimpleIpsPartsSection implements IMenuLis
                     // nothing to do.
                 }
             });
+        }
 
+        private void createContextMenu() {
+            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
+            rename = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
+            IActionBars actionBars = editorSite.getActionBars();
+            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
+                    getPartsComposite()));
+
+            MenuManager manager = new MenuManager();
+            manager.setRemoveAllWhenShown(true);
+            manager.addMenuListener(new IMenuListener() {
+
+                public void menuAboutToShow(IMenuManager manager) {
+                    manager.add(new Separator());
+                    MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
+                    refactorSubmenu.add(rename);
+                    manager.add(refactorSubmenu);
+                }
+
+            });
+            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            getViewer().getControl().setMenu(contextMenu);
+            page.getEditor().getSite().registerContextMenu(manager, getPartsComposite());
         }
 
         @Override

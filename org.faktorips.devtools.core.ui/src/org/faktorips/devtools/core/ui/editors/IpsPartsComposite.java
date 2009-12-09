@@ -612,8 +612,4 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
     }
 
-    public Table getTableContol() {
-        return table;
-    }
-
 }
