@@ -44,6 +44,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.question.QuestionAssignedUserGroup;
 import org.faktorips.devtools.core.model.question.QuestionStatus;
@@ -80,25 +83,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private boolean modelProject;
     private boolean productDefinitionProject;
+    private boolean persistentProject = true;
+
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
     private String builderSetId = ""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
     private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
     private String[] predefinedDatatypesUsed = new String[0];
-    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0); // all datatypes defined
-    // in the project
-    // including(!) the value
-    // datatypes.
+
+    // all datatypes defined in the project including(!) the value datatypes
+    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0);
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
     private Hashtable requiredFeatures = new Hashtable();
+
     // hidden resource names in the model and product explorer
     private Set resourcesPathExcludedFromTheProductDefiniton = new HashSet(10);
     private Long lastPersistentModificationTimestamp;
+
+    private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
     /**
      * Default constructor.
@@ -451,6 +458,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
+        persistentProject = true; // Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue();
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -492,6 +500,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
 
         initOptionalConstraints(element);
+
+        initPersistenceOptions(element);
     }
 
     /**
@@ -620,6 +630,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 rulesWithoutReferencesAllowed = enable;
             }
         }
+    }
+
+    private void initPersistenceOptions(Element element) {
+        persistenceOptions = new PersistenceOptions(XmlUtil.getFirstElement(element, IPersistenceOptions.XML_TAG_NAME));
     }
 
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
@@ -1025,6 +1039,34 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         new QuestionStatus(type, "closed", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_CLOSED); //$NON-NLS-1$
         new QuestionStatus(type, "deferred", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_DEFERRED); //$NON-NLS-1$
         return type;
+    }
+
+    public boolean isPersistenceSupportEnabled() {
+        return persistentProject;
+    }
+
+    public void setPersistenceSupport(boolean persistentProject) {
+        this.persistentProject = persistentProject;
+    }
+
+    public IPersistenceOptions getPersistenceOptions() {
+        return persistenceOptions;
+    }
+
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
+        return getPersistenceOptions().getTableColumnNamingStrategy();
+    }
+
+    public ITableNamingStrategy getTableNamingStrategy() {
+        return getPersistenceOptions().getTableNamingStrategy();
+    }
+
+    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
+        getPersistenceOptions().setTableColumnNamingStrategy(newStrategy);
+    }
+
+    public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
+        getPersistenceOptions().setTableNamingStrategy(newStrategy);
     }
 
 }

@@ -349,4 +349,15 @@ public interface IPolicyCmptType extends IType {
      *            types
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
+
+    /**
+     * Returns the object containing information about how to persist this policy component type
+     * into a relational database table.
+     * 
+     * @return <code>null</code> if the persistence information is not available, e.g. when the
+     *         corresponding IPS project this type belongs to does not support persistence.
+     * 
+     * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
+     */
+    public IPersistentTypeInfo getPersistenceTypeInfo();
 }

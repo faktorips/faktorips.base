@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -64,6 +65,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private boolean forceExtensionCompilationUnitGeneration = false;
 
     private IpsObjectPartCollection rules;
+
+    private IPersistentTypeInfo persistenceTypeInfo = new PersistentTypeInfo();
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
@@ -349,6 +352,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
+        validatePersistenceTypeInfo(list, ipsProject);
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -397,6 +401,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         for (IValidationRule rule : getRules()) {
             CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(rule, msgList);
             visitor.start(this);
+        }
+    }
+
+    private void validatePersistenceTypeInfo(MessageList msgList, IIpsProject ipsProject) {
+        if (ipsProject.isPersistenceSupportEnabled()) {
+            persistenceTypeInfo.validate(msgList, ipsProject);
         }
     }
 
@@ -551,6 +561,10 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             return true;
         }
 
+    }
+
+    public IPersistentTypeInfo getPersistenceTypeInfo() {
+        return persistenceTypeInfo;
     }
 
 }

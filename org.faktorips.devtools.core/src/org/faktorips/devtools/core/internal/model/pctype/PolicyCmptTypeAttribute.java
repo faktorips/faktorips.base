@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -60,6 +61,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private IValueSet valueSet;
     private boolean overwrites = false;
     private String computationMethodSignature = ""; //$NON-NLS-1$
+    private IPersistentAttributeInfo jpaAttributeInfo = new PersistentAttributeInfo();
 
     /**
      * Creates a new attribute.
@@ -501,6 +503,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public String getPropertyDatatype() {
         return getDatatype();
+    }
+
+    public IPersistentAttributeInfo getJpaAttributeInfo() {
+        return jpaAttributeInfo;
     }
 
 }

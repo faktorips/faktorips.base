@@ -363,6 +363,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public boolean isProductDefinitionProject();
 
     /**
+     * Returns <code>true</code> if this is a project that supports persistence, otherwise
+     * <code>false</code>. Persistent projects can store and retrieve policy component types to/from
+     * a relational database.
+     */
+    public boolean isPersistenceSupportEnabled();
+
+    /**
      * Returns the root folder with the indicated name.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name);
@@ -809,10 +816,22 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public String getRuntimeIdPrefix();
 
     /**
-     * Returns the stratgey used to name product components. This method never returns
+     * Returns the strategy used to name product components. This method never returns
      * <code>null</code>.
      */
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException;
+
+    /**
+     * Returns the strategy used to name database tables used for persisting policy component types.
+     * Returns <code>null</code> if persistence support is not enabled for this IPS project.
+     */
+    public ITableNamingStrategy getTableNamingStrategy() throws CoreException;
+
+    /**
+     * Returns the strategy used to name database columns used for persisting policy component
+     * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
+     */
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() throws CoreException;
 
     /**
      * Adds a new <code>DynamicValueDataType</code> to the project at runtime.
