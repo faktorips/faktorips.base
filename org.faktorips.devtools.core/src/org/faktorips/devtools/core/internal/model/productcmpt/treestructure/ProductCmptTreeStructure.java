@@ -344,7 +344,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * {@inheritDoc}
      */
     public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent) {
-        return getChildProductCmptTypeRelationReferences(parent, false);
+        return getChildProductCmptTypeRelationReferences(parent, true);
     }
 
     public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent,
