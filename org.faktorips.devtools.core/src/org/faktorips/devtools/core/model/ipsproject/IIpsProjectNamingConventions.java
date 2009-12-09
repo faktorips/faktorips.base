@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -112,7 +112,18 @@ public interface IIpsProjectNamingConventions {
      * 
      * @throws CoreException if an error occurs while validating the name
      */
-    public Message validateIfValidJavaIdentifier(String name, String text, Object validatedObject, IIpsProject ipsProject)
-            throws CoreException;
+    public Message validateIfValidJavaIdentifier(String name,
+            String text,
+            Object validatedObject,
+            IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Validates if the given name is valid java type name.
+     * 
+     * @param name
+     * @param qualifiedCheck true = qualified name; false = unqualified name
+     * @return MessageList
+     */
+    public MessageList validateJavaTypeName(String name, boolean qualifiedCheck);
 
 }

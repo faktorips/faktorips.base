@@ -68,7 +68,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private String getNameIsEmptyErrorText(IpsObjectType type) {
-        String text = (String)errorMsgTxtNameIsEmpty.get(type);
+        String text = errorMsgTxtNameIsEmpty.get(type);
         if (text == null) {
             text = Messages.DefaultIpsProjectNamingConventions_msgMissingName;
         }
@@ -76,7 +76,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private String getNameIsQualifiedErrorText(IpsObjectType type) {
-        String text = (String)errorMsgTxtNameIsQualified.get(type);
+        String text = errorMsgTxtNameIsQualified.get(type);
         if (text == null) {
             text = Messages.DefaultIpsProjectNamingConventions_msgNameMustNotBeQualified;
         }
@@ -212,7 +212,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /*
      * Validate if the name is a valid java type identifier
      */
-    private MessageList validateJavaTypeName(String name, boolean qualifiedCheck) {
+    public MessageList validateJavaTypeName(String name, boolean qualifiedCheck) {
         return validateJavaTypeName(name, qualifiedCheck, Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
                 Messages.DefaultIpsProjectNamingConventions_msgNameIdDiscouraged);
     }
@@ -294,7 +294,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public MessageList validateIpsPackageRootName(String name) throws CoreException {
         return new MessageList();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -311,13 +311,13 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         }
         return null;
     }
-    
+
     private String getCompilerComplianceLevel(IIpsProject ipsProject) {
         return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
     }
-    
+
     private String getCompilerSourceLevel(IIpsProject ipsProject) {
         return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
     }
-    
+
 }
