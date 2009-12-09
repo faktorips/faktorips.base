@@ -44,6 +44,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -52,8 +53,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
 /**
  * This Section lets the user select icons that are used when instances of the edited type are
@@ -61,32 +62,24 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * <p>
  * Note: This class can be easily extended for use with all ITypes (especially
  * {@link IPolicyCmptType}. The Methods in {@link IProductCmptType} as
- * {@link IProductCmptType#getInstancesEnabledIcon()} etc. then have to be pulled up to
- * {@link IType}.
+ * {@link IProductCmptType#getInstancesIcon()} etc. then have to be pulled up to {@link IType}.
  * 
  * @author Stefan Widmaier, Faktor Zehn AG
  */
 public class CustomIconSection extends IpsSection {
 
     private IType type;
-    private Label disabledIconTextLabel;
-    private Text disabledIconPathText;
-    private Button disabledIconBrowseButton;
     private Label enabledIconTextLabel;
     private Text enabledIconPathText;
     private Button enabledIconBrowseButton;
-    private Checkbox checkBox;
-    private Label enabledIconLabel;
-    private Label disabledIconLabel;
 
-    /*
-     * TODO: rewrite constructor to expect an IType when IPolicyCmptType also requires an Icon.
-     */
-    public CustomIconSection(IProductCmptType type, Composite parent, UIToolkit toolkit) {
+    private Label enabledIconPreview;
+
+    public CustomIconSection(IType type, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.type = type;
         initControls();
-        setText("Instance Icon Settings");
+        setText(Messages.CustomIconSection_SectionTitle);
     }
 
     @Override
@@ -95,67 +88,42 @@ public class CustomIconSection extends IpsSection {
         layout.marginHeight = 2;
         layout.marginWidth = 1;
         client.setLayout(layout);
-        createInheritedIconLabel(client, toolkit);
-        createUseCustomIconCheckBox(client, toolkit);
-        createEnabledIconControls(client, toolkit);
-        createDisabledIconControls(client, toolkit);
-        performRefresh();
+        if (type instanceof IProductCmptType) {
+            createDescriptionLabel(client, toolkit);
+            createEnabledIconControls(client, toolkit);
+            performRefresh();
+        } else {
+            Label unsupportedTypeLabel = new Label(client, SWT.NONE);
+            unsupportedTypeLabel.setText(Messages.CustomIconSection_UnsupportedType_Label);
+            GridData gd = new GridData(GridData.FILL, GridData.FILL, true, true, 3, 1);
+            unsupportedTypeLabel.setLayoutData(gd);
+        }
     }
 
-    private void createInheritedIconLabel(Composite parent, UIToolkit toolkit) {
-        Composite inheritedIconComposite = toolkit.createComposite(parent);
-        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 3, 1);
-        GridLayout layout = new GridLayout(3, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        inheritedIconComposite.setLayoutData(gd);
-        inheritedIconComposite.setLayout(layout);
-
-        enabledIconLabel = new Label(inheritedIconComposite, SWT.BORDER | SWT.CENTER);
-        gd = new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1);
-        gd.heightHint = 16;
-        gd.widthHint = 16;
-        enabledIconLabel.setLayoutData(gd);
-
-        disabledIconLabel = new Label(inheritedIconComposite, SWT.BORDER | SWT.CENTER);
-        gd = new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1);
-        disabledIconLabel.setLayoutData(gd);
-        gd.heightHint = 16;
-        gd.widthHint = 16;
-
-        Label iconDescriptionLabel = new Label(inheritedIconComposite, SWT.NONE);
-        iconDescriptionLabel.setText("These icons will be used for all instances of this type.");
-        gd = new GridData(GridData.BEGINNING, GridData.BEGINNING, true, false, 1, 1);
+    private void createDescriptionLabel(Composite parent, UIToolkit toolkit) {
+        Label iconDescriptionLabel = new Label(parent, SWT.WRAP);
+        iconDescriptionLabel.setText(Messages.CustomIconSection_ConfigurationDescription);
+        GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, true, false, 3, 1);
+        gd.widthHint = 600;
         iconDescriptionLabel.setLayoutData(gd);
     }
 
-    private void createUseCustomIconCheckBox(Composite client, UIToolkit toolkit) {
-        checkBox = toolkit.createCheckbox(client, "Use Custom Icons for Instances");
-        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 3, 1);
-        checkBox.setLayoutData(gd);
-        checkBox.getButton().addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                IProductCmptType prodType = (IProductCmptType)type;
-                prodType.setUseCustomInstanceIcon(checkBox.isChecked());
-                performRefresh();
-            }
-        });
-    }
-
     private void createEnabledIconControls(Composite parent, UIToolkit toolkit) {
-        enabledIconTextLabel = toolkit.createLabel(parent, "Icon for enabled Instances:");
-        enabledIconPathText = toolkit.createText(parent);
-        enabledIconBrowseButton = toolkit.createButton(parent, "Browse");
-        enabledIconBrowseButton.addSelectionListener(new BrowseIconsListener(enabledIconPathText));
+        toolkit.createLabel(parent, Messages.CustomIconSection_IconPreviewLabel);
 
-        GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1);
-        enabledIconTextLabel.setLayoutData(gd);
-        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 1, 1);
-        enabledIconPathText.setLayoutData(gd);
+        enabledIconPreview = new Label(parent, SWT.BORDER | SWT.CENTER);
+        GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, false, false);
+        gd.heightHint = 16;
+        gd.widthHint = 16;
+        gd.horizontalSpan = 2;
+        enabledIconPreview.setLayoutData(gd);
+
+        enabledIconTextLabel = toolkit.createLabel(parent, Messages.CustomIconSection_CustomPathText);
+        enabledIconPathText = toolkit.createText(parent);
+        enabledIconPathText.setEnabled(true);
+
+        enabledIconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
+        enabledIconBrowseButton.addSelectionListener(new BrowseIconsListener(enabledIconPathText));
 
         enabledIconPathText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -163,48 +131,13 @@ public class CustomIconSection extends IpsSection {
                     return;
                 }
                 IProductCmptType prodType = (IProductCmptType)type;
-                if (!ObjectUtils.equals(prodType.getInstancesEnabledIcon(), enabledIconPathText.getText())) {
-                    prodType.setInstancesEnabledIcon(enabledIconPathText.getText());
+                if (!ObjectUtils.equals(prodType.getInstancesIcon(), enabledIconPathText.getText())) {
+                    prodType.setInstancesIcon(enabledIconPathText.getText());
                 }
                 refreshIcons();
             }
 
         });
-    }
-
-    private void createDisabledIconControls(Composite parent, UIToolkit toolkit) {
-        disabledIconTextLabel = toolkit.createLabel(parent, "Icon for disabled Instances:");
-        disabledIconPathText = toolkit.createText(parent);
-        disabledIconBrowseButton = toolkit.createButton(parent, "Browse");
-        disabledIconBrowseButton.addSelectionListener(new BrowseIconsListener(disabledIconPathText));
-
-        GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1);
-        disabledIconTextLabel.setLayoutData(gd);
-        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 1, 1);
-        disabledIconPathText.setLayoutData(gd);
-
-        disabledIconPathText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                if (isRefreshing()) {
-                    return;
-                }
-                IProductCmptType prodType = (IProductCmptType)type;
-                if (!ObjectUtils.equals(prodType.getInstancesDisabledIcon(), disabledIconPathText.getText())) {
-                    prodType.setInstancesDisabledIcon(disabledIconPathText.getText());
-                }
-                refreshIcons();
-            }
-
-        });
-    }
-
-    private void enableIconEditControls(boolean enable) {
-        enabledIconBrowseButton.setEnabled(enable);
-        enabledIconPathText.setEnabled(enable);
-        enabledIconTextLabel.setEnabled(enable);
-        disabledIconBrowseButton.setEnabled(enable);
-        disabledIconPathText.setEnabled(enable);
-        disabledIconTextLabel.setEnabled(enable);
     }
 
     @Override
@@ -213,31 +146,17 @@ public class CustomIconSection extends IpsSection {
             return;
         }
         IProductCmptType prodCmptType = (IProductCmptType)type;
-        boolean hasCustomIcon = prodCmptType.isUseCustomInstanceIcons();
-        if (checkBox.isChecked() != hasCustomIcon) {
-            // optimization
-            checkBox.setChecked(hasCustomIcon);
-        }
-        enableIconEditControls(hasCustomIcon);
-        enabledIconPathText.setText(prodCmptType.getInstancesEnabledIcon());
-        disabledIconPathText.setText(prodCmptType.getInstancesDisabledIcon());
+        enabledIconPathText.setText(prodCmptType.getInstancesIcon());
         refreshIcons();
     }
 
     private void refreshIcons() {
-        // ProductCmptWorkbenchAdapter adapter =
-        // (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault().getAdapterFactory()
-        // .getAdapter(ProductCmpt.class, IWorkbenchAdapter.class);
-        // try {
-        // enabledIconLabel.setImage(IpsUIPlugin.getDefault().getImage(
-        // adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
-        // FIXME DiabledIcon aktualisieren
-        // Image disabledIconImage =
-        // type.getIpsProject().getCustomInstanceDisabledIconOrDefault((IProductCmptType)type);
-        // disabledIconLabel.setImage(disabledIconImage);
-        // } catch (CoreException e) {
-        // IpsPlugin.log(e);
-        // }
+        if (type instanceof IProductCmptType) {
+            ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault()
+                    .getWorkbenchAdapterFor(ProductCmpt.class);
+            enabledIconPreview.setImage(IpsUIPlugin.getDefault().getImage(
+                    adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+        }
     }
 
     public void setType(IType newType) {
@@ -261,9 +180,9 @@ public class CustomIconSection extends IpsSection {
 
             dialog.setValidator(new FileValidator());
             dialog.setAllowMultiple(false);
-            dialog.setTitle("Icon auswählen");
-            dialog.setMessage("Bitte wählen sie ein Icon aus");
-            dialog.addFilter(new FileExtensionFilter(new String[] { "gif", "png" }));
+            dialog.setTitle(Messages.CustomIconSection_SelectImageDialog_Title);
+            dialog.setMessage(Messages.CustomIconSection_SelectImageDialog_Description);
+            dialog.addFilter(new FileExtensionFilter(new String[] { "gif", "png" })); //$NON-NLS-1$ //$NON-NLS-2$
             dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
             if (dialog.open() == Window.OK) {
@@ -354,7 +273,7 @@ public class CustomIconSection extends IpsSection {
          */
         private boolean selectFile(IFile file) {
             for (String extension : targetExtensions) {
-                if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("." + extension)) {
+                if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("." + extension)) { //$NON-NLS-1$
                     return true;
                 }
             }
@@ -376,8 +295,8 @@ public class CustomIconSection extends IpsSection {
                 return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, IStatus.OK, "", //$NON-NLS-1$
                         null);
             }
-            return new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR, "", //$NON-NLS-1$
-                    null);
+            return new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
+                    Messages.CustomIconSection_SelectImageDialog_Error_NoFileSelected, null);
         }
 
     }

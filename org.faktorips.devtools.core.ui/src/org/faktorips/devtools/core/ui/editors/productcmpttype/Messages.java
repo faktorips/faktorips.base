@@ -47,6 +47,26 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_valueSetSection;
     public static String AttributesSection_title;
     public static String BehaviourPage_title_behaviour;
+    public static String CustomIconPage_Page_Tab_Label;
+
+    public static String CustomIconSection_BrowseButtonText;
+
+    public static String CustomIconSection_ConfigurationDescription;
+
+    public static String CustomIconSection_CustomPathText;
+
+    public static String CustomIconSection_IconPreviewLabel;
+
+    public static String CustomIconSection_SectionTitle;
+
+    public static String CustomIconSection_SelectImageDialog_Description;
+
+    public static String CustomIconSection_SelectImageDialog_Error_NoFileSelected;
+
+    public static String CustomIconSection_SelectImageDialog_Title;
+
+    public static String CustomIconSection_UnsupportedType_Label;
+
     public static String GeneralInfoSection_abstractLabel;
     public static String GeneralInfoSection_configuredTypeLabel;
     public static String GeneralInfoSection_configuresLabel;

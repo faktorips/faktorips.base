@@ -338,12 +338,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns <code>true</code> if the user has configured a custom icon for instances of this
-     * type, <code>false</code> otherwise.
+     * Returns <code>true</code> if the user has configured a custom icon for enabled instances of
+     * this type, <code>false</code> otherwise.
      * 
      * @return
      */
-    public boolean isUseCustomInstanceIcons();
+    public boolean isUseCustomInstanceIcon();
 
     /**
      * Returns the string-presentation of the path of an Icon file used for enabled instances of
@@ -351,15 +351,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @return
      */
-    public String getInstancesEnabledIcon();
-
-    /**
-     * Returns the string-presentation of the path of an Icon file used for disabled instances of
-     * this type. This method may return a valid path even though no custom Icon is configured.
-     * 
-     * @return
-     */
-    public String getInstancesDisabledIcon();
+    public String getInstancesIcon();
 
     /**
      * Configures this {@link ProductCmptType} to use the icon at the given path as icon for enabled
@@ -367,23 +359,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param path
      */
-    public void setInstancesEnabledIcon(String path);
-
-    /**
-     * Configures this {@link ProductCmptType} to use the icon at the given path as icon for
-     * disabled instances.
-     * 
-     * @param path
-     */
-    public void setInstancesDisabledIcon(String path);
-
-    /**
-     * Configures this {@link ProductCmptType} to use the instance icons set by
-     * {@link #setInstancesDisabledIcon(String)} and {@link #setInstancesEnabledIcon(String)}.
-     * 
-     * @param useCustomIcon
-     */
-    public void setUseCustomInstanceIcon(boolean useCustomIcon);
+    public void setInstancesIcon(String path);
 
     /**
      * Delegating to @see #searchMetaObjectSrcFiles(boolean)

@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
@@ -77,6 +78,8 @@ import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
+import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
+import org.faktorips.devtools.core.ui.workbenchadapters.IpsWorkbenchAdapterFactory;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -144,6 +147,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private IWorkbenchAdapterProvider[] workbenchAdapterProviders;
 
+    private IpsWorkbenchAdapterFactory adapterFactory;
+
     /**
      * The constructor.
      */
@@ -174,6 +179,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
                 new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new DefaultControlFactory() };
+        adapterFactory = new IpsWorkbenchAdapterFactory();
+        Platform.getAdapterManager().registerAdapters(adapterFactory, IIpsElement.class);
     }
 
     /**
@@ -692,6 +699,20 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return getDefault().getImage(getImageDescriptor(ipsElement));
     }
 
+    public Image getDisabledImage(IIpsElement ipsElement) {
+        return getDisabledImage(getImageDescriptor(ipsElement));
+    }
+
+    public Image getDisabledImage(ImageDescriptor enabledImageDescriptor) {
+        ImageDescriptor disabledImageDesc = getDisabledImageDescriptor(enabledImageDescriptor);
+        return getImage(disabledImageDesc);
+    }
+
+    private ImageDescriptor getDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor) {
+        ImageDescriptor disabledImageDesc = ImageDescriptor.createWithFlags(enabledImageDescriptor, SWT.IMAGE_DISABLE);
+        return disabledImageDesc;
+    }
+
     public final static String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
@@ -701,4 +722,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
     }
 
+    public <T extends IIpsElement> IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<T> ipsElementClass) {
+        IpsElementWorkbenchAdapter adapter = (IpsElementWorkbenchAdapter)adapterFactory.getAdapter(ipsElementClass,
+                IWorkbenchAdapter.class);
+        return adapter;
+    }
 }

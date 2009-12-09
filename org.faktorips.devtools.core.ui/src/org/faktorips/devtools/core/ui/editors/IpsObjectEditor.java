@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
@@ -1031,8 +1032,13 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          * decorated with an ips marker image if a marker exists.
          */
         Image getDecoratedImage() {
-            Image titleImage = ipsObjectEditor.getIpsSrcFile().getIpsObjectType().getImage(
-                    ipsObjectEditor.isDataChangeable().booleanValue());
+            ImageDescriptor titleImageDesc = IpsUIPlugin.getImageDescriptor(ipsObjectEditor.getIpsSrcFile());
+            Image titleImage = null;
+            if (ipsObjectEditor.isDataChangeable().booleanValue()) {
+                titleImage = IpsUIPlugin.getDefault().getImage(titleImageDesc);
+            } else {
+                titleImage = IpsUIPlugin.getDefault().getDisabledImage(titleImageDesc);
+            }
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsSrcFile());
         }
 

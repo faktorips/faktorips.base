@@ -13,20 +13,14 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import java.io.InputStream;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.util.StringUtil;
 
 /**
  * TODO Support Disabled Icons
@@ -47,8 +41,8 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
             return getDefaultImageDescriptor();
         }
 
-        if (type.isUseCustomInstanceIcons()) {
-            return getImageDescriptorForPath(type.getIpsProject(), type.getInstancesEnabledIcon());
+        if (type.isUseCustomInstanceIcon()) {
+            return getImageDescriptorForPath(type.getIpsProject(), type.getInstancesIcon());
         } else if (type.hasSupertype()) {
             IProductCmptType superType;
             try {
@@ -87,16 +81,6 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         return null;
     }
 
-    @Override
-    protected String getLabel(IIpsSrcFile ipsSrcFile) {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-    }
-
-    @Override
-    protected String getLabel(IIpsObject ipsObject) {
-        return ipsObject.getName();
-    }
-
     protected ImageDescriptor getDefaultImageDescriptor() {
         return prodCmptDefaultIcon;
     }
@@ -105,20 +89,4 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         return getProductCmptImage(type);
     }
 
-    protected ImageDescriptor getImageDescriptorForPath(IIpsProject ipsProject, String path) {
-        ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-        if (cachedImage == null) {
-            InputStream inputStream = ipsProject.getResourceAsStream(path);
-            if (inputStream != null) {
-                Image loadedImage = new Image(Display.getDefault(), inputStream);
-                IpsUIPlugin.getDefault().getImageRegistry().put(path, loadedImage);
-                return IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-            } else {
-                // Return missing Icon
-                // return IpsUIPlugin.getDefault().getImageDescriptor(null);
-                return ImageDescriptor.getMissingImageDescriptor();
-            }
-        }
-        return cachedImage;
-    }
 }

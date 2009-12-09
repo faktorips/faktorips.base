@@ -14,20 +14,16 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 public class CustomIconPage extends IpsObjectEditorPage {
     final static String PAGE_ID = "CustomIconPage"; //$NON-NLS-1$
 
-    public CustomIconPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "Custom Icon");
-    }
-
-    private IProductCmptType getProductCmptType() {
-        return (IProductCmptType)getIpsObject();
+    public CustomIconPage(TypeEditor editor) {
+        super(editor, PAGE_ID, Messages.CustomIconPage_Page_Tab_Label);
     }
 
     /**
@@ -36,6 +32,6 @@ public class CustomIconPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, true));
-        new CustomIconSection(getProductCmptType(), formBody, toolkit);
+        new CustomIconSection((IType)getIpsObject(), formBody, toolkit);
     }
 }
