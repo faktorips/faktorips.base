@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -47,9 +48,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- * 
- */
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
@@ -458,9 +456,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return childrenList.toArray(new IIpsElement[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element partEl, int id) {
         String xmlTagName = partEl.getNodeName();
@@ -474,9 +469,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getValueDatatype() {
         try {
             return findValueDatatype(getIpsProject());
@@ -490,4 +482,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public boolean isValueSetUpdateable() {
         return true;
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

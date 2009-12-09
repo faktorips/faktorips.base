@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -32,7 +33,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A value set that desribes a range with a lower and an upper bound, e.g. 100-200. Lower and upper
+ * A value set that describes a range with a lower and an upper bound, e.g. 100-200. Lower and upper
  * bound are part of the range. If lower bound or upper bound contain an empty string, the range is
  * unbounded. The range has an optional step attribute to define that only the values where
  * <code>((value-lower) mod step)== 0</code> holds true. E.g. 100-200 with step 10 defines the
@@ -125,9 +126,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return step;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -202,9 +200,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
@@ -388,17 +383,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return datatype.isParsable(value) && !datatype.isNull(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset) {
         MessageList dummy = new MessageList();
         return containsValueSet(subset, dummy, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         ValueDatatype datatype = getValueDatatype();
@@ -476,17 +465,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.RANGE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         if (isAbstract()) {
@@ -495,9 +478,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String toShortString() {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
@@ -512,9 +492,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return sb.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -543,9 +520,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -558,9 +532,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         element.appendChild(tagElement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValueSet copy(IIpsObjectPart parent, int id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
 
@@ -572,9 +543,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return retValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void copyPropertiesFrom(IValueSet source) {
         RangeValueSet set = (RangeValueSet)source;
@@ -585,20 +553,22 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getContainsNull() {
         return containsNull;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setContainsNull(boolean containsNull) {
         boolean old = this.containsNull;
         this.containsNull = containsNull;
         valueChanged(old, containsNull);
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

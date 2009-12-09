@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
@@ -106,14 +107,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return false;
     }
 
-    public void removeAllIncommingControlFlows(){
+    public void removeAllIncommingControlFlows() {
         incommingControlFlows.clear();
     }
-    
-    public void removeAllOutgoingControlFlows(){
+
+    public void removeAllOutgoingControlFlows() {
         outgoingControlFlows.clear();
     }
-    
+
     public void addOutgoingControlFlow(IControlFlow controlFlow) {
         if (outgoingControlFlows.contains(controlFlow.getId())) {
             return;
@@ -165,6 +166,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         valueChanged(old, size);
     }
 
+    @Override
     public void setName(String name) {
         String old = this.name;
         this.name = name;
@@ -180,9 +182,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return doc.createElement(XML_TAG);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
@@ -192,14 +192,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             Element posElement = (Element)nl.item(i);
             String xPos = posElement.getAttribute("xlocation"); //$NON-NLS-1$
             String yPos = posElement.getAttribute("ylocation"); //$NON-NLS-1$
-            this.location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos));
+            location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos));
         }
         nl = element.getElementsByTagName("Size"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
             String width = posElement.getAttribute("width"); //$NON-NLS-1$
             String height = posElement.getAttribute("height"); //$NON-NLS-1$
-            this.size = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
+            size = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
         }
         nl = element.getElementsByTagName("ControlFlow"); //$NON-NLS-1$
         incommingControlFlows.clear();
@@ -217,9 +217,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
@@ -236,14 +234,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         sizeEl.setAttribute("height", String.valueOf(getSize().height)); //$NON-NLS-1$
         element.appendChild(sizeEl);
 
-        for (Integer controlFlowId : this.outgoingControlFlows) {
+        for (Integer controlFlowId : outgoingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "out"); //$NON-NLS-1$ //$NON-NLS-2$
             controlFlowEl.setAttribute("id", String.valueOf(controlFlowId)); //$NON-NLS-1$
         }
 
-        for (Integer controlFlowId : this.incommingControlFlows) {
+        for (Integer controlFlowId : incommingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "in"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -293,8 +291,8 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      */
     protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getName())) {
-            msgList
-                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, Messages.getString("BFElement.nameNotSpecified"), Message.ERROR, this)); //$NON-NLS-1$
+            msgList.add(new Message(MSGCODE_NAME_NOT_SPECIFIED,
+                    Messages.getString("BFElement.nameNotSpecified"), Message.ERROR, this)); //$NON-NLS-1$
             return;
         }
         Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(getName(),
@@ -320,7 +318,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
         String uncapName = StringUtils.uncapitalize(name);
         if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            String text = NLS.bind(Messages.getString("BFElement.nameNotAllowed"), name); //$NON-NLS-1$ //$NON-NLS-2$
+            String text = NLS.bind(Messages.getString("BFElement.nameNotAllowed"), name); //$NON-NLS-1$ 
             msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
         }
     }
@@ -332,6 +330,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             validateName(list, ipsProject);
             validateNotAllowedNames(getName(), "name", list); //$NON-NLS-1$
         }
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

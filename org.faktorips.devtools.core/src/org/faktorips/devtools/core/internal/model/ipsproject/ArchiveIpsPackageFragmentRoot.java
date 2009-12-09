@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -34,7 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
@@ -46,17 +47,14 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * @param archivePath Path to an IPS archive
      */
     public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IpsArchive archive) {
-    	super(ipsProject, archive.getArchivePath().lastSegment());
-    	this.archive = archive;
+        super(ipsProject, archive.getArchivePath().lastSegment());
+        this.archive = archive;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArchive getIpsArchive() throws CoreException {
         return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();
     }
-    
+
     @Override
     public boolean exists() {
         IIpsArchive archive;
@@ -65,22 +63,16 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         } catch (CoreException e) {
             return false;
         }
-        if (archive==null) {
+        if (archive == null) {
             return false;
         }
         return archive.exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IFolder getArtefactDestination(boolean derived) throws CoreException {
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
 
         List list = getIpsPackageFragmentsAsList();
@@ -88,9 +80,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
 
@@ -99,13 +88,9 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
-    /**
-     * @return
-     * @throws CoreException
-     */
     private List getIpsPackageFragmentsAsList() throws CoreException {
         IIpsArchive archive = getIpsArchive();
-        if (archive==null) {
+        if (archive == null) {
             return new ArrayList(0);
         }
 
@@ -120,60 +105,48 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected IIpsPackageFragment newIpsPackageFragment(String name) {
         return new ArchiveIpsPackageFragment(this, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource[] getNonIpsResources() throws CoreException {
-
         return new IResource[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource getCorrespondingResource() {
         return archive.getCorrespondingResource();
     }
-    
-	private CoreException newExceptionMethodNotAvailableForArchvies() {
+
+    private CoreException newExceptionMethodNotAvailableForArchvies() {
         return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
     public void findIpsSourceFiles(IpsObjectType type, String packageFragment, List result) throws CoreException {
-        if (type==null) {
+        if (type == null) {
             return;
         }
         IIpsArchive archive = getIpsArchive();
-        if (archive==null) {
+        if (archive == null) {
             return;
         }
         Set qntSet = archive.getQNameTypes();
         for (Iterator it = qntSet.iterator(); it.hasNext();) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
-            if(!type.equals(qnt.getIpsObjectType())){
+            if (!type.equals(qnt.getIpsObjectType())) {
                 continue;
             }
-            if(packageFragment != null && !qnt.getPackageName().equals(packageFragment)){
+            if (packageFragment != null && !qnt.getPackageName().equals(packageFragment)) {
                 continue;
             }
             IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
-            if (pack==null) {
+            if (pack == null) {
                 return;
             }
             IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
@@ -183,19 +156,21 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isContainedInArchive() {
         return true;
     }
 
-    
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

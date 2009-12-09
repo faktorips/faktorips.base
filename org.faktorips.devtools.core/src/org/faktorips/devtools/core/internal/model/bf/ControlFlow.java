@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,6 +23,7 @@ import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -54,7 +55,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         super(parent, id);
     }
 
-    public final static ImageDescriptor getImageDescriptor(){
+    public final static ImageDescriptor getImageDescriptor() {
         return IpsPlugin.getDefault().getImageDescriptor("obj16/" + "ControlFlow.gif");
     }
 
@@ -91,7 +92,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     // TODO test
     public void setConditionValue(String value) {
         String old = conditionValue;
-        this.conditionValue = value;
+        conditionValue = value;
         valueChanged(old, conditionValue);
     }
 
@@ -104,16 +105,16 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     public void setTarget(IBFElement target) {
-        if (this.targetId == null && target == null) {
+        if (targetId == null && target == null) {
             return;
         }
-        if (this.targetId != null && target != null && this.targetId.equals(target.getId())) {
+        if (targetId != null && target != null && targetId.equals(target.getId())) {
             return;
         }
         if (getTarget() != null) {
             getTarget().removeIncomingControlFlow(this);
         }
-        this.targetId = (target == null) ? null : target.getId();
+        targetId = (target == null) ? null : target.getId();
         objectHasChanged();
         if (getTarget() != null) {
             getTarget().addIncomingControlFlow(this);
@@ -125,16 +126,16 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     public void setSource(IBFElement source) {
-        if (this.sourceId == null && source == null) {
+        if (sourceId == null && source == null) {
             return;
         }
-        if (this.sourceId != null && source != null && this.sourceId.equals(source.getId())) {
+        if (sourceId != null && source != null && sourceId.equals(source.getId())) {
             return;
         }
         if (getSource() != null) {
             getSource().removeOutgoingControlFlow(this);
         }
-        this.sourceId = (source == null) ? null : source.getId();
+        sourceId = (source == null) ? null : source.getId();
         objectHasChanged();
         if (getSource() != null) {
             getSource().addOutgoingControlFlow(this);
@@ -170,7 +171,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         // TODO test
         element.setAttribute(PROPERTY_CONDITION_VALUE, conditionValue);
         Document doc = element.getOwnerDocument();
-        for (Bendpoint bendpoint : this.bendpoints) {
+        for (Bendpoint bendpoint : bendpoints) {
             Element bendpointEl = doc.createElement("Bendpoint"); //$NON-NLS-1$
             Point location = bendpoint.getLocation();
             bendpointEl.setAttribute("locationX", String.valueOf(location.x)); //$NON-NLS-1$
@@ -233,7 +234,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
                     String text = NLS.bind(Messages.getString("ControlFlow.valueNotValid"), new String[] {
-                            getConditionValue(), datatype.getQualifiedName() }); //$NON-NLS-1$
+                            getConditionValue(), datatype.getQualifiedName() });
                     list.add(new Message(MSGCODE_VALUE_NOT_VALID, text, Message.ERROR, this));
                 }
             }
@@ -257,6 +258,14 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
                 msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

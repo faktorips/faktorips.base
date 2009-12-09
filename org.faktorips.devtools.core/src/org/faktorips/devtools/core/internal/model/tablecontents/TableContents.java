@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,6 +21,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -43,10 +44,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-
-/**
- *
- */
 public class TableContents extends TimedIpsObject implements ITableContents {
 
     /**
@@ -57,9 +54,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
 
-    /**
-     * @param file
-     */
     public TableContents(IIpsSrcFile file) {
         super(file);
     }
@@ -69,154 +63,117 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         generation.setValidFromInternal(validFrom);
         return generation;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected IpsObjectGeneration createNewGeneration(int id) {
         TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
         initUniqueKeyValidator(tableContentsGeneration);
         return tableContentsGeneration;
     }
 
-    /*
+    /**
      * Creates an unique key validator for the given table contents generation
      */
     private void initUniqueKeyValidator(TableContentsGeneration tableContentsGeneration) {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
-        } catch (CoreException e){
+        } catch (CoreException e) {
             // will be handled as validation error
             IpsPlugin.log(e);
             return;
-        } 
+        }
         tableContentsGeneration.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_CONTENTS;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTableStructure() {
         return structure;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public void setTableStructure(String qName) {
         String oldStructure = structure;
         setTableStructureInternal(qName);
         valueChanged(oldStructure, structure);
     }
-    
-    protected void setTableStructureInternal(String qName){
+
+    protected void setTableStructureInternal(String qName) {
         structure = qName;
     }
-   
-    /**
-     * {@inheritDoc}
-     */
+
     public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public int getNumOfColumns() {
         return numOfColumns;
     }
 
     /**
      * Sets the number of columns
-     * @param numOfColumns 
+     * 
+     * @param numOfColumns
      */
-    public void setNumOfColumnsInternal(int numOfColumns){
+    public void setNumOfColumnsInternal(int numOfColumns) {
         this.numOfColumns = numOfColumns;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public int newColumn(String defaultValue) {
-    	newColumnAt(numOfColumns, defaultValue);
+        newColumnAt(numOfColumns, defaultValue);
         return numOfColumns;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void newColumnAt(int index, String defaultValue) {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i=0; i<generations.length; i++) {
+        for (int i = 0; i < generations.length; i++) {
             ((TableContentsGeneration)generations[i]).newColumn(index, defaultValue);
         }
         numOfColumns++;
         objectHasChanged();
-	}
+    }
 
-    /**
-     * {@inheritDoc}
-     */
     public void deleteColumn(int columnIndex) {
-        if (columnIndex<0 || columnIndex>=numOfColumns) {
+        if (columnIndex < 0 || columnIndex >= numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i=0; i<generations.length; i++) {
+        for (int i = 0; i < generations.length; i++) {
             ((TableContentsGeneration)generations[i]).removeColumn(columnIndex);
         }
         numOfColumns--;
-        objectHasChanged();        
+        objectHasChanged();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     public IDependency[] dependsOn() throws CoreException {
         if (StringUtils.isEmpty(getTableStructure())) {
             return new IDependency[0];
         }
-        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
-                getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
+        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
-        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ //$NON-NLS-2$
+        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
-        numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS)); //$NON-NLS-1$
+        numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initFromInputStream(InputStream is) throws CoreException {
         try {
             reinitPartCollections();
@@ -227,75 +184,70 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
         ITableStructure tableStructure = findTableStructure(ipsProject);
-        if (tableStructure  == null) {
-            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
-            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); 
+        if (tableStructure == null) {
+            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
             return;
         }
-        
-        if (tableStructure .getNumOfColumns() != getNumOfColumns()) {
-        	Integer structCols = new Integer(tableStructure .getNumOfColumns());
-        	Integer contentCols = new Integer(getNumOfColumns());
-        	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
-        	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+
+        if (tableStructure.getNumOfColumns() != getNumOfColumns()) {
+            Integer structCols = new Integer(tableStructure.getNumOfColumns());
+            Integer contentCols = new Integer(getNumOfColumns());
+            String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
+            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
     }
-    
+
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {
-        if (structure == null){
+        if (structure == null) {
             return new ValueDatatype[0];
         }
-        IColumn[] columns= structure.getColumns();
-        ValueDatatype[] datatypes= new ValueDatatype[columns.length];
+        IColumn[] columns = structure.getColumns();
+        ValueDatatype[] datatypes = new ValueDatatype[columns.length];
         for (int i = 0; i < columns.length; i++) {
-            datatypes[i]= columns[i].findValueDatatype(ipsProject);
+            datatypes[i] = columns[i].findValueDatatype(ipsProject);
         }
         return datatypes;
     }
-    
-    /** 
-     * {@inheritDoc}
-     */
+
     public void addExtensionProperty(String propertyId, String extPropertyValue) {
         addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject)
-			throws CoreException {
-		return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
-	}
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
+    }
 
-	/**
-	 * This Method always returns false because differences to model is not supported at the moment
-	 */
-	public boolean containsDifferenceToModel(IIpsProject ipsProject)
-			throws CoreException {
-		//TODO throw new NotImplementedException();
-		return false;
-	}
+    /**
+     * This Method always returns false because differences to model is not supported at the moment
+     */
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO throw new NotImplementedException();
+        return false;
+    }
 
-	/**
-	 * This method does nothing because there is nothing to do at the moment
-	 * 
-	 */
-	public void fixAllDifferencesToModel(IIpsProject ipsProject)
-			throws CoreException {
-	}
+    /**
+     * This method does nothing because there is nothing to do at the moment
+     */
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getMetaClass() {
-		return getTableStructure();
-	}
+    }
+
+    public String getMetaClass() {
+        return getTableStructure();
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

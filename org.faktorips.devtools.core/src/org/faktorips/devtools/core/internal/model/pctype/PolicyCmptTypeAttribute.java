@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -72,16 +73,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
         IType supertype = getPolicyCmptType().findSupertype(ipsProject);
         if (supertype == null) {
@@ -94,18 +89,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return (IPolicyCmptTypeAttribute)candidate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setAttributeType(AttributeType newType) {
         AttributeType oldType = attributeType;
         attributeType = newType;
         valueChanged(oldType, newType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule findValueSetRule(IIpsProject ipsProject) {
         IValidationRule[] rules = getPolicyCmptType().getRules();
 
@@ -120,9 +109,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule createValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
         if (rule != null) {
@@ -138,9 +124,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return rule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void deleteValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
         if (rule != null) {
@@ -148,30 +131,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public AttributeType getAttributeType() {
         return attributeType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isChangeable() {
         return getAttributeType() == AttributeType.CHANGEABLE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDerived() {
         return getAttributeType().isDerived();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(computationMethodSignature)) {
             return null;
@@ -183,16 +154,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return (IProductCmptTypeMethod)productCmptType.findMethod(computationMethodSignature, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isProductRelevant() {
         return productRelevant;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
         productRelevant = newValue;
@@ -202,16 +167,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValueSet getValueSet() {
         return valueSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
         for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
@@ -226,9 +185,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return types;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValueSetType(ValueSetType type) {
         if (valueSet != null && type == valueSet.getValueSetType()) {
             return;
@@ -237,24 +193,15 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValueSet changeValueSetType(ValueSetType newType) {
         setValueSetType(newType);
         return valueSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueSetUpdateable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         String baseImageName = "AttributePublic.gif"; //$NON-NLS-1$
         if (isProductRelevant()) {
@@ -264,25 +211,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getComputationMethodSignature() {
         return computationMethodSignature;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setComputationMethodSignature(String newMethodName) {
         String oldName = computationMethodSignature;
         computationMethodSignature = newMethodName;
         valueChanged(oldName, newMethodName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
@@ -336,17 +274,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -356,9 +288,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -368,24 +297,15 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         valueSet = (IValueSet)part;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
@@ -395,9 +315,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         if (valueSet != null) {
@@ -407,9 +324,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getValueDatatype() {
         try {
             // TODO v2 - signature getValueDatatype() is wrong
@@ -423,64 +337,40 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isOverwrite() {
         return overwrites;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setOverwrite(boolean overwrites) {
         boolean old = this.overwrites;
         this.overwrites = overwrites;
         valueChanged(old, overwrites);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValueSetCopy(IValueSet source) {
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getProposalValueSetRuleName() {
         return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getProposalMsgCodeForValueSetRule() {
         return NLS.bind(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     public String getPropertyName() {
         if (productRelevant) {
             return name;
@@ -488,18 +378,20 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     public String getPropertyDatatype() {
         return getDatatype();
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

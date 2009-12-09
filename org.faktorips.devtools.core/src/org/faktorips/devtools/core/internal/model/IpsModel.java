@@ -49,6 +49,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -251,8 +252,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IpsPlugin.log(new IpsStatus(text));
                 continue;
             }
-            type = (IpsObjectType)ExtensionPoints.createExecutableExtension(extension, configElements[i],
-                    "class", IpsObjectType.class); //$NON-NLS-1$
+            type = ExtensionPoints
+                    .createExecutableExtension(extension, configElements[i], "class", IpsObjectType.class); //$NON-NLS-1$
 
             if (type == null) {
                 String text = "Illegal ips object type definition " + extension.getUniqueIdentifier(); //$NON-NLS-1$
@@ -272,17 +273,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().removeResourceChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
 
         runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void runAndQueueChangeEvents(IWorkspaceRunnable action,
             ISchedulingRule rule,
             int flags,
@@ -345,9 +340,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ResourcesPlugin.getWorkspace();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException {
         if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) != null) {
             return getIpsProject(javaProject.getProject());
@@ -365,9 +357,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject[] getIpsProjects() throws CoreException {
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
@@ -387,9 +376,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return shrinked;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource[] getNonIpsProjects() throws CoreException {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IProject[] nonIpsProjects = new IProject[projects.length];
@@ -408,31 +394,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return shrinked;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsModel getIpsModel() {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject getIpsProject(String name) {
         return new IpsProject(this, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject getIpsProject(IProject project) {
         return new IpsProject(this, project.getName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsModel.gif"); //$NON-NLS-1$
     }
@@ -444,17 +418,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ResourcesPlugin.getWorkspace().getRoot();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsProjects();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsElement getIpsElement(IResource resource) {
         ArgumentCheck.notNull(resource);
         if (resource.getType() == IResource.ROOT) {
@@ -495,9 +463,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsElement findIpsElement(IResource resource) {
         if (resource == null) {
             return null;
@@ -565,9 +530,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener) {
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
@@ -578,9 +540,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         modificationStatusChangeListeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeModificationStatusChangeListener(IModificationStatusChangeListener listener) {
         if (modificationStatusChangeListeners != null) {
             boolean wasRemoved = modificationStatusChangeListeners.remove(listener);
@@ -627,9 +586,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addChangeListener(ContentsChangeListener listener) {
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addChangeListeners(): " + listener); //$NON-NLS-1$
@@ -637,9 +593,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         changeListeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeChangeListener(ContentsChangeListener listener) {
         boolean wasRemoved = changeListeners.remove(listener);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
@@ -687,25 +640,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         return o instanceof IIpsModel;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "IpsModel"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException {
         List result = new ArrayList();
         IIpsProject[] projects = getIpsProjects();
@@ -962,7 +906,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return data;
     }
 
-    /*
+    /**
      * Intializes the datatypes and their helpers for the project.
      */
     private void initDatatypesDefinedInProjectProperties(IIpsProject project) {
@@ -1000,9 +944,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void resourceChanged(IResourceChangeEvent event) {
         IResourceDelta delta = event.getDelta();
         if (delta != null) {
@@ -1042,9 +983,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         builderSetInfoList = new ArrayList(Arrays.asList(builderSetInfos));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type,
             boolean includeSupertypesAndInterfaces) {
         if (typeExtensionPropertiesMap == null) {
@@ -1071,9 +1009,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return properties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
@@ -1257,9 +1192,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         datatypeHelpersMap.put(helper.getDatatype(), helper);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype[] getPredefinedValueDatatypes() {
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
@@ -1268,9 +1200,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return (ValueDatatype[])c.toArray(new ValueDatatype[c.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
@@ -1278,18 +1207,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return datatypes.containsKey(valueDatatypeId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void delete(IIpsElement toDelete) {
         if (toDelete instanceof IIpsObjectPart) {
             ((IIpsObjectPart)toDelete).delete();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id) {
 
         initChangesOverTimeNamingConventionIfNecessary();
@@ -1500,7 +1423,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * ResourceDeltaVisitor to generate ips model change events.
+     * ResourceDeltaVisitor to generate IPS model change events.
      */
     private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
@@ -1569,9 +1492,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void clearValidationCache() {
         getValidationResultCache().removeStaleData(null);
     }
@@ -1596,9 +1516,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 .toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
         createIpsArtefactBuilderSetInfosIfNecessary();
         for (Iterator it = builderSetInfoList.iterator(); it.hasNext();) {
@@ -1610,16 +1527,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType[] getIpsObjectTypes() {
         return ipsObjectTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType(String name) {
         for (int i = 0; i < ipsObjectTypes.length; i++) {
             if (ipsObjectTypes[i].getId().equals(name)) {
@@ -1629,9 +1540,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension) {
         for (int i = 0; i < ipsObjectTypes.length; i++) {
             if (ipsObjectTypes[i].getFileExtension().equals(fileExtension)) {
@@ -1672,14 +1580,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object
      * from the cache if the file exists and didn't change, otherwise update sort order from the
-     * filesystem.
+     * file system.
      * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be
      *         not <code>null</code>.
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
-
         // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
 
@@ -1734,11 +1641,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return sortDef;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isContainedInArchive() {
+        return false;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
         return false;
     }
 

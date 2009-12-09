@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -41,9 +42,6 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class TableStructure extends IpsObject implements ITableStructure {
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
@@ -63,11 +61,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         super();
     }
 
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
-     */
     @Override
     public IIpsElement[] getChildren() {
         int numOfChildren = getNumOfColumns() + getNumOfRanges() + getNumOfUniqueKeys() + getNumOfForeignKeys();
@@ -81,9 +74,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return childrenArray;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMultipleContentsAllowed() {
         return type == TableStructureType.MULTIPLE_CONTENTS;
     }
@@ -102,22 +92,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return type;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumns()
-     */
     public IColumn[] getColumns() {
         IColumn[] c = new IColumn[columns.size()];
         columns.toArray(c);
         return c;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumn(java.lang.String)
-     */
     public IColumn getColumn(String name) {
         for (Iterator it = columns.iterator(); it.hasNext();) {
             IColumn column = (IColumn)it.next();
@@ -128,41 +108,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumn(int)
-     */
     public IColumn getColumn(int index) {
         return (IColumn)columns.get(index);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getNumOfColumns()
-     */
     public int getNumOfColumns() {
         return columns.size();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#newColumn()
-     */
     public IColumn newColumn() {
         IColumn newColumn = newColumnInternal(getNextPartId());
         objectHasChanged();
         return newColumn;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#moveColumns(int[],
-     *      boolean)
-     */
     public int[] moveColumns(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(columns);
         int[] result = mover.move(indexes, up);
@@ -180,9 +139,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         columns.remove(column);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getColumnIndex(IColumn column) {
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i) == column) {
@@ -192,22 +148,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getRanges()
-     */
     public IColumnRange[] getRanges() {
         IColumnRange[] c = new IColumnRange[ranges.size()];
         ranges.toArray(c);
         return c;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getRange(java.lang.String)
-     */
     public IColumnRange getRange(String name) {
         for (Iterator it = ranges.iterator(); it.hasNext();) {
             IColumnRange range = (IColumnRange)it.next();
@@ -218,32 +164,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getNumOfRanges()
-     */
     public int getNumOfRanges() {
         return ranges.size();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#newColumn()
-     */
     public IColumnRange newRange() {
         IColumnRange newRange = newColumnRangeInternal(getNextPartId());
         objectHasChanged();
         return newRange;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#moveRanges(int[],
-     *      boolean)
-     */
     public int[] moveRanges(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(ranges);
         int[] result = mover.move(indexes, up);
@@ -261,22 +191,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         ranges.remove(range);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getUniqueKeys()
-     */
     public IUniqueKey[] getUniqueKeys() {
         IUniqueKey[] keys = new IUniqueKey[uniqueKeys.size()];
         uniqueKeys.toArray(keys);
         return keys;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getUniqueKey(java.lang.String)
-     */
     public IUniqueKey getUniqueKey(String name) {
         for (Iterator it = uniqueKeys.iterator(); it.hasNext();) {
             IUniqueKey key = (IUniqueKey)it.next();
@@ -287,32 +207,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getNumOfUniqueKeys()
-     */
     public int getNumOfUniqueKeys() {
         return uniqueKeys.size();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#newUniqueKey()
-     */
     public IUniqueKey newUniqueKey() {
         IUniqueKey newUniqueKey = newUniqueKeyInternal(getNextPartId());
         objectHasChanged();
         return newUniqueKey;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#moveUniqueKeys(int[],
-     *      boolean)
-     */
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(uniqueKeys);
         int[] result = mover.move(indexes, up);
@@ -330,22 +234,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         uniqueKeys.remove(key);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getForeignKeys()
-     */
     public IForeignKey[] getForeignKeys() {
         IForeignKey[] keys = new IForeignKey[foreignKeys.size()];
         foreignKeys.toArray(keys);
         return keys;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getForeignKey(java.lang.String)
-     */
     public IForeignKey getForeignKey(String name) {
         for (Iterator it = foreignKeys.iterator(); it.hasNext();) {
             IForeignKey key = (IForeignKey)it.next();
@@ -356,32 +250,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getNumOfForeignKeys()
-     */
     public int getNumOfForeignKeys() {
         return foreignKeys.size();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#newUniqueKey()
-     */
     public IForeignKey newForeignKey() {
         IForeignKey newForeignKey = newForeignKeyInternal(getNextPartId());
         objectHasChanged();
         return newForeignKey;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#moveForeignKeys(int[],
-     *      boolean)
-     */
     public int[] moveForeignKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(foreignKeys);
         int[] result = mover.move(indexes, up);
@@ -399,32 +277,18 @@ public class TableStructure extends IpsObject implements ITableStructure {
         foreignKeys.remove(key);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsobject.IIpsObject#getIpsObjectType()
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_STRUCTURE;
     }
 
-    /**
-     * Overridden.
-     */
     public boolean hasRange(String name) {
         return getRange(name) != null;
     }
 
-    /**
-     * Overridden.
-     */
     public boolean hasColumn(String name) {
         return getColumn(name) != null;
     }
 
-    /**
-     * Overridden IMethod.
-     */
     public ITableAccessFunction[] getAccessFunctions() {
         if (getUniqueKeys().length == 0) {
             return new ITableAccessFunction[0];
@@ -463,9 +327,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return fct;
     }
 
-    /**
-     * Overridden.
-     */
     public IColumn[] getColumnsNotInKey(IKey key) {
         ArgumentCheck.notNull(key);
         List columnsNotInKey = new ArrayList(columns);
@@ -479,22 +340,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return (IColumn[])columnsNotInKey.toArray(new IColumn[columnsNotInKey.size()]);
     }
 
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#propertiesToXml(org.w3c.dom.Element)
-     */
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TYPE, type.getId());
     }
 
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -514,11 +365,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
     }
 
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#reinitPartCollections()
-     */
     @Override
     protected void reinitPartCollections() {
         columns.clear();
@@ -527,9 +373,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         foreignKeys.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
@@ -548,9 +391,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
@@ -569,9 +409,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -588,9 +425,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         if (partType.equals(IColumn.class)) {
             return newColumnInternal(getNextPartId());
@@ -604,16 +438,10 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isModelEnumType() {
         return type == TableStructureType.ENUMTYPE_MODEL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -631,9 +459,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
      * org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools
      * .core.model.ipsproject.IIpsProject, boolean)
      */
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
@@ -641,6 +466,14 @@ public class TableStructure extends IpsObject implements ITableStructure {
             result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

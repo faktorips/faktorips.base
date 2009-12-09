@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -41,24 +42,26 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
 
     /** Tags */
     final static String TAG_NAME = "FormulaTestInputValue"; //$NON-NLS-1$
-    
+
     private String identifier = ""; //$NON-NLS-1$
     private String value = ""; //$NON-NLS-1$
-    
+
     public FormulaTestInputValue(IFormulaTestCase parent, int id) {
         super(parent, id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         identifier = element.getAttribute(PROPERTY_IDENTIFIER);
@@ -68,12 +71,13 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_IDENTIFIER, identifier);
         ValueToXmlHelper.addValueToElement(value, element, StringUtils.capitalize(PROPERTY_VALUE));
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -87,33 +91,33 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     public String getIdentifier() {
         return identifier;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IParameter findFormulaParameter(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(identifier)){
+        if (StringUtils.isEmpty(identifier)) {
             return null;
         }
-        IFormulaTestCase testcase = (IFormulaTestCase) getParent();
+        IFormulaTestCase testcase = (IFormulaTestCase)getParent();
         IFormula formula = testcase.getFormula();
         IMethod method = formula.findFormulaSignature(ipsProject);
-        if (method== null){
+        if (method == null) {
             return null;
         }
-        //TODO pk 2007-10-19 this kind of code appears in several areas. Think about refactoring it
+        // TODO pk 2007-10-19 this kind of code appears in several areas. Think about refactoring it
         int index = identifier.lastIndexOf("."); //$NON-NLS-1$
         String parameterIdentifier = ""; //$NON-NLS-1$
-        if (index == -1){
+        if (index == -1) {
             parameterIdentifier = identifier;
         } else {
             parameterIdentifier = identifier.substring(0, index);
         }
-        
+
         // find the corresponding parameter
         IParameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
-            if (parameterIdentifier.equals(parameters[i].getName())){
+            if (parameterIdentifier.equals(parameters[i].getName())) {
                 return parameters[i];
             }
         }
@@ -150,7 +154,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
      */
     public ValueDatatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException {
         IParameter param = findFormulaParameter(ipsProject);
-        if (param == null){
+        if (param == null) {
             return null;
         }
         Datatype datatype = getIpsProject().findDatatype(param.getDatatype());
@@ -170,10 +174,10 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                         identifier)));
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
-            IType type = (IType) datatype;
+            IType type = (IType)datatype;
             IAttribute attribute = type.findAttribute(attributeName, ipsProject);
-            if (attribute == null){
-                // attribute not found, therfore the datatype couldn't be determined, 
+            if (attribute == null) {
+                // attribute not found, therfore the datatype couldn't be determined,
                 // remark this inconsistence will be reported in the vaildate method
                 return null;
             }
@@ -181,13 +185,12 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         }
         return (ValueDatatype)datatype;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        //TODO pk: seems not to be correct to get the IpsProject like this. Should be provided as parameter
+        // TODO pk: seems not to be correct to get the IpsProject like this. Should be provided as
+        // parameter
         IParameter param = findFormulaParameter(ipsProject);
         if (param == null) {
             String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound,
@@ -208,21 +211,28 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                     if (attribute == null) {
                         // attribute not found
                         knownReason = true;
-                        String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound, attributeName);
+                        String text = NLS
+                                .bind(
+                                        Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound,
+                                        attributeName);
                         list.add(new Message(MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this,
                                 PROPERTY_IDENTIFIER));
                     } else if (attribute.findDatatype(ipsProject) == null) {
                         // datatype of attribute not found
                         knownReason = true;
-                        String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,
-                                attribute.getDatatype(), identifier);
+                        String text = NLS
+                                .bind(
+                                        Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,
+                                        attribute.getDatatype(), identifier);
                         list.add(new Message(MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.WARNING,
                                 this, PROPERTY_IDENTIFIER));
                     }
                 }
                 if (!knownReason) {
                     // unknown reason
-                    String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound, param.getDatatype());
+                    String text = NLS.bind(
+                            Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound,
+                            param.getDatatype());
                     list.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_IDENTIFIER));
                 }
             } else if (!(datatype instanceof ValueDatatype)) {
@@ -235,5 +245,13 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                 ValidationUtils.checkValue(datatype.getQualifiedName(), value, this, PROPERTY_VALUE, list);
             }
         }
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 }

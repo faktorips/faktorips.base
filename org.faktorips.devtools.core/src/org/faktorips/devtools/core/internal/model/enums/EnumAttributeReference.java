@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
@@ -43,6 +44,7 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
         super(parent, id);
     }
 
+    @Override
     public void setName(String name) {
         ArgumentCheck.notNull(name);
 
@@ -81,6 +83,14 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
      */
     @Override
     public boolean isDescriptionChangable() {
+        return false;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
         return false;
     }
 

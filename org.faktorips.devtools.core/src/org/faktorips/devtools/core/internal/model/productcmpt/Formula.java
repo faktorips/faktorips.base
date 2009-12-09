@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -68,8 +69,9 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
 
     private String formulaSignature = ""; //$NON-NLS-1$
     private String expression = ""; //$NON-NLS-1$
-    private IpsObjectPartCollection testcases = new IpsObjectPartCollection(this, FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
-    
+    private IpsObjectPartCollection testcases = new IpsObjectPartCollection(this, FormulaTestCase.class,
+            IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
+
     public Formula(IIpsObjectPart parent, int id) {
         super(parent, id);
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
@@ -84,13 +86,15 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return formulaSignature;
     }
@@ -129,7 +133,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -161,7 +165,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             return null;
         }
         IProductCmptType type = findProductCmptType(ipsProject);
-        if (type==null) {
+        if (type == null) {
             return null;
         }
         return type.findFormulaSignature(formulaSignature, ipsProject);
@@ -172,7 +176,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IMethod signature = findFormulaSignature(ipsProject);
-        if (signature!=null) {
+        if (signature != null) {
             Datatype datatype = signature.findDatatype(ipsProject);
             if (datatype.isValueDatatype()) {
                 return (ValueDatatype)datatype;
@@ -209,18 +213,18 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      */
     public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
         ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
-        
+
         // add the table functions based on the table usages defined in the product cmpt type
         IProductCmptGeneration gen = getProductCmptGeneration();
         compiler.add(new TableUsageFunctionsResolver(ipsProject, gen.getTableContentUsages()));
-        
+
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
         IMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             return compiler;
         }
         IdentifierResolver resolver;
-        if (! formulaTest){
+        if (!formulaTest) {
             resolver = builderSet.createFlIdentifierResolver(this, compiler);
         } else {
             // create special identifier resolver for test methods
@@ -230,10 +234,10 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             return compiler;
         }
         compiler.setIdentifierResolver(resolver);
-        
+
         return compiler;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -249,26 +253,26 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         collectEnumsAllowedInFormula(enumtypes);
         return (EnumDatatype[])enumtypes.values().toArray(new EnumDatatype[enumtypes.size()]);
     }
-    
-    private void collectEnumsAllowedInFormula(Map nameToTypeMap) throws CoreException{
+
+    private void collectEnumsAllowedInFormula(Map nameToTypeMap) throws CoreException {
         collectEnumTypesFromAttributes(nameToTypeMap);
         collectEnumTypesFromMethod(nameToTypeMap);
     }
-    
-    private void collectEnumTypesFromAttributes(Map enumTypes) throws CoreException{
+
+    private void collectEnumTypesFromAttributes(Map enumTypes) throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         IProductCmptType productCmptType = getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
-        if(productCmptType != null){
+        if (productCmptType != null) {
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
             for (int i = 0; i < attributes.length; i++) {
                 Datatype datatype = attributes[i].findDatatype(ipsProject);
-                if(datatype instanceof EnumDatatype){
+                if (datatype instanceof EnumDatatype) {
                     enumTypes.put(datatype.getName(), datatype);
                 }
             }
         }
     }
-    
+
     private void collectEnumTypesFromMethod(Map enumtypes) throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         IMethod method = findFormulaSignature(getIpsProject());
@@ -297,7 +301,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             }
         }
     }
-    
+
     private void searchAndAdd(IIpsProject ipsProject, String datatypeName, Map types) throws CoreException {
         if (types.containsKey(datatypeName)) {
             return;
@@ -312,47 +316,48 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      * {@inheritDoc}
      */
     public String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(expression)){
+        if (StringUtils.isEmpty(expression)) {
             return new String[0];
         }
         IProductCmptTypeMethod signature = findFormulaSignature(ipsProject);
-        if (signature == null){
+        if (signature == null) {
             return new String[0];
         }
         ExprCompiler compiler = newExprCompiler(ipsProject);
         CompilationResult compilationResult = compiler.compile(expression);
-        
+
         // store the resolved identifiers in the cache
         String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
-        if(resolvedIdentifiers.length == 0){
+        if (resolvedIdentifiers.length == 0) {
             return resolvedIdentifiers;
         }
         Map enumNamesToTypes = new HashMap();
         collectEnumsAllowedInFormula(enumNamesToTypes);
         List filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
-        
+
         IAttribute[] attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
         Set attributeNames = new HashSet(attributes.length);
         for (int i = 0; i < attributes.length; i++) {
             attributeNames.add(attributes[i].getName());
         }
-        
+
         for (Iterator it = filteredIdentifieres.iterator(); it.hasNext();) {
             String idendtifier = (String)it.next();
-            if(attributeNames.contains(idendtifier)){
+            if (attributeNames.contains(idendtifier)) {
                 it.remove();
             }
         }
         return (String[])filteredIdentifieres.toArray(new String[filteredIdentifieres.size()]);
     }
-    
-    private List removeIdentifieresOfEnumDatatypes(Map enumDatatypes, String[] allIdentifiersUsedInFormula){
+
+    private List removeIdentifieresOfEnumDatatypes(Map enumDatatypes, String[] allIdentifiersUsedInFormula) {
         List filteredIdentifiers = new ArrayList(allIdentifiersUsedInFormula.length);
         for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
-            if(allIdentifiersUsedInFormula[i] != null){
-                if(allIdentifiersUsedInFormula[i].indexOf('.') != -1){
-                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i].indexOf('.'));
-                    if(!enumDatatypes.containsKey(identifierRoot)){
+            if (allIdentifiersUsedInFormula[i] != null) {
+                if (allIdentifiersUsedInFormula[i].indexOf('.') != -1) {
+                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i]
+                            .indexOf('.'));
+                    if (!enumDatatypes.containsKey(identifierRoot)) {
                         filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
                     }
                     continue;
@@ -363,7 +368,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return filteredIdentifiers;
     }
 
-    
     /**
      * {@inheritDoc}
      */
@@ -398,10 +402,11 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     public void removeFormulaTestCase(IFormulaTestCase formulaTest) {
         testcases.removePart(formulaTest);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         formulaSignature = element.getAttribute(PROPERTY_FORMULA_SIGNATURE_NAME);
@@ -411,15 +416,17 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_NAME, formulaSignature);
-        ValueToXmlHelper.addValueToElement(expression, element, TAG_NAME_FOR_EXPRESSION); //$NON-NLS-1$
+        ValueToXmlHelper.addValueToElement(expression, element, TAG_NAME_FOR_EXPRESSION);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         if (StringUtils.isEmpty(expression)) {
@@ -433,13 +440,12 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             MessageList compilerMessageList = result.getMessages();
             for (int i = 0; i < compilerMessageList.getNoOfMessages(); i++) {
                 Message msg = compilerMessageList.getMessage(i);
-                list.add(new Message(msg.getCode(), msg.getText(), msg
-                        .getSeverity(), this, PROPERTY_EXPRESSION));
+                list.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_EXPRESSION));
             }
             return;
         }
         IMethod method = findFormulaSignature(ipsProject);
-        if (method==null) {
+        if (method == null) {
             String text = Messages.Formula_msgFormulaSignatureMissing;
             list.add(new Message(MSGCODE_SIGNATURE_CANT_BE_FOUND, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
@@ -453,26 +459,33 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         if (signatureDatatype.equals(result.getDatatype())) {
             return;
         }
-        if (compiler.getConversionCodeGenerator().canConvert(
-                result.getDatatype(), signatureDatatype)) {
+        if (compiler.getConversionCodeGenerator().canConvert(result.getDatatype(), signatureDatatype)) {
             return;
         }
         String text = NLS.bind(Messages.Formula_msgWrongReturntype, signatureDatatype, result.getDatatype().getName());
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
     }
 
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
 
     class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
-        
+
         private IIpsProject project;
         private Map enumtypes;
-        
+
         public EnumDatatypesCollector(IIpsProject project, Map enumtypes) {
             super();
             this.project = project;
             this.enumtypes = enumtypes;
         }
 
+        @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAttribute[] attr = currentType.getPolicyCmptTypeAttributes();
             for (int i = 0; i < attr.length; i++) {
@@ -480,8 +493,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             }
             return true;
         }
-        
-    }
 
+    }
 
 }

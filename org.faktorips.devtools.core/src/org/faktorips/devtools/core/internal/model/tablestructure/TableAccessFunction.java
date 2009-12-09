@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -28,10 +29,10 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     private String accessedColumn;
     private String type;
     private String[] argTypes = new String[0];
-    
+
     // hides field in supertype. Done to avoid update-events fired on description changes.
-    private String description; 
-    
+    private String description;
+
     public TableAccessFunction(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -43,17 +44,19 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     public TableAccessFunction() {
         super();
     }
-    
+
     public ITableStructure getTableStructure() {
         return (ITableStructure)getParent();
     }
 
+    @Override
     protected Element createElement(Document doc) {
         return null;
     }
 
-    public String getName(){
-    	return getTableStructure().getName() + '.' + getAccessedColumn();
+    @Override
+    public String getName() {
+        return getTableStructure().getName() + '.' + getAccessedColumn();
     }
 
     public String getAccessedColumn() {
@@ -61,12 +64,9 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     }
 
     public void setAccessedColumn(String columnName) {
-        this.accessedColumn = columnName;
+        accessedColumn = columnName;
     }
-    
-    /**
-     * Overridden.
-     */
+
     public IColumn findAccessedColumn() {
         return getTableStructure().getColumn(accessedColumn);
     }
@@ -74,11 +74,11 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     public String getType() {
         return type;
     }
-    
+
     public void setType(String newType) {
-        this.type = newType;
+        type = newType;
     }
-    
+
     public void setArgTypes(String[] types) {
         // make a defensive copy.
         argTypes = new String[types.length];
@@ -91,30 +91,33 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         return types; // return defensive copy
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return null;
     }
 
-	/**
-	 * Overridden to avoid change-notifications on description changes. This method is necessary, 
-	 * because we hide the field holding the description in supertype.
-	 * {@inheritDoc}
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * Overridden to avoid change-notifications on description changes. This method is necessary,
+     * because we hide the field holding the description in supertype. {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * Overridden to avoid change-notifications on description changes. 
-	 * {@inheritDoc}
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * Overridden to avoid change-notifications on description changes. {@inheritDoc}
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
 
 }

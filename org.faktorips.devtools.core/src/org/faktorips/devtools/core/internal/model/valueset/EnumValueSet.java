@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -66,16 +67,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         super(ValueSetType.ENUM, parent, partId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getValues() {
         return values.toArray(new String[values.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
@@ -89,11 +84,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return positions;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -143,9 +133,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required");
@@ -201,16 +188,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return contains;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset) {
         return containsValueSet(subset, new MessageList(), null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addValue(String val) {
         addValueWithoutTriggeringChangeEvent(val);
         objectHasChanged();
@@ -240,18 +221,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         indexList.add(newIndex);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeValue(int index) {
         values.remove(index);
         refillValuesToIndexMap();
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeValue(String value) {
         removeWithoutTriggeringChangeEvents(value);
         objectHasChanged();
@@ -291,16 +266,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getValue(int index) {
         return values.get(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public void setValue(int index, String value) {
         String oldValue = values.get(index);
@@ -319,16 +288,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         valueChanged(oldValue, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int size() {
         return values.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getValuesNotContained(IEnumValueSet otherSet) {
         List<String> result = new ArrayList<String>();
         if (otherSet == null) {
@@ -342,9 +305,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return result.toArray(new String[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         ValueDatatype datatype = getValueDatatype();
@@ -362,9 +322,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
         MessageList list = new MessageList();
         validateValueWithoutDuplicateCheck(list, index, getValueDatatype());
@@ -467,9 +424,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return values.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -484,9 +438,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -501,9 +452,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         element.appendChild(tagElement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValueSet copy(IIpsObjectPart parent, int id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
@@ -511,9 +459,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return copy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void copyPropertiesFrom(IValueSet source) {
         values.clear();
@@ -522,9 +467,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addValuesFromDatatype(EnumDatatype datatype) {
         String[] valueIds = datatype.getAllValueIds(true);
         for (int i = 0; i < valueIds.length; i++) {
@@ -532,16 +474,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getContainsNull() {
         return values.contains(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setContainsNull(boolean containsNull) {
         boolean old = getContainsNull();
 
@@ -555,4 +491,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
         valueChanged(old, containsNull);
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

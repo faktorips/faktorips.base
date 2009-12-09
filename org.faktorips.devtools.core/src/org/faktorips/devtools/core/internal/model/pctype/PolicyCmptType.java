@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -70,49 +71,31 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         rules = new IpsObjectPartCollection(this, ValidationRule.class, IValidationRule.class, ValidationRule.TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection createCollectionForMethods() {
         return new IpsObjectPartCollection(this, Method.class, IMethod.class, Method.XML_ELEMENT_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection createCollectionForAssociations() {
         return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.class,
                 PolicyCmptTypeAssociation.TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection createCollectionForAttributes() {
         return new IpsObjectPartCollection(this, PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.class,
                 PolicyCmptTypeAttribute.TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getProductCmptType() {
         return productCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isConfigurableByProductCmptType() {
         return configurableByProductCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setConfigurableByProductCmptType(boolean newValue) {
         boolean oldValue = configurableByProductCmptType;
         configurableByProductCmptType = newValue;
@@ -122,9 +105,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmptType(getProductCmptType());
     }
@@ -136,25 +116,16 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isForceExtensionCompilationUnitGeneration() {
         return forceExtensionCompilationUnitGeneration;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setForceExtensionCompilationUnitGeneration(boolean flag) {
         boolean oldValue = forceExtensionCompilationUnitGeneration;
         forceExtensionCompilationUnitGeneration = flag;
         valueChanged(oldValue, forceExtensionCompilationUnitGeneration);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isExtensionCompilationUnitGenerated() {
         if (forceExtensionCompilationUnitGeneration) {
             return true;
@@ -181,38 +152,26 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute[] getPolicyCmptTypeAttributes() {
         IPolicyCmptTypeAttribute[] a = new IPolicyCmptTypeAttribute[attributes.size()];
         attributes.toArray(a);
         return a;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name) {
         return (IPolicyCmptTypeAttribute)getAttribute(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
             throws CoreException {
         return (IPolicyCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)newAttribute();
     }
 
-    /*
+    /**
      * Returns the list holding the attributes as a reference. Package private for use in
      * TypeHierarchy.
      */
@@ -220,7 +179,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return attributes.getBackingList();
     }
 
-    /*
+    /**
      * Returns the list holding the methods as a reference. Package private for use in
      * TypeHierarchy.
      */
@@ -228,34 +187,23 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return methods.getBackingList();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     public boolean isAggregateRoot() throws CoreException {
         IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor();
         visitor.start(this);
         return visitor.isRoot();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDependantType() throws CoreException {
         return !isAggregateRoot();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations() {
         IPolicyCmptTypeAssociation[] r = new IPolicyCmptTypeAssociation[associations.size()];
         associations.toArray(r);
         return r;
     }
 
-    /*
+    /**
      * Returns the list holding the associations as a reference. Package private for use in
      * TypeHierarchy.
      */
@@ -263,60 +211,39 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return associations.getBackingList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation() {
         return (IPolicyCmptTypeAssociation)newAssociation();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule[] getRules() {
         IValidationRule[] r = new IValidationRule[rules.size()];
         rules.toArray(r);
         return r;
     }
 
-    /*
+    /**
      * Returns the list holding the rules as a reference. Package private for use in TypeHierarchy.
      */
     List getRulesList() {
         return rules.getBackingList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule newRule() {
         return (IValidationRule)rules.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfRules() {
         return rules.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int[] moveRules(int[] indexes, boolean up) {
         return rules.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.POLICY_CMPT_TYPE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -327,9 +254,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
@@ -339,9 +263,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 .setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -400,23 +321,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(ipsProject);
 
@@ -446,9 +358,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return (IPolicyCmptTypeAttribute[])result.toArray(new IPolicyCmptTypeAttribute[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes) {
         IPolicyCmptTypeAttribute[] newAttributes = new IPolicyCmptTypeAttribute[attributes.length];
         for (int i = 0; i < attributes.length; i++) {
@@ -469,9 +378,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return newAttributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDependency[] dependsOn() throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
@@ -486,13 +392,18 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
@@ -523,9 +434,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             this.msgList = msgList;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             for (IValidationRule validationRule : currentType.getRules()) {

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -55,25 +56,16 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 IControlFlow.XML_TAG);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Dimension getParameterRectangleSize() {
         return parameterRectangleSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setParameterRectangleSize(Dimension parameterRectangleSize) {
         Dimension old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;
         valueChanged(old, parameterRectangleSize);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement getStart() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -84,9 +76,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement getEnd() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -97,16 +86,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Point getParameterRectangleLocation() {
         return parameterRectangleLocation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IParameterBFE> getParameterBFEs() {
         ArrayList<IParameterBFE> returnValue = new ArrayList<IParameterBFE>();
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
@@ -115,9 +98,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return returnValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IParameterBFE getParameterBFE(String name) {
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
             if (parameterBFE.getName().equals(name)) {
@@ -127,36 +107,27 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement getBFElement(Integer id) {
         if (id == null) {
             return null;
         }
-        IBFElement element = (IBFElement)simpleElements.getPartById(id);
+        IBFElement element = simpleElements.getPartById(id);
         if (element == null) {
-            element = (IBFElement)actions.getPartById(id);
+            element = actions.getPartById(id);
         }
         if (element == null) {
-            element = (IBFElement)decisions.getPartById(id);
+            element = decisions.getPartById(id);
         }
         if (element == null) {
-            element = (IBFElement)parameters.getPartById(id);
+            element = parameters.getPartById(id);
         }
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IControlFlow newControlFlow() {
         return (IControlFlow)controlFlows.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IControlFlow getControlFlow(int id) {
         IIpsObjectPart[] parts = controlFlows.getParts();
         for (IIpsObjectPart ipsObjectPart : parts) {
@@ -167,9 +138,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public List<IControlFlow> getControlFlows() {
         IIpsObjectPart[] controlFlowParts = controlFlows.getParts();
@@ -178,97 +146,62 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return controlFlowList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement newEnd(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.END);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement newMerge(Point location) {
-        return (BFElement)simpleElements.newBFElement(location, BFElementType.MERGE);
+        return simpleElements.newBFElement(location, BFElementType.MERGE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IBFElement newStart(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.START);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IActionBFE newOpaqueAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_INLINE);
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IActionBFE newMethodCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_METHODCALL);
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IActionBFE newBusinessFunctionCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_BUSINESSFUNCTIONCALL);
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IDecisionBFE newDecision(Point location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION);
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     // TODO testing
     public IDecisionBFE newMethodCallDecision(Point location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION_METHODCALL);
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IParameterBFE newParameter() {
         ParameterBFE element = (ParameterBFE)parameters.newBFElement(null, BFElementType.PARAMETER);
         return element;
     }
 
-    /**
-    @SuppressWarnings("unchecked")
-    public List<IBFElement> getBFElementsWithoutParameters() {
-
-        List<IBFElement> nodeList = new ArrayList<IBFElement>();
-        IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = actions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = decisions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        return nodeList;
-    }
-
-    /**
-     * {@inheritDoc}
+    /*
+     * @SuppressWarnings("unchecked") public List<IBFElement> getBFElementsWithoutParameters() {
+     * 
+     * List<IBFElement> nodeList = new ArrayList<IBFElement>(); IIpsObjectPart[] bFParts =
+     * simpleElements.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); bFParts =
+     * actions.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); bFParts =
+     * decisions.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); return nodeList; }
      */
+
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
@@ -283,9 +216,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return nodeList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return BusinessFunctionIpsObjectType.getInstance();
     }
@@ -377,7 +307,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     private List<IBFElement> getValue(Map<String, List<IBFElement>> elements, String key) {
-        List<IBFElement> list = (List<IBFElement>)elements.get(key);
+        List<IBFElement> list = elements.get(key);
         if (list == null) {
             list = new ArrayList<IBFElement>();
             elements.put(key, list);
@@ -393,7 +323,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             }
         }
         if (startElements.size() > 1) {
-            String text = NLS.bind(Messages.getString("BusinessFunction.elementOnlyOnce"), type.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            String text = NLS.bind(Messages.getString("BusinessFunction.elementOnlyOnce"), type.getName()); //$NON-NLS-1$ 
             for (IBFElement element : startElements) {
                 msgList.add(new Message(msgCode, text, Message.ERROR, element));
             }
@@ -557,12 +487,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
-    
+
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
         IIpsObjectPart[] bFParts = simpleElements.getParts();
         nodeList.addAll((Collection)Arrays.asList(bFParts));
@@ -571,6 +498,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         bFParts = decisions.getParts();
         nodeList.addAll((Collection)Arrays.asList(bFParts));
         return nodeList;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
     private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection<BFElement> {
@@ -592,4 +527,5 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             return newPart(initializer);
         }
     }
+
 }

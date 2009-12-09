@@ -15,13 +15,13 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -43,9 +43,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * @inheritDoc
- */
 public class ValidationRule extends AtomicIpsObjectPart implements IValidationRule {
 
     final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
@@ -87,34 +84,24 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      * Constructor for testing purposes.
      */
     public ValidationRule() {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getBusinessFunctions() {
-        return (String[])functions.toArray(new String[functions.size()]);
+        return functions.toArray(new String[functions.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setBusinessFunctions(String[] functionNames) {
         functions.clear();
         for (int i = 0; i < functionNames.length; i++) {
@@ -123,40 +110,25 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfBusinessFunctions() {
         return functions.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addBusinessFunction(String functionName) {
         ArgumentCheck.notNull(functionName);
         functions.add(functionName);
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeBusinessFunction(int index) {
         functions.remove(index);
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getBusinessFunction(int index) {
-        return (String)functions.get(index);
+        return functions.get(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setBusinessFunctions(int index, String functionName) {
         ArgumentCheck.notNull(functionName);
         String oldName = getBusinessFunction(index);
@@ -164,25 +136,17 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         valueChanged(oldName, functionName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAppliedForAllBusinessFunctions() {
         return appliedForAllBusinessFunction;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setAppliedForAllBusinessFunctions(boolean newValue) {
         boolean oldValue = appliedForAllBusinessFunction;
         appliedForAllBusinessFunction = newValue;
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
@@ -208,25 +172,26 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {
-        for (int i=0; i<functions.size(); i++) {
+        for (int i = 0; i < functions.size(); i++) {
             String function = functions.get(i);
             if (StringUtils.isNotEmpty(function)) {
                 if (ipsProject.findIpsObject(IpsObjectType.BUSINESS_FUNCTION, function) == null) {
                     String text = NLS.bind(Messages.ValidationRule_msgFunctionNotExists, function);
                     list.add(new Message("", text, Message.ERROR, //$NON-NLS-1$
-                            new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i))); //$NON-NLS-1$
+                            new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
                 } else {
                     if (isAppliedForAllBusinessFunctions()) {
                         String text = Messages.ValidationRule_msgIgnored;
                         list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
-                                new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i))); //$NON-NLS-1$
+                                new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
                     }
                 }
             }
         }
         if (!isAppliedForAllBusinessFunctions() && functions.isEmpty()) {
             String text = Messages.ValidationRule_msgOneBusinessFunction;
-            list.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
+            list.add(new Message(
+                    "", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
         }
     }
 
@@ -259,10 +224,10 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             attributeNames.add(attributes[i].getName());
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
-            String validatedAttribute = (String)validatedAttributes.get(i);
+            String validatedAttribute = validatedAttributes.get(i);
             if (!attributeNames.contains(validatedAttribute)) {
                 String text = Messages.ValidationRule_msgUndefinedAttribute;
-                list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR, //$NON-NLS-1$
+                list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR,
                         new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
             } else {
                 IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findPolicyCmptTypeAttribute(
@@ -288,64 +253,42 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getMessageText() {
         return msgText;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setMessageText(String newText) {
         String oldText = msgText;
         msgText = newText;
         valueChanged(oldText, msgText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getMessageCode() {
         return msgCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setMessageCode(String newCode) {
         String oldCode = msgCode;
         msgCode = newCode;
         valueChanged(oldCode, msgCode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageSeverity getMessageSeverity() {
         return msgSeverity;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setMessageSeverity(MessageSeverity newSeverity) {
         MessageSeverity oldSeverity = msgSeverity;
         msgSeverity = newSeverity;
         valueChanged(oldSeverity, msgSeverity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
@@ -376,9 +319,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         functions.trimToSize();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_NAME, name);
@@ -397,15 +338,12 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
             Element attrElement = doc.createElement("ValidatedAttribute"); //$NON-NLS-1$
-            attrElement.setAttribute("name", (String)validatedAttributes //$NON-NLS-1$
+            attrElement.setAttribute("name", validatedAttributes //$NON-NLS-1$
                     .get(i));
             newElement.appendChild(attrElement);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String addValidatedAttribute(String attributeName) {
         ArgumentCheck.notNull(this, attributeName);
         validatedAttributes.add(attributeName);
@@ -413,68 +351,52 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         return attributeName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getValidatedAttributes() {
-        return (String[])validatedAttributes.toArray(new String[validatedAttributes.size()]);
+        return validatedAttributes.toArray(new String[validatedAttributes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeValidatedAttribute(int index) {
         validatedAttributes.remove(index);
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getValidatedAttributeAt(int index) {
-        return (String)validatedAttributes.get(index);
+        return validatedAttributes.get(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValidatedAttributeAt(int index, String attributeName) {
         String oldValue = getValidatedAttributeAt(index);
         validatedAttributes.set(index, attributeName);
         valueChanged(oldValue, attributeName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValidatedAttrSpecifiedInSrc() {
         return validatedAttrSpecifiedInSrc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValidatedAttrSpecifiedInSrc(boolean validatedAttrSpecifiedInSrc) {
         boolean oldValue = this.validatedAttrSpecifiedInSrc;
         this.validatedAttrSpecifiedInSrc = validatedAttrSpecifiedInSrc;
         valueChanged(oldValue, validatedAttrSpecifiedInSrc);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isCheckValueAgainstValueSetRule() {
         return checkValueAgainstValueSetRule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setCheckValueAgainstValueSetRule(boolean isAttributeValueValidationRule) {
         boolean oldValue = isCheckValueAgainstValueSetRule();
-        this.checkValueAgainstValueSetRule = isAttributeValueValidationRule;
+        checkValueAgainstValueSetRule = isAttributeValueValidationRule;
         valueChanged(oldValue, isAttributeValueValidationRule);
 
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

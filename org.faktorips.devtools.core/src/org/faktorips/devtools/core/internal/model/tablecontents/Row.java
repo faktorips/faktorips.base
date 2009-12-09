@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -38,9 +39,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-/**
- *
- */
 public class Row extends AtomicIpsObjectPart implements IRow {
 
     final static String TAG_NAME = "Row"; //$NON-NLS-1$
@@ -56,9 +54,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         initValues();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITableContents getTableContents() {
         return (ITableContents)getParent().getParent();
     }
@@ -78,7 +73,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         initValues(getNumOfColumnsViaTableContents());
     }
 
-    /*
+    /**
      * Initializes the row's values with blanks
      */
     private void initValues(int numOfColumns) {
@@ -88,17 +83,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return String.valueOf(getId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getRowNumber() {
         return rowNumber;
     }
@@ -113,16 +102,10 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         this.rowNumber = rowNumber;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getValue(int column) {
         return values.get(column);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
         getTableContentsGeneration().updateUniqueKeyCacheFor(this);
@@ -148,14 +131,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         values.remove(column);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("TableRow.gif"); //$NON-NLS-1$
     }
 
-    /*
+    /**
      * Returns the element's first text node.
      */
     private Text getTextNode(Element valueElement) {
@@ -225,7 +205,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
     }
 
-    /*
+    /**
      * Validates this row using the given list of datatypes.
      */
     private void validateMissingAndInvalidUniqueKeyValue(MessageList list,
@@ -346,17 +326,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -380,9 +354,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -403,4 +374,13 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     public int getNoOfColumns() {
         return values.size();
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

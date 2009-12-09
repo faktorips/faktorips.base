@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -48,24 +49,15 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String toShortString() {
         return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return super.toString() + ":" + "UnrestrictedValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -98,9 +90,6 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
@@ -124,25 +113,16 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsValueSet(IValueSet subset) {
         return containsValueSet(subset, new MessageList(), null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        // nothing more to do...
+        // Nothing more to do...
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -151,24 +131,15 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         element.appendChild(tagElement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValueSet copy(IIpsObjectPart parent, int id) {
         return new UnrestrictedValueSet(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void copyPropertiesFrom(IValueSet target) {
-        // nothing to do.
+        // Nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getContainsNull() {
         ValueDatatype type = getValueDatatype();
         return type == null || !type.isPrimitive();
@@ -190,6 +161,14 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             throw new UnsupportedOperationException(
                     "Datatype is nonPrimitive, therefore this all-values valueset must contain null"); //$NON-NLS-1$
         }
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

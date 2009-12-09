@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
@@ -79,25 +80,16 @@ public class TestCase extends IpsObject implements ITestCase {
         super(file);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         return (IIpsElement[])testObjects.toArray(new IIpsElement[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         testObjects = new ArrayList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
@@ -107,9 +99,6 @@ public class TestCase extends IpsObject implements ITestCase {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
@@ -123,9 +112,6 @@ public class TestCase extends IpsObject implements ITestCase {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -139,41 +125,26 @@ public class TestCase extends IpsObject implements ITestCase {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TEST_CASE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         testCaseType = element.getAttribute(PROPERTY_TEST_CASE_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_TEST_CASE_TYPE, testCaseType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
@@ -190,7 +161,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
-    /*
+    /**
      * Adds the dependencies to the given list for the given test policy cmpt and their childs
      */
     private void addQualifiedNameTypesForTestPolicyCmpt(Set dependencies, ITestPolicyCmpt cmpt) throws CoreException {
@@ -210,9 +181,6 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException {
         List allPolicyCmpts = new ArrayList();
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
@@ -222,9 +190,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return (ITestPolicyCmpt[])allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestObject[] getAllTestObjects() throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpts = getAllTestPolicyCmpt();
         ITestRule[] testRuleObjects = getTestRuleObjects();
@@ -238,7 +203,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return result;
     }
 
-    /*
+    /**
      * Adds all test policy cmpts and its child test policy cmpts to the given list.
      */
     private void addChildTestPolicyCmpt(List allPolicyCmpts, ITestPolicyCmpt cmpt) throws CoreException {
@@ -252,9 +217,6 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getReferencedProductCmpts() throws CoreException {
         List relatedProductCmpts = new ArrayList();
         ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
@@ -266,25 +228,16 @@ public class TestCase extends IpsObject implements ITestCase {
         return (String[])relatedProductCmpts.toArray(new String[relatedProductCmpts.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTestCaseType() {
         return testCaseType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setTestCaseType(String testCaseType) {
         String oldTestCaseType = this.testCaseType;
         this.testCaseType = testCaseType;
         valueChanged(oldTestCaseType, testCaseType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testCaseType) || ipsProject == null) {
             return null;
@@ -292,9 +245,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException {
         ITestCaseType testCaseTypeFound = findTestCaseType(getIpsProject());
         if (testCaseTypeFound != null) {
@@ -304,9 +254,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException {
         fixDifferencesTestCaseSide(delta);
         fixDifferencesTestCaseTypeSide(delta);
@@ -431,9 +378,6 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void sortTestObjects() throws CoreException {
         List orderedTestObject = getCorrectSortOrderOfRootObjects(getIpsProject());
         if (orderedTestObject != null) {
@@ -442,7 +386,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /*
+    /**
      * Returns all root objects in the correct sort order compared to the test case type parameters.
      * If the test parameter doesn't exist order the test object to the end of the test object list.
      */
@@ -492,27 +436,18 @@ public class TestCase extends IpsObject implements ITestCase {
         return newTestObjectOrder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestValue newTestValue() {
         ITestValue v = newTestValueInternal(getNextPartId());
         objectHasChanged();
         return v;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestRule newTestRule() {
         ITestRule v = newTestRuleInternal(getNextPartId());
         objectHasChanged();
         return v;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt newTestPolicyCmpt() {
         ITestPolicyCmpt p = newTestPolicyCmptInternal(getNextPartId());
         objectHasChanged();
@@ -523,9 +458,6 @@ public class TestCase extends IpsObject implements ITestCase {
     // Getters for test objects
     //
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestObject[] getTestObjects() {
         List foundTestObjects = getTestObjects(null, null, null);
         if (foundTestObjects.size() == 0) {
@@ -535,23 +467,14 @@ public class TestCase extends IpsObject implements ITestCase {
         return (ITestObject[])foundTestObjects.toArray(new ITestObject[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt[] getTestPolicyCmpts() {
         return (ITestPolicyCmpt[])getTestObjects(null, TestPolicyCmpt.class, null).toArray(new ITestPolicyCmpt[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestValue[] getTestValues() {
         return (ITestValue[])getTestObjects(null, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestRule[] getTestRule(String testRuleParameter) {
         List testRules = getTestObjects(null, TestRule.class, null);
         List result = new ArrayList();
@@ -564,9 +487,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return (ITestRule[])result.toArray(new ITestRule[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestRule[] getTestRuleObjects() {
         return (ITestRule[])getTestObjects(null, TestRule.class, null).toArray(new ITestRule[0]);
     }
@@ -575,23 +495,14 @@ public class TestCase extends IpsObject implements ITestCase {
     // Getters for input objects
     //
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestObject[] getInputTestObjects() {
         return (ITestObject[])getTestObjects(TestParameterType.INPUT, null, null).toArray(new ITestObject[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestValue[] getInputTestValues() {
         return (ITestValue[])getTestObjects(TestParameterType.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt[] getInputTestPolicyCmpts() {
         return (ITestPolicyCmpt[])getTestObjects(TestParameterType.INPUT, TestPolicyCmpt.class, null).toArray(
                 new ITestPolicyCmpt[0]);
@@ -601,40 +512,25 @@ public class TestCase extends IpsObject implements ITestCase {
     // Getters for expected result objects
     //    
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestObject[] getExpectedResultTestObjects() {
         return (ITestObject[])getTestObjects(TestParameterType.EXPECTED_RESULT, null, null).toArray(new ITestObject[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestValue[] getExpectedResultTestValues() {
         return (ITestValue[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestValue.class, null).toArray(
                 new ITestValue[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestRule[] getExpectedResultTestRules() {
         return (ITestRule[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestRule.class, null).toArray(
                 new ITestRule[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts() {
         return (ITestPolicyCmpt[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null)
                 .toArray(new ITestPolicyCmpt[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeTestObject(ITestObject testObject) throws CoreException {
         if (testObject.isRoot()) {
             testObjects.remove(testObject);
@@ -648,18 +544,12 @@ public class TestCase extends IpsObject implements ITestCase {
     // Finder methods to search inside the complete test case structure.
     //
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmpt,
             IIpsProject ipsProject) throws CoreException {
 
         return findTestPolicyCmptTypeParameter(testPolicyCmpt, null, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptLink link, IIpsProject ipsProject)
             throws CoreException {
         return findTestPolicyCmptTypeParameter(null, link, ipsProject);
@@ -755,9 +645,6 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath) throws CoreException {
         TestCaseHierarchyPath path = new TestCaseHierarchyPath(testPolicyCmptPath);
         ITestPolicyCmpt pc = null;
@@ -775,7 +662,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return pc;
     }
 
-    /*
+    /**
      * Assert the correct instance of ITestPolicyCmpt for the given testObject.
      * 
      * @throws CoreException if the check fails.
@@ -787,7 +674,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /*
+    /**
      * Search the test policy component by the given path.
      */
     private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path)
@@ -823,9 +710,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return pc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String generateUniqueNameForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name) {
         String uniqueLabel = name;
 
@@ -867,9 +751,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return newUniqueLabel;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
         Set result = new HashSet();
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
@@ -880,9 +761,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return (IValidationRule[])result.toArray(new IValidationRule[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (int i = 0; i < validationRules.length; i++) {
@@ -893,7 +771,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return null;
     }
 
-    /*
+    /**
      * Returns all validation rules of the policy cmpt types of the product cmpt inside this test
      * case.
      */
@@ -903,7 +781,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return result;
     }
 
-    /*
+    /**
      * Adds all validation rules - of policy cmpts related by the given test policy cmpts - to the
      * given list
      */
@@ -914,7 +792,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /*
+    /**
      * Add all validaton rules of the corresponding policy cmpt and childs
      */
     private void getValidationRules(ITestPolicyCmpt testPolicyCmpt, List validationRules, IIpsProject ipsProject)
@@ -954,7 +832,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /*
+    /**
      * Creates a new test policy component without updating the src file.
      */
     private ITestPolicyCmpt newTestPolicyCmptInternal(int id) {
@@ -963,7 +841,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return p;
     }
 
-    /*
+    /**
      * Creates a new test value without updating the src file.
      */
     private ITestValue newTestValueInternal(int id) {
@@ -972,7 +850,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return v;
     }
 
-    /*
+    /**
      * Creates a new test rule without updating the src file.
      */
     private ITestRule newTestRuleInternal(int id) {
@@ -981,7 +859,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return v;
     }
 
-    /*
+    /**
      * Returns the test objects which matches the given type, is instance of the given class and
      * matches the given name. The particular object aspect will only check if the particular field
      * is not <code>null</code>. For instance if all parameter are <code>null</code> then all
@@ -1063,9 +941,6 @@ public class TestCase extends IpsObject implements ITestCase {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
         super.validateThis(messageList, ipsProject);
@@ -1079,9 +954,6 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         ITestCaseTestCaseTypeDelta delta = computeDeltaToTestCaseType();
         if (delta != null && !delta.isEmpty()) {
@@ -1090,16 +962,10 @@ public class TestCase extends IpsObject implements ITestCase {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         fixDifferences(computeDeltaToTestCaseType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void clearTestValues(TestParameterType testParameterType) throws CoreException {
         if (TestParameterType.isTypeMatching(TestParameterType.INPUT, testParameterType)) {
             clearAllInputTestValues();
@@ -1145,9 +1011,6 @@ public class TestCase extends IpsObject implements ITestCase {
      * org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core
      * .model.ipsproject.IIpsProject)
      */
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getTestCaseType());
     }
@@ -1157,10 +1020,16 @@ public class TestCase extends IpsObject implements ITestCase {
      * 
      * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
      */
-    /**
-     * {@inheritDoc}
-     */
     public String getMetaClass() {
         return getTestCaseType();
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

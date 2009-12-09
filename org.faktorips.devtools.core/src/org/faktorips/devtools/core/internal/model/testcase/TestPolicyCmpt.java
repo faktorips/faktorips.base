@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -58,6 +59,7 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
+
     private final String POLICY_CMPT_INSTANCE_INSTANCE_IMAGE_NAME = "PolicyCmptInstance.gif"; //$NON-NLS-1$
 
     /* Tags */
@@ -82,9 +84,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         int numOfChildren = testAttributeValues.size() + testPolicyCmptLinks.size();
@@ -96,18 +95,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return childrenArray;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         testAttributeValues = new ArrayList<ITestAttributeValue>();
         testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
@@ -120,9 +113,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
@@ -135,9 +125,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -149,32 +136,20 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTestPolicyCmptTypeParameter() {
         return testPolicyCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter) {
         String oldPolicyCmptType = testPolicyCmptType;
         testPolicyCmptType = testPolicyCmptTypeParameter;
         valueChanged(oldPolicyCmptType, testPolicyCmptTypeParameter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
         return findTestPolicyCmptTypeParameter(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
@@ -182,32 +157,20 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTestParameterName() {
         return testPolicyCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setProductCmpt(String newProductCmpt) {
         String oldTestProductCmpt = productCmpt;
         productCmpt = newProductCmpt;
         valueChanged(oldTestProductCmpt, newProductCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getProductCmpt() {
         return productCmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
@@ -216,16 +179,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return pc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isProductRelevant() {
         return !StringUtils.isEmpty(productCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
@@ -239,17 +197,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return ((ITestCase)getRoot().getParent());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -259,9 +211,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         productCmpt = element.getAttribute(PROPERTY_PRODUCTCMPT);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -271,9 +220,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage() {
         if (isProductRelevant()) {
@@ -282,9 +228,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return IpsPlugin.getDefault().getImage(POLICY_CMPT_INSTANCE_INSTANCE_IMAGE_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestAttributeValue newTestAttributeValue() {
         TestAttributeValue a = newTestAttributeValueInternal(getNextPartId());
         objectHasChanged();
@@ -300,9 +243,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return a;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestAttributeValue getTestAttributeValue(String name) {
         for (Iterator<ITestAttributeValue> it = testAttributeValues.iterator(); it.hasNext();) {
             ITestAttributeValue a = it.next();
@@ -313,9 +253,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestAttributeValue[] getTestAttributeValues() {
         ITestAttributeValue[] a = new ITestAttributeValue[testAttributeValues.size()];
         testAttributeValues.toArray(a);
@@ -329,9 +266,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         testAttributeValues.remove(attribute);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType) {
         ArgumentCheck.notNull(testPolicyCmptType);
         for (Iterator<ITestPolicyCmptLink> it = testPolicyCmptLinks.iterator(); it.hasNext();) {
@@ -343,18 +277,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks() {
         ITestPolicyCmptLink[] r = new ITestPolicyCmptLink[testPolicyCmptLinks.size()];
         testPolicyCmptLinks.toArray(r);
         return r;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName) {
         List<ITestPolicyCmptLink> links = new ArrayList<ITestPolicyCmptLink>();
         for (Iterator<ITestPolicyCmptLink> iter = testPolicyCmptLinks.iterator(); iter.hasNext();) {
@@ -366,9 +294,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return links.toArray(new ITestPolicyCmptLink[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptLink newTestPolicyCmptLink() {
         ITestPolicyCmptLink r = newTestPcTypeLinkInternal(getNextPartId());
         objectHasChanged();
@@ -391,17 +316,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         testPolicyCmptLinks.remove(link);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isRoot() {
         return (!(getParent() instanceof TestPolicyCmptLink));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestObject getRoot() {
         ITestPolicyCmpt testPolicyCmpt = this;
@@ -411,9 +330,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return testPolicyCmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmpt getParentTestPolicyCmpt() {
         if (isRoot()) {
             return null;
@@ -422,9 +338,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return (ITestPolicyCmpt)testPcTypeLink.getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeLink(ITestPolicyCmptLink link) {
         int idx = 0;
         int foundIdx = -1;
@@ -442,9 +355,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
@@ -523,9 +433,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return newTestPcTypeLink;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void updateDefaultTestAttributeValues() throws CoreException {
         // add the attributes which are defined in the test case type parameter
         IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
@@ -552,9 +459,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         Assert.isNotNull(testPolicyCmpt);
         int idx = 0;
@@ -568,9 +472,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new CoreException(new IpsStatus(Messages.TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoLink));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int[] moveTestPolicyCmptLink(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(testPolicyCmptLinks);
         int[] newIdxs = mover.move(indexes, up);
@@ -673,9 +574,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return testPolicyCmptLinks.toArray(new ITestPolicyCmptLink[testPolicyCmptLinks.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -813,7 +711,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         validateAllowedProductCmpt(list, param, productCmptObj, ipsProject);
     }
 
-    /*
+    /**
      * Returns the qualified name of the corresponding policy component type, if a product is
      * assigned then the qualified name of the policy cmpt type of the product will be returned
      * otherwise if a policy component type is assign (without a product) then this qualified name
@@ -931,9 +829,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getProductCmpt())) {
             // no product cmpt is set, therefore no attribute could be searched,
@@ -953,9 +848,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return pct.findPolicyCmptTypeAttribute(attribute, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptType findPolicyCmptType() {
         IIpsProject ipsProject = getTestCase().getIpsProject();
         try {
@@ -970,19 +862,22 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setPolicyCmptType(String policyCmptType) {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;
         valueChanged(oldPolicyCmptType, policyCmptType);
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Association;
@@ -46,38 +47,23 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super(parent, id);
         type = AssociationType.AGGREGATION;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public boolean isQualified() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
         return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getTarget());
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
-        return findMatchingPolicyCmptTypeAssociation(ipsProject)!=null;
+        return findMatchingPolicyCmptTypeAssociation(ipsProject) != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
@@ -104,11 +90,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
         return policyAssoc[index];
     }
-    
+
     /**
-     * Returns all {@code IPolicyCmptTypeAssociation}s which have the specified
-     * source and target policy component type, but ignoring associations of type
-     * COMPOSITION_DETAIL_TO_MASTER.
+     * Returns all {@code IPolicyCmptTypeAssociation}s which have the specified source and target
+     * policy component type, but ignoring associations of type COMPOSITION_DETAIL_TO_MASTER.
      */
     private IPolicyCmptTypeAssociation[] getAssociationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
@@ -123,7 +108,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
         return (IPolicyCmptTypeAssociation[])result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
-    
+
     private int getAssociationIndex() {
         List allAssociationsForTheTargetType = new ArrayList();
         IAssociation[] assoc = getType().getAssociations();
@@ -133,27 +118,29 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             }
         }
         int index = 0;
-        for (Iterator it=allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
-            if (it.next()==this) {
+        for (Iterator it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+            if (it.next() == this) {
                 return index;
             }
         }
         throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage(getAssociationType().getImageName());
     }
 
-    
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -58,17 +59,11 @@ public class TestValue extends TestObject implements ITestValue {
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -80,9 +75,6 @@ public class TestValue extends TestObject implements ITestValue {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -90,56 +82,35 @@ public class TestValue extends TestObject implements ITestValue {
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("TestValue.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isRoot() {
         // test values are always root elements
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTestValueParameter() {
         return testValueParameter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setTestValueParameter(String testValueParameter) {
         String oldTValueParameter = this.testValueParameter;
         this.testValueParameter = testValueParameter;
         valueChanged(oldTValueParameter, testValueParameter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTestParameterName() {
         return testValueParameter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
         return findTestValueParameter(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;
@@ -156,25 +127,16 @@ public class TestValue extends TestObject implements ITestValue {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDefaultValue() throws CoreException {
         ITestValueParameter parameter = findTestValueParameter(getIpsProject());
         if (parameter == null) {
@@ -186,18 +148,12 @@ public class TestValue extends TestObject implements ITestValue {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestObject getRoot() {
         // test values have no childs
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -230,50 +186,43 @@ public class TestValue extends TestObject implements ITestValue {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return getTestValueParameter();
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

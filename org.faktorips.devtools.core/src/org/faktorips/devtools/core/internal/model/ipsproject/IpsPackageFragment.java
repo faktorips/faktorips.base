@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -70,9 +71,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         super(parent, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource getCorrespondingResource() {
         String path = name.replace('.', IPath.SEPARATOR);
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
@@ -90,9 +88,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         IpsModel model = (IpsModel)getIpsModel();
         IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(this);
@@ -106,7 +101,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * found.
      * 
      * @return Sort definition.
-     * @throws CoreException
      */
     public IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
 
@@ -143,9 +137,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
@@ -158,9 +149,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * Get all child IIpsPackageFragments as List.
-     * 
-     * @return
-     * @throws CoreException
      */
     private List getChildIpsPackageFragmentsAsList() throws CoreException {
         List list = new ArrayList();
@@ -182,11 +170,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
         }
@@ -222,9 +206,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
         List childResources = new ArrayList();
@@ -258,9 +239,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
@@ -283,9 +261,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return shrinked;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
@@ -324,9 +299,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return ipsSrcFile;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
             throws CoreException {
         try {
@@ -337,9 +309,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
             throws CoreException {
         String filename = type.getFileName(ipsObjectName);
@@ -357,9 +326,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
             GregorianCalendar date,
@@ -397,9 +363,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         newTableContents.setDescription(template.getDescription());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private IIpsSrcFile createProductCmptFromTemplateGeneration(String name,
             IProductCmpt template,
             GregorianCalendar date,
@@ -448,9 +411,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return first;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
         if (!exists()) {
@@ -472,9 +432,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void findIpsObjects(List result) throws CoreException {
         if (!exists()) {
             return;
@@ -501,9 +458,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
         if (!exists()) {
@@ -551,6 +505,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             boolean ignoreCase,
             List result,
             boolean returnIpsObject) throws CoreException {
+
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);
@@ -587,11 +542,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     public boolean hasChildIpsPackageFragments() throws CoreException {
 
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -606,6 +556,14 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             }
         }
 
+        return false;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
         return false;
     }
 

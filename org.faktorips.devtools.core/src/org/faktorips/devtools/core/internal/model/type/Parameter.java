@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -38,94 +39,81 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
 
     final static String TAG_NAME = "Parameter"; //$NON-NLS-1$
 
-	private String datatype = ""; //$NON-NLS-1$
-	
-	public Parameter(IParameterContainer container, int id) {
-		super(container, id);
-	}
+    private String datatype = ""; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Element createElement(Document doc) {
-		return doc.createElement(TAG_NAME);
-	}
+    public Parameter(IParameterContainer container, int id) {
+        super(container, id);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		valueChanged(oldName, name);
-	}
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(TAG_NAME);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDatatype(String type) {
-		String oldType = datatype;
-		datatype = type;
-		valueChanged(oldType, datatype);
-	}
+    @Override
+    public void setName(String newName) {
+        String oldName = name;
+        name = newName;
+        valueChanged(oldName, name);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDatatype() {
-		return datatype;
-	}
+    public void setDatatype(String type) {
+        String oldType = datatype;
+        datatype = type;
+        valueChanged(oldType, datatype);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
-		return ipsProject.findDatatype(datatype);
-	}
+    public String getDatatype() {
+        return datatype;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void initPropertiesFromXml(Element element, Integer id) {
-		super.initPropertiesFromXml(element, id);
-		name = element.getAttribute(PROPERTY_NAME);
-		datatype = element.getAttribute(PROPERTY_DATATYPE);
-	}
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findDatatype(datatype);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void propertiesToXml(Element element) {
-		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_NAME, name);
-		element.setAttribute(PROPERTY_DATATYPE, datatype);
-	}
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        name = element.getAttribute(PROPERTY_NAME);
+        datatype = element.getAttribute(PROPERTY_DATATYPE);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("Parameter.gif"); //$NON-NLS-1$
-	}
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_NAME, name);
+        element.setAttribute(PROPERTY_DATATYPE, datatype);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
-		super.validateThis(result, ipsProject);
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage("Parameter.gif"); //$NON-NLS-1$
+    }
+
+    @Override
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Parameter_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
-	        Message msg = ipsProject.getNamingConventions().validateIfValidJavaIdentifier(getName(), Messages.Parameter_msg_InvalidParameterName, this, ipsProject);
-	        if (msg == null) {
-	            if (!ExprCompiler.isValidIdentifier(getName())) {
-	                msg = new Message("", Messages.Parameter_msg_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME); //$NON-NLS-1$
-	            }
-	        }
-	        result.add(msg);
+            Message msg = ipsProject.getNamingConventions().validateIfValidJavaIdentifier(getName(),
+                    Messages.Parameter_msg_InvalidParameterName, this, ipsProject);
+            if (msg == null) {
+                if (!ExprCompiler.isValidIdentifier(getName())) {
+                    msg = new Message(
+                            "", Messages.Parameter_msg_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME); //$NON-NLS-1$
+                }
+            }
+            result.add(msg);
         }
         ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
-	}
+    }
 
-	
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

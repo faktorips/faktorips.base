@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -32,6 +33,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         super(parent, id);
     }
 
+    @Override
     public String getDisplayString() {
         if (BFElementType.ACTION_METHODCALL.equals(getType())) {
             return super.getDisplayString();
@@ -73,7 +75,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        if(getType().equals(BFElementType.ACTION_METHODCALL)){
+        if (getType().equals(BFElementType.ACTION_METHODCALL)) {
             validateMethodCall(list, ipsProject);
         }
         validateBusinessFunctionCallAction(list);
@@ -96,4 +98,13 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
             }
         }
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.businessfct;
 
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
@@ -21,73 +22,65 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
-
-/**
- *
- */
-public class BusinessFunctionImpl extends IpsObject implements
-        BusinessFunction {
+public class BusinessFunctionImpl extends IpsObject implements BusinessFunction {
 
     public BusinessFunctionImpl(IIpsSrcFile file) {
         super(file);
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.BUSINESS_FUNCTION;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void propertiesToXml(Element newElement) {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void reinitPartCollections() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void addPart(IIpsObjectPart part) {
+
     }
 
     /**
-     * Overridden IMethod. 
+     * Overridden IMethod.
      * 
      * BusinessFunctions don't have any part, so this method should never be called.
      * 
      * @throws RuntimeException if the method is called.
-     *
-     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(java.lang.String, int)
+     * 
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(java.lang.String,
+     *      int)
      */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+    }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         throw new IllegalArgumentException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

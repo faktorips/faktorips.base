@@ -363,6 +363,9 @@ public class GenProductCmptType extends GenType {
         BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
                 .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
         // TODO AW: Assumes that the policy component type is stored in the same root.
+        // getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject()); // valid
+        // because product and policy reference each other and must therefore be found in object
+        // path of that project
         return policyCmptTypeBuilder.getGeneratedJavaType(getProductCmptType().getPolicyCmptType(),
                 getProductCmptType().getIpsPackageFragment().getRoot());
     }

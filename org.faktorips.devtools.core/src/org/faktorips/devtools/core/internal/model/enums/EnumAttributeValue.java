@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -308,6 +309,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
         val = val.replaceAll("[^A-Za-z0-9]", "_");
         setValue(val);
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

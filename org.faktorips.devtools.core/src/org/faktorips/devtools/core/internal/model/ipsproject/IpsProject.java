@@ -44,6 +44,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
@@ -119,7 +120,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION;
 
-    // The underlying plattform project
+    /** The underlying plattform project */
     private IProject project;
 
     private IIpsProjectNamingConventions namingConventions = null;
@@ -1043,25 +1044,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return (getIpsObjectPathInternal()).findIpsSrcFiles(type, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void findAllIpsSrcFiles(List result) throws CoreException {
         findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
             throws CoreException {
         Set<IIpsSrcFile> visitedEntries = new HashSet<IIpsSrcFile>();
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, packageFragment, result, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IEnumContent findEnumContent(IEnumType enumType) throws CoreException {
         ArgumentCheck.notNull(enumType, this);
         if (enumType.isContainingValues()) {
@@ -1088,25 +1080,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException {
         return findDatatypes(valuetypesOnly, includeVoid, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives)
             throws CoreException {
 
         return findDatatypes(valuetypesOnly, includeVoid, includePrimitives, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
@@ -1115,9 +1098,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
@@ -1491,11 +1471,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TEST_CASE);
         if (testCaseType == null) {
@@ -1511,9 +1486,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
         if (enumType == null) {
@@ -1536,9 +1508,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
         if (structure == null) {
@@ -1554,9 +1523,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
         List result = new ArrayList();
         getSourceIpsFragmentRoots(result);
@@ -1575,16 +1541,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
         return ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void reinitializeIpsArtefactBuilderSet() throws CoreException {
         ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, true);
     }
@@ -1617,12 +1577,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /*
-     * Finds all product cmpt generations of the given product cmpt which refers to the given
+     * + Finds all product cmpt generations of the given product cmpt which refers to the given
      * product cmpt. The result will be added to the given set.
      */
     private void findReferencingProductCmptGenerationsToProductCmpts(IProductCmpt toBeSearched,
             String qualifiedProductCmptName,
             Set result) throws CoreException {
+
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
@@ -1636,7 +1597,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /*
+    /**
      * Finds all product cmpt generations of the given product cmpt which refers to the given table
      * contents. The result will be added to the given set.
      */
@@ -1657,9 +1618,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
         ArrayList result = new ArrayList();
         IIpsObject[] allTestCases = findIpsObjects(IpsObjectType.TEST_CASE);
@@ -1679,9 +1637,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return resultArray;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException {
         ArrayList<IIpsObject> list = new ArrayList<IIpsObject>();
         // get referenced PCTypes
@@ -1706,31 +1661,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return list.toArray(new PolicyCmptType[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException {
         return getPropertiesInternal().getProductCmptNamingStrategy();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException {
         (getPropertiesInternal()).addDefinedDatatype(newDatatype);
         saveProjectProperties(getProperties());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getRuntimeIdPrefix() {
         return getPropertiesInternal().getRuntimeIdPrefix();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         validateJavaProjectBuildPath(result);
@@ -1843,7 +1786,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /*
+    /**
      * Validates for duplicate base package generated entries inside the referenced project
      */
     private void validateDuplicateTocFilePath(MessageList result, IpsProjectProperties props) throws CoreException {
@@ -1898,35 +1841,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return namingConventions;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList checkForDuplicateRuntimeIds() throws CoreException {
         return checkForDuplicateRuntimeIdsInternal(findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT), true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException {
         return checkForDuplicateRuntimeIdsInternal(cmptsToCheck, false);
     }
 
-    /*
+    /**
      * Check product cmpts for duplicate runtime id.
      * 
      * @param cmptsToCheck List of product components to check.
      * 
      * @param all <code>true</code> to indicate that the given array of product components is the
-     * whole list of all available product components or <code>false</code> for only a subset of
-     * product components. If <code>false</code> is provided, a list of all product components is
-     * build and all given product components are checked against this list.
+     *            whole list of all available product components or <code>false</code> for only a
+     *            subset of product components. If <code>false</code> is provided, a list of all
+     *            product components is build and all given product components are checked against
+     *            this list.
      * 
      * @return A message list containing messages for each combination of a given product component
-     * with the same runtime id as another one. The message has either one invalid object property
-     * containing the given product component if <code>all</code> is <code>false</code>, or two
-     * invalid object properties with the both product components with the same runtime id if
-     * <code>all</code> is <code>true</code>.
+     *         with the same runtime id as another one. The message has either one invalid object
+     *         property containing the given product component if <code>all</code> is
+     *         <code>false</code>, or two invalid object properties with the both product components
+     *         with the same runtime id if <code>all</code> is <code>true</code>.
      * 
      * @throws CoreException if an error occurs during processing.
      */
@@ -2007,9 +1945,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isResourceExcludedFromProductDefinition(IResource resource) {
         if (resource == null) {
             return false;
@@ -2028,17 +1963,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return props.isResourceExcludedFromProductDefinition(location);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isContainedInArchive() {
         return false;
@@ -2051,6 +1980,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
             IpsPlugin.log(e);
         }
         return null;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

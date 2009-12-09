@@ -26,6 +26,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -616,6 +617,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    public String getInstancesIcon() {
+        return enabledInstancesIconPath;
+    }
+
+    public boolean isUseCustomInstanceIcon() {
+        return StringUtils.isNotEmpty(enabledInstancesIconPath);
+    }
+
+    public void setInstancesIcon(String path) {
+        String oldPath = enabledInstancesIconPath;
+        enabledInstancesIconPath = path;
+        valueChanged(oldPath, enabledInstancesIconPath);
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
     private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String tsuName;
@@ -817,20 +840,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             check = currentType.isAbstract();
             return !check;
         }
-    }
-
-    public String getInstancesIcon() {
-        return enabledInstancesIconPath;
-    }
-
-    public boolean isUseCustomInstanceIcon() {
-        return StringUtils.isNotEmpty(enabledInstancesIconPath);
-    }
-
-    public void setInstancesIcon(String path) {
-        String oldPath = enabledInstancesIconPath;
-        enabledInstancesIconPath = path;
-        valueChanged(oldPath, enabledInstancesIconPath);
     }
 
 }

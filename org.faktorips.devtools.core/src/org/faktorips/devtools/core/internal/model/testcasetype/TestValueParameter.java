@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -33,177 +34,139 @@ import org.w3c.dom.Element;
 
 /**
  * Test value parameter class. Defines a test value for a specific test case type.
+ * 
  * @author Joerg Ortmann
  */
-public class TestValueParameter extends TestParameter implements
-		ITestValueParameter {
+public class TestValueParameter extends TestParameter implements ITestValueParameter {
 
-	final static String TAG_NAME = "ValueParameter"; //$NON-NLS-1$
-	
-	private String datatype = ""; //$NON-NLS-1$
-	
-	/**
-	 * @param parent
-	 * @param id
-	 */
-	public TestValueParameter(IIpsObject parent, int id) {
-		super(parent, id);
-	}
+    final static String TAG_NAME = "ValueParameter"; //$NON-NLS-1$
 
-	/**
-	 * @param parent
-	 * @param id
-	 */
-	public TestValueParameter(IIpsObjectPart parent, int id) {
-		super(parent, id);
-	}
+    private String datatype = ""; //$NON-NLS-1$
 
-    /**
-     * {@inheritDoc}
-     */
+    public TestValueParameter(IIpsObject parent, int id) {
+        super(parent, id);
+    }
+
+    public TestValueParameter(IIpsObjectPart parent, int id) {
+        super(parent, id);
+    }
+
     public String getDatatype() {
         return getValueDatatype();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDatatype(String datatype) {
         setValueDatatype(datatype);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     public void setTestParameterType(TestParameterType testParameterType) {
         // a test value parameter supports only input type or expected result type
         ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.INPUT)
                 || testParameterType.equals(TestParameterType.EXPECTED_RESULT));
-        TestParameterType oldType = this.type;
-        this.type = testParameterType;
+        TestParameterType oldType = type;
+        type = testParameterType;
         valueChanged(oldType, testParameterType);
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getValueDatatype() {
-		return datatype;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValueDatatype(String datatypeId) {
-        String oldDatatype = this.datatype;
-		datatype = datatypeId;
+    public String getValueDatatype() {
+        return datatype;
+    }
+
+    public void setValueDatatype(String datatypeId) {
+        String oldDatatype = datatype;
+        datatype = datatypeId;
         valueChanged(oldDatatype, datatypeId);
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-		return ipsProject.findValueDatatype(datatype);
-	}
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findValueDatatype(datatype);
+    }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-	protected void initPropertiesFromXml(Element element, Integer id) {
-		super.initPropertiesFromXml(element, id);
-		datatype = element.getAttribute(PROPERTY_VALUEDATATYPE);
-	}
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        datatype = element.getAttribute(PROPERTY_VALUEDATATYPE);
+    }
 
-    /**
-     * {@inheritDoc}
-     */
-	protected void propertiesToXml(Element element) {
-		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_VALUEDATATYPE, datatype);
-	}
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_VALUEDATATYPE, datatype);
+    }
 
-	/**
-     * {@inheritDoc}
-	 */
+    @Override
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public ITestParameter getRootParameter() {
         // no childs are supported, the test value parameter is always a root element
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isRoot() {
-        // no childs are supported, the test value parameter is always a root element        
+        // no childs are supported, the test value parameter is always a root element
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (datatype==null) {
+        if (datatype == null) {
             String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, getDatatype());
-            Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
+            Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this,
+                    PROPERTY_VALUEDATATYPE);
             list.add(msg);
         }
-        
+
         // check the correct type
-        if (isCombinedParameter() || (! isInputOrCombinedParameter()&& ! isExpextedResultOrCombinedParameter())){
+        if (isCombinedParameter() || (!isInputOrCombinedParameter() && !isExpextedResultOrCombinedParameter())) {
             String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type.getName(), name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void reinitPartCollections() {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void removePart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
+    }
+
 }

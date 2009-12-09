@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -872,6 +873,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public boolean isCapableOfContainingValues() {
         return !isAbstract && containingValues;
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
