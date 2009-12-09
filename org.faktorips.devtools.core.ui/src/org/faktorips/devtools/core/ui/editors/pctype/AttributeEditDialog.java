@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -49,6 +50,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -205,6 +207,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             nameText.setFocus();
         }
 
+        createPersistenceTabItemIfNecessary(tabFolder);
         createDescriptionTabItem(tabFolder);
 
         tabFolder.addSelectionListener(new SelectionListener() {
@@ -734,6 +737,68 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
         ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
         ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+    }
+
+    private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
+        if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            return;
+        }
+        final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
+        persistencePage.setText("Persistence");
+
+        Composite c = createTabItemComposite(tabFolder, 1, false);
+        persistencePage.setControl(c);
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+
+        uiToolkit.createFormLabel(workArea, "Table column name:");
+        Text columnNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(columnNameText, attribute.getJpaAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
+
+        uiToolkit.createFormLabel(workArea, "Is an unique attribute:");
+        Checkbox uniqueCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(uniqueCheckbox, attribute.getJpaAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
+
+        uiToolkit.createFormLabel(workArea, "Is a nullable attribute:");
+        Checkbox nullableCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(nullableCheckbox, attribute.getJpaAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
+
+        uiToolkit.createFormLabel(workArea, "Column size:");
+        Spinner sizeSpinner = createSpinner(workArea);
+        // FIXME: bind spinner
+        // bindingContext.bindContent(sizeSpinner, attribute.getJpaAttributeInfo(),
+        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
+
+        uiToolkit.createFormLabel(workArea, "Column precision:");
+        Spinner precisionSpinner = createSpinner(workArea);
+        // FIXME: bind spinner
+        // bindingContext.bindContent(precisionSpinner, attribute.getJpaAttributeInfo(),
+        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
+
+        uiToolkit.createFormLabel(workArea, "Column scale:");
+        Spinner scaleSpinner = createSpinner(workArea);
+        // FIXME: bind spinner
+        // bindingContext.bindContent(scaleSpinner, attribute.getJpaAttributeInfo(),
+        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
+
+        uiToolkit.createFormLabel(workArea, "Datatype converter:");
+        Combo converter = uiToolkit.createCombo(workArea);
+        // FIXME: bind a converter
+        // DefaultEnumType converterEnum = new DefaultEnumType("Date and Time converter",
+        // ValueSetType.class);
+        // bindingContext.bindContent(converter, attribute.getJpaAttributeInfo(),
+        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER, converterEnum);
+    }
+
+    // TODO: move to UIToolkit
+    private Spinner createSpinner(Composite workArea) {
+        Spinner spinner = new Spinner(workArea, SWT.BORDER);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END);
+        spinner.setLayoutData(gridData);
+        return spinner;
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

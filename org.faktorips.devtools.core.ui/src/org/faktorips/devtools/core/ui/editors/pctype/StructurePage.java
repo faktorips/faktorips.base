@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,58 +26,73 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
-
 /**
- * The structure page contain the general information section, the attributes section
- * and the relations section.
+ * The structure page contain the general information section, the attributes section and the
+ * relations section.
  */
 public class StructurePage extends TypeEditorStructurePage {
-    
+
     public StructurePage(PctEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
         super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title);
     }
-    
-	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+
+    @Override
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         super.createPageContent(formBody, toolkit);
         registerContentsChangeListener();
-	}
-	
-	protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
+    }
+
+    @Override
+    protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
+        createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
+
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
-	}
-	
-	protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
+    }
+
+    @Override
+    protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
+        createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
+
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
-	}
-	
-	protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit); 
-	}
+    }
 
-    private void registerContentsChangeListener(){
-        //refreshing the page after a change in the PolicyCmptType occurred is necessary since there
-        //is a dependency from attributes that are displayed in the GeneralInfoSection and the
-        //attributes respectively IpsPart that are displayed in the other sections. 
-        final ContentsChangeListener changeListener = new ContentsChangeListener(){
+    @Override
+    protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
+        new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
+    }
+
+    private void createPersistenceTypeInfoSectionIfNecessary(Composite formBody, UIToolkit toolkit) {
+        if (!getIpsObject().getIpsProject().isPersistenceSupportEnabled()) {
+            return;
+        }
+        new PersistentTypeInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
+    }
+
+    // package level access, need this functionality also in PersistencePage
+    void registerContentsChangeListener() {
+        // refreshing the page after a change in the PolicyCmptType occurred is necessary since
+        // there is a dependency from attributes that are displayed in the GeneralInfoSection and
+        // the attributes respectively IpsPart that are displayed in the other sections.
+        final ContentsChangeListener changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
-                if(getPartControl().isVisible() &&
-                   event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED &&
-                   event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())){
+                if (getPartControl().isVisible()
+                        && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
+                        && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {
                     refresh();
                 }
             }
         };
         getIpsObject().getIpsModel().addChangeListener(changeListener);
-        getPartControl().addDisposeListener(new DisposeListener(){
+        getPartControl().addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                 IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-                if(model != null){
+                if (model != null) {
                     model.removeChangeListener(changeListener);
                 }
             }
