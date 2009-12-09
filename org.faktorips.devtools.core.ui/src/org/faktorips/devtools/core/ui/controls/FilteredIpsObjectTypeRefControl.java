@@ -58,7 +58,7 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
      */
     @Override
     protected String getDefaultDialogFilterExpression() {
-        return selectedIpsObject == null ? null : selectedIpsObject.getName();
+        return selectedIpsObject == null ? "?" : selectedIpsObject.getName(); //$NON-NLS-1$
     }
 
     /**
