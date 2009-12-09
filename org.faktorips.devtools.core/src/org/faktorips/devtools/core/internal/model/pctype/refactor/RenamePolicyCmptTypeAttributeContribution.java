@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.internal.model.pctype.refactor;
 
 import java.util.Map;
 
@@ -21,11 +21,11 @@ import org.faktorips.devtools.core.refactor.IIpsRefactorings;
 import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 
 /**
- * Contributes the "Rename Product Component Type Attribute" - refactoring to the platform.
+ * Contributes the "Rename Policy Component Type Attribute" - refactoring to the platform.
  * 
  * @author Alexander Weickmann
  */
-public final class RenameProductCmptTypeAttributeContribution extends RefactoringContribution {
+public final class RenamePolicyCmptTypeAttributeContribution extends RefactoringContribution {
 
     @SuppressWarnings("unchecked")
     // Unchecked inherited from LTK, can't do anything here.
@@ -42,7 +42,7 @@ public final class RenameProductCmptTypeAttributeContribution extends Refactorin
 
     @Override
     public RefactoringDescriptor createDescriptor() {
-        return new RenameIpsElementDescriptor(IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE);
+        return new RenameIpsElementDescriptor(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE);
     }
 
 }

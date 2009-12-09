@@ -47,9 +47,4 @@ public class Messages extends NLS {
     public static String MoveOperation_tableContentIsMissing;
     public static String MoveOperation_testCaseIsMissing;
 
-    public static String RenamePolicyCmptTypeAttributeProcessor_msgAttributeNotValid;
-    public static String RenamePolicyCmptTypeAttributeProcessor_msgTypeNotValid;
-    public static String RenameProductCmptTypeAttributeProcessor_msgAttributeNotValid;
-    public static String RenameProductCmptTypeAttributeProcessor_msgTypeNotValid;
-
 }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.internal.model.productcmpttype.refactor;
 
 import java.util.Set;
 
