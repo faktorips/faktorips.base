@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -22,25 +26,56 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A section to display and edit a type's attributes.
  */
-public class AttributesSection extends SimpleIpsPartsSection {
+public class AttributesSection extends SimpleIpsPartsSection implements IMenuListener {
 
-    public AttributesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
+    private IpsObjectEditorPage page;
+
+    private IWorkbenchAction rename;
+
+    public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
+        ArgumentCheck.notNull(page);
+        this.page = page;
+
+        IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
+        rename = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
+        IActionBars actionBars = editorSite.getActionBars();
+        actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
+                getPartsComposite()));
+
+        createContextMenu();
+    }
+
+    private void createContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(this);
+        Menu contextMenu = manager.createContextMenu(getPartsComposite().getTableContol());
+        getPartsComposite().getTableContol().setMenu(contextMenu);
+        page.getEditor().getSite().registerContextMenu(manager, getPartsComposite());
     }
 
     @Override
@@ -48,11 +83,21 @@ public class AttributesSection extends SimpleIpsPartsSection {
         return new AttributesComposite(getIpsObject(), parent, toolkit);
     }
 
+    public void menuAboutToShow(IMenuManager manager) {
+        manager.add(new Separator());
+        MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
+        refactorSubmenu.add(rename);
+        manager.add(refactorSubmenu);
+
+        rename.setEnabled(getSelectedPart() != null);
+    }
+
     /**
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
     public class AttributesComposite extends IpsPartsComposite {
+
         private Button overrideButton;
 
         public AttributesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
@@ -97,6 +142,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
                     // nothing to do.
                 }
             });
+
         }
 
         @Override
@@ -156,6 +202,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private class AttributeContentProvider implements IStructuredContentProvider {
+
             public Object[] getElements(Object inputElement) {
                 return getPcType().getPolicyCmptTypeAttributes();
             }
@@ -167,7 +214,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }
+
         }
 
     }
+
 }

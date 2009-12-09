@@ -203,7 +203,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
          */
         setLayoutStyle(layoutStyle);
 
-        // Create 'link with editor' ection
+        // Create 'link with editor' action
         toggleLinking = new ToggleLinkingAction(this);
 
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
@@ -628,7 +628,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             editorActivationListener.setActivatedByModelExplorer(true);
             IEditorPart editorPart = openEditorsForSelection();
             if (editorPart == null) {
-                // editor wasn't opened, therfore the activation flag must be reseted
+                // editor wasn't opened, therefore the activation flag must be reseted
                 editorActivationListener.setActivatedByModelExplorer(false);
             }
 

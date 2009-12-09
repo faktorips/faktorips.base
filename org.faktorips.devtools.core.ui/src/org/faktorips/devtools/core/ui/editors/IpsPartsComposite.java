@@ -18,6 +18,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -52,7 +53,7 @@ import org.faktorips.util.message.MessageList;
  * delete button.
  */
 public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation,
-        IDataChangeableReadWriteAccess {
+        ISelectionProvider, IDataChangeableReadWriteAccess {
 
     // the object the parts belong to.
     private IIpsObject ipsObject;
@@ -125,16 +126,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return canCreate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDataChangeable() {
         return canCreate || canEdit || canMove || canDelete;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDataChangeable(boolean flag) {
         table.setEnabled(true);
         canCreate = flag;
@@ -177,9 +172,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         updateButtonEnabledStates();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
         table = createTable(parent, toolkit);
@@ -397,9 +389,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void updateButtonEnabledStates() {
         boolean itemSelected = false;
@@ -433,6 +422,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     public final IIpsObjectPart getSelectedPart() {
         return (IIpsObjectPart)getSelectedObject();
+    }
+
+    public ISelection getSelection() {
+        return getViewer().getSelection();
+    }
+
+    public void setSelection(ISelection selection) {
+        getViewer().setSelection(selection);
     }
 
     private void newPart() {
@@ -603,16 +600,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ISelectionProvider getSelectionProvider() {
         return viewer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isActivated() {
         if (viewer == null) {
             return false;
@@ -620,4 +611,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
     }
+
+    public Table getTableContol() {
+        return table;
+    }
+
 }

@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -29,6 +29,7 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class SimpleIpsPartsSection extends IpsSection {
 
     private IIpsObject ipsObject;
+
     private IpsPartsComposite partsComposite;
 
     /**
@@ -40,11 +41,11 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
      * @param toolkit
      */
     public SimpleIpsPartsSection(IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(pdObject);
 
-        this.ipsObject = pdObject;
+        ipsObject = pdObject;
         initControls();
         setText(title);
     }
@@ -71,6 +72,7 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
         partsComposite = createIpsPartsComposite(client, toolkit);
         addFocusControl(partsComposite);
@@ -98,6 +100,7 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void performRefresh() {
         partsComposite.refresh();
     }
@@ -124,4 +127,9 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     public final IIpsObjectPart getSelectedPart() {
         return partsComposite.getSelectedPart();
     }
+
+    protected IpsPartsComposite getPartsComposite() {
+        return partsComposite;
+    }
+
 }
