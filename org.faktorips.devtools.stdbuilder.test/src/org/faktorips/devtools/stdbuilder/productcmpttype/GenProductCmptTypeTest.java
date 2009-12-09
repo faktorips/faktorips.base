@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -42,33 +43,33 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForPublishedInterfaceConfiguring() {
+    public void testGetGeneratedJavaElementsForPublishedInterfaceConfiguring() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genProductCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
                 productCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectGetProductCmptMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(true));
+                .findGeneratedJavaTypeForPolicyCmptType(true));
         expectGetProductCmptGenMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(true));
+                .findGeneratedJavaTypeForPolicyCmptType(true));
         expectSetProductCmptMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(true));
+                .findGeneratedJavaTypeForPolicyCmptType(true));
         assertEquals(4, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForImplementationConfiguring() {
+    public void testGetGeneratedJavaElementsForImplementationConfiguring() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genProductCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
                 productCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectGetProductCmptMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(false));
+                .findGeneratedJavaTypeForPolicyCmptType(false));
         expectGetProductCmptGenMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(false));
+                .findGeneratedJavaTypeForPolicyCmptType(false));
         expectSetProductCmptMethod(generatedJavaElements, genProductCmptType
-                .getGeneratedJavaTypeForPolicyCmptType(false));
+                .findGeneratedJavaTypeForPolicyCmptType(false));
         assertEquals(4, generatedJavaElements.size());
     }
 

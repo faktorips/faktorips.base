@@ -27,6 +27,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
@@ -272,7 +273,16 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
 
         if (getProductCmptType().isConfigurationForPolicyCmptType()) {
-            addGetterMethodToGeneratedJavaElements(javaElements, getGeneratedJavaTypeForPolicyCmptType(false));
+            IType javaTypePolicyCmptType = null;
+            try {
+                javaTypePolicyCmptType = findGeneratedJavaTypeForPolicyCmptType(false);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (javaTypePolicyCmptType != null) {
+                addGetterMethodToGeneratedJavaElements(javaElements, javaTypePolicyCmptType);
+            }
         }
     }
 
@@ -285,19 +295,26 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     }
 
     /**
-     * Returns the Java type generated for the <tt>IPolicyCmptType</tt> configured by the
-     * <tt>IProductCmptType</tt>.
+     * Searches and returns the Java type generated for the <tt>IPolicyCmptType</tt> configured by
+     * the <tt>IProductCmptType</tt>.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IPolicyCmptType</tt> cannot be found.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            <tt>IPolicyCmptType</tt> (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IPolicyCmptType</tt>.
      */
-    public IType getGeneratedJavaTypeForPolicyCmptType(boolean forInterface) {
-        IProductCmptType productCmptType = getProductCmptType();
+    public IType findGeneratedJavaTypeForPolicyCmptType(boolean forInterface) throws CoreException {
         BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
                 .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
-        // TODO AW: Assumes that the policy component type is stored in the same root.
-        return policyCmptTypeBuilder.getGeneratedJavaType(productCmptType.getPolicyCmptType(), productCmptType
+
+        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject());
+        if (policyCmptType == null) {
+            return null;
+        }
+        return policyCmptTypeBuilder.getGeneratedJavaType(getProductCmptType().getPolicyCmptType(), policyCmptType
                 .getIpsPackageFragment().getRoot());
     }
 

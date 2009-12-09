@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
@@ -100,7 +101,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         assertEquals(1, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForImplementation() {
+    public void testGetGeneratedJavaElementsForImplementation() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
@@ -108,7 +109,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         expectMemberVar(generatedJavaElements, genPublishedAttribute);
         expectGetterMethod(generatedJavaElements, getGeneratedJavaType(), genPublishedAttribute);
         expectSetterMethod(generatedJavaElements, genPublishedAttribute);
-        expectGetterMethod(generatedJavaElements, genPublishedAttribute.getGeneratedJavaTypeForPolicyCmptType(false),
+        expectGetterMethod(generatedJavaElements, genPublishedAttribute.findGeneratedJavaTypeForPolicyCmptType(false),
                 genPublishedAttribute);
         assertEquals(4, generatedJavaElements.size());
 
@@ -118,7 +119,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         expectMemberVar(generatedJavaElements, genPublicAttribute);
         expectGetterMethod(generatedJavaElements, getGeneratedJavaType(), genPublicAttribute);
         expectSetterMethod(generatedJavaElements, genPublicAttribute);
-        expectGetterMethod(generatedJavaElements, genPublicAttribute.getGeneratedJavaTypeForPolicyCmptType(false),
+        expectGetterMethod(generatedJavaElements, genPublicAttribute.findGeneratedJavaTypeForPolicyCmptType(false),
                 genPublicAttribute);
         assertEquals(4, generatedJavaElements.size());
     }

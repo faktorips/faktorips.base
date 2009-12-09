@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -565,11 +566,19 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         }
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            IType javaTypeProductCmptTypeGen = getGeneratedJavaTypeForProductCmptTypeGen(false);
-            addDefaultValueMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-            addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-            addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            IType javaTypeProductCmptTypeGen = null;
+            try {
+                javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(false);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (javaTypeProductCmptTypeGen != null) {
+                addDefaultValueMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            }
         }
     }
 
@@ -590,27 +599,43 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         }
         if (isProductRelevant()) {
             addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            IType javaTypeProductCmptTypeGen = getGeneratedJavaTypeForProductCmptTypeGen(true);
-            addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            IType javaTypeProductCmptTypeGen = null;
+            try {
+                javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (javaTypeProductCmptTypeGen != null) {
+                addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            }
         }
     }
 
     /**
-     * Returns the Java type generated for the product component type generation of the
+     * Searches and returns the Java type generated for the product component type generation of the
      * <tt>IProductCmptType</tt> configuring the <tt>IPolicyCmptType</tt> of the
      * <tt>IPolicyCmptTypeAttribute</tt> this generator is configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            product component type generation (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
-    public IType getGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) {
+    public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) throws CoreException {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
         BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
                 .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
-        // TODO AW: Assumes that the product component type is stored in the same root.
-        return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), policyCmptType
+
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+        if (productCmptType == null) {
+            return null;
+        }
+        return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), productCmptType
                 .getIpsPackageFragment().getRoot());
     }
 

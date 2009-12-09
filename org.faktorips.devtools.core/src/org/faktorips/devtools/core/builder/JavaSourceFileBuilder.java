@@ -990,6 +990,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * <p>
      * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
      * <tt>IIpsElement</tt>.
+     * <p>
+     * The IPS model should be completely valid if calling this method or else the results may not
+     * be exhaustive.
      * 
      * @param ipsElement The <tt>IIpsElement</tt> to obtain the generated <tt>IJavaElement</tt>s
      *            for.

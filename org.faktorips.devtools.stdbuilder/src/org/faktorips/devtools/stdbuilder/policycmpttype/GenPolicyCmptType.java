@@ -311,27 +311,43 @@ public class GenPolicyCmptType extends GenType {
             boolean forInterface) {
 
         if (getPolicyCmptType().isConfigurableByProductCmptType()) {
-            IType javaTypeProductCmpt = getGeneratedJavaTypeForProductCmptType(forInterface);
-            org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
-                    getMethodNameCreatePolicyCmpt(), new String[] {});
-            javaElements.add(createPolicyCmptMethod);
+            IType javaTypeProductCmpt = null;
+            try {
+                javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (javaTypeProductCmpt != null) {
+                org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
+                        getMethodNameCreatePolicyCmpt(), new String[] {});
+                javaElements.add(createPolicyCmptMethod);
+            }
         }
     }
 
     /**
-     * Returns the Java type generated for the <tt>IProductCmptType</tt> configuring the
-     * <tt>IPolicyCmptType</tt> this generator is configured for.
+     * Searches and returns the Java type generated for the <tt>IProductCmptType</tt> configuring
+     * the <tt>IPolicyCmptType</tt> this generator is configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
-    public IType getGeneratedJavaTypeForProductCmptType(boolean forInterface) {
+    public IType findGeneratedJavaTypeForProductCmptType(boolean forInterface) throws CoreException {
         BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
                 .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
-        // TODO AW: Assumes that the product component type is stored in the same root.
-        return productCmptTypeBuilder.getGeneratedJavaType(getPolicyCmptType().getProductCmptType(),
-                getPolicyCmptType().getIpsPackageFragment().getRoot());
+
+        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
+        if (productCmptType == null) {
+            return null;
+        }
+        return productCmptTypeBuilder.getGeneratedJavaType(getPolicyCmptType().getProductCmptType(), productCmptType
+                .getIpsPackageFragment().getRoot());
     }
 
 }

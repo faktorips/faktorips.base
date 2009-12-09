@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -42,25 +43,25 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForPublishedInterfaceConfigured() {
+    public void testGetGeneratedJavaElementsForPublishedInterfaceConfigured() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
-                .getGeneratedJavaTypeForProductCmptType(true));
+                .findGeneratedJavaTypeForProductCmptType(true));
         assertEquals(2, generatedJavaElements.size());
     }
 
-    public void testGetGeneratedJavaElementsForImplementationConfigured() {
+    public void testGetGeneratedJavaElementsForImplementationConfigured() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
                 policyCmptType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
-                .getGeneratedJavaTypeForProductCmptType(false));
+                .findGeneratedJavaTypeForProductCmptType(false));
         assertEquals(2, generatedJavaElements.size());
     }
 

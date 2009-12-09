@@ -339,35 +339,49 @@ public class GenProductCmptType extends GenType {
             boolean forInterface) {
 
         if (getProductCmptType().isConfigurationForPolicyCmptType()) {
-            IType javaTypePolicyCmpt = getGeneratedJavaTypeForPolicyCmptType(forInterface);
-            IMethod getProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmpt(), new String[] {});
-            javaElements.add(getProductCmptMethod);
-            IMethod getProductCmptGenMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmptGeneration(),
-                    new String[] {});
-            javaElements.add(getProductCmptGenMethod);
-            IMethod setProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameSetProductCmpt(), new String[] {
-                    "Q" + getQualifiedName(true) + ";", "Z" });
-            javaElements.add(setProductCmptMethod);
+            IType javaTypePolicyCmpt = null;
+            try {
+                javaTypePolicyCmpt = findGeneratedJavaTypeForPolicyCmptType(forInterface);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (javaTypePolicyCmpt != null) {
+                IMethod getProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmpt(),
+                        new String[] {});
+                javaElements.add(getProductCmptMethod);
+                IMethod getProductCmptGenMethod = javaTypePolicyCmpt.getMethod(getMethodNameGetProductCmptGeneration(),
+                        new String[] {});
+                javaElements.add(getProductCmptGenMethod);
+                IMethod setProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameSetProductCmpt(),
+                        new String[] { "Q" + getQualifiedName(true) + ";", "Z" });
+                javaElements.add(setProductCmptMethod);
+            }
         }
     }
 
     /**
-     * Returns the Java type generated for the <tt>IPolicyCmptType</tt> that is configured by the
-     * <tt>IProductCmptType</tt> this generator is configured for.
+     * Searches and returns the Java type generated for the <tt>IPolicyCmptType</tt> that is
+     * configured by the <tt>IProductCmptType</tt> this generator is configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IPolicyCmptType</tt> cannot be found.
      * 
      * @param forInterface Flag indicating whether to search for the published interface of the
      *            <tt>IPolicyCmptType</tt> (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IPolicyCmptType</tt>.
      */
-    public IType getGeneratedJavaTypeForPolicyCmptType(boolean forInterface) {
+    public IType findGeneratedJavaTypeForPolicyCmptType(boolean forInterface) throws CoreException {
         BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getBuilderSet()
                 .getPolicyCmptInterfaceBuilder() : getBuilderSet().getPolicyCmptImplClassBuilder();
-        // TODO AW: Assumes that the policy component type is stored in the same root.
-        // getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject()); // valid
-        // because product and policy reference each other and must therefore be found in object
-        // path of that project
-        return policyCmptTypeBuilder.getGeneratedJavaType(getProductCmptType().getPolicyCmptType(),
-                getProductCmptType().getIpsPackageFragment().getRoot());
+
+        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject());
+        if (policyCmptType == null) {
+            return null;
+        }
+        return policyCmptTypeBuilder.getGeneratedJavaType(getProductCmptType().getPolicyCmptType(), policyCmptType
+                .getIpsPackageFragment().getRoot());
     }
 
 }
