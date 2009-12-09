@@ -85,8 +85,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer"; //$NON-NLS-1$
 
     /** The filter group in the context menu of the model explorer. */
-    // TODO goup -> group
-    protected static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
+    protected static String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
 
     /** Used for saving the current filter into an eclipse <tt>Memento</tt>. */
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
