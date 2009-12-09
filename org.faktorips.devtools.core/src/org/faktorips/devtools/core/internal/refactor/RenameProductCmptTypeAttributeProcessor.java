@@ -40,7 +40,7 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
      * 
      * @param productCmptTypeAttribute The <tt>IProductCmptTypeAttribute</tt> to be refactored.
      */
-    protected RenameProductCmptTypeAttributeProcessor(IProductCmptTypeAttribute productCmptTypeAttribute) {
+    public RenameProductCmptTypeAttributeProcessor(IProductCmptTypeAttribute productCmptTypeAttribute) {
         super(productCmptTypeAttribute);
     }
 

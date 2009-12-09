@@ -18,6 +18,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.RefactoringContribution;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -43,6 +46,8 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.refactor.IIpsRefactorings;
+import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -355,7 +360,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected void reinitPartCollections() {
-        // nothing to do
+        // Nothing to do.
     }
 
     @Override
@@ -387,11 +392,20 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     public RenameRefactoring getRenameRefactoring() {
-        return null;
+        RefactoringContribution contribution = RefactoringCore
+                .getRefactoringContribution(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE);
+        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
+        renameDescriptor.setIpsElement(this);
+
+        try {
+            return (RenameRefactoring)renameDescriptor.createRefactoring(new RefactoringStatus());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isRenameRefactoringSupported() {
-        return false;
+        return true;
     }
 
 }

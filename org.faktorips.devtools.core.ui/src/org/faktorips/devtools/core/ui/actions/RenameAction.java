@@ -27,20 +27,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
@@ -67,7 +61,7 @@ public class RenameAction extends IpsAction implements IShellProvider {
 
         // Open refactoring wizard if supported for selection.
         if (selected instanceof IAttribute || selected instanceof IMethod || selected instanceof IType) {
-            Refactoring refactoring = createRefactoring((IIpsElement)selected);
+            Refactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.
             try {
@@ -106,34 +100,6 @@ public class RenameAction extends IpsAction implements IShellProvider {
             RenameResourceAction action = new RenameResourceAction(this);
             action.selectionChanged(selection);
             action.run();
-        }
-    }
-
-    /** Creates the refactoring compatible to the given <tt>IIpsElement</tt>. */
-    private Refactoring createRefactoring(IIpsElement ipsElement) {
-        String contributionId = "";
-
-        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            contributionId = IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE;
-        } else if (ipsElement instanceof IProductCmptTypeAttribute) {
-            contributionId = IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE;
-        }
-
-        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(contributionId);
-        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setProject(ipsElement.getIpsProject().getName());
-
-        if (ipsElement instanceof IAttribute) {
-            IAttribute attribute = (IAttribute)ipsElement;
-            renameDescriptor.setTypeArgument(attribute.getType());
-            renameDescriptor.setPartArgument(attribute);
-        }
-
-        try {
-            return contribution.createRefactoring(renameDescriptor);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
         }
     }
 

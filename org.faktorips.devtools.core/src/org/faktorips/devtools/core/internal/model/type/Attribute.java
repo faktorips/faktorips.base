@@ -216,4 +216,5 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
             }
         }
     }
+
 }

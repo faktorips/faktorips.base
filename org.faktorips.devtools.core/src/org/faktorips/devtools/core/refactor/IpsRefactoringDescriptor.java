@@ -13,14 +13,7 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 /**
  * An <tt>IpsRefactoringDescriptor</tt> can be used to start a Faktor-IPS refactoring head-less.
@@ -36,32 +29,28 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
  * 
  * <p>
  * Clients should then call <tt>createDescriptor</tt> on the contribution and cast it to the
- * appropriate <tt>IpsRefactoringDescriptor</tt>. The methods <tt>setProject(String)</tt> and
- * <tt>setXXXArgument(...)</tt> provided by the descriptor are then used to configure the
- * refactoring, for example like this:
+ * appropriate <tt>IpsRefactoringDescriptor</tt>. Then the descriptor needs to be configured, for
+ * example like this:
  * </p>
  * 
  * <pre>
  * RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
- * renameDescriptor.setProject(ipsElement.getIpsProject().getName());
- * IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)ipsElement;
- * renameDescriptor.setTypeArgument(policyCmptTypeAttribute.getPolicyCmptType());
- * renameDescriptor.setPartArgument(policyCmptTypeAttribute);
+ * renameDescriptor.setIpsElement(ipsElement);
  * </pre>
  * 
  * <p>
  * After that is done, the descriptor can be used to create a <tt>Refactoring</tt> instance by
- * invoking <tt>createRefactoring(IpsRefactoringDescriptor)</tt> on the
- * <tt>IpsRefactoringContribution</tt>.
+ * invoking <tt>createRefactoring(RefactoringStatus)</tt> on the descriptor.
+ * <p>
+ * Note however, that it is much easier to create a refactoring instance configured for a specific
+ * <tt>IIpsElement</tt> by just calling a getter method provided by <tt>IIpsElement</tt>, for
+ * example <tt>getRenameRefactoring()</tt>.
  * 
  * @see IpsRefactoringContribution
  * 
  * @author Alexander Weickmann
  */
 public abstract class IpsRefactoringDescriptor extends RefactoringDescriptor {
-
-    /** A map containing all arguments configuring the refactoring. */
-    private final Map<String, String> arguments;
 
     /**
      * Creates an <tt>IpsRefactoringDescriptor</tt>.
@@ -87,29 +76,6 @@ public abstract class IpsRefactoringDescriptor extends RefactoringDescriptor {
             int flags) {
 
         super(contributionId, project, description, comment, flags);
-        arguments = new HashMap<String, String>();
-    }
-
-    /**
-     * This operation initializes the descriptor by loading any necessary resources.
-     * <p>
-     * This operation needs not to be called by clients.
-     * 
-     * @throws CoreException If an error occurs while initializing.
-     */
-    public abstract void internalInit() throws CoreException;
-
-    /** Grants subclasses access to the argument map. */
-    protected final Map<String, String> getArguments() {
-        return arguments;
-    }
-
-    @Override
-    public final Refactoring createRefactoring(RefactoringStatus status) throws CoreException {
-        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(getID());
-        Refactoring refactoring = contribution.createRefactoring(this);
-        return refactoring;
     }
 
 }

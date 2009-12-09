@@ -14,11 +14,18 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.faktorips.devtools.core.internal.refactor.RenamePolicyCmptTypeAttributeProcessor;
+import org.faktorips.devtools.core.internal.refactor.RenameProductCmptTypeAttributeProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The <tt>RenameIpsElementDescriptor</tt> is used to configure the Faktor-IPS rename refactorings.
@@ -35,12 +42,6 @@ import org.faktorips.devtools.core.model.type.IType;
  * @author Alexander Weickmann
  */
 public final class RenameIpsElementDescriptor extends IpsRefactoringDescriptor {
-
-    /** Argument identifying the <tt>IType</tt>. */
-    private static final String TYPE_ARGUMENT = "type";
-
-    /** Argument identifying the <tt>IIpsObjectPart</tt>. */
-    private static final String PART_ARGUMENT = "part";
 
     /** The <tt>IIpsElement</tt> to be renamed. */
     private IIpsElement ipsElement;
@@ -70,52 +71,33 @@ public final class RenameIpsElementDescriptor extends IpsRefactoringDescriptor {
     }
 
     /**
-     * Sets the value of the <tt>Type</tt> argument.
+     * Sets the <tt>IIpsElement</tt> to be renamed.
      * 
-     * @param type The <tt>IType</tt> that is either to be renamed or contains the
-     *            <tt>IIpsObjectPart</tt> to be renamed.
-     */
-    public void setTypeArgument(IType type) {
-        getArguments().put(TYPE_ARGUMENT, type.getQualifiedName());
-    }
-
-    /**
-     * Sets the value of the <tt>Part</tt> argument.
+     * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
      * 
-     * @param ipsObjectPart The <tt>IIpsObjectPart</tt> to be renamed.
+     * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
      */
-    public void setPartArgument(IIpsObjectPart ipsObjectPart) {
-        getArguments().put(PART_ARGUMENT, ipsObjectPart.getName());
+    public void setIpsElement(IIpsElement ipsElement) {
+        ArgumentCheck.notNull(ipsElement);
+        this.ipsElement = ipsElement;
     }
 
-    /** Returns the value of the <tt>Type</tt> argument. */
-    public String getTypeArgument() {
-        return getArguments().get(TYPE_ARGUMENT);
-    }
-
-    /** Returns the value of <tt>Part</tt> argument. */
-    public String getPartArgument() {
-        return getArguments().get(PART_ARGUMENT);
-    }
-
-    @Override
-    public void internalInit() throws CoreException {
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
-
-        if (getID().equals(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE)) {
-            ipsElement = ipsProject.findPolicyCmptType(getTypeArgument()).getPolicyCmptTypeAttribute(getPartArgument());
-
-        } else if (getID().equals(IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE)) {
-            ipsElement = ipsProject.findProductCmptType(getTypeArgument()).getProductCmptTypeAttribute(
-                    getPartArgument());
-        }
-    }
-
-    /**
-     * Returns the <tt>IIpsElement</tt> to be renamed or <tt>null</tt> if the descriptor has not
-     * been initialized yet.
-     */
+    /** Returns the <tt>IIpsElement</tt> to be renamed or <tt>null</tt> if it has not been set. */
     public IIpsElement getIpsElement() {
         return ipsElement;
     }
+
+    @Override
+    public Refactoring createRefactoring(RefactoringStatus status) throws CoreException {
+        RenameProcessor renameProcessor;
+        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
+            renameProcessor = new RenamePolicyCmptTypeAttributeProcessor((IPolicyCmptTypeAttribute)ipsElement);
+        } else if (ipsElement instanceof IProductCmptTypeAttribute) {
+            renameProcessor = new RenameProductCmptTypeAttributeProcessor((IProductCmptTypeAttribute)ipsElement);
+        } else {
+            throw new RuntimeException("The IPS element " + ipsElement + " does not support the rename refactoring.");
+        }
+        return new RenameRefactoring(renameProcessor);
+    }
+
 }

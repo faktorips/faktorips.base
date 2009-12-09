@@ -15,35 +15,17 @@ package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
-import org.faktorips.devtools.core.refactor.IpsRefactoringDescriptor;
 import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Contributes the "Rename Product Component Type Attribute" - refactoring to the platform.
  * 
  * @author Alexander Weickmann
  */
-public final class RenameProductCmptTypeAttributeContribution extends IpsRefactoringContribution {
-
-    @Override
-    public Refactoring createRefactoring(IpsRefactoringDescriptor descriptor) throws CoreException {
-        ArgumentCheck.notNull(descriptor);
-        ArgumentCheck.isInstanceOf(descriptor, RenameIpsElementDescriptor.class);
-        descriptor.internalInit();
-        IProductCmptTypeAttribute productCmptTypeAttribute = (IProductCmptTypeAttribute)((RenameIpsElementDescriptor)descriptor)
-                .getIpsElement();
-        RenameProcessor renameProcessor = new RenameProductCmptTypeAttributeProcessor(productCmptTypeAttribute);
-        return new RenameRefactoring(renameProcessor);
-    }
+public final class RenameProductCmptTypeAttributeContribution extends RefactoringContribution {
 
     @SuppressWarnings("unchecked")
     // Unchecked inherited from LTK, can't do anything here.

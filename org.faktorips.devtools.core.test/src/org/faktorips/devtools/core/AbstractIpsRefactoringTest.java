@@ -18,14 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.IpsRefactoringContribution;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -49,13 +44,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
             String newAttributeName) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { policyCmptTypeAttribute, newAttributeName });
-
-        RenameIpsElementDescriptor renameDescriptor = createRenameIpsElementDescriptor(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE);
-        renameDescriptor.setProject(policyCmptTypeAttribute.getIpsProject().getName());
-        renameDescriptor.setTypeArgument(policyCmptTypeAttribute.getPolicyCmptType());
-        renameDescriptor.setPartArgument(policyCmptTypeAttribute);
-
-        createAndRunRenameRefactoring(renameDescriptor, newAttributeName);
+        createAndRunRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
     }
 
     /**
@@ -71,26 +60,11 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
             String newAttributeName) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { productCmptTypeAttribute, newAttributeName });
-
-        RenameIpsElementDescriptor renameDescriptor = createRenameIpsElementDescriptor(IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE);
-        renameDescriptor.setProject(productCmptTypeAttribute.getIpsProject().getName());
-        renameDescriptor.setTypeArgument(productCmptTypeAttribute.getProductCmptType());
-        renameDescriptor.setPartArgument(productCmptTypeAttribute);
-
-        createAndRunRenameRefactoring(renameDescriptor, newAttributeName);
+        createAndRunRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
     }
 
-    private RenameIpsElementDescriptor createRenameIpsElementDescriptor(String contributionId) {
-        IpsRefactoringContribution contribution = (IpsRefactoringContribution)RefactoringCore
-                .getRefactoringContribution(contributionId);
-        return (RenameIpsElementDescriptor)contribution.createDescriptor();
-    }
-
-    private void createAndRunRenameRefactoring(RenameIpsElementDescriptor renameDescriptor, String newElementName)
+    private void createAndRunRenameRefactoring(RenameRefactoring renameRefactoring, String newElementName)
             throws CoreException {
-
-        ProcessorBasedRefactoring renameRefactoring = (ProcessorBasedRefactoring)renameDescriptor
-                .createRefactoring(new RefactoringStatus());
 
         RenameRefactoringProcessor processor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
         processor.setNewElementName(newElementName);
