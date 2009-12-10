@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -931,12 +932,18 @@ public abstract class Type extends BaseIpsObject implements IType {
         @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAttribute[] lattributes = currentType.getAttributes();
+            List<IAttribute> attributesToAdd = new ArrayList<IAttribute>();
             // considers overridden attributes
             for (int i = 0; i < lattributes.length; i++) {
                 if (!attributeNames.contains(lattributes[i].getName())) {
-                    attributeNames.add(lattributes[i].getName());
-                    attributes.add(lattributes[i]);
+                    attributesToAdd.add(lattributes[i]);
                 }
+            }
+            // Place supertype attributes in front of subtype attributes
+            Collections.reverse(attributesToAdd);
+            for (IAttribute attribute : attributesToAdd) {
+                attributeNames.add(attribute.getName());
+                attributes.add(0, attribute);
             }
             return true;
         }
