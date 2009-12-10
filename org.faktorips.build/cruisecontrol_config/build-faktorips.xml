@@ -865,7 +865,7 @@ ${faktoripsProductLinuxZipPath}
         </copy>
     </target>
     <target name="-copy.javaoutput" unless="is.thisbuildsuccessful">
-        <copy file="${buildDirectory}/javaoutput*" 
+        <copy file="${buildDirectory}/javaoutput.txt" 
                      todir="${ccProjectDir}/${cctimestamp}"
                      failonerror="false" verbose="true"/>
     </target>
