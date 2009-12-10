@@ -6,7 +6,7 @@ CVS_ROOT=/usr/local/cvsroot
 CVS_CHECKOUT=/opt/cc/work/skel/
 CVS_CRUISE_CONTROL_SOURCE_LOCATION=org.faktorips.build/cruisecontrol_config/
 
-INPUT_FILES=(faktorips.projects.xml mailmapping.txt)
+INPUT_FILES=(faktorips.projects.xml mailmapping.txt generate.cc.config.xml)
 OUTPUT_FILE=config.xml
 
 JAVA_HOME=/usr/lib/jvm/java-1.5.0-sun
