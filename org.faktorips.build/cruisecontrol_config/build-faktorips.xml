@@ -259,8 +259,8 @@
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
             <property name="label" value="${label}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
-            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+            <property name="xms.megabytes" value="600m"/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value="1024m"/> <!-- -Xmx256m -->
         </ant>
     </target>
     
@@ -494,8 +494,8 @@
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
             <property name="product.project" value="${productProject}"/>
-            <property name="xms.megabytes" value=""/>
-            <property name="xmx.megabytes" value=""/>   
+            <property name="xms.megabytes" value="600m"/>
+            <property name="xmx.megabytes" value="1024m"/>   
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
