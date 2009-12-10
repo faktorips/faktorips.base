@@ -54,8 +54,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
-import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
@@ -127,8 +125,11 @@ public class CustomIconSection extends IpsSection {
         iconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
         iconBrowseButton.addSelectionListener(new BrowseIconsListener((IProductCmptType)type));
 
-        EditField field = new TextField(iconPathText);
-        bindingContext.bindContent(field, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
+        // update Text before binding it to the content, as it will not show up when initially
+        // opened otherwise
+        // TODO: SW 10.12.09 Why doesn't bindingContext update text field in the first place?
+        iconPathText.setText(((IProductCmptType)type).getInstancesIcon());
+        bindingContext.bindContent(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
 
         // Update Icon on path-change
         bindingContext.add(new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
@@ -145,7 +146,6 @@ public class CustomIconSection extends IpsSection {
         if (!(type instanceof IProductCmptType)) {
             return;
         }
-        iconPathText.setText(((IProductCmptType)type).getInstancesIcon());
         refreshIcon();
     }
 
