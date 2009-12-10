@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
@@ -69,7 +72,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
-    private String enabledInstancesIconPath = null;
+    private String instancesIconPath = null;
 
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class,
             ITableStructureUsage.class, "TableStructureUsage"); //$NON-NLS-1$
@@ -296,7 +299,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
         configurationForPolicyCmptType = Boolean.valueOf(
                 element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
-        enabledInstancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_ENABLED_INSTANCES);
+        instancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_INSTANCES);
     }
 
     /**
@@ -309,7 +312,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 .valueOf(configurationForPolicyCmptType));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
 
-        element.setAttribute(PROPERTY_ICON_FOR_ENABLED_INSTANCES, enabledInstancesIconPath);
+        element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
     }
 
     /**
@@ -504,6 +507,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
+
+        validateIconPath(list, ipsProject);
     }
 
     // TODO pk: write test case
@@ -528,6 +533,23 @@ public class ProductCmptType extends Type implements IProductCmptType {
                             overloadedMethod.getFormulaName());
                     msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR,
                             nonFormulas[i], IIpsElement.PROPERTY_NAME));
+                }
+            }
+        }
+    }
+
+    private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+        if (isUseCustomInstanceIcon()) {
+            InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
+            if (stream == null) {
+                String text = "Icon file cannot be resolved. Check path: \"" + getInstancesIcon() + "\".";
+                msgList.add(new Message(MSGCODE_ICON_PATH_INVALID, text, Message.ERROR, this,
+                        PROPERTY_ICON_FOR_INSTANCES));
+            } else {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new CoreException(new IpsStatus(e));
                 }
             }
         }
@@ -615,28 +637,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             result.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(this, includeSubtypes)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    public String getInstancesIcon() {
-        return enabledInstancesIconPath;
-    }
-
-    public boolean isUseCustomInstanceIcon() {
-        return StringUtils.isNotEmpty(enabledInstancesIconPath);
-    }
-
-    public void setInstancesIcon(String path) {
-        String oldPath = enabledInstancesIconPath;
-        enabledInstancesIconPath = path;
-        valueChanged(oldPath, enabledInstancesIconPath);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
     private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
@@ -840,6 +840,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
             check = currentType.isAbstract();
             return !check;
         }
+    }
+
+    public String getInstancesIcon() {
+        return instancesIconPath;
+    }
+
+    public boolean isUseCustomInstanceIcon() {
+        return StringUtils.isNotEmpty(instancesIconPath);
+    }
+
+    public void setInstancesIcon(String path) {
+        String oldPath = instancesIconPath;
+        instancesIconPath = path;
+        valueChanged(oldPath, instancesIconPath);
+    }
+
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

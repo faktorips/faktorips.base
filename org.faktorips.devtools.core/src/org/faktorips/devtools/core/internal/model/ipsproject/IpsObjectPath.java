@@ -781,7 +781,6 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public InputStream getResourceAsStream(String path) {
-        IIpsObjectPathEntry[] entries = getEntries();
         for (IIpsObjectPathEntry entry : entries) {
             try {
                 InputStream inputStream = entry.getRessourceAsStream(path);

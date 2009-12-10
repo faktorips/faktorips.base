@@ -14,11 +14,13 @@
 package org.faktorips.devtools.core;
 
 import java.beans.PropertyDescriptor;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -1045,5 +1047,36 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             lastEvent = event;
         }
 
+    }
+
+    /**
+     * Reads the first line of a file's contents from the given {@link InputStream}.
+     * 
+     * @param aStream
+     * @return
+     * @throws IOException
+     */
+    protected String getFileContent(InputStream aStream) throws IOException {
+        assertNotNull(aStream);
+        BufferedReader aReader = new BufferedReader(new InputStreamReader(aStream));
+        String aContent = aReader.readLine();
+        aReader.close();
+
+        return aContent;
+    }
+
+    /**
+     * Creates a file ("file.txt") with the given String as content and places it in the given
+     * folder.
+     * 
+     * @param parentFolder
+     * @param content
+     * @throws CoreException
+     */
+    protected void createFileWithContent(IFolder parentFolder, String fileName, String content) throws CoreException {
+        IFile file = parentFolder.getFile(fileName);
+        if (!file.exists()) {
+            file.create(new ByteArrayInputStream(content.getBytes()), true, null);
+        }
     }
 }

@@ -872,6 +872,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
      * no resource is found at the given path.
+     * <p>
+     * Callers of this method are responsible for closing the stream after use.
      * 
      * @param path
      * @return

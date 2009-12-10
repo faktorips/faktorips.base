@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2003,5 +2004,21 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 throws CoreException {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public void testGetResourceAsStream() throws CoreException, IOException {
+        IIpsPackageFragmentRoot rootOne = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
+        createFileWithContent((IFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
+        assertEquals("111", getFileContent(ipsProject.getResourceAsStream("file.txt")));
+
+        IIpsProject referencedIpsProject = newIpsProject("referencedIpsProject");
+        IIpsPackageFragmentRoot rootTwo = newIpsPackageFragmentRoot(referencedIpsProject, null, "rootTwo");
+        createFileWithContent((IFolder)rootTwo.getCorrespondingResource(), "anotherFile.txt", "222");
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(referencedIpsProject);
+        ipsProject.setIpsObjectPath(path);
+
+        // "anotherFile.txt" can be retrieved via the original ipsProject.
+        assertEquals("222", getFileContent(ipsProject.getResourceAsStream("anotherFile.txt")));
     }
 }

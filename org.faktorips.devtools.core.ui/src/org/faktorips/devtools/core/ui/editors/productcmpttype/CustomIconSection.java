@@ -15,9 +15,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,8 +28,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -44,21 +42,26 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
 /**
  * This Section lets the user select icons that are used when instances of the edited type are
- * displayed in FIPS/Eclipse. The user can define an enabled and a disabled Icon separately.
+ * displayed in FIPS/Eclipse.
  * <p>
  * Note: This class can be easily extended for use with all ITypes (especially
  * {@link IPolicyCmptType}. The Methods in {@link IProductCmptType} as
@@ -69,11 +72,11 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
 public class CustomIconSection extends IpsSection {
 
     private IType type;
-    private Label enabledIconTextLabel;
-    private Text enabledIconPathText;
-    private Button enabledIconBrowseButton;
+    private Label iconTextLabel;
+    private Text iconPathText;
+    private Button iconBrowseButton;
 
-    private Label enabledIconPreview;
+    private Label iconPreview;
 
     public CustomIconSection(IType type, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
@@ -104,59 +107,56 @@ public class CustomIconSection extends IpsSection {
         Label iconDescriptionLabel = new Label(parent, SWT.WRAP);
         iconDescriptionLabel.setText(Messages.CustomIconSection_ConfigurationDescription);
         GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, true, false, 3, 1);
-        gd.widthHint = 600;
+        gd.widthHint = 650;
         iconDescriptionLabel.setLayoutData(gd);
     }
 
     private void createEnabledIconControls(Composite parent, UIToolkit toolkit) {
         toolkit.createLabel(parent, Messages.CustomIconSection_IconPreviewLabel);
 
-        enabledIconPreview = new Label(parent, SWT.BORDER | SWT.CENTER);
+        iconPreview = new Label(parent, SWT.BORDER | SWT.CENTER);
         GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, false, false);
         gd.heightHint = 16;
         gd.widthHint = 16;
         gd.horizontalSpan = 2;
-        enabledIconPreview.setLayoutData(gd);
+        iconPreview.setLayoutData(gd);
 
-        enabledIconTextLabel = toolkit.createLabel(parent, Messages.CustomIconSection_CustomPathText);
-        enabledIconPathText = toolkit.createText(parent);
-        enabledIconPathText.setEnabled(true);
+        iconTextLabel = toolkit.createLabel(parent, Messages.CustomIconSection_CustomPathText);
+        iconPathText = toolkit.createText(parent);
 
-        enabledIconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
-        enabledIconBrowseButton.addSelectionListener(new BrowseIconsListener(enabledIconPathText));
+        iconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
+        iconBrowseButton.addSelectionListener(new BrowseIconsListener((IProductCmptType)type));
 
-        enabledIconPathText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                if (isRefreshing()) {
-                    return;
-                }
-                IProductCmptType prodType = (IProductCmptType)type;
-                if (!ObjectUtils.equals(prodType.getInstancesIcon(), enabledIconPathText.getText())) {
-                    prodType.setInstancesIcon(enabledIconPathText.getText());
-                }
-                refreshIcons();
+        EditField field = new TextField(iconPathText);
+        bindingContext.bindContent(field, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
+
+        // Update Icon on path-change
+        bindingContext.add(new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
+                String.class) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                refreshIcon();
             }
-
         });
     }
 
     @Override
     protected void performRefresh() {
-        if (type == null) {
+        if (!(type instanceof IProductCmptType)) {
             return;
         }
-        IProductCmptType prodCmptType = (IProductCmptType)type;
-        enabledIconPathText.setText(prodCmptType.getInstancesIcon());
-        refreshIcons();
+        iconPathText.setText(((IProductCmptType)type).getInstancesIcon());
+        refreshIcon();
     }
 
-    private void refreshIcons() {
-        if (type instanceof IProductCmptType) {
-            ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault()
-                    .getWorkbenchAdapterFor(ProductCmpt.class);
-            enabledIconPreview.setImage(IpsUIPlugin.getDefault().getImage(
-                    adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+    private void refreshIcon() {
+        if (!(type instanceof IProductCmptType)) {
+            return;
         }
+        ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault()
+                .getWorkbenchAdapterFor(ProductCmpt.class);
+        iconPreview.setImage(IpsUIPlugin.getDefault().getImage(
+                adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
     }
 
     public void setType(IType newType) {
@@ -165,10 +165,10 @@ public class CustomIconSection extends IpsSection {
     }
 
     private class BrowseIconsListener implements SelectionListener {
-        private Text text;
+        private IProductCmptType type;
 
-        public BrowseIconsListener(Text textControl) {
-            text = textControl;
+        public BrowseIconsListener(IProductCmptType type) {
+            this.type = type;
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
@@ -188,9 +188,17 @@ public class CustomIconSection extends IpsSection {
             if (dialog.open() == Window.OK) {
                 // Validator ensures a file is returned as first element
                 IFile file = (IFile)dialog.getFirstResult();
-                // remove project from file-path. Using the ipsObjectPath Images must be addressed
-                // project- or archive-relative respectively.
-                text.setText(file.getFullPath().removeFirstSegments(1).toString());
+                /**
+                 * Requirement by Jan: Images for Model-Classes must be accessible via the
+                 * IpsObjectPath. Thus image-paths are be saved sourcefolder- or archive-relative
+                 * respectively.
+                 * <p>
+                 * Note: This may cause problems when using Icons with the same name in different
+                 * IPS SourceFolders (which is possible within the same project). Furthermore images
+                 * will be cached by the IpsUIPlugin using their path, so problems may arise with
+                 * caching as well.
+                 */
+                type.setInstancesIcon(file.getFullPath().removeFirstSegments(2).toString());
                 performRefresh();
             }
         }
@@ -218,11 +226,11 @@ public class CustomIconSection extends IpsSection {
                 return selectFile((IFile)element);
             }
 
-            if (element instanceof IProject) {
-                return selectIpsProjectsInPath((IProject)element);
-            }
-
-            if (element instanceof IContainer) { // i.e. IProject, IFolder
+            if (element instanceof IFolder) {
+                IFolder folder = (IFolder)element;
+                if (!isIpsSrcFolder(folder)) {
+                    return false;
+                }
                 try {
                     IResource[] resources = ((IContainer)element).members();
                     for (int i = 0; i < resources.length; i++) {
@@ -233,7 +241,38 @@ public class CustomIconSection extends IpsSection {
                 } catch (CoreException e) {
                 }
             }
+
+            if (element instanceof IProject) {
+                return selectIpsProjectsInPath((IProject)element);
+            }
+
+            // e.g. for WorkspaceRoot
             return false;
+        }
+
+        /**
+         * Returns <code>true</code> if the given folder is an IPS SourceFolder
+         * (PackageFragmentRoot) or a sub folder of an IPS SourceFolder (PackageFragment) and thus
+         * part of the {@link IpsObjectPath}.
+         * 
+         * @param folder
+         * @return
+         */
+        private boolean isIpsSrcFolder(IFolder folder) {
+            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(folder.getProject());
+            IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(folder.getProjectRelativePath()
+                    .toOSString());
+            if (root != null && root.exists()) {
+                return true;
+            } else {
+                // Check if parentFolder is PackageFragmentRoot
+                IContainer parent = folder.getParent();
+                if (parent instanceof IFolder) {
+                    return isIpsSrcFolder((IFolder)parent);
+                } else {
+                    return false;
+                }
+            }
         }
 
         /**

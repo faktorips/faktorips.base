@@ -120,6 +120,8 @@ public interface IIpsObjectPathEntry {
     /**
      * Returns an {@link InputStream} that provides a resource's/file's contents. The given path is
      * interpreted as a relative path in respect to the path-entry's resource.
+     * <p>
+     * Callers of this method are responsible for closing the stream after use.
      * 
      * @param path
      * @return

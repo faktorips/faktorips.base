@@ -33,9 +33,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
     public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
-    public String PROPERTY_ICON_FOR_ENABLED_INSTANCES = "customIconForEnabledInstances";
-    public String PROPERTY_ICON_FOR_DISABLED_INSTANCES = "customIconForDisabledInstances";
-    public String PROPERTY_USE_ICONS = "useCustomIcons";
+    public String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon";
 
     /**
      * Prefix for all message codes of this class.
@@ -103,6 +101,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      */
     public final static String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX
             + "OverloadedFormulaCannotBeOverridden"; //$NON-NLS-1$
+    /**
+     * Validation message code to indicate that the custom icon cannot be resolved.
+     */
+    public final static String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to. Returns

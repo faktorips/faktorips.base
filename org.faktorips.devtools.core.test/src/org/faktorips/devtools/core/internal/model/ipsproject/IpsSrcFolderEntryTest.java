@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,11 +13,16 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -34,13 +39,14 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IpsObjectPath path;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
     }
-    
+
     public void testGetOutputFolderForGeneratedJavaFiles() {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
@@ -68,7 +74,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         path.setOutputDefinedPerSrcFolder(true);
         assertEquals("pack2", entry.getBasePackageNameForMergableJavaClasses());
     }
-    
+
     public void testGetOutputFolderForExtensionJavaFiles() {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
@@ -96,13 +102,13 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         path.setOutputDefinedPerSrcFolder(true);
         assertEquals("pack2", entry.getBasePackageNameForDerivedJavaClasses());
     }
-    
+
     public void testInitFromXml() {
         IProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path);
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName("Entry");
-        
+
         entry.initFromXml((Element)nl.item(0), ipsProject.getProject());
         assertEquals(project.getFolder("ipssrc"), entry.getSourceFolder());
         assertEquals(project.getFolder("generated"), entry.getSpecificOutputFolderForMergableJavaFiles());
@@ -128,9 +134,10 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(element, project);
         assertEquals("toc.xml", entry.getBasePackageRelativeTocPath());
         assertEquals(project.getFolder("ipssrc").getFolder("modelclasses"), entry.getSourceFolder());
-        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry
+                .getSpecificOutputFolderForMergableJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForMergableJavaClasses());
-        
+
         // null, default values for new entries
         entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         element = entry.toXml(newDocument());
@@ -141,8 +148,8 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("", entry.getSpecificBasePackageNameForMergableJavaClasses());
         assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
     }
-    
-    public void testValidate() throws CoreException{
+
+    public void testValidate() throws CoreException {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
 
@@ -156,7 +163,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
-        
+
         // validate missing outputFolderGenerated
         IFolder folder1 = ipsProject.getProject().getFolder("none");
         srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(folder1);
@@ -176,5 +183,32 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(5, ml.getNoOfMessages());
+    }
+
+    public void testGetResourceAsStream() throws CoreException, IOException {
+        IFolder projectSubFolder = ipsProject.getProject().getFolder(new Path("subFolder"));
+        if (!projectSubFolder.exists()) {
+            projectSubFolder.create(true, true, null);
+        }
+        createFileWithContent(projectSubFolder, "file.txt", "CCC");
+
+        // File not found, as Folder is not an IPS SourceFolder
+        assertNull(ipsProject.getIpsObjectPath().getResourceAsStream("subFolder/file.txt"));
+        assertNull(ipsProject.getIpsObjectPath().getResourceAsStream("file.txt"));
+
+        // Roots in subfolders (e.g. project/folder/root) cannot be created via the FIPS GUI. Tests
+        // with IconPaths will fail in that case.
+        IIpsPackageFragmentRoot rootOne = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
+        IIpsPackageFragmentRoot rootTwo = newIpsPackageFragmentRoot(ipsProject, null, "rootTwo");
+
+        createFileWithContent((IFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((IFolder)rootTwo.getCorrespondingResource(), "file.txt", "222");
+        assertEquals("111", getFileContent("rootOne", "file.txt"));
+        assertEquals("222", getFileContent("rootTwo", "file.txt"));
+    }
+
+    private String getFileContent(String rootName, String fileName) throws CoreException, IOException {
+        InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getRessourceAsStream(fileName);
+        return getFileContent(aStream);
     }
 }
