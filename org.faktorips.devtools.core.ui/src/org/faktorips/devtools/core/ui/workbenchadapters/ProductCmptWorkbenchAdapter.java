@@ -13,11 +13,17 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -36,23 +42,34 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         prodCmptDefaultIcon = IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
     }
 
-    private ImageDescriptor getProductCmptImage(IProductCmptType type) {
+    private ImageDescriptor getProductCmptImageDescriptor(IProductCmptType type) {
+        IconDesc icon = getProductCmptIconDesc(type);
+        return icon.getImageDescriptor();
+    }
+
+    /**
+     * Public for testing purposes.
+     * 
+     * @param type
+     * @return
+     */
+    public IconDesc getProductCmptIconDesc(IProductCmptType type) {
         if (type == null) {
-            return getDefaultImageDescriptor();
+            return new DefaultIconDesc();
         }
 
         if (type.isUseCustomInstanceIcon()) {
-            return getImageDescriptorForPath(type.getIpsProject(), type.getInstancesIcon());
+            return new PathIconDesc(type.getIpsProject(), type.getInstancesIcon());
         } else if (type.hasSupertype()) {
             IProductCmptType superType;
             try {
                 superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
             } catch (CoreException e) {
-                return getDefaultImageDescriptor();
+                return new DefaultIconDesc();
             }
-            return getProductCmptImage(superType);
+            return getProductCmptIconDesc(superType);
         } else {
-            return getDefaultImageDescriptor();
+            return new DefaultIconDesc();
         }
     }
 
@@ -61,7 +78,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         try {
             String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
-            return getProductCmptImage(type);
+            return getProductCmptImageDescriptor(type);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return null;
@@ -73,7 +90,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         try {
             if (ipsObject instanceof IProductCmpt) {
                 IProductCmpt productCmpt = (IProductCmpt)ipsObject;
-                return getProductCmptImage(productCmpt.findProductCmptType(ipsObject.getIpsProject()));
+                return getProductCmptImageDescriptor(productCmpt.findProductCmptType(ipsObject.getIpsProject()));
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -86,7 +103,56 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     }
 
     public ImageDescriptor getImageDescriptorForInstancesOf(IProductCmptType type) {
-        return getProductCmptImage(type);
+        return getProductCmptImageDescriptor(type);
     }
 
+    public abstract class IconDesc {
+        public abstract ImageDescriptor getImageDescriptor();
+    }
+
+    public class PathIconDesc extends IconDesc {
+        private IIpsProject ipsProject;
+        private String pathToImage;
+
+        public PathIconDesc(IIpsProject ipsProject, String pathToImage) {
+            this.ipsProject = ipsProject;
+            this.pathToImage = pathToImage;
+        }
+
+        @Override
+        public ImageDescriptor getImageDescriptor() {
+            ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(pathToImage);
+            if (cachedImage == null) {
+                try {
+                    InputStream inputStream = ipsProject.getResourceAsStream(pathToImage);
+                    if (inputStream != null) {
+                        Image loadedImage = new Image(Display.getDefault(), inputStream);
+                        IpsUIPlugin.getDefault().getImageRegistry().put(pathToImage, loadedImage);
+                        ImageDescriptor imageDesc = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(
+                                pathToImage);
+                        inputStream.close();
+                        return imageDesc;
+                    } else {
+                        return ImageDescriptor.getMissingImageDescriptor();
+                    }
+                } catch (IOException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+            return cachedImage;
+        }
+
+        public String getPathToImage() {
+            return pathToImage;
+        }
+    }
+
+    public class DefaultIconDesc extends IconDesc {
+
+        @Override
+        public ImageDescriptor getImageDescriptor() {
+            return prodCmptDefaultIcon;
+        }
+
+    }
 }

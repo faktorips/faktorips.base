@@ -13,18 +13,10 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
 public abstract class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapter {
@@ -69,24 +61,4 @@ public abstract class IpsObjectWorkbenchAdapter extends IpsElementWorkbenchAdapt
         return ipsObject.getName();
     }
 
-    protected ImageDescriptor getImageDescriptorForPath(IIpsProject ipsProject, String path) {
-        ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-        if (cachedImage == null) {
-            try {
-                InputStream inputStream = ipsProject.getResourceAsStream(path);
-                if (inputStream != null) {
-                    Image loadedImage = new Image(Display.getDefault(), inputStream);
-                    IpsUIPlugin.getDefault().getImageRegistry().put(path, loadedImage);
-                    ImageDescriptor imageDesc = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(path);
-                    inputStream.close();
-                    return imageDesc;
-                } else {
-                    return ImageDescriptor.getMissingImageDescriptor();
-                }
-            } catch (IOException e) {
-                IpsPlugin.log(e);
-            }
-        }
-        return cachedImage;
-    }
 }
