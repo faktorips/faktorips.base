@@ -115,11 +115,20 @@
         </project>
         
         <!--=====================================================-->
+        <!--Project definition: org.faktorips.nebula-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.nebula" mainbuildtarget="nebula">
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>
+        </project>
+        
+        <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.core.ui-->
         <!--=====================================================-->          
         <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
             <depends>
-                <project name="org.faktorips.devtools.core"/>
+                <project name="org.faktorips.nebula"/>
             </depends>
         </project>
         
@@ -132,15 +141,6 @@
             </depends>
         </project>
         
-        <!--=====================================================-->
-        <!--Project definition: org.faktorips.nebula-->
-        <!--=====================================================-->          
-        <project name="org.faktorips.nebula" mainbuildtarget="nebula">
-            <depends>
-                <project name="org.faktorips.nebula"/>
-            </depends>
-        </project>
-
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ant-->
         <!--=====================================================-->           

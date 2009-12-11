@@ -65,8 +65,15 @@
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.devtools.core-->
+        <!-- depends on org.faktorips.devtools.core-->
         <fileset dir="../../org.faktorips.devtools.core/">
+            <patternset>
+                <include name="lib/*.jar"/>
+                <include name="build/results/*.jar"/>
+            </patternset>
+        </fileset>
+        <!-- depends on org.faktorips.nebula-->
+        <fileset dir="../../org.faktorips.nebula/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
