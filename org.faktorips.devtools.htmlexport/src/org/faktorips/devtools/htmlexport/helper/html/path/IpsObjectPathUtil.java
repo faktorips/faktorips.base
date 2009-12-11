@@ -3,9 +3,9 @@ package org.faktorips.devtools.htmlexport.helper.html.path;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
-public class IpsObjectHtmlPathUtil extends AbstractIpsElementHtmlPathUtil<IIpsObject> {
+public class IpsObjectPathUtil extends AbstractIpsElementPathUtil<IIpsObject> {
 
-    public IpsObjectHtmlPathUtil(IIpsObject ipsElement) {
+    public IpsObjectPathUtil(IIpsObject ipsElement) {
         super(ipsElement);
     }
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Fipsdoc Plug-in
+Bundle-Name: Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.faktorips.devtools.htmlexport.Activator
@@ -17,6 +17,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.documentor,
+ org.faktorips.devtools.htmlexport.generators,
  org.faktorips.devtools.htmlexport.helper.html,
  org.faktorips.devtools.htmlexport.helper.html.path,
  org.faktorips.devtools.htmlexport.standard

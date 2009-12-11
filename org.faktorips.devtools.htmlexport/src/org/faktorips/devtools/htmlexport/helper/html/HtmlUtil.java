@@ -3,9 +3,9 @@ package org.faktorips.devtools.htmlexport.helper.html;
 import java.util.Collection;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.htmlexport.helper.html.path.HtmlPathUtilFactory;
-import org.faktorips.devtools.htmlexport.helper.html.path.IpsElementHtmlPathUtil;
+import org.faktorips.devtools.htmlexport.helper.html.path.IpsElementPathUtil;
 import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.html.path.PathUtilFactory;
 
 public class HtmlUtil {
 
@@ -31,7 +31,7 @@ public class HtmlUtil {
         builder
                 .append("<?xml version=\"1.0\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>");
         builder.append(title);
-        builder.append("</title></head>");
+        builder.append("</title></head><body>");
 
         return builder.toString();
     }
@@ -110,8 +110,8 @@ public class HtmlUtil {
         return builder.toString();
     }
 
-    public static IpsElementHtmlPathUtil createIpsElementHtmlPathUtil(IIpsElement element) {
-        return HtmlPathUtilFactory.createPathUtil(element);
+    public static IpsElementPathUtil createIpsElementHtmlPathUtil(IIpsElement element) {
+        return PathUtilFactory.createPathUtil(element);
     }
 
     /**
@@ -121,7 +121,7 @@ public class HtmlUtil {
      * @return relativer Link ins Root-Verzeichnis
      */
     public static String getPathToRoot(IIpsElement ipsElement) {
-        IpsElementHtmlPathUtil pathUtil = HtmlPathUtilFactory.createPathUtil(ipsElement);
+        IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
         return pathUtil.getPathToRoot();
     }
 
@@ -132,7 +132,7 @@ public class HtmlUtil {
      * @return relativer Link vom Root-Verzeichnis
      */
     public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileTypes linkedFileType) {
-        IpsElementHtmlPathUtil pathUtil = HtmlPathUtilFactory.createPathUtil(ipsElement);
+        IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
         return pathUtil.getPathFromRoot(linkedFileType);
     }
 
@@ -145,7 +145,7 @@ public class HtmlUtil {
      * @return Html-Link-Text
      */
     public static String getLinkName(IIpsElement ipsElement, boolean withImage) {
-        IpsElementHtmlPathUtil pathUtil = HtmlPathUtilFactory.createPathUtil(ipsElement);
+        IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
         return pathUtil.getLinkText(withImage);
     }
 
@@ -161,5 +161,9 @@ public class HtmlUtil {
     
     public static String getHtmlText(String text) {
         return text.replaceAll("\n", "\n<br/>");
+    }
+
+    public static String createHtmlFoot() {
+        return createHtmlElementCloseTag("body") + createHtmlElementCloseTag("html");
     }
 }

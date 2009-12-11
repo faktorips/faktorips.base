@@ -5,16 +5,16 @@ import java.io.File;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
-abstract class AbstractIpsElementHtmlPathUtil<T extends IIpsElement> implements IpsElementHtmlPathUtil {
+abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implements IpsElementPathUtil {
     protected static final String PATH_UP = "../";
 
     protected T ipsElement;
 
-    protected AbstractIpsElementHtmlPathUtil(T ipsElement) {
+    protected AbstractIpsElementPathUtil(T ipsElement) {
         this.ipsElement = ipsElement;
     }
 
-    protected AbstractIpsElementHtmlPathUtil() {
+    protected AbstractIpsElementPathUtil() {
 
     }
 

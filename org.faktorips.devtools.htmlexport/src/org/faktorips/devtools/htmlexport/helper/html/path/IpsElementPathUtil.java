@@ -7,25 +7,25 @@ import org.faktorips.devtools.core.model.IIpsElement;
  * @author dicker
  *
  */
-public interface IpsElementHtmlPathUtil {
+public interface IpsElementPathUtil {
 
     /**
-     * gibt den relativen Link vom <code>IIpsElement</code> ins Root-Verzeichnis
+     * gibt den relativen Pfad vom <code>IIpsElement</code> ins Root-Verzeichnis
      * 
-     * @return relativer Link ins Root-Verzeichnis
+     * @return relativer Pfad ins Root-Verzeichnis
      */
     public String getPathToRoot();
 
     /**
-     * gibt den relativen Link vom Root-Verzeichnis zum <code>IIpsElement</code>
-     * @param linkedFileType Typ des Links
+     * gibt den relativen Pfad vom Root-Verzeichnis zum <code>IIpsElement</code>
+     * @param linkedFileType Typ des Pfads
      * 
-     * @return relativer Link vom Root-Verzeichnis
+     * @return relativer Pfad vom Root-Verzeichnis
      */
     public String getPathFromRoot(LinkedFileTypes linkedFileType);
 
     /**
-     * Name des IIPSElement im Link
+     * Name des IIPSElement in einem Link
      * 
      * @param withImage
      *            true: Darstellung mit Thumb

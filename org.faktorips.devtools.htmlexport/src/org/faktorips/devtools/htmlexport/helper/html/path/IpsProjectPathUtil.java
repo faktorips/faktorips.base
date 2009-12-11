@@ -4,7 +4,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-class IpsProjectHtmlPathUtil extends AbstractIpsElementHtmlPathUtil<IIpsProject> {
+class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> {
 
     private static final String INDES_HTML = "indes.html";
 

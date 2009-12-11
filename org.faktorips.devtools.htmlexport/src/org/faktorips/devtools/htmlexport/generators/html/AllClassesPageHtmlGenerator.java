@@ -10,7 +10,7 @@ import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
 
-public class AllClassesPageHtmlGenerator extends AbstractAllPageHtmlGenerator {
+public class AllClassesPageHtmlGenerator extends AbstractAllPageElement {
     public AllClassesPageHtmlGenerator(IIpsElement baseIpsElement, List<IIpsObject> objects) {
         this(baseIpsElement, objects, ALL_FILTER);
     }
@@ -19,7 +19,7 @@ public class AllClassesPageHtmlGenerator extends AbstractAllPageHtmlGenerator {
         super(baseIpsElement, objects,filter);
     }
 
-    @Override
+    
     public String generateText() {
         StringBuilder builder = new StringBuilder();
         builder.append(HtmlUtil.createHtmlHead("All Classes"));

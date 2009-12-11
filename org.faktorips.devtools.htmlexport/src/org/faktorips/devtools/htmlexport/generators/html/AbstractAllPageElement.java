@@ -8,10 +8,10 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.htmlexport.generators.AbstractTextGenerator;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
+import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
 
-public abstract class AbstractAllPageHtmlGenerator extends AbstractTextGenerator {
+public abstract class AbstractAllPageElement extends RootPageElement {
 
     protected IIpsElement baseIpsElement;
 
@@ -30,14 +30,14 @@ public abstract class AbstractAllPageHtmlGenerator extends AbstractTextGenerator
     protected List<IIpsObject> objects;
     protected IpsObjectFilter filter = ALL_FILTER;
 
-    public AbstractAllPageHtmlGenerator(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsObjectFilter filter) {
+    public AbstractAllPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsObjectFilter filter) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.objects = objects;
         this.filter = filter;
     }
 
-    public AbstractAllPageHtmlGenerator(IIpsElement baseIpsElement, List<IIpsObject> objects) {
+    public AbstractAllPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.objects = objects;

@@ -9,15 +9,18 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.AbstractDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
+import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.AllClassesPageHtmlGenerator;
-import org.faktorips.devtools.htmlexport.generators.html.AllPackagesPageHtmlGenerator;
+import org.faktorips.devtools.htmlexport.generators.html.AllPackagesPageElement;
 import org.faktorips.devtools.htmlexport.generators.html.BaseFrameHtmlGenerator;
-import org.faktorips.devtools.htmlexport.generators.html.objects.AbstractObjectContentPageHtmlGenerator;
+import org.faktorips.devtools.htmlexport.generators.html.objects.AbstractObjectContentPageElement;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
-import org.faktorips.devtools.htmlexport.standard.generators.ProjectOverviewPageHtmlGenerator;
+import org.faktorips.devtools.htmlexport.pages.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.standard.generators.ProjectOverviewPageElement;
 
 public class StandardDocumentorScript extends AbstractDocumentorScript {
 
@@ -27,12 +30,14 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writeBaseFrame(DocumentorConfiguration config, List<IIpsObject> objects) {
+        writeOverviewPage(config, objects);
+        /*
         writeBaseFrameDefinition(config);
         writeAllClassesPage(config, objects);
-        writeAllOverviewPage(config, objects);
         writeProjectOverviewPage(config);
         writePackagesClassesPages(config, objects);
         writeClassesContentPages(config, objects);
+        */
     }
 
     private void writeClassesContentPages(DocumentorConfiguration config, List<IIpsObject> objects) {
@@ -43,8 +48,15 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writeClassContentPage(DocumentorConfiguration config, IIpsObject ipsObject) {
-        IGenerator objectContentPage = AbstractObjectContentPageHtmlGenerator.getInstance(ipsObject);
-        FileHandler.writeFile(config, "standard/" + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileTypes.CLASS_CONTENT), objectContentPage.generate());
+        RootPageElement objectContentPage = AbstractObjectContentPageElement.getInstance(ipsObject);
+        objectContentPage.build();
+        FileHandler.writeFile(config, "standard/" + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileTypes.CLASS_CONTENT), getPageContent(config, objectContentPage));
+    }
+
+    private byte[] getPageContent(DocumentorConfiguration config, PageElement page) {
+        ILayouter layouter = config.getLayouter();
+        page.acceptLayouter(layouter);
+        return layouter.generate();
     }
 
     private void writePackagesClassesPages(DocumentorConfiguration config, List<IIpsObject> objects) {
@@ -54,8 +66,9 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writePackagesClassesPage(DocumentorConfiguration config, IIpsPackageFragment ipsPackageFragment, List<IIpsObject> objects) {
-        IGenerator allClassesPage = new AllClassesPageHtmlGenerator(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
-        FileHandler.writeFile(config, "standard/" + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW), allClassesPage.generate());
+        RootPageElement allClassesPage = new AllClassesPageHtmlGenerator(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
+        allClassesPage.build();
+        FileHandler.writeFile(config, "standard/" + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW), getPageContent(config, allClassesPage));
     }
 
     private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsObject> objects) {
@@ -67,13 +80,25 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writeAllClassesPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        IGenerator allClassesPage = new AllClassesPageHtmlGenerator(config.getIpsProject(), objects);
-        FileHandler.writeFile(config, "standard/classes.html", allClassesPage.generate());
+        RootPageElement allClassesPage = new AllClassesPageHtmlGenerator(config.getIpsProject(), objects);
+        allClassesPage.build();
+        FileHandler.writeFile(config, "standard/classes.html", getPageContent(config, allClassesPage));
     }
 
-    private void writeAllOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        IGenerator allPackagesPage = new AllPackagesPageHtmlGenerator(config.getIpsProject(), objects);
-        FileHandler.writeFile(config, "standard/overview.html", allPackagesPage.generate());
+    private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
+        AllPackagesPageElement allPackagesPage = new AllPackagesPageElement(config.getIpsProject(), objects);
+        allPackagesPage.build();
+        writeFileWithOutput(config, allPackagesPage, "standard/overview.html");
+    }
+
+    private void writeFileWithOutput(DocumentorConfiguration config, RootPageElement allPackagesPage, String filePath) {
+        byte[] pageContent = getPageContent(config, allPackagesPage);
+        System.out.println("=======================================");
+        System.out.println(filePath);
+        System.out.println();
+        System.out.println(new String(pageContent));
+        
+        FileHandler.writeFile(config, filePath, pageContent);
     }
 
     private void writeBaseFrameDefinition(DocumentorConfiguration config) {
@@ -82,8 +107,9 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
     
     private void writeProjectOverviewPage(DocumentorConfiguration config) {
-        IGenerator projectOverviewHtml = new ProjectOverviewPageHtmlGenerator(config.getIpsProject());
-        FileHandler.writeFile(config, "standard/summary.html", projectOverviewHtml.generate());
+        RootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config.getIpsProject());
+        projectOverviewHtml.build();
+        FileHandler.writeFile(config, "standard/summary.html", getPageContent(config, projectOverviewHtml));
     }
 
 }

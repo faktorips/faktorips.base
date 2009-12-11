@@ -5,27 +5,38 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.generators.AbstractTextGenerator;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
+import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 
-public abstract class AbstractObjectContentPageHtmlGenerator<T extends IIpsObject> extends AbstractTextGenerator {
+public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends RootPageElement {
 
     protected T object;
 
-    public static AbstractTextGenerator getInstance(IIpsObject object) {
+    public static RootPageElement getInstance(IIpsObject object) {
         if (object.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE)
-            return new PolicyCmptContentPageHtmlGenerator((PolicyCmptType) object);
+            return new PolicyCmptContentPageElement((PolicyCmptType) object);
         if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE)
-            return new ProductCmptContentPageHtmlGenerator((ProductCmptType) object);
+            return new ProductCmptContentPageElement((ProductCmptType) object);
         throw new NotImplementedException();
     }
 
-    protected AbstractObjectContentPageHtmlGenerator(T object) {
+    protected AbstractObjectContentPageElement(T object) {
         this.object = object;
+        setTitle(object.getName());
     }
 
+    
     @Override
+    public void build() {
+        super.build();
+        addPageElement(new TextPageElement(Util.getIpsPackageName(object.getIpsPackageFragment())));
+        addPageElement(new TextPageElement(object.getName(), TextType.HEADING_1));
+
+    }
+
     public String generateText() {
         StringBuilder builder = new StringBuilder();
         builder.append(HtmlUtil.createHtmlHead(object.getName()));

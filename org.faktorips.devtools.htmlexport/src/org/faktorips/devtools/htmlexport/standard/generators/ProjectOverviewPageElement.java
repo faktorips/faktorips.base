@@ -1,18 +1,17 @@
 package org.faktorips.devtools.htmlexport.standard.generators;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.htmlexport.generators.AbstractTextGenerator;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
+import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
 
-public class ProjectOverviewPageHtmlGenerator extends AbstractTextGenerator {
+public class ProjectOverviewPageElement extends RootPageElement {
 
     IIpsProject project;
     
-    public ProjectOverviewPageHtmlGenerator(IIpsProject project) {
+    public ProjectOverviewPageElement(IIpsProject project) {
         this.project = project;
     }
 
-    @Override
     public String generateText() {
         StringBuilder builder = new StringBuilder();
         builder.append(HtmlUtil.createHtmlHead("Project " + project.getName()));

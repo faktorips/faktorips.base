@@ -8,9 +8,9 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.Documentor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
 
 public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
@@ -36,6 +36,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
         documentorConfig = new DocumentorConfiguration();
         documentorConfig.setPath(FIPSDOC_GENERIERT_HOME);
         documentorConfig.setIpsProject(ipsProject);
+        documentorConfig.setLayouter(new HtmlLayouter());
 
         documentor = new Documentor(documentorConfig);
     }

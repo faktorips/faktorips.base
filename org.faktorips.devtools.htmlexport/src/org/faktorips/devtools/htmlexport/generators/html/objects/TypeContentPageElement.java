@@ -7,9 +7,9 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 
-public abstract class TypeContentPageHtmlGenerator<T extends IType> extends AbstractObjectContentPageHtmlGenerator<IType> {
+public abstract class TypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<IType> {
 
-    public TypeContentPageHtmlGenerator(IType object) {
+    public TypeContentPageElement(IType object) {
         super(object);
     }
 

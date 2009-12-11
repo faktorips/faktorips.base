@@ -12,12 +12,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author dicker
  *
  */
-public class HtmlPathUtilFactory {
+public class PathUtilFactory {
 
-    public static IpsElementHtmlPathUtil createPathUtil(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsProject) return new IpsProjectHtmlPathUtil();
-        if (ipsElement instanceof IIpsPackageFragment) return new IpsPackageFragmentHtmlPathUtil((IIpsPackageFragment) ipsElement);
-        if (ipsElement instanceof IIpsObject) return new IpsObjectHtmlPathUtil((IIpsObject) ipsElement);
+    public static IpsElementPathUtil createPathUtil(IIpsElement ipsElement) {
+        if (ipsElement instanceof IIpsProject) return new IpsProjectPathUtil();
+        if (ipsElement instanceof IIpsPackageFragment) return new IpsPackageFragmentPathUtil((IIpsPackageFragment) ipsElement);
+        if (ipsElement instanceof IIpsObject) return new IpsObjectPathUtil((IIpsObject) ipsElement);
         throw new NotImplementedException("Fuer das IIpsElement vom Typ " + ipsElement.getClass().getCanonicalName() + " gibt es noch kein PathUtil");
     }
 }

@@ -11,12 +11,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
+import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 public class DocumentorConfiguration {
     private Set<IpsObjectType> linkedTypes = new HashSet<IpsObjectType>();
     private String path;
     private List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
     private IIpsProject ipsProject;
+    private ILayouter layouter;
     
     public void setLinkPolicyClasses(boolean linkPolicyClasses) {
         if (linkPolicyClasses) {
@@ -86,4 +88,14 @@ public class DocumentorConfiguration {
     public List<IDocumentorScript> getScripts() {
         return scripts;
     }
+
+    public ILayouter getLayouter() {
+        return layouter;
+    }
+
+    public void setLayouter(ILayouter layouter) {
+        this.layouter = layouter;
+    }
+    
+    
 }

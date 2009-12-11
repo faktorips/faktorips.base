@@ -3,10 +3,10 @@ package org.faktorips.devtools.htmlexport.helper.html.path;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.Util;
 
-public class IpsPackageFragmentHtmlPathUtil extends AbstractIpsElementHtmlPathUtil<IIpsPackageFragment> {
+public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsPackageFragment> {
     private static String PACKAGE_INDEX_FILE_NAME = "package_index.html";
 
-    public IpsPackageFragmentHtmlPathUtil(IIpsPackageFragment ipsElement) {
+    public IpsPackageFragmentPathUtil(IIpsPackageFragment ipsElement) {
         super(ipsElement);
     }
 

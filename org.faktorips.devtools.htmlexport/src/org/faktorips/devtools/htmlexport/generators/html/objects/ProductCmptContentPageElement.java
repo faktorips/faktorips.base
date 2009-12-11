@@ -2,9 +2,9 @@ package org.faktorips.devtools.htmlexport.generators.html.objects;
 
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 
-public class ProductCmptContentPageHtmlGenerator extends TypeContentPageHtmlGenerator<ProductCmptType> {
+public class ProductCmptContentPageElement extends TypeContentPageElement<ProductCmptType> {
 
-    protected ProductCmptContentPageHtmlGenerator(ProductCmptType object) {
+    protected ProductCmptContentPageElement(ProductCmptType object) {
         super(object);
     }
 }
