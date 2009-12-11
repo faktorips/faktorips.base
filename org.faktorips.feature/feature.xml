@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feature id="org.faktorips.feature" label="Faktor-IPS" plugin="org.faktorips.devtools.core" version="0.0.0" provider-name="Faktor Zehn AG">
-    <install-handler/>
-    <description url="http://www.faktorips.org">
+<feature
+      id="org.faktorips.feature"
+      label="Faktor-IPS"
+      version="0.0.0"
+      provider-name="Faktor Zehn AG"
+      plugin="org.faktorips.devtools.core">
+   <install-handler/>
+
+   <description url="http://www.faktorips.org">
       Faktor-IPS
    </description>
-    <copyright url="http://www.faktorips.org">A - Lizenzvertrag
+
+   <copyright url="http://www.faktorips.org">
+      A - Lizenzvertrag
 B - Datenschutzbestimmung
 
 -----------------
@@ -380,11 +388,10 @@ Nutzer dort auf die Änderung hinweisen.
 9 Abrufbarkeit der Datenschutzbestimmungen
 Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
+   </copyright>
 
-
-
-</copyright>
-    <license url="http://www.faktorips.org">A - Lizenzvertrag
+   <license url="http://www.faktorips.org">
+      A - Lizenzvertrag
 B - Datenschutzbestimmung
 
 -----------------
@@ -760,36 +767,115 @@ Nutzer dort auf die Änderung hinweisen.
 9 Abrufbarkeit der Datenschutzbestimmungen
 Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
+   </license>
 
+   <includes
+         id="org.faktorips.feature.source"
+         version="0.0.0"
+         name="Faktor-IPS Source"
+         optional="true"/>
 
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.emf.codegen"/>
+   </requires>
 
-</license>
-    <includes id="org.faktorips.feature.source" name="Faktor-IPS Source" optional="true" version="0.0.0"/>
-    <requires>
-        <import plugin="org.eclipse.ui"/>
-        <import plugin="org.eclipse.core.runtime"/>
-        <import plugin="org.eclipse.core.resources"/>
-        <import plugin="org.eclipse.jdt.core"/>
-        <import plugin="org.eclipse.jdt.launching"/>
-        <import plugin="org.eclipse.jdt.ui"/>
-        <import plugin="org.eclipse.ui.forms"/>
-        <import plugin="org.eclipse.ui.ide"/>
-        <import plugin="org.eclipse.jface.text"/>
-        <import plugin="org.eclipse.ui.workbench.texteditor"/>
-        <import plugin="org.eclipse.text"/>
-        <import plugin="org.junit"/>
-        <import plugin="org.eclipse.emf.codegen"/>
-    </requires>
-    <plugin id="org.faktorips.dtflcommon" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.fl" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.runtime" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.util" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.valuetypes" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.devtools.ant" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.devtools.core" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.devtools.stdbuilder" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.runtime.java5" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.valuetypes.java5" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.devtools.core.ui" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
-    <plugin id="org.faktorips.devtools.tableconversion" unpack="false" install-size="0" download-size="0" version="0.0.0"/>
+   <plugin
+         id="org.faktorips.dtflcommon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.fl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.valuetypes"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.devtools.ant"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.devtools.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.devtools.stdbuilder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.runtime.java5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.valuetypes.java5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.devtools.core.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.devtools.tableconversion"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.nebula"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
