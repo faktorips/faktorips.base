@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,8 +31,9 @@ import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBase
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
 /**
  * A control factory for the datytpes enumeration.
@@ -96,7 +97,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      */
     @Deprecated
     @Override
-    public TableCellEditor createCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -115,7 +116,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
     @Override
-    public TableCellEditor createTableCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -123,7 +124,9 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, tableViewer.getTable());
-        cellEditor.setTraversalStrategy(new TableTraversalStrategy(cellEditor, tableViewer, columnIndex));
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
+        strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
         return cellEditor;
     }
 
@@ -136,14 +139,16 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
     @Override
-    public TableCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
-            ColumnViewer columnViewer,
+            GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
 
-        return createComboCellEditor(toolkit, datatype, valueSet, (Composite)columnViewer.getControl());
+        ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid());
+        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return cellEditor;
     }
 
     private ComboCellEditor createComboCellEditor(UIToolkit toolkit,

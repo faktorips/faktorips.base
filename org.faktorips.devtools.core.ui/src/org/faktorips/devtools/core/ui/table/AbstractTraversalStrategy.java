@@ -24,13 +24,13 @@ import org.eclipse.swt.events.TraverseEvent;
  */
 public abstract class AbstractTraversalStrategy implements TraversalStrategy {
 
-    private TableCellEditor cellEditor;
+    private IpsCellEditor cellEditor;
 
-    public TableCellEditor getCellEditor() {
+    public IpsCellEditor getCellEditor() {
         return cellEditor;
     }
 
-    protected AbstractTraversalStrategy(TableCellEditor cellEditor) {
+    protected AbstractTraversalStrategy(IpsCellEditor cellEditor) {
         this.cellEditor = cellEditor;
     }
 
@@ -49,4 +49,7 @@ public abstract class AbstractTraversalStrategy implements TraversalStrategy {
     public void focusLost(FocusEvent e) {
     }
 
+    protected void fireApplyEditorValue() {
+        getCellEditor().fireApplyEditorValue();
+    }
 }

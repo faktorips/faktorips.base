@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,8 +29,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -91,7 +92,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      */
     @Deprecated
     @Override
-    public TableCellEditor createCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -105,16 +106,18 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
      */
     @Override
-    public TableCellEditor createTableCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        TableCellEditor tableCellEditor = createComboCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
+        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
                 ipsProject);
-        tableCellEditor.setTraversalStrategy(new TableTraversalStrategy(tableCellEditor, tableViewer, columnIndex));
-        return tableCellEditor;
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
+        strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
+        return cellEditor;
     }
 
     /**
@@ -122,22 +125,24 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
      */
     @Override
-    public TableCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
-            ColumnViewer columnViewer,
+            GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        return createComboCellEditor(toolkit, dataType, valueSet, (Composite)columnViewer.getControl(), ipsProject);
+        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
+        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return cellEditor;
     }
 
-    private TableCellEditor createComboCellEditor(UIToolkit toolkit,
+    private IpsCellEditor createComboCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             Composite parent,
             IIpsProject ipsProject) {
         Combo comboControl = (Combo)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        TableCellEditor tableCellEditor = new ComboCellEditor(comboControl);
+        IpsCellEditor tableCellEditor = new ComboCellEditor(comboControl);
         // stores the boolean datatype object as data object in the combo,
         // to indicate that the to be displayed data will be mapped as boolean
         if (Datatype.PRIMITIVE_BOOLEAN.equals(dataType)) {

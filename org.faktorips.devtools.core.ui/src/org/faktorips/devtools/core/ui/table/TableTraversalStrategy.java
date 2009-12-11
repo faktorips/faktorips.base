@@ -13,19 +13,10 @@
 
 package org.faktorips.devtools.core.ui.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.TraverseEvent;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
 /**
  * Supports the navigation in a <tt>Table</tt> / <tt>TableViewer</tt> using the
@@ -34,21 +25,13 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
  * 
  * @author Stefan Widmaier, Alexander Weickmann
  */
-public class TableTraversalStrategy extends AbstractTraversalStrategy {
-    private TableViewer tableViewer;
+public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     /** Index of the table column this <tt>CellEditor</tt> was created for. */
     private final int columnIndex;
-    /**
-     * A list containing the indices of all columns that shall be skipped when navigating trough the
-     * table.
-     */
-    private List<Integer> skippedColumns;
 
-    public TableTraversalStrategy(TableCellEditor cellEditor, TableViewer viewer, int colIndex) {
+    public TableTraversalStrategy(IpsCellEditor cellEditor, int colIndex) {
         super(cellEditor);
-        tableViewer = viewer;
         columnIndex = colIndex;
-        skippedColumns = new ArrayList<Integer>(tableViewer.getTable().getItemCount());
     }
 
     @Override
@@ -87,10 +70,7 @@ public class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     @Override
     public void focusLost(FocusEvent e) {
-        // Skipped columns do not fire the event.
-        if (!(skippedColumns.contains(columnIndex))) {
-            fireApplyEditorValue();
-        }
+        fireApplyEditorValue();
     }
 
     /**
@@ -119,73 +99,44 @@ public class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     /**
      * Edits the next row relative to the current selection of the <tt>TableViewer</tt> this
-     * <tt>TableCellEditor</tt> is used in. If no following row exists, two behaviors are possible:
-     * <ul>
-     * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
-     * the current column in the new row is edited.
-     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the current column of
-     * the last row is edited.
-     * </ul>
+     * <tt>TableCellEditor</tt> is used in. If no following row exists, this method does nothing.
      */
-    private void editNextRow() {
-        fireApplyEditorValue();
-        if (getNextRow() != getCurrentRow() && isAtNewRow()) {
-
-            appendTableRow();
+    protected void editNextRow() {
+        if (!isAtNewRow()) {
+            fireApplyEditorValue();
+            editCell(getNextRow(), columnIndex);
         }
-        editCell(getNextRow(), columnIndex);
     }
 
     /**
      * Edits the next column relative to the column this <tt>TableCellEditor</tt> is used for. If
      * there is no next column, the first cell of the next row is edited. If in turn no following
-     * row exists two behaviors are possible:
-     * <ul>
-     * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
-     * the first cell edited.
-     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the last cell of the
-     * last row of the table is edited.
-     * </ul>
-     * 
+     * row exists this method does nothing.
      */
-    private void editNextColumn() {
+    protected void editNextColumn() {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
-            if (isAtNewRow()) {
-                appendTableRow();
-            }
             editCell(getNextRow(), getNextColumn());
         }
         editCell(getCurrentRow(), getNextColumn());
     }
 
-    private void fireApplyEditorValue() {
-        getCellEditor().fireApplyEditorValue();
-    }
-
     /**
-     * Returns the index of the next row. If no following row exists and this
-     * <tt>TableCellEditor</tt> wasn't configured to create new rows, the index of the last row will
-     * be returned.
+     * Returns the index of the next row. Returns the current row index if no following row exists.
      */
-    private int getNextRow() {
-        if (isAtNewRow() && !getCellEditor().isRowCreating()) {
+    protected int getNextRow() {
+        if (isAtNewRow()) {
             return getCurrentRow();
         }
         return getCurrentRow() + 1;
     }
 
     /**
-     * Returns the index of the next column. If no following row exists the first column (0) will be
-     * returned.
-     * <p>
-     * Takes skipped columns into account.
+     * Returns the index of the next column. If no following row exists the current column index
+     * will be returned.
      */
-    private int getNextColumn() {
-        int nextColumn = (isAtNewColumn()) ? 0 : columnIndex + 1;
-        while (skippedColumns.contains(nextColumn)) {
-            nextColumn++;
-        }
+    protected int getNextColumn() {
+        int nextColumn = (isAtNewColumn()) ? columnIndex : columnIndex + 1;
         return nextColumn;
     }
 
@@ -193,7 +144,7 @@ public class TableTraversalStrategy extends AbstractTraversalStrategy {
      * Returns the index of the previous row. If the first row is currently selected the index of
      * the first row (0) will be returned.
      */
-    private int getPreviousRow() {
+    protected int getPreviousRow() {
         if (getCurrentRow() - 1 < 0) {
             return 0;
         }
@@ -207,38 +158,27 @@ public class TableTraversalStrategy extends AbstractTraversalStrategy {
      * <li>If the first row is being edited the first column (0) will be returned.
      * <li>For any other row the highest column index will be returned.
      * </ul>
-     * <p>
-     * Takes skipped columns into account.
+     * .
      */
-    private int getPreviousColumn() {
+    protected int getPreviousColumn() {
         int previousColumn = columnIndex - 1;
         if (previousColumn < 0) {
-            previousColumn = (getCurrentRow() == 0) ? 0 : tableViewer.getTable().getColumnCount() - 1;
-        }
-        while (skippedColumns.contains(previousColumn)) {
-            previousColumn--;
-            if (previousColumn < 0) {
-                previousColumn = (getCurrentRow() == 0) ? 0 : tableViewer.getTable().getColumnCount() - 1;
-            }
+            previousColumn = (getCurrentRow() == 0) ? 0 : getColumnCount() - 1;
         }
         return previousColumn;
     }
 
-    /** Returns <tt>true</tt> if the next row does not exist yet, <tt>false</tt> otherwise. */
+    /** Returns <tt>true</tt> if the next row does not exist, <tt>false</tt> otherwise. */
     private boolean isAtNewRow() {
-        return getCurrentRow() + 1 == tableViewer.getTable().getItemCount();
+        return getCurrentRow() + 1 == getRowCount();
     }
 
     /**
-     * Returns <tt>true</tt> if the next column does not exist yet, <tt>false</tt> otherwise. Takes
-     * skipped columns into account.
+     * Returns <tt>true</tt> if the next column does not exist, <tt>false</tt> otherwise.
      */
-    private boolean isAtNewColumn() {
-        int nextNotSkipped = columnIndex + 1;
-        while (skippedColumns.contains(nextNotSkipped)) {
-            nextNotSkipped++;
-        }
-        return nextNotSkipped >= tableViewer.getTable().getColumnCount();
+    protected boolean isAtNewColumn() {
+        int nextColIndex = columnIndex + 1;
+        return nextColIndex >= getColumnCount();
     }
 
     /**
@@ -252,87 +192,17 @@ public class TableTraversalStrategy extends AbstractTraversalStrategy {
      * @param rowIndex The index of the table row that shall be edited.
      * @param columnIndex The index of the table column that shall be edited.
      */
-    private void editCell(int rowIndex, int columnIndex) {
-        if (columnIndex != this.columnIndex || rowIndex != getCurrentRow()) {
-            tableViewer.editElement(tableViewer.getElementAt(rowIndex), columnIndex);
-        }
-    }
-
-    // FS#1607, TODO not necessary?
-    // see this#deactivate()
-    // /** Saves the current user input. */
-    // private void saveCurrentValue() {
-    // Object[] properties = tableViewer.getColumnProperties();
-    // if (properties == null) {
-    // // TODO since Eclipse 3.3 there is an alternative way for cell editing, do we have to
-    // // support this here? @see ViewerColumn#setEditingSupport(EditingSupport)
-    // return;
-    // }
-    // if (columnIndex < properties.length) {
-    // Table table = tableViewer.getTable();
-    // ICellModifier cellModifier = tableViewer.getCellModifier();
-    // cellModifier.modify(table.getItem(getCurrentRow()), (String)properties[columnIndex],
-    // getValue());
-    // }
-    // }
-
-    /**
-     * Appends a new <tt>IRow</tt> to the table if the tableviewer's input is a
-     * <tt>TableContents</tt>.
-     * <p>
-     * Appends a new <tt>IEnumValue</tt> to the table if the tableviewer's input is an
-     * <tt>EnumValueContainer</tt>.
-     * <p>
-     * Does nothing otherwise.
-     */
-    private void appendTableRow() {
-        if (tableViewer.getInput() instanceof ITableContents) {
-            ITableContents tableContents = (ITableContents)tableViewer.getInput();
-            IRow newRow = ((ITableContentsGeneration)tableContents.getFirstGeneration()).newRow();
-            tableViewer.add(newRow);
-
-        } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
-            IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
-            try {
-                enumValueContainer.newEnumValue();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+    protected abstract void editCell(int rowIndex, int columnIndex);
 
     /** Returns the index of the row that is currently being edited. */
-    private int getCurrentRow() {
-        return tableViewer.getTable().getSelectionIndex();
+    protected abstract int getCurrentRow();
+
+    protected abstract int getRowCount();
+
+    protected abstract int getColumnCount();
+
+    protected int getColumnIndex() {
+        return columnIndex;
     }
 
-    /**
-     * Adds the column identified by the given column index to the list of columns that are skipped
-     * while navigating trough the table.
-     * <p>
-     * Returns <tt>true</tt> if the index was added, <tt>false</tt> otherwise (e.g. if the given
-     * index is already skipped).
-     */
-    public boolean addSkippedColumnIndex(int columnIndex) {
-        return skippedColumns.contains(columnIndex) ? false : skippedColumns.add(columnIndex);
-    }
-
-    /**
-     * Removes the column identified by the given column index from the list of columns that are
-     * skipped while navigating trough the table.
-     * <p>
-     * Returns <tt>true</tt> if the index was found and removed, <tt>false</tt> otherwise (e.g. if
-     * the given index was not skipped).
-     */
-    public boolean removeSkippedColumnIndex(int columnIndex) {
-        return skippedColumns.remove(new Integer(columnIndex));
-    }
-
-    /**
-     * Clears the skipped columns causing any columns that are currently being skipped to be no
-     * longer skipped.
-     */
-    public void clearSkippedColumns() {
-        skippedColumns.clear();
-    }
 }

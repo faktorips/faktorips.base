@@ -59,7 +59,8 @@ import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -268,9 +269,11 @@ public class ContentPage extends IpsObjectEditorPage {
                             getTableContents().getIpsProject());
                     ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                             dataType);
-                    TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
+                    IpsCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
-                    cellEditor.setRowCreating(true);
+                    TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
+                            .getTraversalStrategy();
+                    tableTraverseStrat.setRowCreating(true);
                     editors[i] = cellEditor;
                     datatypes[i] = dataType;
                 }

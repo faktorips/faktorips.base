@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
  * 
  * @author Stefan Widmaier
  */
-public class ComboCellEditor extends TableCellEditor {
+public class ComboCellEditor extends IpsCellEditor {
 
     private Combo comboControl;
 

@@ -75,8 +75,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -411,7 +411,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
              * option is not active.
              */
             for (CellEditor cellEditor : cellEditors) {
-                clearSkippedColumnIndex((TableCellEditor)cellEditor);
+                clearSkippedColumnIndex((IpsCellEditor)cellEditor);
             }
             return;
         }
@@ -424,7 +424,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         // Skip the literal name column in all cell editors.
         int skippedColumnIndex = enumType.getIndexOfEnumLiteralNameAttribute();
         for (CellEditor cellEditor : cellEditors) {
-            addSkippedColumnIndex((TableCellEditor)cellEditor, skippedColumnIndex);
+            addSkippedColumnIndex((IpsCellEditor)cellEditor, skippedColumnIndex);
         }
 
         getCellEditorForLiteralNameColumn().getControl().addFocusListener(new FocusListener() {
@@ -440,15 +440,17 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         });
     }
 
-    private void addSkippedColumnIndex(TableCellEditor cellEditor, int skippedColumnIndex) {
-        TableTraversalStrategy tableTraverseStrat = (TableTraversalStrategy)cellEditor.getTraversalStrategy();
+    private void addSkippedColumnIndex(IpsCellEditor cellEditor, int skippedColumnIndex) {
+        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
+                .getTraversalStrategy();
         if (tableTraverseStrat != null) {
             tableTraverseStrat.addSkippedColumnIndex(skippedColumnIndex);
         }
     }
 
-    private void clearSkippedColumnIndex(TableCellEditor cellEditor) {
-        TableTraversalStrategy tableTraverseStrat = (TableTraversalStrategy)cellEditor.getTraversalStrategy();
+    private void clearSkippedColumnIndex(IpsCellEditor cellEditor) {
+        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
+                .getTraversalStrategy();
         if (tableTraverseStrat != null) {
             tableTraverseStrat.clearSkippedColumns();
         }
@@ -602,9 +604,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private CellEditor createCellEditor(ValueDatatype datatype, int columnIndex) {
         ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(datatype);
-        TableCellEditor cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
+        IpsCellEditor cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
                 enumValuesTableViewer, columnIndex, enumValueContainer.getIpsProject());
-        cellEditor.setRowCreating(true);
+        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
+                .getTraversalStrategy();
+        tableTraverseStrat.setRowCreating(true);
         return cellEditor;
     }
 

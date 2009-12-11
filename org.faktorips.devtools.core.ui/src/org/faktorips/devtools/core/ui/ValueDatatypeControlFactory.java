@@ -13,15 +13,15 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 /**
  * A factory to create controls and edit fields that allow to edit values for one or more value
@@ -80,7 +80,7 @@ public abstract class ValueDatatypeControlFactory {
      *             instead.
      */
     @Deprecated
-    public abstract TableCellEditor createCellEditor(UIToolkit toolkit,
+    public abstract IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -97,7 +97,7 @@ public abstract class ValueDatatypeControlFactory {
      * @param tableViewer
      * @param columnIndex The index of the column.
      */
-    public abstract TableCellEditor createTableCellEditor(UIToolkit toolkit,
+    public abstract IpsCellEditor createTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -114,10 +114,10 @@ public abstract class ValueDatatypeControlFactory {
      * @param grifViewer
      * @param columnIndex The index of the column.
      */
-    public abstract TableCellEditor createGridCellEditor(UIToolkit toolkit,
+    public abstract IpsCellEditor createGridCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
-            ColumnViewer columnViewer,
+            GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject);
 

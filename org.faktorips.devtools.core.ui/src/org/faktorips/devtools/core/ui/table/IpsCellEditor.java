@@ -27,19 +27,13 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Stefan Widmaier, Alexander Weickmann
  */
-public abstract class TableCellEditor extends CellEditor {
+public abstract class IpsCellEditor extends CellEditor {
 
     /** The control to be displayed when the user edits a table cell. */
     private Control control;
 
     /**
-     * Flag that is <tt>true</tt> if this <tt>CellEditor</tt> creates new rows if requested and
-     * deletes empty rows at the bottom of the table, false otherwise (default).
-     */
-    private boolean rowCreating;
-
-    /**
-     * Field for the {@link TraversalStrategy} this {@link TableCellEditor} uses.
+     * Field for the {@link TraversalStrategy} this {@link IpsCellEditor} uses.
      */
     private TraversalStrategy traversalStrategy;
 
@@ -59,7 +53,7 @@ public abstract class TableCellEditor extends CellEditor {
      * 
      * @throws NullPointerException If <tt>control</tt> is <tt>null</tt>.
      */
-    public TableCellEditor(Control control) {
+    public IpsCellEditor(Control control) {
         // Do not call super-constructor.
         ArgumentCheck.notNull(control);
         deactivate();
@@ -99,29 +93,6 @@ public abstract class TableCellEditor extends CellEditor {
     @Override
     protected Control createControl(Composite parent) {
         return control;
-    }
-
-    /**
-     * Indicates whether this <tt>TableCellEditor</tt> creates new rows when requested (
-     * <tt>true</tt>) or not (<tt>false</tt>).
-     */
-    public boolean isRowCreating() {
-        return rowCreating;
-    }
-
-    /**
-     * Configures this <tt>TableCellEditor</tt> to create new rows dynamically. New rows are created
-     * when the user tries to navigate into a cell / row that is not in the table (yet).
-     * <p>
-     * If <tt>false</tt> is given this <tt>TableCellEditor</tt> will not create any rows and simply
-     * edit the last cell of the table. On the other hand, if <tt>true</tt> is given a new row is
-     * created when needed.
-     * 
-     * @param rowCreating Flag indicating whether new rows shall be created by this cell editor when
-     *            the need to do so arises.
-     */
-    public void setRowCreating(boolean rowCreating) {
-        this.rowCreating = rowCreating;
     }
 
     /**
@@ -189,7 +160,7 @@ public abstract class TableCellEditor extends CellEditor {
     }
 
     /**
-     * Returns the {@link TraversalStrategy} used for this {@link TableCellEditor}. Will return
+     * Returns the {@link TraversalStrategy} used for this {@link IpsCellEditor}. Will return
      * <code>null</code> if no {@link TraversalStrategy} is set using
      * {@link #setTraversalStrategy(TraversalStrategy)}.
      * 

@@ -18,7 +18,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.TraverseListener;
 
 /**
- * Interface for all classes that support navigation/Traversal in {@link TableCellEditor}s.
+ * Interface for all classes that support navigation/Traversal in {@link IpsCellEditor}s.
  * 
  * @author Stefan Widmaier
  */

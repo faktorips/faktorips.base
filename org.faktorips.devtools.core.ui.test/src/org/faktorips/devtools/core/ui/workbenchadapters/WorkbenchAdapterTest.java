@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -22,6 +24,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPluginTest;
+import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.DefaultIconDesc;
+import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.IconDesc;
+import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.PathIconDesc;
 
 public class WorkbenchAdapterTest extends IpsUIPluginTest {
 
@@ -38,7 +43,7 @@ public class WorkbenchAdapterTest extends IpsUIPluginTest {
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
 
-    public void testGetCustomInstanceEnabledIconOrDefault() throws CoreException {
+    public void testProductCmptIconDesc() throws CoreException, IOException {
         // create Types
         IProductCmptType aSuperType = newProductCmptType(root, "ASuperType");
         IProductCmptType bNormalType = newProductCmptType(root, "BNormalType");
@@ -46,43 +51,50 @@ public class WorkbenchAdapterTest extends IpsUIPluginTest {
         bNormalType.setSupertype(aSuperType.getQualifiedName());
         cSubType.setSupertype(bNormalType.getQualifiedName());
         // Define Icon
-        bNormalType.setInstancesIcon("root/icons/enabled");
+        bNormalType.setInstancesIcon("normalTypeImage.gif");
         // create components
-        IProductCmpt aSuperCmpt = newProductCmpt(root, "SuperProductCmpt");
-        IProductCmpt bNormalCmpt = newProductCmpt(root, "NormalProductCmpt");
-        IProductCmpt cSubCmpt = newProductCmpt(root, "SubProductCmpt");
+        IProductCmpt aSuperCmpt = newProductCmpt(aSuperType, "SuperProductCmpt");
+        IProductCmpt bNormalCmpt = newProductCmpt(bNormalType, "NormalProductCmpt");
+        IProductCmpt cSubCmpt = newProductCmpt(cSubType, "SubProductCmpt");
 
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)aSuperCmpt.getAdapter(IWorkbenchAdapter.class);
         assertNotNull(adapter);
         assertTrue(adapter instanceof ProductCmptWorkbenchAdapter);
 
         ProductCmptWorkbenchAdapter cmptAdapter = (ProductCmptWorkbenchAdapter)adapter;
-        cmptAdapter.getImageDescriptorForInstancesOf(aSuperType);
 
         // A: standard Icons
-        ImageDescriptor iconDesc = IpsUIPlugin.getImageDescriptor(aSuperCmpt);
-        assertTrue(iconDesc == prodCmptDefaultIcon);
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageDescriptor(aSuperCmpt);
+        assertEquals(prodCmptDefaultIcon, imageDescriptor);
+        IconDesc iconDesc = cmptAdapter.getProductCmptIconDesc(aSuperType);
+        assertTrue(iconDesc instanceof DefaultIconDesc);
         // B: Custom Icon
-        iconDesc = IpsUIPlugin.getImageDescriptor(bNormalCmpt);
-        assertEquals(IpsUIPlugin.getDefault().getImageRegistry().getDescriptor("root/icons/enabled"), iconDesc);
+        iconDesc = cmptAdapter.getProductCmptIconDesc(bNormalType);
+        assertTrue(iconDesc instanceof PathIconDesc);
+        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
         // C inherits B's Custom Icon
-        iconDesc = IpsUIPlugin.getImageDescriptor(cSubCmpt);
-        assertEquals(IpsUIPlugin.getDefault().getImageRegistry().getDescriptor("root/icons/enabled"), iconDesc);
+        iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
+        assertTrue(iconDesc instanceof PathIconDesc);
+        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
 
-        cSubType.setInstancesIcon("root/icons/enabledCSubType");
+        cSubType.setInstancesIcon("subTypeImage.gif");
         // C: custom Icon overwrites inherited Icon
-        iconDesc = IpsUIPlugin.getImageDescriptor(cSubCmpt);
-        assertEquals(IpsUIPlugin.getDefault().getImageRegistry().getDescriptor("root/icons/enabledCSubType"), iconDesc);
+        iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
+        assertTrue(iconDesc instanceof PathIconDesc);
+        assertEquals("subTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
 
         cSubType.setInstancesIcon("");
         // C inherits B's Custom Icons again
-        iconDesc = IpsUIPlugin.getImageDescriptor(cSubCmpt);
-        assertEquals(IpsUIPlugin.getDefault().getImageRegistry().getDescriptor("root/icons/enabled"), iconDesc);
+        iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
+        assertTrue(iconDesc instanceof PathIconDesc);
+        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
 
         bNormalType.setInstancesIcon("");
         // C inherits A's standard Icon
-        iconDesc = IpsUIPlugin.getImageDescriptor(cSubCmpt);
-        assertEquals(prodCmptDefaultIcon, iconDesc);
+        imageDescriptor = IpsUIPlugin.getImageDescriptor(cSubCmpt);
+        assertEquals(prodCmptDefaultIcon, imageDescriptor);
+        iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
+        assertTrue(iconDesc instanceof DefaultIconDesc);
     }
 
 }

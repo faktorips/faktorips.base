@@ -72,8 +72,8 @@ import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.DelegateCellEditor;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -465,7 +465,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 // TraversalStrategy was added when refactoring CellEditors (Dec 2009). Remove if
                 // not necessary.
                 ComboCellEditor comboCellEditor = new ComboCellEditor(combo);
-                comboCellEditor.setTraversalStrategy(new TableTraversalStrategy(comboCellEditor, tableViewer, 1));
+                comboCellEditor.setTraversalStrategy(new TableViewerTraversalStrategy(comboCellEditor, tableViewer, 1));
                 cellEditors.add(comboCellEditor);
 
                 // store current product cmpt and all found candidates
@@ -474,7 +474,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                         .toArray(new IIpsSrcFile[allowedProductCmptList.size()]));
             }
         }
-        delegateCellEditor.setCellEditors(cellEditors.toArray(new TableCellEditor[cellEditors.size()]));
+        delegateCellEditor.setCellEditors(cellEditors.toArray(new IpsCellEditor[cellEditors.size()]));
         return delegateCellEditor;
     }
 

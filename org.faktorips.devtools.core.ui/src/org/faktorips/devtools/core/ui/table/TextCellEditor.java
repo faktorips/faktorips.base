@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Stefan Widmaier
  */
-public class TextCellEditor extends TableCellEditor {
+public class TextCellEditor extends IpsCellEditor {
 
     private Text textControl;
 

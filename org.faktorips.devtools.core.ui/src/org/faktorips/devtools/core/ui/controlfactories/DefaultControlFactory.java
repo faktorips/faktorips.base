@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -29,8 +29,9 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.devtools.core.ui.table.TableTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
@@ -93,7 +94,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
      */
     @Deprecated
     @Override
-    public TableCellEditor createCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -107,7 +108,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
      * columnIndex and a <code>Text</code> control. {@inheritDoc}
      */
     @Override
-    public TableCellEditor createTableCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
@@ -115,7 +116,8 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
         Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
-        cellEditor.setTraversalStrategy(new TableTraversalStrategy(cellEditor, tableViewer, columnIndex));
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
+        strat.setRowCreating(true);
         return cellEditor;
     }
 
@@ -124,14 +126,16 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
      * columnIndex and a <code>Text</code> control. {@inheritDoc}
      */
     @Override
-    public TableCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
-            ColumnViewer columnViewer,
+            GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        Text textControl = toolkit.createText((Composite)columnViewer.getControl(), SWT.SINGLE);
-        return new TextCellEditor(textControl);
+        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
+        TextCellEditor cellEditor = new TextCellEditor(textControl);
+        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return cellEditor;
     }
 
 }

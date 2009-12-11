@@ -102,12 +102,12 @@ public class DelegateCellEditor extends CellEditor {
      * corresponding cell editor will be returned. If no cell editor is defined for the selected row index
      * a runtime exception will be thrown.
      */
-    private TableCellEditor getCurrent(){
+    private IpsCellEditor getCurrent(){
         int currentCellEditorRow = tableViewer.getTable().getSelectionIndex();
         if (currentCellEditorRow >= cellEditors.size()){
             throw new RuntimeException("Undefined table cell editor! No table cell editor is specified for the selected row."); //$NON-NLS-1$
         }
-        return ((TableCellEditor)cellEditors.get(currentCellEditorRow));
+        return ((IpsCellEditor)cellEditors.get(currentCellEditorRow));
     }
     
     /**
@@ -142,7 +142,7 @@ public class DelegateCellEditor extends CellEditor {
      * {@inheritDoc}
      */
     protected Object doGetValue() {
-        TableCellEditor current = getCurrent();
+        IpsCellEditor current = getCurrent();
         if (current instanceof TextCellEditor){
             return ((TextCellEditor) current).doGetValue();
         } else if (current instanceof ComboCellEditor){
@@ -155,7 +155,7 @@ public class DelegateCellEditor extends CellEditor {
      * {@inheritDoc}
      */
     protected void doSetFocus() {
-        TableCellEditor current = getCurrent();
+        IpsCellEditor current = getCurrent();
         if (current instanceof TextCellEditor){
             ((TextCellEditor) current).doSetFocus();
         } else if (current instanceof ComboCellEditor){
@@ -167,7 +167,7 @@ public class DelegateCellEditor extends CellEditor {
      * {@inheritDoc}
      */
     protected void doSetValue(Object value) {
-        TableCellEditor current = getCurrent();
+        IpsCellEditor current = getCurrent();
         if (current instanceof TextCellEditor){
             ((TextCellEditor) current).doSetValue(value);
         } else if (current instanceof ComboCellEditor){
