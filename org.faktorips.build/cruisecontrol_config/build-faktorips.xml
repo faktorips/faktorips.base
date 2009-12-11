@@ -131,6 +131,16 @@
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
+    <target name="nebula" depends="updateBuildTemplate" description="builds the 'org.faktorips.nebula' project">
+        <property name="cvsModule" value="org.faktorips.nebula"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+        	
     <target name="devtools.stdbuilder" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.stdbuilder' project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.stdbuilder"/>
         <property name="projectFlDir" value="checkout/"/>

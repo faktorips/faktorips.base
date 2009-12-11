@@ -25,6 +25,8 @@
         
     	<ant dir="../org.faktorips.devtools.stdbuilder/build" antfile="build.xml" target="buildjar"/>
         
+    	<ant dir="../org.faktorips.nebula/build" antfile="build.xml" target="buildjar"/>
+		
     	<ant dir="../org.faktorips.devtools.core.ui/build" antfile="build.xml" target="buildjar"/>
         
     	<ant dir="../org.faktorips.devtools.tableconversion/build" antfile="build.xml" target="buildjar"/>
