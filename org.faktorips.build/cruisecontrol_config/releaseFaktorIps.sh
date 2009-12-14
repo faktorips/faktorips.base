@@ -72,6 +72,9 @@
 BASH_PARAM="-e"
 set $BASH_PARAM
 
+# fix problem with swt and x server?
+GDK_NATIVE_WINDOWS=1
+
 echo '  '
 
 BUILD_VERSION=""
