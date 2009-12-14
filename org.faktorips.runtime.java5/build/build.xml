@@ -64,6 +64,9 @@
 		<ant antfile="${buildproject.path}/build.xml" target="buildjar">
 			<reference refid="classpath" torefid="classpath"/>
 		</ant>
+		<ant antfile="${buildproject.path}/build.xml" target="update.jar.in.integrationtest">
+			<property name="integrationtest.cvs.module" value="org.faktorips.integrationtest.java5"/>
+		</ant>		
 	</target>
 	
 	<!-- calls clean-target of template-buildfile -->
