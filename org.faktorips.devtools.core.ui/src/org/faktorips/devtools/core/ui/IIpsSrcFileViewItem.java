@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsobject;
+package org.faktorips.devtools.core.ui;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * 
  * @author Faktor Zehn AG
  */
-public interface IIpsSrcFileProvider {
+public interface IIpsSrcFileViewItem {
 
     /**
      * Provide the <code>IpsSrcFile</code> of this object.

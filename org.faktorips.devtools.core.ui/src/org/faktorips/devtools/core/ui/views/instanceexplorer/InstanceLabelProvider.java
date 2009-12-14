@@ -12,7 +12,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.views.IpsSrcFileViewItem;
+import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 
 /**
  * The label provider for the instance explorer, extending the {@link StyledCellLabelProvider} The
@@ -45,8 +45,8 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
     public void update(ViewerCell cell) {
         Object element = cell.getElement();
         try {
-            if (element instanceof IpsSrcFileViewItem) {
-                IpsSrcFileViewItem item = (IpsSrcFileViewItem)element;
+            if (element instanceof InstanceIpsSrcFileViewItem) {
+                InstanceIpsSrcFileViewItem item = (InstanceIpsSrcFileViewItem)element;
                 updateCell(cell, item);
             } else if (element instanceof String) {
                 cell.setText((String)element);
@@ -59,7 +59,7 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
         }
     }
 
-    private void updateCell(ViewerCell cell, IpsSrcFileViewItem item) throws CoreException {
+    private void updateCell(ViewerCell cell, InstanceIpsSrcFileViewItem item) throws CoreException {
         String elementName = getText(item);
         List<StyleRange> styleRanges = new ArrayList<StyleRange>();
         if (item.isInstanceOfSubtype()) {

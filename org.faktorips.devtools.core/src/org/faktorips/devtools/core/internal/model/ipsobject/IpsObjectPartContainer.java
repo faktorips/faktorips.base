@@ -50,7 +50,7 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer,
-        IExtensionPropertyAccess, IIpsSrcFileProvider {
+        IExtensionPropertyAccess {
 
     /**
      * Name of the xml element the containing the elements for the extension property values.

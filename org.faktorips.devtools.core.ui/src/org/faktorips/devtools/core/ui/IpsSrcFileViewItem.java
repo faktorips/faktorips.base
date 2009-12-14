@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IIpsSrcFileProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -28,7 +27,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
  * @author dirmeier
  * 
  */
-public abstract class IpsSrcFileProvider implements IIpsSrcFileProvider {
+public abstract class IpsSrcFileViewItem implements IIpsSrcFileViewItem {
 
     private IIpsSrcFile ipsSrcFile;
 
@@ -37,7 +36,7 @@ public abstract class IpsSrcFileProvider implements IIpsSrcFileProvider {
      * 
      * @param ipsSrcFile
      */
-    public IpsSrcFileProvider(IIpsSrcFile ipsSrcFile) {
+    public IpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
     }
 

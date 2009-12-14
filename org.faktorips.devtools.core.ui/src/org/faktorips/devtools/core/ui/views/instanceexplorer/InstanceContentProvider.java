@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
-import org.faktorips.devtools.core.ui.views.IpsSrcFileViewItem;
+import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 
 /**
  * The content provider for the instance explorer
@@ -51,23 +51,23 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
 
     }
 
-    private IpsSrcFileViewItem[] collectIpsSrcFileViewItems(IIpsMetaClass ipsMetaClass, IProgressMonitor monitor) {
+    private InstanceIpsSrcFileViewItem[] collectIpsSrcFileViewItems(IIpsMetaClass ipsMetaClass, IProgressMonitor monitor) {
         this.ipsMetaClass = ipsMetaClass;
         if (ipsMetaClass == null) {
             monitor.done();
-            return new IpsSrcFileViewItem[0];
+            return new InstanceIpsSrcFileViewItem[0];
         }
         try {
             monitor.beginTask(getWaitingLabel(), 2);
             IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.searchMetaObjectSrcFiles(subTypeSearch);
             monitor.worked(1);
-            IpsSrcFileViewItem[] result = IpsSrcFileViewItem.createItems(metaObjectsSrcFiles, ipsMetaClass);
+            InstanceIpsSrcFileViewItem[] result = InstanceIpsSrcFileViewItem.createItems(metaObjectsSrcFiles, ipsMetaClass);
             monitor.worked(1);
             monitor.done();
             return result;
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return new IpsSrcFileViewItem[0];
+            return new InstanceIpsSrcFileViewItem[0];
         }
     }
 

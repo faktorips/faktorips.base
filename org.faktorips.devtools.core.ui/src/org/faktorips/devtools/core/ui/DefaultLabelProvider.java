@@ -82,8 +82,8 @@ public class DefaultLabelProvider extends LabelProvider {
             return IpsPlugin.getDefault().getImage("Function.gif");
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
-        } else if (element instanceof IpsSrcFileProvider) {
-            return getImage(((IpsSrcFileProvider)element).getIpsSrcFile());
+        } else if (element instanceof IpsSrcFileViewItem) {
+            return getImage(((IpsSrcFileViewItem)element).getIpsSrcFile());
         }
         return super.getImage(element);
     }
@@ -100,8 +100,8 @@ public class DefaultLabelProvider extends LabelProvider {
             IIpsElement ipsElement = (IIpsElement)element;
             return IpsUIPlugin.getLabel(ipsElement);
         }
-        if (element instanceof IpsSrcFileProvider) {
-            return getText(((IpsSrcFileProvider)element).getIpsSrcFile());
+        if (element instanceof IpsSrcFileViewItem) {
+            return getText(((IpsSrcFileViewItem)element).getIpsSrcFile());
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getText(((EnumTypeDatatypeAdapter)element).getEnumType());
         }

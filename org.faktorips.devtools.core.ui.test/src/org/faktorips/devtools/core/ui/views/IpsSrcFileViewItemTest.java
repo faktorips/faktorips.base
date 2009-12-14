@@ -41,7 +41,7 @@ public class IpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt2 = newProductCmpt(ipsProject, "home2.ProductA");
         cmpt2.setProductCmptType(subtype.getQualifiedName());
 
-        IpsSrcFileViewItem[] items = IpsSrcFileViewItem.createItems(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
+        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
                 cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, type);
         assertEquals(3, items.length);
         assertEquals(cmpt0.getIpsSrcFile(), items[0].getIpsSrcFile());
@@ -56,21 +56,21 @@ public class IpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         assertTrue(items[2].isDuplicateName());
         assertTrue(items[2].isInstanceOfSubtype());
 
-        items = IpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
+        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
         assertEquals(0, items.length);
 
         // MetaObjectClass = null !
-        items = IpsSrcFileViewItem.createItems(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(),
+        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(),
                 cmpt2.getIpsSrcFile() }, null);
         assertFalse(items[0].isInstanceOfSubtype());
         assertFalse(items[1].isInstanceOfSubtype());
         assertFalse(items[2].isInstanceOfSubtype());
 
-        items = IpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
+        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
         assertEquals(0, items.length);
 
         try {
-            IpsSrcFileViewItem.createItems(null, null);
+            InstanceIpsSrcFileViewItem.createItems(null, null);
             fail();
         } catch (NullPointerException e) {
         }

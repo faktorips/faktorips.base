@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.ui.IpsSrcFileProvider;
+import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 
 /**
  * 
@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.IpsSrcFileProvider;
  * @author dirmeier
  * 
  */
-public class IpsSrcFileViewItem extends IpsSrcFileProvider {
+public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
 
     /**
      * Creates an item for each ips source file and marks the itens as duplicate, if two (or more)
@@ -40,14 +40,14 @@ public class IpsSrcFileViewItem extends IpsSrcFileProvider {
      * @throws CoreException
      * @throws NullPointerException if files is <code>null</code>
      */
-    public static final IpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass)
+    public static final InstanceIpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass)
             throws CoreException {
 
-        IpsSrcFileViewItem[] items = new IpsSrcFileViewItem[files.length];
-        Map<String, IpsSrcFileViewItem> itemsByName = new HashMap<String, IpsSrcFileViewItem>();
+        InstanceIpsSrcFileViewItem[] items = new InstanceIpsSrcFileViewItem[files.length];
+        Map<String, InstanceIpsSrcFileViewItem> itemsByName = new HashMap<String, InstanceIpsSrcFileViewItem>();
         for (int i = 0; i < files.length; i++) {
-            IpsSrcFileViewItem item = itemsByName.get(files[i].getName());
-            IpsSrcFileViewItem newItem = new IpsSrcFileViewItem(files[i]);
+            InstanceIpsSrcFileViewItem item = itemsByName.get(files[i].getName());
+            InstanceIpsSrcFileViewItem newItem = new InstanceIpsSrcFileViewItem(files[i]);
             items[i] = newItem;
             newItem.setDefiningMetaClass(getMetaClassName(files[i]));
             if (item == null) {
@@ -84,7 +84,7 @@ public class IpsSrcFileViewItem extends IpsSrcFileProvider {
     /**
      * @param ipsSrcFile The IpsSrcFile represented by this viewer item
      */
-    public IpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
+    public InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
         super(ipsSrcFile);
     }
 

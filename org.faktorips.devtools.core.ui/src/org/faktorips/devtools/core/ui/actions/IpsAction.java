@@ -49,7 +49,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
-import org.faktorips.devtools.core.ui.IpsSrcFileProvider;
+import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -266,8 +266,8 @@ public abstract class IpsAction extends Action {
         if (selected instanceof IIpsSrcFile) {
             // avoid reading IpsSrcFile in getIpsObjectForSelection()
             return (IIpsSrcFile)selected;
-        } else if (selected instanceof IpsSrcFileProvider) {
-            return ((IpsSrcFileProvider)selected).getIpsSrcFile();
+        } else if (selected instanceof IpsSrcFileViewItem) {
+            return ((IpsSrcFileViewItem)selected).getIpsSrcFile();
         }
 
         IIpsObject ipsObject = getIpsObjectForSelection(selected);
