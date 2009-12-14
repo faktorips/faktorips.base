@@ -216,7 +216,7 @@
 	    <condition property="integration.available" value="true">
 	    	 <available file="${integrationtest.path}/${jarfile}"/>
 	     </condition>
-		<ancall target="-update.jar.in.integrationtest"/>
+		<antcall inheritall="true" target="-update.jar.in.integrationtest"/>
 	</target>
 
 	<target name="-update.jar.in.integrationtest" if="integration.available">
