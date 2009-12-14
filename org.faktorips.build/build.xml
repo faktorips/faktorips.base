@@ -222,7 +222,8 @@
 	<target name="-update.jar.in.integrationtest" if="integration.available">
 		<copy file="${jarfile}" tofile="${integrationtest.path}/lib/${jarname}"/>
 		<copy file="${src_jarfile}" tofile="${integrationtest.path}/lib/${src_jarname}"/>
-		 <cvs package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
+		<echo message="update integrationtest: commit ${jarname} and ${src_jarname} in cvs"/>
+		<cvs package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
 		 	failonerror="true"
 		 	command="commit -m 'automatically commit by build process'"/>
 	</target>
