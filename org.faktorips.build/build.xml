@@ -223,9 +223,11 @@
 		<copy file="${jarfile}" tofile="${integrationtest.path}/lib/${jarname}"/>
 		<copy file="${src_jarfile}" tofile="${integrationtest.path}/lib/${src_jarname}"/>
 		<echo message="update integrationtest: commit ${jarname} and ${src_jarname} in cvs"/>
-		<cvs cvsRoot="/usr/local/cvsroot" package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
+		<cvs cvsRoot=":local:/usr/local/cvsroot" 
+			package="${integrationtest.cvs.module}" 
+			dest="./../.."
 		 	failonerror="false"
-		 	command='commit -m "automatically commit by build process"'/>
+		 	command='commit -m "automatically commit by build process" '/>
 	</target>
 	
 	<!-- xml pretty print utility target -->
