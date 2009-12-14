@@ -224,7 +224,7 @@
 		<copy file="${src_jarfile}" tofile="${integrationtest.path}/lib/${src_jarname}"/>
 		<echo message="update integrationtest: commit ${jarname} and ${src_jarname} in cvs"/>
 		<cvs package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
-		 	failonerror="true"
+		 	failonerror="false"
 		 	command="commit -m 'automatically commit by build process'"/>
 	</target>
 	
