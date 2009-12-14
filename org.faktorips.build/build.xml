@@ -14,8 +14,8 @@
 		<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
 	
 	
-	    <property name="jarname" location="faktorips-${projectname}.jar" />
-	    <property name="src_jarname" location="faktorips-${projectname}-src.zip" />
+	    <property name="jarname" value="faktorips-${projectname}.jar" />
+	    <property name="src_jarname" value="faktorips-${projectname}-src.zip" />
 	    <property name="jarfile" location="results/${jarname}" />
 	    <property name="src_jarfile" location="results/${src_jarname}" />
 
