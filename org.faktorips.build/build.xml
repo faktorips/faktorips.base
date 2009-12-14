@@ -12,8 +12,12 @@
 	
 		<!-- jars -->
 		<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
-	    <property name="jarfile" location="results/faktorips-${projectname}.jar" />
-	    <property name="src_jarfile" location="results/faktorips-${projectname}-src.zip" />
+	
+	
+	    <property name="jarname" location="faktorips-${projectname}.jar" />
+	    <property name="src_jarname" location="faktorips-${projectname}-src.zip" />
+	    <property name="jarfile" location="results/${jarname}" />
+	    <property name="src_jarfile" location="results/${src_jarname}" />
 
 		<!-- classpath -->
 		<path id="classpath" refid="classpath" />
@@ -24,6 +28,10 @@
 		<!-- javac source/target VM version -->
 		<property name="vmversion" value="1.5" />
 
+		<!-- integrationtest path to update jars in the integrationtest -->
+		<property name="integrationtest.cvs.module" value="org.faktorips.integrationtest" />
+		<property name="integrationtest.path" value="./../${integrationtest.cvs.module}" />
+		
         <!-- jars for the xml pretty print utility target -->
         <path id="xml.pretty.classpath">
              <fileset dir="./lib/xmlbeans/">
@@ -200,7 +208,24 @@
     	<delete file="${jarfile}" />
     	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
     	<delete file="${temp_jarfile}"/>
-    </target>	
+    </target>
+	
+	<!-- if the integration test is available in the parent path,
+		 then refresh the runtime jar in the classpath -->
+	<target name="update.jar.in.integrationtest" description="update jar and src zip  in the integrationtest">
+	    <condition property="integration.available" value="true">
+	    	 <available file="${integrationtest.path}/${jarfile}"/>
+	     </condition>
+		<ancall target="-update.jar.in.integrationtest"/>
+	</target>
+
+	<target name="-update.jar.in.integrationtest" if="integration.available">
+		<copy file="${jarfile}" tofile="${integrationtest.path}/lib/${jarname}"/>
+		<copy file="${src_jarfile}" tofile="${integrationtest.path}/lib/${src_jarname}"/>
+		 <cvs package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
+		 	failonerror="true"
+		 	command="commit -m 'automatically commit by build process'"/>
+	</target>
 	
 	<!-- xml pretty print utility target -->
 	<!-- input properties: input.xml - specifies the xml file which will be pretty printed -->
@@ -218,5 +243,7 @@
          </java>
          <echo file="${input.xml}_pretty" append="false">${xml.pretty}</echo>
          <echo message="${input.xml}_pretty successfully created"/>
-    </target>	
+    </target>
+	
+	
 </project>
