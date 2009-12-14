@@ -225,7 +225,7 @@
 		<echo message="update integrationtest: commit ${jarname} and ${src_jarname} in cvs"/>
 		<cvs package="${integrationtest.cvs.module}" dest="${integrationtest.path}/lib"
 		 	failonerror="false"
-		 	command="commit -m 'automatically commit by build process'"/>
+		 	command='commit -m "automatically commit by build process"'/>
 	</target>
 	
 	<!-- xml pretty print utility target -->
