@@ -991,6 +991,7 @@
                  		<or>
                    			<test property="org.eclipse.debug.ui.matchesPattern" value="*.ipstestcase"/>
                    			<test property="org.eclipse.debug.ui.matchesPattern" value="*.ipsproduct"/>
+                   			<adapt type="org.eclipse.core.resources.IResource"/>
                  		</or>
                		</iterate>
                </with>

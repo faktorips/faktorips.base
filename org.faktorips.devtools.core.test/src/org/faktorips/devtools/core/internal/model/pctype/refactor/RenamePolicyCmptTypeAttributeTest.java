@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -33,15 +32,11 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
 
     private static final String POLICY_CMPT_TYPE_ATTRIBUTE_NAME = "policyAttribute";
 
-    private static final String PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME = "productAttribute";
-
     private IPolicyCmptType policyCmptType;
 
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
     private IProductCmptType productCmptType;
-
-    private IProductCmptTypeAttribute productCmptTypeAttribute;
 
     private ITestCaseType testCaseType;
 
@@ -74,12 +69,6 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
         policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setProductRelevant(true);
-
-        // Create a product component type attribute.
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
-        productCmptTypeAttribute.setName(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME);
-        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
 
         // Create a test case type with a test attribute.
         testCaseType = newTestCaseType(ipsProject, "TestCaseType");
