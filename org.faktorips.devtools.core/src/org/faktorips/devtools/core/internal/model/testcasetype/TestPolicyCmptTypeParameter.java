@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -322,10 +321,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return a;
     }
 
-    public ITestAttribute[] getTestAttributes(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+    public ITestAttribute[] getTestAttributes(String attributeName) {
         List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>();
+
         for (ITestAttribute testAttribute : this.testAttributes) {
-            if (testAttribute.getAttribute().equals(policyCmptTypeAttribute.getName())) {
+            if (testAttribute.getAttribute().equals(attributeName)) {
                 testAttributes.add(testAttribute);
             }
         }

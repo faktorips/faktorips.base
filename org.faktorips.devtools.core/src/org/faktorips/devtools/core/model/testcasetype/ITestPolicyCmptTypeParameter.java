@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
 /**
@@ -171,13 +170,16 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public ITestAttribute getTestAttribute(String attributeName);
 
     /**
-     * Returns an array of all <tt>ITestAttribute</tt>s that are based on the provided
-     * <tt>IPolicyCmptTypeAttribute</tt>.
+     * Returns an array of all <tt>ITestAttribute</tt>s that are based on the
+     * <tt>IPolicyCmptTypeAttribute</tt> with the given name.
      * <p>
-     * Returns an empty array if <tt>policyCmptTypeAttribute</tt> is <tt>null</tt> or if no
-     * <tt>ITestAttribute</tt>s based on the provided <tt>IPolicyCmptTypeAttribute</tt> exist.
+     * Returns an empty array if no <tt>ITestAttribute</tt>s based on the
+     * <tt>IPolicyCmptTypeAttribute</tt> identified by the provided <tt>attributeName</tt> exist.
+     * 
+     * @param attributeName The name of the <tt>IPolicyCmptTypeAttribute</tt> that results must be
+     *            based upon.
      */
-    public ITestAttribute[] getTestAttributes(IPolicyCmptTypeAttribute policyCmptTypeAttribute);
+    public ITestAttribute[] getTestAttributes(String attributeName);
 
     /**
      * Creates a new child test policy component type parameter and returns it.

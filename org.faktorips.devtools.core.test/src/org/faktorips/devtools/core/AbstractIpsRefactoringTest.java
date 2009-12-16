@@ -19,10 +19,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings.
@@ -31,39 +29,17 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
-    /**
-     * Starts the "Rename Policy Component Type Attribute" - refactoring.
-     * 
-     * @param policyCmptTypeAttribute The <tt>IPolicyCmptTypeAttribute</tt> to be renamed.
-     * @param newAttributeName The new name for the <tt>IPolicyCmptTypeAttribute</tt>.
-     * 
-     * @throws CoreException If an error occurs while creating or running the refactoring.
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
-     */
-    protected final void renamePolicyCmptTypeAttribute(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
-            String newAttributeName) throws CoreException {
+    protected IIpsProject ipsProject;
 
-        ArgumentCheck.notNull(new Object[] { policyCmptTypeAttribute, newAttributeName });
-        createAndRunRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // Create an IPS project.
+        ipsProject = newIpsProject();
     }
 
-    /**
-     * Starts the "Rename Product Component Type Attribute" - refactoring.
-     * 
-     * @param productCmptTypeAttribute The <tt>IProductCmptTypeAttribute</tt> to be renamed.
-     * @param newAttributeName The new name for the <tt>IProductCmptTypeAttribute</tt>.
-     * 
-     * @throws CoreException If an error occurs while creating or running the refactoring.
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
-     */
-    protected final void renameProductCmptTypeAttribute(IProductCmptTypeAttribute productCmptTypeAttribute,
-            String newAttributeName) throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { productCmptTypeAttribute, newAttributeName });
-        createAndRunRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
-    }
-
-    private void createAndRunRenameRefactoring(RenameRefactoring renameRefactoring, String newElementName)
+    protected final void runRenameRefactoring(RenameRefactoring renameRefactoring, String newElementName)
             throws CoreException {
 
         RenameRefactoringProcessor processor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();

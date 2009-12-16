@@ -22,10 +22,12 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -81,6 +83,18 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
         Set<IIpsSrcFile> productCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+
+            /*
+             * Continue if this product component does not reference the product component type that
+             * configures the policy component type of the attribute to be renamed.
+             */
+            IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+            IProductCmptType configuringProductCmptType = getPolicyCmptType().findProductCmptType(getIpsProject());
+            if (!(referencedProductCmptType
+                    .isSubtypeOrSameType(configuringProductCmptType, productCmpt.getIpsProject()))) {
+                continue;
+            }
+
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
                 IConfigElement configElement = generation.getConfigElement(getOriginalElementName());
@@ -101,7 +115,17 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
-                for (ITestAttribute testAttribute : parameter.getTestAttributes(getPolicyCmptTypeAttribute())) {
+
+                /*
+                 * Continue if this parameter does not reference the policy component type of the
+                 * attribute to be renamed.
+                 */
+                IPolicyCmptType referencedPolicyCmptType = parameter.findPolicyCmptType(parameter.getIpsProject());
+                if (!(referencedPolicyCmptType.isSubtypeOrSameType(getPolicyCmptType(), parameter.getIpsProject()))) {
+                    continue;
+                }
+
+                for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalElementName())) {
                     testAttribute.setAttribute(getNewElementName());
                     addModifiedSrcFile(testCaseType.getIpsSrcFile());
                 }
@@ -121,6 +145,14 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
     /** Returns the <tt>IPolicyCmptTypeAttribute</tt> to be refactored. */
     private IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)getIpsElement();
+    }
+
+    /**
+     * Returns the <tt>IPolicyCmptType</tt> of the <tt>IPolicyCmptTypeAttribute</tt> to be
+     * refactored.
+     */
+    private IPolicyCmptType getPolicyCmptType() {
+        return getPolicyCmptTypeAttribute().getPolicyCmptType();
     }
 
     @Override

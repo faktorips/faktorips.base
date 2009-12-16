@@ -80,6 +80,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
 
+        // TODO AW: check final condition valid IPS element in subclasses.
         return new RefactoringStatus();
     }
 
@@ -92,6 +93,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
             status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
                     .getName()));
         }
+
         return status;
     }
 

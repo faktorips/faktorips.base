@@ -23,7 +23,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -45,8 +44,6 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     private static final String PRODUCT_ATTRIBUTE_NAME = "productAttribute";
 
     private static final String PRODUCT_TYPE_NAME = "Product";
-
-    private IIpsProject ipsProject;
 
     private IPolicyCmptType policyCmptType;
 
@@ -71,9 +68,6 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
-        // Create an IPS project.
-        ipsProject = newIpsProject();
 
         // Create a policy component type and a policy component type attribute.
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_TYPE_NAME);
@@ -127,7 +121,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
-        renamePolicyCmptTypeAttribute(policyCmptTypeAttribute, "test");
+        runRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), "test");
 
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
@@ -178,7 +172,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Refactor the attribute.
-        renameProductCmptTypeAttribute(productCmptTypeAttribute, "test");
+        runRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), "test");
 
         // The former Java elements must no longer exist.
         assertFalse(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());

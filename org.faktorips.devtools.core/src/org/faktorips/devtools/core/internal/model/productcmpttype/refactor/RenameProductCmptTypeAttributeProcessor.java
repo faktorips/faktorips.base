@@ -77,7 +77,10 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
-            // Continue if this product component does not reference this product component type.
+            /*
+             * Continue if this product component does not reference the product component type of
+             * the attribute to be renamed.
+             */
             IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
             if (!(referencedProductCmptType.isSubtypeOrSameType(getProductCmptType(), productCmpt.getIpsProject()))) {
                 continue;
