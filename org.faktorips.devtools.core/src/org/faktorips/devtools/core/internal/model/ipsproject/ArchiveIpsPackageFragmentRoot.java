@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -163,14 +162,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     @Override
     public boolean isContainedInArchive() {
         return true;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

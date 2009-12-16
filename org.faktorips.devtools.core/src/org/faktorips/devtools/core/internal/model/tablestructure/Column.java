@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -117,14 +116,6 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findValueDatatype(datatype);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

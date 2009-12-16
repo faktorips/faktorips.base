@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -870,14 +869,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;
         valueChanged(oldPolicyCmptType, policyCmptType);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

@@ -28,7 +28,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.EnumValue;
@@ -639,6 +638,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    public String getInstancesIcon() {
+        return instancesIconPath;
+    }
+
+    public boolean isUseCustomInstanceIcon() {
+        return StringUtils.isNotEmpty(instancesIconPath);
+    }
+
+    public void setInstancesIcon(String path) {
+        String oldPath = instancesIconPath;
+        instancesIconPath = path;
+        valueChanged(oldPath, instancesIconPath);
+    }
+
     private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String tsuName;
@@ -649,9 +662,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             this.tsuName = tsuName;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IProductCmptType currentType) {
             tsu = currentType.getTableStructureUsage(tsuName);
@@ -678,9 +688,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             this.propertyType = propertyType;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ProductCmptType currType = (ProductCmptType)currentType;
@@ -804,9 +811,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IType currentType) throws CoreException {
             super.visit(currentType);
@@ -840,28 +844,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             check = currentType.isAbstract();
             return !check;
         }
-    }
-
-    public String getInstancesIcon() {
-        return instancesIconPath;
-    }
-
-    public boolean isUseCustomInstanceIcon() {
-        return StringUtils.isNotEmpty(instancesIconPath);
-    }
-
-    public void setInstancesIcon(String path) {
-        String oldPath = instancesIconPath;
-        instancesIconPath = path;
-        valueChanged(oldPath, instancesIconPath);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

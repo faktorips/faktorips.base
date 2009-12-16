@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -51,112 +51,72 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public abstract boolean isRoot();
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public abstract ITestParameter getRootParameter();
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     public void setName(String newName) {
-        String oldName = this.name;
-        this.name = newName;
+        String oldName = name;
+        name = newName;
         valueChanged(oldName, newName);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         // default no image
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage(IIpsProject ipsProject) {
         // default no image
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_PARAMETER_TYPE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_TEST_PARAMETER_TYPE, type.getId());
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public boolean isInputOrCombinedParameter() {
         return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isExpextedResultOrCombinedParameter() {
         return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isCombinedParameter() {
         return type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     *  {@inheritDoc}
-     */
-    public TestParameterType getTestParameterType(){
+    public TestParameterType getTestParameterType() {
         return type;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public abstract void setTestParameterType(TestParameterType testParameterType);
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-    
+
         // check for duplicate test parameter names
         ITestParameter[] testParameters = null;
         if (isRoot()) {
@@ -166,14 +126,14 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
             IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
             List testParameterChildrenOfParent = new ArrayList(childrenOfParent.length);
             for (int i = 0; i < childrenOfParent.length; i++) {
-                if (childrenOfParent[i] instanceof ITestParameter){
+                if (childrenOfParent[i] instanceof ITestParameter) {
                     testParameterChildrenOfParent.add(childrenOfParent[i]);
                 }
             }
-            testParameters = (ITestParameter[]) testParameterChildrenOfParent.toArray(new ITestParameter[0]);
+            testParameters = (ITestParameter[])testParameterChildrenOfParent.toArray(new ITestParameter[0]);
         }
 
-        if (testParameters != null){
+        if (testParameters != null) {
             for (int i = 0; i < testParameters.length; i++) {
                 if (testParameters[i] != this && testParameters[i].getName().equals(name)) {
                     String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
@@ -183,10 +143,10 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
                 }
             }
         }
-        
+
         // check the correct name format
         IStatus status = JavaConventions.validateFieldName(name);
-        if (!status.isOK()){
+        if (!status.isOK()) {
             String text = NLS.bind(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
             Message msg = new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME);
             list.add(msg);
@@ -196,12 +156,13 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * Return the test case type this parameter belongs to.
      */
-    public TestCaseType getTestCaseType(){
-        if (isRoot()){
+    public TestCaseType getTestCaseType() {
+        if (isRoot()) {
             return (TestCaseType)getParent();
         } else {
             ITestParameter root = getRootParameter();
             return (TestCaseType)root.getParent();
         }
     }
+
 }

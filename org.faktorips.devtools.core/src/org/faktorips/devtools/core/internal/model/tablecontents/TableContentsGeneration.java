@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -351,14 +350,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         if (tableStructure != null && uniqueKeyValidator != null) {
             updateUniqueKeyCache(tableStructure);
         }
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

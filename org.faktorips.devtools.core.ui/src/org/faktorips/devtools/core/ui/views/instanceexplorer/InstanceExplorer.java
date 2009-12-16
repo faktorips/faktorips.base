@@ -24,7 +24,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -519,14 +518,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         @SuppressWarnings("unchecked")
         public IIpsObjectPart newPart(Class partType) {
             return null;
-        }
-
-        public RenameRefactoring getRenameRefactoring() {
-            return null;
-        }
-
-        public boolean isRenameRefactoringSupported() {
-            return false;
         }
 
     }

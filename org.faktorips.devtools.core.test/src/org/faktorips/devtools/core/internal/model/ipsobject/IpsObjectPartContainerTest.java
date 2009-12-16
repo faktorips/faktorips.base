@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -352,14 +351,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         public Image getImage() {
             return null;
-        }
-
-        public RenameRefactoring getRenameRefactoring() {
-            return null;
-        }
-
-        public boolean isRenameRefactoringSupported() {
-            return false;
         }
 
     }

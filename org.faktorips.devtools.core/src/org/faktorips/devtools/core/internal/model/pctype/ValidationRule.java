@@ -21,7 +21,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -389,14 +388,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         checkValueAgainstValueSetRule = isAttributeValueValidationRule;
         valueChanged(oldValue, isAttributeValueValidationRule);
 
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

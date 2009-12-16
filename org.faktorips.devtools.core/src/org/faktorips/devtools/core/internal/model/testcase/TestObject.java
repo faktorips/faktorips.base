@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,20 +31,17 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public abstract class TestObject extends IpsObjectPart implements ITestObject {
-    /* Specifies the default type, will be used if the corresponding test case type parameter 
-     * is not specified or not found */
-    public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
     /**
-     * {@inheritDoc}
+     * Specifies the default type, will be used if the corresponding test case type parameter is not
+     * specified or not found
      */
+    public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
+
     public abstract ITestObject getRoot();
-    
-    /**
-     * {@inheritDoc}
-     */
-    public abstract boolean isRoot(); 
-    
+
+    public abstract boolean isRoot();
+
     public TestObject(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -53,93 +50,78 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isInput() {
-        TestObject root = (TestObject) getRoot();
-        TestCase testCase = (TestCase) root.getParent();
+        TestObject root = (TestObject)getRoot();
+        TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt){
+            if (this instanceof ITestPolicyCmpt) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            }else if (this instanceof ITestPolicyCmptLink){
+            } else if (this instanceof ITestPolicyCmptLink) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
             }
-            if (param != null){
+            if (param != null) {
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
             }
         } catch (Exception e) {
             // ignore exception check type of root
         }
-        return testCase.isTypeOrDefault(root.getTestParameterName(), 
-                TestParameterType.INPUT, DEFAULT_TYPE);
+        return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.INPUT, DEFAULT_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isExpectedResult() {
         // TODO: mit Joerg klaeren
-        TestObject root = (TestObject) getRoot();
-        TestCase testCase = (TestCase) root.getParent();
+        TestObject root = (TestObject)getRoot();
+        TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt)
+            if (this instanceof ITestPolicyCmpt) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            else if (this instanceof ITestPolicyCmptLink)
+            } else if (this instanceof ITestPolicyCmptLink) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
-            
-            if (param != null)
+            }
+
+            if (param != null) {
                 return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
+            }
         } catch (Exception e) {
             // ignore exception check type of root
         }
-        return testCase.isTypeOrDefault(root.getTestParameterName(), 
-                TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
+        return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isCombined() {
-        TestObject root = (TestObject) getRoot();
-        TestCase testCase = (TestCase) root.getParent();
+        TestObject root = (TestObject)getRoot();
+        TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt)
+            if (this instanceof ITestPolicyCmpt) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            else if (this instanceof ITestPolicyCmptLink)
+            } else if (this instanceof ITestPolicyCmptLink) {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
-            
-            if (param != null)
+            }
+
+            if (param != null) {
                 return testCase.isTypeOrDefault(param, TestParameterType.COMBINED, DEFAULT_TYPE);
+            }
         } catch (Exception e) {
             // ignore exception check type of root
         }
-        return testCase.isTypeOrDefault(root.getTestParameterName(), 
-                TestParameterType.COMBINED, DEFAULT_TYPE);
-        
+        return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.COMBINED, DEFAULT_TYPE);
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return null;
     }
+
 }

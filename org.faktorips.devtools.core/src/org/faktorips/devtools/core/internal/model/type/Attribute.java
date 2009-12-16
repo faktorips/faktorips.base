@@ -54,24 +54,15 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         name = ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IType getType() {
         return (IType)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setName(String newName) {
         String oldName = name;
@@ -79,16 +70,10 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Modifier getModifier() {
         return modifier;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setModifier(Modifier newModifer) {
         ArgumentCheck.notNull(newModifer);
         Modifier oldModifier = modifier;
@@ -96,55 +81,34 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         valueChanged(oldModifier, newModifer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDatatype() {
         return datatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDatatype(String newDatatype) {
         String oldDatatype = datatype;
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
         return project.findValueDatatype(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype findValueDatatype(IIpsProject project) throws CoreException {
         return project.findValueDatatype(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDefaultValue(String newValue) {
         String oldValue = defaultValue;
         defaultValue = newValue;
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -157,9 +121,6 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$    
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -169,9 +130,6 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);

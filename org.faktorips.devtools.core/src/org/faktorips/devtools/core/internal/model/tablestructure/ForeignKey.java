@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -213,14 +212,6 @@ public class ForeignKey extends Key implements IForeignKey {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_REF_TABLE_STRUCTURE, refTableStructure);
         element.setAttribute(PROPERTY_REF_UNIQUE_KEY, refUniqueKey);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

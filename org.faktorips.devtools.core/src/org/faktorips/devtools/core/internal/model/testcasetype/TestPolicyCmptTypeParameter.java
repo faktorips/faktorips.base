@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -654,14 +653,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     Message.ERROR, this, PROPERTY_REQUIRES_PRODUCTCMT);
             list.add(msg);
         }
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

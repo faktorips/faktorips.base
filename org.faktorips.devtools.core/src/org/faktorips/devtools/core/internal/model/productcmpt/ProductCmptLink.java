@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -284,14 +283,6 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     public boolean isOptional() {
         return getMinCardinality() == 0 && getMaxCardinality() == 1;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

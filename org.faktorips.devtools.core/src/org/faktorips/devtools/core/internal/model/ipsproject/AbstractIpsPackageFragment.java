@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.util.StringUtil;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsPackageFragment extends IpsElement implements IIpsPackageFragment {
@@ -43,56 +43,37 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragmentRoot getRoot() {
         return (IIpsPackageFragmentRoot)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsSrcFiles();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment getParentIpsPackageFragment() {
         int lastIndex = getName().lastIndexOf("."); //$NON-NLS-1$
         if (lastIndex < 0) {
             if (isDefaultPackage()) {
                 return null;
-            }
-            else {
+            } else {
                 return getRoot().getDefaultIpsPackageFragment();
             }
-        }
-        else {
+        } else {
             String parentPath = getName().substring(0, lastIndex);
-            return new IpsPackageFragment(this.getParent(), parentPath);
+            return new IpsPackageFragment(getParent(), parentPath);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPath getRelativePath() {
         return new Path(getName().replace('.', '/'));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDefaultPackage() {
-        return this.name.equals(""); //$NON-NLS-1$
+        return name.equals(""); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile getIpsSrcFile(String name) {
         IpsObjectType type = IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
         if (type != null) {
@@ -101,52 +82,41 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type) {
         return new IpsSrcFile(this, filenameWithoutExtension + '.' + type.getFileExtension());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         try {
             IIpsElement[] children = getChildren();
             if (children != null && children.length > 0) {
                 return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             // nothing to do. If we can't get the content, we consider the package empty.
         }
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentEmpty.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getLastSegmentName() {
         int index = name.lastIndexOf('.');
         if (index == -1) {
             return name;
-        }
-        else {
+        } else {
             return name.substring(index + 1);
         }
     }
 
     /**
      * Searches all objects of the given type and adds them to the result.
-     *
+     * 
      * @throws CoreException if an error occurs while searching
      */
     public abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
 
     /**
      * Searches all ips source files of the given type and adds them to the result.
-     *
+     * 
      * @throws CoreException if an error occurs while searching
      */
     public abstract void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException;

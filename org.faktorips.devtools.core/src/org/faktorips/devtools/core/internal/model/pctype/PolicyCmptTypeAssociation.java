@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -370,14 +369,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

@@ -24,14 +24,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-/**
- *
- */
 public abstract class IpsElement extends PlatformObject implements IIpsElement, IAdaptable {
 
     protected String name;
@@ -188,6 +186,24 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
 
     public boolean isContainedInArchive() {
         return getParent().isContainedInArchive();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The default implementation always returns <tt>null</tt>.
+     */
+    public RenameRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The default implementation always returns <tt>false</tt>.
+     */
+    public boolean isRenameRefactoringSupported() {
+        return false;
     }
 
 }

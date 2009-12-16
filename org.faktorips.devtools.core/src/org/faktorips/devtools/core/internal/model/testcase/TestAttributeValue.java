@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -326,14 +325,6 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     @Override
     public String getName() {
         return getTestAttribute();
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

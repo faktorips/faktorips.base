@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -300,14 +299,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ""; //$NON-NLS-1$
     }
 
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
-    }
-
     private class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
@@ -360,14 +351,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
                         this);
                 list.add(msg);
             }
-        }
-
-        public RenameRefactoring getRenameRefactoring() {
-            return null;
-        }
-
-        public boolean isRenameRefactoringSupported() {
-            return false;
         }
 
     }

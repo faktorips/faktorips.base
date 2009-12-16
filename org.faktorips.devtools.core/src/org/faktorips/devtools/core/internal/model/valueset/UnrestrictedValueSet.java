@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -161,14 +160,6 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             throw new UnsupportedOperationException(
                     "Datatype is nonPrimitive, therefore this all-values valueset must contain null"); //$NON-NLS-1$
         }
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -452,13 +451,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools
-     * .core.model.ipsproject.IIpsProject, boolean)
-     */
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
@@ -466,14 +458,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
             result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

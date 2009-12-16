@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -110,14 +109,6 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

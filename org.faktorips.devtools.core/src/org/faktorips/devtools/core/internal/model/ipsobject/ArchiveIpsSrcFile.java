@@ -18,7 +18,6 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
@@ -96,14 +95,6 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
     public String getBasePackageNameForDerivedArtefacts() throws CoreException {
         IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
         return archive.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

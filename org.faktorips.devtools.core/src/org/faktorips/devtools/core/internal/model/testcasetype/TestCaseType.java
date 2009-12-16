@@ -23,7 +23,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
@@ -488,13 +487,6 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools
-     * .core.model.ipsproject.IIpsProject, boolean)
-     */
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
@@ -502,14 +494,6 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             result.addAll(Arrays.asList(project.findAllTestCaseSrcFiles(this)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

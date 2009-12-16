@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -790,14 +789,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
         return null;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
     class AssociationsValidator extends ProductCmptTypeHierarchyVisitor {

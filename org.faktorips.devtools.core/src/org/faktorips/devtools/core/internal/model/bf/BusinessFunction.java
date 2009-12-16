@@ -10,7 +10,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -498,14 +497,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         bFParts = decisions.getParts();
         nodeList.addAll((Collection)Arrays.asList(bFParts));
         return nodeList;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
     private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection<BFElement> {

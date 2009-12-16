@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.businessfct;
 
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
@@ -73,14 +72,6 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     @Override
     protected void removePart(IIpsObjectPart part) {
         throw new IllegalArgumentException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

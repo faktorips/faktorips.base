@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -543,7 +542,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     }
 
     public boolean hasChildIpsPackageFragments() throws CoreException {
-
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] content = folder.members();
 
@@ -556,14 +554,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             }
         }
 
-        return false;
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
         return false;
     }
 

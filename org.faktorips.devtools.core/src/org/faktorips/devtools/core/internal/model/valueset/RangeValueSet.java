@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -561,14 +560,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         boolean old = this.containsNull;
         this.containsNull = containsNull;
         valueChanged(old, containsNull);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

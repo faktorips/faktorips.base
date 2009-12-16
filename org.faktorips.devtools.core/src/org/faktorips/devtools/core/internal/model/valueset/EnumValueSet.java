@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -490,14 +489,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
 
         valueChanged(old, containsNull);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

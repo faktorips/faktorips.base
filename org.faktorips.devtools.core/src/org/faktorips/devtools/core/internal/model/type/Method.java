@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -347,14 +346,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         for (IParameter parameter : parameters) {
             dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype()));
         }
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
     class OverridingMethodFinder extends TypeHierarchyVisitor {

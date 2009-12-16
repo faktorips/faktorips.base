@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -390,14 +389,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies);
         return dependencies.toArray(new IDependency[dependencies.size()]);
-    }
-
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
