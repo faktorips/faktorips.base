@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
@@ -75,6 +76,13 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
         Set<IIpsSrcFile> productCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+
+            // Continue if this product component does not reference this product component type.
+            IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+            if (!(referencedProductCmptType.isSubtypeOrSameType(getProductCmptType(), productCmpt.getIpsProject()))) {
+                continue;
+            }
+
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
                 IAttributeValue attributeValue = generation.getAttributeValue(getOriginalElementName());
@@ -98,6 +106,14 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
     /** Returns the <tt>IProductCmptTypeAttribute</tt> to be refactored. */
     private IProductCmptTypeAttribute getProductCmptTypeAttribute() {
         return (IProductCmptTypeAttribute)getIpsElement();
+    }
+
+    /**
+     * Returns the <tt>IProductCmptType</tt> of the <tt>IProductCmptTypeAttribute</tt> to be
+     * refactored.
+     */
+    private IProductCmptType getProductCmptType() {
+        return getProductCmptTypeAttribute().getProductCmptType();
     }
 
     @Override
