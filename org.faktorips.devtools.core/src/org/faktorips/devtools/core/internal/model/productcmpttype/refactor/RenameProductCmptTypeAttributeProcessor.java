@@ -85,7 +85,6 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
             if (!(referencedProductCmptType.isSubtypeOrSameType(getProductCmptType(), productCmpt.getIpsProject()))) {
                 continue;
             }
-
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
                 IAttributeValue attributeValue = generation.getAttributeValue(getOriginalElementName());
