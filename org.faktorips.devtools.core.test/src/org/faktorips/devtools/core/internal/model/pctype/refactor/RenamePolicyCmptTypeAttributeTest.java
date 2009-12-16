@@ -95,13 +95,125 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
         assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
 
         // Check for test attribute update.
-        assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(policyCmptTypeAttribute.getName()).length);
+        assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(newAttributeName).length);
         assertTrue(testAttribute.getAttribute().equals(newAttributeName));
 
         // Check for product component configuration element update.
         assertNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
         assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
         assertEquals(newAttributeName, productCmptGenerationConfigElement.getPolicyCmptTypeAttribute());
+    }
+
+    /**
+     * Creates another <tt>IPolicyCmptType</tt> that has an attribute that corresponds exactly to
+     * the attribute of the already existing <tt>IPolicyCmptType</tt>.
+     * <p>
+     * This new <tt>IPolicyCmptType</tt> is configured by a new <tt>IProductCmptType</tt>. Based on
+     * that <tt>IProductCmptType</tt> exists an <tt>IProductCmpt</tt>. The refactoring of the
+     * original <tt>IPolicyCmptTypeAttribute</tt> may not cause modifications to this new
+     * <tt>IProductCmpt</tt>'s <tt>IConfigElement</tt>s.
+     * <p>
+     * Also creates another <tt>ITestCaseType</tt> based on the new <tt>IPolicyCmptType</tt> /
+     * <tt>IPolicyCmptTypeAttribute</tt>. The new <tt>ITestCaseType</tt> may not be modified by the
+     * refactoring, too.
+     */
+    public void testRenamePolicyCmptTypeAttributeSameNames() throws CoreException {
+        // Create the other policy component type.
+        IPolicyCmptType otherPolicyCmptType = newPolicyCmptType(ipsProject, "OtherPolicy");
+        otherPolicyCmptType.setConfigurableByProductCmptType(true);
+
+        // Create an attribute corresponding to the attribute of the original policy component type.
+        IPolicyCmptTypeAttribute otherAttribute = otherPolicyCmptType.newPolicyCmptTypeAttribute();
+        otherAttribute.setName(POLICY_CMPT_TYPE_ATTRIBUTE_NAME);
+        otherAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        otherAttribute.setModifier(Modifier.PUBLISHED);
+        otherAttribute.setAttributeType(AttributeType.CHANGEABLE);
+        otherAttribute.setProductRelevant(true);
+
+        // Create the other product component type.
+        IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProduct");
+        otherProductCmptType.setConfigurationForPolicyCmptType(true);
+        otherProductCmptType.setPolicyCmptType(otherPolicyCmptType.getQualifiedName());
+        otherPolicyCmptType.setProductCmptType(otherProductCmptType.getQualifiedName());
+
+        // Create a product component on that new product component type.
+        IProductCmpt otherProductCmpt = newProductCmpt(otherProductCmptType, "OtherExampleProduct");
+        IProductCmptGeneration otherGeneration = (IProductCmptGeneration)otherProductCmpt.newGeneration();
+        IConfigElement otherConfigElement = otherGeneration.newConfigElement(otherAttribute);
+
+        // Create another test case type based on the new policy component type.
+        ITestCaseType otherTestCaseType = newTestCaseType(ipsProject, "OtherTestCaseType");
+        ITestPolicyCmptTypeParameter otherPolicyParameter = otherTestCaseType.newCombinedPolicyCmptTypeParameter();
+        otherPolicyParameter.setPolicyCmptType(otherPolicyCmptType.getQualifiedName());
+        ITestAttribute otherTestAttribute = otherPolicyParameter.newInputTestAttribute();
+        otherTestAttribute.setAttribute(otherAttribute);
+        otherTestAttribute.setName("someOtherTestAttribute");
+        otherTestAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Run the refactoring.
+        String newAttributeName = "test";
+        runRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+
+        // The new configuration element may not have been modified.
+        assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherConfigElement.getName());
+        assertNull(otherGeneration.getConfigElement(newAttributeName));
+
+        // The new test attribute may not have been modified.
+        assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherTestAttribute.getAttribute());
+        assertNull(otherPolicyParameter.getTestAttribute(newAttributeName));
+    }
+
+    /**
+     * Test to rename an <tt>IPolicyCmptTypeAttribute</tt> from an <tt>IPolicyCmptType</tt> that is
+     * a super type of another <tt>IPolicyCmptType</tt>.
+     */
+    public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
+        // Create a super policy component type.
+        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        superPolicyCmptType.setAbstract(true);
+        superPolicyCmptType.setConfigurableByProductCmptType(true);
+
+        // Create an attribute in the super policy component type.
+        IPolicyCmptTypeAttribute superAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        superAttribute.setName("superAttribute");
+        superAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        superAttribute.setModifier(Modifier.PUBLISHED);
+        superAttribute.setAttributeType(AttributeType.CHANGEABLE);
+        superAttribute.setProductRelevant(true);
+
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+
+        // Create a super product component type.
+        IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
+        superProductCmptType.setAbstract(true);
+        superProductCmptType.setConfigurationForPolicyCmptType(true);
+        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
+        superPolicyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
+        productCmptType.setSupertype(superProductCmptType.getQualifiedName());
+
+        // Create a test attribute for this new attribute.
+        ITestAttribute superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
+        superTestAttribute.setAttribute(superAttribute);
+        superTestAttribute.setName("someSuperTestAttribute");
+        superTestAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        // Create a configuration element for this new attribute.
+        IConfigElement superConfigElement = productCmptGeneration.newConfigElement(superAttribute);
+
+        // Run the refactoring.
+        String newAttributeName = "test";
+        runRenameRefactoring(superAttribute.getRenameRefactoring(), newAttributeName);
+
+        // Check for test attribute update.
+        assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(POLICY_CMPT_TYPE_ATTRIBUTE_NAME).length);
+        assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(newAttributeName).length);
+        assertTrue(superTestAttribute.getAttribute().equals(newAttributeName));
+
+        // Check for product component configuration element update.
+        assertNotNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
+        assertNull(productCmptGeneration.getConfigElement("superAttribute"));
+        assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
+        assertEquals(newAttributeName, superConfigElement.getPolicyCmptTypeAttribute());
     }
 
 }

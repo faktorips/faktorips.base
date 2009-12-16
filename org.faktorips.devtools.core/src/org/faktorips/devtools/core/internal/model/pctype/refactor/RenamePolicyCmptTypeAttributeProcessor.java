@@ -90,11 +90,14 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
              */
             IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
             IProductCmptType configuringProductCmptType = getPolicyCmptType().findProductCmptType(getIpsProject());
+            /*
+             * TODO AW: If a method isSubtypeOrSameType(String qualifiedName) would be provided,
+             * this and the other refactorings could have better performance.
+             */
             if (!(referencedProductCmptType
                     .isSubtypeOrSameType(configuringProductCmptType, productCmpt.getIpsProject()))) {
                 continue;
             }
-
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
                 IConfigElement configElement = generation.getConfigElement(getOriginalElementName());
@@ -115,7 +118,6 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
-
                 /*
                  * Continue if this parameter does not reference the policy component type of the
                  * attribute to be renamed.
@@ -124,7 +126,6 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
                 if (!(referencedPolicyCmptType.isSubtypeOrSameType(getPolicyCmptType(), parameter.getIpsProject()))) {
                     continue;
                 }
-
                 for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalElementName())) {
                     testAttribute.setAttribute(getNewElementName());
                     addModifiedSrcFile(testCaseType.getIpsSrcFile());

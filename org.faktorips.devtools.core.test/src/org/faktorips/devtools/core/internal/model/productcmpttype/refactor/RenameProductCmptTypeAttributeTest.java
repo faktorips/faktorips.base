@@ -92,6 +92,7 @@ public class RenameProductCmptTypeAttributeTest extends AbstractIpsRefactoringTe
         IAttributeValue otherAttributeValue = otherProductCmptGeneration
                 .newAttributeValue(otherProductCmptTypeAttribute);
 
+        // Run the refactoring.
         String newAttributeName = "test";
         runRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
 
@@ -127,9 +128,14 @@ public class RenameProductCmptTypeAttributeTest extends AbstractIpsRefactoringTe
 
         IAttributeValue newAttributeValue = productCmptGeneration.newAttributeValue(superAttribute);
 
+        // Run the refactoring.
         String newAttributeName = "test";
         runRenameRefactoring(superAttribute.getRenameRefactoring(), newAttributeName);
 
+        // Check for product component attribute value update.
+        assertNull(productCmptGeneration.getAttributeValue("superAttribute"));
+        assertNotNull(productCmptGeneration.getAttributeValue(newAttributeName));
+        assertEquals(newAttributeName, newAttributeValue.getAttribute());
     }
 
 }
