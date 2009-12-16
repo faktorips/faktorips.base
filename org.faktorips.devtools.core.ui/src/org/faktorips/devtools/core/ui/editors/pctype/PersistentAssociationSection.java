@@ -105,7 +105,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
-                IPersistentAttributeInfo jpaAttributeInfo = attribute.getJpaAttributeInfo();
+                IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String result = "";
                 switch (columnIndex) {

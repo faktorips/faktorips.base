@@ -327,6 +327,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
-    public IPersistentAssociationInfo getJpaAssociatonInfo();
+    public IPersistentAssociationInfo getPersistenceAssociatonInfo();
 
 }

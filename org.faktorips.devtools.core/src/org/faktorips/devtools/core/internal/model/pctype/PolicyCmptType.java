@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Method;
@@ -31,6 +34,8 @@ import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -65,12 +70,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private boolean forceExtensionCompilationUnitGeneration = false;
 
     private IpsObjectPartCollection rules;
-
-    private IPersistentTypeInfo persistenceTypeInfo = new PersistentTypeInfo();
+    private IIpsObjectPart persistenceTypeInfo;
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
         rules = new IpsObjectPartCollection(this, ValidationRule.class, IValidationRule.class, ValidationRule.TAG_NAME);
+        if (getIpsProject().isPersistenceSupportEnabled()) {
+            persistenceTypeInfo = newPart(PersistentTypeInfo.class);
+        }
     }
 
     /**
@@ -352,7 +359,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
-        validatePersistenceTypeInfo(list, ipsProject);
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -401,12 +407,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         for (IValidationRule rule : getRules()) {
             CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(rule, msgList);
             visitor.start(this);
-        }
-    }
-
-    private void validatePersistenceTypeInfo(MessageList msgList, IIpsProject ipsProject) {
-        if (ipsProject.isPersistenceSupportEnabled()) {
-            persistenceTypeInfo.validate(msgList, ipsProject);
         }
     }
 
@@ -564,7 +564,68 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     public IPersistentTypeInfo getPersistenceTypeInfo() {
-        return persistenceTypeInfo;
+        return (IPersistentTypeInfo)persistenceTypeInfo;
+    }
+
+    // The methods below are overridden to allow a single IPersistenceTypeInfo instance be part of
+    // this class. The default implementations handle only the case where the part is a
+    // IIpsObjectPartCollection and not a single IIpsObjectPart.
+
+    @Override
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        ArgumentCheck.notNull(xmlTag);
+        if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
+            return new PersistentTypeInfo(this, id);
+        }
+        return super.newPart(xmlTag, id);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public IIpsObjectPart newPart(Class partType) {
+        try {
+            Constructor<? extends IPersistentTypeInfo> constructor = partType.getConstructor(IIpsObject.class,
+                    int.class);
+            IPersistentTypeInfo result = constructor.newInstance(this, getNextPartId());
+            return result;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+        throw new IllegalArgumentException("Unsupported part type: " + partType);
+    }
+
+    @Override
+    protected void addPart(IIpsObjectPart part) {
+        if (IPersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
+            persistenceTypeInfo = part;
+        } else {
+            super.addPart(part);
+        }
+    }
+
+    @Override
+    protected void reinitPartCollections() {
+        super.reinitPartCollections();
+        newPart(PersistentTypeInfo.class);
+    }
+
+    @Override
+    protected void removePart(IIpsObjectPart part) {
+        if (persistenceTypeInfo.equals(part)) {
+            newPart(PersistentTypeInfo.class);
+        } else {
+            super.removePart(part);
+        }
+    }
+
+    @Override
+    public IIpsElement[] getChildren() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(super.getChildren()));
+        // This is the only time, the model element could be null at instantiation time
+        if (persistenceTypeInfo != null) {
+            children.add(persistenceTypeInfo);
+        }
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
 }

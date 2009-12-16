@@ -219,4 +219,44 @@ public class StringUtil {
         return result.toString();
     }
 
+    /**
+     * Returns a String where an occurence of a character followed by an uppercase character is
+     * replaced by these characters divided by an underscore. Consecutive sequences of comma, dot,
+     * hyphen and whitespace is also replaced by one single underscore.
+     * <p/>
+     * For example:
+     * 
+     * <pre>
+     *  CamelCase      -&gt;  Camel_Case
+     *  a.,- b-cdEF    -&gt;  a_b_cd_E_F       (splitUppercaseSequences = true)
+     *  a.,- b-cdEF    -&gt;  a_b_cd_EF       (splitUppercaseSequences = false)
+     * </pre>
+     * 
+     */
+    public static String camelCaseToUnderscore(String text, boolean splitUppercaseSequences) {
+        if (text == null || text.equals("")) {
+            return "";
+        }
+        String regex;
+        if (splitUppercaseSequences) {
+            regex = "([A-Z])";
+        } else {
+            regex = "([^A-Z])([A-Z])";
+        }
+
+        String result = text.replaceAll(regex, splitUppercaseSequences ? "_$1" : "$1_$2");
+
+        // compress sequences of [,.-_ ] to a single underscore
+        result = result.replaceAll(CAMEL_CASE_SEPERATORS + CAMEL_CASE_SEPERATORS + "*", "_");
+
+        // cut off leading and trailing underscores
+        if (result.charAt(0) == '_') {
+            result = result.substring(1, result.length());
+        }
+        if (result.charAt(result.length() - 1) == '_') {
+            result = result.substring(0, result.length() - 1);
+        }
+
+        return result.toString();
+    }
 }

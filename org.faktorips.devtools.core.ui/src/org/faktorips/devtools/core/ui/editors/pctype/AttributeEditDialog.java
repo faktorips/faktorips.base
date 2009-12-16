@@ -753,17 +753,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         uiToolkit.createFormLabel(workArea, "Table column name:");
         Text columnNameText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(columnNameText, attribute.getJpaAttributeInfo(),
+        bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
         uiToolkit.createFormLabel(workArea, "Is an unique attribute:");
         Checkbox uniqueCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(uniqueCheckbox, attribute.getJpaAttributeInfo(),
+        bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
         uiToolkit.createFormLabel(workArea, "Is a nullable attribute:");
         Checkbox nullableCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(nullableCheckbox, attribute.getJpaAttributeInfo(),
+        bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
         uiToolkit.createFormLabel(workArea, "Column size:");

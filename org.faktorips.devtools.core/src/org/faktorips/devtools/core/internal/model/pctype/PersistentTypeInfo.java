@@ -13,26 +13,43 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IPersistentTypeInfo}.
  * 
  * @author Roman Grutza
  */
-public class PersistentTypeInfo implements IPersistentTypeInfo {
+public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
 
-    private String tableName;
-    private String secondaryTableName;
-    private InheritanceStrategy inheritanceStrategy;
+    private String tableName = "";
+    private String secondaryTableName = "";
+    private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
     private String descriminatorValue;
-    private DescriminatorDatatype descriminatorDatatype;
-    private String descriminatorColumnName;
+    private DescriminatorDatatype descriminatorDatatype = DescriminatorDatatype.STRING;
+    private String descriminatorColumnName = "DTYPE";
+
+    /**
+     * @param policyComponentType
+     */
+    public PersistentTypeInfo(IIpsObject ipsObject, int id) {
+        super(ipsObject, id);
+
+        ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
+
+        tableName = tableNamingStrategy.getTableName(ipsObject.getName());
+        descriminatorValue = ipsObject.getName();
+    }
 
     public String getDescriminatorColumnName() {
         return descriminatorColumnName;
@@ -59,45 +76,52 @@ public class PersistentTypeInfo implements IPersistentTypeInfo {
     }
 
     public void setDescriminatorColumnName(String newDescriminatorColumnName) {
-        if (StringUtils.isEmpty(newDescriminatorColumnName)) {
-            throw new RuntimeException("Descriminator column name must not be null or empty.");
-        }
+        String oldValue = descriminatorColumnName;
         descriminatorColumnName = newDescriminatorColumnName;
+
+        valueChanged(oldValue, newDescriminatorColumnName);
     }
 
     public void setDescriminatorDatatype(DescriminatorDatatype newDescriminatorDatatype) {
+        DescriminatorDatatype oldValue = descriminatorDatatype;
         descriminatorDatatype = newDescriminatorDatatype;
+
+        valueChanged(oldValue, newDescriminatorDatatype);
     }
 
     public void setDescriminatorValue(String newDescriminatorValue) {
-        if (StringUtils.isEmpty(newDescriminatorValue)) {
-            throw new RuntimeException("Descriminator value name must not be null or empty.");
-        }
+        String oldValue = descriminatorValue;
         descriminatorValue = newDescriminatorValue;
+
+        valueChanged(oldValue, newDescriminatorValue);
     }
 
     public void setInheritanceStrategy(InheritanceStrategy newStrategy) {
+        InheritanceStrategy oldValue = inheritanceStrategy;
         inheritanceStrategy = newStrategy;
+
+        valueChanged(oldValue, newStrategy);
     }
 
     public void setSecondaryTableName(String newSecondaryTableName) {
-        if (StringUtils.isEmpty(newSecondaryTableName)) {
-            throw new RuntimeException("Secondary table name must not be null or empty.");
-        }
+        String oldValue = secondaryTableName;
         secondaryTableName = newSecondaryTableName;
+
+        valueChanged(oldValue, newSecondaryTableName);
     }
 
     public void setTableName(String newTableName) {
-        if (StringUtils.isEmpty(newTableName)) {
-            throw new RuntimeException("Table name must not be null or empty.");
-        }
+        String oldValue = tableName;
         tableName = newTableName;
+
+        valueChanged(oldValue, newTableName);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void validate(MessageList msgList, IIpsProject ipsProject) {
+    @Override
+    public void validateThis(MessageList msgList, IIpsProject ipsProject) {
         if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
             String text = "The table name is invalid.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, text, Message.ERROR, this,
@@ -133,5 +157,43 @@ public class PersistentTypeInfo implements IPersistentTypeInfo {
         // FIXME: add additional validation rules to check the type hierarchy for consistence, e.g:
         // - A subtype cannot have an InheritanceStrategy of JOINED_SUBCLASS if secondary tables are
         // used
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(XML_TAG);
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_SECONDARY_TABLE_NAME, "" + secondaryTableName);
+        element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy);
+        element.setAttribute(PROPERTY_DESCRIMINATOR_COLUMN_NAME, "" + descriminatorColumnName);
+        element.setAttribute(PROPERTY_DESCRIMINATOR_DATATYPE, "" + descriminatorDatatype);
+        element.setAttribute(PROPERTY_DESCRIMINATOR_VALUE, "" + descriminatorValue);
+    }
+
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        tableName = element.getAttribute(PROPERTY_TABLE_NAME);
+        secondaryTableName = element.getAttribute(PROPERTY_SECONDARY_TABLE_NAME);
+        inheritanceStrategy = InheritanceStrategy.valueOf(element.getAttribute(PROPERTY_INHERITANCE_STRATEGY));
+        descriminatorColumnName = element.getAttribute(PROPERTY_DESCRIMINATOR_COLUMN_NAME);
+        descriminatorDatatype = DescriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DESCRIMINATOR_DATATYPE));
+        descriminatorValue = element.getAttribute(PROPERTY_DESCRIMINATOR_VALUE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        // IpsPlugin.getDefault().getImage("FIXME.gif"); //$NON-NLS-1$
+        return null;
     }
 }

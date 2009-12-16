@@ -2045,11 +2045,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    public ITableColumnNamingStrategy getTableColumnNamingStrategy() throws CoreException {
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
         return getPropertiesInternal().getTableColumnNamingStrategy();
     }
 
-    public ITableNamingStrategy getTableNamingStrategy() throws CoreException {
+    public ITableNamingStrategy getTableNamingStrategy() {
         return getPropertiesInternal().getTableNamingStrategy();
     }
 

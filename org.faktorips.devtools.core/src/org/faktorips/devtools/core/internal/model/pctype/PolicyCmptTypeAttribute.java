@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private IValueSet valueSet;
     private boolean overwrites = false;
     private String computationMethodSignature = ""; //$NON-NLS-1$
-    private IPersistentAttributeInfo jpaAttributeInfo = new PersistentAttributeInfo();
+    private IIpsObjectPart persistenceAttributeInfo;
 
     /**
      * Creates a new attribute.
@@ -72,6 +74,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public PolicyCmptTypeAttribute(PolicyCmptType pcType, int id) {
         super(pcType, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
+            persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
+        }
     }
 
     /**
@@ -374,16 +379,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
-        valueSet = (IValueSet)part;
+        if (part instanceof IValueSet) {
+            valueSet = (IValueSet)part;
+        } else {
+            persistenceAttributeInfo = part;
+        }
     }
 
     /**
@@ -395,7 +397,25 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
         }
+        if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
+            return new PersistentAttributeInfo(this, id);
+        }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class partType) {
+        try {
+            Constructor<? extends IIpsObjectPart> constructor = partType
+                    .getConstructor(IIpsObjectPart.class, int.class);
+            IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
+            return result;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+        throw new IllegalArgumentException("Unsupported part type: " + partType);
     }
 
     /**
@@ -403,11 +423,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     @Override
     public IIpsElement[] getChildren() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>();
         if (valueSet != null) {
-            return new IIpsElement[] { valueSet };
-        } else {
-            return new IIpsElement[0];
+            children.add(valueSet);
         }
+        if (persistenceAttributeInfo != null) {
+            children.add(persistenceAttributeInfo);
+        }
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     /**
@@ -505,8 +528,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getDatatype();
     }
 
-    public IPersistentAttributeInfo getJpaAttributeInfo() {
-        return jpaAttributeInfo;
+    public IPersistentAttributeInfo getPersistenceAttributeInfo() {
+        return (IPersistentAttributeInfo)persistenceAttributeInfo;
     }
 
 }

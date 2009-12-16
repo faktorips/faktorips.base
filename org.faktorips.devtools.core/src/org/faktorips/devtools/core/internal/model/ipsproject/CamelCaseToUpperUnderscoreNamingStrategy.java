@@ -13,9 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
+import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,29 +28,45 @@ import org.w3c.dom.Element;
 public class CamelCaseToUpperUnderscoreNamingStrategy implements ITableColumnNamingStrategy, ITableNamingStrategy {
 
     public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreNamingStrategy";
+    private IIpsProject ipsProject;
 
-    /**
-     * {@inheritDoc}
-     */
+    // /**
+    // * @param ipsProject
+    // */
+    // public CamelCaseToUpperUnderscoreNamingStrategy(IIpsProject ipsProject) {
+    // this.ipsProject = ipsProject;
+    // }
+
     public IIpsProject getIpsProject() {
-        // TODO Auto-generated method stub
-        return null;
+        return ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public String getTableName(String baseName) {
+        if (StringUtils.isEmpty(baseName)) {
+            // throw new
+            // RuntimeException("Empty base name is not allowed to derive a table identifier from.");
+        }
+        return toUnderscoreUppercase(baseName);
+    }
+
+    public String getTableName(String baseName, int maxLength) {
+        if (StringUtils.isEmpty(baseName)) {
+            // throw new
+            // RuntimeException("Empty base name is not allowed to derive a table identifier from.");
+        }
+        if (maxLength <= 0) {
+            throw new RuntimeException("Negative length given for table identifier size.");
+        }
+        String derivedName = toUnderscoreUppercase(baseName);
+        return derivedName.substring(0, Math.min(derivedName.length(), maxLength));
+    }
+
     public String getTableColumnName(String baseName) {
-        // TODO Auto-generated method stub
-        return null;
+        return getTableName(baseName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTableColumnName(String baseName, int maxLength) {
-        // TODO Auto-generated method stub
-        return null;
+        return getTableName(baseName, maxLength);
     }
 
     /**
@@ -84,19 +102,12 @@ public class CamelCaseToUpperUnderscoreNamingStrategy implements ITableColumnNam
     }
 
     /**
-     * {@inheritDoc}
+     * @param baseName
+     * @return
      */
-    public String getTableName(String baseName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getTableName(String baseName, int maxLength) {
-        // TODO Auto-generated method stub
-        return null;
+    private String toUnderscoreUppercase(String baseName) {
+        String underscoredName = StringUtil.camelCaseToUnderscore(baseName, false);
+        return underscoredName.toUpperCase();
     }
 
 }

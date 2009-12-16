@@ -14,8 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * A class that holds information of a policy component type which is relevant for persistence.
@@ -25,7 +24,10 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentTypeInfo {
+public interface IPersistentTypeInfo extends IIpsObjectPart {
+
+    /** The XML tag for this IPS object part. */
+    public final static String XML_TAG = "Persistence"; //$NON-NLS-1$
 
     public final static String PROPERTY_TABLE_NAME = "tableName";
 
@@ -135,11 +137,4 @@ public interface IPersistentTypeInfo {
         }
     }
 
-    /**
-     * Perform validations on the persistence properties of an IPolicyComponentType.
-     * 
-     * @param msgList An {@link MessageList} instance to append the validation messages to
-     * @param ipsProject The IPS project the IPolicyComponentType belongs to
-     */
-    public void validate(MessageList msgList, IIpsProject ipsProject);
 }

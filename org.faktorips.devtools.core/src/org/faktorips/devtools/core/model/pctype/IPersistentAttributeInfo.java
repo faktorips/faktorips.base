@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+
 /**
  * A class that holds information of a policy component type attribute which is relevant for
  * persistence using the JPA (Java Persistence API).
@@ -22,7 +24,10 @@ package org.faktorips.devtools.core.model.pctype;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentAttributeInfo {
+public interface IPersistentAttributeInfo extends IIpsObjectPart {
+
+    /** The XML tag for this IPS object part. */
+    public final static String XML_TAG = "PersistenceAttribute"; //$NON-NLS-1$
 
     public final static String PROPERTY_TABLE_COLUMN_NAME = "tableColumnName";
 
@@ -37,6 +42,8 @@ public interface IPersistentAttributeInfo {
     public final static String PROPERTY_TABLE_COLUMN_PRECISION = "tableColumnPrecision";
 
     public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter";
+
+    public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute();
 
     public String getTableColumnName();
 

@@ -15,26 +15,38 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
  * @author Roman Grutza
  */
-public class PersistentAssociationInfo implements IPersistentAssociationInfo {
+public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
 
-    private String targetColumnName;
-    private String sourceColumnName;
-    private String joinTableName;
-    private FetchType fetchType;
-    private final PolicyCmptTypeAssociation policyCmptTypeAssociation;
+    private String targetColumnName = "";
+    private String sourceColumnName = "";
+    private String joinTableName = "";
+    private FetchType fetchType = FetchType.FETCH_LAZY;
+
+    private IIpsObjectPart policyComponentTypeAssociation;
 
     /**
-     * @param policyCmptTypeAssociation
      */
-    public PersistentAssociationInfo(PolicyCmptTypeAssociation policyCmptTypeAssociation) {
-        this.policyCmptTypeAssociation = policyCmptTypeAssociation;
+    public PersistentAssociationInfo(IIpsObjectPart ipsObject, int id) {
+        super(ipsObject, id);
+        policyComponentTypeAssociation = ipsObject;
+
+        ITableColumnNamingStrategy tableColumnNamingStrategy = getIpsProject().getTableColumnNamingStrategy();
+
+        sourceColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
+        targetColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
     }
 
     public FetchType getFetchType() {
@@ -54,22 +66,24 @@ public class PersistentAssociationInfo implements IPersistentAssociationInfo {
     }
 
     public boolean isBidirectional() {
-        return policyCmptTypeAssociation.hasInverseAssociation();
+        return getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
 
     public boolean isCascading() {
-        return policyCmptTypeAssociation.isAssoziation() || policyCmptTypeAssociation.isComposition();
+        return getPolicyComponentTypeAssociation().isAssoziation()
+                || getPolicyComponentTypeAssociation().isComposition();
     }
 
     public boolean isJoinTableRequired() throws CoreException {
-        boolean isUnidirectional1ToManyComposition = isUnidirectional() && policyCmptTypeAssociation.isComposition()
-                && policyCmptTypeAssociation.is1ToMany();
+        boolean isUnidirectional1ToManyComposition = isUnidirectional()
+                && getPolicyComponentTypeAssociation().isComposition()
+                && getPolicyComponentTypeAssociation().is1ToMany();
 
-        boolean isOneToManyAssociation = policyCmptTypeAssociation.isAssoziation()
-                && policyCmptTypeAssociation.is1ToMany();
+        boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().isAssoziation()
+                && getPolicyComponentTypeAssociation().is1ToMany();
 
-        IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
-                .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
+        IPolicyCmptTypeAssociation inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
+                getPolicyComponentTypeAssociation().getIpsProject());
 
         boolean isInverseAssociationOneToMany = (inverseAssociation != null) && inverseAssociation.is1ToMany();
 
@@ -79,11 +93,12 @@ public class PersistentAssociationInfo implements IPersistentAssociationInfo {
     }
 
     public boolean isOrphanDeleting() {
-        return isUnidirectional() && policyCmptTypeAssociation.isComposition() && policyCmptTypeAssociation.is1ToMany();
+        return isUnidirectional() && getPolicyComponentTypeAssociation().isComposition()
+                && getPolicyComponentTypeAssociation().is1ToMany();
     }
 
     public boolean isUnidirectional() {
-        return policyCmptTypeAssociation.hasInverseAssociation();
+        return getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
 
     public void setFetchType(FetchType fetchType) {
@@ -109,6 +124,41 @@ public class PersistentAssociationInfo implements IPersistentAssociationInfo {
             throw new RuntimeException("Target column name must not be null or empty.");
         }
         targetColumnName = newTargetColumnName;
+    }
+
+    public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
+        return (IPolicyCmptTypeAssociation)policyComponentTypeAssociation;
+    }
+
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(XML_TAG);
+    }
+
+    @Override
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
+        targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
+        joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
+        fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName);
+        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
+        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
+        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        // IpsPlugin.getDefault().getImage("FIXME.gif"); //$NON-NLS-1$
+        return null;
     }
 
 }

@@ -214,5 +214,5 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
-    public IPersistentAttributeInfo getJpaAttributeInfo();
+    public IPersistentAttributeInfo getPersistenceAttributeInfo();
 }

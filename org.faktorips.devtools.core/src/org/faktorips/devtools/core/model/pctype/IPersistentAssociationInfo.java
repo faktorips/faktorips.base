@@ -26,10 +26,15 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IPersistentAssociationInfo {
 
+    /** The XML tag for this IPS object part. */
+    public final static String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
+
     public final static String PROPERTY_JOIN_TABLE_NAME = "jpaJoinTableName";
     public final static String PROPERTY_SOURCE_COLUMN_NAME = "jpaSourceColumnName";
     public final static String PROPERTY_TARGET_COLUMN_NAME = "jpaTargetColumnName";
     public final static String PROPERTY_FETCH_TYPE = "jpaFetchType";
+
+    public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation();
 
     public String getJoinTableName();
 

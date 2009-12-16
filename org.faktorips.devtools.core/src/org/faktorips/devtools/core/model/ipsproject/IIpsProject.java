@@ -825,13 +825,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the strategy used to name database tables used for persisting policy component types.
      * Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableNamingStrategy getTableNamingStrategy() throws CoreException;
+    public ITableNamingStrategy getTableNamingStrategy();
 
     /**
      * Returns the strategy used to name database columns used for persisting policy component
      * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableColumnNamingStrategy getTableColumnNamingStrategy() throws CoreException;
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy();
 
     /**
      * Adds a new <code>DynamicValueDataType</code> to the project at runtime.
