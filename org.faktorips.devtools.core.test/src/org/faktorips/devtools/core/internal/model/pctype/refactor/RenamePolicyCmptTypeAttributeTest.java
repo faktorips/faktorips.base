@@ -87,7 +87,7 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        runRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
 
         // Check for changed attribute name.
         assertNull(policyCmptType.getAttribute(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -152,7 +152,7 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
 
         // The new configuration element may not have been modified.
         assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherConfigElement.getName());
@@ -202,7 +202,7 @@ public class RenamePolicyCmptTypeAttributeTest extends AbstractIpsRefactoringTes
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(superAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(superAttribute, newAttributeName);
 
         // Check for test attribute update.
         assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(POLICY_CMPT_TYPE_ATTRIBUTE_NAME).length);

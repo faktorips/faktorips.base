@@ -18,15 +18,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.refactor.RenamePolicyCmptTypeAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -46,8 +44,6 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -391,19 +387,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getDatatype();
     }
 
+    @Override
     public RenameRefactoring getRenameRefactoring() {
-        RefactoringContribution contribution = RefactoringCore
-                .getRefactoringContribution(IIpsRefactorings.RENAME_POLICY_CMPT_TYPE_ATTRIBUTE);
-        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setIpsElement(this);
-
-        try {
-            return (RenameRefactoring)renameDescriptor.createRefactoring(new RefactoringStatus());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return new RenameRefactoring(new RenamePolicyCmptTypeAttributeProcessor(this));
     }
 
+    @Override
     public boolean isRenameRefactoringSupported() {
         return true;
     }

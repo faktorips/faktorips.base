@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
@@ -39,9 +40,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
     }
 
-    protected final void runRenameRefactoring(RenameRefactoring renameRefactoring, String newElementName)
-            throws CoreException {
-
+    protected final void runRenameRefactoring(IIpsElement ipsElement, String newElementName) throws CoreException {
+        RenameRefactoring renameRefactoring = ipsElement.getRenameRefactoring();
         RenameRefactoringProcessor processor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
         processor.setNewElementName(newElementName);
 

@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS rename refactoring.
@@ -41,6 +42,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
      */
     public RenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png"));
         setChangeCreationCancelable(false);
         this.ipsElement = ipsElement;
 

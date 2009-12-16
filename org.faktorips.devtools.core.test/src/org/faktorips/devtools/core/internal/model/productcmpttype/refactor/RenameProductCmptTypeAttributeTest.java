@@ -60,7 +60,7 @@ public class RenameProductCmptTypeAttributeTest extends AbstractIpsRefactoringTe
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        runRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(productCmptTypeAttribute, newAttributeName);
 
         // Check for changed attribute name.
         assertNull(productCmptType.getAttribute(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -94,7 +94,7 @@ public class RenameProductCmptTypeAttributeTest extends AbstractIpsRefactoringTe
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(productCmptTypeAttribute, newAttributeName);
 
         // Check that the other product component was not modified.
         assertNotNull(otherProductCmptGeneration.getAttributeValue(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -130,7 +130,7 @@ public class RenameProductCmptTypeAttributeTest extends AbstractIpsRefactoringTe
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(superAttribute.getRenameRefactoring(), newAttributeName);
+        runRenameRefactoring(superAttribute, newAttributeName);
 
         // Check for product component attribute value update.
         assertNull(productCmptGeneration.getAttributeValue("superAttribute"));

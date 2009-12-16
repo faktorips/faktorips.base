@@ -342,15 +342,4 @@
             class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
 		</ipsobjecttype>
 	</extension>
-   <extension
-         point="org.eclipse.ltk.core.refactoring.refactoringContributions">
-      <contribution
-            class="org.faktorips.devtools.core.internal.model.pctype.refactor.RenamePolicyCmptTypeAttributeContribution"
-            id="org.faktorips.devtools.refactor.renamePolicyCmptTypeAttribute">
-      </contribution>
-      <contribution
-            class="org.faktorips.devtools.core.internal.model.productcmpttype.refactor.RenameProductCmptTypeAttributeContribution"
-            id="org.faktorips.devtools.refactor.renameProductCmptTypeAttribute">
-      </contribution>
-   </extension>
 </plugin>

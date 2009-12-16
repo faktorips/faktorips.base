@@ -73,7 +73,7 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
      * <tt>IProductCmpt</tt>s.
      */
     private void updateProductCmptReferences() throws CoreException {
-        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.PRODUCT_CMPT);
+        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
@@ -126,16 +126,6 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
     @Override
     public String getProcessorName() {
         return "Rename Product Component Type Attribute";
-    }
-
-    @Override
-    public boolean isApplicable() throws CoreException {
-        for (Object element : getElements()) {
-            if (!(element instanceof IProductCmptTypeAttribute)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

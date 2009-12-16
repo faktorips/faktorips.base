@@ -61,6 +61,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
 
     private IType policyInterface;
 
+    private IType productClass;
+
+    private IType productInterface;
+
     private IType productGenClass;
 
     private IType productGenInterface;
@@ -95,6 +99,8 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         internalFolder = modelFolder.getFolder("internal");
         policyInterface = getJavaType(POLICY_TYPE_NAME, false);
         policyClass = getJavaType(POLICY_TYPE_NAME, true);
+        productInterface = getJavaType(PRODUCT_TYPE_NAME, false);
+        productClass = getJavaType(PRODUCT_TYPE_NAME, true);
         productGenInterface = getJavaType(PRODUCT_TYPE_NAME + "Gen", false);
         productGenClass = getJavaType(PRODUCT_TYPE_NAME + "Gen", true);
     }
@@ -121,7 +127,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(policyCmptTypeAttribute.getRenameRefactoring(), "test");
+        runRenameRefactoring(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
@@ -172,7 +178,7 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(productCmptTypeAttribute.getRenameRefactoring(), "test");
+        runRenameRefactoring(productCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
         assertFalse(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
@@ -190,6 +196,26 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(productGenClass.getMethod("getTest", new String[] {}).exists());
         assertTrue(productGenClass.getMethod("setTest", new String[] { "QString;" }).exists());
         assertTrue(policyClass.getMethod("getTest", new String[] {}).exists());
+    }
+
+    public void testRenamePolicyCmptType() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        assertTrue(productClass.getMethod("createPolicy", new String[] {}).exists());
+        assertTrue(productInterface.getMethod("createPolicy", new String[] {}).exists());
+
+        // Refactor the policy component type.
+        runRenameRefactoring(policyCmptType, "RenamedPolicy");
+
+        assertFalse(getJavaType("Policy", false).exists());
+        assertFalse(getJavaType("Policy", true).exists());
+        assertTrue(getJavaType("RenamedPolicy", false).exists());
+        assertTrue(getJavaType("RenamedPolicy", true).exists());
+
+        assertFalse(productClass.getMethod("createPolicy", new String[] {}).exists());
+        assertFalse(productInterface.getMethod("createPolicy", new String[] {}).exists());
+        assertTrue(productClass.getMethod("createRenamedPolicy", new String[] {}).exists());
+        assertTrue(productInterface.getMethod("createRenamedPolicy", new String[] {}).exists());
     }
 
     private IType getJavaType(String typeName, boolean internal) {

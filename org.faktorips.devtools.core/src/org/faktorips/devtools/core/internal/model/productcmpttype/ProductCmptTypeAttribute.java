@@ -16,13 +16,11 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpttype.refactor.RenameProductCmptTypeAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -35,8 +33,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.refactor.IIpsRefactorings;
-import org.faktorips.devtools.core.refactor.RenameIpsElementDescriptor;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -169,19 +165,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
     }
 
+    @Override
     public RenameRefactoring getRenameRefactoring() {
-        RefactoringContribution contribution = RefactoringCore
-                .getRefactoringContribution(IIpsRefactorings.RENAME_PRODUCT_CMPT_TYPE_ATTRIBUTE);
-        RenameIpsElementDescriptor renameDescriptor = (RenameIpsElementDescriptor)contribution.createDescriptor();
-        renameDescriptor.setIpsElement(this);
-
-        try {
-            return (RenameRefactoring)renameDescriptor.createRefactoring(new RefactoringStatus());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return new RenameRefactoring(new RenameProductCmptTypeAttributeProcessor(this));
     }
 
+    @Override
     public boolean isRenameRefactoringSupported() {
         return true;
     }

@@ -310,19 +310,18 @@ public class GenPolicyCmptType extends GenType {
             IType generatedJavaType,
             boolean forInterface) {
 
-        if (getPolicyCmptType().isConfigurableByProductCmptType()) {
-            IType javaTypeProductCmpt = null;
+        if (!(getPolicyCmptType().isAbstract()) && getPolicyCmptType().isConfigurableByProductCmptType()) {
             try {
-                javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
+                IType javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
+                if (javaTypeProductCmpt != null) {
+                    org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
+                            getMethodNameCreatePolicyCmpt(), new String[] {});
+                    javaElements.add(createPolicyCmptMethod);
+                }
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
 
-            if (javaTypeProductCmpt != null) {
-                org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
-                        getMethodNameCreatePolicyCmpt(), new String[] {});
-                javaElements.add(createPolicyCmptMethod);
-            }
         }
     }
 

@@ -65,6 +65,26 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
         assertEquals(2, generatedJavaElements.size());
     }
 
+    public void testGetGeneratedJavaElementsForPublishedInterfaceConfiguredAbstract() throws CoreException {
+        policyCmptType.setAbstract(true);
+        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
+        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
+                policyCmptType);
+        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
+        assertEquals(1, generatedJavaElements.size());
+    }
+
+    public void testGetGeneratedJavaElementsForImplementationConfiguredAbstract() throws CoreException {
+        policyCmptType.setAbstract(true);
+        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
+
+        genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
+                policyCmptType);
+        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
+        assertEquals(1, generatedJavaElements.size());
+    }
+
     private void expectCreatePolicyCmptMethod(List<IJavaElement> javaElements, IType javaType) {
         IMethod expectedMethod = javaType.getMethod(genPolicyCmptType.getMethodNameCreatePolicyCmpt(), new String[] {});
         assertTrue(javaElements.contains(expectedMethod));

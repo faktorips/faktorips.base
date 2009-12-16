@@ -124,6 +124,11 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
                 true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
+    @Override
+    public boolean isApplicable() throws CoreException {
+        return true;
+    }
+
     /** Saves all modified <tt>IIpsSrcFile</tt>s. */
     private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
@@ -142,7 +147,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * @throws CoreException If an error occurs while searching for the source files.
      * @throws NullPointerException If <tt>ipsObjectType</tt> is <tt>null</tt>.
      */
-    protected final Set<IIpsSrcFile> findReferencingSourceFiles(IpsObjectType ipsObjectType) throws CoreException {
+    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType ipsObjectType) throws CoreException {
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);

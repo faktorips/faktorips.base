@@ -34,71 +34,57 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This is the abstract super type that all ips objects should extend.
+ * Abstract super type that all IPS objects should extend.
+ * 
+ * @author unascribed
  */
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
 
-    // The description currently attached to this ips object
+    /** The description currently attached to this <tt>IpsObject</tt> */
     private String description = ""; //$NON-NLS-1$
 
-    // Flag indicating whether this object was created from a parsable file content
+    /** Flag indicating whether this <tt>IpsObject</tt> was created from a parsable file content. */
     private boolean fromParsableFile = false;
 
     /**
-     * Creates a new ips object.
+     * Creates a new <tt>IpsObject</tt>.
      * 
-     * @param file The ips source file in which this ips object will be stored in.
+     * @param file The <tt>IIpsSrcFile</tt> in which this <tt>IpsObject</tt> will be stored in.
      */
     protected IpsObject(IIpsSrcFile file) {
-        super(file, ""); //$NON-NLS-1$
+        super(file, (file == null) ? "" : StringUtil.getFilenameWithoutExtension(file.getName()));
     }
 
-    /**
-     * Constructor for testing purposes.
-     */
+    /** Constructor for testing purposes. */
     protected IpsObject() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isFromParsableFile() {
         return fromParsableFile;
     }
 
     /**
-     * Marks the ips object as originating from an ips src file with an invalid file format.
+     * Marks the <tt>IpsObject</tt> as originating from an <tt>IIpsSrcFile</tt> with an invalid file
+     * format.
      */
     void markAsFromUnparsableFile() {
         fromParsableFile = false;
         reinitPartCollections();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObject getIpsObject() {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment getIpsPackageFragment() {
         return getIpsSrcFile().getIpsPackageFragment();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public QualifiedNameType getQualifiedNameType() {
         return new QualifiedNameType(getQualifiedName(), getIpsObjectType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
         if (folderName.equals("")) { //$NON-NLS-1$
@@ -108,33 +94,14 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return folderName + '.' + getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getUnqualifiedName() {
         return getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName() {
-        String filename = getParent().getName();
-        return StringUtil.getFilenameWithoutExtension(filename);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    // TODO AW: Seems not to be consistent with the JavaDoc?
     public IResource getCorrespondingResource() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile getIpsSrcFile() {
         if (getParent() instanceof IIpsSrcFile) {
@@ -143,9 +110,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         if (getIpsSrcFile().exists()) {
             return getIpsObjectType().getEnabledImage();
@@ -159,16 +123,10 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final boolean isDescriptionChangable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDescription(String newDescription) {
         description = newDescription;
         objectHasChanged();
@@ -176,80 +134,52 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     /**
      * This is a not published method to set the description from outside of this class without
-     * triggering the object changed event handler. It is used by TableContentsSaxHandler to load
-     * the description.
-     * 
-     * @param newDescription
+     * triggering the object changed event handler. It is used by <tt>TableContentsSaxHandler</tt>
+     * to load the description.
      */
     public void setDescriptionInternal(String newDescription) {
         description = newDescription;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Notifies the model that the object has changed.
-     */
+    /** Notifies the model that this <tt>IpsObject</tt> has changed. */
     @Override
     protected void objectHasChanged() {
         ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
         objectHasChanged(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValid() throws CoreException {
         return getValidationResultSeverity() != Message.ERROR;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IDependency[] dependsOn() throws CoreException {
         return new IDependency[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final Element createElement(Document doc) {
         return doc.createElement(getIpsObjectType().getXmlElementName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         DescriptionHelper.setDescription(element, description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element) {
         fromParsableFile = true;
         super.initFromXml(element);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         description = DescriptionHelper.getDescription(element);
@@ -258,12 +188,9 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     @Override
     public String toString() {
         if (getParent() == null) {
-            return "unnamed object"; // can only happen in test cases.  //$NON-NLS-1$
+            return "unnamed object"; // Can only happen in test cases.  //$NON-NLS-1$
         }
-
-        // ips object's name is the same as the file name, so use the
-        // parent's to string method
-        return getParent().toString();
+        return super.toString();
     }
 
     /**
@@ -280,7 +207,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(list, ipsProject);
     }
 
-    // Validates whether there is another type in the object path with the same name
+    /** Validates whether there is another type in the object path with the same name. */
     private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
@@ -307,7 +234,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(
                 getIpsObjectType(), nameToValidate));
         for (Iterator<Message> iter = mlForNameValidation.iterator(); iter.hasNext();) {
-            // Create new messages related to this object and the given property
+            // Create new messages related to this object and the given property.
             Message msg = iter.next();
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);

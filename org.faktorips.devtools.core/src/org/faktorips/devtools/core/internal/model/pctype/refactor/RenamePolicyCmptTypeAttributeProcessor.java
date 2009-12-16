@@ -80,7 +80,7 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
      * <tt>IProductCmpt</tt>s.
      */
     private void updateProductCmptReferences() throws CoreException {
-        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.PRODUCT_CMPT);
+        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
@@ -114,7 +114,7 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
      * <tt>ITestCaseType</tt>s.
      */
     private void updateTestCaseTypeReferences() throws CoreException {
-        Set<IIpsSrcFile> testCaseTypeCmptSrcFiles = findReferencingSourceFiles(IpsObjectType.TEST_CASE_TYPE);
+        Set<IIpsSrcFile> testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
@@ -154,16 +154,6 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
      */
     private IPolicyCmptType getPolicyCmptType() {
         return getPolicyCmptTypeAttribute().getPolicyCmptType();
-    }
-
-    @Override
-    public boolean isApplicable() throws CoreException {
-        for (Object element : getElements()) {
-            if (!(element instanceof IPolicyCmptTypeAttribute)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

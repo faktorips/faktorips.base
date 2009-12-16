@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
@@ -60,7 +59,7 @@ public class RenameAction extends IpsAction implements IShellProvider {
         Object selected = selection.getFirstElement();
 
         // Open refactoring wizard if supported for selection.
-        if (selected instanceof IAttribute || selected instanceof IMethod || selected instanceof IType) {
+        if (selected instanceof IAttribute || selected instanceof IType) {
             Refactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.

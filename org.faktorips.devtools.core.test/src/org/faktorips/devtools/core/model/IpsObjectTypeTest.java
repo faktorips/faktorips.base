@@ -18,9 +18,6 @@ import junit.framework.TestCase;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
-/**
- *
- */
 public class IpsObjectTypeTest extends TestCase {
 
     public void testNewObject() {
