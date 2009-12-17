@@ -118,6 +118,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
         return cellEditor;
     }
 

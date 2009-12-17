@@ -604,11 +604,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private CellEditor createCellEditor(ValueDatatype datatype, int columnIndex) {
         ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(datatype);
-        IpsCellEditor cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
+        // creates a row-creating CellEditor
+        IpsCellEditor cellEditor = valueDatatypeControlFactory.createTableCellEditor(getToolkit(), datatype, null,
                 enumValuesTableViewer, columnIndex, enumValueContainer.getIpsProject());
-        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
-                .getTraversalStrategy();
-        tableTraverseStrat.setRowCreating(true);
         return cellEditor;
     }
 
