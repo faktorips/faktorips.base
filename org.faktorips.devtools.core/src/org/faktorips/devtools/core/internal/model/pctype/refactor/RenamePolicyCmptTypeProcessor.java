@@ -24,6 +24,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
 /**
@@ -86,8 +89,6 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
     private void updateSubtypeReferences() throws CoreException {
         for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-
-            // Update supertype reference if necessary.
             if (policyCmptType.getSupertype().equals(getPolicyCmptType().getQualifiedName())) {
                 policyCmptType.setSupertype(getQualifiedNewTypeName());
                 addModifiedSrcFile(ipsSrcFile);
@@ -102,8 +103,6 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
     private void updateAssociationReferences() throws CoreException {
         for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-
-            // Update association references if any.
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptType.getPolicyCmptTypeAssociations()) {
                 if (policyCmptTypeAssociation.getTarget().equals(getPolicyCmptType().getQualifiedName())) {
                     policyCmptTypeAssociation.setTarget(getQualifiedNewTypeName());
@@ -128,8 +127,21 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
     }
 
     /** Updates all references to the <tt>IPolicyCmptType</tt> to be renamed in <tt>IMethod</tt>s. */
-    private void updateMethodParameterReferences() {
+    private void updateMethodParameterReferences() throws CoreException {
+        Set<IIpsSrcFile> cmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
+        cmptTypeSrcFiles.addAll(policyCmptTypeSrcFiles);
 
+        for (IIpsSrcFile ipsSrcFile : cmptTypeSrcFiles) {
+            IType type = (IType)ipsSrcFile.getIpsObject();
+            for (IMethod method : type.getMethods()) {
+                for (IParameter parameter : method.getParameters()) {
+                    if (parameter.getDatatype().equals(getQualifiedOriginalTypeName())) {
+                        parameter.setDatatype(getQualifiedNewTypeName());
+                        addModifiedSrcFile(ipsSrcFile);
+                    }
+                }
+            }
+        }
     }
 
     /**
