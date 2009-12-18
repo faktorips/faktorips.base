@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,152 +38,115 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
 
     // Cached QNameType
     // as QualifiedNameType is an immutable value object, we don't have any threading problems here
-    // if two threads create two qualified name types we don't have a problem as the two QNameTypes are equal.
+    // if two threads create two qualified name types we don't have a problem as the two QNameTypes
+    // are equal.
     private QualifiedNameType qualifiedNameType = null;
-    
-    /**
-     * @param parent
-     * @param name
-     */
+
     public AbstractIpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragment getIpsPackageFragment() {
         return (IIpsPackageFragment)getParent();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public final boolean isReadOnly() {
         return !isMutable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean exists() {
         try {
             IpsObjectPathEntry entry = (IpsObjectPathEntry)getIpsPackageFragment().getRoot().getIpsObjectPathEntry();
-            if (entry==null) {
+            if (entry == null) {
                 return false;
             }
             return entry.exists(getQualifiedNameType());
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public String getIpsObjectName() {
         String name = getName();
         int index = name.lastIndexOf('.');
-        return name.substring(0, index); // index==-1 can never happen for ipssrcfiles, they have a file extension!
+        return name.substring(0, index); // index==-1 can never happen for ipssrcfiles, they have a
+                                         // file extension!
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     public IResource getCorrespondingResource() {
         return getCorrespondingFile();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public QualifiedNameType getQualifiedNameType() {
-        // as QualifiedNameType is an immutable value object, we don't have any threading problems here
-        // if two threads create two qualified name types we don't have a problem as the two QNameTypes are equal.
-        if (qualifiedNameType==null) {
+        // as QualifiedNameType is an immutable value object, we don't have any threading problems
+        // here
+        // if two threads create two qualified name types we don't have a problem as the two
+        // QNameTypes are equal.
+        if (qualifiedNameType == null) {
             StringBuffer buf = new StringBuffer();
             String packageFragmentName = getIpsPackageFragment().getName();
-            if(!StringUtils.isEmpty(packageFragmentName)){
+            if (!StringUtils.isEmpty(packageFragmentName)) {
                 buf.append(getIpsPackageFragment().getName());
                 buf.append('.');
             }
-            
+
             buf.append(StringUtil.getFilenameWithoutExtension(getName()));
             qualifiedNameType = new QualifiedNameType(buf.toString(), getIpsObjectType());
         }
         return qualifiedNameType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsElement[] getChildren() throws CoreException {
         if (isContentParsable()) {
-            return new IIpsElement[]{getIpsObject()};
+            return new IIpsElement[] { getIpsObject() };
         }
-        return new IIpsElement[0]; 
+        return new IIpsElement[0];
     }
-    
-    /** 
-     * {@inheritDoc}
-     */
+
     public IIpsObject getIpsObject() throws CoreException {
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
         }
-        
+
         IpsSrcFileContent content = getContent();
         if (content == null) {
-        	throw new CoreException(new IpsStatus("Could not read content." + this)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Could not read content." + this)); //$NON-NLS-1$
         }
         return content.getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPropertyValue(String name) throws CoreException {
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get property value because file does not exist." + this)); //$NON-NLS-1$
         }
         return getContent(false).getRootPropertyValue(name);
     }
-    
+
     protected IpsSrcFileContent getContent() {
         return getContent(true);
     }
-    
+
     private IpsSrcFileContent getContent(boolean loadCompleteContent) {
         return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this, loadCompleteContent);
     }
-    
-    /** 
-     * {@inheritDoc}
-     */
+
     public boolean isContentParsable() throws CoreException {
         IpsSrcFileContent content = getContent();
-        if (content==null) {
+        if (content == null) {
             return false;
         }
         return content.isParsable();
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsSrcFile.gif"); //$NON-NLS-1$
     }
-
-
 
 }
