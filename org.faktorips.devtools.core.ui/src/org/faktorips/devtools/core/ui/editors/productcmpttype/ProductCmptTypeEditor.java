@@ -36,6 +36,7 @@ public class ProductCmptTypeEditor extends TypeEditor {
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new StructurePage(this, false));
+        addPage(new CustomIconPage(this));
     }
 
     /**
@@ -45,5 +46,6 @@ public class ProductCmptTypeEditor extends TypeEditor {
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new StructurePage(this, true));
         addPage(new BehaviourPage(this));
+        addPage(new CustomIconPage(this));
     }
 }
