@@ -64,12 +64,22 @@ public class StructurePage extends TypeEditorStructurePage {
     }
 
     private void registerContentsChangeListener() {
-        // refreshing the page after a change in the PolicyCmptType occurred is necessary since
-        // there
-        // is a dependency from attributes that are displayed in the GeneralInfoSection and the
-        // attributes respectively IpsPart that are displayed in the other sections.
+        /*
+         * Refreshing the page after a change in the PolicyCmptType occurred is necessary since
+         * there is a dependency from attributes that are displayed in the GeneralInfoSection and
+         * the attributes respectively IpsPart that are displayed in the other sections.
+         */
         final ContentsChangeListener changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
+                /*
+                 * FIXME AW: getIpsObject() returns null when this event was caused by an IpsSrcFile
+                 * rename. This happens because the rename only changes the IpsSrcFile handle it was
+                 * called on. Other IpsSrcFile handles referring to the same file are not affected.
+                 * This is a critical bug however in AbstractIpsSrcFile that needs to be addressed.
+                 */
+                if (getIpsObject() == null) {
+                    return;
+                }
                 if (getPartControl().isVisible()
                         && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
                         && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {

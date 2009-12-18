@@ -133,8 +133,8 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
         IPath pathToSourceFile = getCorrespondingResource().getFullPath();
         String newSourceFileName = newName + "." + pathToSourceFile.getFileExtension();
         setName(newSourceFileName);
-        Change renameResourceChange = new RenameResourceChange(pathToSourceFile, newSourceFileName);
 
+        Change renameResourceChange = new RenameResourceChange(pathToSourceFile, newSourceFileName);
         PerformChangeOperation op = new PerformChangeOperation(renameResourceChange);
         op.run(new NullProgressMonitor());
     }
