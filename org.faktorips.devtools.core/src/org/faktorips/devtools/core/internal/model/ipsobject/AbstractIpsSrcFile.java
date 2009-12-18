@@ -76,7 +76,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         String name = getName();
         int index = name.lastIndexOf('.');
         return name.substring(0, index); // index==-1 can never happen for ipssrcfiles, they have a
-                                         // file extension!
+        // file extension!
     }
 
     public IResource getCorrespondingResource() {
@@ -84,10 +84,11 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     public QualifiedNameType getQualifiedNameType() {
-        // as QualifiedNameType is an immutable value object, we don't have any threading problems
-        // here
-        // if two threads create two qualified name types we don't have a problem as the two
-        // QNameTypes are equal.
+        /*
+         * as QualifiedNameType is an immutable value object, we don't have any threading problems
+         * here if two threads create two qualified name types we don't have a problem as the two
+         * QNameTypes are equal.
+         */
         if (qualifiedNameType == null) {
             StringBuffer buf = new StringBuffer();
             String packageFragmentName = getIpsPackageFragment().getName();
