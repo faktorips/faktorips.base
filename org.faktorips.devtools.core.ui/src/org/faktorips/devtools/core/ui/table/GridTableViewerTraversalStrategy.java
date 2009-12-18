@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.table;
 
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
 
 public class GridTableViewerTraversalStrategy extends TableTraversalStrategy {
 
@@ -27,18 +25,17 @@ public class GridTableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        super.keyPressed(e);
-        if (e.keyCode == SWT.CR) {
-            editNextRow();
-            e.doit = false;
-        }
-    }
-
-    @Override
     protected void editCell(int rowIndex, int columnIndex) {
+        /**
+         * Grid verhindert weiteres zeilenspringen per Enter, da es bei Cell-Editor-Aufruf seine
+         * Selection NICHT verändert.
+         * <p>
+         * Fix: Selection setzen und hoffen, dass ihn das nicht durcheinander bringt...
+         */
         if (columnIndex != getColumnIndex() || rowIndex != getCurrentRow()) {
+            viewer.getGrid().setSelection(rowIndex);
             viewer.editElement(viewer.getElementAt(rowIndex), columnIndex);
+            // System.out.println("Viewer#edit(" + rowIndex + ", " + columnIndex + ") called.");
         }
     }
 
