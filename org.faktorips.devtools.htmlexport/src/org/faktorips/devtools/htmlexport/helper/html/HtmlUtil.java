@@ -12,7 +12,7 @@ public class HtmlUtil {
     public static String createDocFrame(String title, String colDefinition, String rowsDefinition) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(createHtmlHead(title));
+        builder.append(createHtmlHead(title).replaceFirst("<body>", ""));
         builder.append("<frameset cols=\"");
         builder.append(colDefinition);
         builder.append("\"><frameset rows=\"");
@@ -78,6 +78,7 @@ public class HtmlUtil {
         builder.append('<');
         builder.append(element);
         for (HtmlAttribute attribute : attributes) {
+            if (attribute == null) continue;
             builder.append(' ');
             builder.append(attribute.getName());
             builder.append("=\"");
@@ -96,16 +97,14 @@ public class HtmlUtil {
         return builder.toString();
     }
 
-    public static String createLink(String href, String text, String alt, String target, String classes) {
+    public static String createLinkOpenTag(String href, String target, String classes) {
         HtmlAttribute hrefAttr = new HtmlAttribute("href", href);
-        HtmlAttribute altAttr = new HtmlAttribute("alt", alt);
         HtmlAttribute classAttr = new HtmlAttribute("class", classes);
-        HtmlAttribute targetAttr = new HtmlAttribute("target", target);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(createHtmlElementOpenTag("a", hrefAttr, altAttr, classAttr, targetAttr));
-        builder.append(text);
-        builder.append(createHtmlElementCloseTag("a"));
+
+        HtmlAttribute targetAttr = (target == null ? null:new HtmlAttribute("target", target));
+        builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr));
 
         return builder.toString();
     }
@@ -152,13 +151,13 @@ public class HtmlUtil {
     public static String createLinkBase(IIpsElement from, IIpsElement to, LinkedFileTypes linkedFileType) {
         return getPathToRoot(from) + getPathFromRoot(to, linkedFileType);
     }
-    
+
     public static String createHtmlTable(String[][] cells, String tableClasses, String cellClasses) {
         HtmlTable table = new HtmlTable(cells, tableClasses, cellClasses);
-        
+
         return table.generate();
     }
-    
+
     public static String getHtmlText(String text) {
         return text.replaceAll("\n", "\n<br/>");
     }

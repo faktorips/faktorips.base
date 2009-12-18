@@ -14,9 +14,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
 public abstract class AbstractAllPageElement extends RootPageElement {
 
     protected IIpsElement baseIpsElement;
+    protected String linkTarget;
 
     protected final static IpsObjectFilter ALL_FILTER = new IpsObjectFilter() {
-        public boolean accept(IIpsObject object) {
+        public boolean accept(IIpsElement object) {
             return true;
         }
     };
@@ -26,7 +27,7 @@ public abstract class AbstractAllPageElement extends RootPageElement {
             return o1.getUnqualifiedName().compareTo(o2.getUnqualifiedName());
         }
     };
-    
+
     protected List<IIpsObject> objects;
     protected IpsObjectFilter filter = ALL_FILTER;
 
@@ -52,5 +53,13 @@ public abstract class AbstractAllPageElement extends RootPageElement {
             packageFragments.add(object.getIpsPackageFragment());
         }
         return packageFragments;
+    }
+
+    public String getLinkTarget() {
+        return linkTarget;
+    }
+
+    public void setLinkTarget(String linkTarget) {
+        this.linkTarget = linkTarget;
     }
 }

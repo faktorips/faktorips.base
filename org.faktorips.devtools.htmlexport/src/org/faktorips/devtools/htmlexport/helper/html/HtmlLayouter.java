@@ -40,8 +40,19 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
     }
 
     private void createLink(LinkPageElement pageElement, LayouterWrapperType wrapper, LayouterVisitingMode mode) {
-        HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW);
-        
+        String linkBase = HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW);
+        if (LayouterVisitingMode.isInitiating(mode)) {
+            if (wrapper != LayouterWrapperType.NONE) {
+                append(HtmlUtil.createHtmlElementOpenTag(getWrappingHtmlElement(wrapper), ""));
+            }
+            append(HtmlUtil.createLinkOpenTag(linkBase, pageElement.getTarget(), ""));
+        }
+        if (LayouterVisitingMode.isFinalizing(mode)) {
+            if (wrapper != LayouterWrapperType.NONE) {
+                append(HtmlUtil.createHtmlElementCloseTag(getWrappingHtmlElement(wrapper)));
+            }
+            append(HtmlUtil.createHtmlElementCloseTag("a"));
+        }
     }
 
     private void createList(ListPageElement pageElement, LayouterWrapperType wrapper, LayouterVisitingMode mode) {
@@ -72,21 +83,25 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
     private String identifyTagName(TextPageElement textPageElement) {
         return HtmlTextType.getHtmlTextTypeByTextType(textPageElement.getType()).getTagName();
     }
-    
+
     protected void append(String text, LayouterWrapperType wrapper, LayouterVisitingMode mode) {
         if (wrapper == LayouterWrapperType.NONE) {
             append(text);
             return;
         }
         String wrappingElement = getWrappingHtmlElement(wrapper);
-        if (mode != LayouterVisitingMode.FINALIZE) append(HtmlUtil.createHtmlElementOpenTag(wrappingElement));
+        if (mode != LayouterVisitingMode.FINALIZE)
+            append(HtmlUtil.createHtmlElementOpenTag(wrappingElement));
         append(text);
-        if (mode != LayouterVisitingMode.INIT) append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
+        if (mode != LayouterVisitingMode.INIT)
+            append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
     }
 
     private String getWrappingHtmlElement(LayouterWrapperType wrapper) {
-        if (wrapper == LayouterWrapperType.LISTELEMENT) return "li";
-        if (wrapper == LayouterWrapperType.TABLECELL) return "td";
+        if (wrapper == LayouterWrapperType.LISTELEMENT)
+            return "li";
+        if (wrapper == LayouterWrapperType.TABLECELL)
+            return "td";
         return "span";
     }
 }

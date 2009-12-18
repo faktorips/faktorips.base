@@ -3,7 +3,6 @@ package org.faktorips.devtools.htmlexport.generators.html;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -11,10 +10,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
-import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.pages.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
@@ -59,7 +55,8 @@ public class AllPackagesPageElement extends AbstractAllPageElement {
 
         List<PageElement> packageLinks = new ArrayList<PageElement>();
         for (IIpsPackageFragment packageFragment : packageFragments) {
-            PageElement link = new LinkPageElement(baseIpsElement, packageFragment, new TextPageElement(packageFragment.getName()));
+            if (!filter.accept(packageFragment)) continue;
+            PageElement link = new LinkPageElement(baseIpsElement, packageFragment, new TextPageElement(packageFragment.getName()), getLinkTarget());
             packageLinks.add(link);
         }
         return packageLinks;

@@ -1,27 +1,24 @@
 package org.faktorips.devtools.htmlexport.standard.generators;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 
 public class ProjectOverviewPageElement extends RootPageElement {
 
     IIpsProject project;
-    
+
     public ProjectOverviewPageElement(IIpsProject project) {
         this.project = project;
+        setTitle("Project " + project.getName());
     }
 
-    public String generateText() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(HtmlUtil.createHtmlHead("Project " + project.getName()));
-
-        String head = HtmlUtil.createHtmlElement("h1", project.getName());
-
-        builder.append(HtmlUtil.createHtmlElement("body", head));
-
-        builder.append(HtmlUtil.createHtmlElementCloseTag("html"));
-        return builder.toString();
+    @Override
+    public void build() {
+        super.build();
+        addPageElement(new TextPageElement(getTitle(), TextType.HEADING_2));
+        
+        addPageElement(new TextPageElement("Jetzt ne zündende Idee für die Projektübersicht!"));
     }
-
 }

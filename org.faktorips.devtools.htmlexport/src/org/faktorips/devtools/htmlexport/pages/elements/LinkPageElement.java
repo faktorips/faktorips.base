@@ -2,11 +2,12 @@ package org.faktorips.devtools.htmlexport.pages.elements;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.htmlexport.generators.LayouterVisitingMode;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.pages.PageElement;
 import org.faktorips.devtools.htmlexport.pages.PageElementType;
 
-public class LinkPageElement extends AbstractPageElement {
+public class LinkPageElement extends CompositePageElement {
     private IIpsElement from;
     private IIpsElement to;
     private String target;
@@ -45,12 +46,24 @@ public class LinkPageElement extends AbstractPageElement {
     }
 
     public void acceptLayouter(ILayouter layoutVisitor) {
-        // TODO Auto-generated method stub
+        acceptLayouter(layoutVisitor, LayouterWrapperType.NONE);
         
     }
 
     public void acceptLayouter(ILayouter layoutVisitor, LayouterWrapperType wrapperType) {
+        layoutVisitor.layoutPageElement(this, wrapperType, LayouterVisitingMode.INIT);
+        getText().acceptLayouter(layoutVisitor);
+        layoutVisitor.layoutPageElement(this, wrapperType, LayouterVisitingMode.FINALIZE);
+        
+    }
+
+    @Override
+    public void build() {
         // TODO Auto-generated method stub
         
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 }

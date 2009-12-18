@@ -3,7 +3,6 @@ package org.faktorips.devtools.htmlexport.pages;
 import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.LayouterVisitingMode;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.Style;
 

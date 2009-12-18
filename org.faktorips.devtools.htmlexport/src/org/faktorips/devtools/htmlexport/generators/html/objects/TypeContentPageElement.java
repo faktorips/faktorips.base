@@ -1,8 +1,6 @@
 package org.faktorips.devtools.htmlexport.generators.html.objects;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;

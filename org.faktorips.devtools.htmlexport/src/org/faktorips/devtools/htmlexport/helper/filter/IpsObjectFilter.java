@@ -1,7 +1,7 @@
 package org.faktorips.devtools.htmlexport.helper.filter;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsElement;
 
 public interface IpsObjectFilter {
-    public boolean accept(IIpsObject object);
+    public boolean accept(IIpsElement element);
 }
