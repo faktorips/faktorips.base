@@ -72,7 +72,7 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
             updateProductCmptReferences();
         }
         updateTestCaseTypeReferences();
-        changeAttributeName();
+        updateAttributeName();
     }
 
     /**
@@ -135,10 +135,10 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
     }
 
     /**
-     * Changes the name of the <tt>IPolicyCmptTypeAttribute</tt> to be refactored to the new name
+     * Updates the name of the <tt>IPolicyCmptTypeAttribute</tt> to be refactored to the new name
      * provided by the user.
      */
-    private void changeAttributeName() {
+    private void updateAttributeName() {
         getPolicyCmptTypeAttribute().setName(getNewElementName());
         addModifiedSrcFile(getPolicyCmptTypeAttribute().getIpsSrcFile());
     }

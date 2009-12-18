@@ -33,23 +33,24 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Abstract base class for pages of an ips object editor.
+ * Abstract base class for pages of an IPS object editor.
  */
 public abstract class IpsObjectEditorPage extends FormPage implements IDataChangeableReadAccessWithListenerSupport {
 
-    // The horizontal space between two sections
+    /** The horizontal space between two sections. */
     public final static int HORIZONTAL_SECTION_SPACE = 15;
 
-    // The vertical space between two sections
+    /** The vertical space between two sections. */
     public final static int VERTICAL_SECTION_SPACE = 10;
 
     private UIToolkit uiToolkit;
+
     private boolean dataChangeable = true;
 
     private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     /**
-     * Creates a new <code>IpsObjectEditorPage</code>.
+     * Creates a new <tt>IpsObjectEditorPage</tt>.
      * 
      * @param editor The editor the page belongs to.
      * @param id Page id used to identify the page.
@@ -61,23 +62,21 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         uiToolkit = new UIToolkit(new FormToolkit(Display.getCurrent()));
     }
 
-    /**
-     * Returns the <code>IpsObjectEditor</code> this page belongs to.
-     */
+    /** Returns the <tt>IpsObjectEditor</tt> this page belongs to. */
     protected IpsObjectEditor getIpsObjectEditor() {
         return (IpsObjectEditor)getEditor();
     }
 
     /**
-     * Returns the ips object of the ips src file beeing edited. Returns <code>null</code> if the
-     * src file couldn't determine the ips object (e.g. if the src file is stored outside an ips
-     * package).
+     * Returns the <tt>IIpsObject</tt> of the <tt>IIpsSrcFile</tt> being edited. Returns
+     * <tt>null</tt> if the source file couldn't determine the IPS object (e.g. if the source file
+     * is stored outside an IPS package).
      */
     protected IIpsObject getIpsObject() {
         /*
-         * null checking is necessary since it might be the case that the ips source file cannot be
-         * determined. E.g. in the special case that one tries to open an ips source file which is
-         * not in an ips package.
+         * Null checking is necessary since it might be the case that the IPS source file cannot be
+         * determined. E.g. in the special case that one tries to open an IPS source file which is
+         * not in an IPS package.
          */
         if (getIpsObjectEditor() != null && getIpsObjectEditor().getIpsSrcFile() != null
                 && getIpsObjectEditor().getIpsSrcFile().exists()) {
@@ -87,16 +86,13 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createFormContent(IManagedForm managedForm) {
         super.createFormContent(managedForm);
 
         ScrolledForm form = managedForm.getForm();
         if (getIpsObject() == null) {
-            // no valid ips src file, create nothing
+            // No valid IPS source file, create nothing.
             return;
         }
 
@@ -163,7 +159,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * @param toolkit
      * @param parent
      * @param numOfColumns Number of columns in the grid.
-     * @param equalSize Set to <code>true</code> if the columns should have the same size.
+     * @param equalSize Set to <tt>true</tt> if the columns should have the same size.
      * @param gridData
      */
     protected Composite createGridComposite(UIToolkit toolkit,
@@ -189,9 +185,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * Refreshes the page with the data from the model.
      * <p>
-     * The default implementation refreshes all ancestors that are instances of
-     * <code>IpsSection</code>. By ancestors we mean the children of the composite that represents
-     * this page and its children.
+     * The default implementation refreshes all ancestors that are instances of <tt>IpsSection</tt>.
+     * By ancestors we mean the children of the composite that represents this page and its
+     * children.
      */
     public void refresh() {
         if (!(getPartControl() instanceof Composite)) {
@@ -213,8 +209,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * Returns <code>true</code> if the content shown on this page is changeable, otherwise
-     * <code>false</code>.
+     * Returns <tt>true</tt> if the content shown on this page is changeable, otherwise
+     * <tt>false</tt>.
      */
     public boolean isDataChangeable() {
         return dataChangeable;
@@ -223,13 +219,11 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * <p>
      * Evaluates the new data changeable state and updates it, if it has changed.
-     * </p>
      * <p>
      * If the user can't change the data shown in the editor's at all, he also can't change the data
      * shown on this page. If the user can change editor's data in general, the
-     * <code>computeDataChangeableState()</code> is called to evaluate if the data shown on this
-     * page can be changed.
-     * </p>
+     * <tt>computeDataChangeableState()</tt> is called to evaluate if the data shown on this page
+     * can be changed.
      * 
      * @see #computeDataChangeableState()
      */
@@ -244,30 +238,28 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * <p>
      * Evaluates whether the data shown on this page is changeable by the user. This method does not
-     * consider the state of the ips object editor.
-     * </p>
+     * consider the state of the IPS object editor.
      * <p>
-     * The default implementation returns <code>true</code>, subclasses may override.
-     * </p>
+     * The default implementation returns <tt>true</tt>, subclasses may override.
      */
     protected boolean computeDataChangeableState() {
         return true;
     }
 
     /**
-     * Resets the data changeable state to it's default, which is <code>true</code>, so that it
-     * matches the initial state of controls which are by default enabled / editable.
+     * Resets the data changeable state to it's default, which is <tt>true</tt>, so that it matches
+     * the initial state of controls which are by default enabled / editable.
      */
     protected void resetDataChangeableState() {
         dataChangeable = true;
     }
 
     private void setDataChangeable(boolean changeable) {
-        if (changeable == this.dataChangeable) {
+        if (changeable == dataChangeable) {
             return;
         }
 
-        this.dataChangeable = changeable;
+        dataChangeable = changeable;
         uiToolkit.setDataChangeable(getPartControl(), changeable);
         if (dataChangeableStateChangeListeners == null) {
             return;
@@ -280,9 +272,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (listener == null) {
             return;
@@ -292,26 +281,20 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
             dataChangeableStateChangeListeners = new ArrayList<IDataChangeableStateChangeListener>(1);
         }
 
-        this.dataChangeableStateChangeListeners.add(listener);
+        dataChangeableStateChangeListeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (dataChangeableStateChangeListeners == null) {
             return;
         }
-
         dataChangeableStateChangeListeners.remove(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         uiToolkit.dispose();
         super.dispose();
     }
+
 }

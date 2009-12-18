@@ -65,7 +65,7 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
     @Override
     protected void refactorModel(IProgressMonitor pm) throws CoreException {
         updateProductCmptReferences();
-        changeAttributeName();
+        updateAttributeName();
     }
 
     /**
@@ -100,7 +100,7 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
      * Changes the name of the <tt>IProductCmptTypeAttribute</tt> to be refactored to the new name
      * provided by the user.
      */
-    private void changeAttributeName() {
+    private void updateAttributeName() {
         getProductCmptTypeAttribute().setName(getNewElementName());
         addModifiedSrcFile(getProductCmptTypeAttribute().getIpsSrcFile());
     }

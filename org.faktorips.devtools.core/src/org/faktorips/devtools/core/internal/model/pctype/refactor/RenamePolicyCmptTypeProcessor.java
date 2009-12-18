@@ -34,6 +34,12 @@ import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProcessor {
 
     /**
+     * Set of all potentially referencing <tt>IIpsSrcFile</tt>s that contain
+     * <tt>IPolicyCmptType</tt>s.
+     */
+    private Set<IIpsSrcFile> policyCmptTypeSrcFiles;
+
+    /**
      * Creates a <tt>RenamePolicyCmptTypeProcessor</tt>.
      * 
      * @param policyCmptType The <tt>IPolicyCmptType</tt> to be refactored.
@@ -44,12 +50,21 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
 
     @Override
     protected void refactorModel(IProgressMonitor pm) throws CoreException {
+        // Initialized here because these source files are needed in multiple helper methods.
+        policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+
+        // The policy component type to be renamed could reference itself.
+        policyCmptTypeSrcFiles.add(getPolicyCmptType().getIpsSrcFile());
+
         if (getPolicyCmptType().isConfigurableByProductCmptType()) {
             updateProductCmptTypeReference();
         }
-        updateSubtypeAndAssociationReferences();
+        updateSubtypeReferences();
+        updateAssociationReferences();
         updateTestCaseTypeReferences();
-        changeTypeName();
+        updateMethodParameterReferences();
+        updateTypeName();
+        updateSourceFileName();
     }
 
     /**
@@ -65,17 +80,10 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
     }
 
     /**
-     * Updates all sub types that inherit from the <tt>IPolicyCmptType</tt> to be renamed.
-     * <p>
-     * This operation also updates all references in associations of <tt>IPolicyCmptType</tt>s that
-     * target the <tt>IPolicyCmptType</tt> to be renamed.
+     * Updates the supertype property all sub types that inherit from the <tt>IPolicyCmptType</tt>
+     * to be renamed.
      */
-    private void updateSubtypeAndAssociationReferences() throws CoreException {
-        Set<IIpsSrcFile> policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-
-        // The policy component type to be renamed could reference itself.
-        policyCmptTypeSrcFiles.add(getPolicyCmptType().getIpsSrcFile());
-
+    private void updateSubtypeReferences() throws CoreException {
         for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
 
@@ -84,6 +92,16 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
                 policyCmptType.setSupertype(getQualifiedNewTypeName());
                 addModifiedSrcFile(ipsSrcFile);
             }
+        }
+    }
+
+    /**
+     * Updates all references in associations of <tt>IPolicyCmptType</tt>s that target the
+     * <tt>IPolicyCmptType</tt> to be renamed.
+     */
+    private void updateAssociationReferences() throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
 
             // Update association references if any.
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptType.getPolicyCmptTypeAssociations()) {
@@ -109,23 +127,39 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
         }
     }
 
+    /** Updates all references to the <tt>IPolicyCmptType</tt> to be renamed in <tt>IMethod</tt>s. */
+    private void updateMethodParameterReferences() {
+
+    }
+
     /**
-     * Changes the name of the <tt>IPolicyCmptType</tt> to be refactored to the new name provided by
+     * Updates the name of the <tt>IPolicyCmptType</tt> to be refactored to the new name provided by
      * the user.
      */
-    private void changeTypeName() {
+    private void updateTypeName() {
         getPolicyCmptType().setName(getNewElementName());
         addModifiedSrcFile(getPolicyCmptType().getIpsSrcFile());
+    }
+
+    /** Renames the <tt>IIpsSrcFile</tt> that contains the <tt>IPolicyCmptType</tt> to be renamed. */
+    private void updateSourceFileName() throws CoreException {
+        getPolicyCmptType().getIpsSrcFile().renameCorrespondingResource(getNewElementName());
     }
 
     /** Returns the new qualified name of the <tt>IPolicyCmptType</tt> to be renamed. */
     private String getQualifiedNewTypeName() {
         String newTypeName = getNewElementName();
-        if (getOriginalElementName().contains(".")) {
-            newTypeName = getOriginalElementName().substring(0, getOriginalElementName().lastIndexOf('.') + 1)
+        if (getQualifiedOriginalTypeName().contains(".")) {
+            newTypeName = getQualifiedOriginalTypeName().substring(0,
+                    getQualifiedOriginalTypeName().lastIndexOf('.') + 1)
                     + getNewElementName();
         }
         return newTypeName;
+    }
+
+    /** Returns the original qualified name of the <tt>IPolicyCmptType</tt> to be renamed. */
+    private String getQualifiedOriginalTypeName() {
+        return getPolicyCmptType().getQualifiedName();
     }
 
     /** Returns the <tt>IPolicyCmptType</tt> to be refactored. */

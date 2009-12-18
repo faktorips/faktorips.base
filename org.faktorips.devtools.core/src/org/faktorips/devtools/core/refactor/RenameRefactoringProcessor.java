@@ -93,7 +93,6 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
             status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
                     .getName()));
         }
-
         return status;
     }
 
