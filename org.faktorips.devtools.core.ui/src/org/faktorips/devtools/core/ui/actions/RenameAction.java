@@ -26,8 +26,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
@@ -60,7 +60,7 @@ public class RenameAction extends IpsAction implements IShellProvider {
 
         // Open refactoring wizard if supported for selection.
         if (selected instanceof IAttribute || selected instanceof IType) {
-            Refactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
+            RenameRefactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.
             try {

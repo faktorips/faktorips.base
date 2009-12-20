@@ -38,7 +38,13 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -187,12 +193,40 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
         generatedJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
 
-        String oldName = ipsElement.getName();
-        ipsElement.setName(getArguments().getNewName());
-        newJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
-        ipsElement.setName(oldName);
+        if (ipsElement instanceof IAttribute) {
+            initNewJavaElements((IAttribute)ipsElement, builderSet);
+        } else if (ipsElement instanceof IPolicyCmptType) {
+            initNewJavaElements((IPolicyCmptType)ipsElement, builderSet);
+        }
 
         return true;
+    }
+
+    /**
+     * Initializes the list of the <tt>IJavaElement</tt>s generated for the renamed
+     * <tt>IAttribute</tt>.
+     */
+    private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
+        String oldName = attribute.getName();
+        attribute.setName(getArguments().getNewName());
+        newJavaElements = builderSet.getGeneratedJavaElements(attribute);
+        attribute.setName(oldName);
+    }
+
+    /**
+     * Initializes the list of the <tt>IJavaElement</tt>s generated for the renamed
+     * <tt>IPolicyCmptType</tt>.
+     */
+    private void initNewJavaElements(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) {
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getArguments()
+                .getNewName()
+                + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
+        copiedPolicyCmptType.setAbstract(policyCmptType.isAbstract());
+        copiedPolicyCmptType.setConfigurableByProductCmptType(policyCmptType.isConfigurableByProductCmptType());
+        copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
+        copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
+        newJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
     }
 
     @Override

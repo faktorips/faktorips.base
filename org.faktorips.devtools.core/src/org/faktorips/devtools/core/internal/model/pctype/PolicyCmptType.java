@@ -394,11 +394,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public boolean isRenameRefactoringSupported() {
-        return true;
-    }
-
-    @Override
     public RenameRefactoring getRenameRefactoring() {
         return new RenameRefactoring(new RenamePolicyCmptTypeProcessor(this));
     }

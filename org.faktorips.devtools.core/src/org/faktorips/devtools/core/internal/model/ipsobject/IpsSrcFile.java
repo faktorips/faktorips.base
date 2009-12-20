@@ -18,12 +18,7 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
-import org.eclipse.ltk.core.refactoring.resource.RenameResourceChange;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -31,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 
 /**
@@ -125,18 +119,6 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
-    }
-
-    public void renameCorrespondingResource(String newName) throws CoreException {
-        ArgumentCheck.notNull(newName);
-
-        IPath pathToSourceFile = getCorrespondingResource().getFullPath();
-        String newSourceFileName = newName + "." + pathToSourceFile.getFileExtension();
-        setName(newSourceFileName);
-
-        Change renameResourceChange = new RenameResourceChange(pathToSourceFile, newSourceFileName);
-        PerformChangeOperation op = new PerformChangeOperation(renameResourceChange);
-        op.run(new NullProgressMonitor());
     }
 
 }

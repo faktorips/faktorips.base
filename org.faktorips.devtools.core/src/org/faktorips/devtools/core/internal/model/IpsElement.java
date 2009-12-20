@@ -197,13 +197,4 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * The default implementation always returns <tt>false</tt>.
-     */
-    public boolean isRenameRefactoringSupported() {
-        return false;
-    }
-
 }

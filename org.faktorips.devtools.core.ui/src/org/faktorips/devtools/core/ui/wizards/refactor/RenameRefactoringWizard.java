@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -40,7 +40,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public RenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+    public RenameRefactoringWizard(RenameRefactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png"));
         setChangeCreationCancelable(false);

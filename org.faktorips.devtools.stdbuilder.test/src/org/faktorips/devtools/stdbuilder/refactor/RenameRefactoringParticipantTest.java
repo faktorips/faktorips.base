@@ -206,7 +206,6 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
 
         // Refactor the policy component type.
         runRenameRefactoring(policyCmptType, "RenamedPolicy");
-
         assertFalse(getJavaType("Policy", false).exists());
         assertFalse(getJavaType("Policy", true).exists());
         assertTrue(getJavaType("RenamedPolicy", false).exists());

@@ -170,9 +170,4 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         return new RenameRefactoring(new RenameProductCmptTypeAttributeProcessor(this));
     }
 
-    @Override
-    public boolean isRenameRefactoringSupported() {
-        return true;
-    }
-
 }

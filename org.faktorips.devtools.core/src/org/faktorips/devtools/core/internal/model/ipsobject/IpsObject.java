@@ -212,7 +212,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             throws CoreException {
 
         IIpsObject otherIpsObject = ipsProject.findIpsObject(getQualifiedNameType());
-        if (otherIpsObject != this) {
+        if (otherIpsObject != null && otherIpsObject != this) {
             list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD, NLS.bind(
                     Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING, this));
         }

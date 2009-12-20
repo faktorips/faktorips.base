@@ -18,8 +18,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
@@ -105,8 +107,14 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     public final Change postCreateChange(Change[] participantChanges, IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
-        refactorModel(pm);
+        Change change = refactorModel(pm);
+        if (change != null) {
+            PerformChangeOperation op = new PerformChangeOperation(change);
+            op.run(new NullProgressMonitor());
+        }
+
         saveModifiedSourceFiles(pm);
+
         return null;
     }
 
@@ -190,12 +198,15 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /**
      * Subclass implementation that is responsible for performing the necessary changes in the
      * Faktor-IPS model.
+     * <p>
+     * This method may return a <tt>Change</tt> object that will be executed right before all
+     * modified source files will be saved. May also return <tt>null</tt>.
      * 
      * @param pm Progress monitor to report progress to if necessary.
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time.
      */
-    protected abstract void refactorModel(IProgressMonitor pm) throws CoreException;
+    protected abstract Change refactorModel(IProgressMonitor pm) throws CoreException;
 
     /**
      * Registers the given <tt>IIpsSrcFile</tt> as modified source file so it saved at the end of

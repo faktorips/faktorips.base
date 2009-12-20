@@ -172,15 +172,4 @@ public interface IIpsSrcFile extends IIpsElement {
      */
     public String getBasePackageNameForDerivedArtefacts() throws CoreException;
 
-    /**
-     * Allows to rename the resource that corresponds to this <tt>IIpsSrcFile</tt>.
-     * 
-     * @param newName The unqualified new name for the <tt>IIpsSrcFile</tt> without the file
-     *            extension.
-     * 
-     * @throws CoreException Thrown if the operation fails.
-     * @throws NullPointerException If <tt>newName</tt> is <tt>null</tt>.
-     */
-    public void renameCorrespondingResource(String newName) throws CoreException;
-
 }

@@ -392,9 +392,4 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return new RenameRefactoring(new RenamePolicyCmptTypeAttributeProcessor(this));
     }
 
-    @Override
-    public boolean isRenameRefactoringSupported() {
-        return true;
-    }
-
 }

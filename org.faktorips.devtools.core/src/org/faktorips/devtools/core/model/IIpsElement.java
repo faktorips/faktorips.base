@@ -33,9 +33,6 @@ public interface IIpsElement extends IAdaptable {
     /** Returns the element's unqualified name. */
     public String getName();
 
-    /** Sets the element's name. */
-    public void setName(String name);
-
     /** Returns the model this <tt>IIpsElement</tt> belongs to. */
     public IIpsModel getIpsModel();
 
@@ -98,15 +95,7 @@ public interface IIpsElement extends IAdaptable {
      * <tt>RenameRefactoring</tt> can be used to safely rename this <tt>IIpsElement</tt>.
      * <p>
      * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the rename refactoring.
-     * 
-     * @see #isRenameRefactoringSupported()
      */
     public RenameRefactoring getRenameRefactoring();
-
-    /**
-     * Returns <tt>true</tt> if this <tt>IIpsElement</tt> supports the rename refactoring,
-     * <tt>false</tt> if not.
-     */
-    public boolean isRenameRefactoringSupported();
 
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -67,12 +68,13 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
     }
 
     @Override
-    protected void refactorModel(IProgressMonitor pm) throws CoreException {
+    protected Change refactorModel(IProgressMonitor pm) throws CoreException {
         if (getPolicyCmptTypeAttribute().isProductRelevant()) {
             updateProductCmptReferences();
         }
         updateTestCaseTypeReferences();
         updateAttributeName();
+        return null;
     }
 
     /**
