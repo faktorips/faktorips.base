@@ -212,6 +212,12 @@
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/> 
 
+				<!-- features -->
+                <cvs module="org.faktorips.feature"/> 
+                <cvs module="org.faktorips.feature.test"/> 
+                <cvs module="org.faktorips.uml.feature"/> 
+                <cvs module="org.faktorips.uml.feature.test"/> 
+
                 <!-- customer plugins # does not work in head yet               
                 <cvs module="de.qv.faktorips"/>
                 <cvs module="de.qv.ormext.builder"/>
