@@ -61,7 +61,7 @@ public class RenamePolicyCmptTypeTest extends AbstractIpsRefactoringTest {
     }
 
     public void testRenamePolicyCmptType() {
-
+        // TODO AW: Implement test.
     }
 
 }

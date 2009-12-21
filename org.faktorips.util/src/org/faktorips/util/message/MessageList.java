@@ -48,12 +48,13 @@ public class MessageList {
         return newList;
     }
 
-    private List messages = new ArrayList(0);
+    private List<Message> messages = new ArrayList<Message>(0);
 
     /**
      * Creates an empty message list.
      */
     public MessageList() {
+
     }
 
     /**
@@ -134,9 +135,9 @@ public class MessageList {
      * @param severity
      */
     public int getNoOfMessages(int severity) {
-        List msgList = new ArrayList(messages.size());
+        List<Message> msgList = new ArrayList<Message>(messages.size());
         for (int i = 0; i < messages.size(); i++) {
-            Message msg = (Message)messages.get(i);
+            Message msg = messages.get(i);
             if (msg.getSeverity() == severity) {
                 msgList.add(msg);
             }
@@ -150,15 +151,15 @@ public class MessageList {
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public Message getMessage(int index) {
-        return (Message)messages.get(index);
+        return messages.get(index);
     }
 
     /**
      * Returns the first message with the given severity or null if none is found.
      */
     public Message getFirstMessage(int severity) {
-        for (Iterator it = messages.iterator(); it.hasNext();) {
-            Message msg = (Message)it.next();
+        for (Iterator<Message> it = messages.iterator(); it.hasNext();) {
+            Message msg = it.next();
             if (msg.getSeverity() == severity) {
                 return msg;
             }
@@ -177,7 +178,7 @@ public class MessageList {
     }
 
     /**
-     * Returns the first message in the list that has the indicacted message code. Returns null, if
+     * Returns the first message in the list that has the indicated message code. Returns null, if
      * the list does not contain such a message.
      */
     public Message getMessageByCode(String code) {
@@ -235,7 +236,7 @@ public class MessageList {
     }
 
     /**
-     * Returns a new list witht the messages in this list that belong to the given object (any
+     * Returns a new list with the messages in this list that belong to the given object (any
      * property). Returns an empty list if no such message is found.
      */
     public MessageList getMessagesFor(Object object) {
@@ -280,10 +281,25 @@ public class MessageList {
     }
 
     /**
+     * Returns a new <tt>MessageList</tt> containing only the <tt>Message</tt>s with the indicated
+     * severity.
+     */
+    public MessageList getMessages(int severity) {
+        MessageList messageList = new MessageList();
+        for (Message message : messages) {
+            if (message.getSeverity() == severity) {
+                messageList.add(message);
+            }
+        }
+        return messageList;
+    }
+
+    /**
      * Returns all messages in the list separated by a line separator. Overridden method.
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < getNoOfMessages(); i++) {
@@ -299,6 +315,7 @@ public class MessageList {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof MessageList)) {
             return false;
@@ -308,7 +325,7 @@ public class MessageList {
             return false;
         }
         for (int i = 0; i < other.getNoOfMessages(); i++) {
-            if (!this.messages.get(i).equals(other.messages.get(i))) {
+            if (!messages.get(i).equals(other.messages.get(i))) {
                 return false;
             }
         }
@@ -316,17 +333,14 @@ public class MessageList {
     }
 
     /**
-     * clear l�scht alle Elemente der Liste
-     * 
+     * Deletes all messages this list contains.
      */
     public void clear() {
         messages.clear();
     }
 
     /**
-     * Liefert einen iterator, mit dessen Hilfe man �ber die vorhandene Liste iterieren kann
-     * 
-     * @return Iterator
+     * Returns an <tt>Iterator</tt>.
      */
     public Iterator iterator() {
         return messages.iterator();

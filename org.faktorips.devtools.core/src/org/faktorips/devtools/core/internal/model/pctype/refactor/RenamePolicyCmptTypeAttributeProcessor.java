@@ -20,9 +20,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -33,6 +35,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This is the "Rename Policy Component Type Attribute" - refactoring.
@@ -48,6 +51,37 @@ public final class RenamePolicyCmptTypeAttributeProcessor extends RenameRefactor
      */
     public RenamePolicyCmptTypeAttributeProcessor(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         super(policyCmptTypeAttribute);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Applies the new name to the <tt>IPolicyCmptTypeAttribute</tt> and performs a validation. Any
+     * validation messages will be added to the <tt>RefactoringStatus</tt> that will be returned by
+     * this operation.
+     */
+    @Override
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+            throws CoreException, OperationCanceledException {
+
+        RefactoringStatus status = new RefactoringStatus();
+        /*
+         * TODO AW: Stop broadcasting change events would be good for name changing here, make it
+         * published?
+         */
+        getPolicyCmptTypeAttribute().setName(getNewElementName());
+
+        IIpsProject ipsProject = getPolicyCmptTypeAttribute().getIpsProject();
+        MessageList validationMessageList = getPolicyCmptTypeAttribute().validate(ipsProject);
+        validationMessageList.add(getPolicyCmptType().validate(ipsProject));
+        addValidationMessagesToStatus(validationMessageList, status);
+
+        getPolicyCmptTypeAttribute().setName(getOriginalElementName());
+
+        // The source file was not really modified.
+        getPolicyCmptTypeAttribute().getIpsSrcFile().markAsClean();
+
+        return status;
     }
 
     @Override

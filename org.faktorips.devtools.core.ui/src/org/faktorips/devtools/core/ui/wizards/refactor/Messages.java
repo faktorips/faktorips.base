@@ -30,7 +30,7 @@ public class Messages extends NLS {
 
     public static String RenamePage_msgNewNameEmpty;
     public static String RenamePage_msgNewNameEqualsElementName;
-    public static String RenamePage_msgDuplicateAttribute;
+    public static String RenamePage_msgSourceFileAlreadyExists;
 
     static {
         // initialize resource bundle

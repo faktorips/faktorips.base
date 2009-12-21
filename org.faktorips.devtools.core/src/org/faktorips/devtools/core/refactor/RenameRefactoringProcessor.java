@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +37,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This is the abstract base class for all Faktor-IPS rename refactorings.
@@ -78,14 +81,59 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         modifiedSrcFiles = new HashSet<IIpsSrcFile>();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Default implementation does nothing and returns an empty <tt>RefactoringStatus</tt>. Should
+     * be overwritten by subclasses in most cases.
+     */
     @Override
     public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
 
-        // TODO AW: check final condition valid IPS element in subclasses.
         return new RefactoringStatus();
     }
 
+    /**
+     * Adds an entry to the provided <tt>RefactoringStatus</tt> for every messages contained in the
+     * provided <tt>MessageList</tt>.
+     * <p>
+     * May be overwritten by subclasses, e.g. if validation messages with certain message codes
+     * shall not be added to the <tt>RefactoringStatus</tt>.
+     * 
+     * @param validationMessageList The <tt>MessageList</tt> from that messages shall be added to
+     *            the <tt>RefactoringStatus</tt>.
+     * @param status The <tt>RefactoringStatus</tt> to add entries to.
+     * 
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     */
+    @SuppressWarnings("unchecked")
+    // Can't do anything against warning from MessageList#iterator().
+    protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
+        ArgumentCheck.notNull(new Object[] { validationMessageList, status });
+
+        for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
+            Message message = it.next();
+            switch (message.getSeverity()) {
+                case Message.ERROR:
+                    status.addFatalError(message.getText());
+                    break;
+                case Message.WARNING:
+                    status.addWarning(message.getText());
+                    break;
+                case Message.INFO:
+                    status.addInfo(message.getText());
+                    break;
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Default implementation checks that the <tt>IIpsElement</tt> to be renamed exists. May be
+     * overwritten by subclasses.
+     */
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
@@ -98,8 +146,14 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         return status;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Default implementation does nothing and returns <tt>null</tt>, may be overwritten by
+     * subclasses if any changes need to be done before any refactoring participants are called.
+     */
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
         return null;
     }
 
@@ -201,6 +255,13 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * <p>
      * This method may return a <tt>Change</tt> object that will be executed right before all
      * modified source files will be saved. May also return <tt>null</tt>.
+     * <p>
+     * Note that anything implemented in this operation will be performed after processing all
+     * refactoring participants, e.g. source code refactoring. If any changes must be performed
+     * before refactoring participants are called it must be done by overwriting
+     * <tt>createChange(IProgressMonitor)</tt>.
+     * 
+     * @see #createChange(IProgressMonitor)
      * 
      * @param pm Progress monitor to report progress to if necessary.
      * 

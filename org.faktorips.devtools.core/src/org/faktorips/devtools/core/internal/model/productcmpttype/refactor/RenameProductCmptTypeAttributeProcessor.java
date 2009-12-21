@@ -20,15 +20,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This is the "Rename Product Component Type Attribute" - refactoring.
@@ -44,6 +47,37 @@ public final class RenameProductCmptTypeAttributeProcessor extends RenameRefacto
      */
     public RenameProductCmptTypeAttributeProcessor(IProductCmptTypeAttribute productCmptTypeAttribute) {
         super(productCmptTypeAttribute);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Applies the new name to the <tt>IProductCmptTypeAttribute</tt> and performs a validation. Any
+     * validation messages will be added to the <tt>RefactoringStatus</tt> that will be returned by
+     * this operation.
+     */
+    @Override
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+            throws CoreException, OperationCanceledException {
+
+        RefactoringStatus status = new RefactoringStatus();
+        /*
+         * TODO AW: Stop broadcasting change events would be good for name changing here, make it
+         * published?
+         */
+        getProductCmptTypeAttribute().setName(getNewElementName());
+
+        IIpsProject ipsProject = getProductCmptTypeAttribute().getIpsProject();
+        MessageList validationMessageList = getProductCmptTypeAttribute().validate(ipsProject);
+        validationMessageList.add(getProductCmptType().validate(ipsProject));
+        addValidationMessagesToStatus(validationMessageList, status);
+
+        getProductCmptTypeAttribute().setName(getOriginalElementName());
+
+        // The source file was not really modified.
+        getProductCmptTypeAttribute().getIpsSrcFile().markAsClean();
+
+        return status;
     }
 
     @Override

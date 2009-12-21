@@ -13,13 +13,17 @@
 
 package org.faktorips.devtools.core.internal.model.pctype.refactor;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -32,6 +36,9 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This is the "Rename Policy Component Type" - refactoring.
@@ -46,6 +53,9 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
      */
     private Set<IIpsSrcFile> policyCmptTypeSrcFiles;
 
+    /** New <tt>IIpsSrcFile</tt> containing a copy of the <tt>IPolicyCmptType</tt> to be renamed. */
+    private IIpsSrcFile copiedIpsSrcFile;
+
     /**
      * Creates a <tt>RenamePolicyCmptTypeProcessor</tt>.
      * 
@@ -53,6 +63,89 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
      */
     public RenamePolicyCmptTypeProcessor(IPolicyCmptType policyCmptType) {
         super(policyCmptType);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The source file of the <tt>IPolicyCmptType</tt> to be renamed will be copied this early.
+     * Based on that new source file and on the copied <tt>IPolicyCmptType</tt> validation is
+     * performed. If the validation fails the copy will be deleted so everything is left in a clean
+     * state (as it was before). If only a warning or information validation message results the
+     * copy must also be deleted and recreated later if the user really starts the refactoring.
+     */
+    @Override
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+            throws CoreException, OperationCanceledException {
+
+        RefactoringStatus status = new RefactoringStatus();
+        try {
+            copyToNewSourceFile(pm);
+        } catch (CoreException e) {
+            status.addFatalError(e.getLocalizedMessage());
+            return status;
+        }
+        IPolicyCmptType copiedPolicyCmptType = (IPolicyCmptType)copiedIpsSrcFile.getIpsObject();
+
+        MessageList validationMessageList = copiedPolicyCmptType.validate(copiedPolicyCmptType.getIpsProject());
+        addValidationMessagesToStatus(validationMessageList, status);
+
+        if (status.getEntries().length > 0) {
+            copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
+            copiedIpsSrcFile = null;
+        }
+
+        return status;
+    }
+
+    @SuppressWarnings("unchecked")
+    // Can't do anything against warning from MessageList#iterator().
+    @Override
+    protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
+        ArgumentCheck.notNull(new Object[] { validationMessageList, status });
+
+        for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
+            Message message = it.next();
+            switch (message.getSeverity()) {
+                case Message.ERROR:
+                    /*
+                     * The product component type is of course configuring the original policy
+                     * component type still.
+                     */
+                    if (!(message.getCode()
+                            .equals(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE))) {
+                        status.addFatalError(message.getText());
+                    }
+                    break;
+                case Message.WARNING:
+                    status.addWarning(message.getText());
+                    break;
+                case Message.INFO:
+                    status.addInfo(message.getText());
+                    break;
+            }
+        }
+    }
+
+    /** Copies the <tt>IPolicyCmptType</tt> to be renamed into a new source file with the new name. */
+    private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
+        IPath destinationPath = getCorrespondingResource().getFullPath();
+        destinationPath = destinationPath.removeLastSegments(1);
+        destinationPath = destinationPath.append(getNewElementName() + "."
+                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+
+        getCorrespondingResource().copy(destinationPath, true, pm);
+
+        copiedIpsSrcFile = getPolicyCmptType().getIpsPackageFragment().getIpsSrcFile(
+                getNewElementName() + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+    }
+
+    @Override
+    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+        if (copiedIpsSrcFile == null) {
+            copyToNewSourceFile(pm);
+        }
+        return null;
     }
 
     @Override
@@ -70,7 +163,6 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
         updateAssociationReferences();
         updateTestCaseTypeReferences();
         updateMethodParameterReferences();
-        copyToNewSourceFile(pm);
 
         return deleteSourceFile();
     }
@@ -147,15 +239,6 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
                 }
             }
         }
-    }
-
-    /** Copies the <tt>IPolicyCmptType</tt> to be renamed into a new source file with the new name. */
-    private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
-        IPath destinationPath = getCorrespondingResource().getFullPath();
-        destinationPath = destinationPath.removeLastSegments(1);
-        destinationPath = destinationPath.append(getNewElementName() + "."
-                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
-        getCorrespondingResource().copy(destinationPath, true, pm);
     }
 
     /**

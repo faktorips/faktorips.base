@@ -36,6 +36,13 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFile {
 
+    /**
+     * Cached QNameType as QualifiedNameType is an immutable value object, we don't have any
+     * threading problems here if two threads create two qualified name types we don't have a
+     * problem as the two QNameTypes are equal.
+     */
+    private QualifiedNameType qualifiedNameType = null;
+
     public AbstractIpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
@@ -79,25 +86,22 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
 
     public QualifiedNameType getQualifiedNameType() {
         /*
-         * TODO AW: I don't know if the following comment is true any longer because I needed to
-         * remove the cache. It is possible now for an IpsSrcFile to be renamed. So
-         * QualifiedNameType might change. But basically it shouldn't make any problems. Remove this
-         * comment if no problems occurred after some time. This comment was created 18.12.2009.
-         */
-        /*
          * As QualifiedNameType is an immutable value object, we don't have any threading problems
          * here if two threads create two qualified name types we don't have a problem as the two
          * QNameTypes are equal.
          */
-        StringBuffer buf = new StringBuffer();
-        String packageFragmentName = getIpsPackageFragment().getName();
-        if (!StringUtils.isEmpty(packageFragmentName)) {
-            buf.append(getIpsPackageFragment().getName());
-            buf.append('.');
-        }
+        if (qualifiedNameType == null) {
+            StringBuffer buf = new StringBuffer();
+            String packageFragmentName = getIpsPackageFragment().getName();
+            if (!StringUtils.isEmpty(packageFragmentName)) {
+                buf.append(getIpsPackageFragment().getName());
+                buf.append('.');
+            }
 
-        buf.append(StringUtil.getFilenameWithoutExtension(getName()));
-        return new QualifiedNameType(buf.toString(), getIpsObjectType());
+            buf.append(StringUtil.getFilenameWithoutExtension(getName()));
+            qualifiedNameType = new QualifiedNameType(buf.toString(), getIpsObjectType());
+        }
+        return qualifiedNameType;
     }
 
     @Override

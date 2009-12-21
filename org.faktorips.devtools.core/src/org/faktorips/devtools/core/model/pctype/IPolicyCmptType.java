@@ -141,16 +141,6 @@ public interface IPolicyCmptType extends IType {
     public boolean hasSupertype();
 
     /**
-     * Returns the type's supertype if the type is based on a supertype and the supertype can be
-     * found on the project's ips object path. Returns <code>null</code> if either this type is not
-     * based on a supertype or the supertype can't be found on the project's ips object path.
-     * 
-     * @param ipsProject TODO
-     * 
-     * @throws CoreException if an error occurs while searching for the supertype.
-     */
-    // public IPolicyCmptType findSupertype(IIpsProject ipsProject) throws CoreException;
-    /**
      * Sets the type's supertype.
      * 
      * @throws IllegalArgumentException if newSupertype is null.

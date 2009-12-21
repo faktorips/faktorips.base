@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
@@ -22,6 +24,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -84,9 +88,6 @@ class RenamePage extends UserInputWizardPage {
                 String text = newNameTextField.getText();
                 try {
                     boolean valid = validateNewName(text);
-                    if (valid) {
-                        setErrorMessage(null);
-                    }
                     setPageComplete(valid);
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
@@ -100,50 +101,82 @@ class RenamePage extends UserInputWizardPage {
 
     /** Validates the new name provided by the user. */
     private boolean validateNewName(String newName) throws CoreException {
-        boolean valid = true;
+        // Reset any messages.
+        setErrorMessage(null);
+        setMessage(null, WARNING);
+        setMessage(null, INFORMATION);
+
         if (newName.length() < 1) {
-            valid = false;
             setErrorMessage(Messages.RenamePage_msgNewNameEmpty);
+            return false;
 
         } else if (newName.equals(ipsElement.getName())) {
-            valid = false;
             setErrorMessage(Messages.RenamePage_msgNewNameEqualsElementName);
+            return false;
 
         } else {
-            /*
-             * TODO AW: Stop broadcasting change events would be good for name changing here, make
-             * it published?
-             */
             MessageList validationMessageList = new MessageList();
-            String oldName = ipsElement.getName();
+
             if (ipsElement instanceof IAttribute) {
                 IAttribute attribute = (IAttribute)ipsElement;
+                String originalName = attribute.getName();
+
                 attribute.setName(newName);
                 validationMessageList = attribute.validate(attribute.getIpsProject());
                 validationMessageList.add(attribute.getType().validate(attribute.getIpsProject()));
-                attribute.setName(oldName);
+
+                attribute.setName(originalName);
+
+                // The source file was not really modified.
                 attribute.getIpsSrcFile().markAsClean();
 
             } else if (ipsElement instanceof IType) {
-                // TODO AW
+                /*
+                 * Can't validate because for type validation the type's source file must be copied.
+                 * Validation will still be performed during final condition checking so it should
+                 * be OK.
+                 */
+                IType type = (IType)ipsElement;
+                IIpsPackageFragment fragment = type.getIpsPackageFragment();
+                // Check if there is already a source file with the new name.
+                for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+                    String sourceFileName = ipsSrcFile.getName();
+                    String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
+                    if (relevantNamePart.equals(newName)) {
+                        setErrorMessage(NLS.bind(Messages.RenamePage_msgSourceFileAlreadyExists, newName, fragment
+                                .getName()));
+                        return false;
+                    }
+                }
             }
-            valid = evaluateValidation(validationMessageList);
-        }
 
-        return valid;
+            return evaluateValidation(validationMessageList);
+        }
     }
 
-    /**
-     * Evaluates the given <tt>MessageList</tt> - if any error message is contained it will be used
-     * as error message for this page.
-     */
+    /** Evaluates the given <tt>MessageList</tt> by setting appropriate page messages. */
+    @SuppressWarnings("unchecked")
+    // Can't do anything against warning from MessageList#iterator()
     private boolean evaluateValidation(MessageList validationMessageList) {
-        Message possibleErrorMessage = validationMessageList.getFirstMessage(Message.ERROR);
-        if (!(possibleErrorMessage == null)) {
-            setErrorMessage(possibleErrorMessage.getText());
-            return false;
+        boolean valid = true;
+        for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
+            Message message = it.next();
+            switch (message.getSeverity()) {
+                case Message.ERROR:
+                    setErrorMessage(message.getText());
+                    valid = false;
+                    break;
+                case Message.WARNING:
+                    setMessage(message.getText(), WARNING);
+                    break;
+                case Message.INFO:
+                    setMessage(message.getText(), INFORMATION);
+                    break;
+                default:
+                    break;
+            }
         }
-        return true;
+        return valid;
     }
 
     @Override

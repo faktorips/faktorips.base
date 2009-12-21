@@ -218,14 +218,26 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
      * <tt>IPolicyCmptType</tt>.
      */
     private void initNewJavaElements(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) {
+        /*
+         * Creating an in-memory-only source file for an in-memory-only policy component type that
+         * can be passed to the builder to obtain the generated Java elements for.
+         */
         IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getArguments()
                 .getNewName()
                 + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
+
+        /*
+         * TODO AW: I think this could lead to bugs in the future easily. If other properties are
+         * added to policy component type's this code must be updated, too. It is very likely that
+         * this won't be done, so this code should be moved. Actually I don't really know where and
+         * to put that code.
+         */
         copiedPolicyCmptType.setAbstract(policyCmptType.isAbstract());
         copiedPolicyCmptType.setConfigurableByProductCmptType(policyCmptType.isConfigurableByProductCmptType());
         copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
         copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
+
         newJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
     }
 

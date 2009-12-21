@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
@@ -32,8 +31,8 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
@@ -59,7 +58,7 @@ public class RenameAction extends IpsAction implements IShellProvider {
         Object selected = selection.getFirstElement();
 
         // Open refactoring wizard if supported for selection.
-        if (selected instanceof IAttribute || selected instanceof IType) {
+        if (selected instanceof IAttribute || selected instanceof IPolicyCmptType) {
             RenameRefactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.
@@ -71,8 +70,6 @@ public class RenameAction extends IpsAction implements IShellProvider {
                                     + status.getEntryWithHighestSeverity().getMessage());
                     return;
                 }
-            } catch (OperationCanceledException e) {
-                throw new RuntimeException(e);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
