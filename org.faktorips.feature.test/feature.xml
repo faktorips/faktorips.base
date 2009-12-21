@@ -807,4 +807,18 @@ schutz” abgerufen und ausgedruckt werden.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.faktorips.devtools.core.ui.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.devtools.tableconversion.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
