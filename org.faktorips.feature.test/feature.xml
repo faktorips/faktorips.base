@@ -794,7 +794,32 @@ schutz” abgerufen und ausgedruckt werden.
    </requires>
 
    <plugin
+         id="org.faktorips.devtools.stdbuilder.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.devtools.core.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.devtools.core.ui.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
          id="org.faktorips.devtools.ant.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.devtools.tableconversion.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
