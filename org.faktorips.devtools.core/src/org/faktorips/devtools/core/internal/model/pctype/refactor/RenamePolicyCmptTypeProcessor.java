@@ -162,6 +162,7 @@ public final class RenamePolicyCmptTypeProcessor extends RenameRefactoringProces
         updateSubtypeReferences();
         updateAssociationReferences();
         updateTestCaseTypeReferences();
+        // TODO AW: Attributes of test case type parameters must also be updated.
         updateMethodParameterReferences();
 
         return deleteSourceFile();
