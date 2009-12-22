@@ -132,7 +132,6 @@ initDefaultParameter()
   # etc
   DEFAULT_CVS_ROOT='/usr/local/cvsroot'
   DEFAULT_ANT_HOME=${DEFAULT_ANT_HOME:-'/opt/cc/apache-ant-1.6.5'}
-  # jre: /usr/lib/jvm/ia32-java-1.5.0-sun/jre
   DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/java-1.5.0-sun'}
   CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 

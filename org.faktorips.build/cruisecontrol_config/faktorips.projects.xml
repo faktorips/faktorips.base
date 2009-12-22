@@ -186,8 +186,7 @@
             testmerge="*test.xml"
             scheduleintervall="300"> 
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
-            <jvmarg arg="-Xms124m"/>
-            <jvmarg arg="-Xmx512m"/>
+            <jvmarg arg="-Xmx600m"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
                 <cvs module="org.faktorips.util"/>
@@ -237,8 +236,7 @@
             cvsmodul="org.faktorips.pluginbuilder"
             scheduleintervall="300"> 
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
-            <jvmarg arg="-Xms124m"/>
-            <jvmarg arg="-Xmx512m"/>
+            <jvmarg arg="-Xmx600m"/>
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvsTag" value="v2_2_patches"/>
@@ -282,8 +280,7 @@
             cvsmodul="org.faktorips.pluginbuilder"
             scheduleintervall="300"> 
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
-            <jvmarg arg="-Xms124m"/>
-            <jvmarg arg="-Xmx512m"/>
+            <jvmarg arg="-Xmx600m"/>
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch_2_3"/>
             <property name="cvsTag" value="v2_3_patches"/>
@@ -326,8 +323,7 @@
             cvsmodul="org.faktorips.pluginbuilder"
             scheduleintervall="300"> 
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
-            <jvmarg arg="-Xms124m"/>
-            <jvmarg arg="-Xmx512m"/>
+            <jvmarg arg="-Xmx600m"/>
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch_2_4"/>
             <property name="cvsTag" value="v2_4_patches"/>
