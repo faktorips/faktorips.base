@@ -17,7 +17,7 @@ import org.faktorips.devtools.htmlexport.generators.html.objects.AbstractObjectC
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.pages.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
 import org.faktorips.devtools.htmlexport.standard.generators.ProjectOverviewPageElement;

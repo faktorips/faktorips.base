@@ -1,4 +1,7 @@
-package org.faktorips.devtools.htmlexport.helper.html.path;
+package org.faktorips.devtools.htmlexport.helper.path;
+
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 public enum LinkedFileTypes {
     PACKAGE_CLASSES_OVERVIEW("package_classes_", ".html", "classes"),
@@ -26,4 +29,8 @@ public enum LinkedFileTypes {
         return target;
     }
 
+    public static LinkedFileTypes getLinkedFileTypeByIpsElement(IIpsElement element) {
+        if (element instanceof IIpsPackageFragment) return PACKAGE_CLASSES_OVERVIEW;
+        return CLASS_CONTENT;
+    }
 }

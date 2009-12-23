@@ -3,9 +3,9 @@ package org.faktorips.devtools.htmlexport.helper.html;
 import java.util.Collection;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.htmlexport.helper.html.path.IpsElementPathUtil;
-import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
-import org.faktorips.devtools.htmlexport.helper.html.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 public class HtmlUtil {
 

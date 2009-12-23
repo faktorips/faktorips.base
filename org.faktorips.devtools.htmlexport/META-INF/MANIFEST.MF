@@ -19,5 +19,5 @@ Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.documentor,
  org.faktorips.devtools.htmlexport.generators,
  org.faktorips.devtools.htmlexport.helper.html,
- org.faktorips.devtools.htmlexport.helper.html.path,
+ org.faktorips.devtools.htmlexport.helper.path,
  org.faktorips.devtools.htmlexport.standard

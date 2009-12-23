@@ -5,7 +5,7 @@ import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayouterVisitingMode;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
-import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.pages.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
@@ -40,7 +40,8 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
     }
 
     private void createLink(LinkPageElement pageElement, LayouterWrapperType wrapper, LayouterVisitingMode mode) {
-        String linkBase = HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW);
+        String linkBase = HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes.getLinkedFileTypeByIpsElement(pageElement.getTo()));
+        
         if (LayouterVisitingMode.isInitiating(mode)) {
             if (wrapper != LayouterWrapperType.NONE) {
                 append(HtmlUtil.createHtmlElementOpenTag(getWrappingHtmlElement(wrapper), ""));

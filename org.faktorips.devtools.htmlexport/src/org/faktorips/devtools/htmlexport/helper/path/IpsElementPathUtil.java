@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.helper.html.path;
+package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 
