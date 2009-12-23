@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.faktorips.devtools.htmlexport.test
 Bundle-Version: 1.0.0
 Bundle-Activator: org.faktorips.devtools.htmlexport.test.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.faktorips.devtools.htmlexport;bundle-version="1.0.0",
+ org.faktorips.devtools.htmlexport;bundle-version="0.0.0",
  org.faktorips.devtools.core.test;bundle-version="0.0.0",
  org.faktorips.devtools.core
 Bundle-ActivationPolicy: lazy

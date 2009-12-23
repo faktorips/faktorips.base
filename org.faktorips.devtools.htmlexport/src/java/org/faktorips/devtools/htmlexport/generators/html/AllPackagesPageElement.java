@@ -56,7 +56,7 @@ public class AllPackagesPageElement extends AbstractAllPageElement {
         List<PageElement> packageLinks = new ArrayList<PageElement>();
         for (IIpsPackageFragment packageFragment : packageFragments) {
             if (!filter.accept(packageFragment)) continue;
-            PageElement link = new LinkPageElement(baseIpsElement, packageFragment, new TextPageElement(getPackageName(packageFragment)), getLinkTarget());
+            PageElement link = new LinkPageElement(baseIpsElement, packageFragment, getLinkTarget(), new TextPageElement(getPackageName(packageFragment)));
             packageLinks.add(link);
         }
         return packageLinks;

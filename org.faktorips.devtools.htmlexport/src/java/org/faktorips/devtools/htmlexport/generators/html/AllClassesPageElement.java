@@ -43,7 +43,7 @@ public class AllClassesPageElement extends AbstractAllPageElement {
         List<PageElement> items = new ArrayList<PageElement>(); 
         for (IIpsObject object : objects) {
             if (!filter.accept(object)) continue;
-            PageElement link = new LinkPageElement(baseIpsElement, object, new TextPageElement(object.getName()), getLinkTarget());
+            PageElement link = new LinkPageElement(baseIpsElement, object, getLinkTarget(), new TextPageElement(object.getName()));
             items.add(link);
         }
         return items;

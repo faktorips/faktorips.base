@@ -7,26 +7,21 @@ public class LinkPageElement extends AbstractCompositePageElement {
     private IIpsElement from;
     private IIpsElement to;
     private String target;
-    private PageElement text;
 
-    public LinkPageElement(IIpsElement from, IIpsElement to, PageElement text, String target) {
+    public LinkPageElement(IIpsElement from, IIpsElement to, String target, PageElement... pageElements) {
         super();
         this.from = from;
         this.to = to;
-        this.text = text;
         this.target = target;
+        addPageElements(pageElements);
     }
 
-    public LinkPageElement(IIpsElement from, IIpsElement to, PageElement text) {
-        this(from, to, text, null);
+    public LinkPageElement(IIpsElement from, IIpsElement to, PageElement...pageElements) {
+        this(from, to, null, pageElements);
     }
 
     public String getTarget() {
         return target;
-    }
-
-    public PageElement getText() {
-        return text;
     }
 
     public IIpsElement getFrom() {
