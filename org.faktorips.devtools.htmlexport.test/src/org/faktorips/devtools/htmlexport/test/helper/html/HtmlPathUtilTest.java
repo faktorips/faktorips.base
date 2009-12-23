@@ -5,7 +5,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.helper.html.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
 
 public class HtmlPathUtilTest extends AbstractFipsDocTest {
