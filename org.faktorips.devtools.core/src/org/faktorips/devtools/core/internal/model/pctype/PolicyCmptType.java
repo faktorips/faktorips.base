@@ -27,9 +27,9 @@ import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.pctype.refactor.RenamePolicyCmptTypeProcessor;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
+import org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -395,7 +395,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public RenameRefactoring getRenameRefactoring() {
-        return new RenameRefactoring(new RenamePolicyCmptTypeProcessor(this));
+        return new RenameRefactoring(new RenameTypeProcessor(this));
     }
 
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {

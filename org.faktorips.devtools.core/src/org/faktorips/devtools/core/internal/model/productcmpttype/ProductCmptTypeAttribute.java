@@ -16,11 +16,9 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpttype.refactor.RenameProductCmptTypeAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -163,11 +161,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
-    }
-
-    @Override
-    public RenameRefactoring getRenameRefactoring() {
-        return new RenameRefactoring(new RenameProductCmptTypeAttributeProcessor(this));
     }
 
 }

@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.pctype.refactor;
+package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
-public class RenamePolicyCmptTypeTest extends AbstractIpsRefactoringTest {
+public class RenameTypeTest extends AbstractIpsRefactoringTest {
 
     private static final String POLICY_NAME = "Policy";
 

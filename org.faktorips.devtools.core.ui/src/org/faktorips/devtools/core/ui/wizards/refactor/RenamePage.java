@@ -118,53 +118,57 @@ class RenamePage extends UserInputWizardPage {
             MessageList validationMessageList = new MessageList();
 
             if (ipsElement instanceof IAttribute) {
-                IAttribute attribute = (IAttribute)ipsElement;
-                String originalName = attribute.getName();
-
-                attribute.setName(newName);
-                validationMessageList = attribute.validate(attribute.getIpsProject());
-                validationMessageList.add(attribute.getType().validate(attribute.getIpsProject()));
-
-                attribute.setName(originalName);
-
-                // The source file was not really modified.
-                attribute.getIpsSrcFile().markAsClean();
-
+                validateNewName((IAttribute)ipsElement, newName, validationMessageList);
             } else if (ipsElement instanceof IType) {
-                /*
-                 * Can't validate because for type validation the type's source file must be copied.
-                 * Validation will still be performed during final condition checking so it should
-                 * be OK.
-                 */
-                IType type = (IType)ipsElement;
-                IIpsPackageFragment fragment = type.getIpsPackageFragment();
-                // Check if there is already a source file with the new name.
-                for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
-                    String sourceFileName = ipsSrcFile.getName();
-                    String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
-                    if (relevantNamePart.equals(newName)) {
-                        setErrorMessage(NLS.bind(Messages.RenamePage_msgSourceFileAlreadyExists, newName, fragment
-                                .getName()));
-                        return false;
-                    }
-                }
+                validateNewName((IType)ipsElement, newName, validationMessageList);
             }
 
-            return evaluateValidation(validationMessageList);
+            evaluateValidation(validationMessageList);
+            return getErrorMessage() == null;
+        }
+    }
+
+    /** Validates the new name for an <tt>IAttribute</tt>. */
+    private void validateNewName(IAttribute attribute, String newName, MessageList validationMessageList)
+            throws CoreException {
+
+        String originalName = attribute.getName();
+
+        attribute.setName(newName);
+        validationMessageList = attribute.validate(attribute.getIpsProject());
+        validationMessageList.add(attribute.getType().validate(attribute.getIpsProject()));
+
+        attribute.setName(originalName);
+
+        // The source file was not really modified.
+        attribute.getIpsSrcFile().markAsClean();
+    }
+
+    /** Validates the new name for an <tt>IType</tt>. */
+    private void validateNewName(IType type, String newName, MessageList validationMessageList) throws CoreException {
+        /*
+         * Can't validate because for type validation the type's source file must be copied.
+         * Validation will still be performed during final condition checking so it should be OK. We
+         * still check if there is already a source file with the new name in this package however.
+         */
+        IIpsPackageFragment fragment = type.getIpsPackageFragment();
+        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+            String sourceFileName = ipsSrcFile.getName();
+            String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
+            if (relevantNamePart.equals(newName)) {
+                setErrorMessage(NLS.bind(Messages.RenamePage_msgSourceFileAlreadyExists, newName, fragment.getName()));
+                break;
+            }
         }
     }
 
     /** Evaluates the given <tt>MessageList</tt> by setting appropriate page messages. */
-    @SuppressWarnings("unchecked")
-    // Can't do anything against warning from MessageList#iterator()
-    private boolean evaluateValidation(MessageList validationMessageList) {
-        boolean valid = true;
+    private void evaluateValidation(MessageList validationMessageList) {
         for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
             Message message = it.next();
             switch (message.getSeverity()) {
                 case Message.ERROR:
                     setErrorMessage(message.getText());
-                    valid = false;
                     break;
                 case Message.WARNING:
                     setMessage(message.getText(), WARNING);
@@ -176,7 +180,6 @@ class RenamePage extends UserInputWizardPage {
                     break;
             }
         }
-        return valid;
     }
 
     @Override

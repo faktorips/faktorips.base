@@ -18,13 +18,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.refactor.RenamePolicyCmptTypeAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -385,11 +383,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     public String getPropertyDatatype() {
         return getDatatype();
-    }
-
-    @Override
-    public RenameRefactoring getRenameRefactoring() {
-        return new RenameRefactoring(new RenamePolicyCmptTypeAttributeProcessor(this));
     }
 
 }

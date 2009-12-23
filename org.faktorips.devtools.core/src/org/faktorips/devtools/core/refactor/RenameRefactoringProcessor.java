@@ -107,8 +107,6 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    @SuppressWarnings("unchecked")
-    // Can't do anything against warning from MessageList#iterator().
     protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, status });
 
@@ -267,6 +265,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time.
      */
+    // TODO AW: Subclasses need the ability to search for references, we need a reference search.
     protected abstract Change refactorModel(IProgressMonitor pm) throws CoreException;
 
     /**

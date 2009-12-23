@@ -217,6 +217,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(productInterface.getMethod("createRenamedPolicy", new String[] {}).exists());
     }
 
+    public void testRenameProductCmptType() throws CoreException {
+        // TODO AW: Implement test.
+    }
+
     private IType getJavaType(String typeName, boolean internal) {
         IFolder folder = internal ? internalFolder : modelFolder;
         String interfaceSeparator = internal ? "" : "I";
