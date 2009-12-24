@@ -26,7 +26,7 @@ import org.apache.commons.lang.SystemUtils;
  * 
  * @author Jan Ortmann
  */
-public class MessageList {
+public class MessageList implements Iterable<Message> {
 
     /**
      * Creates a copy from the message list and replaces all references to the old object with the
@@ -91,10 +91,10 @@ public class MessageList {
     }
 
     /**
-     * Copies the messages from the given list to this list and sets the message's invallid object
+     * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
      * 
-     * @param msgList the list to coppy the messages from.
+     * @param msgList the list to copy the messages from.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
      * @param override <code>true</code> if the invalidObjectProperty should be set in all messages.
      *            <code>false</code> if the invalidObjectProperty is set only for messages that do
