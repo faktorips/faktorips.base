@@ -32,74 +32,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 
 public class RenameAttributeTest extends AbstractIpsRefactoringTest {
 
-    private static final String POLICY_CMPT_TYPE_ATTRIBUTE_NAME = "policyAttribute";
-
-    private static final String PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME = "productAttribute";
-
-    private IPolicyCmptType policyCmptType;
-
-    private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
-
-    private IProductCmptType productCmptType;
-
-    private IProductCmptTypeAttribute productCmptTypeAttribute;
-
-    private ITestCaseType testCaseType;
-
-    private ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
-
-    private ITestAttribute testAttribute;
-
-    private IProductCmpt productCmpt;
-
-    private IProductCmptGeneration productCmptGeneration;
-
-    private IAttributeValue attributeValue;
-
-    private IConfigElement productCmptGenerationConfigElement;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // Create a policy component type and a product component type.
-        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
-        productCmptType = newProductCmptType(ipsProject, "Product");
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
-        productCmptType.setConfigurationForPolicyCmptType(true);
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-
-        // Create a policy component type attribute.
-        policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.setName(POLICY_CMPT_TYPE_ATTRIBUTE_NAME);
-        policyCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-        policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        policyCmptTypeAttribute.setProductRelevant(true);
-
-        // Create a product component type attribute.
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
-        productCmptTypeAttribute.setName(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME);
-        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-
-        // Create a test case type with a test attribute.
-        testCaseType = newTestCaseType(ipsProject, "TestCaseType");
-        testPolicyCmptTypeParameter = testCaseType.newCombinedPolicyCmptTypeParameter();
-        testPolicyCmptTypeParameter.setPolicyCmptType(policyCmptType.getQualifiedName());
-        testAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
-        testAttribute.setAttribute(policyCmptTypeAttribute);
-        testAttribute.setName("someTestAttribute");
-        testAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-
-        // Create a product component based on the product component type.
-        productCmpt = newProductCmpt(productCmptType, "ExampleProduct");
-        productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
-        productCmptGenerationConfigElement = productCmptGeneration.newConfigElement(policyCmptTypeAttribute);
-        attributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
-    }
-
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
         runRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
@@ -183,11 +115,6 @@ public class RenameAttributeTest extends AbstractIpsRefactoringTest {
      * a super type of another <tt>IPolicyCmptType</tt>.
      */
     public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
-        // Create a super policy component type.
-        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superPolicyCmptType.setAbstract(true);
-        superPolicyCmptType.setConfigurableByProductCmptType(true);
-
         // Create an attribute in the super policy component type.
         IPolicyCmptTypeAttribute superAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         superAttribute.setName("superAttribute");
@@ -195,16 +122,6 @@ public class RenameAttributeTest extends AbstractIpsRefactoringTest {
         superAttribute.setModifier(Modifier.PUBLISHED);
         superAttribute.setAttributeType(AttributeType.CHANGEABLE);
         superAttribute.setProductRelevant(true);
-
-        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
-
-        // Create a super product component type.
-        IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
-        superProductCmptType.setAbstract(true);
-        superProductCmptType.setConfigurationForPolicyCmptType(true);
-        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-        superPolicyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
-        productCmptType.setSupertype(superProductCmptType.getQualifiedName());
 
         // Create a test attribute for this new attribute.
         ITestAttribute superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
@@ -285,19 +202,11 @@ public class RenameAttributeTest extends AbstractIpsRefactoringTest {
      * is a super type of another <tt>IProductCmptType</tt>.
      */
     public void testRenameProductCmptTypeAttributeInheritance() throws CoreException {
-        // Create a super product component type.
-        IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProductCmptType");
-        superProductCmptType.setAbstract(true);
-        superProductCmptType.setConfigurationForPolicyCmptType(false);
-        superProductCmptType.setPolicyCmptType("");
-
         // Create an attribute in the super product component type.
         IProductCmptTypeAttribute superAttribute = superProductCmptType.newProductCmptTypeAttribute();
         superAttribute.setName("superAttribute");
         superAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         superAttribute.setModifier(Modifier.PUBLISHED);
-
-        productCmptType.setSupertype(superProductCmptType.getQualifiedName());
 
         IAttributeValue newAttributeValue = productCmptGeneration.newAttributeValue(superAttribute);
 

@@ -13,54 +13,131 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IMethod;
 
 public class RenameTypeTest extends AbstractIpsRefactoringTest {
 
-    private static final String POLICY_NAME = "Policy";
+    private static final String OTHER_POLICY_NAME = "OtherPolicy";
 
-    private static final String PRODUCT_NAME = "Product";
+    private static final String OTHER_PRODUCT_NAME = "OtherProduct";
 
-    private IPolicyCmptType superPolicyCmptType;
+    private IPolicyCmptType otherPolicyCmptType;
 
-    private IProductCmptType superProductCmptType;
+    private IProductCmptType otherProductCmptType;
 
-    private IPolicyCmptType policyCmptType;
+    private IMethod policyMethod;
 
-    private IProductCmptType productCmptType;
+    private IMethod productMethod;
+
+    private IAssociation policyToOtherPolicyAssociation;
+
+    private IAssociation otherPolicyToPolicyAssociation;
+
+    private IAssociation productToOtherProductAssociation;
+
+    private IAssociation otherProductToProductAssociation;
+
+    private ITestAttribute superTestAttribute;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        // Create super policy component type.
-        superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superPolicyCmptType.setAbstract(true);
-        superPolicyCmptType.setConfigurableByProductCmptType(true);
+        // Create another policy component type and another product component type.
+        otherPolicyCmptType = newPolicyCmptType(ipsProject, OTHER_POLICY_NAME);
+        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_NAME);
 
-        // Create super product component type.
-        superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
-        superProductCmptType.setAbstract(true);
-        superProductCmptType.setConfigurationForPolicyCmptType(true);
-        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-        superPolicyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
+        // Setup policy method.
+        policyMethod = otherPolicyCmptType.newMethod();
+        policyMethod.setName("policyMethod");
+        policyMethod.setDatatype(Datatype.STRING.getQualifiedName());
+        policyMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
+        policyMethod.newParameter(POLICY_NAME, "toBeChanged");
+        policyMethod.newParameter(PRODUCT_NAME, "withProductDatatype");
 
-        // Create concrete policy component type.
-        policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+        // Setup product method.
+        productMethod = otherProductCmptType.newMethod();
+        productMethod.setName("productMethod");
+        productMethod.setDatatype(Datatype.STRING.getQualifiedName());
+        productMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
+        productMethod.newParameter(PRODUCT_NAME, "toBeChanged");
+        productMethod.newParameter(POLICY_NAME, "withPolicyDatatype");
 
-        // Create concrete product component type.
-        productCmptType = newProductCmptType(ipsProject, PRODUCT_NAME);
-        productCmptType.setConfigurationForPolicyCmptType(true);
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        productCmptType.setSupertype(superProductCmptType.getQualifiedName());
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        // Setup policy associations.
+        policyToOtherPolicyAssociation = policyCmptType.newAssociation();
+        policyToOtherPolicyAssociation.setTarget(OTHER_POLICY_NAME);
+        otherPolicyToPolicyAssociation = otherPolicyCmptType.newAssociation();
+        otherPolicyToPolicyAssociation.setTarget(POLICY_NAME);
+
+        // Setup product associations.
+        productToOtherProductAssociation = productCmptType.newAssociation();
+        productToOtherProductAssociation.setTarget(OTHER_PRODUCT_NAME);
+        otherProductToProductAssociation = otherProductCmptType.newAssociation();
+        otherProductToProductAssociation.setTarget(PRODUCT_NAME);
+
+        // Create a test attribute based on an attribute of the super policy component type.
+        IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        superPolicyAttribute.setName("superPolicyAttribute");
+        superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
+        superTestAttribute.setAttribute(superPolicyAttribute);
+        superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
     }
 
-    public void testRenamePolicyCmptType() {
+    public void testRenamePolicyCmptType() throws CoreException {
+        String newElementName = "NewPolicy";
+        runRenameRefactoring(policyCmptType, newElementName);
+
+        // Old policy component is not modified.
+        assertEquals(POLICY_NAME, policyCmptType.getName());
+
+        // Find the new policy component.
+        IIpsSrcFile ipsSrcFile = policyCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
+                policyCmptType.getIpsObjectType());
+        assertTrue(ipsSrcFile.exists());
+        IPolicyCmptType newPolicyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+        assertEquals(newElementName, newPolicyCmptType.getName());
+
+        // Check for product component configuration update.
+        assertEquals(newElementName, productCmptType.getPolicyCmptType());
+
+        // Check for test parameter and test attribute update.
+        assertEquals(newElementName, testPolicyCmptTypeParameter.getPolicyCmptType());
+        assertEquals(newElementName, testAttribute.getPolicyCmptType());
+
+        // Check for method parameter update.
+        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
+        assertEquals(newElementName, policyMethod.getParameters()[1].getDatatype());
+        assertEquals(newElementName, productMethod.getParameters()[2].getDatatype());
+
+        // Check for association update.
+        assertEquals(newElementName, otherPolicyToPolicyAssociation.getTarget());
+    }
+
+    public void testRenameSuperPolicyCmptType() throws CoreException {
+        String newElementName = "NewSuperPolicy";
+        runRenameRefactoring(superPolicyCmptType, newElementName);
+
+        // Check for test attribute update.
+        assertEquals(newElementName, superTestAttribute.getPolicyCmptType());
+
+        // Check for subtype update.
+        assertEquals(newElementName, policyCmptType.getSupertype());
+    }
+
+    public void testRenameProductCmptType() {
+        // TODO AW: Implement test.
+    }
+
+    public void testRenameSuperProductCmptType() {
         // TODO AW: Implement test.
     }
 
