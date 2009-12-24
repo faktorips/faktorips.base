@@ -84,15 +84,93 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /**
      * {@inheritDoc}
      * <p>
-     * Default implementation does nothing and returns an empty <tt>RefactoringStatus</tt>. Should
-     * be overwritten by subclasses in most cases.
+     * This implementation checks that the <tt>IIpsElement</tt> to be renamed exists and calls the
+     * subclass implementation.
      */
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+
+        RefactoringStatus status = new RefactoringStatus();
+        if (!(ipsElement.exists())) {
+            status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
+                    .getName()));
+        }
+        checkInitialConditionsThis(status, pm);
+        return status;
+    }
+
+    /**
+     * Subclass implementation for initial condition checking that is performed in addition to the
+     * default initial condition checking which validates the existence of the <tt>IIpsElement</tt>
+     * to be refactored.
+     * 
+     * @param status The <tt>RefactoringStatus</tt> to add messages to.
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * 
+     * @throws CoreException May be thrown at any time.
+     */
+    protected abstract void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
+            throws CoreException;
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation validates the new element name and calls the subclass implementation.
+     */
+    @Override
+    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
 
-        return new RefactoringStatus();
+        RefactoringStatus status = validateNewElementName(pm);
+        checkFinalConditionsThis(status, pm, context);
+        return status;
     }
+
+    /**
+     * Subclass implementation for final condition checking that is performed in addition to the
+     * default final condition checking which validates the new element name.
+     * 
+     * @param status The <tt>RefactoringStatus</tt> to add messages to.
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * @param context A condition checking context to collect shared condition checks.
+     * 
+     * @throws CoreException May be thrown at any time.
+     */
+    protected abstract void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException;
+
+    /**
+     * Validates the new element name and returns a <tt>RefactoringStatus</tt> as result of the
+     * validation.
+     * 
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * 
+     * @throws CoreException If an error occurs while validating the new element name.
+     */
+    public final RefactoringStatus validateNewElementName(IProgressMonitor pm) throws CoreException {
+        RefactoringStatus status = new RefactoringStatus();
+        if (newElementName.length() < 1) {
+            status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEmpty);
+        } else if (newElementName.equals(ipsElement.getName())) {
+            status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEqualsElementName);
+        }
+        validateNewElementNameThis(status, pm);
+        return status;
+    }
+
+    /**
+     * This operation is called by <tt>validateNewElementName</tt>. Subclasses must implement
+     * special name validations here.
+     * 
+     * @param status The <tt>RefactoringStatus</tt> to report messages to.
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * 
+     * @throws CoreException May be thrown at any time.
+     */
+    protected abstract void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm)
+            throws CoreException;
 
     /**
      * Adds an entry to the provided <tt>RefactoringStatus</tt> for every messages contained in the
@@ -129,26 +207,8 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /**
      * {@inheritDoc}
      * <p>
-     * Default implementation checks that the <tt>IIpsElement</tt> to be renamed exists. May be
-     * overwritten by subclasses.
-     */
-    @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
-
-        RefactoringStatus status = new RefactoringStatus();
-        if (!(ipsElement.exists())) {
-            status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
-                    .getName()));
-        }
-        return status;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Default implementation does nothing and returns <tt>null</tt>, may be overwritten by
-     * subclasses if any changes need to be done before any refactoring participants are called.
+     * This implementation does nothing and returns <tt>null</tt>, may be overwritten by subclasses
+     * if any changes need to be done before any refactoring participants are called.
      */
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
@@ -183,6 +243,12 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
                 true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation always returns <tt>true</tt>, may be overwritten by subclasses if
+     * necessary.
+     */
     @Override
     public boolean isApplicable() throws CoreException {
         return true;

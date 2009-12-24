@@ -29,6 +29,9 @@ public class Messages extends NLS {
     }
 
     public static String RenameAttributeProcessor_msgAttributeNotValid;
-    public static String RenameAttributeProcessor_msgTypeNotValid;
+
+    public static String TypeRefactorings_msgTypeNotValid;
+
+    public static String RenameTypeProcessor_msgSourceFileAlreadyExists;
 
 }

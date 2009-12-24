@@ -34,4 +34,7 @@ public class Messages extends NLS {
 
     public static String RenameRefactoringProcessor_errorIpsElementDoesNotExist;
 
+    public static String RenameRefactoringProcessor_msgNewNameEmpty;
+    public static String RenameRefactoringProcessor_msgNewNameEqualsElementName;
+
 }

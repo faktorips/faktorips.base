@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -57,18 +56,28 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
         super(attribute);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Applies the new name to the <tt>IAttribute</tt> and performs a validation. Any validation
-     * messages will be added to the <tt>RefactoringStatus</tt> that will be returned by this
-     * operation.
-     */
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException, OperationCanceledException {
+    public void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        if (!(getAttribute().isValid())) {
+            status.addFatalError(NLS.bind(Messages.RenameAttributeProcessor_msgAttributeNotValid, getAttribute()
+                    .getName()));
+        } else {
+            if (!(getAttribute().getType().isValid())) {
+                status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getAttribute()
+                        .getType().getName()));
+            }
+        }
+    }
 
-        RefactoringStatus status = new RefactoringStatus();
+    @Override
+    protected void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException {
+        // Nothing more to do.
+    }
+
+    @Override
+    protected void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         /*
          * TODO AW: Stop broadcasting change events would be good for name changing here, make it
          * published?
@@ -84,25 +93,6 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
 
         // The source file was not really modified.
         getAttribute().getIpsSrcFile().markAsClean();
-
-        return status;
-    }
-
-    @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
-
-        RefactoringStatus status = super.checkInitialConditions(pm);
-        if (!(getAttribute().isValid())) {
-            status.addFatalError(NLS.bind(Messages.RenameAttributeProcessor_msgAttributeNotValid, getAttribute()
-                    .getName()));
-        } else {
-            if (!(getAttribute().getType().isValid())) {
-                status.addFatalError(NLS.bind(Messages.RenameAttributeProcessor_msgTypeNotValid, getAttribute()
-                        .getType().getName()));
-            }
-        }
-        return status;
     }
 
     @Override

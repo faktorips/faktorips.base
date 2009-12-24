@@ -25,8 +25,10 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -61,6 +63,11 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
         super(type);
     }
 
+    @Override
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        // TODO AW: Check if type is valid.
+    }
+
     /**
      * {@inheritDoc}
      * <p>
@@ -71,16 +78,17 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
      * recreated later if the user really starts the refactoring.
      */
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException, OperationCanceledException {
+    protected void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException {
 
-        RefactoringStatus status = new RefactoringStatus();
         try {
             copyToNewSourceFile(pm);
         } catch (CoreException e) {
             status.addFatalError(e.getLocalizedMessage());
-            return status;
+            return;
         }
+
         IType copiedType = (IType)copiedIpsSrcFile.getIpsObject();
 
         MessageList validationMessageList = copiedType.validate(copiedType.getIpsProject());
@@ -90,10 +98,9 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
             copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
             copiedIpsSrcFile = null;
         }
-
-        return status;
     }
 
+    // TODO AW: Better provide something like ignoredMessageCodes.
     @Override
     protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, status });
@@ -118,6 +125,25 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
                 case Message.INFO:
                     status.addInfo(message.getText());
                     break;
+            }
+        }
+    }
+
+    @Override
+    protected void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        /*
+         * Can't validate because for type validation the type's source file must be copied.
+         * Validation will still be performed during final condition checking so it should be OK. We
+         * still check if there is already a source file with the new name in this package however.
+         */
+        IIpsPackageFragment fragment = getType().getIpsPackageFragment();
+        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+            String sourceFileName = ipsSrcFile.getName();
+            String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
+            if (relevantNamePart.equals(getNewElementName())) {
+                status.addFatalError(NLS.bind(Messages.RenameTypeProcessor_msgSourceFileAlreadyExists,
+                        getNewElementName(), fragment.getName()));
+                break;
             }
         }
     }
