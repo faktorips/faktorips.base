@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -40,8 +39,6 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -61,6 +58,8 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
      */
     public RenameTypeProcessor(IType type) {
         super(type);
+        getIgnoredValidationMessageCodes().add(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE);
+        getIgnoredValidationMessageCodes().add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
     }
 
     @Override
@@ -97,35 +96,6 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
         if (status.getEntries().length > 0) {
             copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
             copiedIpsSrcFile = null;
-        }
-    }
-
-    // TODO AW: Better provide something like ignoredMessageCodes.
-    @Override
-    protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
-        ArgumentCheck.notNull(new Object[] { validationMessageList, status });
-
-        for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
-            Message message = it.next();
-            switch (message.getSeverity()) {
-                case Message.ERROR:
-                    /*
-                     * The product component type is of course configuring the original policy
-                     * component type still and vice versa.
-                     */
-                    if (!(message.getCode()
-                            .equals(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE))
-                            && !(message.equals(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE))) {
-                        status.addFatalError(message.getText());
-                    }
-                    break;
-                case Message.WARNING:
-                    status.addWarning(message.getText());
-                    break;
-                case Message.INFO:
-                    status.addInfo(message.getText());
-                    break;
-            }
         }
     }
 

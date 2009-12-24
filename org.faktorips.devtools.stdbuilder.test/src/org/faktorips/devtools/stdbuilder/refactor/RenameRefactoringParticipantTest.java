@@ -20,14 +20,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -36,22 +29,6 @@ import org.faktorips.runtime.IValidationContext;
  * @author Alexander Weickmann
  */
 public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest {
-
-    private static final String POLICY_TYPE_NAME = "Policy";
-
-    private static final String POLICY_ATTRIBUTE_NAME = "policyAttribute";
-
-    private static final String PRODUCT_ATTRIBUTE_NAME = "productAttribute";
-
-    private static final String PRODUCT_TYPE_NAME = "Product";
-
-    private IPolicyCmptType policyCmptType;
-
-    private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
-
-    private IProductCmptType productCmptType;
-
-    private IProductCmptTypeAttribute productCmptTypeAttribute;
 
     private IFolder modelFolder;
 
@@ -73,36 +50,15 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     protected void setUp() throws Exception {
         super.setUp();
 
-        // Create a policy component type and a policy component type attribute.
-        policyCmptType = newPolicyCmptType(ipsProject, POLICY_TYPE_NAME);
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.setName(POLICY_ATTRIBUTE_NAME);
-        policyCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        policyCmptTypeAttribute.setProductRelevant(true);
-        policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-
-        // Create a product component type and a product component type attribute.
-        productCmptType = newProductCmptType(ipsProject, PRODUCT_TYPE_NAME);
-        productCmptType.setConfigurationForPolicyCmptType(true);
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
-        productCmptTypeAttribute.setName(PRODUCT_ATTRIBUTE_NAME);
-        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
-
         // Initialize folders and Java elements.
         modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
         internalFolder = modelFolder.getFolder("internal");
-        policyInterface = getJavaType(POLICY_TYPE_NAME, false);
-        policyClass = getJavaType(POLICY_TYPE_NAME, true);
-        productInterface = getJavaType(PRODUCT_TYPE_NAME, false);
-        productClass = getJavaType(PRODUCT_TYPE_NAME, true);
-        productGenInterface = getJavaType(PRODUCT_TYPE_NAME + "Gen", false);
-        productGenClass = getJavaType(PRODUCT_TYPE_NAME + "Gen", true);
+        policyInterface = getJavaType(POLICY_NAME, false);
+        policyClass = getJavaType(POLICY_NAME, true);
+        productInterface = getJavaType(PRODUCT_NAME, false);
+        productClass = getJavaType(PRODUCT_NAME, true);
+        productGenInterface = getJavaType(PRODUCT_NAME + "Gen", false);
+        productGenClass = getJavaType(PRODUCT_NAME + "Gen", true);
     }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {

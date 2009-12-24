@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 
-public class RenameTypeTest extends AbstractIpsRefactoringTest {
+public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
 
     private static final String OTHER_POLICY_NAME = "OtherPolicy";
 
@@ -90,6 +90,8 @@ public class RenameTypeTest extends AbstractIpsRefactoringTest {
         superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         superTestAttribute.setAttribute(superPolicyAttribute);
         superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
+
+        createProductCmpt();
     }
 
     public void testRenamePolicyCmptType() throws CoreException {

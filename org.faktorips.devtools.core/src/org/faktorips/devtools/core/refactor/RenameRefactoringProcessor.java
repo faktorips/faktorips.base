@@ -46,6 +46,11 @@ import org.faktorips.util.message.MessageList;
  * Subclasses must use the method <tt>addModifiedSrcFile(IIpsSrcFile)</tt> in order to register all
  * modified <tt>IIpsSrcFile</tt>s. All registered modified <tt>IIpsSrcFile</tt>s will be saved at
  * the end of the refactoring.
+ * <p>
+ * The method <tt>addValidationMessagesToStatus(MessageList, RefactoringStatus)</tt> can be used to
+ * transfer the common Faktor-IPS validation messages to a <tt>RefactoringStatus</tt> used by the
+ * refactoring API. If certain validation message codes shall be ignored during this process
+ * subclasses may access a set containing ignored message codes.
  * 
  * @see ProcessorBasedRefactoring
  * 
@@ -65,6 +70,9 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /** The new name for the <tt>IIpsElement</tt>, provided by the user. */
     private String newElementName;
 
+    /** A set containing all message codes that will be ignored during final condition checking. */
+    private final Set<String> ignoredValidationMessageCodes;
+
     /**
      * Creates a <tt>RenameRefactoringProcessor</tt>.
      * 
@@ -79,6 +87,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         newElementName = "";
         originalElementName = ipsElement.getName();
         modifiedSrcFiles = new HashSet<IIpsSrcFile>();
+        ignoredValidationMessageCodes = new HashSet<String>();
     }
 
     /**
@@ -176,8 +185,11 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * Adds an entry to the provided <tt>RefactoringStatus</tt> for every messages contained in the
      * provided <tt>MessageList</tt>.
      * <p>
-     * May be overwritten by subclasses, e.g. if validation messages with certain message codes
-     * shall not be added to the <tt>RefactoringStatus</tt>.
+     * If validation messages with certain message codes shall not be added to the
+     * <tt>RefactoringStatus</tt> these message codes must be added to the set of ignored message
+     * codes.
+     * 
+     * @see #getIgnoredValidationMessageCodes()
      * 
      * @param validationMessageList The <tt>MessageList</tt> from that messages shall be added to
      *            the <tt>RefactoringStatus</tt>.
@@ -185,21 +197,32 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
+    protected final void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, status });
 
         for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
             Message message = it.next();
-            switch (message.getSeverity()) {
-                case Message.ERROR:
-                    status.addFatalError(message.getText());
+            // Check if message code is ignored.
+            boolean ignoreThisMessage = false;
+            for (String messageCode : ignoredValidationMessageCodes) {
+                if (messageCode.equals(message.getCode())) {
+                    ignoreThisMessage = true;
                     break;
-                case Message.WARNING:
-                    status.addWarning(message.getText());
-                    break;
-                case Message.INFO:
-                    status.addInfo(message.getText());
-                    break;
+                }
+            }
+
+            if (!(ignoreThisMessage)) {
+                switch (message.getSeverity()) {
+                    case Message.ERROR:
+                        status.addFatalError(message.getText());
+                        break;
+                    case Message.WARNING:
+                        status.addWarning(message.getText());
+                        break;
+                    case Message.INFO:
+                        status.addInfo(message.getText());
+                        break;
+                }
             }
         }
     }
@@ -353,6 +376,14 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /** Returns the <tt>IIpsProject</tt> the <tt>IIpsElement</tt> to be refactored belongs to. */
     protected final IIpsProject getIpsProject() {
         return ipsElement.getIpsProject();
+    }
+
+    /**
+     * Returns the set containing all validation message codes that will be ignored during final
+     * condition checking.
+     */
+    protected final Set<String> getIgnoredValidationMessageCodes() {
+        return ignoredValidationMessageCodes;
     }
 
 }

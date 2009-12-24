@@ -30,7 +30,14 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
-public class RenameAttributeTest extends AbstractIpsRefactoringTest {
+public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        createProductCmpt();
+    }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";

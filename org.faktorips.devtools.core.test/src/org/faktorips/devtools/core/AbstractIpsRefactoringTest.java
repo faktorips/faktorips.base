@@ -135,8 +135,9 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
         testAttribute.setPolicyCmptType(POLICY_NAME);
+    }
 
-        // Create a product component based on the product component type.
+    protected final void createProductCmpt() throws CoreException {
         productCmpt = newProductCmpt(productCmptType, "ExampleProduct");
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGenerationConfigElement = productCmptGeneration.newConfigElement(policyCmptTypeAttribute);
