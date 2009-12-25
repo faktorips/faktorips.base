@@ -22,9 +22,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -673,6 +675,11 @@ public abstract class Type extends BaseIpsObject implements IType {
                         new QualifiedNameType(targetQName, getIpsObjectType())));
             }
         }
+    }
+
+    @Override
+    public RenameRefactoring getRenameRefactoring() {
+        return new RenameRefactoring(new RenameTypeProcessor(this));
     }
 
     private static class SupertypesCollector extends TypeHierarchyVisitor {

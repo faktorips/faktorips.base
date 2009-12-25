@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -153,7 +154,8 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
             updateConfiguringProductCmptTypeReference();
             updateTestCaseTypeParameterReferences();
         } else {
-            // TODO AW: Implement ProductCmptType specific stuff here.
+            updateConfiguredPolicyCmptTypeReference();
+            updateProductReferences();
         }
         updateMethodParameterReferences(typeSrcFiles);
         updateAssociationReferences(typeSrcFiles);
@@ -207,6 +209,38 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Updates the reference to the <tt>IProductCmptType</tt> in the configured
+     * <tt>IPolicyCmptType</tt>.
+     * <p>
+     * Only applicable to <tt>IProductCmptType</tt>s.
+     */
+    private void updateConfiguredPolicyCmptTypeReference() throws CoreException {
+        if (!((IProductCmptType)getType()).isConfigurationForPolicyCmptType() || getType().isAbstract()) {
+            return;
+        }
+        IPolicyCmptType policyCmptType = ((IProductCmptType)getType()).findPolicyCmptType(getIpsProject());
+        policyCmptType.setProductCmptType(getQualifiedNewTypeName());
+        addModifiedSrcFile(policyCmptType.getIpsSrcFile());
+    }
+
+    /**
+     * Updates references to the <tt>IProductCmptType</tt> in <tt>IProductCmpt</tt>s that are based
+     * on that <tt>IProductCmptType</tt>.
+     * <p>
+     * Only applicable to <tt>IProductCmptType</tt>s.
+     */
+    private void updateProductReferences() throws CoreException {
+        Set<IIpsSrcFile> productSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        for (IIpsSrcFile ipsSrcFile : productSrcFiles) {
+            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            if (productCmpt.getProductCmptType().equals(getQualifiedOriginalTypeName())) {
+                productCmpt.setProductCmptType(getQualifiedNewTypeName());
+                addModifiedSrcFile(ipsSrcFile);
             }
         }
     }

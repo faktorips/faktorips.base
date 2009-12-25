@@ -163,8 +163,9 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
             status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEmpty);
         } else if (newElementName.equals(ipsElement.getName())) {
             status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEqualsElementName);
+        } else {
+            validateNewElementNameThis(status, pm);
         }
-        validateNewElementNameThis(status, pm);
         return status;
     }
 

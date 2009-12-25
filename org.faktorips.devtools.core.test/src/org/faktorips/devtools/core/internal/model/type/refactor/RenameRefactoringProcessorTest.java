@@ -76,17 +76,17 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
+        mockProcessor.setNewElementName("test");
         RefactoringStatus status = mockProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
-        assertEquals(2, status.getEntries().length);
+        assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
-        assertEquals(TEST_ERROR_MESSAGE, status.getEntries()[1].getMessage());
+        assertEquals(TEST_ERROR_MESSAGE, status.getEntries()[0].getMessage());
         assertTrue(mockProcessor.validateNewElementNameThisCalled);
     }
 
     public void testValidateNewElementNameEmpty() throws CoreException {
         RefactoringStatus status = mockProcessor.validateNewElementName(new NullProgressMonitor());
-        assertTrue(mockProcessor.validateNewElementNameThisCalled);
         assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
     }
@@ -94,7 +94,6 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
     public void testValidateNewElementNameEqualsOldElementName() throws CoreException {
         mockProcessor.setNewElementName(POLICY_NAME);
         RefactoringStatus status = mockProcessor.validateNewElementName(new NullProgressMonitor());
-        assertTrue(mockProcessor.validateNewElementNameThisCalled);
         assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
     }

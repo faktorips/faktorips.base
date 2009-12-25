@@ -59,7 +59,12 @@ class RenamePage extends UserInputWizardPage {
         super("RenamePage");
         ArgumentCheck.notNull(ipsElement);
         this.ipsElement = ipsElement;
+        setMessage(NLS.bind(Messages.RenamePage_message, getIpsElementName(), ipsElement.getName()));
+    }
 
+    /** Returns the name describing the <tt>IIpsElement</tt> to be refactored. */
+    // TODO AW: This should be moved to the core model.
+    private String getIpsElementName() {
         String ipsElementName = "";
         if (ipsElement instanceof IAttribute) {
             ipsElementName = Messages.RenameRefactoringWizard_Attribute;
@@ -68,7 +73,7 @@ class RenamePage extends UserInputWizardPage {
         } else if (ipsElement instanceof IType) {
             ipsElementName = Messages.RenameRefactoringWizard_Type;
         }
-        setMessage(NLS.bind(Messages.RenamePage_message, ipsElementName, ipsElement.getName()));
+        return ipsElementName;
     }
 
     public void createControl(Composite parent) {
@@ -102,10 +107,12 @@ class RenamePage extends UserInputWizardPage {
         setErrorMessage(null);
         setMessage(null, WARNING);
         setMessage(null, INFORMATION);
+        setMessage(NLS.bind(Messages.RenamePage_message, getIpsElementName(), ipsElement.getName()));
 
-        RenameRefactoringProcessor renameRefactoring = (RenameRefactoringProcessor)((ProcessorBasedRefactoring)getRefactoring())
+        RenameRefactoringProcessor renameProcessor = (RenameRefactoringProcessor)((ProcessorBasedRefactoring)getRefactoring())
                 .getProcessor();
-        RefactoringStatus status = renameRefactoring.validateNewElementName(new NullProgressMonitor());
+        renameProcessor.setNewElementName(newName);
+        RefactoringStatus status = renameProcessor.validateNewElementName(new NullProgressMonitor());
         evaluateValidation(status);
         return !(status.hasError());
     }
@@ -115,6 +122,7 @@ class RenamePage extends UserInputWizardPage {
         for (RefactoringStatusEntry entry : status.getEntries()) {
             switch (entry.getSeverity()) {
                 case RefactoringStatus.ERROR:
+                case RefactoringStatus.FATAL:
                     setErrorMessage(entry.getMessage());
                     break;
                 case RefactoringStatus.WARNING:
@@ -127,14 +135,6 @@ class RenamePage extends UserInputWizardPage {
                     break;
             }
         }
-    }
-
-    @Override
-    protected boolean performFinish() {
-        ProcessorBasedRefactoring refactoring = (ProcessorBasedRefactoring)getRefactoring();
-        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
-        processor.setNewElementName(newNameTextField.getText());
-        return super.performFinish();
     }
 
 }
