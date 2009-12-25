@@ -53,12 +53,12 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         // Initialize folders and Java elements.
         modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
         internalFolder = modelFolder.getFolder("internal");
-        policyInterface = getJavaType(POLICY_NAME, false);
-        policyClass = getJavaType(POLICY_NAME, true);
-        productInterface = getJavaType(PRODUCT_NAME, false);
-        productClass = getJavaType(PRODUCT_NAME, true);
-        productGenInterface = getJavaType(PRODUCT_NAME + "Gen", false);
-        productGenClass = getJavaType(PRODUCT_NAME + "Gen", true);
+        policyInterface = getJavaType(PACKAGE, POLICY_NAME, false);
+        policyClass = getJavaType(PACKAGE, POLICY_NAME, true);
+        productInterface = getJavaType(PACKAGE, PRODUCT_NAME, false);
+        productClass = getJavaType(PACKAGE, PRODUCT_NAME, true);
+        productGenInterface = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false);
+        productGenClass = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", true);
     }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
@@ -162,10 +162,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
 
         // Refactor the policy component type.
         runRenameRefactoring(policyCmptType, "RenamedPolicy");
-        assertFalse(getJavaType("Policy", false).exists());
-        assertFalse(getJavaType("Policy", true).exists());
-        assertTrue(getJavaType("RenamedPolicy", false).exists());
-        assertTrue(getJavaType("RenamedPolicy", true).exists());
+        assertFalse(getJavaType(PACKAGE, "Policy", false).exists());
+        assertFalse(getJavaType(PACKAGE, "Policy", true).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedPolicy", true).exists());
 
         assertFalse(productClass.getMethod("createPolicy", new String[] {}).exists());
         assertFalse(productInterface.getMethod("createPolicy", new String[] {}).exists());
@@ -177,9 +177,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         // TODO AW: Implement test.
     }
 
-    private IType getJavaType(String typeName, boolean internal) {
+    private IType getJavaType(String packageName, String typeName, boolean internal) {
         IFolder folder = internal ? internalFolder : modelFolder;
         String interfaceSeparator = internal ? "" : "I";
+        folder = (packageName == "") ? folder : folder.getFolder(packageName);
         return ((ICompilationUnit)JavaCore.create(folder.getFile(interfaceSeparator + typeName + ".java")))
                 .getType(interfaceSeparator + typeName);
     }

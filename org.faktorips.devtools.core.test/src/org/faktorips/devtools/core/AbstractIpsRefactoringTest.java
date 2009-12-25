@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
 /**
- * Provides convenient methods to start Faktor-IPS refactorings.
+ * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
  * 
  * @author Alexander Weickmann
  */
@@ -51,6 +51,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected static final String SUPER_POLICY_NAME = "SuperPolicy";
 
     protected static final String SUPER_PRODUCT_NAME = "SuperProduct";
+
+    protected static final String PACKAGE = "somepackage";
+
+    protected static final String QUALIFIED_POLICY_NAME = PACKAGE + ".Policy";
+
+    protected static final String QUALIFIED_PRODUCT_NAME = PACKAGE + ".Product";
 
     protected static final String POLICY_NAME = "Policy";
 
@@ -104,12 +110,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         superPolicyCmptType.setProductCmptType(SUPER_PRODUCT_NAME);
 
         // Create a policy component type and a product component type.
-        policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
-        productCmptType = newProductCmptType(ipsProject, PRODUCT_NAME);
+        policyCmptType = newPolicyCmptType(ipsProject, QUALIFIED_POLICY_NAME);
+        productCmptType = newProductCmptType(ipsProject, QUALIFIED_PRODUCT_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setProductCmptType(PRODUCT_NAME);
+        policyCmptType.setProductCmptType(QUALIFIED_PRODUCT_NAME);
         productCmptType.setConfigurationForPolicyCmptType(true);
-        productCmptType.setPolicyCmptType(POLICY_NAME);
+        productCmptType.setPolicyCmptType(QUALIFIED_POLICY_NAME);
         policyCmptType.setSupertype(SUPER_POLICY_NAME);
         productCmptType.setSupertype(SUPER_PRODUCT_NAME);
 
@@ -130,13 +136,18 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         // Create a test case type with a test attribute.
         testCaseType = newTestCaseType(ipsProject, "TestCaseType");
         testPolicyCmptTypeParameter = testCaseType.newCombinedPolicyCmptTypeParameter();
-        testPolicyCmptTypeParameter.setPolicyCmptType(POLICY_NAME);
+        testPolicyCmptTypeParameter.setPolicyCmptType(QUALIFIED_POLICY_NAME);
         testAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
-        testAttribute.setPolicyCmptType(POLICY_NAME);
+        testAttribute.setPolicyCmptType(QUALIFIED_POLICY_NAME);
     }
 
+    /**
+     * Creates a product component with a generation containing an <tt>IConfigElement</tt> for the
+     * <tt>policyCmptTypeAttribute</tt> and an <tt>IAttributeValue</tt> for the
+     * <tt>productComponentTypeAttribute</tt>.
+     */
     protected final void createProductCmpt() throws CoreException {
         productCmpt = newProductCmpt(productCmptType, "ExampleProduct");
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();

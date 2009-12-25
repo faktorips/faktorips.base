@@ -14,15 +14,22 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
 public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
 
@@ -61,37 +68,83 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
         policyMethod.setName("policyMethod");
         policyMethod.setDatatype(Datatype.STRING.getQualifiedName());
         policyMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        policyMethod.newParameter(POLICY_NAME, "toBeChanged");
-        policyMethod.newParameter(PRODUCT_NAME, "withProductDatatype");
+        policyMethod.newParameter(QUALIFIED_POLICY_NAME, "toBeChanged");
+        policyMethod.newParameter(QUALIFIED_PRODUCT_NAME, "withProductDatatype");
 
         // Setup product method.
         productMethod = otherProductCmptType.newMethod();
         productMethod.setName("productMethod");
         productMethod.setDatatype(Datatype.STRING.getQualifiedName());
         productMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        productMethod.newParameter(PRODUCT_NAME, "toBeChanged");
-        productMethod.newParameter(POLICY_NAME, "withPolicyDatatype");
+        productMethod.newParameter(QUALIFIED_PRODUCT_NAME, "toBeChanged");
+        productMethod.newParameter(QUALIFIED_POLICY_NAME, "withPolicyDatatype");
 
         // Setup policy associations.
         policyToOtherPolicyAssociation = policyCmptType.newAssociation();
         policyToOtherPolicyAssociation.setTarget(OTHER_POLICY_NAME);
+        policyToOtherPolicyAssociation.setTargetRoleSingular(OTHER_POLICY_NAME);
+        policyToOtherPolicyAssociation.setTargetRolePlural(OTHER_POLICY_NAME + "s");
         otherPolicyToPolicyAssociation = otherPolicyCmptType.newAssociation();
-        otherPolicyToPolicyAssociation.setTarget(POLICY_NAME);
+        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
 
         // Setup product associations.
         productToOtherProductAssociation = productCmptType.newAssociation();
         productToOtherProductAssociation.setTarget(OTHER_PRODUCT_NAME);
         otherProductToProductAssociation = otherProductCmptType.newAssociation();
-        otherProductToProductAssociation.setTarget(PRODUCT_NAME);
+        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_NAME);
 
         // Create a test attribute based on an attribute of the super policy component type.
         IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         superPolicyAttribute.setName("superPolicyAttribute");
+        superPolicyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        superPolicyAttribute.setModifier(Modifier.PUBLISHED);
+        superPolicyAttribute.setAttributeType(AttributeType.CHANGEABLE);
         superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         superTestAttribute.setAttribute(superPolicyAttribute);
         superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
 
         createProductCmpt();
+    }
+
+    public void testCheckInitialConditionsValid() throws CoreException {
+        RenameRefactoring refactoring = policyCmptType.getRenameRefactoring();
+        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertFalse(status.hasError());
+    }
+
+    public void testCheckInitialConditionsInvalid() throws CoreException {
+        policyCmptType.setProductCmptType("abc");
+
+        RenameRefactoring refactoring = policyCmptType.getRenameRefactoring();
+        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testCheckFinalConditionsValid() throws CoreException {
+        RenameRefactoring refactoring = policyCmptType.getRenameRefactoring();
+        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
+        processor.setNewElementName("test");
+        RefactoringStatus status = processor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertFalse(status.hasError());
+    }
+
+    public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
+        RenameRefactoring refactoring = policyCmptType.getRenameRefactoring();
+        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
+        processor.setNewElementName(PRODUCT_NAME);
+        RefactoringStatus status = processor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testCheckFinalConditionsInvalidTypeName() throws CoreException {
+        RenameRefactoring refactoring = policyCmptType.getRenameRefactoring();
+        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)refactoring.getProcessor();
+        processor.setNewElementName("$§§  $");
+        RefactoringStatus status = processor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertTrue(status.hasFatalError());
     }
 
     public void testRenamePolicyCmptType() throws CoreException {
@@ -109,19 +162,19 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newElementName, newPolicyCmptType.getName());
 
         // Check for product component configuration update.
-        assertEquals(newElementName, productCmptType.getPolicyCmptType());
+        assertEquals(PACKAGE + "." + newElementName, productCmptType.getPolicyCmptType());
 
         // Check for test parameter and test attribute update.
-        assertEquals(newElementName, testPolicyCmptTypeParameter.getPolicyCmptType());
-        assertEquals(newElementName, testAttribute.getPolicyCmptType());
+        assertEquals(PACKAGE + "." + newElementName, testPolicyCmptTypeParameter.getPolicyCmptType());
+        assertEquals(PACKAGE + "." + newElementName, testAttribute.getPolicyCmptType());
 
         // Check for method parameter update.
         assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
-        assertEquals(newElementName, policyMethod.getParameters()[1].getDatatype());
-        assertEquals(newElementName, productMethod.getParameters()[2].getDatatype());
+        assertEquals(PACKAGE + "." + newElementName, policyMethod.getParameters()[1].getDatatype());
+        assertEquals(PACKAGE + "." + newElementName, productMethod.getParameters()[2].getDatatype());
 
         // Check for association update.
-        assertEquals(newElementName, otherPolicyToPolicyAssociation.getTarget());
+        assertEquals(PACKAGE + "." + newElementName, otherPolicyToPolicyAssociation.getTarget());
     }
 
     public void testRenameSuperPolicyCmptType() throws CoreException {

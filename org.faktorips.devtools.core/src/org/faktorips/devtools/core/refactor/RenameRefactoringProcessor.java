@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.refactor;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -200,8 +199,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     protected final void addValidationMessagesToStatus(MessageList validationMessageList, RefactoringStatus status) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, status });
 
-        for (Iterator<Message> it = validationMessageList.iterator(); it.hasNext();) {
-            Message message = it.next();
+        for (Message message : validationMessageList) {
             // Check if message code is ignored.
             boolean ignoreThisMessage = false;
             for (String messageCode : ignoredValidationMessageCodes) {

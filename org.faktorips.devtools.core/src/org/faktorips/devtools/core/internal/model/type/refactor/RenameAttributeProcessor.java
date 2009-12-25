@@ -63,8 +63,8 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
                     .getName()));
         } else {
             if (!(getAttribute().getType().isValid())) {
-                status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getAttribute()
-                        .getType().getName()));
+                status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getAttribute().getType()
+                        .getName()));
             }
         }
     }
@@ -225,7 +225,7 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
 
     @Override
     public String getIdentifier() {
-        return "RenameAttribute";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor";
     }
 
     @Override

@@ -14,6 +14,10 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -29,14 +33,59 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
 
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         createProductCmpt();
+    }
+
+    public void testCheckInitialConditionsValid() throws CoreException {
+        RenameRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
+        RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertFalse(status.hasError());
+    }
+
+    public void testCheckInitialConditionsInvalidAttribute() throws CoreException {
+        policyCmptTypeAttribute.setDatatype("");
+
+        RenameRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
+        RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testCheckFinalConditionsValid() throws CoreException {
+        RenameRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
+        RenameRefactoringProcessor renameProcessor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewElementName("test");
+        RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertFalse(status.hasError());
+    }
+
+    public void testCheckFinalConditionsInvalidAttributeName() throws CoreException {
+        // Create another policy component type attribute to test against.
+        IAttribute attribute = policyCmptType.newAttribute();
+        attribute.setName("otherAttribute");
+
+        RenameRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
+        RenameRefactoringProcessor renameProcessor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewElementName("otherAttribute");
+        RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testCheckInitialConditionsInvalidType() throws CoreException {
+        policyCmptType.setProductCmptType("xyz");
+
+        RenameRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
+        RefactoringStatus status = renameRefactoring.checkInitialConditions(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
     }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {

@@ -64,7 +64,9 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        // TODO AW: Check if type is valid.
+        if (!(getType().isValid())) {
+            status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getType().getName()));
+        }
     }
 
     /**
@@ -302,7 +304,7 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     @Override
     public String getIdentifier() {
-        return "RenameType";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor";
     }
 
     @Override
