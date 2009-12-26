@@ -220,7 +220,7 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
      * Only applicable to <tt>IProductCmptType</tt>s.
      */
     private void updateConfiguredPolicyCmptTypeReference() throws CoreException {
-        if (!((IProductCmptType)getType()).isConfigurationForPolicyCmptType() || getType().isAbstract()) {
+        if (!((IProductCmptType)getType()).isConfigurationForPolicyCmptType()) {
             return;
         }
         IPolicyCmptType policyCmptType = ((IProductCmptType)getType()).findPolicyCmptType(getIpsProject());
@@ -235,6 +235,9 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
      * Only applicable to <tt>IProductCmptType</tt>s.
      */
     private void updateProductReferences() throws CoreException {
+        if (getType().isAbstract()) {
+            return;
+        }
         Set<IIpsSrcFile> productSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();

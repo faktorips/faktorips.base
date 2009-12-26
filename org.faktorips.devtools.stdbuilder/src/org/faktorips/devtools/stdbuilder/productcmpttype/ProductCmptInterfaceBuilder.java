@@ -223,6 +223,11 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
          * makes a lot of difference in the returned generated Java elements. Making the
          * GenProductCmptType configurable in such a way would require many changes.
          */
+        if (ipsElement instanceof IProductCmptType) {
+            IProductCmptType productCmptType = (IProductCmptType)ipsElement;
+            javaElements.add(getGeneratedJavaType(productCmptType.getQualifiedName(), productCmptType
+                    .getIpsPackageFragment().getRoot()));
+        }
     }
 
     @Override

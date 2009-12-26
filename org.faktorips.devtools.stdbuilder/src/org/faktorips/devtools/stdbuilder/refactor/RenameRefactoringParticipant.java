@@ -40,10 +40,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
@@ -195,8 +197,10 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
 
         if (ipsElement instanceof IAttribute) {
             initNewJavaElements((IAttribute)ipsElement, builderSet);
-        } else if (ipsElement instanceof IPolicyCmptType) {
+        } else if (ipsElement instanceof IPolicyCmptType) { // TODO AW: Simplify to IType
             initNewJavaElements((IPolicyCmptType)ipsElement, builderSet);
+        } else if (ipsElement instanceof IProductCmptType) { // TODO AW: Simplify to IType
+            initNewJavaElements((IProductCmptType)ipsElement, builderSet);
         }
 
         return true;
@@ -239,6 +243,24 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
 
         newJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
+    }
+
+    /**
+     * Initializes the list of the <tt>IJavaElement</tt>s generated for the renamed
+     * <tt>IProductCmptType</tt>.
+     */
+    // TODO AW: See above method.
+    private void initNewJavaElements(IProductCmptType productCmptType, StandardBuilderSet builderSet) {
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(productCmptType.getIpsPackageFragment(), getArguments()
+                .getNewName()
+                + "." + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
+        IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
+        copiedProductCmptType.setAbstract(productCmptType.isAbstract());
+        copiedProductCmptType.setConfigurationForPolicyCmptType(productCmptType.isConfigurationForPolicyCmptType());
+        copiedProductCmptType.setPolicyCmptType(productCmptType.getPolicyCmptType());
+        copiedProductCmptType.setSupertype(productCmptType.getSupertype());
+
+        newJavaElements = builderSet.getGeneratedJavaElements(copiedProductCmptType);
     }
 
     @Override
