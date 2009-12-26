@@ -157,7 +157,6 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     public void testRenamePolicyCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        // Refactor the policy component type.
         runRenameRefactoring(policyCmptType, "RenamedPolicy");
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());

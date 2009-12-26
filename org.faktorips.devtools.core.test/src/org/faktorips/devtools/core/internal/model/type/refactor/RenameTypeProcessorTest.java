@@ -45,11 +45,7 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
 
     private IMethod productMethod;
 
-    private IAssociation policyToOtherPolicyAssociation;
-
     private IAssociation otherPolicyToPolicyAssociation;
-
-    private IAssociation productToOtherProductAssociation;
 
     private IAssociation otherProductToProductAssociation;
 
@@ -80,16 +76,10 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
         productMethod.newParameter(QUALIFIED_POLICY_NAME, "withPolicyDatatype");
 
         // Setup policy associations.
-        policyToOtherPolicyAssociation = policyCmptType.newAssociation();
-        policyToOtherPolicyAssociation.setTarget(OTHER_POLICY_NAME);
-        policyToOtherPolicyAssociation.setTargetRoleSingular(OTHER_POLICY_NAME);
-        policyToOtherPolicyAssociation.setTargetRolePlural(OTHER_POLICY_NAME + "s");
         otherPolicyToPolicyAssociation = otherPolicyCmptType.newAssociation();
         otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
 
         // Setup product associations.
-        productToOtherProductAssociation = productCmptType.newAssociation();
-        productToOtherProductAssociation.setTarget(OTHER_PRODUCT_NAME);
         otherProductToProductAssociation = otherProductCmptType.newAssociation();
         otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_NAME);
 
@@ -151,17 +141,14 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
         String newElementName = "NewPolicy";
         runRenameRefactoring(policyCmptType, newElementName);
 
-        // Old policy component is not modified.
-        assertEquals(POLICY_NAME, policyCmptType.getName());
-
-        // Find the new policy component.
+        // Find the new policy component type.
         IIpsSrcFile ipsSrcFile = policyCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
                 policyCmptType.getIpsObjectType());
         assertTrue(ipsSrcFile.exists());
         IPolicyCmptType newPolicyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
         assertEquals(newElementName, newPolicyCmptType.getName());
 
-        // Check for product component configuration update.
+        // Check for product component type configuration update.
         assertEquals(PACKAGE + "." + newElementName, productCmptType.getPolicyCmptType());
 
         // Check for test parameter and test attribute update.
@@ -188,12 +175,38 @@ public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newElementName, policyCmptType.getSupertype());
     }
 
-    public void testRenameProductCmptType() {
-        // TODO AW: Implement test.
+    public void testRenameProductCmptType() throws CoreException {
+        String newElementName = "NewProduct";
+        runRenameRefactoring(productCmptType, newElementName);
+
+        // Find the new product component type.
+        IIpsSrcFile ipsSrcFile = productCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
+                productCmptType.getIpsObjectType());
+        assertTrue(ipsSrcFile.exists());
+        IProductCmptType newProductCmptType = (IProductCmptType)ipsSrcFile.getIpsObject();
+        assertEquals(newElementName, newProductCmptType.getName());
+
+        // Check for policy component type configuration update.
+        assertEquals(PACKAGE + "." + newElementName, policyCmptType.getProductCmptType());
+
+        // Check for product component reference update.
+        assertEquals(PACKAGE + "." + newElementName, productCmpt.getProductCmptType());
+
+        // Check for method parameter update.
+        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
+        assertEquals(PACKAGE + "." + newElementName, productMethod.getParameters()[1].getDatatype());
+        assertEquals(PACKAGE + "." + newElementName, policyMethod.getParameters()[2].getDatatype());
+
+        // Check for association update.
+        assertEquals(PACKAGE + "." + newElementName, otherProductToProductAssociation.getTarget());
     }
 
-    public void testRenameSuperProductCmptType() {
-        // TODO AW: Implement test.
+    public void testRenameSuperProductCmptType() throws CoreException {
+        String newElementName = "NewSuperProduct";
+        runRenameRefactoring(superProductCmptType, newElementName);
+
+        // Check for subtype update.
+        assertEquals(newElementName, productCmptType.getSupertype());
     }
 
 }
