@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
 
 public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
 
@@ -86,7 +87,9 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
 
     private void expectSetProductCmptMethod(List<IJavaElement> javaElements, IType javaType) {
         IMethod expectedMethod = javaType.getMethod(genProductCmptType.getMethodNameSetProductCmpt(), new String[] {
-                "Q" + genProductCmptType.getQualifiedName(true) + ";", "Z" });
+                "Q"
+                        + JavaGeneratiorHelper.getJavaNamingConvention().getPublishedInterfaceName(
+                                genProductCmptType.getType().getName()) + ";", "Z" });
         assertTrue(javaElements.contains(expectedMethod));
     }
 

@@ -139,7 +139,7 @@ public class GenProductCmptType extends GenType {
      * Returns the name of the method to access the product component, e.g. getMotorProduct
      */
     public String getMethodNameGetProductCmpt() {
-        return getLocalizedText("METHOD_GET_PRODUCTCMPT_NAME", getProductCmptType().getName());
+        return getLocalizedText("METHOD_GET_PRODUCTCMPT_NAME", getType().getName());
     }
 
     private void createGeneratorsForProdAttributes() throws CoreException {
@@ -354,7 +354,9 @@ public class GenProductCmptType extends GenType {
                         new String[] {});
                 javaElements.add(getProductCmptGenMethod);
                 IMethod setProductCmptMethod = javaTypePolicyCmpt.getMethod(getMethodNameSetProductCmpt(),
-                        new String[] { "Q" + getQualifiedName(true) + ";", "Z" });
+                        new String[] {
+                                "Q" + getJavaNamingConvention().getPublishedInterfaceName(getType().getName()) + ";",
+                                "Z" });
                 javaElements.add(setProductCmptMethod);
             }
         }

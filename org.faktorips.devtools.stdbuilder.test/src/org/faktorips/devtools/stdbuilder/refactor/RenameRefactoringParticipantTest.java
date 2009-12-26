@@ -157,13 +157,10 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     public void testRenamePolicyCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        assertTrue(productClass.getMethod("createPolicy", new String[] {}).exists());
-        assertTrue(productInterface.getMethod("createPolicy", new String[] {}).exists());
-
         // Refactor the policy component type.
         runRenameRefactoring(policyCmptType, "RenamedPolicy");
-        assertFalse(getJavaType(PACKAGE, "Policy", false).exists());
-        assertFalse(getJavaType(PACKAGE, "Policy", true).exists());
+        assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
+        assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", true).exists());
 
@@ -174,7 +171,24 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     }
 
     public void testRenameProductCmptType() throws CoreException {
-        // TODO AW: Implement test.
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        runRenameRefactoring(productCmptType, "RenamedProduct");
+        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, false).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, true).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", true).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedProduct", false).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedProduct", true).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedProductGen", false).exists());
+        assertTrue(getJavaType(PACKAGE, "RenamedProductGen", true).exists());
+
+        assertFalse(policyClass.getMethod("getProduct", new String[0]).exists());
+        assertFalse(policyClass.getMethod("getProductGen", new String[0]).exists());
+        assertFalse(policyClass.getMethod("setProduct", new String[] { "IProduct", "Z" }).exists());
+        assertTrue(policyClass.getMethod("getRenamedProduct", new String[0]).exists());
+        assertTrue(policyClass.getMethod("getRenamedProductGen", new String[0]).exists());
+        assertTrue(policyClass.getMethod("setRenamedProduct", new String[] { "QIRenamedProduct;", "Z" }).exists());
     }
 
     private IType getJavaType(String packageName, String typeName, boolean internal) {
