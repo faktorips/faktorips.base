@@ -18,18 +18,20 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.IpsUIPluginTest;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.DefaultIconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.IconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.PathIconDesc;
 
-public class WorkbenchAdapterTest extends IpsUIPluginTest {
-
+// TODO Joerg warum musste vom IpsUIPluginTest abgeleitet werden
+// Problem beim der Autotestsuite (stefan w.)?
+// die Tests von IpsUIPluginTest wurden immer mit ausgefuehrt
+public class WorkbenchAdapterTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
 
