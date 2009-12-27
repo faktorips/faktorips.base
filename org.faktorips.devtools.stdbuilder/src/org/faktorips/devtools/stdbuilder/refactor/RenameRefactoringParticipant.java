@@ -13,19 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -36,7 +28,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -47,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -60,61 +52,24 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactoring.participants.RenameParticipant {
 
-    /**
-     * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be
-     * refactored.
-     */
-    private List<IJavaElement> generatedJavaElements;
+    /** A helper providing common standard builder refactoring functionality. */
+    private RefactoringParticipantHelper refactoringHelper;
 
-    /**
-     * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be
-     * refactored as they will be after the refactoring. This information is needed to be able to
-     * provide the JDT refactorings with the correct new names for the <tt>IJavaElement</tt>s.
-     */
-    private List<IJavaElement> newJavaElements;
+    /** Creates a <tt>RenameRefactoringParticipant</tt>. */
+    public RenameRefactoringParticipant() {
+        refactoringHelper = new RefactoringParticipantHelper();
+    }
 
     @Override
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        // List to remember broken compilation units.
-        List<ICompilationUnit> invalidCompilationUnits = new LinkedList<ICompilationUnit>();
-
-        RefactoringStatus status = new RefactoringStatus();
-        for (IJavaElement javaElement : generatedJavaElements) {
-            try {
-                IType type = null;
-                if (javaElement instanceof IType) {
-                    type = (IType)javaElement;
-                } else if (javaElement instanceof IField) {
-                    IField field = (IField)javaElement;
-                    type = (IType)field.getParent();
-                } else if (javaElement instanceof IMethod) {
-                    IMethod method = (IMethod)javaElement;
-                    type = (IType)method.getParent();
-                }
-
-                // Only report each broken compilation unit once.
-                if (invalidCompilationUnits.contains(type.getCompilationUnit())) {
-                    continue;
-                }
-
-                if (!(type.getCompilationUnit().isStructureKnown())) {
-                    invalidCompilationUnits.add(type.getCompilationUnit());
-                    status.addFatalError(NLS.bind(Messages.RenameRefactoringParticipant_errorSyntaxErrors, type
-                            .getCompilationUnit().getElementName()));
-                }
-            } catch (JavaModelException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return status;
+        return refactoringHelper.checkConditions(pm, context);
     }
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        for (int i = 0; i < generatedJavaElements.size(); i++) {
+        for (int i = 0; i < refactoringHelper.getGeneratedJavaElements().size(); i++) {
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -125,12 +80,12 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
              * encountered will be refactored. The second no longer exists then because the JDT
              * rename method refactoring renamed it already.
              */
-            if (!(generatedJavaElements.get(i).exists())) {
+            if (!(refactoringHelper.getGeneratedJavaElements().get(i).exists())) {
                 continue;
             }
 
             String javaRefactoringContributionId;
-            switch (generatedJavaElements.get(i).getElementType()) {
+            switch (refactoringHelper.getGeneratedJavaElements().get(i).getElementType()) {
                 case IJavaElement.FIELD:
                     javaRefactoringContributionId = IJavaRefactorings.RENAME_FIELD;
                     break;
@@ -143,8 +98,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
                 default:
                     throw new RuntimeException("This kind of Java element is not supported by the refactoring.");
             }
-            rename(generatedJavaElements.get(i), newJavaElements.get(i).getElementName(),
-                    javaRefactoringContributionId, pm);
+            rename(refactoringHelper.getGeneratedJavaElements().get(i), refactoringHelper.getNewJavaElements().get(i)
+                    .getElementName(), javaRefactoringContributionId, pm);
         }
 
         return null;
@@ -186,24 +141,24 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
 
     @Override
     protected boolean initialize(Object element) {
-        if (!(element instanceof IIpsElement)) {
-            return false;
+        boolean initialized = refactoringHelper.initialize(element);
+        if (initialized == false) {
+            return initialized;
         }
 
         IIpsElement ipsElement = (IIpsElement)element;
-
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
-        generatedJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
-
         if (ipsElement instanceof IAttribute) {
             initNewJavaElements((IAttribute)ipsElement, builderSet);
         } else if (ipsElement instanceof IPolicyCmptType) { // TODO AW: Simplify to IType
             initNewJavaElements((IPolicyCmptType)ipsElement, builderSet);
         } else if (ipsElement instanceof IProductCmptType) { // TODO AW: Simplify to IType
             initNewJavaElements((IProductCmptType)ipsElement, builderSet);
+        } else {
+            initialized = false;
         }
 
-        return true;
+        return initialized;
     }
 
     /**
@@ -212,8 +167,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
      */
     private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
         String oldName = attribute.getName();
-        attribute.setName(getArguments().getNewName());
-        newJavaElements = builderSet.getGeneratedJavaElements(attribute);
+        attribute.setName(getUnqualifiedNewName());
+        refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(attribute));
         attribute.setName(oldName);
     }
 
@@ -226,8 +181,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
          * Creating an in-memory-only source file for an in-memory-only policy component type that
          * can be passed to the builder to obtain the generated Java elements for.
          */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getArguments()
-                .getNewName()
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getUnqualifiedNewName()
                 + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
 
@@ -242,7 +196,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
         copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
 
-        newJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
+        refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedPolicyCmptType));
     }
 
     /**
@@ -251,8 +205,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
      */
     // TODO AW: See above method.
     private void initNewJavaElements(IProductCmptType productCmptType, StandardBuilderSet builderSet) {
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(productCmptType.getIpsPackageFragment(), getArguments()
-                .getNewName()
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(productCmptType.getIpsPackageFragment(), getUnqualifiedNewName()
                 + "." + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
         IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
         copiedProductCmptType.setAbstract(productCmptType.isAbstract());
@@ -260,7 +213,12 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         copiedProductCmptType.setPolicyCmptType(productCmptType.getPolicyCmptType());
         copiedProductCmptType.setSupertype(productCmptType.getSupertype());
 
-        newJavaElements = builderSet.getGeneratedJavaElements(copiedProductCmptType);
+        refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedProductCmptType));
+    }
+
+    /** Returns the unqualified new element name. */
+    private String getUnqualifiedNewName() {
+        return QNameUtil.getUnqualifiedName(getArguments().getNewName());
     }
 
     @Override

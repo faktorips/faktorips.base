@@ -18,10 +18,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -35,7 +36,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
+import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
@@ -90,6 +93,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected IConfigElement productCmptGenerationConfigElement;
 
+    protected IIpsPackageFragmentRoot ipsPackageFragmentRoot;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -141,6 +146,9 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
         testAttribute.setPolicyCmptType(QUALIFIED_POLICY_NAME);
+
+        // It is actually the same root for all created IPS elements.
+        ipsPackageFragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
     }
 
     /**
@@ -156,13 +164,19 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Performs the rename refactoring for the given <tt>IIpsElement</tt> and provided new element
-     * name.
+     * Performs the rename refactoring for the given <tt>IIpsElement</tt> and provided target
+     * location.
+     * 
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void runRenameRefactoring(IIpsElement ipsElement, String newElementName) throws CoreException {
-        RenameRefactoring renameRefactoring = ipsElement.getRenameRefactoring();
-        RenameRefactoringProcessor processor = (RenameRefactoringProcessor)renameRefactoring.getProcessor();
-        processor.setNewElementName(newElementName);
+    protected final void runRenameRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
+            throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { ipsElement, targetLocation });
+
+        ProcessorBasedRefactoring renameRefactoring = ipsElement.getRenameRefactoring();
+        IpsRenameMoveProcessor processor = (IpsRenameMoveProcessor)renameRefactoring.getProcessor();
+        processor.setTargetLocation(targetLocation);
 
         PerformRefactoringOperation operation = new PerformRefactoringOperation(renameRefactoring,
                 CheckConditionsOperation.ALL_CONDITIONS);

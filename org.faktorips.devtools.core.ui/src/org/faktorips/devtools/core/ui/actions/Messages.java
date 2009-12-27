@@ -98,8 +98,8 @@ public class Messages extends NLS {
 
     public static String NewProductComponentAction_name;
 
+    public static String IpsRefactoringAction_refactoringCurrentlyNotApplicable;
     public static String RenameAction_name;
-    public static String RenameAction_refactoringCurrentlyNotApplicable;
 
     public static String MoveAction_name;
 

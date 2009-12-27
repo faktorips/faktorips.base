@@ -23,13 +23,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
-import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -40,7 +35,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the abstract base class for all Faktor-IPS rename refactorings.
+ * This is the abstract base class for all Faktor-IPS refactorings.
  * <p>
  * Subclasses must use the method <tt>addModifiedSrcFile(IIpsSrcFile)</tt> in order to register all
  * modified <tt>IIpsSrcFile</tt>s. All registered modified <tt>IIpsSrcFile</tt>s will be saved at
@@ -55,7 +50,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public abstract class RenameRefactoringProcessor extends RenameProcessor {
+public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
@@ -63,28 +58,19 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
     /** Set containing all <tt>IIpsSrcFile</tt>s that have been modified by the refactoring. */
     private final Set<IIpsSrcFile> modifiedSrcFiles;
 
-    /** The original name of the <tt>IIpsElement</tt> to be refactored. */
-    private final String originalElementName;
-
-    /** The new name for the <tt>IIpsElement</tt>, provided by the user. */
-    private String newElementName;
-
     /** A set containing all message codes that will be ignored during final condition checking. */
     private final Set<String> ignoredValidationMessageCodes;
 
     /**
-     * Creates a <tt>RenameRefactoringProcessor</tt>.
+     * Creates a <tt>IpsRefactoringProcessor</tt>.
      * 
      * @param ipsElement The <tt>IIpsElement</tt> to be refactored.
      * 
      * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
      */
-    protected RenameRefactoringProcessor(IIpsElement ipsElement) {
+    protected IpsRefactoringProcessor(IIpsElement ipsElement) {
         super();
-        ArgumentCheck.notNull(ipsElement);
         this.ipsElement = ipsElement;
-        newElementName = "";
-        originalElementName = ipsElement.getName();
         modifiedSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();
     }
@@ -101,7 +87,7 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
-            status.addFatalError(NLS.bind(Messages.RenameRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
+            status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
                     .getName()));
         }
         checkInitialConditionsThis(status, pm);
@@ -119,66 +105,6 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      * @throws CoreException May be thrown at any time.
      */
     protected abstract void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
-            throws CoreException;
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This implementation validates the new element name and calls the subclass implementation.
-     */
-    @Override
-    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException, OperationCanceledException {
-
-        RefactoringStatus status = validateNewElementName(pm);
-        checkFinalConditionsThis(status, pm, context);
-        return status;
-    }
-
-    /**
-     * Subclass implementation for final condition checking that is performed in addition to the
-     * default final condition checking which validates the new element name.
-     * 
-     * @param status The <tt>RefactoringStatus</tt> to add messages to.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * @param context A condition checking context to collect shared condition checks.
-     * 
-     * @throws CoreException May be thrown at any time.
-     */
-    protected abstract void checkFinalConditionsThis(RefactoringStatus status,
-            IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException;
-
-    /**
-     * Validates the new element name and returns a <tt>RefactoringStatus</tt> as result of the
-     * validation.
-     * 
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * 
-     * @throws CoreException If an error occurs while validating the new element name.
-     */
-    public final RefactoringStatus validateNewElementName(IProgressMonitor pm) throws CoreException {
-        RefactoringStatus status = new RefactoringStatus();
-        if (newElementName.length() < 1) {
-            status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEmpty);
-        } else if (newElementName.equals(ipsElement.getName())) {
-            status.addFatalError(Messages.RenameRefactoringProcessor_msgNewNameEqualsElementName);
-        } else {
-            validateNewElementNameThis(status, pm);
-        }
-        return status;
-    }
-
-    /**
-     * This operation is called by <tt>validateNewElementName</tt>. Subclasses must implement
-     * special name validations here.
-     * 
-     * @param status The <tt>RefactoringStatus</tt> to report messages to.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * 
-     * @throws CoreException May be thrown at any time.
-     */
-    protected abstract void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm)
             throws CoreException;
 
     /**
@@ -252,89 +178,6 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
         return null;
     }
 
-    @Override
-    public final Object[] getElements() {
-        return new Object[] { ipsElement };
-    }
-
-    @Override
-    public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-            SharableParticipants sharedParticipants) throws CoreException {
-
-        return ParticipantManager.loadRenameParticipants(status, this, ipsElement, new RenameArguments(newElementName,
-                true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This implementation always returns <tt>true</tt>, may be overwritten by subclasses if
-     * necessary.
-     */
-    @Override
-    public boolean isApplicable() throws CoreException {
-        return true;
-    }
-
-    /** Saves all modified <tt>IIpsSrcFile</tt>s. */
-    private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
-        for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
-            ipsSrcFile.save(true, pm);
-        }
-    }
-
-    /**
-     * Searches for all <tt>IIpsSrcFile</tt>s in the object path of all <tt>IIpsProject</tt>s
-     * referencing the <tt>IIpsProject</tt> that contains the <tt>IIpsElement</tt> to be renamed.
-     * The referenced <tt>IIpsProject</tt> is also searched.
-     * 
-     * @param ipsObjectType Only <tt>IIpsSrcFile</tt>s with this <tt>IpsObjectType</tt> are
-     *            searched.
-     * 
-     * @throws CoreException If an error occurs while searching for the source files.
-     * @throws NullPointerException If <tt>ipsObjectType</tt> is <tt>null</tt>.
-     */
-    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType ipsObjectType) throws CoreException {
-        ArgumentCheck.notNull(ipsObjectType);
-
-        Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
-        IIpsProject[] ipsProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
-        for (IIpsProject ipsProject : ipsProjects) {
-            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
-            for (IIpsSrcFile ipsSrcFile : srcFiles) {
-                collectedSrcFiles.add(ipsSrcFile);
-            }
-        }
-        return collectedSrcFiles;
-    }
-
-    /**
-     * Sets the new name for the <tt>IIpsElement</tt> to be refactored.
-     * 
-     * @param newElementName The new name for the <tt>IIpsElement</tt> to be refactored.
-     * 
-     * @throws NullPointerException If <tt>newElementName</tt> is <tt>null</tt>.
-     */
-    public final void setNewElementName(String newElementName) {
-        ArgumentCheck.notNull(newElementName);
-        this.newElementName = newElementName;
-    }
-
-    /** Returns the <tt>IIpsElement</tt> to be refactored. */
-    protected final IIpsElement getIpsElement() {
-        return ipsElement;
-    }
-
-    /** Returns the new name for the <tt>IIpsElement</tt> to be refactored. */
-    public final String getNewElementName() {
-        return newElementName;
-    }
-
-    /** Returns the original name of the <tt>IIpsElement</tt> to be refactored. */
-    public final String getOriginalElementName() {
-        return originalElementName;
-    }
-
     /**
      * Subclass implementation that is responsible for performing the necessary changes in the
      * Faktor-IPS model.
@@ -355,6 +198,13 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      */
     // TODO AW: Subclasses need the ability to search for references, we need a reference search.
     protected abstract Change refactorModel(IProgressMonitor pm) throws CoreException;
+
+    /** Saves all modified <tt>IIpsSrcFile</tt>s. */
+    private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+            ipsSrcFile.save(true, pm);
+        }
+    }
 
     /**
      * Registers the given <tt>IIpsSrcFile</tt> as modified source file so it saved at the end of
@@ -383,6 +233,52 @@ public abstract class RenameRefactoringProcessor extends RenameProcessor {
      */
     protected final Set<String> getIgnoredValidationMessageCodes() {
         return ignoredValidationMessageCodes;
+    }
+
+    @Override
+    public final Object[] getElements() {
+        return new Object[] { ipsElement };
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation always returns <tt>true</tt>, may be overwritten by subclasses if
+     * necessary.
+     */
+    @Override
+    public boolean isApplicable() throws CoreException {
+        return true;
+    }
+
+    /** Returns the <tt>IIpsElement</tt> to be refactored. */
+    protected final IIpsElement getIpsElement() {
+        return ipsElement;
+    }
+
+    /**
+     * Searches for all <tt>IIpsSrcFile</tt>s in the object path of all <tt>IIpsProject</tt>s
+     * referencing the <tt>IIpsProject</tt> that contains the <tt>IIpsElement</tt> to be renamed.
+     * The referenced <tt>IIpsProject</tt> is also searched.
+     * 
+     * @param ipsObjectType Only <tt>IIpsSrcFile</tt>s with this <tt>IpsObjectType</tt> are
+     *            searched.
+     * 
+     * @throws CoreException If an error occurs while searching for the source files.
+     * @throws NullPointerException If <tt>ipsObjectType</tt> is <tt>null</tt>.
+     */
+    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType ipsObjectType) throws CoreException {
+        ArgumentCheck.notNull(ipsObjectType);
+
+        Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
+        IIpsProject[] ipsProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
+        for (IIpsProject ipsProject : ipsProjects) {
+            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
+            for (IIpsSrcFile ipsSrcFile : srcFiles) {
+                collectedSrcFiles.add(ipsSrcFile);
+            }
+        }
+        return collectedSrcFiles;
     }
 
 }

@@ -32,9 +32,9 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String RenameRefactoringProcessor_errorIpsElementDoesNotExist;
+    public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
 
-    public static String RenameRefactoringProcessor_msgNewNameEmpty;
-    public static String RenameRefactoringProcessor_msgNewNameEqualsElementName;
+    public static String IpsRenameProcessor_msgNewNameEmpty;
+    public static String IpsRenameProcessor_msgNewNameEqualsElementName;
 
 }

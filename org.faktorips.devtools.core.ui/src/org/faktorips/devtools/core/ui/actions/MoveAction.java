@@ -14,52 +14,65 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.MoveResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
+import org.faktorips.devtools.core.ui.wizards.refactor.MoveRefactoringWizard;
 
 /**
  * Opens the move wizard to allow the user to move a product component or package fragment.
  * 
  * @author Thorsten Guenther
  */
-public class MoveAction extends IpsAction implements IShellProvider {
-
-    private Shell shell;
+public class MoveAction extends IpsRefactoringAction {
 
     public MoveAction(Shell shell, ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        this.shell = shell;
+        super(shell, selectionProvider);
         setText(Messages.MoveAction_name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
+
+        // Open refactoring wizard if supported for selection.
+        if (selected instanceof IType) {
+            Refactoring refactoring = ((IIpsElement)selected).getMoveRefactoring();
+
+            // Check initial conditions.
+            try {
+                boolean checkSucceeded = checkInitialConditions(refactoring);
+                if (!(checkSucceeded)) {
+                    return;
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Open the refactoring wizard.
+            RefactoringWizard moveWizard = new MoveRefactoringWizard(refactoring, (IIpsElement)selected);
+            openWizard(moveWizard);
+
+            return;
+        }
+
         if (selected instanceof IIpsElement) {
             MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_MOVE);
-            WizardDialog wd = new WizardDialog(shell, move);
+            WizardDialog wd = new WizardDialog(getShell(), move);
             wd.open();
         } else if (selected instanceof IResource) {
             MoveResourceAction action = new MoveResourceAction(this);
             action.selectionChanged(selection);
             action.run();
         }
-    }
-
-    /**
-     * Implementation of {@link IShellProvider#getShell()}.
-     */
-    public Shell getShell() {
-        return shell;
     }
 
 }

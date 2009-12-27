@@ -14,29 +14,32 @@
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.IIpsElement;
 
-public class Messages extends NLS {
+/**
+ * The one-and-only input page a Faktor-IPS move refactoring needs.
+ * 
+ * @author Alexander Weickmann
+ */
+public class MovePage extends IpsRefactoringUserInputPage {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.refactor.messages"; //$NON-NLS-1$
-
-    public static String ElementNames_Attribute;
-    public static String ElementNames_Method;
-    public static String ElementNames_Type;
-
-    public static String RenameRefactoringWizard_title;
-    public static String MoveRefactoringWizard_title;
-
-    public static String RenamePage_message;
-    public static String MovePage_message;
-    public static String RenamePage_labelNewName;
-
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    /**
+     * Creates the <tt>MovePage</tt>.
+     * 
+     * @param ipsElement The <tt>IIpsElement</tt> to be moved.
+     */
+    MovePage(IIpsElement ipsElement) {
+        super(ipsElement, "MovePage");
     }
 
-    private Messages() {
+    @Override
+    protected void setPromptMessage() {
+        setMessage(NLS.bind(Messages.MovePage_message, getIpsElementName(), getIpsElement().getName()));
+    }
 
+    public void createControl(Composite parent) {
+        // TODO AW: Finish this.
     }
 
 }

@@ -11,7 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.refactor;
+
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -21,15 +23,27 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
+/**
+ * 
+ * 
+ * @author Alexander Weickmann
+ */
+public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
 
     private static final String TEST_ERROR_MESSAGE = "TestError";
 
@@ -47,7 +61,7 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         RefactoringStatus status = mockProcessor.checkInitialConditions(new NullProgressMonitor());
         assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
-        assertEquals("TestError", status.getEntries()[0].getMessage());
+        assertEquals(TEST_ERROR_MESSAGE, status.getEntries()[0].getMessage());
     }
 
     public void testCheckInitialConditionsNonExistingIpsElement() throws OperationCanceledException, CoreException {
@@ -73,29 +87,6 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(2, status.getEntries().length);
         assertTrue(status.hasError());
         assertEquals(TEST_ERROR_MESSAGE, status.getEntries()[1].getMessage());
-    }
-
-    public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
-        mockProcessor.setNewElementName("test");
-        RefactoringStatus status = mockProcessor.checkFinalConditions(new NullProgressMonitor(),
-                new CheckConditionsContext());
-        assertEquals(1, status.getEntries().length);
-        assertTrue(status.hasError());
-        assertEquals(TEST_ERROR_MESSAGE, status.getEntries()[0].getMessage());
-        assertTrue(mockProcessor.validateNewElementNameThisCalled);
-    }
-
-    public void testValidateNewElementNameEmpty() throws CoreException {
-        RefactoringStatus status = mockProcessor.validateNewElementName(new NullProgressMonitor());
-        assertEquals(1, status.getEntries().length);
-        assertTrue(status.hasError());
-    }
-
-    public void testValidateNewElementNameEqualsOldElementName() throws CoreException {
-        mockProcessor.setNewElementName(POLICY_NAME);
-        RefactoringStatus status = mockProcessor.validateNewElementName(new NullProgressMonitor());
-        assertEquals(1, status.getEntries().length);
-        assertTrue(status.hasError());
     }
 
     public void testAddValidationMessagesToStatusEmptyList() throws CoreException {
@@ -174,19 +165,25 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(mockProcessor.isApplicable());
     }
 
-    public void testGetSetNewElementName() {
-        mockProcessor.setNewElementName("fooBar");
-        assertEquals("fooBar", mockProcessor.getNewElementName());
+    public void testFindReferencingIpsSrcFiles() throws CoreException {
+        IIpsProject referencingIpsProject = newIpsProject("ReferencingProject");
+        IIpsObjectPath objectPath = referencingIpsProject.getIpsObjectPath();
+        objectPath.newIpsProjectRefEntry(ipsProject);
+        referencingIpsProject.setIpsObjectPath(objectPath);
+        IIpsProject nonReferencingIpsProject = newIpsProject("NonReferencingProject");
+
+        IPolicyCmptType referencingPolicyCmptType = newPolicyCmptType(referencingIpsProject, "ReferencingPolicy");
+        IPolicyCmptType nonReferencingPolicyCmptType = newPolicyCmptType(nonReferencingIpsProject,
+                "NonReferencingPolicy");
+
+        Set<IIpsSrcFile> referencingPolicies = mockProcessor
+                .findReferencingIpsSrcFilesTest(IpsObjectType.POLICY_CMPT_TYPE);
+        assertTrue(referencingPolicies.contains(policyCmptType.getIpsSrcFile()));
+        assertTrue(referencingPolicies.contains(referencingPolicyCmptType.getIpsSrcFile()));
+        assertFalse(referencingPolicies.contains(nonReferencingPolicyCmptType.getIpsSrcFile()));
     }
 
-    public void testGetOriginalElementName() {
-        mockProcessor.setNewElementName("fooBar");
-        assertEquals(POLICY_NAME, mockProcessor.getOriginalElementName());
-    }
-
-    private class MockProcessor extends RenameRefactoringProcessor {
-
-        private boolean validateNewElementNameThisCalled;
+    private class MockProcessor extends IpsRefactoringProcessor {
 
         private boolean mockChangeExecuted;
 
@@ -196,10 +193,9 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         }
 
         @Override
-        protected void checkFinalConditionsThis(RefactoringStatus status,
-                IProgressMonitor pm,
-                CheckConditionsContext context) throws CoreException {
-            status.addError(TEST_ERROR_MESSAGE);
+        public RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+                throws CoreException, OperationCanceledException {
+            return null;
         }
 
         @Override
@@ -214,11 +210,6 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         }
 
         @Override
-        protected void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-            validateNewElementNameThisCalled = true;
-        }
-
-        @Override
         public String getIdentifier() {
             return null;
         }
@@ -230,6 +221,16 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
 
         private void addValidationMessagesToStatusTest(MessageList validationMessageList, RefactoringStatus status) {
             addValidationMessagesToStatus(validationMessageList, status);
+        }
+
+        private Set<IIpsSrcFile> findReferencingIpsSrcFilesTest(IpsObjectType ipsObjectType) throws CoreException {
+            return findReferencingIpsSrcFiles(ipsObjectType);
+        }
+
+        @Override
+        public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
+                SharableParticipants sharedParticipants) throws CoreException {
+            return null;
         }
 
         private class MockChange extends Change {
@@ -263,5 +264,4 @@ public class RenameRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         }
 
     }
-
 }

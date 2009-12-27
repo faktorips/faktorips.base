@@ -37,7 +37,9 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
+import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -45,7 +47,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
+public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
 
     /**
      * Creates a <tt>RenameAttributeProcessor</tt>.
@@ -53,7 +55,14 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
      * @param attribute The <tt>IAttribute</tt> to be refactored.
      */
     public RenameAttributeProcessor(IAttribute attribute) {
-        super(attribute);
+        super(attribute, false);
+    }
+
+    @Override
+    protected void initOriginalLocation() {
+        setOriginalLocation(new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType()
+                .getQualifiedName()
+                + "." + getAttribute().getName()));
     }
 
     @Override
@@ -63,8 +72,8 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
                     .getName()));
         } else {
             if (!(getAttribute().getType().isValid())) {
-                status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getAttribute().getType()
-                        .getName()));
+                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgTypeNotValid, getAttribute()
+                        .getType().getName()));
             }
         }
     }
@@ -77,19 +86,19 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
     }
 
     @Override
-    protected void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateTargetLocationThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         /*
          * TODO AW: Stop broadcasting change events would be good for name changing here, make it
          * published?
          */
-        getAttribute().setName(getNewElementName());
+        getAttribute().setName(getNewAttributeName());
 
         IIpsProject ipsProject = getAttribute().getIpsProject();
         MessageList validationMessageList = getAttribute().validate(ipsProject);
         validationMessageList.add(getType().validate(ipsProject));
         addValidationMessagesToStatus(validationMessageList, status);
 
-        getAttribute().setName(getOriginalElementName());
+        getAttribute().setName(getOriginalAttributeName());
 
         // The source file was not really modified.
         getAttribute().getIpsSrcFile().markAsClean();
@@ -128,9 +137,9 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
             }
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IAttributeValue attributeValue = generation.getAttributeValue(getOriginalElementName());
+                IAttributeValue attributeValue = generation.getAttributeValue(getOriginalAttributeName());
                 if (attributeValue != null) {
-                    attributeValue.setAttribute(getNewElementName());
+                    attributeValue.setAttribute(getNewAttributeName());
                     addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
@@ -169,9 +178,9 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
             }
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IConfigElement configElement = generation.getConfigElement(getOriginalElementName());
+                IConfigElement configElement = generation.getConfigElement(getOriginalAttributeName());
                 if (configElement != null) {
-                    configElement.setPolicyCmptTypeAttribute(getNewElementName());
+                    configElement.setPolicyCmptTypeAttribute(getNewAttributeName());
                     addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
@@ -196,8 +205,8 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
                 if (!(referencedPolicyCmptType.isSubtypeOrSameType(getType(), parameter.getIpsProject()))) {
                     continue;
                 }
-                for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalElementName())) {
-                    testAttribute.setAttribute(getNewElementName());
+                for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalAttributeName())) {
+                    testAttribute.setAttribute(getNewAttributeName());
                     addModifiedSrcFile(testCaseType.getIpsSrcFile());
                 }
             }
@@ -209,8 +218,18 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
      * user.
      */
     private void updateAttributeName() {
-        getAttribute().setName(getNewElementName());
+        getAttribute().setName(getNewAttributeName());
         addModifiedSrcFile(getAttribute().getIpsSrcFile());
+    }
+
+    /** Returns the new name of the <tt>IAttribute</tt> to be renamed, provided by the user. */
+    private String getNewAttributeName() {
+        return QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
+    }
+
+    /** Returns the original name of the <tt>IAttribute</tt> to be renamed. */
+    private String getOriginalAttributeName() {
+        return QNameUtil.getUnqualifiedName(getOriginalLocation().getQualifiedName());
     }
 
     /** Returns the <tt>IAttribute</tt> to be refactored. */
@@ -230,7 +249,7 @@ public final class RenameAttributeProcessor extends RenameRefactoringProcessor {
 
     @Override
     public String getProcessorName() {
-        return "Rename Attribute";
+        return Messages.RenameAttributeProcessor_processorName;
     }
 
 }

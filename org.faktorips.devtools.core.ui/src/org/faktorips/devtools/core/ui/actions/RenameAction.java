@@ -14,19 +14,11 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
@@ -34,7 +26,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
-import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
 import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
 
 /**
@@ -43,13 +34,10 @@ import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
  * 
  * @author Thorsten Guenther
  */
-public class RenameAction extends IpsAction implements IShellProvider {
-
-    private final Shell shell;
+public class RenameAction extends IpsRefactoringAction {
 
     public RenameAction(Shell shell, ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        this.shell = shell;
+        super(shell, selectionProvider);
         setText(Messages.RenameAction_name);
     }
 
@@ -59,15 +47,12 @@ public class RenameAction extends IpsAction implements IShellProvider {
 
         // Open refactoring wizard if supported for selection.
         if (selected instanceof IAttribute || selected instanceof IType) {
-            RenameRefactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
+            Refactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.
             try {
-                RefactoringStatus status = refactoring.checkInitialConditions(new NullProgressMonitor());
-                if (!(status.isOK())) {
-                    MessageDialog.openInformation(getShell(), refactoring.getName(),
-                            Messages.RenameAction_refactoringCurrentlyNotApplicable + "\n\n      - "
-                                    + status.getEntryWithHighestSeverity().getMessage());
+                boolean checkSucceeded = checkInitialConditions(refactoring);
+                if (!(checkSucceeded)) {
                     return;
                 }
             } catch (CoreException e) {
@@ -76,31 +61,20 @@ public class RenameAction extends IpsAction implements IShellProvider {
 
             // Open the refactoring wizard.
             RefactoringWizard renameWizard = new RenameRefactoringWizard(refactoring, (IIpsElement)selected);
-            IJobManager jobManager = Job.getJobManager();
-            jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
-            try {
-                Dialog dialog = new RefactoringDialog(getShell(), renameWizard);
-                dialog.create();
-                dialog.open();
-            } finally {
-                jobManager.endRule(ResourcesPlugin.getWorkspace().getRoot());
-            }
+            openWizard(renameWizard);
+
             return;
         }
 
         if (selected instanceof IIpsElement) {
             MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_RENAME);
-            WizardDialog wd = new WizardDialog(shell, move);
+            WizardDialog wd = new WizardDialog(getShell(), move);
             wd.open();
         } else if (selected instanceof IResource) {
             RenameResourceAction action = new RenameResourceAction(this);
             action.selectionChanged(selection);
             action.run();
         }
-    }
-
-    public Shell getShell() {
-        return shell;
     }
 
 }

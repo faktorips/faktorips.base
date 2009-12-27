@@ -485,4 +485,5 @@ public abstract class IpsAction extends Action {
     protected Iterator<Object> getSelectionIterator(IStructuredSelection selection) {
         return selection.iterator();
     }
+
 }

@@ -19,7 +19,7 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.stdbuilder.refactor.messages"; //$NON-NLS-1$
 
-    public static String RenameRefactoringParticipant_errorSyntaxErrors;
+    public static String RefactoringParticipantHelper_errorSyntaxErrors;
 
     static {
         // initialize resource bundle

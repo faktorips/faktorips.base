@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,34 +38,43 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.RenameRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
+import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Type" - refactoring.
+ * This is the "Rename Type" / "Move Type" - refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class RenameTypeProcessor extends RenameRefactoringProcessor {
+public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
 
-    /** New <tt>IIpsSrcFile</tt> containing a copy of the <tt>IPolicyCmptType</tt> to be renamed. */
+    /** New <tt>IIpsSrcFile</tt> containing a copy of the <tt>IType</tt> to be refactored. */
     private IIpsSrcFile copiedIpsSrcFile;
 
     /**
-     * Creates a <tt>RenameTypeProcessor</tt>.
+     * Creates a <tt>RenameTypeMoveTypeProcessor</tt>.
      * 
      * @param type The <tt>IType</tt> to be refactored.
+     * @param move Flag indicating whether a move is performed.
      */
-    public RenameTypeProcessor(IType type) {
-        super(type);
+    public RenameTypeMoveTypeProcessor(IType type, boolean move) {
+        super(type, move);
         getIgnoredValidationMessageCodes().add(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE);
         getIgnoredValidationMessageCodes().add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
     }
 
     @Override
+    protected void initOriginalLocation() {
+        setOriginalLocation(new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType()
+                .getQualifiedName()));
+    }
+
+    @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (!(getType().isValid())) {
-            status.addFatalError(NLS.bind(Messages.TypeRefactorings_msgTypeNotValid, getType().getName()));
+            status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgTypeNotValid, getType().getName()));
         }
     }
 
@@ -102,8 +110,26 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
         }
     }
 
+    /**
+     * Copies the <tt>IType</tt> to be refactored into a new source file with the new name inside
+     * the destination package.
+     */
+    private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
+        String targetFragmentName = QNameUtil.getPackageName(getTargetLocation().getQualifiedName());
+        IIpsPackageFragment targetFragment = getTargetLocation().getIpsPackageFragmentRoot().getIpsPackageFragment(
+                targetFragmentName);
+        IPath destinationFolder = targetFragment.getCorrespondingResource().getFullPath();
+
+        String targetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
+        String targetSrcFileName = targetName + "." + getType().getIpsObjectType().getFileExtension();
+        IPath destinationPath = destinationFolder.append(targetSrcFileName);
+
+        getType().getIpsSrcFile().getCorrespondingResource().copy(destinationPath, true, pm);
+        copiedIpsSrcFile = targetFragment.getIpsSrcFile(targetSrcFileName);
+    }
+
     @Override
-    protected void validateNewElementNameThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateTargetLocationThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         /*
          * Can't validate because for type validation the type's source file must be copied.
          * Validation will still be performed during final condition checking so it should be OK. We
@@ -113,25 +139,13 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
         for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
             String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
-            if (relevantNamePart.equals(getNewElementName())) {
-                status.addFatalError(NLS.bind(Messages.RenameTypeProcessor_msgSourceFileAlreadyExists,
-                        getNewElementName(), fragment.getName()));
+            String unqualifiedTargetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
+            if (relevantNamePart.equals(unqualifiedTargetName)) {
+                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists,
+                        unqualifiedTargetName, fragment.getName()));
                 break;
             }
         }
-    }
-
-    /** Copies the <tt>IType</tt> to be renamed into a new source file with the new name. */
-    private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
-        IPath destinationPath = getCorrespondingResource().getFullPath();
-        destinationPath = destinationPath.removeLastSegments(1);
-        destinationPath = destinationPath.append(getNewElementName() + "."
-                + getType().getIpsObjectType().getFileExtension());
-
-        getCorrespondingResource().copy(destinationPath, true, pm);
-
-        copiedIpsSrcFile = getType().getIpsPackageFragment().getIpsSrcFile(
-                getNewElementName() + "." + getType().getIpsObjectType().getFileExtension());
     }
 
     @Override
@@ -165,7 +179,7 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
     }
 
     /**
-     * Updates the reference to the <tt>IPolicyCmptType</tt> in the configuring
+     * Updates the reference to the <tt>IPolicyCmptType</tt> to be refactored in the configuring
      * <tt>IProductCmptType</tt>.
      * <p>
      * Only applicable to <tt>IPolicyCmptType</tt>s.
@@ -175,7 +189,7 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
             return;
         }
         IProductCmptType productCmptType = ((IPolicyCmptType)getType()).findProductCmptType(getIpsProject());
-        productCmptType.setPolicyCmptType(getQualifiedNewTypeName());
+        productCmptType.setPolicyCmptType(getTargetLocation().getQualifiedName());
         addModifiedSrcFile(productCmptType.getIpsSrcFile());
     }
 
@@ -197,15 +211,15 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
                     // Update the parameter's policy component type reference if it is not a
                     // subclass that is referenced.
-                    if (testParameter.getPolicyCmptType().equals(getQualifiedOriginalTypeName())) {
-                        testParameter.setPolicyCmptType(getQualifiedNewTypeName());
+                    if (testParameter.getPolicyCmptType().equals(getOriginalLocation().getQualifiedName())) {
+                        testParameter.setPolicyCmptType(getTargetLocation().getQualifiedName());
                         addModifiedSrcFile(ipsSrcFile);
                     }
 
                     // Update the test attributes where necessary.
                     for (ITestAttribute testAttribute : testParameter.getTestAttributes()) {
-                        if (testAttribute.getPolicyCmptType().equals(getQualifiedOriginalTypeName())) {
-                            testAttribute.setPolicyCmptType(getQualifiedNewTypeName());
+                        if (testAttribute.getPolicyCmptType().equals(getOriginalLocation().getQualifiedName())) {
+                            testAttribute.setPolicyCmptType(getTargetLocation().getQualifiedName());
                         }
                     }
                 }
@@ -214,7 +228,7 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
     }
 
     /**
-     * Updates the reference to the <tt>IProductCmptType</tt> in the configured
+     * Updates the reference to the <tt>IProductCmptType</tt> to be refactored in the configured
      * <tt>IPolicyCmptType</tt>.
      * <p>
      * Only applicable to <tt>IProductCmptType</tt>s.
@@ -224,13 +238,13 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
             return;
         }
         IPolicyCmptType policyCmptType = ((IProductCmptType)getType()).findPolicyCmptType(getIpsProject());
-        policyCmptType.setProductCmptType(getQualifiedNewTypeName());
+        policyCmptType.setProductCmptType(getTargetLocation().getQualifiedName());
         addModifiedSrcFile(policyCmptType.getIpsSrcFile());
     }
 
     /**
      * Updates references to the <tt>IProductCmptType</tt> in <tt>IProductCmpt</tt>s that are based
-     * on that <tt>IProductCmptType</tt>.
+     * on the <tt>IProductCmptType</tt> to be refactored.
      * <p>
      * Only applicable to <tt>IProductCmptType</tt>s.
      */
@@ -241,16 +255,16 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
         Set<IIpsSrcFile> productSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            if (productCmpt.getProductCmptType().equals(getQualifiedOriginalTypeName())) {
-                productCmpt.setProductCmptType(getQualifiedNewTypeName());
+            if (productCmpt.getProductCmptType().equals(getOriginalLocation().getQualifiedName())) {
+                productCmpt.setProductCmptType(getTargetLocation().getQualifiedName());
                 addModifiedSrcFile(ipsSrcFile);
             }
         }
     }
 
     /**
-     * Updates all references to the <tt>IType</tt> to be renamed in parameter data types of
-     * <tt>IMethod</tt>s.
+     * Updates all references in parameter data types of <tt>IMethod</tt>s to the <tt>IType</tt> to
+     * be refactored.
      */
     private void updateMethodParameterReferences(Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
         // We need all type source files.
@@ -263,8 +277,8 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
             IType type = (IType)ipsSrcFile.getIpsObject();
             for (IMethod method : type.getMethods()) {
                 for (IParameter parameter : method.getParameters()) {
-                    if (parameter.getDatatype().equals(getQualifiedOriginalTypeName())) {
-                        parameter.setDatatype(getQualifiedNewTypeName());
+                    if (parameter.getDatatype().equals(getOriginalLocation().getQualifiedName())) {
+                        parameter.setDatatype(getTargetLocation().getQualifiedName());
                         addModifiedSrcFile(ipsSrcFile);
                     }
                 }
@@ -274,14 +288,14 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     /**
      * Updates all references in associations of <tt>IType</tt>s that target the <tt>IType</tt> to
-     * be renamed.
+     * be refactored.
      */
     private void updateAssociationReferences(Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType type = (IType)ipsSrcFile.getIpsObject();
             for (IAssociation association : type.getAssociations()) {
-                if (association.getTarget().equals(getType().getQualifiedName())) {
-                    association.setTarget(getQualifiedNewTypeName());
+                if (association.getTarget().equals(getOriginalLocation().getQualifiedName())) {
+                    association.setTarget(getTargetLocation().getQualifiedName());
                     addModifiedSrcFile(ipsSrcFile);
                 }
             }
@@ -290,13 +304,13 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     /**
      * Updates the supertype property of all sub types that inherit from the <tt>IType</tt> to be
-     * renamed.
+     * refactored.
      */
     private void updateSubtypeReferences(Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-            IType type = (IType)ipsSrcFile.getIpsObject();
-            if (type.getSupertype().equals(getType().getQualifiedName())) {
-                type.setSupertype(getQualifiedNewTypeName());
+            IType potentialSubtype = (IType)ipsSrcFile.getIpsObject();
+            if (potentialSubtype.getSupertype().equals(getOriginalLocation().getQualifiedName())) {
+                potentialSubtype.setSupertype(getTargetLocation().getQualifiedName());
                 addModifiedSrcFile(ipsSrcFile);
             }
         }
@@ -304,34 +318,10 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     /**
      * Creates and returns a <tt>Change</tt> that describes the deletion of the resource
-     * corresponding to the <tt>IIpsSrcFile</tt> of the <tt>IType</tt> to be renamed.
+     * corresponding to the <tt>IIpsSrcFile</tt> of the <tt>IType</tt> to be refactored.
      */
     private Change deleteSourceFile() throws CoreException {
-        return new DeleteResourceChange(getCorrespondingResource().getFullPath(), true);
-    }
-
-    /**
-     * Returns the <tt>IResource</tt> corresponding to the <tt>IIpsSrcFile</tt> that contains the
-     * <tt>IType</tt> to be renamed.
-     */
-    private IResource getCorrespondingResource() {
-        return getType().getIpsSrcFile().getCorrespondingResource();
-    }
-
-    /** Returns the new qualified name of the <tt>IType</tt> to be renamed. */
-    private String getQualifiedNewTypeName() {
-        String newTypeName = getNewElementName();
-        if (getQualifiedOriginalTypeName().contains(".")) {
-            newTypeName = getQualifiedOriginalTypeName().substring(0,
-                    getQualifiedOriginalTypeName().lastIndexOf('.') + 1)
-                    + getNewElementName();
-        }
-        return newTypeName;
-    }
-
-    /** Returns the original qualified name of the <tt>IType</tt> to be renamed. */
-    private String getQualifiedOriginalTypeName() {
-        return getType().getQualifiedName();
+        return new DeleteResourceChange(getType().getIpsSrcFile().getCorrespondingResource().getFullPath(), true);
     }
 
     /** Returns the <tt>IType</tt> to be refactored. */
@@ -341,12 +331,12 @@ public final class RenameTypeProcessor extends RenameRefactoringProcessor {
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeMoveTypeProcessor";
     }
 
     @Override
     public String getProcessorName() {
-        return "Rename Type";
+        return Messages.RenameTypeMoveTypeProcessor_processorName;
     }
 
 }

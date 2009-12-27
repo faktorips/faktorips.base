@@ -19,29 +19,29 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * A wizard to guide the user trough a Faktor-IPS rename refactoring.
+ * A wizard to guide the user trough a Faktor-IPS move refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class RenameRefactoringWizard extends IpsRefactoringWizard {
+public final class MoveRefactoringWizard extends IpsRefactoringWizard {
 
     /**
-     * Creates a <tt>RenameRefactoringWizard</tt>.
+     * Creates a <tt>MoveRefactoringWizard</tt>.
      * 
      * @param refactoring The refactoring used by the wizard.
      * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public RenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+    public MoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png"));
-        setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, getIpsElementName()));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.png"));
+        setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
     }
 
     @Override
     protected void addUserInputPages() {
-        addPage(new RenamePage(getIpsElement()));
+        addPage(new MovePage(getIpsElement()));
     }
 
     @Override

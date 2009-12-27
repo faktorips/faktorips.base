@@ -13,14 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
-import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -28,38 +23,7 @@ import org.faktorips.runtime.IValidationContext;
  * 
  * @author Alexander Weickmann
  */
-public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest {
-
-    private IFolder modelFolder;
-
-    private IFolder internalFolder;
-
-    private IType policyClass;
-
-    private IType policyInterface;
-
-    private IType productClass;
-
-    private IType productInterface;
-
-    private IType productGenClass;
-
-    private IType productGenInterface;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // Initialize folders and Java elements.
-        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
-        internalFolder = modelFolder.getFolder("internal");
-        policyInterface = getJavaType(PACKAGE, POLICY_NAME, false);
-        policyClass = getJavaType(PACKAGE, POLICY_NAME, true);
-        productInterface = getJavaType(PACKAGE, PRODUCT_NAME, false);
-        productClass = getJavaType(PACKAGE, PRODUCT_NAME, true);
-        productGenInterface = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false);
-        productGenClass = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", true);
-    }
+public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
@@ -83,7 +47,9 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(policyCmptTypeAttribute, "test");
+        runRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(ipsPackageFragmentRoot, policyCmptType
+                .getQualifiedName()
+                + "." + "test"));
 
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
@@ -134,7 +100,9 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(productCmptTypeAttribute, "test");
+        runRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(ipsPackageFragmentRoot, productCmptType
+                .getQualifiedName()
+                + "." + "test"));
 
         // The former Java elements must no longer exist.
         assertFalse(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
@@ -157,7 +125,8 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     public void testRenamePolicyCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        runRenameRefactoring(policyCmptType, "RenamedPolicy");
+        runRenameRefactoring(policyCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
+                + "RenamedPolicy"));
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
@@ -172,7 +141,8 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
     public void testRenameProductCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        runRenameRefactoring(productCmptType, "RenamedProduct");
+        runRenameRefactoring(productCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
+                + "RenamedProduct"));
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, true).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false).exists());
@@ -188,14 +158,6 @@ public class RenameRefactoringParticipantTest extends AbstractIpsRefactoringTest
         assertTrue(policyClass.getMethod("getRenamedProduct", new String[0]).exists());
         assertTrue(policyClass.getMethod("getRenamedProductGen", new String[0]).exists());
         assertTrue(policyClass.getMethod("setRenamedProduct", new String[] { "QIRenamedProduct;", "Z" }).exists());
-    }
-
-    private IType getJavaType(String packageName, String typeName, boolean internal) {
-        IFolder folder = internal ? internalFolder : modelFolder;
-        String interfaceSeparator = internal ? "" : "I";
-        folder = (packageName == "") ? folder : folder.getFolder(packageName);
-        return ((ICompilationUnit)JavaCore.create(folder.getFile(interfaceSeparator + typeName + ".java")))
-                .getType(interfaceSeparator + typeName);
     }
 
 }

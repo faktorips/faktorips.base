@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -193,7 +193,16 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
      * <p>
      * The default implementation always returns <tt>null</tt>.
      */
-    public RenameRefactoring getRenameRefactoring() {
+    public ProcessorBasedRefactoring getRenameRefactoring() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The default implementation always returns <tt>null</tt>.
+     */
+    public ProcessorBasedRefactoring getMoveRefactoring() {
         return null;
     }
 

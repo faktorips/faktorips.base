@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -91,11 +91,19 @@ public interface IIpsElement extends IAdaptable {
     public boolean isContainedInArchive();
 
     /**
-     * Returns the <tt>RenameRefactoring</tt> for this <tt>IIpsElement</tt>. The
-     * <tt>RenameRefactoring</tt> can be used to safely rename this <tt>IIpsElement</tt>.
+     * The returned <tt>ProcessorBasedRefactoring</tt> can be used to safely rename this
+     * <tt>IIpsElement</tt> .
      * <p>
-     * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the rename refactoring.
+     * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Rename" refactoring.
      */
-    public RenameRefactoring getRenameRefactoring();
+    public ProcessorBasedRefactoring getRenameRefactoring();
+
+    /**
+     * The returned <tt>ProcessorBasedRefactoring</tt> can be used to safely move this
+     * <tt>IIpsElement</tt>.
+     * <p>
+     * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Move" refactoring.
+     */
+    public ProcessorBasedRefactoring getMoveRefactoring();
 
 }

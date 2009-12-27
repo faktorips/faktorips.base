@@ -28,10 +28,12 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String RenameAttributeProcessor_processorName;
     public static String RenameAttributeProcessor_msgAttributeNotValid;
 
-    public static String TypeRefactorings_msgTypeNotValid;
+    public static String RenameTypeMoveTypeProcessor_msgTypeNotValid;
 
-    public static String RenameTypeProcessor_msgSourceFileAlreadyExists;
+    public static String RenameTypeMoveTypeProcessor_processorName;
+    public static String RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists;
 
 }

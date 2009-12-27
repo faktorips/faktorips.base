@@ -85,7 +85,7 @@
       <renameParticipant
             class="org.faktorips.devtools.stdbuilder.refactor.RenameRefactoringParticipant"
             id="org.faktorips.devtools.stdbuilder.renameParticipant"
-            name="RenameParticipant">
+            name="StdBuilderRenameParticipant">
          <enablement>
             <or>
                <instanceof
@@ -99,6 +99,18 @@
                </instanceof>
             </or></enablement>
       </renameParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.moveParticipants">
+      <moveParticipant
+            class="org.faktorips.devtools.stdbuilder.refactor.MoveRefactoringParticipant"
+            id="org.faktorips.devtools.stdbuilder.moveParticipant"
+            name="StdBuilderMoveParticipant">
+         <enablement>
+            <instanceof
+                  value="org.faktorips.devtools.core.model.type.IType">
+            </instanceof></enablement>
+      </moveParticipant>
    </extension>
 
 </plugin>

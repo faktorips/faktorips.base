@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -178,8 +178,8 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     @Override
-    public RenameRefactoring getRenameRefactoring() {
-        return new RenameRefactoring(new RenameAttributeProcessor(this));
+    public ProcessorBasedRefactoring getRenameRefactoring() {
+        return new ProcessorBasedRefactoring(new RenameAttributeProcessor(this));
     }
 
 }
