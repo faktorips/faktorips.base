@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -141,15 +140,13 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
     }
 
     @Override
-    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        // Copy the source file to the target location again if it was deleted during final
+        // condition checking because of warnings.
         if (copiedIpsSrcFile == null) {
             copyToNewSourceFile(pm);
         }
-        return null;
-    }
 
-    @Override
-    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
         // Initialized here because these source files are needed in multiple helper methods.
         Set<IIpsSrcFile> typeSrcFiles = findReferencingIpsSrcFiles(getType().getIpsObjectType());
 
