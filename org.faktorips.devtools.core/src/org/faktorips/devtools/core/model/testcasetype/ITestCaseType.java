@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.model.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
@@ -56,7 +55,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Creates a new test expected result rule parameter.
      */
     public TestRuleParameter newExpectedResultRuleParameter();
-    
+
     /**
      * Creates a new test combined value parameter.
      */
@@ -70,8 +69,8 @@ public interface ITestCaseType extends IIpsMetaClass {
     /**
      * Search and return the test parameter by the given name.
      * <p>
-     * Returns <code>null</code> if the test parameter was not found.
-     * Returns the first test parameter if more than one test parameter found.
+     * Returns <code>null</code> if the test parameter was not found. Returns the first test
+     * parameter if more than one test parameter found.
      * 
      * @throws CoreException if an error occurs.
      */
@@ -83,7 +82,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Returns an empty list if the test case type contains no test parameters.
      */
     public ITestParameter[] getTestParameters();
-    
+
     /**
      * Returns all input parameters or an empty array if the test case type hasn't got any input
      * parameters.
@@ -91,23 +90,23 @@ public interface ITestCaseType extends IIpsMetaClass {
     public ITestParameter[] getInputTestParameters();
 
     /**
-     * Returns all test value parameters or an empty array if the test case type hasn't got
-     * any test value parameters.
+     * Returns all test value parameters or an empty array if the test case type hasn't got any test
+     * value parameters.
      */
     public ITestValueParameter[] getTestValueParameters();
-    
+
     /**
-     * Returns all test rule parameters or an empty array if the test case
-     * type hasn't got any test rule parameters.
+     * Returns all test rule parameters or an empty array if the test case type hasn't got any test
+     * rule parameters.
      */
     public ITestRuleParameter[] getTestRuleParameters();
-    
+
     /**
      * Returns all root test policy component type parameters or an empty array if the test case
      * type hasn't got any test policy component type parameters.
      */
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters();
-    
+
     /**
      * Returns all input test value parameters or an empty array if the test case type hasn't got
      * any input test value parameters.
@@ -121,9 +120,9 @@ public interface ITestCaseType extends IIpsMetaClass {
     public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters();
 
     /**
-     * Returns the input test value parameter or <code>null</code> if not found.
-     * Returns the first test parameter if more than one test parameter found.
-     *      
+     * Returns the input test value parameter or <code>null</code> if not found. Returns the first
+     * test parameter if more than one test parameter found.
+     * 
      * @throws CoreException if an error occurs.
      */
     public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException;
@@ -156,8 +155,8 @@ public interface ITestCaseType extends IIpsMetaClass {
     public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters();
 
     /**
-     * Returns the expected result test value parameter or <code>null</code> if not found.
-     * Returns the first test parameter if more than one test parameter found.
+     * Returns the expected result test value parameter or <code>null</code> if not found. Returns
+     * the first test parameter if more than one test parameter found.
      * 
      * @throws CoreException if an error occurs.
      */
@@ -165,20 +164,19 @@ public interface ITestCaseType extends IIpsMetaClass {
             throws CoreException;
 
     /**
-     * Returns the expected result test policy component type parameter or <code>null</code> if
-     * not found.
-     * Returns the first test parameter if more than one test parameter found.
+     * Returns the expected result test policy component type parameter or <code>null</code> if not
+     * found. Returns the first test parameter if more than one test parameter found.
      * 
      * @throws CoreException if an error occurs.
      */
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
             throws CoreException;
-    
+
     /**
      * Evaluates and returns an unique name (inside this test case) for the test attribute.
      */
-    public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name); 
-    
+    public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name);
+
     /**
      * Moves the test parameter identified by the indexes up or down by one position. If one of the
      * indexes is 0 (the first test parameter), nothing is moved up. If one of the indexes is the
@@ -193,20 +191,22 @@ public interface ITestCaseType extends IIpsMetaClass {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a test parameter.
      */
     public int[] moveTestParameters(int[] indexes, boolean up);
-    
+
     /**
      * Returns all validation rules from the test policy cmpts which are related by the test policy
      * cmpt type parameters inside this test case type.
+     * 
      * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs
      */
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
-    
+
     /**
-     * Searchs and returns the validation rule with the given name which is inside the test case type.
-     * The rule will be searched in all policy cmpt types which are related by test test policy cmpt type 
-     * parameters.
+     * Searchs and returns the validation rule with the given name which is inside the test case
+     * type. The rule will be searched in all policy cmpt types which are related by test test
+     * policy cmpt type parameters.
+     * 
      * @param ipsProject TODO
      */
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
