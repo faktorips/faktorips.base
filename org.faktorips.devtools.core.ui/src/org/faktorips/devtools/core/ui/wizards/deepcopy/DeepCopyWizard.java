@@ -106,7 +106,7 @@ public class DeepCopyWizard extends ResizableWizard {
         try {
             GregorianCalendar structureDate = null;
             if (validFromOfGenerationSource == null) {
-                structureDate = product.getGeneration(product.getNumOfGenerations()).getValidFrom();
+                structureDate = product.getGeneration(product.getNumOfGenerations() - 1).getValidFrom();
             } else {
                 structureDate = product.getGenerationByEffectiveDate(validFromOfGenerationSource).getValidFrom();
             }
