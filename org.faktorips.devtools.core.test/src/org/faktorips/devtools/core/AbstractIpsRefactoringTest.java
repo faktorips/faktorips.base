@@ -22,7 +22,6 @@ import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -93,8 +92,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected IConfigElement productCmptGenerationConfigElement;
 
-    protected IIpsPackageFragmentRoot ipsPackageFragmentRoot;
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -146,9 +143,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
         testAttribute.setPolicyCmptType(QUALIFIED_POLICY_NAME);
-
-        // It is actually the same root for all created IPS elements.
-        ipsPackageFragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
     }
 
     /**

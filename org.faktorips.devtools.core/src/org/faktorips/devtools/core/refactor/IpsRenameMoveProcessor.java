@@ -25,7 +25,6 @@ import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -96,9 +95,8 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
 
     /**
      * Validates the target location and returns a <tt>RefactoringStatus</tt> as result of the
-     * validation. This base implementation checks that the unqualified name is not empty and that
-     * the qualified name as a whole does not correspond to the qualified name of the original
-     * location.
+     * validation. This base implementation checks that the name is not empty and that the name does
+     * not correspond to the name of the original location.
      * 
      * @param pm An <tt>IProgressMonitor</tt> to report progress to.
      * 
@@ -106,9 +104,9 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
      */
     public final RefactoringStatus validateTargetLocation(IProgressMonitor pm) throws CoreException {
         RefactoringStatus status = new RefactoringStatus();
-        if (QNameUtil.getUnqualifiedName(targetLocation.getQualifiedName()).length() < 1) {
+        if (targetLocation.getName().length() < 1) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
-        } else if (targetLocation.getQualifiedName().equals(originalLocation.getQualifiedName())) {
+        } else if (targetLocation.getName().equals(originalLocation.getName())) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEqualsElementName);
         } else {
             validateTargetLocationThis(status, pm);
@@ -137,8 +135,7 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
                     targetLocation, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
         } else {
             return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new RenameArguments(
-                    QNameUtil.getUnqualifiedName(targetLocation.getQualifiedName()), true),
-                    new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
+                    targetLocation.getName(), true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
         }
     }
 

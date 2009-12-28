@@ -47,9 +47,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(ipsPackageFragmentRoot, policyCmptType
-                .getQualifiedName()
-                + "." + "test"));
+        runRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+                "test"));
 
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
@@ -100,9 +99,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
 
         // Refactor the attribute.
-        runRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(ipsPackageFragmentRoot, productCmptType
-                .getQualifiedName()
-                + "." + "test"));
+        runRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+                "test"));
 
         // The former Java elements must no longer exist.
         assertFalse(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
@@ -125,8 +123,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     public void testRenamePolicyCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        runRenameRefactoring(policyCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
-                + "RenamedPolicy"));
+        runRenameRefactoring(policyCmptType, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+                "RenamedPolicy"));
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
@@ -141,8 +139,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     public void testRenameProductCmptType() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        runRenameRefactoring(productCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
-                + "RenamedProduct"));
+        runRenameRefactoring(productCmptType, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+                "RenamedProduct"));
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, true).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false).exists());

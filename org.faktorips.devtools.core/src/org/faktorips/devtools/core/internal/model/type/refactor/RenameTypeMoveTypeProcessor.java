@@ -26,7 +26,6 @@ import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -40,7 +39,6 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -67,7 +65,7 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
 
     @Override
     protected LocationDescriptor initOriginalLocation() {
-        return new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType().getQualifiedName());
+        return new LocationDescriptor(getType().getIpsPackageFragment(), getType().getName());
     }
 
     @Override
@@ -84,13 +82,12 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
          * Validation will still be performed during final condition checking so it should be OK. We
          * check if there is already a source file with the new name in this package however.
          */
-        for (IIpsSrcFile ipsSrcFile : getTargetIpsPackageFragment().getIpsSrcFiles()) {
+        for (IIpsSrcFile ipsSrcFile : getTargetLocation().getIpsPackageFragment().getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
             String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
-            String unqualifiedTargetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
-            if (relevantNamePart.equals(unqualifiedTargetName)) {
+            if (relevantNamePart.equals(getTargetLocation().getName())) {
                 status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists,
-                        unqualifiedTargetName, getTargetIpsPackageFragment().getName()));
+                        getTargetLocation().getName(), getTargetLocation().getIpsPackageFragment().getName()));
                 break;
             }
         }
@@ -133,20 +130,14 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
      * the destination package.
      */
     private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
-        IPath destinationFolder = getTargetIpsPackageFragment().getCorrespondingResource().getFullPath();
+        IPath destinationFolder = getTargetLocation().getIpsPackageFragment().getCorrespondingResource().getFullPath();
 
-        String targetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
-        String targetSrcFileName = targetName + "." + getType().getIpsObjectType().getFileExtension();
+        String targetSrcFileName = getTargetLocation().getName() + "."
+                + getType().getIpsObjectType().getFileExtension();
         IPath destinationPath = destinationFolder.append(targetSrcFileName);
 
         getType().getIpsSrcFile().getCorrespondingResource().copy(destinationPath, true, pm);
-        copiedIpsSrcFile = getTargetIpsPackageFragment().getIpsSrcFile(targetSrcFileName);
-    }
-
-    /** Returns the target <tt>IIpsPackageFragment</tt>. */
-    private IIpsPackageFragment getTargetIpsPackageFragment() {
-        String targetFragmentName = QNameUtil.getPackageName(getTargetLocation().getQualifiedName());
-        return getTargetLocation().getIpsPackageFragmentRoot().getIpsPackageFragment(targetFragmentName);
+        copiedIpsSrcFile = getTargetLocation().getIpsPackageFragment().getIpsSrcFile(targetSrcFileName);
     }
 
     @Override

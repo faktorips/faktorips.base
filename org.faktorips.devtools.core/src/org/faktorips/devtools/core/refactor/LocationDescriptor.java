@@ -13,24 +13,24 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * A <tt>LocationDescriptor</tt> represents a location of an <tt>IIpsElement</tt>. It is currently
  * used by the "Rename Type" and "Move Type" refactorings for example.
  * <p>
- * A location consists of an <tt>IIpsPackageFragmentRoot</tt>, and a qualified name.
+ * A location consists of an <tt>IIpsPackageFragment</tt>, and an unqualified name.
  * 
  * @author Alexander Weickmann
  */
 public final class LocationDescriptor {
 
-    /** The location's <tt>IIpsPackageFragmentRoot</tt>. */
-    private final IIpsPackageFragmentRoot ipsPackageFragmentRoot;
+    /** The location's <tt>IIpsPackageFragment</tt>. */
+    private final IIpsPackageFragment ipsPackageFragment;
 
-    /** The location's qualified name. */
-    private final String qualifiedName;
+    /** The location's unqualified name. */
+    private final String name;
 
     /** Lazily initialized, cached hash code. */
     private volatile int hashCode;
@@ -38,25 +38,25 @@ public final class LocationDescriptor {
     /**
      * Creates a <tt>LocationDescriptor</tt>.
      * 
-     * @param ipsPackageFragmentRoot The location's <tt>IIpsPackageFragmentRoot</tt>.
-     * @param name The location's qualified name.
+     * @param ipsPackageFragment The location's <tt>IIpsPackageFragment</tt>.
+     * @param name The location's unqualified name.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public LocationDescriptor(IIpsPackageFragmentRoot ipsPackageFragmentRoot, String qualifiedName) {
-        ArgumentCheck.notNull(new Object[] { ipsPackageFragmentRoot, qualifiedName });
-        this.ipsPackageFragmentRoot = ipsPackageFragmentRoot;
-        this.qualifiedName = qualifiedName;
+    public LocationDescriptor(IIpsPackageFragment ipsPackageFragment, String name) {
+        ArgumentCheck.notNull(new Object[] { ipsPackageFragment, name });
+        this.ipsPackageFragment = ipsPackageFragment;
+        this.name = name;
     }
 
-    /** Returns the location's <tt>IIpsPackageFragmentRoot</tt>. */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return ipsPackageFragmentRoot;
+    /** Returns the location's <tt>IIpsPackageFragment</tt>. */
+    public IIpsPackageFragment getIpsPackageFragment() {
+        return ipsPackageFragment;
     }
 
-    /** Returns the location's qualified name. */
-    public String getQualifiedName() {
-        return qualifiedName;
+    /** Returns the location's name. */
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -68,8 +68,8 @@ public final class LocationDescriptor {
             return false;
         }
         LocationDescriptor otherLocationDescriptor = (LocationDescriptor)obj;
-        return ipsPackageFragmentRoot.equals(otherLocationDescriptor.ipsPackageFragmentRoot)
-                && qualifiedName.equals(otherLocationDescriptor.qualifiedName);
+        return ipsPackageFragment.equals(otherLocationDescriptor.ipsPackageFragment)
+                && name.equals(otherLocationDescriptor.name);
     }
 
     @Override
@@ -77,8 +77,8 @@ public final class LocationDescriptor {
         int result = hashCode;
         if (result == 0) {
             result = 17;
-            result = 31 * result + ipsPackageFragmentRoot.hashCode();
-            result = 31 * result + qualifiedName.hashCode();
+            result = 31 * result + ipsPackageFragment.hashCode();
+            result = 31 * result + name.hashCode();
             hashCode = result;
         }
         return result;
@@ -86,8 +86,15 @@ public final class LocationDescriptor {
 
     @Override
     public String toString() {
-        return "LocationDescriptor: IPS Package Fragment Root [" + ipsPackageFragmentRoot + "] Qualified Name ["
-                + qualifiedName + "]";
+        return "LocationDescriptor: IPS Package Fragment [" + ipsPackageFragment + "] Name [" + name + "]";
+    }
+
+    /**
+     * Returns the qualified name build from the location's <tt>IIpsPackageFragment</tt> and the
+     * location's unqualified name.
+     */
+    public String getQualifiedName() {
+        return (ipsPackageFragment.isDefaultPackage()) ? name : ipsPackageFragment.getName() + "." + name;
     }
 
 }

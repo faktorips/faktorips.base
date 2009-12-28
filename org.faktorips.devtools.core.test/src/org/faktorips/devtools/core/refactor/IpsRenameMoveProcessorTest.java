@@ -41,12 +41,13 @@ public class IpsRenameMoveProcessorTest extends AbstractIpsRefactoringTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        originalPolicyCmptTypeLocation = new LocationDescriptor(ipsPackageFragmentRoot, POLICY_NAME);
+        originalPolicyCmptTypeLocation = new LocationDescriptor(policyCmptType.getIpsPackageFragment(), POLICY_NAME);
         mockRenameTypeProcessor = new MockProcessor(policyCmptType, false);
     }
 
     public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
-        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, "test"));
+        mockRenameTypeProcessor
+                .setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "test"));
         RefactoringStatus status = mockRenameTypeProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertEquals(1, status.getEntries().length);
@@ -55,22 +56,23 @@ public class IpsRenameMoveProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(mockRenameTypeProcessor.validateNewElementNameThisCalled);
     }
 
-    public void testValidateTargetLocationEmptyUnqualifiedName() throws CoreException {
-        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, "pack."));
+    public void testValidateTargetLocationEmptyName() throws CoreException {
+        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), ""));
         RefactoringStatus status = mockRenameTypeProcessor.validateTargetLocation(new NullProgressMonitor());
         assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
     }
 
-    public void testValidateTargetLocationQualifiedNameEqualsOldElementName() throws CoreException {
-        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, POLICY_NAME));
+    public void testValidateTargetLocationNameEqualsOldElementName() throws CoreException {
+        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+                POLICY_NAME));
         RefactoringStatus status = mockRenameTypeProcessor.validateTargetLocation(new NullProgressMonitor());
         assertEquals(1, status.getEntries().length);
         assertTrue(status.hasError());
     }
 
     public void testGetSetTargetLocation() {
-        LocationDescriptor targetLocation = new LocationDescriptor(ipsPackageFragmentRoot, "test");
+        LocationDescriptor targetLocation = new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "test");
         mockRenameTypeProcessor.setTargetLocation(targetLocation);
         assertEquals(targetLocation, mockRenameTypeProcessor.getTargetLocation());
     }

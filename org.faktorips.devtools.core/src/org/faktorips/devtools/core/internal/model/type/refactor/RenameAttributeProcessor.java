@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -60,8 +59,7 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
 
     @Override
     protected LocationDescriptor initOriginalLocation() {
-        return new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType().getQualifiedName() + "."
-                + getAttribute().getName());
+        return new LocationDescriptor(getType().getIpsPackageFragment(), getAttribute().getName());
     }
 
     @Override
@@ -223,12 +221,12 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
 
     /** Returns the new name of the <tt>IAttribute</tt> to be renamed, provided by the user. */
     private String getNewAttributeName() {
-        return QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
+        return getTargetLocation().getName();
     }
 
     /** Returns the original name of the <tt>IAttribute</tt> to be renamed. */
     private String getOriginalAttributeName() {
-        return QNameUtil.getUnqualifiedName(getOriginalLocation().getQualifiedName());
+        return getOriginalLocation().getName();
     }
 
     /** Returns the <tt>IAttribute</tt> to be refactored. */

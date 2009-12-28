@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
 
 /**
@@ -42,9 +41,7 @@ class RenamePage extends IpsRenameMovePage {
 
     @Override
     protected LocationDescriptor getTargetLocationFromUserInput() {
-        IIpsPackageFragmentRoot targetRoot = getOriginalLocation().getIpsPackageFragmentRoot();
-        String targetQualifiedName = getOriginalLocation().getQualifiedName();
-        return new LocationDescriptor(targetRoot, targetQualifiedName);
+        return new LocationDescriptor(getOriginalLocation().getIpsPackageFragment(), getUserInputNewName());
     }
 
 }

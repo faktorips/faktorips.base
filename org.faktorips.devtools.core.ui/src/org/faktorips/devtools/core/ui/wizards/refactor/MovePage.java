@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * The <tt>MovePage</tt> provides a tree viewer that enables the user to choose a target destination
@@ -75,27 +74,17 @@ public class MovePage extends IpsRenameMovePage {
             throw new RuntimeException("No selection available.");
         }
 
-        IIpsPackageFragmentRoot targetRoot;
         IIpsPackageFragment targetFragment;
         if (selectedElement instanceof IIpsPackageFragmentRoot) {
-            targetRoot = (IIpsPackageFragmentRoot)selectedElement;
-            if (getUserInputNewName().length() == 0) {
-                targetFragment = targetRoot.getDefaultIpsPackageFragment();
-            } else {
-                String targetFragmentName = QNameUtil.getPackageName(getUserInputNewName());
-                targetFragment = targetRoot.getIpsPackageFragment(targetFragmentName);
-            }
+            IIpsPackageFragmentRoot targetRoot = (IIpsPackageFragmentRoot)selectedElement;
+            targetFragment = targetRoot.getDefaultIpsPackageFragment();
         } else if (selectedElement instanceof IIpsPackageFragment) {
             targetFragment = (IIpsPackageFragment)selectedElement;
-            targetRoot = targetFragment.getRoot();
         } else {
             throw new RuntimeException("Only package fragment roots and package fragments are valid selections.");
         }
 
-        String targetQualifiedName = (targetFragment.isDefaultPackage()) ? getUserInputNewName() : targetFragment
-                .getName()
-                + "." + getUserInputNewName();
-        return new LocationDescriptor(targetRoot, targetQualifiedName);
+        return new LocationDescriptor(targetFragment, getUserInputNewName());
     }
 
     @Override
@@ -145,17 +134,7 @@ public class MovePage extends IpsRenameMovePage {
      * <tt>IIpsElement</tt> to move.
      */
     private void setInitialTreeViewerSelection() {
-        // TODO AW: This is quite a pain, we should really add an IpsPackageFragment to
-        // LocationDescriptor
-        IIpsPackageFragmentRoot originalPackageFragmentRoot = getOriginalLocation().getIpsPackageFragmentRoot();
-        String originalPackageName = QNameUtil.getPackageName(getOriginalLocation().getQualifiedName());
-        IIpsPackageFragment originalPackageFragment;
-        if (originalPackageName.length() == 0) {
-            originalPackageFragment = originalPackageFragmentRoot.getDefaultIpsPackageFragment();
-        } else {
-            originalPackageFragment = originalPackageFragmentRoot.getIpsPackageFragment(originalPackageName);
-        }
-        treeViewer.setSelection(new StructuredSelection(originalPackageFragment));
+        treeViewer.setSelection(new StructuredSelection(getOriginalLocation().getIpsPackageFragment()));
         treeViewer.refresh();
     }
 

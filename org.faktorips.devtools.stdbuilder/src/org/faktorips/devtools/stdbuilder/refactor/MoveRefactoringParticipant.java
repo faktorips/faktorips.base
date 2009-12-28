@@ -46,7 +46,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -216,17 +215,16 @@ public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring
         refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedProductCmptType));
     }
 
-    /** Returns the unqualified new name. */
+    /** Returns the new name of the <tt>IIpsElement</tt> to refactor. */
     private String getNewName() {
         LocationDescriptor targetLocation = (LocationDescriptor)getArguments().getDestination();
-        return QNameUtil.getUnqualifiedName(targetLocation.getQualifiedName());
+        return targetLocation.getName();
     }
 
-    /** Returns the target <tt>IIpsPackageFragment</tt>. */
+    /** Returns the target <tt>IIpsPackageFragment</tt> of the <tt>IIpsElement</tt> to refactor. */
     private IIpsPackageFragment getTargetIpsPackageFragment() {
         LocationDescriptor targetLocation = (LocationDescriptor)getArguments().getDestination();
-        String targetFragment = QNameUtil.getUnqualifiedName(targetLocation.getQualifiedName());
-        return targetLocation.getIpsPackageFragmentRoot().getIpsPackageFragment(targetFragment);
+        return targetLocation.getIpsPackageFragment();
     }
 
     @Override

@@ -119,7 +119,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)refactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, "test"));
+        renameProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "test"));
         RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertFalse(status.hasError());
@@ -128,7 +128,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
     public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)refactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "." + PRODUCT_NAME));
+        renameProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), PRODUCT_NAME));
         RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());
@@ -137,7 +137,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
     public void testCheckFinalConditionsInvalidTypeName() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)refactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, "$§§  $"));
+        renameProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "$§§  $"));
         RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());
@@ -145,8 +145,8 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenamePolicyCmptType() throws CoreException {
         String newElementName = "NewPolicy";
-        runRenameRefactoring(policyCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
-                + newElementName));
+        runRenameRefactoring(policyCmptType, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+                newElementName));
 
         // Find the new policy component type.
         IIpsSrcFile ipsSrcFile = policyCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
@@ -173,7 +173,8 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameSuperPolicyCmptType() throws CoreException {
         String newElementName = "NewSuperPolicy";
-        runRenameRefactoring(superPolicyCmptType, new LocationDescriptor(ipsPackageFragmentRoot, newElementName));
+        runRenameRefactoring(superPolicyCmptType, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
+                newElementName));
 
         // Check for test attribute update.
         assertEquals(newElementName, superTestAttribute.getPolicyCmptType());
@@ -184,8 +185,8 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameProductCmptType() throws CoreException {
         String newElementName = "NewProduct";
-        runRenameRefactoring(productCmptType, new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "."
-                + newElementName));
+        runRenameRefactoring(productCmptType, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+                newElementName));
 
         // Find the new product component type.
         IIpsSrcFile ipsSrcFile = productCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
@@ -211,7 +212,8 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameSuperProductCmptType() throws CoreException {
         String newElementName = "NewSuperProduct";
-        runRenameRefactoring(superProductCmptType, new LocationDescriptor(ipsPackageFragmentRoot, newElementName));
+        runRenameRefactoring(superProductCmptType, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
+                newElementName));
 
         // Check for subtype update.
         assertEquals(newElementName, productCmptType.getSupertype());
