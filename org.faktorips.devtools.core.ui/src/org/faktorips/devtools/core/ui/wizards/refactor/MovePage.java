@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -117,15 +116,8 @@ public class MovePage extends IpsRenameMovePage {
         treeViewer.setLabelProvider(new MoveLabelProvider());
         treeViewer.setContentProvider(new MoveContentProvider());
         try {
-            IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-            // Filter projects that are not model projects. TODO AW: Move to IpsModel.
-            List<IIpsProject> inputProjects = new LinkedList<IIpsProject>();
-            for (IIpsProject ipsProject : ipsProjects) {
-                if (ipsProject.isModelProject()) {
-                    inputProjects.add(ipsProject);
-                }
-            }
-            treeViewer.setInput(inputProjects.toArray(new IIpsProject[inputProjects.size()]));
+            IIpsProject[] modelProjects = IpsPlugin.getDefault().getIpsModel().getIpsModelProjects();
+            treeViewer.setInput(modelProjects);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
