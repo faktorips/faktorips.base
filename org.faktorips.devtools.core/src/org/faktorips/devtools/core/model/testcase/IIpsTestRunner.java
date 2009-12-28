@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,54 +32,56 @@ public interface IIpsTestRunner {
      * @throws CoreException if an error occurs.
      */
     public void terminate() throws CoreException;
-    
+
     /**
      * Adds the given ips test run listener to the collection of listeners
      */
     public void addIpsTestRunListener(IIpsTestRunListener newListener);
-    
-	/**
-	 * Removes the given ips test run listener from the collection of listeners
-	 */
-	public void removeIpsTestRunListener(IIpsTestRunListener listener);
-	
-	/**
-	 * Returns all registered ips test run listener.
-	 */
-	public List getIpsTestRunListener();
-	
-	/**
-	 * Sets the java project the test which will be started by this runner belongs to.
-	 */
-	public void setIpsProject(IIpsProject ipsProject);
-	
-	/**
-	 * Returns the ips project.
-	 */
-	public IIpsProject getIpsProject();	
-	
-	/**
-	 * Starts a new job for running tests.
-     * 
-     * @param classpathRepository the repository where the test are selected from
-     * @param testPackage the package including the tests
-     * 
-	 * @throws CoreException if an error occurred.
-	 */
-	public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
+
+    /**
+     * Removes the given ips test run listener from the collection of listeners
+     */
+    public void removeIpsTestRunListener(IIpsTestRunListener listener);
+
+    /**
+     * Returns all registered ips test run listener.
+     */
+    public List<IIpsTestRunListener> getIpsTestRunListener();
+
+    /**
+     * Sets the java project the test which will be started by this runner belongs to.
+     */
+    public void setIpsProject(IIpsProject ipsProject);
+
+    /**
+     * Returns the ips project.
+     */
+    public IIpsProject getIpsProject();
 
     /**
      * Starts a new job for running tests.
      * 
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
-     * @param mode The mode to run the test with @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
+     * 
+     * @throws CoreException if an error occurred.
+     */
+    public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
+
+    /**
+     * Starts a new job for running tests.
+     * 
+     * @param classpathRepository the repository where the test are selected from
+     * @param testPackage the package including the tests
+     * @param mode The mode to run the test with @see
+     *            org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
      * @param launch An existing launch to run/debug the test runner with
      * 
      * @throws CoreException if an error occurred.
      */
-    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch) throws CoreException;
-    
+    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch)
+            throws CoreException;
+
     /**
      * Returns <code>true</code> if a new test can be started.
      */
