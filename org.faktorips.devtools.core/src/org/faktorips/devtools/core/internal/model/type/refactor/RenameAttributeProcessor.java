@@ -165,10 +165,6 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
             IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
             IProductCmptType configuringProductCmptType = ((IPolicyCmptType)getType())
                     .findProductCmptType(getIpsProject());
-            /*
-             * TODO AW: If a method isSubtypeOrSameType(String qualifiedName) would be provided,
-             * this and the other refactorings could have better performance.
-             */
             if (!(referencedProductCmptType
                     .isSubtypeOrSameType(configuringProductCmptType, productCmpt.getIpsProject()))) {
                 continue;

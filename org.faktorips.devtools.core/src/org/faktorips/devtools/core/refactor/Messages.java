@@ -15,10 +15,6 @@ package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.refactor.messages"; //$NON-NLS-1$
