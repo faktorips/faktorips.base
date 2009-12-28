@@ -236,6 +236,11 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         public void setTableFormat(ITableFormat tableFormat) {
             this.tableFormat = tableFormat;
         }
+
+        public ITableFormat getTableFormat() {
+            return tableFormat;
+        }
+
     }
 
 }
