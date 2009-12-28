@@ -51,14 +51,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrary
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class IpsModelTest extends AbstractIpsPluginTest {
 
     private IpsModel model;
@@ -67,9 +65,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     private IJavaProject javaProject = null;
     private IJavaProject javaProject2 = null;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -88,11 +83,11 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     public void testGetIpsProjects() throws CoreException {
-        super.newPlatformProject("TestProject");
+        newPlatformProject("TestProject");
         IIpsProject[] ipsProjects = model.getIpsProjects();
         assertEquals(0, ipsProjects.length);
 
-        IIpsProject project = super.newIpsProject("TestPdProject");
+        IIpsProject project = newIpsProject("TestPdProject");
         ipsProjects = model.getIpsProjects();
         assertEquals(1, ipsProjects.length);
         assertEquals("TestPdProject", ipsProjects[0].getName());
@@ -102,6 +97,56 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         ipsProjects = model.getIpsProjects();
         assertEquals(1, ipsProjects.length);
         assertEquals("TestProject2", ipsProjects[0].getName());
+    }
+
+    public void testGetIpsModelProjects() throws CoreException {
+        IIpsProject modelProject = newIpsProject("ModelProject");
+        IIpsProjectProperties properties = modelProject.getProperties();
+        properties.setModelProject(true);
+        properties.setProductDefinitionProject(false);
+        modelProject.setProperties(properties);
+
+        IIpsProject productDefinitionProject = newIpsProject("ProductDefinitionProject");
+        properties = productDefinitionProject.getProperties();
+        properties.setModelProject(false);
+        properties.setProductDefinitionProject(true);
+        productDefinitionProject.setProperties(properties);
+
+        IIpsProject modelAndProductDefinitionProject = newIpsProject("ModelAndProductDefinitionProject");
+        properties = modelAndProductDefinitionProject.getProperties();
+        properties.setModelProject(true);
+        properties.setProductDefinitionProject(true);
+        modelAndProductDefinitionProject.setProperties(properties);
+
+        IIpsProject[] modelProjects = getIpsModel().getIpsModelProjects();
+        assertEquals(2, modelProjects.length);
+        assertEquals(modelAndProductDefinitionProject, modelProjects[0]);
+        assertEquals(modelProject, modelProjects[1]);
+    }
+
+    public void testGetIpsProductDefinitionProjects() throws CoreException {
+        IIpsProject modelProject = newIpsProject("ModelProject");
+        IIpsProjectProperties properties = modelProject.getProperties();
+        properties.setModelProject(true);
+        properties.setProductDefinitionProject(false);
+        modelProject.setProperties(properties);
+
+        IIpsProject productDefinitionProject = newIpsProject("ProductDefinitionProject");
+        properties = productDefinitionProject.getProperties();
+        properties.setModelProject(false);
+        properties.setProductDefinitionProject(true);
+        productDefinitionProject.setProperties(properties);
+
+        IIpsProject modelAndProductDefinitionProject = newIpsProject("ModelAndProductDefinitionProject");
+        properties = modelAndProductDefinitionProject.getProperties();
+        properties.setModelProject(true);
+        properties.setProductDefinitionProject(true);
+        modelAndProductDefinitionProject.setProperties(properties);
+
+        IIpsProject[] productDefinitionProjects = getIpsModel().getIpsProductDefinitionProjects();
+        assertEquals(2, productDefinitionProjects.length);
+        assertEquals(modelAndProductDefinitionProject, productDefinitionProjects[0]);
+        assertEquals(productDefinitionProject, productDefinitionProjects[1]);
     }
 
     public void testGetIpsElement_ExistingIpsProject() throws Exception {

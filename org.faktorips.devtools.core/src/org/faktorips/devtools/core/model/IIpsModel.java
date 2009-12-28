@@ -30,20 +30,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * The IPS model is the top of the IpsElement hierarchy (like the Java model is the top of the Java
+ * The IPS model is the top of the IPS element hierarchy (like the Java model is the top of the Java
  * element hierarchy). One model instance exists per workspace. The model instance can be retrieved
- * via the plugin's <code>getIpsModel()</code> method.
+ * via the plugin's <tt>getIpsModel()</tt> method.
  */
 public interface IIpsModel extends IIpsElement {
 
-    /**
-     * Prefix for all message codes of this class.
-     */
+    /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
 
-    /**
-     * Returns the workspace.
-     */
+    /** Returns the workspace. */
     public IWorkspace getWorkspace();
 
     /**
@@ -85,14 +81,16 @@ public interface IIpsModel extends IIpsElement {
      */
     public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException;
 
-    /**
-     * Returns all IPS projects opened in the workspace or an empty array if none.
-     */
+    /** Returns all IPS projects opened in the workspace or an empty array if none. */
     public IIpsProject[] getIpsProjects() throws CoreException;
 
-    /**
-     * Returns the IpsProject with the indicated name.
-     */
+    /** Returns all IPS projects that contain a model definition. */
+    public IIpsProject[] getIpsModelProjects() throws CoreException;
+
+    /** Returns all IPS projects that contain a product definition. */
+    public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException;
+
+    /** Returns the IPS project with the indicated name. */
     public IIpsProject getIpsProject(String name);
 
     /**

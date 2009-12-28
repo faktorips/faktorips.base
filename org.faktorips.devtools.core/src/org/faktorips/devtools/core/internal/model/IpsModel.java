@@ -98,12 +98,18 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 
 /**
- * Implementation of IpsModel.
+ * Implementation of <tt>IIpsModel</tt>.
+ * 
+ * @see IIpsModel
+ * 
+ * @author unascribed
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
 
     public final static boolean TRACE_MODEL_MANAGEMENT;
+
     public final static boolean TRACE_MODEL_CHANGE_LISTENERS;
+
     public final static boolean TRACE_VALIDATION;
 
     static {
@@ -184,6 +190,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // cache sort order
     private Map sortOrderCache = new HashMap();
+
     private Map lastIpSortOrderModifications = new HashMap();
 
     public IpsModel() {
@@ -357,7 +364,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public IIpsProject[] getIpsProjects() throws CoreException {
-
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IIpsProject[] ipsProjects = new IIpsProject[projects.length];
         int counter = 0;
@@ -373,6 +379,28 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject[] shrinked = new IIpsProject[counter];
         System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
         return shrinked;
+    }
+
+    public IIpsProject[] getIpsModelProjects() throws CoreException {
+        IIpsProject[] allIpsProjects = getIpsProjects();
+        List<IIpsProject> modelProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
+        for (IIpsProject ipsProject : allIpsProjects) {
+            if (ipsProject.isModelProject()) {
+                modelProjects.add(ipsProject);
+            }
+        }
+        return modelProjects.toArray(new IIpsProject[modelProjects.size()]);
+    }
+
+    public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException {
+        IIpsProject[] allIpsProjects = getIpsProjects();
+        List<IIpsProject> productDefinitionProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
+        for (IIpsProject ipsProject : allIpsProjects) {
+            if (ipsProject.isProductDefinitionProject()) {
+                productDefinitionProjects.add(ipsProject);
+            }
+        }
+        return productDefinitionProjects.toArray(new IIpsProject[productDefinitionProjects.size()]);
     }
 
     public IResource[] getNonIpsProjects() throws CoreException {
