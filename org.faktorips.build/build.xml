@@ -29,7 +29,7 @@
 		<property name="vmversion" value="1.5" />
 
 		<!-- integrationtest path to update jars in the integrationtest -->
-		<property name="integrationtest.path" value="./../../${integrationtest.cvs.module}" />
+		<property name="integrationtest.path" value="./../../${integrationtest.cvs.module}_tmp" />
 		
         <!-- jars for the xml pretty print utility target -->
         <path id="xml.pretty.classpath">
@@ -212,6 +212,7 @@
 	<!-- if the integration test is available in the parent path,
 		 then refresh the runtime jar in the classpath -->
 	<target name="update.jar.in.integrationtest" description="update jar and src zip  in the integrationtest">
+		<cvs cvsRoot=":local:/usr/local/cvsroot" command="co" package="${integrationtest.cvs.module}" dest="${integrationtest.path}" cvsroot="${cvsroot}" quiet="true"/>
 	    <condition property="integration.available" value="true">
 	    	 <available file="${integrationtest.path}/lib/${jarname}"/>
 	     </condition>
