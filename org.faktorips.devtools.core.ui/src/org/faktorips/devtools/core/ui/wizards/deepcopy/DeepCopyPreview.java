@@ -369,6 +369,11 @@ public class DeepCopyPreview {
         return result;
     }
 
+    public String getPackageName(IProductCmptStructureReference toCopy) {
+        return buildTargetPackageName(sourcePage.getTargetPackage(), sourcePage.getCorrespondingIpsObject(toCopy),
+                sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy()));
+    }
+
     private IIpsSrcFile getNewIpsSrcFile(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
         String newName = getNewName(targetPackage, correspondingIpsObject);
         return targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(newName));

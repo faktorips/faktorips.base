@@ -25,16 +25,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
@@ -286,7 +289,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * 
      * @author Thorsten Guenther
      */
-    private class LabelProvider implements ILabelProvider {
+    private class LabelProvider extends StyledCellLabelProvider {
         private Object getWrapped(Object in) {
             if (in instanceof IProductCmptReference) {
                 return ((IProductCmptReference)in).getProductCmpt();
@@ -296,6 +299,43 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 return ((IProductCmptStructureTblUsageReference)in).getTableContentUsage();
             }
             return null;
+        }
+
+        @Override
+        public void update(ViewerCell cell) {
+            Object element = cell.getElement();
+            updateCell(cell, element);
+            super.update(cell);
+        }
+
+        private void updateCell(ViewerCell cell, Object item) {
+            String suffix = getSuffixFor(item);
+            StyleRange styledPath = new StyleRange();
+            String name = getText(item);
+            styledPath.start = name.length();
+            styledPath.length = suffix.length();
+            styledPath.foreground = getCurrentDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+            styledPath.fontStyle = SWT.NORMAL;
+            cell.setText(name + suffix);
+            cell.setStyleRanges(new StyleRange[] { styledPath });
+            cell.setImage(getImage(item));
+        }
+
+        private String getSuffixFor(Object item) {
+            if (item instanceof IProductCmptReference) {
+                String packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(
+                        (IProductCmptReference)item);
+                return " - " + packageName;
+            } else if (item instanceof IProductCmptStructureTblUsageReference) {
+                String packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(
+                        (IProductCmptStructureTblUsageReference)item);
+                return " - " + packageName;
+            }
+            return "";
+        }
+
+        private Display getCurrentDisplay() {
+            return Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         }
 
         public Image getImage(Object element) {
@@ -323,23 +363,19 @@ public class ReferenceAndPreviewPage extends WizardPage {
         public String getText(Object element) {
             Object wrapped = getWrapped(element);
             if (wrapped instanceof IProductCmpt) {
-                String packageName = StringUtil.getPackageName(((IProductCmpt)wrapped).getQualifiedName());
                 String name = ((IProductCmpt)wrapped).getName();
                 if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
                     name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(element);
                     if (name == null) {
-                        name = getNewName(null, (IIpsObject)wrapped) + " - " + packageName;
+                        name = getNewName(null, (IIpsObject)wrapped);
                     }
                 }
                 if (isInError((IProductCmptStructureReference)element)) {
                     name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
                             + getErrorMessage((IProductCmptStructureReference)element);
-                } else {
-                    name += " - " + packageName;
                 }
                 return name;
             } else if (wrapped instanceof ITableContentUsage) {
-                String packageName = StringUtil.getPackageName(((ITableContentUsage)wrapped).getTableContentName());
                 String name = StringUtil.unqualifiedName(((ITableContentUsage)wrapped).getTableContentName());
                 if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
                     name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(element);
@@ -357,24 +393,26 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 if (isInError((IProductCmptStructureReference)element)) {
                     name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
                             + getErrorMessage((IProductCmptStructureReference)element);
-                } else {
-                    name += " - " + packageName;
                 }
                 return name;
             }
             return ((IIpsObjectPartContainer)wrapped).getName();
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return true;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
         }
     }

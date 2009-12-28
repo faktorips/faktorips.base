@@ -129,6 +129,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
     // The working date format specified in the ips preferences
     private DateFormat dateFormat;
 
+    private Radiobutton copyTableContentsBtn;
     private Radiobutton createEmptyTableContentsBtn;
 
     private Set<Object> linkedElements = new HashSet<Object>();
@@ -238,9 +239,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         targetPackageControl = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
 
         // sets the default package only if the corresponding package root is based on a source
-        // folder
-        // in other cases reset the default package (because maybe the target package is inside an
-        // ips archive)
+        // folder in other cases reset the default package (because maybe the target package is
+        // inside an ips archive)
         targetPackageControl.setIpsPackageFragment(defaultPackageRoot == packRoot ? defaultPackage : null);
         targetPackageControl.getTextControl().addFocusListener(
                 new FocusListenerRefreshTreeOnValueChange(new Text[] { targetPackageControl.getTextControl() }));
@@ -270,7 +270,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         RadiobuttonGroup group = toolkit.createRadiobuttonGroup(root, SWT.SHADOW_IN,
                 Messages.SourcePage_labelGroupTableContents);
         group.getGroup().setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        group.addRadiobutton(Messages.SourcePage_labelRadioBtnCopyTableContents).setChecked(true);
+        copyTableContentsBtn = group.addRadiobutton(Messages.SourcePage_labelRadioBtnCopyTableContents);
+        copyTableContentsBtn.setChecked(true);
         createEmptyTableContentsBtn = group.addRadiobutton(Messages.SourcePage_labelRadioBtnCreateEmptyTableContents);
 
         tree = new CheckboxTreeViewer(root, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -427,8 +428,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                     if (!confirmation) {
                         return;
                     }
-                    for (Iterator iterator = childs.iterator(); iterator.hasNext();) {
-                        IProductCmptStructureReference childElem = (IProductCmptStructureReference)iterator.next();
+                    for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
+                        IProductCmptStructureReference childElem = iterator.next();
                         if (index == 1) {
                             linkedElements.add(childElem);
                         } else {
@@ -471,6 +472,12 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                     } else {
                         cell.setImage(labelProvider.getImage(element));
                     }
+                } else if (element instanceof IProductCmptStructureTblUsageReference) {
+                    if (linkedElements.contains(element)) {
+                        cell.setImage(IpsPlugin.getDefault().getImage("LinkTableContents.gif")); //$NON-NLS-1$
+                    } else {
+                        cell.setImage(labelProvider.getImage(element));
+                    };
                 } else {
                     cell.setImage(labelProvider.getImage(element));
                 }
@@ -832,6 +839,9 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        // otherwise buttons are disabled after run and save ui state?
+        copyTableContentsBtn.setEnabled(true);
+        createEmptyTableContentsBtn.setEnabled(true);
     }
 
     private boolean hasValueChanged(Text text) {
