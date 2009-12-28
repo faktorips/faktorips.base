@@ -97,7 +97,7 @@ public interface IProductCmptTreeStructure {
      * Get all product component type association references from the parent structure reference.
      * 
      * @param parent The parent-reference to start the search for child-references.
-     * @param includeEmptyAssociations true if empty assiciations have to be included
+     * @param includeEmptyAssociations true if empty associations have to be included
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
     public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent,

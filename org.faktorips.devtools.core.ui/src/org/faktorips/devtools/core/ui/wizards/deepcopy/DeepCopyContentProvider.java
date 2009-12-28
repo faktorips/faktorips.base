@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,29 +26,29 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
  * @author Thorsten Guenther
  */
 public class DeepCopyContentProvider implements ITreeContentProvider {
-    
+
     /**
      * The root-node this content provider starts to evaluate the content.
      */
     private IProductCmptTreeStructure structure;
-    
+
     /**
      * Flag to tell the content provider to show (<code>true</code>) or not to show the
      * Relation-Type as Node.
      */
     private boolean fShowRelationType = true;
-    
+
     private IProductCmptReference root;
-    
+
     /**
      * Creates a new content provider.
      * 
      * @param showRelationType <code>true</code> to show the relation types as nodes.
      */
     public DeepCopyContentProvider(boolean showRelationType) {
-        this.fShowRelationType = showRelationType;
+        fShowRelationType = showRelationType;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +71,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] getRefChildrenFor(IProductCmptReference parentElement) {
-        return addTblUsages(parentElement,structure.getChildProductCmptTypeRelationReferences(parentElement));
+        return addTblUsages(parentElement, structure.getChildProductCmptTypeRelationReferences(parentElement));
     }
 
     private Object[] getChildrenFor(IProductCmptStructureReference parentElement) {
@@ -79,8 +79,10 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] addTblUsages(IProductCmptStructureReference parentElement, Object[] productCmptReferencesOrTypes) {
-        IProductCmptStructureTblUsageReference[] tblUsageReference = structure.getChildProductCmptStructureTblUsageReference(parentElement);
-        IProductCmptStructureReference[] result = new IProductCmptStructureReference[tblUsageReference.length + productCmptReferencesOrTypes.length];
+        IProductCmptStructureTblUsageReference[] tblUsageReference = structure
+                .getChildProductCmptStructureTblUsageReference(parentElement);
+        IProductCmptStructureReference[] result = new IProductCmptStructureReference[tblUsageReference.length
+                + productCmptReferencesOrTypes.length];
         System.arraycopy(productCmptReferencesOrTypes, 0, result, 0, productCmptReferencesOrTypes.length);
         System.arraycopy(tblUsageReference, 0, result, productCmptReferencesOrTypes.length, tblUsageReference.length);
         return result;
@@ -93,14 +95,12 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         if (structure == null) {
             return null;
         }
-        
+
         if (!fShowRelationType && element instanceof IProductCmptReference) {
             return structure.getParentProductCmptReference((IProductCmptReference)element);
-        }
-        else if (element instanceof IProductCmptReference) {
+        } else if (element instanceof IProductCmptReference) {
             return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
-        }
-        else if (element instanceof IProductCmptStructureReference) {
+        } else if (element instanceof IProductCmptStructureReference) {
             return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
         }
 
@@ -126,9 +126,8 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
-            return new Object[] {root};
-        }
-        else {
+            return new Object[] { root };
+        } else {
             return new Object[0];
         }
     }
@@ -141,15 +140,15 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
             structure = null;
             return;
         }
-        
+
         structure = (IProductCmptTreeStructure)newInput;
         root = structure.getRoot();
     }
-    
+
     public boolean isRelationTypeShowing() {
         return fShowRelationType;
     }
-    
+
     public void setRelationTypeShowing(boolean showRelationType) {
         fShowRelationType = showRelationType;
     }

@@ -77,7 +77,8 @@ public class DeepCopyLabelProvider implements ILabelProvider {
      */
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
-            return ((IProductCmptReference)element).getProductCmpt().getName();
+            IProductCmptReference productCmptReference = (IProductCmptReference)element;
+            return productCmptReference.getProductCmpt().getName();
         } else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
         } else if (element instanceof IProductCmptStructureTblUsageReference) {

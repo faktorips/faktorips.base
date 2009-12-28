@@ -29,7 +29,9 @@ public class Messages extends NLS {
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
     public static String SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt;
-    public static String SourcePage_errorLabelInsert;
+    public static String SourcePage_columnNameNewName;
+    public static String SourcePage_columnNameOperation;
+    public static String SourcePage_columnNameSourceStructure;
     public static String SourcePage_errorPrefixWorkingDateFormat;
     public static String SourcePage_errorWorkingDateFormat;
     public static String SourcePage_labelGroupTableContents;
@@ -59,13 +61,12 @@ public class Messages extends NLS {
     public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
     public static String SourcePage_msgCircleRelation;
     public static String SourcePage_msgCircleRelationShort;
+    public static String SourcePage_operationCopy;
+    public static String SourcePage_operationLink;
     public static String ReferenceAndPreviewPage_msgCircleDetected;
     public static String DeepCopyWizard_titleNewVersion;
     public static String SourcePage_titleNewVersion;
     public static String ReferenceAndPreviewPage_titleNewVersion;
     public static String ReferenceAndPreviewPage_labelVersionId;
-    public static String DeepCopyWizard_titleWorkingDateNotUsed;
-    public static String DeepCopyWizard_msgWorkingDateNotUsedSimple;
-    public static String DeepCopyWizard_msgWorkingDateNotUsed;
     public static String ReferenceAndPreviewPage_msgValidateCopy;
 }

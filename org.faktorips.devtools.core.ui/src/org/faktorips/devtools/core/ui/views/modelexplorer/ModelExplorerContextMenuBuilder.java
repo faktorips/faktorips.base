@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
@@ -280,7 +281,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
             // Add copy actions depending on selected ips object type
             List<IpsAction> ipsCopyActions = new ArrayList<IpsAction>(3);
-            if (selected instanceof IProductCmpt) {
+            if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
                 ipsCopyActions.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer,
                         DeepCopyWizard.TYPE_NEW_VERSION));
                 ipsCopyActions.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer,
