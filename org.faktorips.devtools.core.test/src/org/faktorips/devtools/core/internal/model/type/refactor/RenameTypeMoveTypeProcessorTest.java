@@ -128,7 +128,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
     public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)refactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, PRODUCT_NAME));
+        renameProcessor.setTargetLocation(new LocationDescriptor(ipsPackageFragmentRoot, PACKAGE + "." + PRODUCT_NAME));
         RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());

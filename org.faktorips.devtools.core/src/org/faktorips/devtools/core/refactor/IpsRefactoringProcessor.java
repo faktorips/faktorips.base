@@ -167,7 +167,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     public final Change postCreateChange(Change[] participantChanges, IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
-        Change change = refactorModel(pm);
+        Change change = refactorIpsModel(pm);
         if (change != null) {
             PerformChangeOperation op = new PerformChangeOperation(change);
             op.run(new NullProgressMonitor());
@@ -197,7 +197,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws CoreException Subclasses may throw this kind of exception any time.
      */
     // TODO AW: Subclasses need the ability to search for references, we need a reference search.
-    protected abstract Change refactorModel(IProgressMonitor pm) throws CoreException;
+    protected abstract Change refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
     /** Saves all modified <tt>IIpsSrcFile</tt>s. */
     private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {

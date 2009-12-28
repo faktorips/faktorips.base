@@ -59,10 +59,9 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
     }
 
     @Override
-    protected void initOriginalLocation() {
-        setOriginalLocation(new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType()
-                .getQualifiedName()
-                + "." + getAttribute().getName()));
+    protected LocationDescriptor initOriginalLocation() {
+        return new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType().getQualifiedName() + "."
+                + getAttribute().getName());
     }
 
     @Override
@@ -76,13 +75,6 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
                         .getType().getName()));
             }
         }
-    }
-
-    @Override
-    protected void checkFinalConditionsThis(RefactoringStatus status,
-            IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
-        // Nothing more to do.
     }
 
     @Override
@@ -105,7 +97,14 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
     }
 
     @Override
-    protected Change refactorModel(IProgressMonitor pm) throws CoreException {
+    protected void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException {
+        // Nothing more to do.
+    }
+
+    @Override
+    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
         if (getAttribute() instanceof IProductCmptTypeAttribute) {
             updateProductCmptAttributeValueReferences();
         } else {

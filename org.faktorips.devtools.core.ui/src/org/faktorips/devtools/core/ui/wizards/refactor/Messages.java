@@ -26,9 +26,12 @@ public class Messages extends NLS {
     public static String RenameRefactoringWizard_title;
     public static String MoveRefactoringWizard_title;
 
+    public static String IpsRenameMovePage_labelNewName;
+
     public static String RenamePage_message;
+
     public static String MovePage_message;
-    public static String RenamePage_labelNewName;
+    public static String MovePage_labelChooseDestination;
 
     static {
         // initialize resource bundle

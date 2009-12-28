@@ -17,9 +17,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -112,41 +109,6 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
     /** Returns the <tt>UIToolkit</tt> to create new UI elements with. */
     protected final UIToolkit getUiToolkit() {
         return uiToolkit;
-    }
-
-    /** Returns the <tt>IIpsProject</tt> the <tt>IIpsElement</tt> to be refactored belongs to. */
-    protected final IIpsProject getIpsProject() {
-        return ipsElement.getIpsProject();
-    }
-
-    /**
-     * Returns the <tt>IIpsPackageFragmentRoot</tt> the <tt>IIpsElement</tt> to be refactored
-     * belongs to.
-     */
-    protected final IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        if (ipsElement instanceof IIpsObjectPartContainer) {
-            IIpsObjectPartContainer objectPartContainer = (IIpsObjectPartContainer)ipsElement;
-            return objectPartContainer.getIpsObject().getIpsPackageFragment().getRoot();
-        }
-        throw new RuntimeException("This IPS element is not supported.");
-    }
-
-    /** Returns the qualified name of the <tt>IIpsElement</tt> to be refactored. */
-    protected final String getQualifiedName() {
-        if (ipsElement instanceof IType) {
-            IType type = (IType)ipsElement;
-            return type.getQualifiedName();
-
-        } else if (ipsElement instanceof IAttribute) {
-            IAttribute attribute = (IAttribute)ipsElement;
-            return attribute.getType().getQualifiedName() + "." + attribute.getName();
-
-        } else if (ipsElement instanceof IMethod) {
-            IMethod method = (IMethod)ipsElement;
-            return method.getType().getQualifiedName() + "." + method.getName();
-        }
-
-        throw new RuntimeException("This IPS element is not supported.");
     }
 
 }

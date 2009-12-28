@@ -53,27 +53,18 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
     protected IpsRenameMoveProcessor(IIpsElement ipsElement, boolean move) {
         super(ipsElement);
         this.move = move;
-        initOriginalLocation();
+        originalLocation = initOriginalLocation();
     }
 
     /**
      * Subclass implementation that must initialize the original location of the
      * <tt>IIpsElement</tt> to be renamed.
+     * <p>
+     * <strong>Important:</strong> This operation is called by the constructor of
+     * <tt>IpsRenameMoveProcessor</tt> and therefore may not assume that the constructor of the
+     * subclass has been called. This operation must not return <tt>null</tt>.
      */
-    protected abstract void initOriginalLocation();
-
-    /**
-     * Sets the original location of the <tt>IIpsElement</tt> to be renamed.
-     * 
-     * @param originalLocation A <tt>LocationDescriptor</tt> representing the original location of
-     *            the <tt>IIpsElement</tt> to rename.
-     * 
-     * @throws NullPointerException If <tt>originalLocation</tt> is <tt>null</tt>.
-     */
-    protected final void setOriginalLocation(LocationDescriptor originalLocation) {
-        ArgumentCheck.notNull(originalLocation);
-        this.originalLocation = originalLocation;
-    }
+    protected abstract LocationDescriptor initOriginalLocation();
 
     /**
      * {@inheritDoc}
@@ -146,8 +137,8 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
                     targetLocation, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
         } else {
             return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new RenameArguments(
-                    targetLocation.getQualifiedName(), true), new String[] { IIpsProject.NATURE_ID },
-                    sharedParticipants);
+                    QNameUtil.getUnqualifiedName(targetLocation.getQualifiedName()), true),
+                    new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
         }
     }
 
@@ -168,7 +159,7 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
      * Returns a <tt>LocationDescriptor</tt> representing the original location of the
      * <tt>IIpsElement</tt> to be renamed.
      */
-    protected final LocationDescriptor getOriginalLocation() {
+    public final LocationDescriptor getOriginalLocation() {
         return originalLocation;
     }
 

@@ -17,8 +17,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A <tt>LocationDescriptor</tt> represents a location to where an <tt>IType</tt> shall be copied
- * to. It is used by the "Rename Type" and "Move Type" refactorings.
+ * A <tt>LocationDescriptor</tt> represents a location of an <tt>IIpsElement</tt>. It is currently
+ * used by the "Rename Type" and "Move Type" refactorings for example.
  * <p>
  * A location consists of an <tt>IIpsPackageFragmentRoot</tt>, and a qualified name.
  * 
@@ -44,7 +44,6 @@ public final class LocationDescriptor {
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
     public LocationDescriptor(IIpsPackageFragmentRoot ipsPackageFragmentRoot, String qualifiedName) {
-
         ArgumentCheck.notNull(new Object[] { ipsPackageFragmentRoot, qualifiedName });
         this.ipsPackageFragmentRoot = ipsPackageFragmentRoot;
         this.qualifiedName = qualifiedName;

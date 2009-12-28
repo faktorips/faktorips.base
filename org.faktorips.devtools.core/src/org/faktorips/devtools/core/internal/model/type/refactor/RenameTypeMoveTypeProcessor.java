@@ -66,15 +66,33 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
     }
 
     @Override
-    protected void initOriginalLocation() {
-        setOriginalLocation(new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType()
-                .getQualifiedName()));
+    protected LocationDescriptor initOriginalLocation() {
+        return new LocationDescriptor(getType().getIpsPackageFragment().getRoot(), getType().getQualifiedName());
     }
 
     @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (!(getType().isValid())) {
             status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgTypeNotValid, getType().getName()));
+        }
+    }
+
+    @Override
+    protected void validateTargetLocationThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        /*
+         * Can't validate because for type validation the type's source file must be copied.
+         * Validation will still be performed during final condition checking so it should be OK. We
+         * check if there is already a source file with the new name in this package however.
+         */
+        for (IIpsSrcFile ipsSrcFile : getTargetIpsPackageFragment().getIpsSrcFiles()) {
+            String sourceFileName = ipsSrcFile.getName();
+            String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
+            String unqualifiedTargetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
+            if (relevantNamePart.equals(unqualifiedTargetName)) {
+                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists,
+                        unqualifiedTargetName, getTargetIpsPackageFragment().getName()));
+                break;
+            }
         }
     }
 
@@ -115,37 +133,20 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
      * the destination package.
      */
     private void copyToNewSourceFile(IProgressMonitor pm) throws CoreException {
-        String targetFragmentName = QNameUtil.getPackageName(getTargetLocation().getQualifiedName());
-        IIpsPackageFragment targetFragment = getTargetLocation().getIpsPackageFragmentRoot().getIpsPackageFragment(
-                targetFragmentName);
-        IPath destinationFolder = targetFragment.getCorrespondingResource().getFullPath();
+        IPath destinationFolder = getTargetIpsPackageFragment().getCorrespondingResource().getFullPath();
 
         String targetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
         String targetSrcFileName = targetName + "." + getType().getIpsObjectType().getFileExtension();
         IPath destinationPath = destinationFolder.append(targetSrcFileName);
 
         getType().getIpsSrcFile().getCorrespondingResource().copy(destinationPath, true, pm);
-        copiedIpsSrcFile = targetFragment.getIpsSrcFile(targetSrcFileName);
+        copiedIpsSrcFile = getTargetIpsPackageFragment().getIpsSrcFile(targetSrcFileName);
     }
 
-    @Override
-    protected void validateTargetLocationThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        /*
-         * Can't validate because for type validation the type's source file must be copied.
-         * Validation will still be performed during final condition checking so it should be OK. We
-         * still check if there is already a source file with the new name in this package however.
-         */
-        IIpsPackageFragment fragment = getType().getIpsPackageFragment();
-        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
-            String sourceFileName = ipsSrcFile.getName();
-            String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
-            String unqualifiedTargetName = QNameUtil.getUnqualifiedName(getTargetLocation().getQualifiedName());
-            if (relevantNamePart.equals(unqualifiedTargetName)) {
-                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists,
-                        unqualifiedTargetName, fragment.getName()));
-                break;
-            }
-        }
+    /** Returns the target <tt>IIpsPackageFragment</tt>. */
+    private IIpsPackageFragment getTargetIpsPackageFragment() {
+        String targetFragmentName = QNameUtil.getPackageName(getTargetLocation().getQualifiedName());
+        return getTargetLocation().getIpsPackageFragmentRoot().getIpsPackageFragment(targetFragmentName);
     }
 
     @Override
@@ -157,7 +158,7 @@ public final class RenameTypeMoveTypeProcessor extends IpsRenameMoveProcessor {
     }
 
     @Override
-    protected Change refactorModel(IProgressMonitor pm) throws CoreException {
+    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
         // Initialized here because these source files are needed in multiple helper methods.
         Set<IIpsSrcFile> typeSrcFiles = findReferencingIpsSrcFiles(getType().getIpsObjectType());
 

@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -167,7 +166,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
      */
     private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
         String oldName = attribute.getName();
-        attribute.setName(getUnqualifiedNewName());
+        attribute.setName(getArguments().getNewName());
         refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(attribute));
         attribute.setName(oldName);
     }
@@ -181,7 +180,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
          * Creating an in-memory-only source file for an in-memory-only policy component type that
          * can be passed to the builder to obtain the generated Java elements for.
          */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getUnqualifiedNewName()
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(policyCmptType.getIpsPackageFragment(), getArguments()
+                .getNewName()
                 + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
 
@@ -205,7 +205,8 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
      */
     // TODO AW: See above method.
     private void initNewJavaElements(IProductCmptType productCmptType, StandardBuilderSet builderSet) {
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(productCmptType.getIpsPackageFragment(), getUnqualifiedNewName()
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(productCmptType.getIpsPackageFragment(), getArguments()
+                .getNewName()
                 + "." + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
         IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
         copiedProductCmptType.setAbstract(productCmptType.isAbstract());
@@ -214,11 +215,6 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         copiedProductCmptType.setSupertype(productCmptType.getSupertype());
 
         refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedProductCmptType));
-    }
-
-    /** Returns the unqualified new element name. */
-    private String getUnqualifiedNewName() {
-        return QNameUtil.getUnqualifiedName(getArguments().getNewName());
     }
 
     @Override

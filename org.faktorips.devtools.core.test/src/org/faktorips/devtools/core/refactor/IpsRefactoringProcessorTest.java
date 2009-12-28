@@ -204,7 +204,7 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         }
 
         @Override
-        protected Change refactorModel(IProgressMonitor pm) throws CoreException {
+        protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
             addModifiedSrcFile(policyCmptType.getIpsSrcFile());
             return new MockChange();
         }

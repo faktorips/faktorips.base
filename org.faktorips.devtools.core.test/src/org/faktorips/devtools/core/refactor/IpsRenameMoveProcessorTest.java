@@ -89,8 +89,8 @@ public class IpsRenameMoveProcessorTest extends AbstractIpsRefactoringTest {
         }
 
         @Override
-        protected void initOriginalLocation() {
-            setOriginalLocation(originalPolicyCmptTypeLocation);
+        protected LocationDescriptor initOriginalLocation() {
+            return originalPolicyCmptTypeLocation;
         }
 
         @Override
@@ -106,7 +106,7 @@ public class IpsRenameMoveProcessorTest extends AbstractIpsRefactoringTest {
         }
 
         @Override
-        protected Change refactorModel(IProgressMonitor pm) throws CoreException {
+        protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
             return null;
         }
 
