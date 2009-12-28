@@ -100,7 +100,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     }
 
     private SourcePage getSourcePageFor(IProductCmpt cmpt) {
-        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, DeepCopyWizard.TYPE_COPY_PRODUCT);
+        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);
         d.open();
@@ -110,7 +110,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     }
 
     private ReferenceAndPreviewPage getReferenceAndPreviewPageFor(IProductCmpt cmpt, int type) {
-        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, type);
+        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, type);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);
         d.open();
