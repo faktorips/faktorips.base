@@ -84,10 +84,16 @@ public interface IIpsModel extends IIpsElement {
     /** Returns all IPS projects opened in the workspace or an empty array if none. */
     public IIpsProject[] getIpsProjects() throws CoreException;
 
-    /** Returns all IPS projects that contain a model definition. */
+    /**
+     * Returns all IPS projects opened in the workspace that contain a model definition or an empty
+     * array if none.
+     */
     public IIpsProject[] getIpsModelProjects() throws CoreException;
 
-    /** Returns all IPS projects that contain a product definition. */
+    /**
+     * Returns all IPS projects opened in the workspace that contain a product definition or an
+     * empty array if none.
+     */
     public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException;
 
     /** Returns the IPS project with the indicated name. */
