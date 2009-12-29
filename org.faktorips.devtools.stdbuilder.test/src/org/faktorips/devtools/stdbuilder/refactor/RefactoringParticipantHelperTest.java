@@ -19,11 +19,15 @@ import java.util.List;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.text.edits.InsertEdit;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
  * 
@@ -32,12 +36,12 @@ import org.eclipse.text.edits.InsertEdit;
  */
 public class RefactoringParticipantHelperTest extends RefactoringParticipantTest {
 
-    private RefactoringParticipantHelper refactoringHelper;
+    private MockParticipantHelper refactoringHelper;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        refactoringHelper = new RefactoringParticipantHelper();
+        refactoringHelper = new MockParticipantHelper();
     }
 
     public void testInitializeNonIpsElement() {
@@ -45,18 +49,18 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     }
 
     public void testInitializeIpsElement() {
-        assertNull(refactoringHelper.getGeneratedJavaElements());
+        assertNull(refactoringHelper.getGeneratedJavaElementsTest());
         assertTrue(refactoringHelper.initialize(policyCmptType));
-        assertNotNull(refactoringHelper.getGeneratedJavaElements());
+        assertNotNull(refactoringHelper.getGeneratedJavaElementsTest());
     }
 
     public void testGetSetNewJavaElements() {
-        assertNull(refactoringHelper.getNewJavaElements());
+        assertNull(refactoringHelper.getNewJavaElementsTest());
         refactoringHelper.initialize(policyCmptType);
-        assertNull(refactoringHelper.getNewJavaElements());
+        assertNull(refactoringHelper.getNewJavaElementsTest());
         List<IJavaElement> newJavaElements = new ArrayList<IJavaElement>();
-        refactoringHelper.setNewJavaElements(newJavaElements);
-        assertEquals(newJavaElements, refactoringHelper.getNewJavaElements());
+        refactoringHelper.setNewJavaElementsTest(newJavaElements);
+        assertEquals(newJavaElements, refactoringHelper.getNewJavaElementsTest());
     }
 
     public void testCheckConditions() throws CoreException, IOException {
@@ -74,6 +78,34 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
         status = refactoringHelper.checkConditions(new NullProgressMonitor(), new CheckConditionsContext());
         assertTrue(status.hasFatalError());
+    }
+
+    private static class MockParticipantHelper extends RefactoringParticipantHelper {
+
+        @Override
+        protected void createChangeThis(IJavaElement originalJavaElement,
+                IJavaElement newJavaElement,
+                IProgressMonitor pm) throws CoreException, OperationCanceledException {
+
+        }
+
+        @Override
+        protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            return true;
+        }
+
+        private List<IJavaElement> getGeneratedJavaElementsTest() {
+            return getGeneratedJavaElements();
+        }
+
+        private List<IJavaElement> getNewJavaElementsTest() {
+            return getNewJavaElements();
+        }
+
+        private void setNewJavaElementsTest(List<IJavaElement> newJavaElements) {
+            setNewJavaElements(newJavaElements);
+        }
+
     }
 
 }

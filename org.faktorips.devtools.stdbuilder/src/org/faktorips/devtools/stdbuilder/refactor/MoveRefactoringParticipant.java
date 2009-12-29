@@ -13,36 +13,23 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.MoveDescriptor;
-import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.refactor.LocationDescriptor;
@@ -59,12 +46,12 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring.participants.MoveParticipant {
 
-    /** A helper providing common standard builder refactoring functionality. */
+    /** A helper providing shared standard builder refactoring functionality. */
     private RefactoringParticipantHelper refactoringHelper;
 
     /** Creates a <tt>MoveRefactoringParticipant</tt>. */
     public MoveRefactoringParticipant() {
-        refactoringHelper = new RefactoringParticipantHelper();
+        refactoringHelper = new MoveParticipantHelper();
     }
 
     @Override
@@ -76,160 +63,76 @@ public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        List<IJavaElement> generatedJavaElements = refactoringHelper.getGeneratedJavaElements();
-        for (int i = 0; i < generatedJavaElements.size(); i++) {
-            if (!(generatedJavaElements.get(i).exists())) {
-                continue;
-            }
-
-            if (generatedJavaElements.get(i).getElementType() == IJavaElement.TYPE) {
-                IType originalJavaType = (IType)generatedJavaElements.get(i);
-                IType targetJavaType = (IType)refactoringHelper.getNewJavaElements().get(i);
-                moveAndRenameIfNecessary(originalJavaType, targetJavaType, pm);
-            }
-        }
-
-        return null;
-    }
-
-    private void moveAndRenameIfNecessary(IType originalJavaType, IType targetJavaType, final IProgressMonitor pm)
-            throws CoreException {
-
-        // Rename if necessary.
-        if (!(targetJavaType.getElementName().equals(originalJavaType.getElementName()))) {
-            RefactoringContribution renameContribution = RefactoringCore
-                    .getRefactoringContribution(IJavaRefactorings.RENAME_TYPE);
-            RenameJavaElementDescriptor renameDescriptor = (RenameJavaElementDescriptor)renameContribution
-                    .createDescriptor();
-            renameDescriptor.setJavaElement(originalJavaType);
-            renameDescriptor.setNewName(targetJavaType.getElementName());
-            renameDescriptor.setUpdateReferences(getArguments().getUpdateReferences());
-
-            RefactoringStatus renameStatus = new RefactoringStatus();
-            Refactoring renameRefactoring = renameDescriptor.createRefactoring(renameStatus);
-            if (renameStatus.isOK()) {
-                final PerformRefactoringOperation operation = new PerformRefactoringOperation(renameRefactoring,
-                        CheckConditionsOperation.ALL_CONDITIONS);
-                Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
-                display.syncExec(new Runnable() {
-                    public void run() {
-                        try {
-                            ResourcesPlugin.getWorkspace().run(operation, pm);
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-            }
-        }
-
-        // Move.
-        RefactoringContribution moveContribution = RefactoringCore.getRefactoringContribution(IJavaRefactorings.MOVE);
-        MoveDescriptor moveDescriptor = (MoveDescriptor)moveContribution.createDescriptor();
-        moveDescriptor.setMoveResources(new IFile[0], new IFolder[0], new ICompilationUnit[] { originalJavaType
-                .getCompilationUnit() });
-        moveDescriptor.setDestination(targetJavaType.getPackageFragment());
-        moveDescriptor.setProject(targetJavaType.getJavaProject().getElementName());
-        moveDescriptor.setUpdateReferences(getArguments().getUpdateReferences());
-
-        RefactoringStatus moveStatus = new RefactoringStatus();
-        Refactoring moveRefactoring = moveDescriptor.createRefactoring(moveStatus);
-        if (moveStatus.isOK()) {
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(moveRefactoring,
-                    CheckConditionsOperation.ALL_CONDITIONS);
-            Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
-            display.syncExec(new Runnable() {
-                public void run() {
-                    try {
-                        ResourcesPlugin.getWorkspace().run(operation, pm);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-        }
+        return refactoringHelper.createChange(pm);
     }
 
     @Override
     protected boolean initialize(Object element) {
-        boolean initialized = refactoringHelper.initialize(element);
-        if (initialized == false) {
-            return initialized;
-        }
-
-        IIpsElement ipsElement = (IIpsElement)element;
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
-        if (ipsElement instanceof IPolicyCmptType) { // TODO AW: Simplify to IType
-            initNewJavaElements((IPolicyCmptType)ipsElement, builderSet);
-        } else if (ipsElement instanceof IProductCmptType) { // TODO AW: Simplify to IType
-            initNewJavaElements((IProductCmptType)ipsElement, builderSet);
-        } else {
-            initialized = false;
-        }
-
-        return initialized;
-    }
-
-    /**
-     * Initializes the list of the <tt>IJavaElement</tt>s generated for the moved
-     * <tt>IPolicyCmptType</tt>.
-     */
-    private void initNewJavaElements(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) {
-        /*
-         * Creating an in-memory-only source file for an in-memory-only policy component type that
-         * can be passed to the builder to obtain the generated Java elements for.
-         */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(getTargetIpsPackageFragment(), getNewName() + "."
-                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
-        IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
-
-        /*
-         * TODO AW: I think this could lead to bugs in the future easily. If other properties are
-         * added to policy component type's this code must be updated, too. It is very likely that
-         * this won't be done, so this code should be moved. Actually I don't really know where and
-         * to put that code.
-         */
-        copiedPolicyCmptType.setAbstract(policyCmptType.isAbstract());
-        copiedPolicyCmptType.setConfigurableByProductCmptType(policyCmptType.isConfigurableByProductCmptType());
-        copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
-        copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
-
-        refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedPolicyCmptType));
-    }
-
-    /**
-     * Initializes the list of the <tt>IJavaElement</tt>s generated for the moved
-     * <tt>IProductCmptType</tt>.
-     */
-    // TODO AW: See above method.
-    private void initNewJavaElements(IProductCmptType productCmptType, StandardBuilderSet builderSet) {
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(getTargetIpsPackageFragment(), getNewName() + "."
-                + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
-        IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
-
-        copiedProductCmptType.setAbstract(productCmptType.isAbstract());
-        copiedProductCmptType.setConfigurationForPolicyCmptType(productCmptType.isConfigurationForPolicyCmptType());
-        copiedProductCmptType.setPolicyCmptType(productCmptType.getPolicyCmptType());
-        copiedProductCmptType.setSupertype(productCmptType.getSupertype());
-
-        refactoringHelper.setNewJavaElements(builderSet.getGeneratedJavaElements(copiedProductCmptType));
-    }
-
-    /** Returns the new name of the <tt>IIpsElement</tt> to refactor. */
-    private String getNewName() {
-        LocationDescriptor targetLocation = (LocationDescriptor)getArguments().getDestination();
-        return targetLocation.getName();
-    }
-
-    /** Returns the target <tt>IIpsPackageFragment</tt> of the <tt>IIpsElement</tt> to refactor. */
-    private IIpsPackageFragment getTargetIpsPackageFragment() {
-        LocationDescriptor targetLocation = (LocationDescriptor)getArguments().getDestination();
-        return targetLocation.getIpsPackageFragment();
+        return refactoringHelper.initialize(element);
     }
 
     @Override
     public String getName() {
-        return "StandardBuilderMoveParticipant";
+        return "StandardBuilder Move Participant";
+    }
+
+    /** The <tt>RefactoringParticipantHelper</tt> for this participant. */
+    private final class MoveParticipantHelper extends RefactoringParticipantHelper {
+
+        @Override
+        protected void createChangeThis(IJavaElement originalJavaElement,
+                IJavaElement newJavaElement,
+                IProgressMonitor pm) throws CoreException, OperationCanceledException {
+
+            if (originalJavaElement.getElementType() == IJavaElement.TYPE
+                    && newJavaElement.getElementType() == IJavaElement.TYPE) {
+
+                // Rename the Java type if necessary.
+                if (!(newJavaElement.getElementName().equals(originalJavaElement.getElementName()))) {
+                    renameJavaElement(originalJavaElement, newJavaElement.getElementName(), getArguments()
+                            .getUpdateReferences(), pm);
+                }
+
+                moveJavaElement((IType)originalJavaElement, ((IType)newJavaElement).getPackageFragment(), pm);
+            }
+        }
+
+        /**
+         * Moves the given Java <tt>IType</tt> to the given destination Java
+         * <tt>IPackageFragment</tt>.
+         */
+        private void moveJavaElement(IType javaType, IPackageFragment targetPackageFragment, final IProgressMonitor pm)
+                throws CoreException {
+
+            RefactoringContribution moveContribution = RefactoringCore
+                    .getRefactoringContribution(IJavaRefactorings.MOVE);
+            MoveDescriptor moveDescriptor = (MoveDescriptor)moveContribution.createDescriptor();
+            moveDescriptor.setMoveResources(new IFile[0], new IFolder[0], new ICompilationUnit[] { javaType
+                    .getCompilationUnit() });
+            moveDescriptor.setDestination(targetPackageFragment);
+            moveDescriptor.setProject(targetPackageFragment.getJavaProject().getElementName());
+            moveDescriptor.setUpdateReferences(getArguments().getUpdateReferences());
+
+            performRefactoring(moveDescriptor, pm);
+        }
+
+        @Override
+        protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            if (ipsElement instanceof IPolicyCmptType) {
+                IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
+                initNewJavaElements(policyCmptType, (LocationDescriptor)getArguments().getDestination(), builderSet);
+
+            } else if (ipsElement instanceof IProductCmptType) {
+                IProductCmptType productCmptType = (IProductCmptType)ipsElement;
+                initNewJavaElements(productCmptType, (LocationDescriptor)getArguments().getDestination(), builderSet);
+
+            } else {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
 }

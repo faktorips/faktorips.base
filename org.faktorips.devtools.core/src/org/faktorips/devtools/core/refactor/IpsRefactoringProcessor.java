@@ -156,7 +156,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * {@inheritDoc}
      * <p>
      * This implementation does nothing and returns <tt>null</tt>, may be overwritten by subclasses
-     * if any changes need to be done before any refactoring participants are called.
+     * if any changes need to be done explicitly before any refactoring participants are called.
      */
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
