@@ -117,12 +117,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
 
             treeViewer.setLabelProvider(new MoveLabelProvider());
             treeViewer.setContentProvider(new MoveContentProvider());
-            try {
-                IIpsProject[] modelProjects = IpsPlugin.getDefault().getIpsModel().getIpsModelProjects();
-                treeViewer.setInput(modelProjects);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            treeViewer.setInput(new IIpsProject[] { getIpsElement().getIpsProject() });
 
             setInitialTreeViewerSelection();
 
