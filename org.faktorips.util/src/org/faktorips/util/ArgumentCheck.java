@@ -29,57 +29,37 @@ import org.w3c.dom.Node;
 public class ArgumentCheck {
 
     /**
-     * Checks if the indicated argument is not null.
+     * Checks if any of the provided objects is <tt>null</tt>. If so a <tt>NullPointerException</tt>
+     * is thrown.
      * 
-     * @param arg the argument to check.
+     * @param objects The objects to check.
      * 
-     * @throws NullPointerException if arg is null.
+     * @throws NullPointerException If any of the provided <tt>objects</tt> is <tt>null</tt>.
      */
-    public final static void notNull(Object arg) {
-        if (arg == null) {
-            throw new NullPointerException();
+    public final static void notNull(Object... objects) {
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                throw new NullPointerException();
+            }
         }
     }
 
     /**
-     * Checks if the provided array or one of the objects at the array's positions is null. If so a
-     * NullPointerException is thrown.
+     * Checks if any of the provided objects is <tt>null</tt>. If so a <tt>NullPointerException</tt>
+     * with the provided context is thrown.
      * 
-     * @param arg the argument to check.
+     * @param context Information to provide if the test fails.
+     * @param objects The objects to check.
+     * 
+     * @throws NullPointerException If any of the provided <tt>objects</tt> or <tt>context</tt> is
+     *             <tt>null</tt>.
      */
-    public final static void notNull(Object[] arg) {
-        notNull((Object)arg);
-        for (int i = 0; i < arg.length; i++) {
-            notNull(arg[i]);
-        }
-    }
-
-    /**
-     * Checks if the provided array or the objects at the array positions are null. If so a
-     * NullPointerException is thrown.
-     * 
-     * @param arg the argument to check.
-     * @param context information, in case the test fails, the context's toString()
-     */
-    public final static void notNull(Object[] arg, Object context) {
-        notNull((Object)arg);
-        for (int i = 0; i < arg.length; i++) {
-            notNull(arg[i], context);
-        }
-    }
-
-    /**
-     * Checks if the indicated argument is not null.
-     * 
-     * @param arg the argument to check.
-     * @param context context information, in case the test fails, the context's toString() method
-     *            is called and the result passed to the NullPointerException.
-     * 
-     * @throws NullPointerException if arg is null.
-     */
-    public final static void notNull(Object arg, Object context) {
-        if (arg == null) {
-            throw new NullPointerException("" + context);
+    public final static void notNull(String context, Object... objects) {
+        notNull(new Object[] { context });
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                throw new NullPointerException(context);
+            }
         }
     }
 
