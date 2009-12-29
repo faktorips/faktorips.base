@@ -57,7 +57,7 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
 
     /**
      * Subclass implementation that must initialize the original location of the
-     * <tt>IIpsElement</tt> to be renamed.
+     * <tt>IIpsElement</tt> to be refactored.
      * <p>
      * <strong>Important:</strong> This operation is called by the constructor of
      * <tt>IpsRenameMoveProcessor</tt> and therefore may not assume that the constructor of the
@@ -95,8 +95,8 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
 
     /**
      * Validates the target location and returns a <tt>RefactoringStatus</tt> as result of the
-     * validation. This base implementation checks that the name is not empty and that the name does
-     * not correspond to the name of the original location while the package is the same.
+     * validation. This base implementation checks that the name is not empty and that the target
+     * location does not equal the original location.
      * 
      * @param pm An <tt>IProgressMonitor</tt> to report progress to.
      * 
@@ -106,12 +106,14 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
         RefactoringStatus status = new RefactoringStatus();
 
         if (targetLocation.getName().length() < 1) {
-            status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
+            status.addFatalError(Messages.IpsRenameMoveProcessor_msgNewNameEmpty);
 
-        } else if (targetLocation.getName().equals(originalLocation.getName())
-                && targetLocation.getIpsPackageFragment().equals(originalLocation.getIpsPackageFragment())) {
-
-            status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEqualsElementName);
+        } else if (targetLocation.equals(originalLocation)) {
+            if (move) {
+                status.addFatalError(Messages.IpsRenameMoveProcessor_msgTargetLocationEqualsOriginalLocation);
+            } else {
+                status.addFatalError(Messages.IpsRenameMoveProcessor_msgNewNameEqualsElementName);
+            }
 
         } else {
             validateTargetLocationThis(status, pm);
@@ -146,21 +148,27 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
     }
 
     /**
-     * Sets the target location of the <tt>IIpsElement</tt> to be renamed.
+     * Sets the target location of the <tt>IIpsElement</tt> to be refactored.
      * 
      * @param originalLocation A <tt>LocationDescriptor</tt> representing the target location of the
-     *            <tt>IIpsElement</tt> to rename.
+     *            <tt>IIpsElement</tt> to refactor.
      * 
      * @throws NullPointerException If <tt>targetLocation</tt> is <tt>null</tt>.
      */
     public final void setTargetLocation(LocationDescriptor targetLocation) {
         ArgumentCheck.notNull(targetLocation);
-        this.targetLocation = targetLocation;
+        if (move) {
+            this.targetLocation = new LocationDescriptor(targetLocation.getIpsPackageFragment(), originalLocation
+                    .getName());
+        } else {
+            this.targetLocation = new LocationDescriptor(originalLocation.getIpsPackageFragment(), targetLocation
+                    .getName());
+        }
     }
 
     /**
      * Returns a <tt>LocationDescriptor</tt> representing the original location of the
-     * <tt>IIpsElement</tt> to be renamed.
+     * <tt>IIpsElement</tt> to be refactored.
      */
     public final LocationDescriptor getOriginalLocation() {
         return originalLocation;
@@ -168,7 +176,7 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
 
     /**
      * Returns a <tt>LocationDescriptor</tt> representing the target location of the
-     * <tt>IIpsElement</tt> to be renamed.
+     * <tt>IIpsElement</tt> to be refactored.
      */
     public final LocationDescriptor getTargetLocation() {
         return targetLocation;

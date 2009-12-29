@@ -32,6 +32,7 @@ public class Messages extends NLS {
 
     public static String MovePage_message;
     public static String MovePage_labelChooseDestination;
+    public static String MovePage_msgSelectOnlyPackages;
 
     static {
         // initialize resource bundle

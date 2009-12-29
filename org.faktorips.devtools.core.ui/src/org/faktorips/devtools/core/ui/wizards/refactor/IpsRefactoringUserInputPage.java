@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
@@ -72,6 +73,37 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
         }
         return ipsElementName;
     }
+
+    /** Operation that should be called when any user input has changed, triggers validation. */
+    protected final void userInputChanged() {
+        try {
+            boolean userInputValid = validateUserInput();
+            setPageComplete(userInputValid);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Validates the user input, manages page messages and calls a subclass implementation. Returns
+     * <tt>true</tt> if valid, <tt>false</tt> otherwise.
+     */
+    private final boolean validateUserInput() throws CoreException {
+        resetPageMessages();
+
+        RefactoringStatus status = new RefactoringStatus();
+        validateUserInputThis(status);
+        evaluateValidation(status);
+
+        return !(status.hasError());
+    }
+
+    /**
+     * Subclass implementation responsible for validating the user input.
+     * 
+     * @param status A <tt>RefactoringStatus</tt> to add messages to.
+     */
+    protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreException;
 
     /** Evaluates the given <tt>RefactoringStatus</tt> by setting appropriate page messages. */
     protected final void evaluateValidation(RefactoringStatus status) {

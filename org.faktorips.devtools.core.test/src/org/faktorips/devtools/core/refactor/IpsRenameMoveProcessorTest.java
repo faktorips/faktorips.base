@@ -71,13 +71,6 @@ public class IpsRenameMoveProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.hasError());
     }
 
-    public void testValidateTargetLocationDifferentPackage() throws CoreException {
-        mockRenameTypeProcessor.setTargetLocation(new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
-                POLICY_NAME));
-        RefactoringStatus status = mockRenameTypeProcessor.validateTargetLocation(new NullProgressMonitor());
-        assertFalse(status.hasError());
-    }
-
     public void testGetSetTargetLocation() {
         LocationDescriptor targetLocation = new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "test");
         mockRenameTypeProcessor.setTargetLocation(targetLocation);

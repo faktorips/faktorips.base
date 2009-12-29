@@ -30,7 +30,8 @@ public class Messages extends NLS {
 
     public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
 
-    public static String IpsRenameProcessor_msgNewNameEmpty;
-    public static String IpsRenameProcessor_msgNewNameEqualsElementName;
+    public static String IpsRenameMoveProcessor_msgNewNameEmpty;
+    public static String IpsRenameMoveProcessor_msgNewNameEqualsElementName;
+    public static String IpsRenameMoveProcessor_msgTargetLocationEqualsOriginalLocation;
 
 }
