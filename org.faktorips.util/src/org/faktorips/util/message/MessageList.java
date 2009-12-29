@@ -342,7 +342,7 @@ public class MessageList implements Iterable<Message> {
     /**
      * Returns an <tt>Iterator</tt>.
      */
-    public Iterator iterator() {
+    public Iterator<Message> iterator() {
         return messages.iterator();
     }
 
