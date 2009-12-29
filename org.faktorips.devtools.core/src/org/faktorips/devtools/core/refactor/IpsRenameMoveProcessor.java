@@ -96,7 +96,7 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
     /**
      * Validates the target location and returns a <tt>RefactoringStatus</tt> as result of the
      * validation. This base implementation checks that the name is not empty and that the name does
-     * not correspond to the name of the original location.
+     * not correspond to the name of the original location while the package is the same.
      * 
      * @param pm An <tt>IProgressMonitor</tt> to report progress to.
      * 
@@ -104,13 +104,19 @@ public abstract class IpsRenameMoveProcessor extends IpsRefactoringProcessor {
      */
     public final RefactoringStatus validateTargetLocation(IProgressMonitor pm) throws CoreException {
         RefactoringStatus status = new RefactoringStatus();
+
         if (targetLocation.getName().length() < 1) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
-        } else if (targetLocation.getName().equals(originalLocation.getName())) {
+
+        } else if (targetLocation.getName().equals(originalLocation.getName())
+                && targetLocation.getIpsPackageFragment().equals(originalLocation.getIpsPackageFragment())) {
+
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEqualsElementName);
+
         } else {
             validateTargetLocationThis(status, pm);
         }
+
         return status;
     }
 

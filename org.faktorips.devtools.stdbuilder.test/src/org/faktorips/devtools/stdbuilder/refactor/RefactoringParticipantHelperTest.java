@@ -14,10 +14,8 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,26 +44,25 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
     public void testInitializeNonIpsElement() {
         assertFalse(refactoringHelper.initialize(new Object()));
+        assertFalse(refactoringHelper.initializeNewJavaElementsCalled);
     }
 
     public void testInitializeIpsElement() {
         assertNull(refactoringHelper.getGeneratedJavaElementsTest());
         assertTrue(refactoringHelper.initialize(policyCmptType));
         assertNotNull(refactoringHelper.getGeneratedJavaElementsTest());
+        assertTrue(refactoringHelper.initializeNewJavaElementsCalled);
     }
 
     public void testGetSetNewJavaElements() {
         assertNull(refactoringHelper.getNewJavaElementsTest());
         refactoringHelper.initialize(policyCmptType);
-        assertNull(refactoringHelper.getNewJavaElementsTest());
-        List<IJavaElement> newJavaElements = new ArrayList<IJavaElement>();
-        refactoringHelper.setNewJavaElementsTest(newJavaElements);
-        assertEquals(newJavaElements, refactoringHelper.getNewJavaElementsTest());
+        assertNotNull(refactoringHelper.getNewJavaElementsTest());
     }
 
     public void testCheckConditions() throws CoreException, IOException {
         refactoringHelper.initialize(policyCmptType);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        performFullBuild();
         RefactoringStatus status = refactoringHelper.checkConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
 
@@ -80,17 +77,36 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         assertTrue(status.hasFatalError());
     }
 
+    public void testCreateChange() throws OperationCanceledException, CoreException {
+        refactoringHelper.initialize(policyCmptType);
+        performFullBuild();
+        assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
+        assertTrue(refactoringHelper.createChangeThisCalled);
+    }
+
+    public void testCreateChangeJavaElementsNotExisting() throws OperationCanceledException, CoreException {
+        refactoringHelper.initialize(policyCmptType);
+        assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
+        assertFalse(refactoringHelper.createChangeThisCalled);
+    }
+
     private static class MockParticipantHelper extends RefactoringParticipantHelper {
+
+        private boolean initializeNewJavaElementsCalled;
+
+        private boolean createChangeThisCalled;
 
         @Override
         protected void createChangeThis(IJavaElement originalJavaElement,
                 IJavaElement newJavaElement,
                 IProgressMonitor pm) throws CoreException, OperationCanceledException {
-
+            createChangeThisCalled = true;
         }
 
         @Override
         protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            initializeNewJavaElementsCalled = true;
+            setNewJavaElements(builderSet.getGeneratedJavaElements(ipsElement));
             return true;
         }
 
@@ -100,10 +116,6 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
         private List<IJavaElement> getNewJavaElementsTest() {
             return getNewJavaElements();
-        }
-
-        private void setNewJavaElementsTest(List<IJavaElement> newJavaElements) {
-            setNewJavaElements(newJavaElements);
         }
 
     }

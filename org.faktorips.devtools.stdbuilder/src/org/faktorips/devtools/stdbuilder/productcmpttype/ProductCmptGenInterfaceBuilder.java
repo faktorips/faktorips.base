@@ -160,9 +160,13 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     @Override
     protected String getGeneratedJavaTypeName(String ipsTypeName) {
         ArgumentCheck.notNull(ipsTypeName);
-        // TODO AW: Is there an option to ask for a generation name for a given product name?
-        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(
-                ipsTypeName + "Gen") : getJavaNamingConvention().getImplementationClassName(ipsTypeName + "Gen");
+        String generationConceptAbbreviation = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
+                .getGenerationConceptNameAbbreviation();
+        if (isBuildingPublishedSourceFile()) {
+            return getJavaNamingConvention().getPublishedInterfaceName(ipsTypeName + generationConceptAbbreviation);
+        } else {
+            return getJavaNamingConvention().getImplementationClassName(ipsTypeName + generationConceptAbbreviation);
+        }
     }
 
     @Override

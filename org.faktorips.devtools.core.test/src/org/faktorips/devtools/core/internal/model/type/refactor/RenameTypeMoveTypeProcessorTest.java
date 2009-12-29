@@ -145,7 +145,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenamePolicyCmptType() throws CoreException {
         String newElementName = "NewPolicy";
-        runRenameRefactoring(policyCmptType, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(policyCmptType, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
                 newElementName));
 
         // Find the new policy component type.
@@ -173,7 +173,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameSuperPolicyCmptType() throws CoreException {
         String newElementName = "NewSuperPolicy";
-        runRenameRefactoring(superPolicyCmptType, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(superPolicyCmptType, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
                 newElementName));
 
         // Check for test attribute update.
@@ -185,7 +185,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameProductCmptType() throws CoreException {
         String newElementName = "NewProduct";
-        runRenameRefactoring(productCmptType, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(productCmptType, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
                 newElementName));
 
         // Find the new product component type.
@@ -212,7 +212,7 @@ public class RenameTypeMoveTypeProcessorTest extends AbstractIpsRefactoringTest 
 
     public void testRenameSuperProductCmptType() throws CoreException {
         String newElementName = "NewSuperProduct";
-        runRenameRefactoring(superProductCmptType, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(superProductCmptType, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
                 newElementName));
 
         // Check for subtype update.

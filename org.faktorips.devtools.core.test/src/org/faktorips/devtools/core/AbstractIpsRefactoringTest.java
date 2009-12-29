@@ -13,11 +13,13 @@
 
 package org.faktorips.devtools.core;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -158,12 +160,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Performs the rename refactoring for the given <tt>IIpsElement</tt> and provided target
+     * Performs the "Rename" refactoring for the given <tt>IIpsElement</tt> and provided target
      * location.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void runRenameRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
+    protected final void performRenameRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { ipsElement, targetLocation });
@@ -172,9 +174,37 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         IpsRenameMoveProcessor processor = (IpsRenameMoveProcessor)renameRefactoring.getProcessor();
         processor.setTargetLocation(targetLocation);
 
-        PerformRefactoringOperation operation = new PerformRefactoringOperation(renameRefactoring,
+        runRefactoring(renameRefactoring);
+    }
+
+    /**
+     * Performs the "Move" refactoring for the given <tt>IIpsElement</tt> and provided target
+     * location.
+     * 
+     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     */
+    protected final void performMoveRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
+            throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { ipsElement, targetLocation });
+
+        ProcessorBasedRefactoring moveRefactoring = ipsElement.getMoveRefactoring();
+        IpsRenameMoveProcessor processor = (IpsRenameMoveProcessor)moveRefactoring.getProcessor();
+        processor.setTargetLocation(targetLocation);
+
+        runRefactoring(moveRefactoring);
+    }
+
+    /** Actually runs the given refactoring. */
+    private void runRefactoring(Refactoring refactoring) throws CoreException {
+        PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
                 CheckConditionsOperation.ALL_CONDITIONS);
         ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
+    }
+
+    /** Performs a full build. */
+    protected final void performFullBuild() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
 }

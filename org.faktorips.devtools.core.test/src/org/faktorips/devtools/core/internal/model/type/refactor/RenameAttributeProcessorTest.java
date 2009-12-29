@@ -97,7 +97,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        runRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // Check for changed attribute name.
@@ -163,7 +163,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // The new configuration element may not have been modified.
@@ -199,7 +199,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(superAttribute, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(superAttribute, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // Check for test attribute update.
@@ -216,7 +216,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        runRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // Check for changed attribute name.
@@ -251,7 +251,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // Check that the other product component was not modified.
@@ -280,7 +280,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        runRenameRefactoring(superAttribute, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
+        performRenameRefactoring(superAttribute, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
                 newAttributeName));
 
         // Check for product component attribute value update.

@@ -172,7 +172,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public final void renameJavaElement(IJavaElement javaElement,
+    protected final void renameJavaElement(IJavaElement javaElement,
             String newName,
             boolean updateReferences,
             final IProgressMonitor pm) throws OperationCanceledException, CoreException {
@@ -213,7 +213,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public final void performRefactoring(RefactoringDescriptor refactoringDescriptor, final IProgressMonitor pm)
+    protected final void performRefactoring(RefactoringDescriptor refactoringDescriptor, final IProgressMonitor pm)
             throws CoreException {
 
         ArgumentCheck.notNull(refactoringDescriptor, pm);
