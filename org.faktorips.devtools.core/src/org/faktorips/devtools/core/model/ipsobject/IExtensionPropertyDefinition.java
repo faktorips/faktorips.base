@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public interface IExtensionPropertyDefinition extends Comparable {
+public interface IExtensionPropertyDefinition extends Comparable<IExtensionPropertyDefinition> {
 
     /**
      * Position to indicate that controls to edit the extension property should be placed above the
@@ -56,7 +56,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * Returns the type this object defines a property for, e.g.
      * <code>org.faktorips.plugin.model.pctype.IAttribute</code>.
      */
-    public Class getExtendedType();
+    public Class<?> getExtendedType();
 
     /**
      * Returns the unique property id. The id is the unique id of the extension that defines this
@@ -152,9 +152,9 @@ public interface IExtensionPropertyDefinition extends Comparable {
     public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreException;
 
     /**
-     * Returns the position of the label and editing field of the extension property in the display area of
-     * the editor, view or dialog. Only the values of the positioning constants of this interface a valid
-     * to return by this method.
+     * Returns the position of the label and editing field of the extension property in the display
+     * area of the editor, view or dialog. Only the values of the positioning constants of this
+     * interface a valid to return by this method.
      * 
      * @see #POSITION_BOTTOM
      * @see #POSITION_TOP

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,6 @@ import java.io.Serializable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
@@ -30,10 +29,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class QualifiedNameType implements Serializable, Comparable {
+public class QualifiedNameType implements Serializable, Comparable<QualifiedNameType> {
 
     private static final long serialVersionUID = -5891585006868536302L;
-    
+
     private String qualifiedName;
     private transient IpsObjectType type;
     private transient int hashCode;
@@ -42,9 +41,9 @@ public class QualifiedNameType implements Serializable, Comparable {
     // as Path is an immutable value object, we don't have any threading problems here
     // if two threads create two different paths we don't have a problem as the two paths are equal.
     private transient IPath path = null;
-    
+
     /**
-     * Returns the qualified name type for he given path. 
+     * Returns the qualified name type for he given path.
      * 
      * @param pathToFile a relative path to an ips src file, e.g. base/motor/MotorPolicy.ipspct
      * @return The qualified name type
@@ -53,20 +52,20 @@ public class QualifiedNameType implements Serializable, Comparable {
      */
     public final static QualifiedNameType newQualifedNameType(String pathToFile) {
         int index = pathToFile.lastIndexOf('.');
-        if (index==-1 || index==pathToFile.length()-1) {
+        if (index == -1 || index == pathToFile.length() - 1) {
             throw new IllegalArgumentException("Path " + pathToFile + " can't be parsed to a qualified name type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index+1));
-        if (type==null) {
+        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
+        if (type == null) {
             throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy an ips object type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IpsPackageFragment.SEPARATOR);
+        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
         if (qName.equals("")) { //$NON-NLS-1$
             throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy a qualified name."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return new QualifiedNameType(qName, type);
     }
-    
+
     /**
      * @param name
      * @param type
@@ -74,7 +73,7 @@ public class QualifiedNameType implements Serializable, Comparable {
     public QualifiedNameType(String name, IpsObjectType type) {
         ArgumentCheck.notNull(name, this);
         ArgumentCheck.notNull(type, this);
-        this.qualifiedName = name;
+        qualifiedName = name;
         this.type = type;
         calculateHashCode();
     }
@@ -83,13 +82,13 @@ public class QualifiedNameType implements Serializable, Comparable {
      * Returns the qualified name.
      */
     public String getName() {
-    	return qualifiedName;
+        return qualifiedName;
     }
 
     /**
      * Returns the ips object type.
      */
-    public IpsObjectType getIpsObjectType(){
+    public IpsObjectType getIpsObjectType() {
         return type;
     }
 
@@ -98,7 +97,7 @@ public class QualifiedNameType implements Serializable, Comparable {
      */
     public String getPackageName() {
         int index = qualifiedName.lastIndexOf('.');
-        if (index==-1) {
+        if (index == -1) {
             return ""; //$NON-NLS-1$
         }
         return qualifiedName.substring(0, index);
@@ -109,45 +108,47 @@ public class QualifiedNameType implements Serializable, Comparable {
      */
     public String getUnqualifiedName() {
         int index = qualifiedName.lastIndexOf('.');
-        if (index==-1) {
+        if (index == -1) {
             return qualifiedName;
         }
-        if (index==qualifiedName.length()-1) {
+        if (index == qualifiedName.length() - 1) {
             return ""; //$NON-NLS-1$
         }
-        return qualifiedName.substring(index+1);
+        return qualifiedName.substring(index + 1);
     }
-    
+
     /**
-     * Transforms this qualified name part into an IPath.
-     * E.g.: mycompany.motor.MotorPolicy of type PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
+     * Transforms this qualified name part into an IPath. E.g.: mycompany.motor.MotorPolicy of type
+     * PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
      */
     public IPath toPath() {
-        if (path==null) {
-            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
-                    + '.' + type.getFileExtension()); 
+        if (path == null) {
+            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR) + '.'
+                    + type.getFileExtension());
         }
         return path;
     }
-    
+
     /**
      * Returns the name for files in that an ips object with this qualified name type is stored.
-     * E.g.: for "mycompany.motor.MotorPolicy" of type PolicyCmptType the method returns "MotorPolicy.ipspct"
+     * E.g.: for "mycompany.motor.MotorPolicy" of type PolicyCmptType the method returns
+     * "MotorPolicy.ipspct"
      */
     public String getFileName() {
         return type.getFileName(getUnqualifiedName());
     }
-    
-    private void calculateHashCode(){
+
+    private void calculateHashCode() {
         int result = 17;
-        result = result*37 + qualifiedName.hashCode();
-        result = result*37 + type.hashCode();
+        result = result * 37 + qualifiedName.hashCode();
+        result = result * 37 + type.hashCode();
         hashCode = result;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return hashCode;
     }
@@ -155,8 +156,9 @@ public class QualifiedNameType implements Serializable, Comparable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object obj) {
-        if(obj instanceof QualifiedNameType){
+        if (obj instanceof QualifiedNameType) {
             QualifiedNameType other = (QualifiedNameType)obj;
             return type.equals(other.type) && qualifiedName.equals(other.qualifiedName);
         }
@@ -166,6 +168,7 @@ public class QualifiedNameType implements Serializable, Comparable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return type + ": " + qualifiedName; //$NON-NLS-1$
     }
@@ -191,23 +194,21 @@ public class QualifiedNameType implements Serializable, Comparable {
     }
 
     /**
-     * QualifiedNameTypes are compared by their package name, then by their unqualified name and then by their
-     * ips obejct type's name.
+     * QualifiedNameTypes are compared by their package name, then by their unqualified name and
+     * then by their ips obejct type's name.
      * 
      * {@inheritDoc}
      */
-    public int compareTo(Object o) {
-        QualifiedNameType other = (QualifiedNameType)o;
+    public int compareTo(QualifiedNameType other) {
         int c = getPackageName().compareTo(other.getPackageName());
-        if (c!=0) {
+        if (c != 0) {
             return c;
         }
         c = getUnqualifiedName().compareTo(other.getUnqualifiedName());
-        if (c!=0) {
+        if (c != 0) {
             return c;
         }
         return getIpsObjectType().getId().compareTo(other.getIpsObjectType().getId());
     }
-    
-    
+
 }
