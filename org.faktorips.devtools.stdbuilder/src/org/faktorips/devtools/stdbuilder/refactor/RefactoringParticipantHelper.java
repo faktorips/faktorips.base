@@ -26,14 +26,10 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
-import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -46,9 +42,9 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -162,49 +158,6 @@ public abstract class RefactoringParticipantHelper {
             IProgressMonitor pm) throws CoreException, OperationCanceledException;
 
     /**
-     * Renames the given <tt>IJavaElement</tt> to the given new name by calling the appropriate JDT
-     * refactoring.
-     * 
-     * @param javaElement The <tt>IJavaElement</tt> to rename.
-     * @param newName A new name for the <tt>IJavaElement</tt>.
-     * @param updateReferences Flag whether to update Java references.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
-     */
-    protected final void renameJavaElement(IJavaElement javaElement,
-            String newName,
-            boolean updateReferences,
-            final IProgressMonitor pm) throws OperationCanceledException, CoreException {
-
-        ArgumentCheck.notNull(new Object[] { javaElement, newName, pm });
-
-        String javaRefactoringContributionId;
-        switch (javaElement.getElementType()) {
-            case IJavaElement.FIELD:
-                javaRefactoringContributionId = IJavaRefactorings.RENAME_FIELD;
-                break;
-            case IJavaElement.METHOD:
-                javaRefactoringContributionId = IJavaRefactorings.RENAME_METHOD;
-                break;
-            case IJavaElement.TYPE:
-                javaRefactoringContributionId = IJavaRefactorings.RENAME_TYPE;
-                break;
-            default:
-                throw new RuntimeException("This kind of Java element is not supported.");
-        }
-
-        RefactoringContribution contribution = RefactoringCore
-                .getRefactoringContribution(javaRefactoringContributionId);
-        RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
-        descriptor.setJavaElement(javaElement);
-        descriptor.setNewName(newName);
-        descriptor.setUpdateReferences(updateReferences);
-
-        performRefactoring(descriptor, pm);
-    }
-
-    /**
      * Executes the refactoring described by the provided <tt>RefactoringDescriptor</tt>.
      * 
      * @param refactoringDescriptor The <tt>RefactoringDescriptor</tt> describing the refactoring to
@@ -274,24 +227,27 @@ public abstract class RefactoringParticipantHelper {
      * after it has been refactored.
      * 
      * @param policyCmptType The <tt>IPolicyCmptType</tt> to be refactored.
-     * @param targetLocation The target location of the <tt>IPolicyCmptType</tt> to be refactored.
+     * @param targetIpsPackageFragment The <tt>IIpsPackageFragment</tt> of the
+     *            <tt>IPolicyCmptType</tt> after it has been refactored.
+     * @param newName The new name of the <tt>IPolicyCmptType</tt> after it has been refactored.
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
      *            elements.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
     protected final void initNewJavaElements(IPolicyCmptType policyCmptType,
-            LocationDescriptor targetLocation,
+            IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
             StandardBuilderSet builderSet) {
 
-        ArgumentCheck.notNull(new Object[] { policyCmptType, targetLocation, builderSet });
+        ArgumentCheck.notNull(new Object[] { policyCmptType, targetIpsPackageFragment, newName, builderSet });
 
         /*
          * Creating an in-memory-only source file for an in-memory-only policy component type that
          * can be passed to the builder to obtain the generated Java elements for.
          */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetLocation.getIpsPackageFragment(), targetLocation.getName()
-                + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetIpsPackageFragment, newName + "."
+                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
 
         /*
@@ -313,24 +269,27 @@ public abstract class RefactoringParticipantHelper {
      * <tt>IProductCmptType</tt> after it has been refactored.
      * 
      * @param productCmptType The <tt>IProductCmptType</tt> to be refactored.
-     * @param targetLocation The target location of the <tt>IProductCmptType</tt> to be refactored.
+     * @param targetIpsPackageFragment The <tt>IIpsPackageFragment</tt> of the
+     *            <tt>IProductCmptType</tt> after it has been refactored.
+     * @param newName The new name of the <tt>IProductCmptType</tt> after it has been refactored.
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
      *            elements.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
     protected final void initNewJavaElements(IProductCmptType productCmptType,
-            LocationDescriptor targetLocation,
+            IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
             StandardBuilderSet builderSet) {
 
-        ArgumentCheck.notNull(new Object[] { productCmptType, targetLocation, builderSet });
+        ArgumentCheck.notNull(new Object[] { productCmptType, targetIpsPackageFragment, newName, builderSet });
 
         /*
          * Creating an in-memory-only source file for an in-memory-only product component type that
          * can be passed to the builder to obtain the generated Java elements for.
          */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetLocation.getIpsPackageFragment(), targetLocation.getName()
-                + "." + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
+        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetIpsPackageFragment, newName + "."
+                + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
         IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
 
         /*

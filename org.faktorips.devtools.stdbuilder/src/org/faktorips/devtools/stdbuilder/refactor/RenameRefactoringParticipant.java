@@ -17,15 +17,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.RefactoringContribution;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -81,6 +83,40 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
                     .getUpdateReferences(), pm);
         }
 
+        /**
+         * Renames the given <tt>IJavaElement</tt> to the given new name by calling the appropriate
+         * JDT refactoring.
+         */
+        private void renameJavaElement(IJavaElement javaElement,
+                String newName,
+                boolean updateReferences,
+                final IProgressMonitor pm) throws OperationCanceledException, CoreException {
+
+            String javaRefactoringContributionId;
+            switch (javaElement.getElementType()) {
+                case IJavaElement.FIELD:
+                    javaRefactoringContributionId = IJavaRefactorings.RENAME_FIELD;
+                    break;
+                case IJavaElement.METHOD:
+                    javaRefactoringContributionId = IJavaRefactorings.RENAME_METHOD;
+                    break;
+                case IJavaElement.TYPE:
+                    javaRefactoringContributionId = IJavaRefactorings.RENAME_TYPE;
+                    break;
+                default:
+                    throw new RuntimeException("This kind of Java element is not supported.");
+            }
+
+            RefactoringContribution contribution = RefactoringCore
+                    .getRefactoringContribution(javaRefactoringContributionId);
+            RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
+            descriptor.setJavaElement(javaElement);
+            descriptor.setNewName(newName);
+            descriptor.setUpdateReferences(updateReferences);
+
+            performRefactoring(descriptor, pm);
+        }
+
         @Override
         protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             if (ipsElement instanceof IAttribute) {
@@ -88,11 +124,13 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
 
             } else if (ipsElement instanceof IPolicyCmptType) {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initNewJavaElements(policyCmptType, getTargetLocation(policyCmptType), builderSet);
+                initNewJavaElements(policyCmptType, policyCmptType.getIpsPackageFragment(),
+                        getArguments().getNewName(), builderSet);
 
             } else if (ipsElement instanceof IProductCmptType) {
                 IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initNewJavaElements(productCmptType, getTargetLocation(productCmptType), builderSet);
+                initNewJavaElements(productCmptType, productCmptType.getIpsPackageFragment(), getArguments()
+                        .getNewName(), builderSet);
 
             } else {
                 return false;
@@ -101,18 +139,13 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
             return true;
         }
 
-        /** Returns the target location for the given <tt>IType</tt>. */
-        private LocationDescriptor getTargetLocation(IType type) {
-            return new LocationDescriptor(type.getIpsPackageFragment(), getArguments().getNewName());
-        }
-
         /**
          * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IAttribute</tt>
          * after it has been refactored.
          */
         private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
             String oldName = attribute.getName();
-            attribute.setName(getTargetLocation(attribute.getType()).getName());
+            attribute.setName(getArguments().getNewName());
             setNewJavaElements(builderSet.getGeneratedJavaElements(attribute));
             attribute.setName(oldName);
         }

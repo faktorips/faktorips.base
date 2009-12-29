@@ -28,12 +28,21 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
+
+    public static String IpsRenameProcessor_msgNewNameEmpty;
+    public static String IpsRenameProcessor_msgNewNameEqualsElementName;
+
+    public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
+
     public static String RenameAttributeProcessor_processorName;
     public static String RenameAttributeProcessor_msgAttributeNotValid;
 
-    public static String RenameTypeMoveTypeProcessor_msgTypeNotValid;
+    public static String RenameTypeMoveTypeHelper_msgTypeNotValid;
+    public static String RenameTypeMoveTypeHelper_msgSourceFileAlreadyExists;
 
-    public static String RenameTypeMoveTypeProcessor_processorName;
-    public static String RenameTypeMoveTypeProcessor_msgSourceFileAlreadyExists;
+    public static String RenameTypeProcessor_processorName;
+
+    public static String MoveTypeProcessor_processorName;
 
 }

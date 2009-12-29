@@ -24,8 +24,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
@@ -111,15 +110,13 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
 
         @Override
         protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
-            LocationDescriptor targetLocation = new LocationDescriptor(getIpsRenameMoveProcessor()
-                    .getOriginalLocation().getIpsPackageFragment(), newNameTextField.getText());
-            getIpsRenameMoveProcessor().setTargetLocation(targetLocation);
-            status.merge(getIpsRenameMoveProcessor().validateTargetLocation(new NullProgressMonitor()));
+            getIpsRenameProcessor().setNewName(newNameTextField.getText());
+            status.merge(getIpsRenameProcessor().validateUserInput(new NullProgressMonitor()));
         }
 
-        /** Returns the <tt>IpsRenameMoveProcessor</tt> this refactoring is working with. */
-        private IpsRenameMoveProcessor getIpsRenameMoveProcessor() {
-            return (IpsRenameMoveProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+        /** Returns the <tt>IIpsRenameProcessor</tt> this refactoring is working with. */
+        private IIpsRenameProcessor getIpsRenameProcessor() {
+            return (IIpsRenameProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
         }
 
     }

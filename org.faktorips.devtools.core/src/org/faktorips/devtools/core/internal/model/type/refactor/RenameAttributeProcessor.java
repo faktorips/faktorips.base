@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -37,8 +36,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -46,7 +43,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
+public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     /**
      * Creates a <tt>RenameAttributeProcessor</tt>.
@@ -54,12 +51,7 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
      * @param attribute The <tt>IAttribute</tt> to be refactored.
      */
     public RenameAttributeProcessor(IAttribute attribute) {
-        super(attribute, false);
-    }
-
-    @Override
-    protected LocationDescriptor initOriginalLocation() {
-        return new LocationDescriptor(getType().getIpsPackageFragment(), getAttribute().getName());
+        super(attribute);
     }
 
     @Override
@@ -69,36 +61,29 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
                     .getName()));
         } else {
             if (!(getAttribute().getType().isValid())) {
-                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeProcessor_msgTypeNotValid, getAttribute()
+                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgTypeNotValid, getAttribute()
                         .getType().getName()));
             }
         }
     }
 
     @Override
-    protected void validateTargetLocationThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         /*
          * TODO AW: Stop broadcasting change events would be good for name changing here, make it
          * published?
          */
-        getAttribute().setName(getNewAttributeName());
+        getAttribute().setName(getNewName());
 
         IIpsProject ipsProject = getAttribute().getIpsProject();
         MessageList validationMessageList = getAttribute().validate(ipsProject);
         validationMessageList.add(getType().validate(ipsProject));
         addValidationMessagesToStatus(validationMessageList, status);
 
-        getAttribute().setName(getOriginalAttributeName());
+        getAttribute().setName(getOriginalName());
 
         // The source file was not really modified.
         getAttribute().getIpsSrcFile().markAsClean();
-    }
-
-    @Override
-    protected void checkFinalConditionsThis(RefactoringStatus status,
-            IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
-        // Nothing more to do.
     }
 
     @Override
@@ -134,9 +119,9 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
             }
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IAttributeValue attributeValue = generation.getAttributeValue(getOriginalAttributeName());
+                IAttributeValue attributeValue = generation.getAttributeValue(getOriginalName());
                 if (attributeValue != null) {
-                    attributeValue.setAttribute(getNewAttributeName());
+                    attributeValue.setAttribute(getNewName());
                     addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
@@ -171,9 +156,9 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
             }
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IConfigElement configElement = generation.getConfigElement(getOriginalAttributeName());
+                IConfigElement configElement = generation.getConfigElement(getOriginalName());
                 if (configElement != null) {
-                    configElement.setPolicyCmptTypeAttribute(getNewAttributeName());
+                    configElement.setPolicyCmptTypeAttribute(getNewName());
                     addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
@@ -198,8 +183,8 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
                 if (!(referencedPolicyCmptType.isSubtypeOrSameType(getType(), parameter.getIpsProject()))) {
                     continue;
                 }
-                for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalAttributeName())) {
-                    testAttribute.setAttribute(getNewAttributeName());
+                for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalName())) {
+                    testAttribute.setAttribute(getNewName());
                     addModifiedSrcFile(testCaseType.getIpsSrcFile());
                 }
             }
@@ -211,18 +196,8 @@ public final class RenameAttributeProcessor extends IpsRenameMoveProcessor {
      * user.
      */
     private void updateAttributeName() {
-        getAttribute().setName(getNewAttributeName());
+        getAttribute().setName(getNewName());
         addModifiedSrcFile(getAttribute().getIpsSrcFile());
-    }
-
-    /** Returns the new name of the <tt>IAttribute</tt> to be renamed, provided by the user. */
-    private String getNewAttributeName() {
-        return getTargetLocation().getName();
-    }
-
-    /** Returns the original name of the <tt>IAttribute</tt> to be renamed. */
-    private String getOriginalAttributeName() {
-        return getOriginalLocation().getName();
     }
 
     /** Returns the <tt>IAttribute</tt> to be refactored. */

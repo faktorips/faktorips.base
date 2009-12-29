@@ -34,8 +34,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -148,7 +147,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
          * <tt>IIpsElement</tt> to move.
          */
         private void setInitialTreeViewerSelection() {
-            treeViewer.setSelection(new StructuredSelection(getOriginalLocation().getIpsPackageFragment()));
+            treeViewer.setSelection(new StructuredSelection(getIpsMoveProcessor().getOriginalIpsPackageFragment()));
             treeViewer.refresh();
         }
 
@@ -172,19 +171,13 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
                 throw new RuntimeException("Only package fragments are valid selections.");
             }
 
-            LocationDescriptor targetLocation = new LocationDescriptor(targetFragment, getOriginalLocation().getName());
-            getIpsRenameMoveProcessor().setTargetLocation(targetLocation);
-            status.merge(getIpsRenameMoveProcessor().validateTargetLocation(new NullProgressMonitor()));
+            getIpsMoveProcessor().setTargetIpsPackageFragment(targetFragment);
+            status.merge(getIpsMoveProcessor().validateUserInput(new NullProgressMonitor()));
         }
 
-        /** Returns the original location of the <tt>IIpsElement</tt> to be moved. */
-        private LocationDescriptor getOriginalLocation() {
-            return getIpsRenameMoveProcessor().getOriginalLocation();
-        }
-
-        /** Returns the <tt>IpsRenameMoveProcessor</tt> this refactoring is working with. */
-        private IpsRenameMoveProcessor getIpsRenameMoveProcessor() {
-            return (IpsRenameMoveProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+        /** Returns the <tt>IIpsMoveProcessor</tt> this refactoring is working with. */
+        private IIpsMoveProcessor getIpsMoveProcessor() {
+            return (IIpsMoveProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
         }
 
         /** Label provider for the selection tree used by this page. */

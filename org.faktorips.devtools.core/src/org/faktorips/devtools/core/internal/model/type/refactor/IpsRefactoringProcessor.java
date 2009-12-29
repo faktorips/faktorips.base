@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.refactor;
+package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.refactor.IIpsRefactoringProcessor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -50,7 +52,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
+public abstract class IpsRefactoringProcessor extends RefactoringProcessor implements IIpsRefactoringProcessor {
 
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
@@ -106,6 +108,37 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     protected abstract void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
             throws CoreException;
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation triggers the user input validation and a subclass implementation that may
+     * extend the final condition checking.
+     */
+    @Override
+    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
+            throws CoreException, OperationCanceledException {
+
+        RefactoringStatus status = validateUserInput(pm);
+        checkFinalConditionsThis(status, pm, context);
+        return status;
+    }
+
+    /**
+     * Subclass implementation which may extend the final condition checking. The default
+     * implementation does nothing.
+     * 
+     * @param status The <tt>RefactoringStatus</tt> to add messages to.
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * @param context A condition checking context to collect shared condition checks.
+     * 
+     * @throws CoreException May be thrown at any time.
+     */
+    protected void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException {
+
+    }
 
     /**
      * Adds an entry to the provided <tt>RefactoringStatus</tt> for every messages contained in the

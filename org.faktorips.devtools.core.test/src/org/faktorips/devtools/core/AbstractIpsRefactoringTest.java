@@ -24,6 +24,7 @@ import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -37,8 +38,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -160,37 +161,34 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Performs the "Rename" refactoring for the given <tt>IIpsElement</tt> and provided target
-     * location.
+     * Performs the "Rename" refactoring for the given <tt>IIpsElement</tt> and provided new name.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void performRenameRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
-            throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { ipsElement, targetLocation });
+    protected final void performRenameRefactoring(IIpsElement ipsElement, String newName) throws CoreException {
+        ArgumentCheck.notNull(new Object[] { ipsElement, newName });
 
         ProcessorBasedRefactoring renameRefactoring = ipsElement.getRenameRefactoring();
-        IpsRenameMoveProcessor processor = (IpsRenameMoveProcessor)renameRefactoring.getProcessor();
-        processor.setTargetLocation(targetLocation);
+        IIpsRenameProcessor processor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        processor.setNewName(newName);
 
         runRefactoring(renameRefactoring);
     }
 
     /**
      * Performs the "Move" refactoring for the given <tt>IIpsElement</tt> and provided target
-     * location.
+     * <tt>IIpsPackageFragment</tt>.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void performMoveRefactoring(IIpsElement ipsElement, LocationDescriptor targetLocation)
+    protected final void performMoveRefactoring(IIpsElement ipsElement, IIpsPackageFragment targetIpsPackageFragment)
             throws CoreException {
 
-        ArgumentCheck.notNull(new Object[] { ipsElement, targetLocation });
+        ArgumentCheck.notNull(new Object[] { ipsElement, targetIpsPackageFragment });
 
         ProcessorBasedRefactoring moveRefactoring = ipsElement.getMoveRefactoring();
-        IpsRenameMoveProcessor processor = (IpsRenameMoveProcessor)moveRefactoring.getProcessor();
-        processor.setTargetLocation(targetLocation);
+        IIpsMoveProcessor processor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
+        processor.setTargetIpsPackageFragment(targetIpsPackageFragment);
 
         runRefactoring(moveRefactoring);
     }

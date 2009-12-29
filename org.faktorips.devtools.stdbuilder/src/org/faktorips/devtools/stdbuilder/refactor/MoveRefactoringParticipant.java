@@ -30,9 +30,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -87,12 +87,6 @@ public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring
             if (originalJavaElement.getElementType() == IJavaElement.TYPE
                     && newJavaElement.getElementType() == IJavaElement.TYPE) {
 
-                // Rename the Java type if necessary.
-                if (!(newJavaElement.getElementName().equals(originalJavaElement.getElementName()))) {
-                    renameJavaElement(originalJavaElement, newJavaElement.getElementName(), getArguments()
-                            .getUpdateReferences(), pm);
-                }
-
                 moveJavaElement((IType)originalJavaElement, ((IType)newJavaElement).getPackageFragment(), pm);
             }
         }
@@ -120,11 +114,13 @@ public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring
         protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             if (ipsElement instanceof IPolicyCmptType) {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initNewJavaElements(policyCmptType, (LocationDescriptor)getArguments().getDestination(), builderSet);
+                initNewJavaElements(policyCmptType, (IIpsPackageFragment)getArguments().getDestination(),
+                        policyCmptType.getName(), builderSet);
 
             } else if (ipsElement instanceof IProductCmptType) {
                 IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initNewJavaElements(productCmptType, (LocationDescriptor)getArguments().getDestination(), builderSet);
+                initNewJavaElements(productCmptType, (IIpsPackageFragment)getArguments().getDestination(),
+                        productCmptType.getName(), builderSet);
 
             } else {
                 return false;

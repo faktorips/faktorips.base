@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
 
 /**
  * Tests the various Faktor-IPS "Move" refactorings with regard to the generated Java source code.
@@ -38,9 +37,6 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
     public void testMovePolicyCmptType() throws CoreException {
         performFullBuild();
-
-        // Move the policy component type.
-        performMoveRefactoring(policyCmptType, new LocationDescriptor(targetPackageFragment, "MyMovedPolicy"));
     }
 
     public void testMoveProductCmptType() {

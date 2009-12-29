@@ -13,25 +13,24 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
-public class Messages extends NLS {
+/**
+ * An <tt>IIpsRefactoringProcessor</tt> implements a specific Faktor-IPS refactoring.
+ * 
+ * @author Alexander Weickmann
+ */
+public interface IIpsRefactoringProcessor {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.refactor.messages"; //$NON-NLS-1$
-
-    private Messages() {
-
-    }
-
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
-
-    public static String IpsRenameMoveProcessor_msgNewNameEmpty;
-    public static String IpsRenameMoveProcessor_msgNewNameEqualsElementName;
-    public static String IpsRenameMoveProcessor_msgTargetLocationEqualsOriginalLocation;
+    /**
+     * Responsible for validating the user input.
+     * 
+     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * 
+     * @throws CoreException If an error occurs while validating the user input.
+     */
+    public abstract RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException;
 
 }

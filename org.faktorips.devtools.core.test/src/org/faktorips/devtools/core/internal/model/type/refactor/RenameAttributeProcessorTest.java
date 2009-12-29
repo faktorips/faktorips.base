@@ -34,8 +34,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.refactor.IpsRenameMoveProcessor;
-import org.faktorips.devtools.core.refactor.LocationDescriptor;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
  * 
@@ -66,9 +65,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(), "test"));
-        RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName("test");
+        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertFalse(status.hasError());
     }
@@ -79,10 +78,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         attribute.setName("otherAttribute");
 
         ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        IpsRenameMoveProcessor renameProcessor = (IpsRenameMoveProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setTargetLocation(new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
-                "otherAttribute"));
-        RefactoringStatus status = renameProcessor.checkFinalConditions(new NullProgressMonitor(),
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName("otherAttribute");
+        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());
     }
@@ -97,8 +95,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        performRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
 
         // Check for changed attribute name.
         assertNull(policyCmptType.getAttribute(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -163,8 +160,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        performRenameRefactoring(policyCmptTypeAttribute, new LocationDescriptor(policyCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
 
         // The new configuration element may not have been modified.
         assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherConfigElement.getName());
@@ -199,8 +195,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        performRenameRefactoring(superAttribute, new LocationDescriptor(superPolicyCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(superAttribute, newAttributeName);
 
         // Check for test attribute update.
         assertEquals(1, testPolicyCmptTypeParameter.getTestAttributes(POLICY_CMPT_TYPE_ATTRIBUTE_NAME).length);
@@ -216,8 +211,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
-        performRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(productCmptTypeAttribute, newAttributeName);
 
         // Check for changed attribute name.
         assertNull(productCmptType.getAttribute(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -251,8 +245,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        performRenameRefactoring(productCmptTypeAttribute, new LocationDescriptor(productCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(productCmptTypeAttribute, newAttributeName);
 
         // Check that the other product component was not modified.
         assertNotNull(otherProductCmptGeneration.getAttributeValue(PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME));
@@ -280,8 +273,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // Run the refactoring.
         String newAttributeName = "test";
-        performRenameRefactoring(superAttribute, new LocationDescriptor(superProductCmptType.getIpsPackageFragment(),
-                newAttributeName));
+        performRenameRefactoring(superAttribute, newAttributeName);
 
         // Check for product component attribute value update.
         assertNull(productCmptGeneration.getAttributeValue("superAttribute"));
