@@ -19,16 +19,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
@@ -36,70 +29,7 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class RenameTypeProcessorTest extends AbstractIpsRefactoringTest {
-
-    private static final String OTHER_POLICY_NAME = "OtherPolicy";
-
-    private static final String OTHER_PRODUCT_NAME = "OtherProduct";
-
-    private IPolicyCmptType otherPolicyCmptType;
-
-    private IProductCmptType otherProductCmptType;
-
-    private IMethod policyMethod;
-
-    private IMethod productMethod;
-
-    private IAssociation otherPolicyToPolicyAssociation;
-
-    private IAssociation otherProductToProductAssociation;
-
-    private ITestAttribute superTestAttribute;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // Create another policy component type and another product component type.
-        otherPolicyCmptType = newPolicyCmptType(ipsProject, OTHER_POLICY_NAME);
-        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_NAME);
-
-        // Setup policy method.
-        policyMethod = otherPolicyCmptType.newMethod();
-        policyMethod.setName("policyMethod");
-        policyMethod.setDatatype(Datatype.STRING.getQualifiedName());
-        policyMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        policyMethod.newParameter(QUALIFIED_POLICY_NAME, "toBeChanged");
-        policyMethod.newParameter(QUALIFIED_PRODUCT_NAME, "withProductDatatype");
-
-        // Setup product method.
-        productMethod = otherProductCmptType.newMethod();
-        productMethod.setName("productMethod");
-        productMethod.setDatatype(Datatype.STRING.getQualifiedName());
-        productMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        productMethod.newParameter(QUALIFIED_PRODUCT_NAME, "toBeChanged");
-        productMethod.newParameter(QUALIFIED_POLICY_NAME, "withPolicyDatatype");
-
-        // Setup policy associations.
-        otherPolicyToPolicyAssociation = otherPolicyCmptType.newAssociation();
-        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
-
-        // Setup product associations.
-        otherProductToProductAssociation = otherProductCmptType.newAssociation();
-        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_NAME);
-
-        // Create a test attribute based on an attribute of the super policy component type.
-        IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
-        superPolicyAttribute.setName("superPolicyAttribute");
-        superPolicyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        superPolicyAttribute.setModifier(Modifier.PUBLISHED);
-        superPolicyAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
-        superTestAttribute.setAttribute(superPolicyAttribute);
-        superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
-
-        createProductCmpt();
-    }
+public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
 
     public void testCheckInitialConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
