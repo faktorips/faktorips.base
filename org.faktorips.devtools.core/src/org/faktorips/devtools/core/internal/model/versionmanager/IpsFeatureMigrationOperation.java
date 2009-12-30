@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,7 +48,7 @@ import org.osgi.framework.Version;
 public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOperation {
 
     private MessageList result;
-    private ArrayList operations = new ArrayList();
+    private ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
     private IIpsProject projectToMigrate;
 
     public IpsFeatureMigrationOperation(IIpsProject projectToMigrate) {
@@ -58,10 +58,10 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getIpsProject() {
         return projectToMigrate;
     }
-
 
     public void addMigrationPath(AbstractIpsProjectMigrationOperation[] path) {
         operations.addAll(Arrays.asList(path));
@@ -70,9 +70,10 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
-        
+
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -86,7 +87,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         }
     }
 
-    private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+    private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+            InterruptedException {
         try {
             // check for unsaved changes - is there a more elegant way???
             if (PlatformUI.isWorkbenchRunning()) {
@@ -104,35 +106,31 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
                 }
             }
             monitor.worked(10);
-            
+
             result = new MessageList();
             for (int i = 0; i < operations.size(); i++) {
                 if (monitor.isCanceled()) {
                     throw new InterruptedException();
                 }
-                AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
+                AbstractIpsProjectMigrationOperation operation = operations.get(i);
                 result.add(operation.migrate(new SubProgressMonitor(monitor, 1000)));
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             rollback();
-            throw(e);
-        }
-        catch (InvocationTargetException e) {
+            throw (e);
+        } catch (InvocationTargetException e) {
             rollback();
-            throw(e);
-        }
-        catch (InterruptedException e) {
+            throw (e);
+        } catch (InterruptedException e) {
             rollback();
-            throw(e);
-        }
-        catch (Throwable t) {
+            throw (e);
+        } catch (Throwable t) {
             rollback();
             throw new CoreException(new IpsStatus(t));
         }
-        
+
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
-        ArrayList result = new ArrayList();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         projectToMigrate.findAllIpsSrcFiles(result);
         IProgressMonitor saveMonitor = new SubProgressMonitor(monitor, 1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
@@ -141,7 +139,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         // we now start to save all the modifications - which has to be done atomically.
         monitor.setCanceled(false);
         for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = ((IIpsSrcFile)result.get(i));
+            IIpsSrcFile file = (result.get(i));
             if (file.isDirty()) {
                 file.save(true, monitor);
             }
@@ -152,52 +150,51 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     private void rollback() {
-        ArrayList result = new ArrayList();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
             projectToMigrate.findAllIpsSrcFiles(result);
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("Error during rollback of migration. Rollback might have failed", e)); //$NON-NLS-1$
         }
         for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = ((IIpsSrcFile)result.get(i));
+            IIpsSrcFile file = (result.get(i));
             if (file.isDirty()) {
                 file.discardChanges();
                 file.markAsClean();
             }
         }
-        
+
     }
-    
+
     private void updateIpsProject() throws CoreException {
         if (isEmpty()) {
             return;
         }
         IIpsProjectProperties props = projectToMigrate.getProperties();
-        
+
         // for every migrated feature find the maximum target version.
-        Hashtable features = new Hashtable();
-        for(int i = 0; i < operations.size(); i++) {
-            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
-            String version = (String)features.get(operation.getFeatureId());
+        Hashtable<String, String> features = new Hashtable<String, String>();
+        for (int i = 0; i < operations.size(); i++) {
+            AbstractIpsProjectMigrationOperation operation = operations.get(i);
+            String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
-            }
-            else if (Version.parseVersion(version).compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
+            } else if (Version.parseVersion(version).compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }
-        
-        for(Enumeration keys = features.keys(); keys.hasMoreElements();) {
-            String key = (String)keys.nextElement();
-            props.setMinRequiredVersionNumber(key, (String)features.get(key));
+
+        for (Enumeration<String> keys = features.keys(); keys.hasMoreElements();) {
+            String key = keys.nextElement();
+            props.setMinRequiredVersionNumber(key, features.get(key));
         }
         projectToMigrate.setProperties(props);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList getMessageList() {
         return result;
     }
@@ -205,10 +202,11 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         StringBuffer description = new StringBuffer();
         for (int i = 0; i < operations.size(); i++) {
-            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
+            AbstractIpsProjectMigrationOperation operation = operations.get(i);
             description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
             description.append(operation.getDescription()).append(SystemUtils.LINE_SEPARATOR);
         }
@@ -218,11 +216,12 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEmpty() {
         boolean empty = true;
 
         for (int i = 0; i < operations.size() && empty; i++) {
-            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
+            AbstractIpsProjectMigrationOperation operation = operations.get(i);
             empty = empty && operation.isEmpty();
         }
         return empty;
