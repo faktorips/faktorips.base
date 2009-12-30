@@ -24,23 +24,54 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
  */
 public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
-    private IIpsPackageFragment targetPackageFragment;
+    private static final String TARGET_PACKAGE_NAME = "level.targetipspackage";
+
+    private IIpsPackageFragment targetIpsPackageFragment;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
-        targetPackageFragment = fragmentRoot.createPackageFragment("targetPackageLevel1", true, null);
-        targetPackageFragment = targetPackageFragment.createSubPackage("targetPackageLevel2", true, null);
+        targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
     }
 
     public void testMovePolicyCmptType() throws CoreException {
         performFullBuild();
+
+        performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
+
+        assertFalse(policyClass.exists());
+        assertFalse(policyInterface.exists());
+
+        // Obtain the moved Java elements.
+        policyClass = getJavaType(TARGET_PACKAGE_NAME, POLICY_NAME, true);
+        policyInterface = getJavaType(TARGET_PACKAGE_NAME, POLICY_NAME, false);
+
+        assertTrue(policyClass.exists());
+        assertTrue(policyInterface.exists());
     }
 
-    public void testMoveProductCmptType() {
+    public void testMoveProductCmptType() throws CoreException {
+        performFullBuild();
 
+        performMoveRefactoring(productCmptType, targetIpsPackageFragment);
+
+        assertFalse(productClass.exists());
+        assertFalse(productInterface.exists());
+        assertFalse(productGenClass.exists());
+        assertFalse(productGenInterface.exists());
+
+        // Obtain the moved Java elements.
+        productClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME, true);
+        productInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME, false);
+        productGenClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME + "Gen", true);
+        productGenInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME + "Gen", false);
+
+        assertTrue(productClass.exists());
+        assertTrue(productInterface.exists());
+        assertTrue(productGenClass.exists());
+        assertTrue(productGenInterface.exists());
     }
 
 }

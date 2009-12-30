@@ -54,7 +54,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         assertTrue(refactoringHelper.initializeNewJavaElementsCalled);
     }
 
-    public void testGetSetNewJavaElements() {
+    public void testGetNewJavaElements() {
         assertNull(refactoringHelper.getNewJavaElementsTest());
         refactoringHelper.initialize(policyCmptType);
         assertNotNull(refactoringHelper.getNewJavaElementsTest());

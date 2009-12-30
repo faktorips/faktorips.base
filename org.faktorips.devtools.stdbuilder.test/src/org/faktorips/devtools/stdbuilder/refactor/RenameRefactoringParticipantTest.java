@@ -26,24 +26,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         performFullBuild();
 
-        // Expect Java elements for published interface.
-        assertTrue(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
-        assertTrue(policyInterface.getMethod("getPolicyAttribute", new String[] {}).exists());
-        assertTrue(policyInterface.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
-        assertTrue(productGenInterface.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
-        assertTrue(productGenInterface.getMethod("getSetOfAllowedValuesForPolicyAttribute",
-                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
-
-        // Expect Java elements for implementation.
-        assertTrue(policyClass.getField("policyAttribute").exists());
-        assertTrue(policyClass.getMethod("getPolicyAttribute", new String[] {}).exists());
-        assertTrue(policyClass.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
-        assertTrue(productGenClass.getField("defaultValuePolicyAttribute").exists());
-        assertTrue(productGenClass.getField("setOfAllowedValuesPolicyAttribute").exists());
-        assertTrue(productGenClass.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
-        assertTrue(productGenClass.getMethod("getSetOfAllowedValuesForPolicyAttribute",
-                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
-
         // Rename the attribute.
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
@@ -86,15 +68,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         performFullBuild();
 
-        // Expect Java elements for published interface.
-        assertTrue(productGenInterface.getMethod("getProductAttribute", new String[] {}).exists());
-
-        // Expect Java elements for implementation.
-        assertTrue(productGenClass.getField("productAttribute").exists());
-        assertTrue(productGenClass.getMethod("getProductAttribute", new String[] {}).exists());
-        assertTrue(productGenClass.getMethod("setProductAttribute", new String[] { "QString;" }).exists());
-        assertTrue(policyClass.getMethod("getProductAttribute", new String[] {}).exists());
-
         // Rename the attribute.
         performRenameRefactoring(productCmptTypeAttribute, "test");
 
@@ -120,6 +93,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         performFullBuild();
 
         performRenameRefactoring(policyCmptType, "RenamedPolicy");
+
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
@@ -135,6 +109,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         performFullBuild();
 
         performRenameRefactoring(productCmptType, "RenamedProduct");
+
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, false).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, true).exists());
         assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false).exists());

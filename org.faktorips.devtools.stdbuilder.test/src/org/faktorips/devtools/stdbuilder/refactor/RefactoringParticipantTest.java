@@ -14,11 +14,13 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -68,15 +70,22 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
      * @param implementation Flag indicating whether an implementation type or a published interface
      *            type is searched.
      * 
+     * @throws CoreException If an error occurs.
      * @throws NullPointerException If <tt>packageName</tt> or <tt>typeName</tt> is <tt>null</tt>.
      */
-    protected final IType getJavaType(String packageName, String typeName, boolean implementation) {
+    protected final IType getJavaType(String packageName, String typeName, boolean implementation) throws CoreException {
         ArgumentCheck.notNull(new Object[] { packageName, typeName });
-        IFolder folder = implementation ? internalFolder : modelFolder;
-        String interfaceSeparator = implementation ? "" : "I";
-        folder = (packageName == "") ? folder : folder.getFolder(packageName);
-        return ((ICompilationUnit)JavaCore.create(folder.getFile(interfaceSeparator + typeName + ".java")))
-                .getType(interfaceSeparator + typeName);
+
+        IIpsSrcFolderEntry srcFolderEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
+        IFolder javaSrcFolder = srcFolderEntry.getOutputFolderForMergableJavaFiles();
+        IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(javaSrcFolder);
+
+        String basePackageName = srcFolderEntry.getBasePackageNameForMergableJavaClasses();
+        String internal = implementation ? ".internal" : "";
+        IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + internal + "." + packageName);
+
+        typeName = implementation ? typeName : "I" + typeName;
+        return javaPackage.getCompilationUnit(typeName + ".java").getType(typeName);
     }
 
 }
