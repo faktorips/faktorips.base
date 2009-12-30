@@ -117,7 +117,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     private int getAssociationIndex() {
-        List allAssociationsForTheTargetType = new ArrayList();
+        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
         IPolicyCmptTypeAssociation[] ass = getPolicyCmptType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < ass.length; i++) {
             if (target.equals(ass[i].getTarget())) {
@@ -125,7 +125,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             }
         }
         int index = 0;
-        for (Iterator it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+        for (Iterator<IAssociation> it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
             if (it.next() == this) {
                 return index;
             }
