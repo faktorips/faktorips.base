@@ -145,7 +145,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
         if (datatypeObject != null) {
-            validateDefaultValue(datatypeObject, result);
+            validateDefaultValue(datatypeObject, result, ipsProject);
         } else {
             if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype, defaultValue);
@@ -155,7 +155,8 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         }
     }
 
-    private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result) throws CoreException {
+    private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
         if (!valueDatatype.isParsable(defaultValue)) {
             String defaultValueInMsg = defaultValue;
             if (defaultValue == null) {
@@ -169,7 +170,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         }
         IValueSet valueSet = getValueSet();
         if (valueSet != null) {
-            if (defaultValue != null && !valueSet.containsValue(defaultValue)) {
+            if (defaultValue != null && !valueSet.containsValue(defaultValue, ipsProject)) {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
                         Messages.Attribute_msg_DefaultNotInValueset, defaultValue), Message.WARNING, this,
                         PROPERTY_DEFAULT_VALUE));
