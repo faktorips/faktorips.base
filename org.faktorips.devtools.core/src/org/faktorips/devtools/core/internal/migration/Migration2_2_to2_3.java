@@ -68,6 +68,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @since 2.3
  */
+@SuppressWarnings("restriction")
 public class Migration2_2_to2_3 {
 
     /** Prohibit instantiation. */
@@ -96,6 +97,7 @@ public class Migration2_2_to2_3 {
      *             IPS objects.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
+    @SuppressWarnings("deprecation")
     public static void migrate(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -152,7 +154,7 @@ public class Migration2_2_to2_3 {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( { "unchecked" })
     private static void migrateInitFromXmlMethods(IIpsProject ipsProject, IProgressMonitor monitor)
             throws CoreException {
 
