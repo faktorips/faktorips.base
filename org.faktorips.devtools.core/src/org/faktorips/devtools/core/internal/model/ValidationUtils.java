@@ -353,11 +353,32 @@ public class ValidationUtils {
      * 
      * @param name the name of a field
      * @param ipsProject the project which source and compliance level should be used.
+     * 
+     * @see JavaConventions#validateFieldName(String, String, String)
      */
     public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
         String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
         return JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+    }
+
+    /**
+     * Validate the given Java type name, either simple or qualified. For example,
+     * <code>"java.lang.Object"</code>, or <code>"Object"</code> using the source and compliance
+     * levels used by the given IpsProject/JavaProject.
+     * 
+     * @param name the name of a type
+     * @param ipsProject the project which source and compliance level should be used.
+     * @return a status object with code <code>IStatus.OK</code> if the given name is valid as a
+     *         Java type name, a status with code <code>IStatus.WARNING</code> indicating why the
+     *         given name is discouraged, otherwise a status object indicating what is wrong with
+     *         the name
+     * @see JavaConventions#validateJavaTypeName(String, String, String)
+     */
+    public static IStatus validateJavaTypeName(String name, IIpsProject ipsProject) {
+        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        return JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
     }
 
     private ValidationUtils() {
