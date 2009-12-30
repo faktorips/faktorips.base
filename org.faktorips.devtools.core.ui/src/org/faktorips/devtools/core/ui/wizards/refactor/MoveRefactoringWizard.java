@@ -55,7 +55,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
      */
     public MoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.png"));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/MoveWizard.png"));
         setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
     }
 
