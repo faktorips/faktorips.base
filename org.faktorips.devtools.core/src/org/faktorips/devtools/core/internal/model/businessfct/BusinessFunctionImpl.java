@@ -51,7 +51,7 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     }
 
     /**
-     * Overridden IMethod.
+     * Overridden Method.
      * 
      * BusinessFunctions don't have any part, so this method should never be called.
      * 
@@ -65,7 +65,7 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
