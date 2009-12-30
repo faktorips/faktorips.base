@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,76 +29,82 @@ import org.w3c.dom.Element;
 public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
-    
-	private NoVersionIdProductCmptNamingStrategy strategy = new NoVersionIdProductCmptNamingStrategy();
-	
+
+    private NoVersionIdProductCmptNamingStrategy strategy = new NoVersionIdProductCmptNamingStrategy();
+
     private String prefix;
-    
-	protected void setUp() throws Exception {
+
+    @Override
+    protected void setUp() throws Exception {
         super.setUp();
-	    project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         prefix = project.getRuntimeIdPrefix();
+        strategy.setIpsProject(project);
     }
 
     /*
-	 * Test method for 'org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
-	 */
-	public void testGetNextVersionId() throws CoreException {
-		IProductCmpt pc = newProductCmpt(project, "TestProduct");
-		assertEquals("", strategy.getNextVersionId(pc));
-	}
+     * Test method for
+     * 'org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
+     */
+    public void testGetNextVersionId() throws CoreException {
+        IProductCmpt pc = newProductCmpt(project, "TestProduct");
+        assertEquals("", strategy.getNextVersionId(pc));
+    }
 
-	/*
-	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getConstantPart(String)'
-	 */
-	public void testGetConstantPart() {
-		assertEquals("abc", strategy.getKindId("abc"));
-	}
+    /*
+     * Test method for
+     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getConstantPart(String)'
+     */
+    public void testGetConstantPart() {
+        assertEquals("abc", strategy.getKindId("abc"));
+    }
 
-	/*
-	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getVersionId(String)'
-	 */
-	public void testGetVersionId() {
-		assertEquals("", strategy.getVersionId("abc.- 123"));
-	}
+    /*
+     * Test method for
+     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getVersionId(String)'
+     */
+    public void testGetVersionId() {
+        assertEquals("", strategy.getVersionId("abc.- 123"));
+    }
 
-	/*
-	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getNextName(IProductCmpt)'
-	 */
-	public void testGetNextName() {
-		
-		assertEquals("abc", strategy.getKindId("abc"));
-	}
+    /*
+     * Test method for
+     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getNextName(IProductCmpt)'
+     */
+    public void testGetNextName() {
 
-	/*
-	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.validate(String)'
-	 */
-	public void testValidate() {
-		MessageList list = strategy.validate("abc");
-		assertFalse(list.containsErrorMsg());
-	}
+        assertEquals("abc", strategy.getKindId("abc"));
+    }
 
-	public void testInitFromXml() {
-		Element el = getTestDocument().getDocumentElement();
-		strategy.initFromXml(el); // should not throw an exception
-		assertEquals("", strategy.getVersionIdSeparator());
-	}
+    /*
+     * Test method for
+     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.validate(String)'
+     */
+    public void testValidate() {
+        MessageList list = strategy.validate("abc");
+        assertFalse(list.containsErrorMsg());
+    }
 
-	public void testToXml() {
-		Document doc = newDocument();
-		Element el = strategy.toXml(doc);
-		assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
-	}
-    
+    public void testInitFromXml() {
+        Element el = getTestDocument().getDocumentElement();
+        strategy.initFromXml(el); // should not throw an exception
+        assertEquals("", strategy.getVersionIdSeparator());
+    }
+
+    public void testToXml() {
+        Document doc = newDocument();
+        Element el = strategy.toXml(doc);
+        assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
+    }
 
     public void testGetUniqueRuntimeId() throws Exception {
         String id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
         assertEquals(prefix + "TestProductCmpt", id);
-        
+
         newProductCmpt(project, "TestProductCmpt");
         id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
         assertEquals(prefix + "TestProductCmpt1", id);
-        
+
         newProductCmpt(project, "test.TestProductCmpt");
         id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
         assertEquals(prefix + "TestProductCmpt2", id);
