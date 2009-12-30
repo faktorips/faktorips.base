@@ -304,7 +304,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             MessageList list) throws CoreException {
 
         if (StringUtils.isNotEmpty(value)) {
-            if (!valueSet.containsValue(value)) {
+            if (!valueSet.containsValue(value, ipsProject)) {
                 list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
                         Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
             }
