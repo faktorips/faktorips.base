@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -44,24 +44,24 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Simple class to support developers in internationalisation-process.
  * 
- * All files named "messages.properties" in the source dir (recursively scanned)
- * are compared to all files named "message_ll_RR.properties" (ll means language,
- * e.g. de for german; RR means region, eg. AT for austria; the String ll_RR is given
- * as parameter). If the target file does not exist, it is created with the same content
- * as the source file. If the target exists, the properties contained in the source, 
- * but not in the target, are copied to the target and marked with the text >TRANSLATE_ME<
- * as value-Prefix.
+ * All files named "messages.properties" in the source dir (recursively scanned) are compared to all
+ * files named "message_ll_RR.properties" (ll means language, e.g. de for german; RR means region,
+ * eg. AT for austria; the String ll_RR is given as parameter). If the target file does not exist,
+ * it is created with the same content as the source file. If the target exists, the properties
+ * contained in the source, but not in the target, are copied to the target and marked with the text
+ * >TRANSLATE_ME< as value-Prefix.
  * <p>
  * Note: No translation is done by this class!
- *  
+ * 
  * @author Thorsten Guenther
  */
+@SuppressWarnings("unchecked")
 public class LocalizeHelper {
     File sourceRoot;
     File targetRoot;
     String targetLang;
     List modifiedFiles = new ArrayList();
-    
+
     /*
      * Class which supports properties with predictable iteration order.
      */
@@ -69,17 +69,19 @@ public class LocalizeHelper {
         private static final long serialVersionUID = 1L;
 
         LinkedHashMap content = new LinkedHashMap();
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getProperty(String arg0) {
-            return (String) content.get(arg0);
+            return (String)content.get(arg0);
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized Object setProperty(String arg0, String arg1) {
             return content.put(arg0, arg1);
         }
@@ -87,24 +89,27 @@ public class LocalizeHelper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized void load(InputStream is) throws IOException {
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "8859_1"));
             String line = null;
             while ((line = br.readLine()) != null) {
-                if (line.indexOf("=")>0){
-                    String[] props = StringUtils.split(line,"=", 2);
-                    if (props.length == 2){
+                if (line.indexOf("=") > 0) {
+                    String[] props = StringUtils.split(line, "=", 2);
+                    if (props.length == 2) {
                         content.put(props[0], props[1]);
                     }
                 }
             }
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public void store(OutputStream os, String comments) throws IOException {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "8859_1"));
-            if (comments != null){
+            if (comments != null) {
                 writeln(bw, "#" + comments);
             }
             writeln(bw, "#" + new Date().toString());
@@ -117,147 +122,194 @@ public class LocalizeHelper {
             }
             bw.flush();
         }
-        
+
         private void writeln(BufferedWriter bw, String s) throws IOException {
             bw.write(s);
             bw.newLine();
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public Set keySet() {
             return content.keySet();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized void clear() {
             content.clear();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized boolean contains(Object arg0) {
             return content.containsValue(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized boolean containsKey(Object arg0) {
             return content.containsKey(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean containsValue(Object arg0) {
             return content.containsValue(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public Set entrySet() {
             return content.entrySet();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized boolean equals(Object arg0) {
             return content.equals(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized Object get(Object arg0) {
             return content.get(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized int hashCode() {
             return content.hashCode();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized boolean isEmpty() {
             return content.isEmpty();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized Object put(Object arg0, Object arg1) {
             return content.put(arg0, arg1);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized void putAll(Map arg0) {
             content.putAll(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized Object remove(Object arg0) {
             return content.remove(arg0);
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized int size() {
             return content.size();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public synchronized String toString() {
             return content.toString();
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public Collection values() {
             return content.values();
         }
+
+        @Override
         public synchronized Object clone() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         protected void rehash() {
             throw new UnsupportedOperationException();
-        }        
+        }
+
+        @Override
         public synchronized Enumeration keys() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         public synchronized Enumeration elements() {
             throw new UnsupportedOperationException();
         }
-        
+
+        @Override
         public String getProperty(String arg0, String arg1) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         public void list(PrintStream arg0) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         public void list(PrintWriter arg0) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         public Enumeration propertyNames() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
         public synchronized void save(OutputStream arg0, String arg1) {
             throw new UnsupportedOperationException();
         }
     }
-    
+
     /**
      * First argument:<br>
      * Path to the base directory, where the source-language files are stored.<br>
      * Second argument:<br>
      * Path to the base directory, where the target-language files are stored.<br>
      * Third argument:<br>
-     * The target language (and, optional, the region) as de_RR (e.g. de_AT for 
-     * german language with austrian region or only de for german with no special 
-     * region information.  
+     * The target language (and, optional, the region) as de_RR (e.g. de_AT for german language with
+     * austrian region or only de for german with no special region information.
      */
     public static void main(String[] args) {
         if (args.length != 3) {
@@ -270,8 +322,7 @@ public class LocalizeHelper {
     }
 
     /**
-     * Creates a new LocalizeHelper woring on the given directories and with the
-     * given language.
+     * Creates a new LocalizeHelper woring on the given directories and with the given language.
      * 
      * @param sourceName
      * @param targetName
@@ -284,8 +335,8 @@ public class LocalizeHelper {
     }
 
     /**
-     * Scan source- and target-dir recursively for files called messages.properites (or, for
-     * the target-dir, files with language- and/or region-code appended). Differences are fixed.
+     * Scan source- and target-dir recursively for files called messages.properites (or, for the
+     * target-dir, files with language- and/or region-code appended). Differences are fixed.
      */
     private void run() {
         System.out.println("<source-dir> " + sourceRoot);
@@ -311,16 +362,18 @@ public class LocalizeHelper {
     }
 
     /**
-     * scan the given directory recursivley for files named messages[_langPostfix].properties. All files
-     * found are put into the map <code>propertyFiles</code>, using the slightly modiefied name of the 
-     * file as key. The name is prepared for later compere by cutting of the language postfix and file 
-     * extension. The first part of the filename of the given length is cut off the name, too. 
-     *  
+     * scan the given directory recursivley for files named messages[_langPostfix].properties. All
+     * files found are put into the map <code>propertyFiles</code>, using the slightly modiefied
+     * name of the file as key. The name is prepared for later compere by cutting of the language
+     * postfix and file extension. The first part of the filename of the given length is cut off the
+     * name, too.
+     * 
      * @param dir The direcotry to scan. If not a directory, this method returns silently.
      * @param propertyFiles The map to store found files.
-     * @param ignorePathPrefixLength The leght of the prefix to be cut off the filename. This is used
-     * to cut off the different base-pathnames of source- and target-files.
-     * @param langPostfix The language postfix used. Can be the empty string, but not <code>null</code>.
+     * @param ignorePathPrefixLength The leght of the prefix to be cut off the filename. This is
+     *            used to cut off the different base-pathnames of source- and target-files.
+     * @param langPostfix The language postfix used. Can be the empty string, but not
+     *            <code>null</code>.
      */
     private void findProperties(File dir, Map propertyFiles, int ignorePathPrefixLength, String langPostfix) {
         if (!dir.isDirectory()) {
@@ -341,17 +394,16 @@ public class LocalizeHelper {
     }
 
     /**
-     * Syncronizes all properties found in the target map with the properties found
-     * in the source map.
+     * Syncronizes all properties found in the target map with the properties found in the source
+     * map.
      * <p>
-     * This means to copy the entire file, if not contained in the target map or to 
-     * insert all keys missing in the target file.
+     * This means to copy the entire file, if not contained in the target map or to insert all keys
+     * missing in the target file.
      * <p>
-     * Note: At the moment, no remove of keys contained in target but not in source 
-     * is supported.
-     *  
-     * @param source Map of all found sources. Keys have to be the name of the files
-     * without language postfix, file-extension and base-path.
+     * Note: At the moment, no remove of keys contained in target but not in source is supported.
+     * 
+     * @param source Map of all found sources. Keys have to be the name of the files without
+     *            language postfix, file-extension and base-path.
      * @param target Map of all found targets, for keys see sources.
      * @throws IOException If an error occurs during handling the properties files.
      */
@@ -392,17 +444,17 @@ public class LocalizeHelper {
                         modified = true;
                     }
                 }
-                
+
                 // remove keys in target that don't exist in the source file
                 Set targetKeys = targetProps.keySet();
                 for (Iterator it = targetKeys.iterator(); it.hasNext();) {
                     String key = (String)it.next();
-                    if (sourceProps.get(key)==null) {
+                    if (sourceProps.get(key) == null) {
                         it.remove();
                         modified = true;
                     }
                 }
-                
+
                 if (modified) {
                     modifiedFiles.add(targetFile);
                     // store the target in same order as the source
@@ -422,8 +474,8 @@ public class LocalizeHelper {
     }
 
     /**
-     * Creates a new file and, if necessary, the parent directories, too. If the file
-     * already exists, this method returns silently.
+     * Creates a new file and, if necessary, the parent directories, too. If the file already
+     * exists, this method returns silently.
      * 
      * @param file The file to create
      * @throws IOException if an error during file creation occurs.
