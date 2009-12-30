@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
  * Common protocol for all elements provided by the IPS model.
@@ -95,6 +97,11 @@ public interface IIpsElement extends IAdaptable {
      * <tt>IIpsElement</tt> .
      * <p>
      * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Rename" refactoring.
+     * <p>
+     * The <tt>RefactoringProcessor</tt> associated with the returned
+     * <tt>ProcessorBasedRefactoring</tt> can be safely cast to <tt>IIpsRenameProcessor</tt>.
+     * 
+     * @see IIpsRenameProcessor
      */
     public ProcessorBasedRefactoring getRenameRefactoring();
 
@@ -103,6 +110,11 @@ public interface IIpsElement extends IAdaptable {
      * <tt>IIpsElement</tt>.
      * <p>
      * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Move" refactoring.
+     * <p>
+     * The <tt>RefactoringProcessor</tt> associated with the returned
+     * <tt>ProcessorBasedRefactoring</tt> can be safely cast to <tt>IIpsMoveProcessor</tt>.
+     * 
+     * @see IIpsMoveProcessor
      */
     public ProcessorBasedRefactoring getMoveRefactoring();
 
