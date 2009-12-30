@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -63,28 +64,29 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private boolean forceExtensionCompilationUnitGeneration = false;
 
-    private IpsObjectPartCollection rules;
+    private IpsObjectPartCollection<IValidationRule> rules;
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
-        rules = new IpsObjectPartCollection(this, ValidationRule.class, IValidationRule.class, ValidationRule.TAG_NAME);
+        rules = new IpsObjectPartCollection<IValidationRule>(this, ValidationRule.class, IValidationRule.class,
+                ValidationRule.TAG_NAME);
     }
 
     @Override
-    protected IpsObjectPartCollection createCollectionForMethods() {
-        return new IpsObjectPartCollection(this, Method.class, IMethod.class, Method.XML_ELEMENT_NAME);
+    protected IpsObjectPartCollection<? extends IMethod> createCollectionForMethods() {
+        return new IpsObjectPartCollection<IMethod>(this, Method.class, IMethod.class, Method.XML_ELEMENT_NAME);
     }
 
     @Override
-    protected IpsObjectPartCollection createCollectionForAssociations() {
-        return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.class,
-                PolicyCmptTypeAssociation.TAG_NAME);
+    protected IpsObjectPartCollection<? extends IPolicyCmptTypeAssociation> createCollectionForAssociations() {
+        return new IpsObjectPartCollection<IPolicyCmptTypeAssociation>(this, PolicyCmptTypeAssociation.class,
+                IPolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
     }
 
     @Override
-    protected IpsObjectPartCollection createCollectionForAttributes() {
-        return new IpsObjectPartCollection(this, PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.class,
-                PolicyCmptTypeAttribute.TAG_NAME);
+    protected IpsObjectPartCollection<? extends IAttribute> createCollectionForAttributes() {
+        return new IpsObjectPartCollection<IPolicyCmptTypeAttribute>(this, PolicyCmptTypeAttribute.class,
+                IPolicyCmptTypeAttribute.class, PolicyCmptTypeAttribute.TAG_NAME);
     }
 
     public String getProductCmptType() {
@@ -132,14 +134,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         if (getNumOfRules() > 0) {
             return true;
         }
-        for (Iterator it = methods.iterator(); it.hasNext();) {
-            IMethod method = (IMethod)it.next();
+        for (IMethod method : methods) {
             if (!method.isAbstract()) {
                 return true;
             }
         }
-        for (Iterator it = attributes.iterator(); it.hasNext();) {
-            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)it.next();
+        for (IAttribute attr : attributes) {
+            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)attr;
             if (attribute.getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
                 if (!attribute.isProductRelevant()) {
                     return true;
@@ -174,7 +175,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * Returns the list holding the attributes as a reference. Package private for use in
      * TypeHierarchy.
      */
-    List getAttributeList() {
+    List<?> getAttributeList() {
         return attributes.getBackingList();
     }
 
@@ -182,7 +183,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * Returns the list holding the methods as a reference. Package private for use in
      * TypeHierarchy.
      */
-    List getMethodList() {
+    List<?> getMethodList() {
         return methods.getBackingList();
     }
 
@@ -206,7 +207,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * Returns the list holding the associations as a reference. Package private for use in
      * TypeHierarchy.
      */
-    List getAssociationList() {
+    List<?> getAssociationList() {
         return associations.getBackingList();
     }
 
@@ -223,12 +224,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * Returns the list holding the rules as a reference. Package private for use in TypeHierarchy.
      */
-    List getRulesList() {
+    List<?> getRulesList() {
         return rules.getBackingList();
     }
 
     public IValidationRule newRule() {
-        return (IValidationRule)rules.newPart();
+        return rules.newPart();
     }
 
     public int getNumOfRules() {
@@ -337,8 +338,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         // for easy finding attributes by name put them in a map with the name as key
-        Map toExclude = new HashMap();
-        for (Iterator iter = attributes.iterator(); iter.hasNext();) {
+        Map<String, IAttribute> toExclude = new HashMap<String, IAttribute>();
+        for (Iterator<? extends IAttribute> iter = attributes.iterator(); iter.hasNext();) {
             IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)iter.next();
             if (attr.isOverwrite()) {
                 toExclude.put(attr.getName(), attr);
@@ -347,14 +348,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         // find all overwrite-candidates
         IPolicyCmptTypeAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(supertype);
-        List result = new ArrayList();
+        List<IPolicyCmptTypeAttribute> result = new ArrayList<IPolicyCmptTypeAttribute>();
         for (int i = 0; i < candidates.length; i++) {
             if (!toExclude.containsKey(candidates[i].getName())) {
                 result.add(candidates[i]);
             }
         }
 
-        return (IPolicyCmptTypeAttribute[])result.toArray(new IPolicyCmptTypeAttribute[result.size()]);
+        return result.toArray(new IPolicyCmptTypeAttribute[result.size()]);
     }
 
     public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes) {
