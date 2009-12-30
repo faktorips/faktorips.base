@@ -48,7 +48,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     // Beispiel: T ist IEnumAttribute --> partsBaseClass = EnumAttribute.class
     // --> ? extends T
     private Class<? extends IpsObjectPart> partsBaseClass;
-    // TODO CD das Interface muss von Typ T oder darüber sein
+    // TODO CD das Interface muss von Typ T oder dadrueber sein
     // Beispiel: T ist BusinessFunction --> partsPublishedInterface = IBusinessFunction.class
     // --> ? super T
     private Class<? extends IIpsObjectPart> partsPublishedInterface;
