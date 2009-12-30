@@ -204,7 +204,7 @@ public interface IIpsModel extends IIpsElement {
      *        should be returned, but also the ones registered for it's supertype(s) and it's
      *        interfaces.
      */
-    public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
+    public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type,
             boolean includeSupertypesAndInterfaces);
 
     /**
@@ -218,7 +218,7 @@ public interface IIpsModel extends IIpsElement {
      *        should be returned, but also the ones registered for it's supertype(s) and it's
      *        interfaces.
      */
-    public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
+    public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class type,
             String propertyId,
             boolean includeSupertypesAndInterfaces);
 
