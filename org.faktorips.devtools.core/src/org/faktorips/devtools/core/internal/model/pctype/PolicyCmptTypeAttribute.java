@@ -296,7 +296,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
