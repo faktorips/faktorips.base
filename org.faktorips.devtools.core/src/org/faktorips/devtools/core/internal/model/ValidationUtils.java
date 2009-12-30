@@ -15,6 +15,9 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -341,6 +344,20 @@ public class ValidationUtils {
                 imageName = "size8/NullMessage.gif"; //$NON-NLS-1$
         }
         return IpsPlugin.getDefault().getImage(imageName);
+    }
+
+    /**
+     * Validate the given field name using the source and compliance levels used by the given
+     * IpsProject/JavaProject.
+     * <p>
+     * 
+     * @param name the name of a field
+     * @param ipsProject the project which source and compliance level should be used.
+     */
+    public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
+        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        return JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
     }
 
     private ValidationUtils() {
