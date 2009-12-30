@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
  */
 public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
 
+    private IIpsProject ipsProject;
     private AbstractProductCmptNamingStrategy namingStrategy;
 
     /*
@@ -38,7 +39,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject ipsProject = newIpsProject();
+        ipsProject = newIpsProject();
         namingStrategy = new TestNamingStrategy();
         namingStrategy.setIpsProject(ipsProject);
     }
@@ -76,8 +77,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
     }
 
     public void testGetNextName() throws CoreException {
-        IIpsProject project = newIpsProject("TestProject");
-        IProductCmpt pc = newProductCmpt(project, "TestProduct - id");
+        IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct - id");
         assertEquals("TestProduct - nextId", namingStrategy.getNextName(pc));
     }
 
@@ -93,7 +93,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
 
         list = namingStrategy.validate("abc - qwe - 123"); // two version separators strings are ok,
-                                                           // the first one is taken
+        // the first one is taken
         assertFalse(list.containsErrorMsg());
 
         list = namingStrategy.validate("abc - d123");
