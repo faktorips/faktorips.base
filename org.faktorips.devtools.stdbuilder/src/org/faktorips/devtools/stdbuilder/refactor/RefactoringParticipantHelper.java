@@ -35,7 +35,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -176,16 +175,7 @@ public abstract class RefactoringParticipantHelper {
         if (status.isOK()) {
             final PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
                     CheckConditionsOperation.ALL_CONDITIONS);
-            Display display = (Display.getCurrent() != null) ? Display.getCurrent() : Display.getDefault();
-            display.syncExec(new Runnable() {
-                public void run() {
-                    try {
-                        ResourcesPlugin.getWorkspace().run(operation, pm);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
+            ResourcesPlugin.getWorkspace().run(operation, pm);
         }
     }
 
