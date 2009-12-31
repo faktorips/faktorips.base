@@ -108,10 +108,9 @@ public interface IIpsBuilderSetPropertyDef {
      * 
      * @param ipsModel can be used to get access to IPS resources
      * @param properties the values for the properties defined in the plugin descriptor are provided
-     *            with this map as (String, String) (key, value) pairs
+     *            with this map as (String, String) or (String,List) (key, value) pairs
      * @return a status object if errors occure during the initialization phase, <code>null</code>
      *         if none occurs
      */
-    @SuppressWarnings("unchecked")
-    public IStatus initialize(IIpsModel ipsModel, Map properties);
+    public IStatus initialize(IIpsModel ipsModel, Map<String, Object> properties);
 }

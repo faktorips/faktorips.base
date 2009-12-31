@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,16 +31,16 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IpsObjectPathEntry.
- *  
+ * 
  * @author Jan Ortmann
  */
 public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
-    
+
     // name of xml elements representing path entries.
     public final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
 
     private IpsObjectPath path;
-    
+
     public IpsObjectPathEntry(IpsObjectPath path) {
         ArgumentCheck.notNull(path);
         this.path = path;
@@ -59,27 +59,28 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     public IIpsProject getIpsProject() {
         return path.getIpsProject();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public int getIndex() {
         return path.getIndex(this);
     }
-    
+
     /**
-     * Returns <code>true</code> if the entry contains a source file with the indicated qualified name type,
-     * otherwise <code>false</code>.
-     * @throws CoreException 
+     * Returns <code>true</code> if the entry contains a source file with the indicated qualified
+     * name type, otherwise <code>false</code>.
+     * 
+     * @throws CoreException
      */
     abstract public boolean exists(QualifiedNameType qnt) throws CoreException;
-    
+
     /**
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
-        if (file==null) {
+        if (file == null) {
             return null;
         }
         return file.getIpsObject();
@@ -89,8 +90,9 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         return findIpsSrcFile(qnt, null);
     }
 
-    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        if (visitedEntries!=null) {
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
+            throws CoreException {
+        if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return null;
             }
@@ -100,10 +102,12 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
 
     /**
-     * Adds all ips source files of the given type found in the path entry to the result list. 
+     * Adds all ips source files of the given type found in the path entry to the result list.
      */
-    public final void findIpsSrcFiles(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        if (visitedEntries!=null) {
+    public final void findIpsSrcFiles(IpsObjectType type,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+        if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return;
             }
@@ -112,8 +116,11 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         findIpsSrcFilesInternal(type, null, result, visitedEntries);
     }
 
-    public final void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
-        if (visitedEntries!=null) {
+    public final void findIpsSrcFiles(IpsObjectType type,
+            String packageFragment,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+        if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return;
             }
@@ -123,18 +130,18 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
 
     /**
-     * Returns all isp source files of the given type starting with the given prefix found on the path.
+     * Returns all isp source files of the given type starting with the given prefix found on the
+     * path.
      * 
      * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
      * 
-     * @throws CoreException if an error occurs while searching for the source files. 
+     * @throws CoreException if an error occurs while searching for the source files.
      */
-    public final void findIpsSrcFilesStartingWith(
-            IpsObjectType type, 
-            String prefix, 
-            boolean ignoreCase, 
-            List result,
-            Set visitedEntries) throws CoreException {
+    public final void findIpsSrcFilesStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
 
         if (visitedEntries.contains(this)) {
             return;
@@ -144,42 +151,48 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
 
     /**
-     * Adds all objects of the given type found in the path entry to the result list. 
+     * Adds all objects of the given type found in the path entry to the result list.
      */
-    protected abstract void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException;
+    protected abstract void findIpsSrcFilesInternal(IpsObjectType type,
+            String packageFragment,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
 
     /**
-     * Returns the first ips source file with the indicated qualified name type found in the path entry. 
+     * Returns the first ips source file with the indicated qualified name type found in the path
+     * entry.
      */
-    protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException;
-    
+    protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
+
     /**
-     * Returns all ips source files of the given type starting with the given prefix found on the path.
+     * Returns all ips source files of the given type starting with the given prefix found on the
+     * path.
      * 
      * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
      * 
-     * @throws CoreException if an error occurs while searching for the source files. 
+     * @throws CoreException if an error occurs while searching for the source files.
      */
-    public abstract void findIpsSrcFilesStartingWithInternal(
-            IpsObjectType type, 
-            String prefix, 
-            boolean ignoreCase, 
-            List result,
-            Set visitedEntries) throws CoreException;
-    
+    public abstract void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
+
     /**
      * Initializes the entry with the data stored in the xml element.
      */
     public abstract void initFromXml(Element element, IProject project);
-    
+
     /**
      * Transforms the entry to an xml element.
+     * 
      * @param doc The xml document used to created the element.
      */
     public abstract Element toXml(Document doc);
 
     /**
-     * Returns the object path entry stored in the xml element.     
+     * Returns the object path entry stored in the xml element.
      */
     public final static IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, IProject project) {
         IpsObjectPathEntry entry;

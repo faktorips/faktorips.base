@@ -31,15 +31,15 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFragmentArbitrarySortDefinition {
 
-    private Map sortOrderLookup = new HashMap(20);
+    private Map<String, Integer> sortOrderLookup = new HashMap<String, Integer>(20);
 
-    private List sortOrder = new ArrayList(20);
+    private List<String> sortOrder = new ArrayList<String>(20);
 
     /**
      * {@inheritDoc}
      */
     public String[] getSegmentNames() {
-        return (String[])sortOrder.toArray(new String[sortOrder.size()]);
+        return sortOrder.toArray(new String[sortOrder.size()]);
     }
 
     /**
@@ -67,8 +67,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     public int compare(String segment1, String segment2) {
 
         if (sortOrderLookup.containsKey(segment1) && sortOrderLookup.containsKey(segment2)) {
-            Integer pos1 = (Integer)sortOrderLookup.get(segment1);
-            Integer pos2 = (Integer)sortOrderLookup.get(segment2);
+            Integer pos1 = sortOrderLookup.get(segment1);
+            Integer pos2 = sortOrderLookup.get(segment2);
 
             return pos1.compareTo(pos2);
         } else {
@@ -91,7 +91,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     public String toPersistenceContent() {
         String content = null;
 
-        List out = new ArrayList(sortOrder);
+        List<String> out = new ArrayList<String>(sortOrder);
         out.add(0, Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine);
 
         content = StringUtils.join(out.iterator(), StringUtil.getSystemLineSeparator());
@@ -145,8 +145,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
         IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
 
-        sortDef.sortOrder = (List)((ArrayList)sortOrder).clone();
-        sortDef.sortOrderLookup = (Map)((HashMap)sortOrderLookup).clone();
+        sortDef.sortOrder = new ArrayList<String>(sortOrder);
+        sortDef.sortOrderLookup = new HashMap<String, Integer>(sortOrderLookup);
 
         return sortDef;
     }

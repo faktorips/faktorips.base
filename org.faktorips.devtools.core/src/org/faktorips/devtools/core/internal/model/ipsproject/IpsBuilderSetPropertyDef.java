@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +101,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public IStatus initialize(IIpsModel ipsModel, Map properties) {
         type = (String)properties.get("type"); //$NON-NLS-1$
         name = (String)properties.get("name"); //$NON-NLS-1$
@@ -118,7 +118,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
      * {@inheritDoc}
      */
     public Object parseValue(String value) {
-
         if (value == null) {
             return null;
         }
@@ -129,8 +128,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         } else if (type.equals("integer")) { //$NON-NLS-1$
             return Integer.valueOf(value);
         } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-            for (Iterator it = discretePropertyValues.iterator(); it.hasNext();) {
-                String discreteValue = (String)it.next();
+            for (String discreteValue : discretePropertyValues) {
                 if (discreteValue.equals(value)) {
                     return value;
                 }
@@ -164,8 +162,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         } else if (type.equals("integer")) { //$NON-NLS-1$
             parsable = Datatype.INTEGER.isParsable(value);
         } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-            for (Iterator it = discretePropertyValues.iterator(); it.hasNext();) {
-                String discreteValue = (String)it.next();
+            for (String discreteValue : discretePropertyValues) {
                 if (discreteValue.equals(value)) {
                     parsable = true;
                 }
@@ -200,7 +197,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     }
 
     private final static void retrieveEnumValues(String type,
-            List discreteValues,
+            List<String> discreteValues,
             IConfigurationElement element,
             ILog logger) {
         if (!StringUtils.isEmpty(type) && type.equals("enum") && element.getName().equals("discreteValues")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -215,10 +212,10 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     }
 
     private final static boolean retrieveReferencedExtensionPoint(String type,
-            List discreteValues,
+            List<String> discreteValues,
             IExtensionRegistry registry,
             String builderSetId,
-            Map properties,
+            Map<String, Object> properties,
             IConfigurationElement element,
             ILog logger) {
         if ("extensionPoint".equals(type)) { //$NON-NLS-1$
@@ -242,7 +239,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return true;
     }
 
-    private final static void retrieveJdkComplianceLevels(List jdkComplianceLevelList, IConfigurationElement element) {
+    private final static void retrieveJdkComplianceLevels(List<String> jdkComplianceLevelList,
+            IConfigurationElement element) {
         if (element.getName().equals("jdkComplianceLevels")) { //$NON-NLS-1$
             IConfigurationElement[] values = element.getChildren();
             for (int j = 0; j < values.length; j++) {
@@ -258,8 +256,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             IExtensionRegistry registry,
             String builderSetId,
             IConfigurationElement element,
-            Map properties,
-            List discreteValues) {
+            Map<String, Object> properties,
+            List<String> discreteValues) {
 
         String classValue = element.getAttribute("class"); //$NON-NLS-1$
         boolean classValueSpecified = !StringUtils.isEmpty(classValue);
@@ -318,9 +316,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             ILog logger,
             IIpsModel ipsModel) {
 
-        Map properties = new HashMap();
-        ArrayList discreteValues = new ArrayList();
-        ArrayList jdkComplianceLevelList = new ArrayList();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        List<String> discreteValues = new ArrayList<String>();
+        List<String> jdkComplianceLevelList = new ArrayList<String>();
 
         if (!retrieveProperties(logger, registry, builderSetId, element, properties, discreteValues)) {
             return null;

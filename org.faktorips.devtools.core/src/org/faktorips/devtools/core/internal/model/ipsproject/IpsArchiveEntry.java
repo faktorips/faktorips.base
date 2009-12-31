@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -131,9 +130,14 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.contains(qnt);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries)
-            throws CoreException {
+    public void findIpsSrcFilesInternal(IpsObjectType type,
+            String packageFragment,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
@@ -141,7 +145,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set visitedEntries) throws CoreException {
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
+            throws CoreException {
         IIpsSrcFile file = getIpsSrcFile(qnt);
         if (file.exists()) {
             return file;
@@ -156,15 +161,14 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List result,
-            Set visitedEntries) throws CoreException {
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
 
         if (ignoreCase) {
             prefix = prefix.toLowerCase();
         }
 
-        for (Iterator it = archive.getQNameTypes().iterator(); it.hasNext();) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
+        for (QualifiedNameType qnt : archive.getQNameTypes()) {
             String name = qnt.getUnqualifiedName();
             if (ignoreCase) {
                 name = name.toLowerCase();

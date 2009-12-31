@@ -14,11 +14,10 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -95,9 +94,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
-    private Hashtable requiredFeatures = new Hashtable();
+    private Map<String, String> requiredFeatures = new HashMap<String, String>();
     // hidden resource names in the model and product explorer
-    private Set resourcesPathExcludedFromTheProductDefiniton = new HashSet(10);
+    private Set<String> resourcesPathExcludedFromTheProductDefiniton = new HashSet<String>(10);
     private Long lastPersistentModificationTimestamp;
 
     /**
@@ -373,12 +372,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element features = doc.createElement("RequiredIpsFeatures"); //$NON-NLS-1$
         projectEl.appendChild(features);
 
-        for (Enumeration keys = requiredFeatures.keys(); keys.hasMoreElements();) {
+        for (String key : requiredFeatures.keySet()) {
             Element feature = doc.createElement("RequiredIpsFeature"); //$NON-NLS-1$
             features.appendChild(feature);
-            String key = (String)keys.nextElement();
             feature.setAttribute("id", key); //$NON-NLS-1$
-            feature.setAttribute("minVersion", (String)requiredFeatures.get(key)); //$NON-NLS-1$
+            feature.setAttribute("minVersion", requiredFeatures.get(key)); //$NON-NLS-1$
         }
 
         // artefact builder set
@@ -416,8 +414,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createResourcesExcludedFromProductDefinitionComment(projectEl);
         Element resourcesExcludedFromProdDefEl = doc.createElement("ResourcesExcludedFromProductDefinition"); //$NON-NLS-1$
         projectEl.appendChild(resourcesExcludedFromProdDefEl);
-        for (Iterator iter = resourcesPathExcludedFromTheProductDefiniton.iterator(); iter.hasNext();) {
-            String exclResource = (String)iter.next();
+        for (String exclResource : resourcesPathExcludedFromTheProductDefiniton) {
             Element resourceExcludedEl = doc.createElement("Resource"); //$NON-NLS-1$
             resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
             resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
@@ -498,7 +495,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * @param firstElement
      */
     private void initRequiredFeatures(Element el) {
-        requiredFeatures = new Hashtable();
+        requiredFeatures = new HashMap<String, String>();
 
         if (el == null) {
             return;
@@ -947,20 +944,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * {@inheritDoc}
      */
     public String[] getRequiredIpsFeatureIds() {
-
-        String[] result = new String[requiredFeatures.size()];
-        int i = 0;
-        for (Enumeration keys = requiredFeatures.keys(); keys.hasMoreElements(); i++) {
-            result[i] = (String)keys.nextElement();
-        }
-        return result;
+        return requiredFeatures.keySet().toArray(new String[requiredFeatures.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getMinRequiredVersionNumber(String featureId) {
-        return (String)requiredFeatures.get(featureId);
+        return requiredFeatures.get(featureId);
     }
 
     /**

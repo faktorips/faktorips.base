@@ -81,16 +81,13 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * the javaproject corresponding to this packagefragments IpsProject or not.
      */
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
-
-        List list = getChildIpsPackageFragmentsAsList();
-
-        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
+        List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
+        return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         IpsModel model = (IpsModel)getIpsModel();
         IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(this);
-
         return sortDef.copy();
     }
 
@@ -140,17 +137,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
 
-        List sortedPacks = getChildIpsPackageFragmentsAsList();
+        List<IIpsPackageFragment> sortedPacks = getChildIpsPackageFragmentsAsList();
         Collections.sort(sortedPacks, comparator);
 
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
      * Get all child IIpsPackageFragments as List.
      */
-    private List getChildIpsPackageFragmentsAsList() throws CoreException {
-        List list = new ArrayList();
+    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
+        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>();
 
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] content = folder.members();
@@ -207,7 +204,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
-        List childResources = new ArrayList();
+        List<IResource> childResources = new ArrayList<IResource>();
         IResource[] children = cont.members();
         for (int i = 0; i < children.length; i++) {
             if (!isIpsContent(children[i])) {
@@ -215,7 +212,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             }
         }
         IResource[] resArray = new IResource[childResources.size()];
-        return (IResource[])childResources.toArray(resArray);
+        return childResources.toArray(resArray);
     }
 
     /**
@@ -411,7 +408,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     }
 
     @Override
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
         if (!exists()) {
             return;
         }
@@ -431,7 +428,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    public void findIpsObjects(List result) throws CoreException {
+    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
         if (!exists()) {
             return;
         }
@@ -440,7 +437,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
         IpsObjectType[] types = getIpsModel().getIpsObjectTypes();
 
-        Set fileExtensionNames = new HashSet();
+        Set<String> fileExtensionNames = new HashSet<String>();
         for (int i = 0; i < types.length; i++) {
             fileExtensionNames.add(types[i].getFileExtension());
         }
@@ -458,7 +455,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     }
 
     @Override
-    public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
         if (!exists()) {
             return;
         }
@@ -482,8 +479,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */
-    public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
-            throws CoreException {
+    public void findIpsObjectsStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List<IIpsSrcFile> result) throws CoreException {
         findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, true);
     }
 
@@ -494,11 +493,14 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */
-    public void findIpsSourceFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
-            throws CoreException {
+    public void findIpsSourceFilesStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List<IIpsSrcFile> result) throws CoreException {
         findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, false);
     }
 
+    @SuppressWarnings("unchecked")
     public void findIpsSourceFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,

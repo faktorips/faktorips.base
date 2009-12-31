@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -83,16 +84,19 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * the javaproject corresponding to this roots IpsProject or not.
      */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
-        List list = getIpsPackageFragmentsAsList();
-        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
+        List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
+        return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
-        List sortedPacks = getIpsPackageFragmentsAsList();
+        List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
         Collections.sort(sortedPacks, comparator);
-
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
@@ -101,20 +105,21 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * @return List List of IIpsPackageFragments
      * @throws CoreException
      */
-    private List getIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
-        List list = new ArrayList();
-        list.add(new IpsPackageFragment(this, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE)); // add
-        // the
-        // default
-        // package
+        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>();
+        // add the default package
+        list.add(new IpsPackageFragment(this, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE));
         getIpsPackageFragments(folder, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE, list);
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
-        List childResources = new ArrayList();
+        List<IResource> childResources = new ArrayList<IResource>();
         IResource[] children = cont.members();
         for (int i = 0; i < children.length; i++) {
             if (!isPackageFragment(children[i])) {
@@ -122,7 +127,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
             }
         }
         IResource[] resArray = new IResource[childResources.size()];
-        return (IResource[])childResources.toArray(resArray);
+        return childResources.toArray(resArray);
     }
 
     /**
@@ -148,7 +153,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * Creates the packages based on the contents of the given platform folder and adds them to the
      * list. This is an application of the collecting parameter pattern.
      */
-    private void getIpsPackageFragments(IFolder folder, String namePrefix, List packs) throws CoreException {
+    private void getIpsPackageFragments(IFolder folder, String namePrefix, List<IIpsPackageFragment> packs)
+            throws CoreException {
         IResource[] resources = folder.members();
         for (int i = 0; i < resources.length; i++) {
             if (resources[i].getType() == IResource.FOLDER) {
@@ -195,7 +201,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
 
-    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List result) throws CoreException {
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) throws CoreException {
         if (!exists()) {
             return;
         }
@@ -222,7 +228,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     public void findIpsSourceFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List result) throws CoreException {
+            List<IIpsSrcFile> result) throws CoreException {
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);

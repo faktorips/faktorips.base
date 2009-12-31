@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -112,13 +113,13 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
      * 
      * @throws CoreException if an error occurs while searching
      */
-    public abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
+    public abstract void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException;
 
     /**
      * Searches all ips source files of the given type and adds them to the result.
      * 
      * @throws CoreException if an error occurs while searching
      */
-    public abstract void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException;
+    public abstract void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException;
 
 }

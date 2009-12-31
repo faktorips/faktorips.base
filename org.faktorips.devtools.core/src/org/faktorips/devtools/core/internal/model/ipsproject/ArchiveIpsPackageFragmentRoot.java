@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -68,35 +67,38 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return archive.exists();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IFolder getArtefactDestination(boolean derived) throws CoreException {
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
-
-        List list = getIpsPackageFragmentsAsList();
-
-        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
+        List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
+        return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
-
-        List sortedPacks = getIpsPackageFragmentsAsList();
-
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
+        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
-    private List getIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         IIpsArchive archive = getIpsArchive();
         if (archive == null) {
-            return new ArrayList(0);
+            return new ArrayList<IIpsPackageFragment>(0);
         }
 
         String[] packNames = archive.getNonEmptyPackages();
-
-        List list = new ArrayList(packNames.length);
-
+        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
         for (int i = 0; i < packNames.length; i++) {
             list.add(new ArchiveIpsPackageFragment(this, packNames[i]));
         }
@@ -127,7 +129,8 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
-    public void findIpsSourceFiles(IpsObjectType type, String packageFragment, List result) throws CoreException {
+    public void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
+            throws CoreException {
         if (type == null) {
             return;
         }
@@ -135,9 +138,8 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         if (archive == null) {
             return;
         }
-        Set qntSet = archive.getQNameTypes();
-        for (Iterator it = qntSet.iterator(); it.hasNext();) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
+        Set<QualifiedNameType> qntSet = archive.getQNameTypes();
+        for (QualifiedNameType qnt : qntSet) {
             if (!type.equals(qnt.getIpsObjectType())) {
                 continue;
             }

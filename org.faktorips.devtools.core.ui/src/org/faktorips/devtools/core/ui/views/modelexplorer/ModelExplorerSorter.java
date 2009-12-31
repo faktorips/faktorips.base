@@ -191,7 +191,7 @@ public class ModelExplorerSorter extends ViewerSorter {
                 return 1;
             }
             // sort IpsPackages by SortDefinition
-            return packageComparator.compare(o1, o2);
+            return packageComparator.compare(fragment, fragment2);
         }
 
         if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {

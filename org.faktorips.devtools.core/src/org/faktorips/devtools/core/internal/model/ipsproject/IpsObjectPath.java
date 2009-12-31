@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -114,8 +113,8 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     private IIpsProject ipsProject;
 
-    // map with QualifiedNameTypes as keys and CachedIpsSrcFiles as values.
-    private Map lookupCache = new HashMap(1000);
+    // map with QualifiedNameTypes as keys and cached IpsSrcFiles as values.
+    private Map<QualifiedNameType, CachedSrcFile> lookupCache = new HashMap<QualifiedNameType, CachedSrcFile>(1000);
 
     public IpsObjectPath(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject, this);
@@ -145,26 +144,26 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public IIpsProjectRefEntry[] getProjectRefEntries() {
-        ArrayList projectRefEntries = new ArrayList();
+        List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                projectRefEntries.add(entries[i]);
+                projectRefEntries.add((IIpsProjectRefEntry)entries[i]);
             }
         }
-        return (IIpsProjectRefEntry[])projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
+        return projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
-        ArrayList projectRefEntries = new ArrayList();
+        List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-                projectRefEntries.add(entries[i]);
+                srcEntries.add((IIpsSrcFolderEntry)entries[i]);
             }
         }
-        return (IIpsSrcFolderEntry[])projectRefEntries.toArray(new IIpsSrcFolderEntry[projectRefEntries.size()]);
+        return srcEntries.toArray(new IIpsSrcFolderEntry[srcEntries.size()]);
     }
 
     /**
@@ -172,13 +171,13 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public IIpsArchiveEntry[] getArchiveEntries() {
-        ArrayList archiveEntries = new ArrayList();
+        List<IIpsArchiveEntry> archiveEntries = new ArrayList<IIpsArchiveEntry>();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)) {
-                archiveEntries.add(entries[i]);
+                archiveEntries.add((IIpsArchiveEntry)entries[i]);
             }
         }
-        return (IIpsArchiveEntry[])archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
+        return archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
     }
 
     /**
@@ -217,13 +216,13 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public IIpsProject[] getReferencedIpsProjects() {
-        List projects = new ArrayList();
+        List<IIpsProject> projects = new ArrayList<IIpsProject>();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
                 projects.add(((IIpsProjectRefEntry)entries[i]).getReferencedIpsProject());
             }
         }
-        return (IIpsProject[])projects.toArray(new IIpsProject[projects.size()]);
+        return projects.toArray(new IIpsProject[projects.size()]);
     }
 
     /**
@@ -416,7 +415,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
 
-        ArrayList result = new ArrayList(entries.length);
+        List<IFolder> result = new ArrayList<IFolder>(entries.length);
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER) {
                 IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entries[i];
@@ -425,7 +424,7 @@ public class IpsObjectPath implements IIpsObjectPath {
                 }
             }
         }
-        return (IFolder[])result.toArray(new IFolder[result.size()]);
+        return result.toArray(new IFolder[result.size()]);
     }
 
     /**
@@ -474,9 +473,10 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first ips source file with the indicated qualified name type found on the path.
      * Returns <code>null</code> if no such object is found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
+            throws CoreException {
         int maxEntriesToSearch = entries.length;
-        CachedSrcFile cachedSrcFile = (CachedSrcFile)lookupCache.get(nameType);
+        CachedSrcFile cachedSrcFile = lookupCache.get(nameType);
         if (cachedSrcFile != null) {
             if (!cachedSrcFile.file.exists()) {
                 lookupCache.remove(nameType);
@@ -512,8 +512,8 @@ public class IpsObjectPath implements IIpsObjectPath {
     public void findIpsSrcFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List result,
-            Set visitedEntries) throws CoreException {
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
         for (int i = 0; i < entries.length; i++) {
             ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result,
                     visitedEntries);
@@ -524,23 +524,27 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns all ips source files of the given type found on the path. Returns an empty array if
      * no object is found.
      */
-    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type, Set visitedEntries) throws CoreException {
-        List result = new ArrayList();
+    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type, Set<IIpsObjectPathEntry> visitedEntries)
+            throws CoreException {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         findIpsSrcFiles(type, result, visitedEntries);
-        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
     /**
      * Adds all ips source files of the given type found on the path to the result list.
      */
-    public void findIpsSrcFiles(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+    public void findIpsSrcFiles(IpsObjectType type, List<IIpsSrcFile> result, Set<IIpsObjectPathEntry> visitedEntries)
+            throws CoreException {
         for (int i = 0; i < entries.length; i++) {
             ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, result, visitedEntries);
         }
     }
 
-    public void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries)
-            throws CoreException {
+    public void findIpsSrcFiles(IpsObjectType type,
+            String packageFragment,
+            List<IIpsSrcFile> result,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
         for (int i = 0; i < entries.length; i++) {
             ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
         }
@@ -558,19 +562,18 @@ public class IpsObjectPath implements IIpsObjectPath {
      *            components that are directly based on the given type are returned.
      * @param result List in which the product components being found are stored in.
      */
-    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List result)
+    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List<IProductCmpt> result)
             throws CoreException {
 
-        Set visitedEntries = new HashSet();
-        List allCmptFiles = new ArrayList(100);
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
+        List<IIpsSrcFile> allCmptFiles = new ArrayList<IIpsSrcFile>(100);
         findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, allCmptFiles, visitedEntries);
-        for (Iterator iter = allCmptFiles.iterator(); iter.hasNext();) {
-            IIpsSrcFile productCmptFile = (IIpsSrcFile)iter.next();
+        for (IIpsSrcFile productCmptFile : allCmptFiles) {
             if (!productCmptFile.exists()) {
                 continue;
             }
             if (productCmptType == null) {
-                result.add(productCmptFile.getIpsObject());
+                result.add((IProductCmpt)productCmptFile.getIpsObject());
                 continue;
             }
             QualifiedNameType cmptTypeQnt = new QualifiedNameType(productCmptFile
@@ -581,12 +584,12 @@ public class IpsObjectPath implements IIpsObjectPath {
                 continue;
             }
             if (productCmptType.getIpsSrcFile().equals(typeFoundFile)) {
-                result.add(productCmptFile.getIpsObject());
+                result.add((IProductCmpt)productCmptFile.getIpsObject());
             } else {
                 if (includeSubytpes) {
                     IProductCmptType typeFound = (IProductCmptType)typeFoundFile.getIpsObject();
                     if (typeFound.isSubtypeOf(productCmptType, ipsProject)) {
-                        result.add(productCmptFile.getIpsObject());
+                        result.add((IProductCmpt)productCmptFile.getIpsObject());
                     }
                 }
             }
@@ -597,8 +600,8 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Adds all source files found in <code>IpsSrcFolderEntry</code>s on the path to the result
      * list.
      */
-    public void collectAllIpsSrcFilesOfSrcFolderEntries(List result) throws CoreException {
-        Set visitedEntries = new HashSet();
+    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) throws CoreException {
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
@@ -723,10 +726,10 @@ public class IpsObjectPath implements IIpsObjectPath {
      * @throws CoreException If an error occurs while resolving the object path entries.
      */
     public boolean detectCycle() throws CoreException {
-        return detectCycleInternal(ipsProject, new HashSet());
+        return detectCycleInternal(ipsProject, new HashSet<IIpsObjectPath>());
     }
 
-    public boolean detectCycleInternal(IIpsProject project, Set visitedEntries) throws CoreException {
+    public boolean detectCycleInternal(IIpsProject project, Set<IIpsObjectPath> visitedEntries) throws CoreException {
         if (visitedEntries.contains(this)) {
             return false;
         }

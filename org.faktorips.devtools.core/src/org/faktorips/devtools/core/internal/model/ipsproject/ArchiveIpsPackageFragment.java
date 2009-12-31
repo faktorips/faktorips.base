@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -66,9 +65,9 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
 
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
 
-        List list = getChildIpsPackageFragmentsAsList();
+        List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
 
-        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
+        return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
@@ -77,12 +76,11 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         if (archive == null) {
             return new IIpsSrcFile[0];
         }
-        Set set = archive.getQNameTypes(getName());
+        Set<QualifiedNameType> set = archive.getQNameTypes(getName());
         IIpsSrcFile[] srcFiles = new IIpsSrcFile[set.size()];
         int i = 0;
-        for (Iterator it = set.iterator(); it.hasNext(); i++) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
-            srcFiles[i] = new ArchiveIpsSrcFile(this, qnt.getFileName());
+        for (QualifiedNameType qnt : set) {
+            srcFiles[i++] = new ArchiveIpsSrcFile(this, qnt.getFileName());
         }
         return srcFiles;
     }
@@ -143,24 +141,24 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
         findIpsSourceFilesInternal(type, result, true);
     }
 
     @Override
-    public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
         findIpsSourceFilesInternal(type, result, false);
     }
 
+    @SuppressWarnings("unchecked")
     private void findIpsSourceFilesInternal(IpsObjectType type, List result, boolean asIpsObject) throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
         if (archive == null) {
             return;
         }
-        Set set = archive.getQNameTypes(getName());
-        for (Iterator it = set.iterator(); it.hasNext();) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
+        Set<QualifiedNameType> set = archive.getQNameTypes(getName());
+        for (QualifiedNameType qnt : set) {
             if (qnt.getIpsObjectType() == type) {
                 IIpsSrcFile ipsSrcFile = getIpsSrcFile(qnt.getFileName());
                 if (asIpsObject) {
@@ -172,29 +170,33 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         }
     }
 
-    public void findIpsObjects(List result) throws CoreException {
+    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
         if (archive == null) {
             return;
         }
-        Set set = archive.getQNameTypes(getName());
-        for (Iterator it = set.iterator(); it.hasNext();) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
+        Set<QualifiedNameType> set = archive.getQNameTypes(getName());
+        for (QualifiedNameType qnt : set) {
             result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         // TODO the sort definition for archives needs to be implemented
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
-        List sortedPacks = getChildIpsPackageFragmentsAsList();
-
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        List<IIpsPackageFragment> sortedPacks = getChildIpsPackageFragmentsAsList();
+        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
@@ -203,11 +205,11 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * @return IpsPackageFragments as List.
      * @throws CoreException
      */
-    private List getChildIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         String[] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());
 
-        List list = new ArrayList(packNames.length);
+        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
 
         for (int i = 0; i < packNames.length; ++i) {
             String element = packNames[i];

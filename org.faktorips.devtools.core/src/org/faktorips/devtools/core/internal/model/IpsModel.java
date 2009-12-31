@@ -166,7 +166,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
 
-    private List builderSetInfoList = null;
+    private List<IpsArtefactBuilderSetInfo> builderSetInfoList = null;
 
     // extension properties (as list) per ips object (or part) type, e.g.
     // IAttribute.
@@ -1526,7 +1526,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private void createIpsArtefactBuilderSetInfosIfNecessary() {
         if (builderSetInfoList == null) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
-            builderSetInfoList = new ArrayList();
+            builderSetInfoList = new ArrayList<IpsArtefactBuilderSetInfo>();
             IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsPlugin.getDefault().getLog(), builderSetInfoList,
                     this);
         }
@@ -1539,8 +1539,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
         createIpsArtefactBuilderSetInfosIfNecessary();
-        return (IIpsArtefactBuilderSetInfo[])builderSetInfoList
-                .toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
+        return builderSetInfoList.toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
