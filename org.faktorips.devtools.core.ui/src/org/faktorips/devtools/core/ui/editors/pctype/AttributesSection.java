@@ -53,8 +53,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
     private IpsObjectEditorPage page;
 
-    private IWorkbenchAction rename;
-
     public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
@@ -77,16 +75,17 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         public AttributesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
-            super.addDeleteListener(new IDeleteListener() {
+            addDeleteListener();
+        }
 
+        private void addDeleteListener() {
+            super.addDeleteListener(new IDeleteListener() {
                 public boolean aboutToDelete(IIpsObjectPart part) {
                     IValidationRule rule = findValidationRule(part);
-
                     if (rule == null) {
-                        // nothing to do if no special rule is defined.
+                        // Nothing to do if no special rule is defined.
                         return true;
                     }
-
                     String msg = Messages.AttributesSection_deleteMessage;
                     boolean delete = MessageDialog
                             .openQuestion(getShell(), Messages.AttributesSection_deleteTitle, msg);
@@ -114,14 +113,14 @@ public class AttributesSection extends SimpleIpsPartsSection {
                 }
 
                 public void deleted(IIpsObjectPart part) {
-                    // nothing to do.
+                    // Nothing to do.
                 }
             });
         }
 
         private void createContextMenu() {
             IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-            rename = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
+            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
             IActionBars actionBars = editorSite.getActionBars();
             actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
                     getPartsComposite()));
@@ -129,14 +128,12 @@ public class AttributesSection extends SimpleIpsPartsSection {
             MenuManager manager = new MenuManager();
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
-
                 public void menuAboutToShow(IMenuManager manager) {
                     manager.add(new Separator());
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-                    refactorSubmenu.add(rename);
+                    refactorSubmenu.add(renameAction);
                     manager.add(refactorSubmenu);
                 }
-
             });
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
@@ -206,11 +203,11 @@ public class AttributesSection extends SimpleIpsPartsSection {
             }
 
             public void dispose() {
-                // nothing todo
+                // Nothing to do.
             }
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // nothing todo
+                // Nothing to do.
             }
 
         }

@@ -69,9 +69,6 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
         setText(title);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
         partsComposite = createIpsPartsComposite(client, toolkit);
@@ -82,8 +79,8 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
      * Subclasses must implement this method by creating the <code>IpsPartsComposite</code> to show
      * inside this <code>SimpleIpsPartsSection</code>.
      * 
-     * @param parent The parent ui composite.
-     * @param toolkit The ui toolkit to use for creating ui elements.
+     * @param parent The parent UI composite.
+     * @param toolkit The UI toolkit to use for creating UI elements.
      * 
      * @return The <code>IpsPartsComposite</code> to show inside this
      *         <code>SimpleIpsPartsSection</code>.
@@ -97,9 +94,6 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
         return ipsObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         partsComposite.refresh();

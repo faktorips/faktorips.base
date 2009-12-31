@@ -564,7 +564,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     protected abstract EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException;
 
     /**
-     * Moves the parts indentified by the indexes in the model object up or down.
+     * Moves the parts identified by the indexes in the model object up or down.
      * 
      * @return the new indices of the moved parts.
      */

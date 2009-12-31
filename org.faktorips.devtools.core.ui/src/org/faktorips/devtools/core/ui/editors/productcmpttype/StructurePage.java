@@ -39,30 +39,24 @@ public class StructurePage extends TypeEditorStructurePage {
         return (IProductCmptType)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
         new GeneralInfoSection(getProductCmptType(), formBody, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new AttributesSection(getProductCmptType(), members, toolkit);
+        new AttributesSection(this, getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
         new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new AttributesSection(getProductCmptType(), members, toolkit);
+        new AttributesSection(this, getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
     }
 

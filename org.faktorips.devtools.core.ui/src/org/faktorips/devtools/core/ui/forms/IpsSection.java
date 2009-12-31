@@ -35,7 +35,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * A section is an area of the user interface. The <code>IpsSection</code> is a composite that acts
- * as a wrapper for a swt section.
+ * as a wrapper for a SWT section.
  */
 public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess,
         IDataChangeableReadAccessWithListenerSupport, DisposeListener {
@@ -102,16 +102,13 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * <p>
      * Constructs the section's controls.
-     * </p>
      * <p>
      * This has to to be called explicitly by subclasses <b>after</b> they have initialized any
      * subclass specific instance variables.
-     * </p>
      * <p>
      * The <code>IpsSection</code> does not call this method in it's constructor, because in
-     * subclasses in might be neccessary to initialize instance variable first, but the call to the
+     * subclasses in might be necessary to initialize instance variable first, but the call to the
      * super constructor has to be the first statement in the subclass constructor.
-     * </p>
      */
     protected void initControls() {
         // Adapt this section to the form toolkit
@@ -124,7 +121,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         // Create the ui section widget that is being wrapped by this composite
         section = toolkit.getFormToolkit().createSection(this, style);
         section.setLayoutData(new GridData(layoutData));
-        
+
         // Create the client composite for the section
         Composite client = toolkit.createGridComposite(section, 1, false, false);
         client.setLayoutData(new GridData(layoutData));
@@ -193,9 +190,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * Returns whether the contents of this section can be changed by the user.
-     * 
-     * @return <code>true</code> if the content in this section can be changed by the user,
-     *         otherwise <code>false</code>.
      */
     public boolean isDataChangeable() {
         return changeable;
@@ -219,9 +213,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (listener == null) {
             return;
@@ -231,12 +222,9 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             dataChangeableStateChangeListeners = new ArrayList<IDataChangeableStateChangeListener>(1);
         }
 
-        this.dataChangeableStateChangeListeners.add(listener);
+        dataChangeableStateChangeListeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (dataChangeableStateChangeListeners == null) {
             return;
@@ -276,11 +264,9 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * <p>
      * Set focus to the appropriate control. This is the first editable input available if the focus
      * was not set before or the control that had the focus gained at last.
-     * </p>
-     * 
+     * <p>
      * {@inheritDoc}
      */
     @Override
@@ -294,7 +280,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         return true;
     }
 
-    /*
+    /**
      * Until a control added with <code>addFocusControl</code> gains the Focus by user operation, no
      * focus will be requested by this section after a call to this method.
      */
@@ -302,16 +288,13 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         focusCtrl = null;
     }
 
-    /*
+    /**
      * Set the focus predecessor
      */
     private void setFocusPredecessor(IpsSection predecessor) {
         focusPredecessor = predecessor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void widgetDisposed(DisposeEvent e) {
         if (e.widget == this) {
             bindingContext.dispose();
@@ -320,21 +303,16 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * Returns the ui toolkit.
-     * 
-     * @return The ui toolkit used to create new ui elements.
      */
     public UIToolkit getToolkit() {
         return toolkit;
     }
 
-    /*
-     * Listener to keep track of the last focussed control of this section.
+    /**
+     * Listener to keep track of the last focused control of this section.
      */
     private FocusListener focusHandler = new FocusListener() {
 
-        /**
-         * {@inheritDoc}
-         */
         public void focusGained(FocusEvent e) {
             focusCtrl = (Control)e.getSource();
 
@@ -350,9 +328,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void focusLost(FocusEvent e) {
             // nothing to do
         }
