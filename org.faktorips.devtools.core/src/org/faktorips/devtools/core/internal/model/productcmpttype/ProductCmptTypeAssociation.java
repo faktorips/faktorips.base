@@ -95,7 +95,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * policy component type, but ignoring associations of type COMPOSITION_DETAIL_TO_MASTER.
      */
     private IPolicyCmptTypeAssociation[] getAssociationsFor(IPolicyCmptType from, IPolicyCmptType target) {
-        List result = new ArrayList();
+        List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
         String targetQName = target.getQualifiedName();
         IPolicyCmptTypeAssociation[] policyAssociations = from.getPolicyCmptTypeAssociations();
         for (int i = 0; i < policyAssociations.length; i++) {
@@ -105,11 +105,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 }
             }
         }
-        return (IPolicyCmptTypeAssociation[])result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
+        return result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
 
     private int getAssociationIndex() {
-        List allAssociationsForTheTargetType = new ArrayList();
+        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
         IAssociation[] assoc = getType().getAssociations();
         for (int i = 0; i < assoc.length; i++) {
             if (getTarget().equals(assoc[i].getTarget())) {
@@ -117,7 +117,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             }
         }
         int index = 0;
-        for (Iterator it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+        for (Iterator<IAssociation> it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
             if (it.next() == this) {
                 return index;
             }

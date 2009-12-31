@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -75,12 +75,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/builder")).booleanValue(); //$NON-NLS-1$
     }
 
-    /*
-     * The key is the name of the IpsProject, the value the last modification timestamp of the IpsProjectProperties from the
-     * last build.
+    /**
+     * The key is the name of the IpsProject, the value the last modification timestamp of the
+     * IpsProjectProperties from the last build.
      */
-    private Map lastModificationTimestampForBuilderSets = new HashMap();
-    
+    private Map<String, Long> lastModificationTimestampForBuilderSets = new HashMap<String, Long>();
+
     public IpsBuilder() {
         super();
     }
@@ -92,6 +92,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
+    @Override
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
@@ -102,7 +104,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             // undetected as the validation result cache gets cleared in a resource change listener.
             // it is not guaranteed that the listener is notified before the build starts!
             getIpsProject().getIpsModel().clearValidationCache();
-            if(!checkIpsProjectBeforeBuild(getProject(), getIpsProject())){
+            if (!checkIpsProjectBeforeBuild(getProject(), getIpsProject())) {
                 monitor.done();
                 return null;
             }
@@ -114,9 +116,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 kind = IncrementalProjectBuilder.FULL_BUILD;
             }
             beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()), monitor);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()),
+                    monitor);
             monitor.worked(100);
-            try{
+            try {
                 if (isFullBuildRequired) {
                     kind = IncrementalProjectBuilder.FULL_BUILD;
                     monitor.subTask(Messages.IpsBuilder_startFullBuild);
@@ -127,7 +130,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 }
             } finally {
                 monitor.subTask(Messages.IpsBuilder_finishBuild);
-                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind, getIpsProject()), monitor);
+                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind,
+                        getIpsProject()), monitor);
                 afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
             }
             monitor.worked(100);
@@ -155,26 +159,27 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
-    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException{
-        Long timestamp = (Long)lastModificationTimestampForBuilderSets.get(project.getName());
-        if(timestamp == null){
-            lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties().getLastPersistentModificationTimestamp());
+    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException {
+        Long timestamp = lastModificationTimestampForBuilderSets.get(project.getName());
+        if (timestamp == null) {
+            lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties()
+                    .getLastPersistentModificationTimestamp());
             return project.getIpsArtefactBuilderSet();
         }
 
-        Long projectTimestamp = project.getReadOnlyProperties().getLastPersistentModificationTimestamp(); 
-        if(!timestamp.equals(projectTimestamp)){
+        Long projectTimestamp = project.getReadOnlyProperties().getLastPersistentModificationTimestamp();
+        if (!timestamp.equals(projectTimestamp)) {
             project.reinitializeIpsArtefactBuilderSet();
             lastModificationTimestampForBuilderSets.put(project.getName(), projectTimestamp);
         }
         return project.getIpsArtefactBuilderSet();
     }
-    
-    private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException{
+
+    private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException {
         project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
         MessageList list = ipsProject.validate();
         IResource markedResource = ipsProject.getIpsProjectPropertiesFile();
-        if(!markedResource.exists()){
+        if (!markedResource.exists()) {
             markedResource = project;
         }
         createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
@@ -186,8 +191,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         return true;
     }
-    
-    
+
     private boolean isFullBuildRequired(int kind) throws CoreException {
         if (kind == FULL_BUILD || kind == CLEAN_BUILD) {
             return true;
@@ -202,14 +206,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         IIpsArchiveEntry[] entries = ipsProject.getIpsObjectPath().getArchiveEntries();
         for (int i = 0; i < entries.length; i++) {
-            if(entries[i].isContained(delta)){
+            if (entries[i].isContained(delta)) {
                 return true;
             }
         }
         return false;
     }
 
-    private void beforeBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind){
+    private void beforeBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind) {
         // Despite the fact that generating is disabled in the faktor ips
         // preferences the
         // validation of the modell class instances and marker updating of the
@@ -220,11 +224,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         try {
             builderSet.beforeBuildProcess(buildKind);
         } catch (Exception e) {
-            buildStatus.add(new IpsStatus("Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e));
+            buildStatus.add(new IpsStatus(
+                    "Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e));
         }
     }
 
-    private void afterBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind){
+    private void afterBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind) {
         // Despite the fact that generating is disabled in the faktor ips
         // preferences the
         // validation of the modell class instances and marker updating of the
@@ -235,10 +240,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         try {
             builderSet.afterBuildProcess(buildKind);
         } catch (Exception e) {
-            buildStatus.add(new IpsStatus("Error during afterBuildProcess() of the builder set: " + builderSet.getId(), e));
+            buildStatus.add(new IpsStatus("Error during afterBuildProcess() of the builder set: " + builderSet.getId(),
+                    e));
         }
     }
-    
+
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet,
             MultiStatus buildStatus,
             BuildCommand command,
@@ -280,7 +286,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
     }
 
-    private void collectIpsSrcFilesForFullBuild(List allIpsSrcFiles) throws CoreException {
+    private void collectIpsSrcFilesForFullBuild(List<IIpsSrcFile> allIpsSrcFiles) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
             if (!roots[i].isBasedOnSourceFolder()) {
@@ -291,7 +297,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 IIpsElement[] elements = packs[j].getChildren();
                 for (int k = 0; k < elements.length; k++) {
                     if (elements[k] instanceof IIpsSrcFile) {
-                        allIpsSrcFiles.add(elements[k]);
+                        allIpsSrcFiles.add((IIpsSrcFile)elements[k]);
                     }
                 }
             }
@@ -319,19 +325,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         long begin = System.currentTimeMillis();
 
         try {
-            ArrayList allIpsSrcFiles = new ArrayList();
+            List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
             collectIpsSrcFilesForFullBuild(allIpsSrcFiles);
             monitor.beginTask("full build", 2 * allIpsSrcFiles.size()); //$NON-NLS-1$
             getDependencyGraph().reInit();
             monitor.worked(allIpsSrcFiles.size());
             removeEmptyFolders();
 
-            for (Iterator it = allIpsSrcFiles.iterator(); it.hasNext();) {
-                if(monitor.isCanceled()){
+            for (Iterator<IIpsSrcFile> it = allIpsSrcFiles.iterator(); it.hasNext();) {
+                if (monitor.isCanceled()) {
                     break;
                 }
                 try {
-                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
+                    IIpsSrcFile ipsSrcFile = it.next();
                     monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
                     buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
                     monitor.worked(1);
@@ -354,6 +360,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void clean(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
@@ -374,10 +381,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     /*
-     * Only the resource (file, folder) that is actually derived will be deleted. So if a user chooses to place a
-     * non derived resource in the destination folder it will not be deleted. Accordingly all
-     * folders in the folder hierarchy starting from the folder that contains the derived resource
-     * will not be deleted.
+     * Only the resource (file, folder) that is actually derived will be deleted. So if a user
+     * chooses to place a non derived resource in the destination folder it will not be deleted.
+     * Accordingly all folders in the folder hierarchy starting from the folder that contains the
+     * derived resource will not be deleted.
      */
     private void removeDerivedResources(IFolder folder, IProgressMonitor monitor) throws CoreException {
         IResource[] members = folder.members();
@@ -417,10 +424,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private Set getDependencySetForProject(IIpsProject project, Map buildCandidatesForProjectMap) {
-        Set buildCandidatesSet = (Set)buildCandidatesForProjectMap.get(project);
+    private Set<IDependency> getDependencySetForProject(IIpsProject project,
+            Map<IIpsProject, Set<IDependency>> buildCandidatesForProjectMap) {
+        Set<IDependency> buildCandidatesSet = buildCandidatesForProjectMap.get(project);
         if (buildCandidatesSet == null) {
-            buildCandidatesSet = new HashSet(1000);
+            buildCandidatesSet = new HashSet<IDependency>(1000);
             buildCandidatesForProjectMap.put(project, buildCandidatesSet);
         }
         return buildCandidatesSet;
@@ -440,13 +448,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             IResourceDelta delta = getDelta(getProject());
             IncBuildVisitor visitor = new IncBuildVisitor();
             delta.accept(visitor);
-            Map dependenciesForProjectsMap = new HashMap(10);
+            Map<IIpsProject, Set<IDependency>> dependenciesForProjectsMap = new HashMap<IIpsProject, Set<IDependency>>(
+                    10);
             int numberOfBuildCandidates = collectDependenciesForIncrementalBuild(visitor.changedAndAddedIpsSrcFiles,
                     visitor.removedIpsSrcFiles, dependenciesForProjectsMap)
                     + visitor.removedIpsSrcFiles.size() + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
-            for (Iterator it = visitor.removedIpsSrcFiles.iterator(); it.hasNext();) {
-                if(monitor.isCanceled()){
+            for (Iterator<IIpsSrcFile> it = visitor.removedIpsSrcFiles.iterator(); it.hasNext();) {
+                if (monitor.isCanceled()) {
                     break;
                 }
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
@@ -457,8 +466,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 monitor.worked(1);
             }
 
-            for (Iterator it = visitor.changedAndAddedIpsSrcFiles.iterator(); it.hasNext();) {
-                if(monitor.isCanceled()){
+            for (Iterator<IIpsSrcFile> it = visitor.changedAndAddedIpsSrcFiles.iterator(); it.hasNext();) {
+                if (monitor.isCanceled()) {
                     break;
                 }
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
@@ -468,41 +477,41 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 monitor.worked(1);
             }
 
-            for (Iterator it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
-                if(monitor.isCanceled()){
+            for (Iterator<IIpsProject> it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
+                if (monitor.isCanceled()) {
                     break;
                 }
-                IIpsProject ipsProject = (IIpsProject)it.next();
-                if(!ipsProject.equals(getIpsProject())){
+                IIpsProject ipsProject = it.next();
+                if (!ipsProject.equals(getIpsProject())) {
                     if (!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)) {
                         continue;
                     }
                 }
-                Set dependencySet = (Set)dependenciesForProjectsMap.get(ipsProject);
+                Set<IDependency> dependencySet = dependenciesForProjectsMap.get(ipsProject);
 
                 // dependent ips object can be located in a different project which can have a
                 // differen artefact builder set
                 // therefor the builder set needs to be determined for each project at this point
                 ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(ipsProject);
-                Set alreadyBuild = new HashSet(dependencySet.size());
+                Set<QualifiedNameType> alreadyBuild = new HashSet<QualifiedNameType>(dependencySet.size());
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {
-                    if(!ipsProject.equals(getIpsProject())){
+                    if (!ipsProject.equals(getIpsProject())) {
                         beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(
                                 INCREMENTAL_BUILD, ipsProject), monitor);
-                    }                    
-                    for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
-                        if(monitor.isCanceled()){
+                    }
+                    for (Iterator<IDependency> it2 = dependencySet.iterator(); it2.hasNext();) {
+                        if (monitor.isCanceled()) {
                             break;
                         }
-                        IDependency dependency = (IDependency)it2.next();
-                        Object buildCandidateId = dependency.getSource();
+                        IDependency dependency = it2.next();
+                        QualifiedNameType buildCandidateId = dependency.getSource();
                         if (alreadyBuild.contains(buildCandidateId)) {
                             continue;
                         }
                         alreadyBuild.add(buildCandidateId);
-                        IIpsObject ipsObject = ipsProject.findIpsObject((QualifiedNameType)buildCandidateId);
+                        IIpsObject ipsObject = ipsProject.findIpsObject(buildCandidateId);
                         if (ipsObject == null) {
                             continue;
                         }
@@ -516,16 +525,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     currentBuildStatus.add(new IpsStatus(IStatus.ERROR, NLS.bind(
                             Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
                 } finally {
-                    if(!ipsProject.equals(getIpsProject())){
+                    if (!ipsProject.equals(getIpsProject())) {
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(
                                 INCREMENTAL_BUILD, ipsProject), monitor);
                         afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
-                        if (currentBuildStatus.getSeverity() != MultiStatus.OK) {
+                        if (currentBuildStatus.getSeverity() != IStatus.OK) {
                             ipsProject.reinitializeIpsArtefactBuilderSet();
                         }
-                    }                    
+                    }
                 }
-                if(!currentBuildStatus.isOK()){
+                if (!currentBuildStatus.isOK()) {
                     buildStatus.add(currentBuildStatus);
                 }
             }
@@ -625,26 +634,26 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     "dependency graph for the IpsSrcFile: " + ipsSrcFile, e)); //$NON-NLS-1$
         }
     }
-    
-    private int collectDependenciesForIncrementalBuild(List addedOrChangesIpsSrcFiles,
-            List removedIpsSrcFiles,
-            Map dependenciesForProjectsMap) throws CoreException {
+
+    private int collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangesIpsSrcFiles,
+            List<IIpsSrcFile> removedIpsSrcFiles,
+            Map<IIpsProject, Set<IDependency>> dependenciesForProjectsMap) throws CoreException {
 
         IIpsProject ipsProject = getIpsProject();
         Counter counter = new Counter(0);
-        for (Iterator it = addedOrChangesIpsSrcFiles.iterator(); it.hasNext();) {
+        for (Iterator<IIpsSrcFile> it = addedOrChangesIpsSrcFiles.iterator(); it.hasNext();) {
             IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
-            collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(), ipsProject, new HashSet(),
+            collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(), ipsProject, new HashSet<IIpsProject>(),
                     dependenciesForProjectsMap, counter, false);
         }
-        for (Iterator it = removedIpsSrcFiles.iterator(); it.hasNext();) {
+        for (Iterator<IIpsSrcFile> it = removedIpsSrcFiles.iterator(); it.hasNext();) {
             IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
             // TODO do we still need to find out if the file is in the ips projects roots?
             IIpsPackageFragmentRoot[] roots = ipsSrcFile.getIpsProject().getSourceIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
                 if (ipsSrcFile.getIpsPackageFragment().getRoot().equals(roots[i])) {
-                    collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(),
-                            ipsProject, new HashSet(), dependenciesForProjectsMap, counter, false);
+                    collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(), ipsProject,
+                            new HashSet<IIpsProject>(), dependenciesForProjectsMap, counter, false);
                 }
             }
         }
@@ -653,8 +662,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private void collectDependenciesForProject(QualifiedNameType root,
             IIpsProject ipsProject,
-            Set visitedProjects,
-            Map dependenciesForProjectMap,
+            Set<IIpsProject> visitedProjects,
+            Map<IIpsProject, Set<IDependency>> dependenciesForProjectMap,
             Counter counter,
             boolean searchInstanceOfDependencyOnly) throws CoreException {
 
@@ -671,15 +680,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         // when collecting dependencies it is necessary to know if the builder set has any
         // properties that influences the dependency management
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = model.getIpsArtefactBuilderSet(ipsProject, false);
-        collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, root, counter, searchInstanceOfDependencyOnly);
+        collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, root, counter,
+                searchInstanceOfDependencyOnly);
         collectDependenciesWithinDependantProjects(root, ipsProject, visitedProjects, dependenciesForProjectMap,
                 counter, searchInstanceOfDependencyOnly);
     }
 
     private void collectDependenciesWithinDependantProjects(QualifiedNameType root,
             IIpsProject ipsProject,
-            Set visitedProjects,
-            Map dependenciesForProjectMap,
+            Set<IIpsProject> visitedProjects,
+            Map<IIpsProject, Set<IDependency>> dependenciesForProjectMap,
             Counter counter,
             boolean searchInstanceOfDependencyOnly) throws CoreException {
 
@@ -690,93 +700,94 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     counter, searchInstanceOfDependencyOnly);
         }
         return;
-    }    
-    
+    }
+
     private void collectDependencies(IIpsArtefactBuilderSet ipsArtefactBuilderSet,
             DependencyGraph graph,
-            Map dependenciesForProjectMap,
+            Map<IIpsProject, Set<IDependency>> dependenciesForProjectMap,
             QualifiedNameType source,
             Counter counter,
             boolean searchInstanceOfDependencyOnly) throws CoreException {
 
-        Set dependencySet = getDependencySetForProject(graph.getIpsProject(), dependenciesForProjectMap);
+        Set<IDependency> dependencySet = getDependencySetForProject(graph.getIpsProject(), dependenciesForProjectMap);
         IDependency[] dependencies = graph.getDependants(source);
 
         for (int i = 0; i < dependencies.length; i++) {
             if (!dependencySet.contains(dependencies[i])) {
-                
-                if(searchInstanceOfDependencyOnly){
+
+                if (searchInstanceOfDependencyOnly) {
                     if (dependencies[i].getType().equals(DependencyType.INSTANCEOF)) {
                         dependencySet.add(dependencies[i]);
                         counter.increment();
                     }
                     continue;
                 }
-                
+
                 dependencySet.add(dependencies[i]);
                 counter.increment();
                 if (dependencies[i].getType().equals(DependencyType.SUBTYPE)) {
                     collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
                             .getSource(), counter, false);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
-                            new HashSet(100), dependenciesForProjectMap, counter, false);
+                            new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, false);
                     continue;
                 }
 
-                if (dependencies[i].getType().equals(DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL) && 
-                        ipsArtefactBuilderSet.containsAggregateRootBuilder()) {
+                if (dependencies[i].getType().equals(DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL)
+                        && ipsArtefactBuilderSet.containsAggregateRootBuilder()) {
                     collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
                             .getSource(), counter, false);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
-                            new HashSet(100), dependenciesForProjectMap, counter, false);
+                            new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, false);
                     continue;
                 }
-                if (dependencies[i].getType().equals(DependencyType.REFERENCE) || dependencies[i].getType().equals(DependencyType.DATATYPE)) {
+                if (dependencies[i].getType().equals(DependencyType.REFERENCE)
+                        || dependencies[i].getType().equals(DependencyType.DATATYPE)) {
                     collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
                             .getSource(), counter, true);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
-                            new HashSet(100), dependenciesForProjectMap, counter, true);
+                            new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, true);
                 }
             }
         }
         return;
     }
-    
-    private static class Counter{
-        
+
+    private static class Counter {
+
         private int counts = 0;
-        
-        private Counter(int offSet){
-            this.counts = offSet;
+
+        private Counter(int offSet) {
+            counts = offSet;
         }
-        
-        private void increment(){
+
+        private void increment() {
             counts++;
         }
-        
-        private int getCounts(){
+
+        private int getCounts() {
             return counts;
         }
     }
-    
+
     /**
      * ResourceDeltaVisitor for the incremental build.
      */
     private class IncBuildVisitor implements IResourceDeltaVisitor {
 
         private IFolder[] outputFolders;
-        private List removedIpsSrcFiles = new ArrayList(100);
-        private List changedAndAddedIpsSrcFiles = new ArrayList(100);
+        private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
+        private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
 
         private IncBuildVisitor() throws CoreException {
             outputFolders = getIpsProject().getOutputFolders();
         }
 
-        public List getRemovedIpsSrcFiles() {
+        public List<IIpsSrcFile> getRemovedIpsSrcFiles() {
             return removedIpsSrcFiles;
         }
 
-        public List getChangedOrAddedIpsSrcFiles() {
+        public List<IIpsSrcFile> getChangedOrAddedIpsSrcFiles() {
             return changedAndAddedIpsSrcFiles;
         }
 
@@ -817,19 +828,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (!(element instanceof IIpsSrcFile)) {
                 return true;
             }
-
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
             switch (delta.getKind()) {
                 case IResourceDelta.ADDED:
                     if (element.exists()) {
-                        changedAndAddedIpsSrcFiles.add(element);
+                        changedAndAddedIpsSrcFiles.add(ipsSrcFile);
                     }
                     return true;
                 case IResourceDelta.REMOVED:
-                    removedIpsSrcFiles.add(element);
+                    removedIpsSrcFiles.add(ipsSrcFile);
                 case IResourceDelta.CHANGED: {
                     // skip changes, not caused by content changes,
                     if (delta.getFlags() != 0 && element.exists()) {
-                        changedAndAddedIpsSrcFiles.add(element);
+                        changedAndAddedIpsSrcFiles.add(ipsSrcFile);
                         return true;
                     }
                 }
@@ -857,12 +868,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            if(TRACE_BUILDER_TRACE){
-                System.out.println("BeforeBuildProcessCommand, BuilderName: " + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: " + System.identityHashCode(builder) + ", Project name: " + (ipsProject != null ? ipsProject.getName() : null));
+            if (TRACE_BUILDER_TRACE) {
+                System.out.println("BeforeBuildProcessCommand, BuilderName: "
+                        + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: "
+                        + System.identityHashCode(builder) + ", Project name: "
+                        + (ipsProject != null ? ipsProject.getName() : null));
             }
             builder.beforeBuildProcess(ipsProject, buildKind);
         }
 
+        @Override
         public String toString() {
             return "BeforeBuildProcessCmd[kind=" + buildKind + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -880,12 +895,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            if(TRACE_BUILDER_TRACE){
-                System.out.println("AfterBuildProcessCommand, BuilderName: " + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: " + System.identityHashCode(builder) + ", Project name: " + (ipsProject != null ? ipsProject.getName() : null));
+            if (TRACE_BUILDER_TRACE) {
+                System.out.println("AfterBuildProcessCommand, BuilderName: "
+                        + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: "
+                        + System.identityHashCode(builder) + ", Project name: "
+                        + (ipsProject != null ? ipsProject.getName() : null));
             }
             builder.afterBuildProcess(ipsProject, buildKind);
         }
 
+        @Override
         public String toString() {
             return "AfterBuildProcessCmd[kind=" + buildKind + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -920,6 +939,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
         }
 
+        @Override
         public String toString() {
             return "Build file " + ipsSrcFile; //$NON-NLS-1$
         }
@@ -939,6 +959,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
         }
 
+        @Override
         public String toString() {
             return "Delete file " + toDelete; //$NON-NLS-1$
         }

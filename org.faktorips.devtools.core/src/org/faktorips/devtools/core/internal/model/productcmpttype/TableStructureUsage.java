@@ -14,15 +14,14 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -52,7 +51,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     private boolean mandatoryTableContent = false;
 
     // Contains the related table structures identified by the full qualified name
-    private List tableStructures = new ArrayList();
+    private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
 
     public TableStructureUsage(IProductCmptType pcType, int id) {
         super(pcType, id);
@@ -71,12 +70,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     @Override
     public IIpsElement[] getChildren() {
-        int numOfChildren = tableStructures.size();
-        IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List childrenList = new ArrayList(numOfChildren);
-        childrenList.addAll(tableStructures);
-        childrenList.toArray(childrenArray);
-        return childrenArray;
+        return tableStructures.toArray(new IIpsElement[tableStructures.size()]);
     }
 
     @Override
@@ -84,7 +78,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return doc.createElement(TAG_NAME);
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(TableStructureReference.class)) {
             return newTableStructureReference();
         }
@@ -120,7 +114,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof TableStructureReference) {
-            tableStructures.add(part);
+            tableStructures.add((TableStructureReference)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -163,7 +157,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     public String[] getTableStructures() {
         String[] result = new String[tableStructures.size()];
         for (int i = 0; i < result.length; i++) {
-            TableStructureReference tsr = (TableStructureReference)tableStructures.get(i);
+            TableStructureReference tsr = tableStructures.get(i);
             result[i] = tsr.getTableStructure();
         }
         return result;
@@ -179,12 +173,14 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         objectHasChanged();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isUsed(String tableStructure) {
         if (tableStructure == null) {
             return false;
         }
-        for (Iterator it = tableStructures.iterator(); it.hasNext();) {
-            TableStructureReference tsr = (TableStructureReference)it.next();
+        for (TableStructureReference tsr : tableStructures) {
             if (tableStructure.equals(tsr.tableStructure)) {
                 return true;
             }
@@ -207,6 +203,9 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return tsr;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void removeTableStructure(String tableStructure) {
         TableStructureReference toBeDeleted = getTableStructureReference(tableStructure);
         if (toBeDeleted != null) {
@@ -220,8 +219,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * structure assignet return <code>null</code>
      */
     private TableStructureReference getTableStructureReference(String tableStructure) {
-        for (Iterator iter = tableStructures.iterator(); iter.hasNext();) {
-            TableStructureReference tsr = (TableStructureReference)iter.next();
+        for (TableStructureReference tsr : tableStructures) {
             if (tsr.getTableStructure() != null && tsr.getTableStructure().equals(tableStructure)) {
                 return tsr;
             }
@@ -236,7 +234,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     public int[] moveTableStructure(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(tableStructures);
+        ListElementMover<TableStructureReference> mover = new ListElementMover<TableStructureReference>(tableStructures);
         return mover.move(indexes, up);
     }
 
@@ -245,7 +243,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         super.validateThis(list, ipsProject);
 
         // check the correct name format
-        IStatus status = JavaConventions.validateFieldName(name);
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             String text = NLS.bind(Messages.TableStructureUsage_msgInvalidRoleName, name);
             Message msg = new Message(MSGCODE_INVALID_ROLE_NAME, text, Message.ERROR, this, PROPERTY_ROLENAME);

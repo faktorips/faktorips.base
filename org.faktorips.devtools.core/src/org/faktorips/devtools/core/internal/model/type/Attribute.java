@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.type;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
@@ -135,9 +133,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name
                     + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ 

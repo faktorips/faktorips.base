@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,7 +54,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
     private String expectedResult = ""; //$NON-NLS-1$
 
-    private List formulaTestInputValues = new ArrayList(0);
+    private List<IFormulaTestInputValue> formulaTestInputValues = new ArrayList<IFormulaTestInputValue>(0);
 
     public FormulaTestCase(Formula parent, int id) {
         super(parent, id);
@@ -81,13 +80,13 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      */
     @Override
     protected void reinitPartCollections() {
-        formulaTestInputValues = new ArrayList();
+        formulaTestInputValues.clear();
     }
 
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
@@ -112,7 +111,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
-            formulaTestInputValues.add(part);
+            formulaTestInputValues.add((IFormulaTestInputValue)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -135,9 +134,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      */
     @Override
     public IIpsElement[] getChildren() {
-        List childrenList = new ArrayList(formulaTestInputValues.size());
-        childrenList.addAll(formulaTestInputValues);
-        return (IIpsElement[])childrenList.toArray(new IIpsElement[0]);
+        return formulaTestInputValues.toArray(new IIpsElement[formulaTestInputValues.size()]);
     }
 
     /**
@@ -210,9 +207,8 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             EnumDatatype[] enumTypes = getIpsProject().findEnumDatatypes();
             for (int i = 0; i < enumTypes.length; i++) {
                 String valueName = enumTypes[i].getName();
-                List valueIds = Arrays.asList(enumTypes[i].getAllValueIds(true));
-                for (Iterator iter = valueIds.iterator(); iter.hasNext();) {
-                    String id = (String)iter.next();
+                List<String> valueIds = Arrays.asList(enumTypes[i].getAllValueIds(true));
+                for (String id : valueIds) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumTypes[i].getJavaClassName());
                     DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumTypes[i]);
@@ -263,8 +259,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     public IFormulaTestInputValue getFormulaTestInputValue(String identifier) {
-        for (Iterator it = formulaTestInputValues.iterator(); it.hasNext();) {
-            IFormulaTestInputValue v = (IFormulaTestInputValue)it.next();
+        for (IFormulaTestInputValue v : formulaTestInputValues) {
             if (v.getIdentifier().equals(identifier)) {
                 return v;
             }
@@ -276,7 +271,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     public IFormulaTestInputValue[] getFormulaTestInputValues() {
-        return (IFormulaTestInputValue[])formulaTestInputValues.toArray(new IFormulaTestInputValue[0]);
+        return formulaTestInputValues.toArray(new IFormulaTestInputValue[0]);
     }
 
     /**
@@ -320,7 +315,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         boolean changed = false;
 
         // add new or existing value on the given position
-        List newListOfInputValues = new ArrayList();
+        List<IFormulaTestInputValue> newListOfInputValues = new ArrayList<IFormulaTestInputValue>();
         changed = updateWithAllIdentifiers(newIdentifiers, newListOfInputValues, ipsProject);
 
         // store new list
@@ -336,8 +331,10 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * Adds all of input values to the given list, returns <code>true</code> if there were changes.
      */
-    private boolean updateWithAllIdentifiers(String[] newIdentifiers, List newListOfInputValues, IIpsProject ipsProject) {
-        List oldInputValues = new ArrayList();
+    private boolean updateWithAllIdentifiers(String[] newIdentifiers,
+            List<IFormulaTestInputValue> newListOfInputValues,
+            IIpsProject ipsProject) {
+        List<IFormulaTestInputValue> oldInputValues = new ArrayList<IFormulaTestInputValue>();
         oldInputValues.addAll(formulaTestInputValues);
 
         FormulaUpdater formulaUpdater = new FormulaUpdater(newIdentifiers, oldInputValues, newListOfInputValues,
@@ -354,12 +351,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     private class FormulaUpdater implements IWorkspaceRunnable {
         private boolean formulaTestCaseChanged;
         private String[] newIdentifiers;
-        private List oldInputValues;
-        private List newListOfInputValues;
+        private List<IFormulaTestInputValue> oldInputValues;
+        private List<IFormulaTestInputValue> newListOfInputValues;
         private IIpsProject ipsProject;
 
-        public FormulaUpdater(String[] newIdentifiers, List oldInputValues, List newListOfInputValues,
-                IIpsProject ipsProject) {
+        public FormulaUpdater(String[] newIdentifiers, List<IFormulaTestInputValue> oldInputValues,
+                List<IFormulaTestInputValue> newListOfInputValues, IIpsProject ipsProject) {
             this.newIdentifiers = newIdentifiers;
             this.oldInputValues = oldInputValues;
             this.newListOfInputValues = newListOfInputValues;
@@ -396,8 +393,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                 newListOfInputValues.add(inputValue);
             }
             // delete old input value
-            for (Iterator iter = oldInputValues.iterator(); iter.hasNext();) {
-                IFormulaTestInputValue oldInputValue = (IFormulaTestInputValue)iter.next();
+            for (IFormulaTestInputValue oldInputValue : oldInputValues) {
                 oldInputValue.delete();
                 formulaTestCaseChanged = true;
             }
@@ -407,9 +403,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             return formulaTestCaseChanged;
         }
 
-        public List getNewListOfInputValues() {
-            return newListOfInputValues;
-        }
     }
 
     /**
@@ -419,8 +412,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         if (formulaTestInputValues.size() == 0) {
             return true;
         }
-        for (Iterator iter = formulaTestInputValues.iterator(); iter.hasNext();) {
-            FormulaTestInputValue element = (FormulaTestInputValue)iter.next();
+        for (IFormulaTestInputValue element : formulaTestInputValues) {
             if (StringUtils.isNotEmpty(element.getValue())) {
                 return false;
             }

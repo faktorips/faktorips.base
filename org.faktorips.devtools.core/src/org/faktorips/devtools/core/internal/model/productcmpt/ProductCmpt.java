@@ -188,14 +188,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());
-        for (Iterator iter = list2.iterator(); iter.hasNext();) {
-            Message msg = (Message)iter.next();
+        for (Iterator<Message> iter = list2.iterator(); iter.hasNext();) {
+            Message msg = iter.next();
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
             list.add(msgNew);
         }
         list2 = strategy.validateRuntimeId(getRuntimeId());
-        for (Iterator iter = list2.iterator(); iter.hasNext();) {
-            Message msg = (Message)iter.next();
+        for (Iterator<Message> iter = list2.iterator(); iter.hasNext();) {
+            Message msg = iter.next();
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_RUNTIME_ID);
             list.add(msgNew);
         }
@@ -242,7 +242,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IDependency[] dependsOn() throws CoreException {
 
-        Set dependencySet = new HashSet();
+        Set<IDependency> dependencySet = new HashSet<IDependency>();
 
         if (!StringUtils.isEmpty(productCmptType)) {
             dependencySet.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
@@ -255,7 +255,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet);
         }
 
-        return (IDependency[])dependencySet.toArray(new IDependency[dependencySet.size()]);
+        return dependencySet.toArray(new IDependency[dependencySet.size()]);
     }
 
     /**
@@ -278,7 +278,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 

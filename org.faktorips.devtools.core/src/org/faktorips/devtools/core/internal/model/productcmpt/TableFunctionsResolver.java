@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -32,38 +32,39 @@ import org.faktorips.util.ArgumentCheck;
  * @deprecated
  * @see org.faktorips.devtools.core.internal.model.productcmpt.TableUsageFunctionsResolver
  */
+@Deprecated
 public class TableFunctionsResolver implements FunctionResolver {
 
     private IIpsProject project;
-    
-    
+
     public TableFunctionsResolver(IIpsProject project) {
         ArgumentCheck.notNull(project);
         this.project = project;
     }
 
     public FlFunction[] getFunctions() {
-        List functions = new ArrayList();
+        List<FlFunction> functions = new ArrayList<FlFunction>();
         try {
-        	IIpsObject[] tableContentses = project.findIpsObjects(IpsObjectType.TABLE_CONTENTS);
-            for(int t = 0; t < tableContentses.length; t++){
-            	
-            	ITableContents tableContents = (ITableContents)tableContentses[t];
-	            ITableStructure table = tableContents.findTableStructure(project);
-	            if (table != null) {
-	            	// only add the access-function if the content has a structure...
-	            	addTableAccessFunction(functions, table, tableContents);
-	            }
+            IIpsSrcFile[] tableContentFiles = project.findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+            for (int t = 0; t < tableContentFiles.length; t++) {
+
+                ITableContents tableContents = (ITableContents)tableContentFiles[t].getIpsObject();
+                ITableStructure table = tableContents.findTableStructure(project);
+                if (table != null) {
+                    // only add the access-function if the content has a structure...
+                    addTableAccessFunction(functions, table, tableContents);
+                }
             }
         } catch (CoreException e) {
             // if an error occurs while search for the function, the functions are not
             // provided and an error is logged.
             IpsPlugin.log(e);
         }
-        return (FlFunction[])functions.toArray(new FlFunction[functions.size()]);
+        return functions.toArray(new FlFunction[functions.size()]);
     }
 
-    private void addTableAccessFunction(List functions, ITableStructure table, ITableContents tableContents) throws CoreException{
+    private void addTableAccessFunction(List<FlFunction> functions, ITableStructure table, ITableContents tableContents)
+            throws CoreException {
         ITableAccessFunction[] fcts = table.getAccessFunctions();
         for (int j = 0; j < fcts.length; j++) {
             if (!fcts[j].validate(table.getIpsProject()).containsErrorMsg()) {

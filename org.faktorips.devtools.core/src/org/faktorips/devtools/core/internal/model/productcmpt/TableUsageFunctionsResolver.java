@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,10 +28,10 @@ import org.faktorips.fl.FunctionResolver;
 import org.faktorips.util.ArgumentCheck;
 
 public class TableUsageFunctionsResolver implements FunctionResolver {
-    
+
     private IIpsProject ipsProject;
     private ITableContentUsage[] tableContentUsages;
-    
+
     private FlFunction[] flFunctionsCache;
 
     public TableUsageFunctionsResolver(IIpsProject ipsProject, ITableContentUsage[] tableContentUsages) {
@@ -40,18 +40,19 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
         this.ipsProject = ipsProject;
         this.tableContentUsages = tableContentUsages;
     }
-    
+
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
-    
+
     public FlFunction[] getFunctions() {
-        List functions = new ArrayList();
+        List<FlFunction> functions = new ArrayList<FlFunction>();
         try {
-            // return the functions of all table structures which are based by the used table contents
+            // return the functions of all table structures which are based by the used table
+            // contents
             for (int i = 0; i < tableContentUsages.length; i++) {
                 ITableContents tableContents = tableContentUsages[i].findTableContents(ipsProject);
-                if (tableContents == null){
+                if (tableContents == null) {
                     // ignore if the table content wasn't found (validation error)
                     continue;
                 }
@@ -66,11 +67,14 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
             // provided and an error is logged.
             IpsPlugin.log(e);
         }
-        flFunctionsCache = (FlFunction[])functions.toArray(new FlFunction[functions.size()]);
+        flFunctionsCache = functions.toArray(new FlFunction[functions.size()]);
         return flFunctionsCache;
     }
 
-    private void addTableAccessFunction(List functions, ITableStructure table, ITableContents tableContents, String contentUsage) throws CoreException{
+    private void addTableAccessFunction(List<FlFunction> functions,
+            ITableStructure table,
+            ITableContents tableContents,
+            String contentUsage) throws CoreException {
         ITableAccessFunction[] fcts = table.getAccessFunctions();
         for (int j = 0; j < fcts.length; j++) {
             if (!fcts[j].validate(table.getIpsProject()).containsErrorMsg()) {
@@ -78,11 +82,13 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
             }
         }
     }
-    
+
     /**
      * Returns a new table function adapter.
      */
-    protected FlFunction createFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction function, String roleName){
+    protected FlFunction createFlFunctionAdapter(ITableContents tableContents,
+            ITableAccessFunction function,
+            String roleName) {
         return new TableUsageAccessFunctionFlFunctionAdapter(tableContents, function, roleName);
     }
 }

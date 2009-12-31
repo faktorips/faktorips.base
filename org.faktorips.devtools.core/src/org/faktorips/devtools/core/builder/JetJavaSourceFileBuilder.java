@@ -38,7 +38,7 @@ import org.faktorips.util.StringUtil;
  */
 public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
-    private Class generatorClass;
+    private Class<?> generatorClass;
     private IpsObjectType ipsObjectType;
     private String classNamePrefix;
     private String classNameSuffix;
@@ -57,7 +57,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * @param classNameSuffix is used to create the unqualified name. IpsObject.getName() + suffix =
      *            unqualified name. The classNamePrefix can be applied in addition to the suffix.
      */
-    public JetJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Class generatorClass,
+    public JetJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Class<?> generatorClass,
             IpsObjectType ipsObjectType, boolean enableMerge, String classNamePrefix, String classNameSuffix) {
         super(builderSet, kindId, new LocalizedStringsSet(generatorClass));
         ArgumentCheck.notNull(generatorClass, this);

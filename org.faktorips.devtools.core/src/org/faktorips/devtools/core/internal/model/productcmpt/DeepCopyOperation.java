@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -49,29 +49,31 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
-public class DeepCopyOperation implements IWorkspaceRunnable{
+public class DeepCopyOperation implements IWorkspaceRunnable {
 
-	private IProductCmptStructureReference[] toCopy;
-	private IProductCmptStructureReference[] toRefer;
-	private Map handleMap;
-	private IProductCmpt copiedRoot;
+    private IProductCmptStructureReference[] toCopy;
+    private IProductCmptStructureReference[] toRefer;
+    private Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
+    private IProductCmpt copiedRoot;
     private boolean createEmptyTableContents = false;
-	
-	/**
-	 * Creates a new operation to copy the given product components.
-	 * 
-	 * @param toCopy All product components and table contents that should be copied.
-	 * @param toRefer All product components and table contents which should be referred from the copied ones.
-	 * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing resources!). Keys are the
-	 * nodes given in <code>toCopy</code>.
-	 */
-	public DeepCopyOperation(IProductCmptStructureReference[] toCopy, IProductCmptStructureReference[] toRefer, Map handleMap) {
-		this.toCopy = toCopy;
-		this.toRefer = toRefer;
-		this.handleMap = handleMap;
-	}
 
-	/**
+    /**
+     * Creates a new operation to copy the given product components.
+     * 
+     * @param toCopy All product components and table contents that should be copied.
+     * @param toRefer All product components and table contents which should be referred from the
+     *            copied ones.
+     * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing
+     *            resources!). Keys are the nodes given in <code>toCopy</code>.
+     */
+    public DeepCopyOperation(IProductCmptStructureReference[] toCopy, IProductCmptStructureReference[] toRefer,
+            Map<IProductCmptStructureReference, IIpsSrcFile> handleMap) {
+        this.toCopy = toCopy;
+        this.toRefer = toRefer;
+        this.handleMap = handleMap;
+    }
+
+    /**
      * If <code>true</code> table contents will be created as empty files, otherwise the table
      * contents will be copied.
      */
@@ -80,164 +82,179 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	public void run(IProgressMonitor monitor) throws CoreException {
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-		monitor.beginTask(Messages.DeepCopyOperation_taskTitle, 2 + toCopy.length*2 + toRefer.length);
-		
-		monitor.worked(1);
+     * {@inheritDoc}
+     */
+    public void run(IProgressMonitor monitor) throws CoreException {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+        }
+        monitor.beginTask(Messages.DeepCopyOperation_taskTitle, 2 + toCopy.length * 2 + toRefer.length);
 
-		// stores all objects which refers old targets instead of changing to the new one
-		Set objectsToRefer = collectObjectsToRefer();
-		
-		// maps used to fix the targets (table usages or links) on the new productCmpt
-		HashMap tblContentData2newTableContentQName = new HashMap();
-		HashMap linkData2newProductCmptQName = new HashMap();
-		
-		Hashtable productNew2ProductOld = new Hashtable();
-		List newIpsObjects = new ArrayList();
-		
-		for (int i = 0; i < toCopy.length; i++) {
+        monitor.worked(1);
+
+        // stores all objects which refers old targets instead of changing to the new one
+        Set<Object> objectsToRefer = collectObjectsToRefer();
+
+        // maps used to fix the targets (table usages or links) on the new productCmpt
+        HashMap<TblContentUsageData, String> tblContentData2newTableContentQName = new HashMap<TblContentUsageData, String>();
+        HashMap<LinkData, String> linkData2newProductCmptQName = new HashMap<LinkData, String>();
+
+        Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
+        List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
+
+        for (int i = 0; i < toCopy.length; i++) {
             IIpsObject newIpsObject = createNewIpsObjectIfNecessary(toCopy[i], productNew2ProductOld, monitor);
             newIpsObjects.add(newIpsObject);
-            
-			// stores the link or tableUsage which indicates the creation of the new object
-			// will be used later to fix the new link target or new table contents if necessary
-			if (toCopy[i] instanceof IProductCmptReference){
-			    IProductCmptReference productCmptReference = (IProductCmptReference)toCopy[i];
-			    storeLinkToNewNewProductCmpt(productCmptReference, newIpsObject.getQualifiedName(), linkData2newProductCmptQName);
-			} else if (toCopy[i] instanceof IProductCmptStructureTblUsageReference){
-			    IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toCopy[i];
-			    storeTableUsageToNewTableContents(productCmptStructureTblUsageReference, newIpsObject.getQualifiedName(), tblContentData2newTableContentQName);
-			}
 
-			monitor.worked(1);
-		}
+            // stores the link or tableUsage which indicates the creation of the new object
+            // will be used later to fix the new link target or new table contents if necessary
+            if (toCopy[i] instanceof IProductCmptReference) {
+                IProductCmptReference productCmptReference = (IProductCmptReference)toCopy[i];
+                storeLinkToNewNewProductCmpt(productCmptReference, newIpsObject.getQualifiedName(),
+                        linkData2newProductCmptQName);
+            } else if (toCopy[i] instanceof IProductCmptStructureTblUsageReference) {
+                IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toCopy[i];
+                storeTableUsageToNewTableContents(productCmptStructureTblUsageReference, newIpsObject
+                        .getQualifiedName(), tblContentData2newTableContentQName);
+            }
 
-		// fix links, on of the following options: 
-		//   a) change target to new (copied) productCmpt's: if the target should also be copied -> checked on the 1st wizard page and checked on the 2nd page
-		//   b) leave old target: if the target shouldn't be changed -> check on 1st wizard page and unchecked on the 2nd page
-		//   c) delete link: if target are not copied -> not check on 1st wizard page
-		// fix tableContentUsages, on of the following options:
-		//   a) change table usage to the new (copied) tableContents -> see a) above
-		//   b) leave the table usage to the old tableContents -> see b) above
-		//   C) clear table usage (leave empty) -> see c) above
-		for (Iterator iterator = productNew2ProductOld.keySet().iterator(); iterator.hasNext();) {
-		    IIpsObject ipsObject = (IIpsObject)iterator.next();
-		    if (!(ipsObject instanceof IProductCmpt)){
-		        continue;
-		    }
-		    IProductCmpt productCmptNew = (IProductCmpt)ipsObject.getIpsObject();
-		    IProductCmpt productCmptTemplate = (IProductCmpt)productNew2ProductOld.get(productCmptNew);
-		    
-		    fixRelationsToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName, objectsToRefer);
-		    fixRelationsToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
+            monitor.worked(1);
         }
 
-		// save all ipsSource files
-		for (Iterator iterator = newIpsObjects.iterator(); iterator.hasNext();) {
-		    IIpsSrcFile ipsSrcFile = ((IIpsObject)iterator.next()).getIpsSrcFile();
-		    ipsSrcFile.save(true, monitor);
-		    monitor.worked(1);
+        // fix links, on of the following options:
+        // a) change target to new (copied) productCmpt's: if the target should also be copied ->
+        // checked on the 1st wizard page and checked on the 2nd page
+        // b) leave old target: if the target shouldn't be changed -> check on 1st wizard page and
+        // unchecked on the 2nd page
+        // c) delete link: if target are not copied -> not check on 1st wizard page
+        // fix tableContentUsages, on of the following options:
+        // a) change table usage to the new (copied) tableContents -> see a) above
+        // b) leave the table usage to the old tableContents -> see b) above
+        // C) clear table usage (leave empty) -> see c) above
+        for (Iterator<IProductCmpt> iterator = productNew2ProductOld.keySet().iterator(); iterator.hasNext();) {
+            IIpsObject ipsObject = iterator.next();
+            if (!(ipsObject instanceof IProductCmpt)) {
+                continue;
+            }
+            IProductCmpt productCmptNew = (IProductCmpt)ipsObject.getIpsObject();
+            IProductCmpt productCmptTemplate = productNew2ProductOld.get(productCmptNew);
+
+            fixRelationsToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
+                    objectsToRefer);
+            fixRelationsToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
         }
-		
-		if (newIpsObjects.size() == 0){
-		    throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
-		}
-		copiedRoot = (IProductCmpt)newIpsObjects.get(0);
-		monitor.done();
-	}
+
+        // save all ipsSource files
+        for (Iterator<IIpsObject> iterator = newIpsObjects.iterator(); iterator.hasNext();) {
+            IIpsSrcFile ipsSrcFile = (iterator.next()).getIpsSrcFile();
+            ipsSrcFile.save(true, monitor);
+            monitor.worked(1);
+        }
+
+        if (newIpsObjects.size() == 0) {
+            throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
+        }
+        copiedRoot = (IProductCmpt)newIpsObjects.get(0);
+        monitor.done();
+    }
 
     private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
-            Hashtable productNew2ProductOld,
+            Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
             IProgressMonitor monitor) throws CoreException {
         IIpsObject templateObject = toCopyProductCmptStructureReference.getWrappedIpsObject();
-        IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopyProductCmptStructureReference);
-        
+        IIpsSrcFile file = handleMap.get(toCopyProductCmptStructureReference);
+
         // if the file already exists, we can do nothing because the file was created already
         // caused by another reference to the same product component.
         if (!file.exists()) {
             GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        	IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
-        	String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-        	
-        	boolean createEmptyFile = false;
-            
-        	if (createEmptyTableContents && IpsObjectType.TABLE_CONTENTS.equals(templateObject.getIpsObjectType())){
-        	    createEmptyFile = true;
-        	}
-        	
-        	if (!createEmptyFile){
-        		// try to create the file as copy
-        	    try {
-        			file = targetPackage.createIpsFileFromTemplate(newName, templateObject, date, false, monitor);
-        		} catch (CoreException e) {
-        		    // exception occurred thus create empty file below
-        		    createEmptyFile = true;
-        		}
-        	}
-        	
-        	if (createEmptyFile) {
-        	    // if table contents should be created empty or
-        	    // or if the file could not be created from template then create an empty file
-        		file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
-        		TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
-        		IIpsObjectGeneration generation = (IIpsObjectGeneration)ipsObject.newGeneration();
-        		generation.setValidFrom(date);
-        		setPropertiesFromTemplate(templateObject, ipsObject);
-        	}
+            IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
+            String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+
+            boolean createEmptyFile = false;
+
+            if (createEmptyTableContents && IpsObjectType.TABLE_CONTENTS.equals(templateObject.getIpsObjectType())) {
+                createEmptyFile = true;
+            }
+
+            if (!createEmptyFile) {
+                // try to create the file as copy
+                try {
+                    file = targetPackage.createIpsFileFromTemplate(newName, templateObject, date, false, monitor);
+                } catch (CoreException e) {
+                    // exception occurred thus create empty file below
+                    createEmptyFile = true;
+                }
+            }
+
+            if (createEmptyFile) {
+                // if table contents should be created empty or
+                // or if the file could not be created from template then create an empty file
+                file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
+                TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
+                IIpsObjectGeneration generation = ipsObject.newGeneration();
+                generation.setValidFrom(date);
+                setPropertiesFromTemplate(templateObject, ipsObject);
+            }
         }
-        
-        IIpsObject newIpsObject = (IIpsObject)file.getIpsObject();
-        if (newIpsObject instanceof IProductCmpt){
-            productNew2ProductOld.put(newIpsObject, templateObject);
+
+        IIpsObject newIpsObject = file.getIpsObject();
+        if (newIpsObject instanceof IProductCmpt) {
+            productNew2ProductOld.put((IProductCmpt)newIpsObject, (IProductCmpt)templateObject);
         }
         return newIpsObject;
     }
 
     private void storeTableUsageToNewTableContents(IProductCmptStructureTblUsageReference productCmptStructureReference,
             String newTableContentsQName,
-            HashMap tblContentData2newTableContentQName) {
+            HashMap<TblContentUsageData, String> tblContentData2newTableContentQName) {
         ITableContentUsage tblContentUsageOld = productCmptStructureReference.getTableContentUsage();
         tblContentData2newTableContentQName.put(new TblContentUsageData(tblContentUsageOld), newTableContentsQName);
     }
 
     private void storeLinkToNewNewProductCmpt(IProductCmptReference productCmptStructureReference,
             String newProductCmptQName,
-            HashMap linkData2newProductCmptQName) {
+            HashMap<LinkData, String> linkData2newProductCmptQName) {
         IProductCmptStructureReference parent = productCmptStructureReference.getParent();
-        IProductCmpt productCmpt = ((IProductCmptReference)productCmptStructureReference).getProductCmpt();
-        if (parent instanceof IProductCmptTypeRelationReference){
-            IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeRelationReference)parent).getRelation();
-            IProductCmpt parentProductCmpt = ((IProductCmptReference)((IProductCmptTypeRelationReference)parent).getParent()).getProductCmpt();
-            linkData2newProductCmptQName.put(new LinkData(parentProductCmpt, productCmpt, productCmptTypeAssociationOld), newProductCmptQName);
+        IProductCmpt productCmpt = (productCmptStructureReference).getProductCmpt();
+        if (parent instanceof IProductCmptTypeRelationReference) {
+            IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeRelationReference)parent)
+                    .getRelation();
+            IProductCmpt parentProductCmpt = ((IProductCmptReference)((IProductCmptTypeRelationReference)parent)
+                    .getParent()).getProductCmpt();
+            linkData2newProductCmptQName.put(
+                    new LinkData(parentProductCmpt, productCmpt, productCmptTypeAssociationOld), newProductCmptQName);
         }
     }
-	
-	private Set collectObjectsToRefer() {
-        Set tblContentUsageAndLinkDataRefer = new HashSet();
-        List toReferList = Arrays.asList(toRefer);
+
+    private Set<Object> collectObjectsToRefer() {
+        Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<Object>();
+        List<IProductCmptStructureReference> toReferList = Arrays.asList(toRefer);
         for (int i = 0; i < toRefer.length; i++) {
-            if (toRefer[i] instanceof IProductCmptStructureTblUsageReference){
+            if (toRefer[i] instanceof IProductCmptStructureTblUsageReference) {
                 final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toRefer[i];
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
-                if (toReferList.contains(parent)){
-                    // the tableContents should be linked, check if the productCmpt for this tableContentUsage is also a link
-                    // and if true, don't store this table because the parent productCmpt must not be fixed
+                if (toReferList.contains(parent)) {
+                    // the tableContents should be linked, check if the productCmpt for this
+                    // tableContentUsage is also a link
+                    // and if true, don't store this table because the parent productCmpt must not
+                    // be fixed
                     continue;
                 }
-                tblContentUsageAndLinkDataRefer.add(new TblContentUsageData((productCmptStructureTblUsageReference).getTableContentUsage()));
-            } else if (toRefer[i] instanceof IProductCmptStructureReference){
+                tblContentUsageAndLinkDataRefer.add(new TblContentUsageData((productCmptStructureTblUsageReference)
+                        .getTableContentUsage()));
+            } else if (toRefer[i] instanceof IProductCmptStructureReference) {
                 // root elements couldn't be linked thus getParent returns the type association
                 // and the getParent of the type association returns the parent product cmpt of
                 // the to be linked object
-                IProductCmptStructureReference productCmptStructureReference = (IProductCmptStructureReference)toRefer[i];
-                IProductCmptTypeRelationReference parentTypeRel = (IProductCmptTypeRelationReference)productCmptStructureReference.getParent();
+                IProductCmptStructureReference productCmptStructureReference = toRefer[i];
+                IProductCmptTypeRelationReference parentTypeRel = (IProductCmptTypeRelationReference)productCmptStructureReference
+                        .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
-                tblContentUsageAndLinkDataRefer.add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(), (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel.getRelation()));
+                tblContentUsageAndLinkDataRefer
+                        .add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
+                                (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
+                                        .getRelation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;
@@ -247,43 +264,51 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
      * Fix all tableContentUsages
      * 
      * @param productCmptNew the new productCmpt which will be fixed
+     * 
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
-     *            productCmpt
+     * productCmpt
+     * 
      * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier
-     *            as key and the new created tableContent which was initiated by the key tableContentUsage
+     * as key and the new created tableContent which was initiated by the key tableContentUsage
+     * 
      * @param objectsToRefer A set containing the not copied objects
      */
     private void fixRelationsToTableContents(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
-            HashMap tblContentData2newTableContentQName, Set objectsToRefer) {
+            HashMap<TblContentUsageData, String> tblContentData2newTableContentQName,
+            Set<Object> objectsToRefer) {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
-            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsages[i].getTableContentName());
-            if (objectsToRefer.contains(tblContentsData)){
+            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsages[i]
+                    .getTableContentName());
+            if (objectsToRefer.contains(tblContentsData)) {
                 // keep table usage to old table contents
                 continue;
             }
-            
-            String newTarget = (String)tblContentData2newTableContentQName.get(tblContentsData);
-            tableContentUsages[i].setTableContentName(newTarget==null?"":newTarget); //$NON-NLS-1$
+
+            String newTarget = tblContentData2newTableContentQName.get(tblContentsData);
+            tableContentUsages[i].setTableContentName(newTarget == null ? "" : newTarget); //$NON-NLS-1$
         }
     }
-    
+
     /*
      * Fix all links
      * 
      * @param productCmptNew the new productCmpt which will be fixed
+     * 
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
-     *            productCmpt
-     * @param linkData2newProductCmptQName A map containing the link-identifier
-     *            as key and the new created productCmpt which was initiated by the key link
+     * productCmpt
+     * 
+     * @param linkData2newProductCmptQName A map containing the link-identifier as key and the new
+     * created productCmpt which was initiated by the key link
+     * 
      * @param objectsToRefer A set containing the not copied objects
      */
     private void fixRelationsToProductCmpt(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
-            HashMap linkData2newProductCmptQName,
-            Set objectsToRefer) {
+            HashMap<LinkData, String> linkData2newProductCmptQName,
+            Set<Object> objectsToRefer) {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         IProductCmptLink[] links = generation.getLinks();
         for (int i = 0; i < links.length; i++) {
@@ -296,19 +321,19 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }
-            
-            String newTarget = (String)linkData2newProductCmptQName.get(linkData);
-            if (newTarget != null){
+
+            String newTarget = linkData2newProductCmptQName.get(linkData);
+            if (newTarget != null) {
                 links[i].setTarget(newTarget);
             } else {
-                if (objectsToRefer.contains(linkData)){
+                if (objectsToRefer.contains(linkData)) {
                     // keep table usage to old table contents
                     continue;
                 }
                 links[i].delete();
             }
         }
-	}
+    }
 
     private void setPropertiesFromTemplate(IIpsObject template, IIpsObject newObject) {
         if (template instanceof IProductCmpt) {
@@ -318,29 +343,29 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
             ((TableContents)newObject).setNumOfColumnsInternal(((ITableContents)template).getNumOfColumns());
         }
     }
-	
-	/**
-	 * Creates a new package, based on the target package. To this base package, the path of the source
-	 * is appended, after the given number of segments to ignore is cut off.
-	 */
-	private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) throws CoreException {
-		IIpsPackageFragment result;
-		IIpsPackageFragmentRoot root = file.getIpsPackageFragment().getRoot();
-		String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
-		result = root.createPackageFragment(path, false, monitor);
-		return result;
-	}	
-	
-	public IProductCmpt getCopiedRoot() {
-		return copiedRoot;
-	}
-	
-	/*
+
+    /**
+     * Creates a new package, based on the target package. To this base package, the path of the
+     * source is appended, after the given number of segments to ignore is cut off.
+     */
+    private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) throws CoreException {
+        IIpsPackageFragment result;
+        IIpsPackageFragmentRoot root = file.getIpsPackageFragment().getRoot();
+        String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
+        result = root.createPackageFragment(path, false, monitor);
+        return result;
+    }
+
+    public IProductCmpt getCopiedRoot() {
+        return copiedRoot;
+    }
+
+    /*
      * Represents a productCmptLink, which is defined as a link object between two product cmpts
      * (sourceProductCmpt and targetProductCmpt) and a productCmptTypeAssociation on which the link
      * is based on.
      */
-	private class LinkData {
+    private class LinkData {
         private IProductCmpt sourceProductCmpt;
         private IProductCmpt targetProductCmpt;
         private IProductCmptTypeAssociation productCmptTypeAssociation;
@@ -364,23 +389,27 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
             return productCmptTypeAssociation;
         }
 
+        @Override
         public boolean equals(Object other) {
-            if ((this == other))
+            if ((this == other)) {
                 return true;
-            if ((other == null))
+            }
+            if ((other == null)) {
                 return false;
-            if (!(other instanceof LinkData))
+            }
+            if (!(other instanceof LinkData)) {
                 return false;
+            }
             LinkData castOther = (LinkData)other;
-            return (this.getSourceProductCmpt() != null && this.getSourceProductCmpt().equals(
-                    castOther.getSourceProductCmpt()))
-                    && (this.getTargetProductCmpt() != null && this.getTargetProductCmpt().equals(
+            return (getSourceProductCmpt() != null && getSourceProductCmpt().equals(castOther.getSourceProductCmpt()))
+                    && (getTargetProductCmpt() != null && getTargetProductCmpt().equals(
                             castOther.getTargetProductCmpt()))
-                    && (this.getProductCmptTypeAssociation() != null && this.getProductCmptTypeAssociation().equals(
+                    && (getProductCmptTypeAssociation() != null && getProductCmptTypeAssociation().equals(
                             castOther.getProductCmptTypeAssociation()));
 
         }
 
+        @Override
         public int hashCode() {
             int result = 17;
             result = 37 * result + sourceProductCmpt.hashCode();
@@ -390,9 +419,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
         }
     }
 
-	/*
-     * Represents a tblContentUsage object, which is defined by productCmpt and the table usage
-     * name (role of the table contents) inside the productCmpt.
+    /*
+     * Represents a tblContentUsage object, which is defined by productCmpt and the table usage name
+     * (role of the table contents) inside the productCmpt.
      */
     private class TblContentUsageData {
         private IProductCmpt productCmpt;
@@ -415,19 +444,23 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
             return tableUsageName;
         }
 
+        @Override
         public boolean equals(Object other) {
-            if ((this == other))
+            if ((this == other)) {
                 return true;
-            if ((other == null))
+            }
+            if ((other == null)) {
                 return false;
-            if (!(other instanceof TblContentUsageData))
+            }
+            if (!(other instanceof TblContentUsageData)) {
                 return false;
+            }
             TblContentUsageData castOther = (TblContentUsageData)other;
-            return (this.getProductCmpt() != null && this.getProductCmpt().equals(castOther.getProductCmpt()))
-                    && (this.getTableUsageName() != null && this.getTableUsageName().equals(
-                            castOther.getTableUsageName()));
+            return (getProductCmpt() != null && getProductCmpt().equals(castOther.getProductCmpt()))
+                    && (getTableUsageName() != null && getTableUsageName().equals(castOther.getTableUsageName()));
         }
 
+        @Override
         public int hashCode() {
             int result = 17;
             result = 37 * result + productCmpt.hashCode();

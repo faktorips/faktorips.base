@@ -620,7 +620,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IAttributeValue.class)) {
             return newAttributeValue();
         }

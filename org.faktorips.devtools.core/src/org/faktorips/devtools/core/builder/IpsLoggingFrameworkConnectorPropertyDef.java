@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -67,10 +68,10 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     @Override
     public String[] getDiscreteValues() {
         String[] values = super.getDiscreteValues();
-        ArrayList newValues = new ArrayList();
+        List<String> newValues = new ArrayList<String>();
         newValues.add(getDisableValue(null));
         newValues.addAll(Arrays.asList(values));
-        return (String[])newValues.toArray(new String[newValues.size()]);
+        return newValues.toArray(new String[newValues.size()]);
     }
 
     /**

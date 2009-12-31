@@ -53,7 +53,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
     private IProductCmptType productCmptType;
-    private List entries = new ArrayList();
+    private List<IDeltaEntry> entries = new ArrayList<IDeltaEntry>();
 
     public GenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(generation);
@@ -80,16 +80,17 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     private void createEntriesForProperties() throws CoreException {
         for (int i = 0; i < ProdDefPropertyType.ALL_TYPES.length; i++) {
             ProdDefPropertyType propertyType = ProdDefPropertyType.ALL_TYPES[i];
-            LinkedHashMap propertiesMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(propertyType,
-                    ipsProject);
+            LinkedHashMap<String, IProdDefProperty> propertiesMap = ((ProductCmptType)productCmptType)
+                    .getProdDefPropertiesMap(propertyType, ipsProject);
             checkForMissingPropertyValues(propertiesMap, propertyType);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
 
-    private void checkForMissingPropertyValues(LinkedHashMap propertiesMap, ProdDefPropertyType propertyType) {
-        for (Iterator it = propertiesMap.values().iterator(); it.hasNext();) {
-            IProdDefProperty property = (IProdDefProperty)it.next();
+    private void checkForMissingPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap,
+            ProdDefPropertyType propertyType) {
+        for (Iterator<IProdDefProperty> it = propertiesMap.values().iterator(); it.hasNext();) {
+            IProdDefProperty property = it.next();
             if (generation.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
@@ -102,11 +103,11 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
     }
 
-    private void checkForInconsistentPropertyValues(LinkedHashMap propertiesMap, ProdDefPropertyType propertyType)
-            throws CoreException {
+    private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap,
+            ProdDefPropertyType propertyType) throws CoreException {
         IPropertyValue[] values = generation.getPropertyValues(propertyType);
         for (int i = 0; i < values.length; i++) {
-            IProdDefProperty property = (IProdDefProperty)propertiesMap.get(values[i].getPropertyName());
+            IProdDefProperty property = propertiesMap.get(values[i].getPropertyName());
             if (property == null) {
                 // the map contains only properties for the current property type
                 // so we have to search if the property exists with a different type.
@@ -168,37 +169,35 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
      * {@inheritDoc}
      */
     public IDeltaEntry[] getEntries() {
-        return (IDeltaEntry[])entries.toArray(new IDeltaEntry[entries.size()]);
+        return entries.toArray(new IDeltaEntry[entries.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public IDeltaEntry[] getEntries(DeltaType type) {
-        List result = new ArrayList(entries.size());
-        for (Iterator it = entries.iterator(); it.hasNext();) {
-            IDeltaEntry entry = (IDeltaEntry)it.next();
+        List<IDeltaEntry> result = new ArrayList<IDeltaEntry>(entries.size());
+        for (IDeltaEntry entry : entries) {
             if (entry.getDeltaType().equals(type)) {
                 result.add(entry);
             }
         }
-        return (IDeltaEntry[])result.toArray(new IDeltaEntry[result.size()]);
+        return result.toArray(new IDeltaEntry[result.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public void fix() {
-        for (Iterator it = entries.iterator(); it.hasNext();) {
-            IDeltaEntry entry = (IDeltaEntry)it.next();
+        for (IDeltaEntry entry : entries) {
             entry.fix();
         }
     }
 
     class HierarchyVisitor extends ProductCmptTypeHierarchyVisitor {
 
-        List tableStructureUsages = new ArrayList();
-        List attributes = new ArrayList();
+        List<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
+        List<IProductCmptTypeAttribute> attributes = new ArrayList<IProductCmptTypeAttribute>();
 
         public HierarchyVisitor(IIpsProject ipsProject) {
             super(ipsProject);
@@ -219,8 +218,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
 
         boolean containsTableStructureUsage(String rolename) {
-            for (Iterator it = tableStructureUsages.iterator(); it.hasNext();) {
-                ITableStructureUsage tsu = (ITableStructureUsage)it.next();
+            for (ITableStructureUsage tsu : tableStructureUsages) {
                 if (tsu.getRoleName().equals(rolename)) {
                     return true;
                 }
@@ -229,8 +227,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
 
         boolean containsAttribute(String name) {
-            for (Iterator it = attributes.iterator(); it.hasNext();) {
-                IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)it.next();
+            for (IProductCmptTypeAttribute attribute : attributes) {
                 if (attribute.getName().equals(name)) {
                     return true;
                 }

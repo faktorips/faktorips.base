@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,49 +27,54 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnecto
 public class Log4jLoggingFrameworkConnectorTest extends TestCase {
 
     private Log4jLoggingFrameworkConnector connector;
-    private List usedClasses;
+    private List<String> usedClasses;
     private Logger LOGGER;
-    
-    public void setUp(){
+
+    @Override
+    public void setUp() {
         LOGGER = Logger.getLogger(Log4jLoggingFrameworkConnector.class);
         LOGGER.setLevel(Level.DEBUG);
         ConsoleAppender appender = new ConsoleAppender(new SimpleLayout());
         appender.setName("Log4jLoggingFrameworkConnectorTest Appender."); //$NON-NLS-1$
         LOGGER.addAppender(appender);
-        usedClasses = new ArrayList();
+        usedClasses = new ArrayList<String>();
         connector = new Log4jLoggingFrameworkConnector();
-        
+
     }
+
     public final void testGetLogConditionExp() {
-         String exp = connector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, "LOGGER", usedClasses); //$NON-NLS-1$
-         LOGGER.isDebugEnabled();
-         assertEquals("LOGGER.isDebugEnabled()", exp); //$NON-NLS-1$
-         assertEquals(0, usedClasses.size());
-         
-         connector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR, "LOGGER", usedClasses); //$NON-NLS-1$
-         assertEquals(1, usedClasses.size());
+        String exp = connector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, "LOGGER", usedClasses); //$NON-NLS-1$
+        LOGGER.isDebugEnabled();
+        assertEquals("LOGGER.isDebugEnabled()", exp); //$NON-NLS-1$
+        assertEquals(0, usedClasses.size());
+
+        connector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR, "LOGGER", usedClasses); //$NON-NLS-1$
+        assertEquals(1, usedClasses.size());
     }
 
     public final void testGetLogStmtForMessage() {
-        String exp = connector.getLogStmtForMessage(IIpsLoggingFrameworkConnector.LEVEL_ERROR,  "This is a message.", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$
+        String exp = connector.getLogStmtForMessage(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
+                "This is a message.", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$
         LOGGER.error("This is a message."); //$NON-NLS-1$
         assertEquals("LOGGER.error(\"This is a message.\")", exp); //$NON-NLS-1$
         assertEquals(0, usedClasses.size());
     }
 
-    private String getMessage(){
+    private String getMessage() {
         return "This is a logging message."; //$NON-NLS-1$
     }
-    
+
     public final void testGetLogStmtForMessageExp() {
-        String exp = connector.getLogStmtForMessageExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR,  "getMessage()", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$
+        String exp = connector.getLogStmtForMessageExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
+                "getMessage()", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$
         LOGGER.error(getMessage());
         assertEquals("LOGGER.error(getMessage())", exp); //$NON-NLS-1$
         assertEquals(0, usedClasses.size());
     }
 
     public final void testGetLogStmtForThrowable() {
-        String exp = connector.getLogStmtForThrowable(IIpsLoggingFrameworkConnector.LEVEL_ERROR,  "getMessage()", "exception", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String exp = connector.getLogStmtForThrowable(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
+                "getMessage()", "exception", "LOGGER", usedClasses); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         Exception exception = null;
         LOGGER.error(getMessage(), exception);
         assertEquals("LOGGER.error(getMessage(), exception)", exp); //$NON-NLS-1$
