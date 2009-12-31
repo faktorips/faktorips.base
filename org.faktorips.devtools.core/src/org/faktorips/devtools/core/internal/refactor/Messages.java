@@ -46,5 +46,6 @@ public class Messages extends NLS {
     public static String MoveOperation_msgUnsupportedObject;
     public static String MoveOperation_tableContentIsMissing;
     public static String MoveOperation_testCaseIsMissing;
+    public static String MoveOperation_typeIsMissing;
 
 }

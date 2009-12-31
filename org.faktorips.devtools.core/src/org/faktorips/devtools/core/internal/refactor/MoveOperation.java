@@ -24,12 +24,17 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
@@ -55,6 +60,9 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -193,7 +201,7 @@ public class MoveOperation implements IRunnableWithProgress {
         return newRuntimeIds.get(index);
     }
 
-    /*
+    /**
      * Creates the new qualified names for the moved objects.
      * 
      * @param sources The objects to move
@@ -204,7 +212,7 @@ public class MoveOperation implements IRunnableWithProgress {
         return getTargetNames(sources, target.getName(), target.getEnclosingResource().getLocation().toOSString());
     }
 
-    /*
+    /**
      * Creates the new qualified names for the moved objects or in case of none ips elements the
      * target folder.
      * 
@@ -270,7 +278,7 @@ public class MoveOperation implements IRunnableWithProgress {
         return canMoveToTarget(target) && canMoveSources(sources) && canMovePackages(sources, target);
     }
 
-    /*
+    /**
      * Returns true if the given IIpsElement array contains at least one IIpsProject, false
      * otherwise.
      */
@@ -330,9 +338,6 @@ public class MoveOperation implements IRunnableWithProgress {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         Runnable run = new Runnable() {
             public void run() {
@@ -363,6 +368,8 @@ public class MoveOperation implements IRunnableWithProgress {
                             moveTestCase((ITestCase)toMove, targetNames[i], currMonitor);
                         } else if (toMove instanceof IFile) {
                             moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i]);
+                        } else if (toMove instanceof IType) {
+                            moveType((IType)sourceObjects[i], targetNames[i], currMonitor);
                         } else if (toMove instanceof File) {
                             moveNoneIpsElement((File)sourceObjects[i], targetNames[i]);
                         }
@@ -375,6 +382,17 @@ public class MoveOperation implements IRunnableWithProgress {
         };
 
         BusyIndicator.showWhile(getDisplay(), run);
+    }
+
+    private void moveType(IType type, String targetName, IProgressMonitor pm) throws CoreException {
+        ProcessorBasedRefactoring moveRefactoring = type.getMoveRefactoring();
+        IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
+        IIpsPackageFragment targetIpsPackageFragment = targetRoot.getIpsPackageFragment(QNameUtil
+                .getPackageName(targetName));
+        moveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
+        IWorkspaceRunnable op = new PerformRefactoringOperation(moveRefactoring,
+                CheckConditionsOperation.ALL_CONDITIONS);
+        ResourcesPlugin.getWorkspace().run(op, pm);
     }
 
     private void moveNoneIpsElement(File file, String targetName) {
@@ -428,6 +446,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private void movePackageFragement(IIpsPackageFragment pack, String newName, IProgressMonitor monitor)
             throws CoreException {
+
         IIpsPackageFragmentRoot currTargetRoot = targetRoot;
         if (currTargetRoot == null) {
             currTargetRoot = pack.getRoot();
@@ -466,8 +485,7 @@ public class MoveOperation implements IRunnableWithProgress {
                     move(testCase, file, monitor);
                 } else {
                     // programming error, this is an unsupported type which should be moved, but
-                    // this type
-                    // wasn't checked in the prepare check of the move operation!
+                    // this type wasn't checked in the prepare check of the move operation!
                     throw new CoreException(new IpsStatus(NLS.bind(Messages.MoveOperation_msgUnsupportedType, cmptFile
                             .getName())));
                 }
@@ -494,6 +512,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor)
             throws CoreException {
+
         IIpsSrcFile file = createTarget(cmpt, newName);
         move(cmpt, file, newRuntimeId, monitor);
     }
@@ -813,7 +832,7 @@ public class MoveOperation implements IRunnableWithProgress {
         }
     }
 
-    /*
+    /**
      * Check all sources to exist and to be saved. If not so, a CoreException will be thrown.
      */
     private void checkSources(Object[] source) throws CoreException {
@@ -836,7 +855,8 @@ public class MoveOperation implements IRunnableWithProgress {
                 toTest = (IIpsElement)source[i];
             }
 
-            if (toTest instanceof IProductCmpt || toTest instanceof ITableContents || toTest instanceof ITestCase) {
+            if (toTest instanceof IProductCmpt || toTest instanceof ITableContents || toTest instanceof ITestCase
+                    || toTest instanceof IType) {
                 IIpsObject ipsObject = (IIpsObject)toTest;
                 if (!ipsObject.getIpsSrcFile().exists()) {
                     String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(ipsObject));
@@ -881,6 +901,12 @@ public class MoveOperation implements IRunnableWithProgress {
                     String msg = NLS.bind(Messages.MoveOperation_testCaseIsMissing, testCase.getName());
                     return new IpsStatus(msg);
                 }
+            } else if (toTest instanceof IType) {
+                IType type = (IType)toTest;
+                if (!type.exists()) {
+                    String msg = NLS.bind(Messages.MoveOperation_typeIsMissing, type.getName());
+                    return new IpsStatus(msg);
+                }
             } else if (source[i] instanceof IFile) {
                 if (!((IFile)source[i]).exists()) {
                     String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, ((IFile)source[i])
@@ -893,10 +919,9 @@ public class MoveOperation implements IRunnableWithProgress {
                     return new IpsStatus(msg);
                 }
             } else {
-                // localisation of the following messages is necessary because
-                // the exception is expected to be
-                // caught later and the messages are expected to be displayed
-                // to the user.
+                // Localization of the following messages is necessary because the exception is
+                // expected to be caught later and the messages are expected to be displayed to the
+                // user.
                 String msg = null;
                 if (toTest instanceof IIpsObject) {
                     msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, ((IIpsObject)toTest).getIpsObjectType()
@@ -978,4 +1003,5 @@ public class MoveOperation implements IRunnableWithProgress {
     private Display getDisplay() {
         return Display.getCurrent();
     }
+
 }

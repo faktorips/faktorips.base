@@ -36,42 +36,44 @@ import org.faktorips.devtools.core.model.IIpsElement;
 public abstract class IpsElementDropListener implements DropTargetListener {
 
     /**
-     * Empty default implementation.
-     * 
      * {@inheritDoc}
+     * <p>
+     * Empty default implementation.
      */
     public void dragLeave(DropTargetEvent event) {
-        // nothing done as default
+        // Nothing done as default.
     }
 
     /**
-     * Empty default implementation.
-     * 
      * {@inheritDoc}
+     * <p>
+     * Empty default implementation.
      */
     public void dragOperationChanged(DropTargetEvent event) {
-        // nothing done as default
+        // Nothing done as default.
     }
 
     /**
-     * Empty default implementation.
-     * 
      * {@inheritDoc}
+     * <p>
+     * Empty default implementation.
      */
     public void dragOver(DropTargetEvent event) {
-        // nothing done as default
+        // Nothing done as default.
     }
 
     /**
-     * Returns all <code>IIpsElement</code>s transferred as files by the given transferData object
-     * as array. Note for Linux: If this method is called during drag action (e.g. called by
-     * dropAccept method) the transferData is not set correctly and this method returns null. If you
-     * want to check files during drag action you have to use the method
+     * Returns all <tt>IIpsElement</tt>s transferred as files by the given <tt>TransferData</tt> as
+     * array.
+     * <p>
+     * Note for Linux: If this method is called during drag action (e.g. called by dropAccept
+     * method) the <tt>transferData</tt> is not set correctly and this method returns <tt>null</tt>.
+     * If you want to check files during drag action you have to use the method
      * {@link ByteArrayTransfer#isSupportedType(TransferData)}
      * 
      */
     protected Object[] getTransferedElements(TransferData transferData) {
-        String[] filenames = (String[])getTrasfer().nativeToJava(transferData);
+        String[] filenames = (String[])getTransfer().nativeToJava(transferData);
         if (filenames == null) {
             return null;
         }
@@ -83,7 +85,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
             if (file != null) {
                 // getFileForLocation returns a file even if the path points to a folder.
-                // In this case file.exists() returns false.s
+                // In this case file.exists() returns false.
                 if (file.exists()) {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
                     if (element != null && element.exists()) {
@@ -109,7 +111,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
         return elements.toArray(new Object[elements.size()]);
     }
 
-    protected FileTransfer getTrasfer() {
+    protected FileTransfer getTransfer() {
         return FileTransfer.getInstance();
     }
 

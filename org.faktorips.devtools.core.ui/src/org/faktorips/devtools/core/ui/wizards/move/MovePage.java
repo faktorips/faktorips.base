@@ -111,8 +111,8 @@ public class MovePage extends WizardPage implements ModifyListener {
     }
 
     /**
-     * Set the current completion state (and, if neccessary, messages for the user to help him to
-     * get the page complete).
+     * Set the current completion state (and, if necessary, messages for the user to help him to get
+     * the page complete).
      */
     private void setPageComplete() {
         setMessage(null);

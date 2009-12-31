@@ -36,32 +36,17 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
 
-    private class ModifyOperation extends WorkspaceModifyOperation {
-        private MoveOperation move;
-
-        public ModifyOperation(MoveOperation toExecute) {
-            super();
-            move = toExecute;
-        }
-
-        @Override
-        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                InterruptedException {
-            move.run(monitor);
-        }
-    }
-
     public ModelExplorerDropListener() {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void dragEnter(DropTargetEvent event) {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Denies drop operation if one of the following rules apply:
      * <ul>
      * <li>A source (object to be moved) is an <code>IIpsProject</code></li>
@@ -69,7 +54,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
      * <code>IResource</code></li>
      * <li>The target is at the same time a source.</li>
      * </ul>
-     * Allows drop otherwise. {@inheritDoc}
+     * Allows drop otherwise.
      */
     @Override
     public void dragOver(DropTargetEvent event) {
@@ -79,7 +64,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
         Object target = event.item.getData();
         Object[] sources = getTransferedElements(event.currentDataType);
-        // in linux sources is null while drag action
+        // In Linux sources is null while drag action.
         if (sources == null || MoveOperation.canMove(sources, target)) {
             event.detail = DND.DROP_MOVE;
         } else {
@@ -88,9 +73,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void drop(DropTargetEvent event) {
         if (!FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
             return;
@@ -111,8 +93,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
 
             ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
+            // Run the operation with fork = true to ensure UI responsiveness.
             dialog.run(true, false, new ModifyOperation(moveOp));
-            // run the operation with fork=true to ensure UI responsiveness
         } catch (CoreException e) {
             IStatus status = e.getStatus();
             if (status instanceof IpsStatus) {
@@ -141,10 +123,26 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         return dropTarget;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void dropAccept(DropTargetEvent event) {
-        // nothing to do
+        // Nothing to do.
     }
+
+    private class ModifyOperation extends WorkspaceModifyOperation {
+
+        private MoveOperation move;
+
+        public ModifyOperation(MoveOperation toExecute) {
+            super();
+            move = toExecute;
+        }
+
+        @Override
+        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+                InterruptedException {
+
+            move.run(monitor);
+        }
+
+    }
+
 }

@@ -392,7 +392,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             event.detail = DND.DROP_NONE;
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred == null) {
-                if (super.getTrasfer().isSupportedType(event.currentDataType)) {
+                if (super.getTransfer().isSupportedType(event.currentDataType)) {
                     event.detail = DND.DROP_LINK;
                 }
                 return;
