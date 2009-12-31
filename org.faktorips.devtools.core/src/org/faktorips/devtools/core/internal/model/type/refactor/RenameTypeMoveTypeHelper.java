@@ -227,26 +227,50 @@ public final class RenameTypeMoveTypeHelper {
                 .findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
         for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
+
             for (ITestPolicyCmptTypeParameter testParameter : testCaseType.getTestPolicyCmptTypeParameters()) {
+                updateTestCaseTypeParameter(targetIpsPackageFragment, newName, ipsSrcFile, testParameter);
+                updateTestCaseTypeParameterChildren(testParameter, targetIpsPackageFragment, newName, ipsSrcFile);
+            }
+        }
+    }
 
-                // A subclass of the policy component type to be renamed could also be referenced.
-                IIpsProject ipsProject = testParameter.getIpsProject();
-                IPolicyCmptType referencedPolicyCmptType = testParameter.findPolicyCmptType(ipsProject);
-                if (referencedPolicyCmptType.isSubtypeOrSameType(type, ipsProject)) {
+    /** Goes recursively over all child <tt>ITestPolicyCmptTypeParameter</tt>s. */
+    private void updateTestCaseTypeParameterChildren(ITestPolicyCmptTypeParameter testParameter,
+            IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
+            IIpsSrcFile ipsSrcFile) throws CoreException {
 
-                    // Update the parameter's policy component type reference if it is not a
-                    // subclass that is referenced.
-                    if (testParameter.getPolicyCmptType().equals(getOriginalQualifiedName())) {
-                        testParameter.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-                        refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
-                    }
+        for (ITestPolicyCmptTypeParameter child : testParameter.getTestPolicyCmptTypeParamChilds()) {
+            if (child.hasChildren()) {
+                updateTestCaseTypeParameterChildren(child, targetIpsPackageFragment, newName, ipsSrcFile);
+            }
+            updateTestCaseTypeParameter(targetIpsPackageFragment, newName, ipsSrcFile, child);
+        }
+    }
 
-                    // Update the test attributes where necessary.
-                    for (ITestAttribute testAttribute : testParameter.getTestAttributes()) {
-                        if (testAttribute.getPolicyCmptType().equals(getOriginalQualifiedName())) {
-                            testAttribute.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-                        }
-                    }
+    /** Updates all references in the provided <tt>ITestPolicyCmptTypeParameter</tt>. */
+    private void updateTestCaseTypeParameter(IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
+            IIpsSrcFile ipsSrcFile,
+            ITestPolicyCmptTypeParameter testParameter) throws CoreException {
+
+        // A subclass of the policy component type to be renamed could also be referenced.
+        IIpsProject ipsProject = testParameter.getIpsProject();
+        IPolicyCmptType referencedPolicyCmptType = testParameter.findPolicyCmptType(ipsProject);
+        if (referencedPolicyCmptType.isSubtypeOrSameType(type, ipsProject)) {
+
+            // Update the parameter's policy component type reference if it is not a
+            // subclass that is referenced.
+            if (testParameter.getPolicyCmptType().equals(getOriginalQualifiedName())) {
+                testParameter.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
+                refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
+            }
+
+            // Update the test attributes where necessary.
+            for (ITestAttribute testAttribute : testParameter.getTestAttributes()) {
+                if (testAttribute.getPolicyCmptType().equals(getOriginalQualifiedName())) {
+                    testAttribute.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
                 }
             }
         }

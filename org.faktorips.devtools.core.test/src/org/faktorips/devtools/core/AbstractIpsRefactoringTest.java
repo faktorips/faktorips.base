@@ -59,13 +59,13 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected static final String PACKAGE = "somepackage";
 
-    protected static final String QUALIFIED_POLICY_NAME = PACKAGE + ".Policy";
-
-    protected static final String QUALIFIED_PRODUCT_NAME = PACKAGE + ".Product";
-
     protected static final String POLICY_NAME = "Policy";
 
     protected static final String PRODUCT_NAME = "Product";
+
+    protected static final String QUALIFIED_POLICY_NAME = PACKAGE + "." + POLICY_NAME;
+
+    protected static final String QUALIFIED_PRODUCT_NAME = PACKAGE + "." + PRODUCT_NAME;
 
     protected IIpsProject ipsProject;
 
@@ -84,6 +84,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected ITestCaseType testCaseType;
 
     protected ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
+
+    protected ITestPolicyCmptTypeParameter testParameterChild1;
+
+    protected ITestPolicyCmptTypeParameter testParameterChild2;
+
+    protected ITestPolicyCmptTypeParameter testParameterChild3;
 
     protected ITestAttribute testAttribute;
 
@@ -146,6 +152,14 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
         testAttribute.setPolicyCmptType(QUALIFIED_POLICY_NAME);
+
+        // Create some child test parameters.
+        testParameterChild1 = testPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
+        testParameterChild1.setPolicyCmptType(QUALIFIED_POLICY_NAME);
+        testParameterChild2 = testParameterChild1.newTestPolicyCmptTypeParamChild();
+        testParameterChild2.setPolicyCmptType(QUALIFIED_POLICY_NAME);
+        testParameterChild3 = testParameterChild2.newTestPolicyCmptTypeParamChild();
+        testParameterChild3.setPolicyCmptType(QUALIFIED_POLICY_NAME);
     }
 
     /**

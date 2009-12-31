@@ -94,6 +94,9 @@ public class MoveTypeProcessorTest extends RenameTypeMoveTypeTest {
         // Check for test parameter and test attribute update.
         assertEquals(movedQualifiedName, testPolicyCmptTypeParameter.getPolicyCmptType());
         assertEquals(movedQualifiedName, testAttribute.getPolicyCmptType());
+        assertEquals(movedQualifiedName, testParameterChild1.getPolicyCmptType());
+        assertEquals(movedQualifiedName, testParameterChild2.getPolicyCmptType());
+        assertEquals(movedQualifiedName, testParameterChild3.getPolicyCmptType());
 
         // Check for method parameter update.
         assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());

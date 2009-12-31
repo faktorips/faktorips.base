@@ -75,6 +75,7 @@ public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
     public void testRenamePolicyCmptType() throws CoreException {
         String newElementName = "NewPolicy";
         performRenameRefactoring(policyCmptType, newElementName);
+        String qualifiedNewName = PACKAGE + "." + newElementName;
 
         // Find the new policy component type.
         IIpsSrcFile ipsSrcFile = policyCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
@@ -84,19 +85,22 @@ public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
         assertEquals(newElementName, newPolicyCmptType.getName());
 
         // Check for product component type configuration update.
-        assertEquals(PACKAGE + "." + newElementName, productCmptType.getPolicyCmptType());
+        assertEquals(qualifiedNewName, productCmptType.getPolicyCmptType());
 
         // Check for test parameter and test attribute update.
-        assertEquals(PACKAGE + "." + newElementName, testPolicyCmptTypeParameter.getPolicyCmptType());
-        assertEquals(PACKAGE + "." + newElementName, testAttribute.getPolicyCmptType());
+        assertEquals(qualifiedNewName, testPolicyCmptTypeParameter.getPolicyCmptType());
+        assertEquals(qualifiedNewName, testAttribute.getPolicyCmptType());
+        assertEquals(qualifiedNewName, testParameterChild1.getPolicyCmptType());
+        assertEquals(qualifiedNewName, testParameterChild2.getPolicyCmptType());
+        assertEquals(qualifiedNewName, testParameterChild3.getPolicyCmptType());
 
         // Check for method parameter update.
         assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
-        assertEquals(PACKAGE + "." + newElementName, policyMethod.getParameters()[1].getDatatype());
-        assertEquals(PACKAGE + "." + newElementName, productMethod.getParameters()[2].getDatatype());
+        assertEquals(qualifiedNewName, policyMethod.getParameters()[1].getDatatype());
+        assertEquals(qualifiedNewName, productMethod.getParameters()[2].getDatatype());
 
         // Check for association update.
-        assertEquals(PACKAGE + "." + newElementName, otherPolicyToPolicyAssociation.getTarget());
+        assertEquals(qualifiedNewName, otherPolicyToPolicyAssociation.getTarget());
     }
 
     public void testRenameSuperPolicyCmptType() throws CoreException {
@@ -113,6 +117,7 @@ public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
     public void testRenameProductCmptType() throws CoreException {
         String newElementName = "NewProduct";
         performRenameRefactoring(productCmptType, newElementName);
+        String qualifiedNewName = PACKAGE + "." + newElementName;
 
         // Find the new product component type.
         IIpsSrcFile ipsSrcFile = productCmptType.getIpsPackageFragment().getIpsSrcFile(newElementName,
@@ -122,18 +127,18 @@ public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
         assertEquals(newElementName, newProductCmptType.getName());
 
         // Check for policy component type configuration update.
-        assertEquals(PACKAGE + "." + newElementName, policyCmptType.getProductCmptType());
+        assertEquals(qualifiedNewName, policyCmptType.getProductCmptType());
 
         // Check for product component reference update.
-        assertEquals(PACKAGE + "." + newElementName, productCmpt.getProductCmptType());
+        assertEquals(qualifiedNewName, productCmpt.getProductCmptType());
 
         // Check for method parameter update.
         assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
-        assertEquals(PACKAGE + "." + newElementName, productMethod.getParameters()[1].getDatatype());
-        assertEquals(PACKAGE + "." + newElementName, policyMethod.getParameters()[2].getDatatype());
+        assertEquals(qualifiedNewName, productMethod.getParameters()[1].getDatatype());
+        assertEquals(qualifiedNewName, policyMethod.getParameters()[2].getDatatype());
 
         // Check for association update.
-        assertEquals(PACKAGE + "." + newElementName, otherProductToProductAssociation.getTarget());
+        assertEquals(qualifiedNewName, otherProductToProductAssociation.getTarget());
     }
 
     public void testRenameSuperProductCmptType() throws CoreException {
