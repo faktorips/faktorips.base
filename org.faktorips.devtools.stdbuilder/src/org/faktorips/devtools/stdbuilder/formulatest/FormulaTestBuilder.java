@@ -85,7 +85,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private IProductCmpt productCmpt;
     private IProductCmptType productCmptType;
 
-    private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+    private IProductCmptNamingStrategy productCmptNamingStrategy;
 
     // wired builder
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
@@ -98,6 +98,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     public FormulaTestBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
+        project = builderSet.getIpsProject();
+        productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+        productCmptNamingStrategy.setIpsProject(project);
     }
 
     /**
@@ -137,7 +140,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         if (!productCmpt.containsFormulaTest()) {
             return false;
         }
-        project = productCmpt.getIpsProject();
         productCmptType = productCmpt.findProductCmptType(project);
         if (productCmptType == null) {
             return false;
