@@ -92,7 +92,7 @@ public interface IIpsElement extends IAdaptable {
     /** Returns <tt>true</tt> if this element is contained in an archive, <tt>false</tt> otherwise. */
     public boolean isContainedInArchive();
 
-    // TODO AW: Directly offer rename(...) and move(...) instead of the following getters?
+    // TODO AW: Directly offer rename(...) and move(...) ?
 
     /**
      * The returned <tt>ProcessorBasedRefactoring</tt> can be used to safely rename this
