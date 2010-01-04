@@ -178,7 +178,10 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         rows.clear();
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IRow.class)) {
             return newRowInternal(getNextPartId());
         }
@@ -186,6 +189,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void clear() {
         rows.clear();
         clearUniqueKeyValidator();
@@ -196,6 +202,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         return (ITableContents)parent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -208,6 +217,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IRow insertRowAfter(int rowIndex) {
         int newRowIndex = (rowIndex + 1) > getNumOfRows() ? getNumOfRows() : rowIndex + 1;
         Row newRow = new Row(this, getNextPartId());
@@ -229,6 +241,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);

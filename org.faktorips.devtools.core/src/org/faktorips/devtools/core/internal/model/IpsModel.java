@@ -128,30 +128,32 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
     // set of model change listeners that are notified about model changes
-    private Set changeListeners = new HashSet(100);
+    private Set<ContentsChangeListener> changeListeners = new HashSet<ContentsChangeListener>(100);
 
     // set of modification status change listeners
-    private Set modificationStatusChangeListeners = new HashSet(100);
+    private Set<IModificationStatusChangeListener> modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(
+            100);
 
     // a map that contains per thread if changes should be broadcasted to the registered listeners
     // or squeezed.
-    private Map listenerNoticicationLevelMap = new HashMap();
+    private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<Thread, Integer>();
 
     /*
      * A map containing the dataypes (value) by id (key).
      */
-    private Map datatypes = null; // lazy load
+    private Map<String, Datatype> datatypes = null; // lazy load
 
     /*
      * A map containing a code generation helper (value) per datatype (key)
      */
-    private Map datatypeHelpersMap = null;
+    private Map<Datatype, DatatypeHelper> datatypeHelpersMap = null;
 
     /*
      * A map containing the data for each ips project. The name of the project is used as the key
      * and the value is an instance of IpsProjectData.
      */
-    private Map projectPropertiesMap = Collections.synchronizedMap(new HashMap());
+    private Map<String, IpsProjectProperties> projectPropertiesMap = Collections
+            .synchronizedMap(new HashMap<String, IpsProjectProperties>());
 
     // a map containing a set of datatypes per ips project. The map's key is the
     // project name.
@@ -164,24 +166,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = Collections
             .synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
 
-    private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
+    private Map<IIpsProject, IIpsArtefactBuilderSet> projectToBuilderSetMap = Collections
+            .synchronizedMap(new HashMap<IIpsProject, IIpsArtefactBuilderSet>());
 
-    private List<IpsArtefactBuilderSetInfo> builderSetInfoList = null;
+    private List<IIpsArtefactBuilderSetInfo> builderSetInfoList = null;
 
-    // extension properties (as list) per ips object (or part) type, e.g.
-    // IAttribute.
-    private Map typeExtensionPropertiesMap = null; // null as long as they
+    // extension properties (as list) per ips object (or part) type, e.g. IAttribute.
+    private Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap = null;
 
     // map containing all changes in time naming conventions by id.
-    private Map changesOverTimeNamingConventionMap = null;
+    private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
-    private Map dependencyGraphForProjectsMap = new HashMap();
+    private Map<IIpsProject, DependencyGraph> dependencyGraphForProjectsMap = new HashMap<IIpsProject, DependencyGraph>();
 
     // map containing ClassLoaderProviders per IpsProject
-    private Map classLoaderProviderMap = new HashMap();
+    private Map<IIpsProject, ClassLoaderProvider> classLoaderProviderMap = new HashMap<IIpsProject, ClassLoaderProvider>();
 
     // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
-    private HashMap ipsObjectsMap = new HashMap(1000);
+    private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<IIpsSrcFile, IpsSrcFileContent>(1000);
 
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
@@ -189,9 +191,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private IpsObjectType[] ipsObjectTypes;
 
     // cache sort order
-    private Map sortOrderCache = new HashMap();
+    private Map<IIpsPackageFragment, IIpsPackageFragmentSortDefinition> sortOrderCache = new HashMap<IIpsPackageFragment, IIpsPackageFragmentSortDefinition>();
 
-    private Map lastIpSortOrderModifications = new HashMap();
+    private Map<IIpsPackageFragmentSortDefinition, Long> lastIpSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
 
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
@@ -293,8 +295,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             getWorkspace().run(action, rule, flags, monitor);
             return;
         }
-        List listeners = new ArrayList(changeListeners);
-        final Set changedSrcFiles = new LinkedHashSet();
+        List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
+        final Set<IIpsSrcFile> changedSrcFiles = new LinkedHashSet<IIpsSrcFile>();
         ContentsChangeListener batchListener = new ContentsChangeListener() {
 
             public void contentsChanged(ContentChangeEvent event) {
@@ -305,8 +307,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         changeListeners.clear();
         addChangeListener(batchListener);
 
-        HashSet copyOfCurrentModifyListeners = new HashSet(modificationStatusChangeListeners);
-        final Set modifiedSrcFiles = new LinkedHashSet(0);
+        HashSet<IModificationStatusChangeListener> copyOfCurrentModifyListeners = new HashSet<IModificationStatusChangeListener>(
+                modificationStatusChangeListeners);
+        final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<IIpsSrcFile>(0);
         IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener() {
 
             public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
@@ -322,19 +325,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
-            changeListeners = new HashSet(listeners);
+            changeListeners = new HashSet<ContentsChangeListener>(listeners);
 
             // notify about changes
-            for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
-                IIpsSrcFile file = (IIpsSrcFile)it.next();
+            for (Iterator<IIpsSrcFile> it = changedSrcFiles.iterator(); it.hasNext();) {
+                IIpsSrcFile file = it.next();
                 ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
                 notifyChangeListeners(event);
             }
 
             removeModificationStatusChangeListener(batchModifiyListener);
             modificationStatusChangeListeners = copyOfCurrentModifyListeners;
-            for (Iterator it = modifiedSrcFiles.iterator(); it.hasNext();) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
+            for (Iterator<IIpsSrcFile> it = modifiedSrcFiles.iterator(); it.hasNext();) {
+                IIpsSrcFile ipsSrcFile = it.next();
                 ModificationStatusChangedEvent event = new ModificationStatusChangedEvent(ipsSrcFile);
                 notifyModificationStatusChangeListener(event);
             }
@@ -512,7 +515,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * that use these methods without resuming broadcasting to early.
      */
     public void stopBroadcastingChangesMadeByCurrentThread() {
-        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
         if (level == null) {
             level = new Integer(1);
         } else {
@@ -534,7 +537,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * that use these methods without resuming broadcasting to early.
      */
     public void resumeBroadcastingChangesMadeByCurrentThread() {
-        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
         if (level != null && level.intValue() > 0) {
             level = new Integer(level.intValue() - 1);
         }
@@ -550,7 +553,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * object by the current thread.
      */
     public boolean isBroadcastingChangesForCurrentThread() {
-        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
         if (level == null || level.intValue() == 0) {
             return true;
         }
@@ -562,7 +565,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
         }
         if (modificationStatusChangeListeners == null) {
-            modificationStatusChangeListeners = new HashSet(1);
+            modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(1);
         }
         modificationStatusChangeListeners.add(listener);
     }
@@ -588,13 +591,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
             public void run() {
-                List copy = new ArrayList(modificationStatusChangeListeners); // copy do avoid
+                List<IModificationStatusChangeListener> copy = new ArrayList<IModificationStatusChangeListener>(
+                        modificationStatusChangeListeners); // copy do avoid
                 // concurrent
                 // modifications while
                 // iterating
-                for (Iterator it = copy.iterator(); it.hasNext();) {
+                for (Iterator<IModificationStatusChangeListener> it = copy.iterator(); it.hasNext();) {
                     try {
-                        IModificationStatusChangeListener listener = (IModificationStatusChangeListener)it.next();
+                        IModificationStatusChangeListener listener = it.next();
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
                             System.out
                                     .println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
@@ -636,14 +640,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         final Runnable notifier = new Runnable() {
             public void run() {
-                List copy = new ArrayList(changeListeners); // copy do avoid concurrent
+                List<ContentsChangeListener> copy = new ArrayList<ContentsChangeListener>(changeListeners); // copy
+                // do
+                // avoid
+                // concurrent
                 // modifications while iterating
-                for (Iterator it = copy.iterator(); it.hasNext();) {
+                for (Iterator<ContentsChangeListener> it = copy.iterator(); it.hasNext();) {
                     if (!event.getIpsSrcFile().exists()) {
                         break;
                     }
                     try {
-                        ContentsChangeListener listener = (ContentsChangeListener)it.next();
+                        ContentsChangeListener listener = it.next();
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
                             System.out
                                     .println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
@@ -678,7 +685,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException {
-        List result = new ArrayList();
+        List<IIpsPackageFragmentRoot> result = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsProject[] projects = getIpsProjects();
         for (int i = 0; i < projects.length; i++) {
             ((IpsProject)projects[i]).getSourceIpsFragmentRoots(result);
@@ -747,7 +754,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)projectToBuilderSetMap.get(project);
+        IIpsArtefactBuilderSet builderSet = projectToBuilderSetMap.get(project);
         if (builderSet == null) {
             return registerBuilderSet(project);
         }
@@ -812,7 +819,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // the dependencyGraphForProjectsMap
     public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject, this);
-        DependencyGraph graph = (DependencyGraph)dependencyGraphForProjectsMap.get(ipsProject);
+        DependencyGraph graph = dependencyGraphForProjectsMap.get(ipsProject);
         if (graph == null) {
             graph = IpsPlugin.getDefault().getDependencyGraphPersistenceManager().getDependencyGraph(ipsProject);
             if (graph != null) {
@@ -837,8 +844,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * This method is not part of the published interface.
      */
     public DependencyGraph[] getCachedDependencyGraphs() {
-        Collection graphs = dependencyGraphForProjectsMap.values();
-        return (DependencyGraph[])graphs.toArray(new DependencyGraph[graphs.size()]);
+        Collection<DependencyGraph> graphs = dependencyGraphForProjectsMap.values();
+        return graphs.toArray(new DependencyGraph[graphs.size()]);
     }
 
     /**
@@ -847,12 +854,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map map = projectDatatypeHelpersMap.get(ipsProject.getName());
+        Map<ValueDatatype, DatatypeHelper> map = projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
             initDatatypesDefinedInProjectProperties(ipsProject);
             map = projectDatatypeHelpersMap.get(ipsProject.getName());
         }
-        return (DatatypeHelper)map.get(datatype);
+        return map.get(datatype);
     }
 
     /**
@@ -862,7 +869,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
-        IpsProjectProperties data = (IpsProjectProperties)projectPropertiesMap.get(ipsProject.getName());
+        IpsProjectProperties data = projectPropertiesMap.get(ipsProject.getName());
         if (data != null
                 && propertyFile.exists()
                 && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(data
@@ -948,14 +955,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
         for (int i = 0; i < datatypeIds.length; i++) {
-            Datatype datatype = (Datatype)datatypes.get(datatypeIds[i]);
+            Datatype datatype = datatypes.get(datatypeIds[i]);
             if (datatype == null) {
                 continue;
             }
             projectTypes.put(datatypeIds[i], datatype);
             if (datatype.isValueDatatype()) {
                 ValueDatatype valueDatatype = (ValueDatatype)datatype;
-                DatatypeHelper helper = (DatatypeHelper)datatypeHelpersMap.get(valueDatatype);
+                DatatypeHelper helper = datatypeHelpersMap.get(valueDatatype);
                 if (helper != null) {
                     projectHelperMap.put(valueDatatype, helper);
                 }
@@ -1007,28 +1014,22 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * according extension point.
      */
     public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos) {
-        builderSetInfoList = new ArrayList(Arrays.asList(builderSetInfos));
+        builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
     }
 
-    public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type,
+    public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
         if (typeExtensionPropertiesMap == null) {
             initExtensionPropertiesFromConfiguration();
         }
-        Set result = new HashSet();
+        Set<IExtensionPropertyDefinition> result = new HashSet<IExtensionPropertyDefinition>();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
-        IExtensionPropertyDefinition[] properties = (IExtensionPropertyDefinition[])result
-                .toArray(new IExtensionPropertyDefinition[result.size()]);
+        IExtensionPropertyDefinition[] properties = result.toArray(new IExtensionPropertyDefinition[result.size()]);
 
         // Sort extension property definitions by id to avoid random arrangement at return
-        Arrays.sort(properties, new Comparator() {
+        Arrays.sort(properties, new Comparator<IExtensionPropertyDefinition>() {
 
-            public int compare(Object o1, Object o2) {
-                if (!(o1 instanceof IExtensionPropertyDefinition) || !(o2 instanceof IExtensionPropertyDefinition)) {
-                    return 0;
-                }
-                IExtensionPropertyDefinition def1 = (IExtensionPropertyDefinition)o1;
-                IExtensionPropertyDefinition def2 = (IExtensionPropertyDefinition)o2;
+            public int compare(IExtensionPropertyDefinition def1, IExtensionPropertyDefinition def2) {
                 return def1.getPropertyId().compareTo(def2.getPropertyId());
             }
 
@@ -1036,12 +1037,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return properties;
     }
 
-    public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class type,
+    public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
-        Set props = new HashSet();
+        Set<IExtensionPropertyDefinition> props = new HashSet<IExtensionPropertyDefinition>();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, props);
-        for (Iterator it = props.iterator(); it.hasNext();) {
+        for (Iterator<?> it = props.iterator(); it.hasNext();) {
             IExtensionPropertyDefinition prop = (IExtensionPropertyDefinition)it.next();
             if (prop.getPropertyId().equals(propertyId)) {
                 return prop;
@@ -1053,8 +1054,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /*
      * Same as above but with collection parameter result.
      */
-    private void getIpsObjectExtensionProperties(Class type, boolean includeSupertypesAndInterfaces, Set result) {
-        List props = (List)typeExtensionPropertiesMap.get(type);
+    private void getIpsObjectExtensionProperties(Class<?> type,
+            boolean includeSupertypesAndInterfaces,
+            Set<IExtensionPropertyDefinition> result) {
+
+        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(type);
         if (props != null) {
             result.addAll(props);
         }
@@ -1064,14 +1068,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (type.getSuperclass() != null) {
             getIpsObjectExtensionProperties(type.getSuperclass(), true, result);
         }
-        Class[] interfaces = type.getInterfaces();
+        Class<?>[] interfaces = type.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
             getIpsObjectExtensionProperties(interfaces[i], true, result);
         }
     }
 
     private void initExtensionPropertiesFromConfiguration() {
-        typeExtensionPropertiesMap = new HashMap();
+        typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "objectExtensionProperty"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
@@ -1079,9 +1083,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         for (int i = 0; i < extensions.length; i++) {
             IExtensionPropertyDefinition property = createExtensionProperty(extensions[i]);
             if (property != null) {
-                List props = (ArrayList)typeExtensionPropertiesMap.get(property.getExtendedType());
+                List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
                 if (props == null) {
-                    props = new ArrayList();
+                    props = new ArrayList<IExtensionPropertyDefinition>();
                     typeExtensionPropertiesMap.put(property.getExtendedType(), props);
                 }
                 props.add(property);
@@ -1134,9 +1138,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void sortExtensionProperties() {
-        Collection typeLists = typeExtensionPropertiesMap.values();
-        for (Iterator it = typeLists.iterator(); it.hasNext();) {
-            List propList = (List)it.next();
+        Collection<List<IExtensionPropertyDefinition>> typeLists = typeExtensionPropertiesMap.values();
+        for (Iterator<List<IExtensionPropertyDefinition>> it = typeLists.iterator(); it.hasNext();) {
+            List<IExtensionPropertyDefinition> propList = it.next();
             Collections.sort(propList);
         }
     }
@@ -1147,11 +1151,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
         if (typeExtensionPropertiesMap == null) {
-            typeExtensionPropertiesMap = new HashMap();
+            typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
         }
-        List props = (List)typeExtensionPropertiesMap.get(property.getExtendedType());
+        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
         if (props == null) {
-            props = new ArrayList();
+            props = new ArrayList<IExtensionPropertyDefinition>();
             typeExtensionPropertiesMap.put(property.getExtendedType(), props);
         }
         props.add(property);
@@ -1159,8 +1163,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void initDatatypesDefinedViaExtension() {
-        datatypes = new HashMap();
-        datatypeHelpersMap = new HashMap();
+        datatypes = new HashMap<String, Datatype>();
+        datatypeHelpersMap = new HashMap<Datatype, DatatypeHelper>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
@@ -1223,8 +1227,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
         }
-        Collection c = datatypes.values();
-        return (ValueDatatype[])c.toArray(new ValueDatatype[c.size()]);
+        Collection<Datatype> c = datatypes.values();
+        return c.toArray(new ValueDatatype[c.size()]);
     }
 
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
@@ -1243,13 +1247,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id) {
 
         initChangesOverTimeNamingConventionIfNecessary();
-        IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention)changesOverTimeNamingConventionMap
-                .get(id);
+        IChangesOverTimeNamingConvention convention = changesOverTimeNamingConventionMap.get(id);
         if (convention != null) {
             return convention;
         }
-        convention = (IChangesOverTimeNamingConvention)changesOverTimeNamingConventionMap
-                .get(IChangesOverTimeNamingConvention.VAA);
+        convention = changesOverTimeNamingConventionMap.get(IChangesOverTimeNamingConvention.VAA);
         if (convention != null) {
             IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknown changes in time naming convention " + id //$NON-NLS-1$
                     + ". Using default " //$NON-NLS-1$
@@ -1267,15 +1269,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
                 .size()];
         int i = 0;
-        for (Iterator it = changesOverTimeNamingConventionMap.values().iterator(); it.hasNext();) {
-            conventions[i++] = (IChangesOverTimeNamingConvention)it.next();
+        for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
+                .hasNext();) {
+            conventions[i++] = it.next();
         }
         return conventions;
     }
 
     private void initChangesOverTimeNamingConventionIfNecessary() {
         if (changesOverTimeNamingConventionMap == null) {
-            changesOverTimeNamingConventionMap = new HashMap();
+            changesOverTimeNamingConventionMap = new HashMap<String, IChangesOverTimeNamingConvention>();
             IChangesOverTimeNamingConvention fips = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.FAKTOR_IPS);
             changesOverTimeNamingConventionMap.put(fips.getId(), fips);
@@ -1297,7 +1300,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
-        ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
+        ClassLoaderProvider provider = classLoaderProviderMap.get(ipsProject);
         if (provider == null) {
             // create a new classloader provider, make sure that the jars (inside the provided
             // classloader) will be copied, this fixed the problem if the classloader is used
@@ -1351,7 +1354,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return null;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        IpsSrcFileContent content = ipsObjectsMap.get(file);
         long resourceModStamp = enclResource.getModificationStamp();
 
         // new content
@@ -1424,7 +1427,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return false;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        IpsSrcFileContent content = ipsObjectsMap.get(file);
         if (content == null) {
             return true;
         }
@@ -1454,7 +1457,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
-        private Set fileExtensionsOfInterest = new HashSet(20);
+        private Set<String> fileExtensionsOfInterest = new HashSet<String>(20);
 
         public ResourceDeltaVisitor() {
             IpsObjectType[] types = getIpsObjectTypes();
@@ -1526,7 +1529,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private void createIpsArtefactBuilderSetInfosIfNecessary() {
         if (builderSetInfoList == null) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
-            builderSetInfoList = new ArrayList<IpsArtefactBuilderSetInfo>();
+            builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
             IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsPlugin.getDefault().getLog(), builderSetInfoList,
                     this);
         }
@@ -1544,7 +1547,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
         createIpsArtefactBuilderSetInfosIfNecessary();
-        for (Iterator it = builderSetInfoList.iterator(); it.hasNext();) {
+        for (Iterator<?> it = builderSetInfoList.iterator(); it.hasNext();) {
             IIpsArtefactBuilderSetInfo builderSetInfo = (IIpsArtefactBuilderSetInfo)it.next();
             if (builderSetInfo.getBuilderSetId().equals(id)) {
                 return builderSetInfo;
@@ -1614,14 +1617,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
         // SortDefinitions are cached in IpsModel
-        IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
+        IIpsPackageFragmentSortDefinition sortDef = sortOrderCache.get(fragment);
 
         if (sortDef != null) {
             // sortdefinition cached, check modification
             IFile file = fragment.getSortOrderFile();
 
             if (file != null && file.exists()) {
-                Long lastModification = (Long)lastIpSortOrderModifications.get(sortDef);
+                Long lastModification = lastIpSortOrderModifications.get(sortDef);
 
                 if (!lastModification.equals(new Long(file.getModificationStamp()))) {
                     // update current fragment

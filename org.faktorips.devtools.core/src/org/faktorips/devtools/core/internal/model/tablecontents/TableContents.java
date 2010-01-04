@@ -155,7 +155,10 @@ public class TableContents extends TimedIpsObject implements ITableContents {
                 new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 

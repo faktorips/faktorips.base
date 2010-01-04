@@ -216,7 +216,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      */
     public final static void loadExtensions(IExtensionRegistry registry,
             ILog logger,
-            List<IpsArtefactBuilderSetInfo> builderSetInfoList,
+            List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
 
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
