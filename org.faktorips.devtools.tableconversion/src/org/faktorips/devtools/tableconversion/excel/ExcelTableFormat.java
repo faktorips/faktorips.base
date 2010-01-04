@@ -141,7 +141,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
-    public List getImportTablePreview(ITableStructure structure,
+    public List<String[]> getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -149,7 +149,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
-    public List getImportEnumPreview(IEnumType structure,
+    public List<String[]> getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -157,7 +157,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
-    private List getImportPreview(IIpsObject structure,
+    private List<String[]> getImportPreview(IIpsObject structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -169,17 +169,17 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             } else if (structure instanceof IEnumType) {
                 datatypes = getDatatypes((IEnumType)structure);
             } else {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
 
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
-    private List getPreviewInternal(Datatype[] datatypes,
+    private List<String[]> getPreviewInternal(Datatype[] datatypes,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -189,10 +189,10 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
         } catch (Exception e) {
             IpsPlugin.log(e);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
-        List result = new ArrayList();
+        List<String[]> result = new ArrayList<String[]>();
         MessageList ml = new MessageList();
 
         // row 0 is the header if ignoreColumnHeaderRow is true,
