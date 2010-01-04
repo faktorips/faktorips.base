@@ -1,5 +1,5 @@
 package org.faktorips.devtools.htmlexport.generators;
 
 public enum LayouterWrapperType {
-    LISTITEM, TABLEROW, TABLECELL, NONE
+    LISTITEM, TABLEROW, TABLECELL, BLOCK, NONE
 }

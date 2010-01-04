@@ -15,6 +15,10 @@ import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 public class WrapperPageElement extends AbstractCompositePageElement {
     LayouterWrapperType wrapperType;
 
+    public WrapperPageElement(LayouterWrapperType wrapperType) {
+    	this.wrapperType = wrapperType;
+    }
+    
     public WrapperPageElement(LayouterWrapperType wrapperType, PageElement... pageElements) {
         this(wrapperType, null, pageElements);
     }

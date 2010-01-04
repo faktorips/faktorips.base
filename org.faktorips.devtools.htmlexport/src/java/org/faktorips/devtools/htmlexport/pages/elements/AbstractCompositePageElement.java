@@ -29,7 +29,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
 
     public void addPageElements(PageElement... pageElements) {
         for (PageElement pageElement : pageElements) {
-            subElements.add(pageElement);
+            checkPageElementType(pageElement);
+        	subElements.add(pageElement);
         }
     }
 
@@ -39,4 +40,10 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
             subElement.acceptLayouter(layouter);
         }
     }
+    
+    /**
+     * wirft eine ClassCastException, wenn dem Composite ein Element vom falschen Typ uebergeben wird
+     * @param pageElement
+     */
+    protected void checkPageElementType(PageElement pageElement) {}
 }

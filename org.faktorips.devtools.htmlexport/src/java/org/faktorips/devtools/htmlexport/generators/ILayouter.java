@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.generators;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
 
@@ -31,6 +32,12 @@ public interface ILayouter extends IGenerator {
      * @param pageElement
      */
     public void layoutListPageElement(ListPageElement pageElement);
+
+    /**
+     * Layout fuer WrapperElement
+     * @param wrapperPageElement
+     */
+    public void layoutTablePageElement(TablePageElement pageElement);
 
     /**
      * Layout fuer WrapperElement

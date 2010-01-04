@@ -59,11 +59,20 @@ public class HtmlUtil {
     public static String createHtmlElement(String element, String text, String classes) {
         StringBuilder builder = new StringBuilder();
         builder.append(createHtmlElementOpenTag(element, classes));
-        builder.append(text);
+        builder.append(prepareText(text));
         builder.append(createHtmlElementCloseTag(element));
         return builder.toString();
     }
 
+    /**
+     * 
+     * @param text
+     * @return fuer HTML aufbereiteter Text
+     */
+    public static String prepareText(String text) {
+    	return text.replace("\n", "<br/>");
+    }
+    
     public static String createHtmlElementOpenTag(String element, String classes) {
         if (classes == null || classes.trim().equals("")) {
             return createHtmlElementOpenTag(element, new HtmlAttribute[] {});

@@ -5,11 +5,17 @@ import java.util.List;
 import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 
+/**
+ * Test fuer das HTML-Layout
+ * 
+ * <div>Achtung: Für die Generierung der Links sind momentan noch IPS-Objekte notwendig und werden daher im Plugin-Test-Projekt getestet</div>
+ */
 public class HtmlLayouterTest extends AbstractHtmlLayouterTest {
-
     public void testHtmlLayouterRootPageElement() throws Exception {
         RootPageElement pageElement = new RootPageElement();
         pageElement.setTitle("Test");
@@ -88,4 +94,32 @@ public class HtmlLayouterTest extends AbstractHtmlLayouterTest {
         String[] tags = { "<ol>", "<li>", "</li>", "</ol>" };
         assertContains(html, tags);
     }
+    
+    public void testHtmlLayouterTablePageElement() throws Exception {
+    	int rows = 3;
+    	int cols = 4;
+
+    	String[][] texte = new String[rows][cols];
+    	for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				texte[i][j] = i + "-" + j;
+			}
+		}
+    	
+    	TablePageElement table = new TablePageElement();
+
+    	for (String[] zeile : texte) {
+        	table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0])));
+			
+		}
+    	
+        String html = layout(table);
+        for (int i = 0; i < texte.length; i++) {
+            assertContains(html, texte[i]);
+		}
+        
+        String[] tags = { "<table", "<tr>", "<td>", "</td>", "</tr>" , "</table>"};
+        assertContains(html, tags);
+    }
+
 }

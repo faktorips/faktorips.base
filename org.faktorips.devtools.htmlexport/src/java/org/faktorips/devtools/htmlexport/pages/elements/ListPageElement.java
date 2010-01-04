@@ -19,9 +19,6 @@ public class ListPageElement extends AbstractCompositePageElement {
 
     @Override
     public void build() {
-        for (PageElement listElement : subElements) {
-            addPageElements(listElement);
-        }
     }
 
     @Override

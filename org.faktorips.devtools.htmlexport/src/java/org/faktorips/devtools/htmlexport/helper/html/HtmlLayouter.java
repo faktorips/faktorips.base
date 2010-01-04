@@ -1,5 +1,8 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
@@ -8,6 +11,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
@@ -30,7 +34,16 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
         append(HtmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
     }
 
-    public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
+    
+    
+    public void layoutTablePageElement(TablePageElement pageElement) {
+		HtmlAttribute[] attributes = {new HtmlAttribute("border", "1")};
+		append(HtmlUtil.createHtmlElementOpenTag("table", attributes));
+		visitSubElements(pageElement);
+		append(HtmlUtil.createHtmlElementCloseTag("table"));
+	}
+
+	public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
         LayouterWrapperType wrapperType = wrapperPageElement.getWrapperType();
         if (wrapperType == LayouterWrapperType.NONE) {
             visitSubElements(wrapperPageElement);
@@ -49,6 +62,8 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
             return "tr";
         if (wrapper == LayouterWrapperType.TABLECELL)
             return "td";
+        if (wrapper == LayouterWrapperType.BLOCK)
+            return "div";
         return "span";
     }
 
@@ -56,6 +71,12 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
         clean();
         append(HtmlUtil.createHtmlHead(pageElement.getTitle()));
         visitSubElements(pageElement);
+        
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        append(HtmlUtil.createHtmlElement("small", "Created " + sdf.format(new Date())));
+
+        
         append(HtmlUtil.createHtmlFoot());
     }
 
