@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -356,7 +355,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // the name of extension attributes must be a valid java name,
         // because for this type of attributes a constant will be generated
         // inside the test case java class
-        IStatus status = JavaConventions.validateFieldName(name);
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME, NLS.bind(
                     Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name), Message.ERROR, this,
