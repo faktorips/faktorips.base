@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.application;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-
 /**
  * Adapter factory for adapting <code>IResource</code>s to <code>IWorbenchAdapter</code>s.
  * 
@@ -24,15 +23,16 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 class ResourceAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Object o, Class adapterType) {
+        // can suppress the warning as the Eclipse interface defineds the method signature
         if (adapterType.isInstance(o)) {
             return o;
-        }
-        else if (adapterType == IWorkbenchAdapter.class) {
-        	return new IpsWorkbenchAdapter();
+        } else if (adapterType == IWorkbenchAdapter.class) {
+            return new IpsWorkbenchAdapter();
         }
         return null;
     }
@@ -40,7 +40,9 @@ class ResourceAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
-    	return new Class[] { IWorkbenchAdapter.class };
+        // can suppress the warning as the Eclipse interface defineds the method signature
+        return new Class[] { IWorkbenchAdapter.class };
     }
 }

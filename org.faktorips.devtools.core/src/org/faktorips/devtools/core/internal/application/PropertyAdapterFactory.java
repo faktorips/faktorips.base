@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,29 +27,34 @@ import org.eclipse.ui.views.properties.ResourcePropertySource;
  */
 class PropertyAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(Object o, Class adapterType) {
-		if (adapterType.isInstance(o)) {
-			return o;
-		}
-		if (adapterType == IPropertySource.class) {
-			if (o instanceof IResource) {
-				IResource resource = (IResource) o;
-				if (resource.getType() == IResource.FILE)
-					return new FilePropertySource((IFile) o);
-				else
-					return new ResourcePropertySource((IResource) o);
-			}
-		}
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(Object o, Class adapterType) {
+        // can suppress the warning as the Eclipse interface defineds the method signature
+        if (adapterType.isInstance(o)) {
+            return o;
+        }
+        if (adapterType == IPropertySource.class) {
+            if (o instanceof IResource) {
+                IResource resource = (IResource)o;
+                if (resource.getType() == IResource.FILE) {
+                    return new FilePropertySource((IFile)o);
+                } else {
+                    return new ResourcePropertySource((IResource)o);
+                }
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class[] getAdapterList() {
-		return new Class[] { IPropertySource.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        // can suppress the warning as the Eclipse interface defineds the method signature
+        return new Class[] { IPropertySource.class };
+    }
 }
