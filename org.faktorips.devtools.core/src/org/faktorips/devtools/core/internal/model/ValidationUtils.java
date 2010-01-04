@@ -381,6 +381,28 @@ public class ValidationUtils {
         return JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
     }
 
+    /**
+     * Validate the given Java identifier using the source and compliance levels used by the given
+     * IpsProject/JavaProject. The identifier must not have the same spelling as a Java keyword,
+     * boolean literal (<code>"true"</code>, <code>"false"</code>), or null literal (
+     * <code>"null"</code>). See section 3.8 of the
+     * <em>Java Language Specification, Second Edition</em> (JLS2). A valid identifier can act as a
+     * simple type name, method name or field name.
+     * 
+     * @param id the Java identifier
+     * @param ipsProject the project which source and compliance level should be used.
+     * @return a status object with code <code>IStatus.OK</code> if the given identifier is a valid
+     *         Java identifier, otherwise a status object indicating what is wrong with the
+     *         identifier
+     * 
+     * @see JavaConventions#validateIdentifier(String, String, String)
+     */
+    public static IStatus validateJavaIdentifier(String name, IIpsProject ipsProject) {
+        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        return JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
+    }
+
     private ValidationUtils() {
 
     }

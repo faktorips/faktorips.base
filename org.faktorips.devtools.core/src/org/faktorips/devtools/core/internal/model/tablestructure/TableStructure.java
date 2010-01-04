@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -44,10 +43,10 @@ import org.w3c.dom.Element;
 public class TableStructure extends IpsObject implements ITableStructure {
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
-    private List columns = new ArrayList(2);
-    private List ranges = new ArrayList(0);
-    private List uniqueKeys = new ArrayList(1);
-    private List foreignKeys = new ArrayList(0);
+    private List<IColumn> columns = new ArrayList<IColumn>(2);
+    private List<IColumnRange> ranges = new ArrayList<IColumnRange>(0);
+    private List<IUniqueKey> uniqueKeys = new ArrayList<IUniqueKey>(1);
+    private List<IForeignKey> foreignKeys = new ArrayList<IForeignKey>(0);
 
     public TableStructure(IIpsSrcFile file) {
         super(file);
@@ -60,11 +59,14 @@ public class TableStructure extends IpsObject implements ITableStructure {
         super();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IIpsElement[] getChildren() {
         int numOfChildren = getNumOfColumns() + getNumOfRanges() + getNumOfUniqueKeys() + getNumOfForeignKeys();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List childrenList = new ArrayList(numOfChildren);
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(numOfChildren);
         childrenList.addAll(columns);
         childrenList.addAll(ranges);
         childrenList.addAll(uniqueKeys);
@@ -73,10 +75,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return childrenArray;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isMultipleContentsAllowed() {
         return type == TableStructureType.MULTIPLE_CONTENTS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setTableStructureType(TableStructureType type) {
         if (type == null) {
             return;
@@ -87,19 +95,27 @@ public class TableStructure extends IpsObject implements ITableStructure {
         valueChanged(oldType, type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public TableStructureType getTableStructureType() {
         return type;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumn[] getColumns() {
         IColumn[] c = new IColumn[columns.size()];
         columns.toArray(c);
         return c;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumn getColumn(String name) {
-        for (Iterator it = columns.iterator(); it.hasNext();) {
-            IColumn column = (IColumn)it.next();
+        for (IColumn column : columns) {
             if (column.getName().equals(name)) {
                 return column;
             }
@@ -107,22 +123,34 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumn getColumn(int index) {
-        return (IColumn)columns.get(index);
+        return columns.get(index);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfColumns() {
         return columns.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumn newColumn() {
         IColumn newColumn = newColumnInternal(getNextPartId());
         objectHasChanged();
         return newColumn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveColumns(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(columns);
+        ListElementMover<IColumn> mover = new ListElementMover<IColumn>(columns);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -138,6 +166,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
         columns.remove(column);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getColumnIndex(IColumn column) {
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i) == column) {
@@ -147,15 +178,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumnRange[] getRanges() {
         IColumnRange[] c = new IColumnRange[ranges.size()];
         ranges.toArray(c);
         return c;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumnRange getRange(String name) {
-        for (Iterator it = ranges.iterator(); it.hasNext();) {
-            IColumnRange range = (IColumnRange)it.next();
+        for (IColumnRange range : ranges) {
             if (range.getName().equals(name)) {
                 return range;
             }
@@ -163,18 +199,27 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfRanges() {
         return ranges.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumnRange newRange() {
         IColumnRange newRange = newColumnRangeInternal(getNextPartId());
         objectHasChanged();
         return newRange;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveRanges(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(ranges);
+        ListElementMover<IColumnRange> mover = new ListElementMover<IColumnRange>(ranges);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -190,15 +235,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
         ranges.remove(range);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IUniqueKey[] getUniqueKeys() {
         IUniqueKey[] keys = new IUniqueKey[uniqueKeys.size()];
         uniqueKeys.toArray(keys);
         return keys;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IUniqueKey getUniqueKey(String name) {
-        for (Iterator it = uniqueKeys.iterator(); it.hasNext();) {
-            IUniqueKey key = (IUniqueKey)it.next();
+        for (IUniqueKey key : uniqueKeys) {
             if (key.getName().equals(name)) {
                 return key;
             }
@@ -206,18 +256,27 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfUniqueKeys() {
         return uniqueKeys.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IUniqueKey newUniqueKey() {
         IUniqueKey newUniqueKey = newUniqueKeyInternal(getNextPartId());
         objectHasChanged();
         return newUniqueKey;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(uniqueKeys);
+        ListElementMover<IUniqueKey> mover = new ListElementMover<IUniqueKey>(uniqueKeys);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -233,15 +292,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
         uniqueKeys.remove(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IForeignKey[] getForeignKeys() {
         IForeignKey[] keys = new IForeignKey[foreignKeys.size()];
         foreignKeys.toArray(keys);
         return keys;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IForeignKey getForeignKey(String name) {
-        for (Iterator it = foreignKeys.iterator(); it.hasNext();) {
-            IForeignKey key = (IForeignKey)it.next();
+        for (IForeignKey key : foreignKeys) {
             if (key.getName().equals(name)) {
                 return key;
             }
@@ -249,18 +313,27 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfForeignKeys() {
         return foreignKeys.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IForeignKey newForeignKey() {
         IForeignKey newForeignKey = newForeignKeyInternal(getNextPartId());
         objectHasChanged();
         return newForeignKey;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveForeignKeys(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(foreignKeys);
+        ListElementMover<IForeignKey> mover = new ListElementMover<IForeignKey>(foreignKeys);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -276,23 +349,35 @@ public class TableStructure extends IpsObject implements ITableStructure {
         foreignKeys.remove(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_STRUCTURE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasRange(String name) {
         return getRange(name) != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasColumn(String name) {
         return getColumn(name) != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ITableAccessFunction[] getAccessFunctions() {
         if (getUniqueKeys().length == 0) {
             return new ITableAccessFunction[0];
         }
-        List functions = new ArrayList();
+        List<ITableAccessFunction> functions = new ArrayList<ITableAccessFunction>();
         IUniqueKey[] keys = getUniqueKeys();
         // add functions for each key and column which is not in the key
         for (int i = 0; i < keys.length; i++) {
@@ -303,7 +388,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 functions.add(createFunction(j, key, columns[j]));
             }
         }
-        return (ITableAccessFunction[])functions.toArray(new ITableAccessFunction[functions.size()]);
+        return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
     private ITableAccessFunction createFunction(int id, IUniqueKey key, IColumn column) {
@@ -326,9 +411,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return fct;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IColumn[] getColumnsNotInKey(IKey key) {
         ArgumentCheck.notNull(key);
-        List columnsNotInKey = new ArrayList(columns);
+        List<IColumn> columnsNotInKey = new ArrayList<IColumn>(columns);
         IKeyItem[] items = key.getKeyItems();
         for (int i = 0; i < items.length; i++) {
             IColumn[] columnsInItem = items[i].getColumns();
@@ -336,15 +424,21 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 columnsNotInKey.remove(columnsInItem[j]);
             }
         }
-        return (IColumn[])columnsNotInKey.toArray(new IColumn[columnsNotInKey.size()]);
+        return columnsNotInKey.toArray(new IColumn[columnsNotInKey.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TYPE, type.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -372,24 +466,30 @@ public class TableStructure extends IpsObject implements ITableStructure {
         foreignKeys.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
-            columns.add(part);
+            columns.add((IColumn)part);
             return;
         } else if (part instanceof IColumnRange) {
-            ranges.add(part);
+            ranges.add((IColumnRange)part);
             return;
         } else if (part instanceof IUniqueKey) {
-            uniqueKeys.add(part);
+            uniqueKeys.add((IUniqueKey)part);
             return;
         } else if (part instanceof IForeignKey) {
-            foreignKeys.add(part);
+            foreignKeys.add((IForeignKey)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
@@ -408,6 +508,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -424,7 +527,10 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IColumn.class)) {
             return newColumnInternal(getNextPartId());
         } else if (partType.equals(IColumnRange.class)) {
@@ -437,6 +543,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isModelEnumType() {
         return type == TableStructureType.ENUMTYPE_MODEL;
     }
