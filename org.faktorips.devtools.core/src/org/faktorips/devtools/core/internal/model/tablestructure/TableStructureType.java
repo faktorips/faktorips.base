@@ -43,13 +43,6 @@ public class TableStructureType extends DefaultEnumValue {
     @Deprecated
     public static final TableStructureType ENUMTYPE_MODEL;
 
-    /**
-     * EnumType, values are part of the product definition - this table structure represents an
-     * EnumType.
-     */
-    // this value is currently disabled since the builder doesn't support this feature yet. pk
-    // 2007-03-30
-    // public static final TableStructureType ENUMTYPE_PRODUCTDEFINTION;
     private final static DefaultEnumType enumType;
 
     static {

@@ -546,7 +546,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("deprecation")
     public boolean isModelEnumType() {
+        // Ok to use the deprecated constant here as the method itself is deprecated.
         return type == TableStructureType.ENUMTYPE_MODEL;
     }
 
