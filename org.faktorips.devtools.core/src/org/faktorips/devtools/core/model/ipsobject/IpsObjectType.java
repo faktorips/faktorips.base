@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
@@ -101,14 +100,6 @@ public class IpsObjectType {
      */
     public final static IpsObjectType IPS_SOURCE_FILE = new IpsObjectType(
             "Unknown", "Unknown", "Ips Source file", "Ips Source files", "*", false, true, null, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-
-    /**
-     * Contains all ips object types.
-     * 
-     * @deprecated Deprecated since 2.3: Use {@link IpsModel#getIpsObjectTypes()} instead.
-     */
-    @Deprecated
-    public static IpsObjectType[] ALL_TYPES = null;
 
     /**
      * Returns the ips object type that has the given file extension. Returns <code>null</code>, if
