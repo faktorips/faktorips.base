@@ -102,7 +102,7 @@ import org.w3c.dom.Document;
  * 
  * @see IIpsModel
  * 
- * @author unascribed
+ * @author Jan Ortmann
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
 
