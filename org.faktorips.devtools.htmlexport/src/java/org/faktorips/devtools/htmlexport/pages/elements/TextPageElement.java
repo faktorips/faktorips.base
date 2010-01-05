@@ -46,4 +46,8 @@ public class TextPageElement extends AbstractPageElement {
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutTextPageElement(this);
     }
+    
+    public static TextPageElement newBlock(String text) {
+    	return new TextPageElement(text, TextType.BLOCK);
+    }
 }

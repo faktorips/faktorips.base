@@ -45,7 +45,7 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writeClassContentPage(DocumentorConfiguration config, IIpsObject ipsObject) {
-        RootPageElement objectContentPage = AbstractObjectContentPageElement.getInstance(ipsObject);
+        RootPageElement objectContentPage = AbstractObjectContentPageElement.getInstance(ipsObject, config);
         objectContentPage.build();
         FileHandler.writeFile(config, "standard/" + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileTypes.CLASS_CONTENT), getPageContent(config,
                 objectContentPage));
@@ -95,11 +95,14 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
 
     private void writeFileWithOutput(DocumentorConfiguration config, RootPageElement allPackagesPage, String filePath) {
         byte[] pageContent = getPageContent(config, allPackagesPage);
+
+        /*
         System.out.println("=======================================");
         System.out.println(filePath);
         System.out.println();
         System.out.println(new String(pageContent));
-
+		*/
+		
         FileHandler.writeFile(config, filePath, pageContent);
     }
 

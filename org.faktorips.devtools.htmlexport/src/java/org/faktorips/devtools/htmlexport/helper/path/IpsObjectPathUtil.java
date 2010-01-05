@@ -18,7 +18,7 @@ public class IpsObjectPathUtil extends AbstractIpsElementPathUtil<IIpsObject> {
     }
 
     public String getPathToRoot() {
-        return PATH_UP + getPackageFragmentPathToRoot(getIpsPackageFragment());
+        return getPackageFragmentPathToRoot(getIpsPackageFragment());
     }
 
     @Override

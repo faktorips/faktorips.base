@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
@@ -35,6 +36,75 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 				new TextPageElement(text));
 
 		String expected = "<a href=\"../../base/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
+				+ text + "</a>";
+		assertEquals(expected, layout(pageElement));
+	}
+
+	public void testHtmlLayouterLinkPageElementToRoot() throws Exception {
+		String text = "text beispiel";
+
+		PolicyCmptType from = newPolicyCmptType(ipsProject,
+				"kranken.sub.KrankenSubBVB");
+		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
+
+		String target = "classes";
+
+		LinkPageElement pageElement = new LinkPageElement(from, to, target,
+				new TextPageElement(text));
+
+		String expected = "<a href=\"../../class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
+				+ text + "</a>";
+		assertEquals(expected, layout(pageElement));
+	}
+
+	public void testHtmlLayouterLinkPageElementFromRoot() throws Exception {
+		String text = "text beispiel";
+
+		PolicyCmptType from = newPolicyCmptType(ipsProject,
+				"KrankenSubBVB");
+		PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
+
+		String target = "classes";
+
+		LinkPageElement pageElement = new LinkPageElement(from, to, target,
+				new TextPageElement(text));
+
+		String expected = "<a href=\"base/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
+				+ text + "</a>";
+		assertEquals(expected, layout(pageElement));
+	}
+
+	public void testHtmlLayouterLinkPageElementFromRootToRoot() throws Exception {
+		String text = "text beispiel";
+
+		PolicyCmptType from = newPolicyCmptType(ipsProject,
+				"KrankenSubBVB");
+		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
+
+		String target = "classes";
+
+		LinkPageElement pageElement = new LinkPageElement(from, to, target,
+				new TextPageElement(text));
+
+		String expected = "<a href=\"class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
+				+ text + "</a>";
+		assertEquals(expected, layout(pageElement));
+	}
+
+	public void testHtmlLayouterLinkPageElementPackage() throws Exception {
+		String text = "text beispiel";
+
+		
+		IIpsElement from = newPolicyCmptType(ipsProject,
+				"kranken.KrankenSubBVB").getIpsPackageFragment();
+		PolicyCmptType to = newPolicyCmptType(ipsProject, "kranken.sub.BVB");
+
+		String target = "classes";
+
+		LinkPageElement pageElement = new LinkPageElement(from, to, target,
+				new TextPageElement(text));
+
+		String expected = "<a href=\"../kranken/sub/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
 				+ text + "</a>";
 		assertEquals(expected, layout(pageElement));
 	}

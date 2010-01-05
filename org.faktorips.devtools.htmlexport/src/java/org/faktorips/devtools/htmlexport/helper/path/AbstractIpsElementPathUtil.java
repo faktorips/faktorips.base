@@ -19,10 +19,12 @@ abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implements IpsE
     }
 
     protected String getPackageFragmentPathToRoot(IIpsPackageFragment packageFragment) {
-        if (packageFragment.getParentIpsPackageFragment() == null)
+        if (packageFragment.isDefaultPackage())
             return "";
 
         StringBuilder builder = new StringBuilder();
+        
+        builder.append(PATH_UP);
         packageFragment = packageFragment.getParentIpsPackageFragment();
         while (packageFragment.getParentIpsPackageFragment() != null) {
             builder.append(PATH_UP);

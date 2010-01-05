@@ -19,7 +19,7 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
 
     public String getPathToRoot() {
         if (getIpsElement().isDefaultPackage()) return "";
-        return PATH_UP + getPackageFragmentPathToRoot(getIpsElement());
+        return getPackageFragmentPathToRoot(getIpsElement());
     }
 
     @Override
