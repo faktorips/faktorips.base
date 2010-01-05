@@ -231,7 +231,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
         ipsObjectTypes = typesArray;
-        IpsObjectType.ALL_TYPES = typesArray;
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: finished."); //$NON-NLS-1$
         }
