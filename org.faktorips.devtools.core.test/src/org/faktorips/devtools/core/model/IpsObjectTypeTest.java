@@ -13,18 +13,25 @@
 
 package org.faktorips.devtools.core.model;
 
-import junit.framework.TestCase;
-
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class IpsObjectTypeTest extends TestCase {
+public class IpsObjectTypeTest extends AbstractIpsPluginTest {
 
-    public void testNewObject() {
+    public void testNewObject() throws CoreException {
+        IIpsProject ipsProject = newIpsProject();
         IpsObjectType[] types = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
-        assertEquals(types.length, IpsObjectType.ALL_TYPES.length);
         for (int i = 0; i < types.length; i++) {
-            assertNotNull(types[i].newObject(null));
+            IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].createPackageFragment("test", true,
+                    null);
+            // pack.createIpsFile(...) calls newObject() !!!
+            IIpsSrcFile file = pack.createIpsFile(types[i], "TestObject", true, null);
+            assertNotNull(file.getIpsObject());
         }
     }
 
