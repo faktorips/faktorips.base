@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.ui.Messages;
-import org.faktorips.devtools.core.ui.OverrideImageDescriptor;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
@@ -65,7 +65,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
                 IpsPlugin.log(e);
             }
         }
-        return ImageDescriptor.createFromImage(element.getImage());
+        return ImageDescriptor.createFromImage(element.getImageDescriptor());
     }
 
     public Class<? extends IIpsElement> getIpsElementClass() {
@@ -177,12 +177,12 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
             return getOverloadedMethodImage(method);
         }
 
-        return method.getImage();
+        return method.getImageDescriptor();
     }
 
     private static Image getAbstractMethodImage(IMethod method) {
         if (abstractMethodImage == null) {
-            abstractMethodImage = new AbstractPropertyImageDescriptor(method.getImage()).createImage();
+            abstractMethodImage = new AbstractPropertyImageDescriptor(method.getImageDescriptor()).createImage();
         }
 
         return abstractMethodImage;
@@ -190,7 +190,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
     private static Image getOverloadedMethodImage(IMethod method) {
         if (overloadedMethodImage == null) {
-            overloadedMethodImage = new OverrideImageDescriptor(method.getImage()).createImage();
+            overloadedMethodImage = new OverrideImageDescriptor(method.getImageDescriptor()).createImage();
         }
 
         return overloadedMethodImage;
@@ -223,7 +223,7 @@ public class DefaultWorkbenchAdapter extends IpsElementWorkbenchAdapter {
         @Override
         protected void drawCompositeImage(int width, int height) {
             drawImage(baseImage.getImageData(), 0, 0);
-            drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
+            drawImage(IpsPlugin.getDefault().getImage(OverlayIcons.ABSTRACT_OVR).getImageData(), 8, 0);
         }
 
         /**
