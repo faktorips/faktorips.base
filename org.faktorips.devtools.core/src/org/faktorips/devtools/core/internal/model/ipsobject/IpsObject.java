@@ -226,7 +226,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @param property The property which contains the name, the message will be related to this
      *            property.
      */
-    @SuppressWarnings("unchecked")
     protected void validateNamingConventions(MessageList list, String nameToValidate, String property)
             throws CoreException {
 

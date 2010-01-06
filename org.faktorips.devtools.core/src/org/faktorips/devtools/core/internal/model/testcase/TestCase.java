@@ -73,7 +73,7 @@ public class TestCase extends IpsObject implements ITestCase {
     private String testCaseType = ""; //$NON-NLS-1$
 
     /* Children */
-    private List testObjects = new ArrayList();
+    private List<IIpsObjectPart> testObjects = new ArrayList<IIpsObjectPart>();
 
     public TestCase(IIpsSrcFile file) {
         super(file);
@@ -81,12 +81,12 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public IIpsElement[] getChildren() {
-        return (IIpsElement[])testObjects.toArray(new IIpsElement[0]);
+        return testObjects.toArray(new IIpsElement[0]);
     }
 
     @Override
     protected void reinitPartCollections() {
-        testObjects = new ArrayList();
+        testObjects = new ArrayList<IIpsObjectPart>();
     }
 
     @Override
@@ -128,7 +128,7 @@ public class TestCase extends IpsObject implements ITestCase {
         return IpsObjectType.TEST_CASE;
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
@@ -146,7 +146,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public IDependency[] dependsOn() throws CoreException {
-        Set dependencies = new HashSet();
+        Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
             dependencies.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
@@ -157,13 +157,14 @@ public class TestCase extends IpsObject implements ITestCase {
         for (int i = 0; i < testCmpts.length; i++) {
             addQualifiedNameTypesForTestPolicyCmpt(dependencies, testCmpts[i]);
         }
-        return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
+        return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     /**
      * Adds the dependencies to the given list for the given test policy cmpt and their childs
      */
-    private void addQualifiedNameTypesForTestPolicyCmpt(Set dependencies, ITestPolicyCmpt cmpt) throws CoreException {
+    private void addQualifiedNameTypesForTestPolicyCmpt(Set<IpsObjectDependency> dependencies, ITestPolicyCmpt cmpt)
+            throws CoreException {
         if (cmpt == null) {
             return;
         }
@@ -181,12 +182,12 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException {
-        List allPolicyCmpts = new ArrayList();
+        List<ITestPolicyCmpt> allPolicyCmpts = new ArrayList<ITestPolicyCmpt>();
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
         for (int i = 0; i < testCmpts.length; i++) {
             addChildTestPolicyCmpt(allPolicyCmpts, testCmpts[i]);
         }
-        return (ITestPolicyCmpt[])allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
+        return allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
     }
 
     public ITestObject[] getAllTestObjects() throws CoreException {
@@ -205,7 +206,8 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Adds all test policy cmpts and its child test policy cmpts to the given list.
      */
-    private void addChildTestPolicyCmpt(List allPolicyCmpts, ITestPolicyCmpt cmpt) throws CoreException {
+    private void addChildTestPolicyCmpt(List<ITestPolicyCmpt> allPolicyCmpts, ITestPolicyCmpt cmpt)
+            throws CoreException {
         allPolicyCmpts.add(cmpt);
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
         for (int i = 0; i < testLinks.length; i++) {
@@ -217,14 +219,14 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     public String[] getReferencedProductCmpts() throws CoreException {
-        List relatedProductCmpts = new ArrayList();
+        List<String> relatedProductCmpts = new ArrayList<String>();
         ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
         for (int i = 0; i < allTestPolicyCmpt.length; i++) {
             if (StringUtils.isNotEmpty(allTestPolicyCmpt[i].getProductCmpt())) {
                 relatedProductCmpts.add(allTestPolicyCmpt[i].getProductCmpt());
             }
         }
-        return (String[])relatedProductCmpts.toArray(new String[relatedProductCmpts.size()]);
+        return relatedProductCmpts.toArray(new String[relatedProductCmpts.size()]);
     }
 
     public String getTestCaseType() {
@@ -378,7 +380,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     public void sortTestObjects() throws CoreException {
-        List orderedTestObject = getCorrectSortOrderOfRootObjects(getIpsProject());
+        List<IIpsObjectPart> orderedTestObject = getCorrectSortOrderOfRootObjects(getIpsProject());
         if (orderedTestObject != null) {
             testObjects = orderedTestObject;
             objectHasChanged();
@@ -389,10 +391,11 @@ public class TestCase extends IpsObject implements ITestCase {
      * Returns all root objects in the correct sort order compared to the test case type parameters.
      * If the test parameter doesn't exist order the test object to the end of the test object list.
      */
-    private List getCorrectSortOrderOfRootObjects(IIpsProject ipsProject) throws CoreException {
-        List newTestObjectOrder = new ArrayList(testObjects.size());
-        HashMap oldTestObject = new HashMap(testObjects.size());
-        for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
+    private List<IIpsObjectPart> getCorrectSortOrderOfRootObjects(IIpsProject ipsProject) throws CoreException {
+        List<IIpsObjectPart> newTestObjectOrder = new ArrayList<IIpsObjectPart>(testObjects.size());
+        HashMap<ITestParameter, List<ITestObject>> oldTestObject = new HashMap<ITestParameter, List<ITestObject>>(
+                testObjects.size());
+        for (Iterator<IIpsObjectPart> iter = testObjects.iterator(); iter.hasNext();) {
             ITestObject testObject = (ITestObject)iter.next();
             String testParameterName = ""; //$NON-NLS-1$
             ITestParameter testParameter = null;
@@ -413,9 +416,9 @@ public class TestCase extends IpsObject implements ITestCase {
                         testParameterName)));
             }
 
-            List oldObjectsToTestParam = (List)oldTestObject.get(testParameter);
+            List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameter);
             if (oldObjectsToTestParam == null) {
-                oldObjectsToTestParam = new ArrayList(1);
+                oldObjectsToTestParam = new ArrayList<ITestObject>(1);
                 oldObjectsToTestParam.add(testObject);
             } else {
                 oldObjectsToTestParam.add(testObject);
@@ -426,7 +429,7 @@ public class TestCase extends IpsObject implements ITestCase {
         ITestCaseType testCaseType = findTestCaseType(ipsProject);
         ITestParameter[] testParameters = testCaseType.getTestParameters();
         for (int i = 0; i < testParameters.length; i++) {
-            List oldObjectsToTestParam = (List)oldTestObject.get(testParameters[i]);
+            List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameters[i]);
             // add all elements without a test parameter to the end
             if (oldObjectsToTestParam != null) {
                 newTestObjectOrder.addAll(oldObjectsToTestParam);
@@ -458,36 +461,36 @@ public class TestCase extends IpsObject implements ITestCase {
     //
 
     public ITestObject[] getTestObjects() {
-        List foundTestObjects = getTestObjects(null, null, null);
+        List<TestObject> foundTestObjects = getTestObjects(null, null, null);
         if (foundTestObjects.size() == 0) {
             return new ITestObject[0];
         }
 
-        return (ITestObject[])foundTestObjects.toArray(new ITestObject[0]);
+        return foundTestObjects.toArray(new ITestObject[0]);
     }
 
     public ITestPolicyCmpt[] getTestPolicyCmpts() {
-        return (ITestPolicyCmpt[])getTestObjects(null, TestPolicyCmpt.class, null).toArray(new ITestPolicyCmpt[0]);
+        return getTestObjects(null, TestPolicyCmpt.class, null).toArray(new ITestPolicyCmpt[0]);
     }
 
     public ITestValue[] getTestValues() {
-        return (ITestValue[])getTestObjects(null, TestValue.class, null).toArray(new ITestValue[0]);
+        return getTestObjects(null, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
     public ITestRule[] getTestRule(String testRuleParameter) {
-        List testRules = getTestObjects(null, TestRule.class, null);
-        List result = new ArrayList();
-        for (Iterator iter = testRules.iterator(); iter.hasNext();) {
+        List<TestObject> testRules = getTestObjects(null, TestRule.class, null);
+        List<ITestRule> result = new ArrayList<ITestRule>();
+        for (Iterator<TestObject> iter = testRules.iterator(); iter.hasNext();) {
             ITestRule element = (ITestRule)iter.next();
             if (element.getTestParameterName().equals(testRuleParameter)) {
                 result.add(element);
             }
         }
-        return (ITestRule[])result.toArray(new ITestRule[0]);
+        return result.toArray(new ITestRule[0]);
     }
 
     public ITestRule[] getTestRuleObjects() {
-        return (ITestRule[])getTestObjects(null, TestRule.class, null).toArray(new ITestRule[0]);
+        return getTestObjects(null, TestRule.class, null).toArray(new ITestRule[0]);
     }
 
     //
@@ -495,16 +498,15 @@ public class TestCase extends IpsObject implements ITestCase {
     //
 
     public ITestObject[] getInputTestObjects() {
-        return (ITestObject[])getTestObjects(TestParameterType.INPUT, null, null).toArray(new ITestObject[0]);
+        return getTestObjects(TestParameterType.INPUT, null, null).toArray(new ITestObject[0]);
     }
 
     public ITestValue[] getInputTestValues() {
-        return (ITestValue[])getTestObjects(TestParameterType.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
+        return getTestObjects(TestParameterType.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
     public ITestPolicyCmpt[] getInputTestPolicyCmpts() {
-        return (ITestPolicyCmpt[])getTestObjects(TestParameterType.INPUT, TestPolicyCmpt.class, null).toArray(
-                new ITestPolicyCmpt[0]);
+        return getTestObjects(TestParameterType.INPUT, TestPolicyCmpt.class, null).toArray(new ITestPolicyCmpt[0]);
     }
 
     //
@@ -512,22 +514,20 @@ public class TestCase extends IpsObject implements ITestCase {
     //    
 
     public ITestObject[] getExpectedResultTestObjects() {
-        return (ITestObject[])getTestObjects(TestParameterType.EXPECTED_RESULT, null, null).toArray(new ITestObject[0]);
+        return getTestObjects(TestParameterType.EXPECTED_RESULT, null, null).toArray(new ITestObject[0]);
     }
 
     public ITestValue[] getExpectedResultTestValues() {
-        return (ITestValue[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestValue.class, null).toArray(
-                new ITestValue[0]);
+        return getTestObjects(TestParameterType.EXPECTED_RESULT, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
     public ITestRule[] getExpectedResultTestRules() {
-        return (ITestRule[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestRule.class, null).toArray(
-                new ITestRule[0]);
+        return getTestObjects(TestParameterType.EXPECTED_RESULT, TestRule.class, null).toArray(new ITestRule[0]);
     }
 
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts() {
-        return (ITestPolicyCmpt[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null)
-                .toArray(new ITestPolicyCmpt[0]);
+        return getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null).toArray(
+                new ITestPolicyCmpt[0]);
     }
 
     public void removeTestObject(ITestObject testObject) throws CoreException {
@@ -649,9 +649,9 @@ public class TestCase extends IpsObject implements ITestCase {
         ITestPolicyCmpt pc = null;
         String currElem = path.next();
 
-        List testPoliyCmpts = getTestObjects(null, TestPolicyCmpt.class, currElem);
+        List<TestObject> testPoliyCmpts = getTestObjects(null, TestPolicyCmpt.class, currElem);
         if (testPoliyCmpts.size() == 1) {
-            assertInstanceOfTestPolicyCmpt(currElem, (ITestObject)testPoliyCmpts.get(0));
+            assertInstanceOfTestPolicyCmpt(currElem, testPoliyCmpts.get(0));
             pc = searchChildTestPolicyCmpt((ITestPolicyCmpt)testPoliyCmpts.get(0), path);
         } else if (testPoliyCmpts.size() == 0) {
             return null;
@@ -728,7 +728,7 @@ public class TestCase extends IpsObject implements ITestCase {
         } else {
             ITestPolicyCmpt parent = newTestPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
-            ArrayList names = new ArrayList();
+            ArrayList<String> names = new ArrayList<String>();
             for (int i = 0; i < links.length; i++) {
                 ITestPolicyCmptLink link = links[i];
                 if (link.isComposition()) {
@@ -751,13 +751,13 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
-        Set result = new HashSet();
+        Set<IValidationRule> result = new HashSet<IValidationRule>();
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound != null) {
             result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates(ipsProject)));
             result.addAll(getTestCaseTestRuleCandidates(ipsProject));
         }
-        return (IValidationRule[])result.toArray(new IValidationRule[result.size()]);
+        return result.toArray(new IValidationRule[result.size()]);
     }
 
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
@@ -774,8 +774,8 @@ public class TestCase extends IpsObject implements ITestCase {
      * Returns all validation rules of the policy cmpt types of the product cmpt inside this test
      * case.
      */
-    private Collection getTestCaseTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
-        List result = new ArrayList();
+    private Collection<IValidationRule> getTestCaseTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
+        List<IValidationRule> result = new ArrayList<IValidationRule>();
         getValidationRules(getTestPolicyCmpts(), result, ipsProject);
         return result;
     }
@@ -784,8 +784,9 @@ public class TestCase extends IpsObject implements ITestCase {
      * Adds all validation rules - of policy cmpts related by the given test policy cmpts - to the
      * given list
      */
-    private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts, List validationRules, IIpsProject ipsProject)
-            throws CoreException {
+    private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts,
+            List<IValidationRule> validationRules,
+            IIpsProject ipsProject) throws CoreException {
         for (int i = 0; i < testPolicyCmpts.length; i++) {
             getValidationRules(testPolicyCmpts[i], validationRules, ipsProject);
         }
@@ -794,8 +795,9 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Add all validaton rules of the corresponding policy cmpt and childs
      */
-    private void getValidationRules(ITestPolicyCmpt testPolicyCmpt, List validationRules, IIpsProject ipsProject)
-            throws CoreException {
+    private void getValidationRules(ITestPolicyCmpt testPolicyCmpt,
+            List<IValidationRule> validationRules,
+            IIpsProject ipsProject) throws CoreException {
 
         // add rules of childs, ignore if the corresponding objects are not found (validation
         // errors)
@@ -864,9 +866,9 @@ public class TestCase extends IpsObject implements ITestCase {
      * is not <code>null</code>. For instance if all parameter are <code>null</code> then all
      * parameters are returned.
      */
-    private List getTestObjects(TestParameterType type, Class parameterClass, String name) {
-        List result = new ArrayList(testObjects.size());
-        for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
+    private List<TestObject> getTestObjects(TestParameterType type, Class<?> parameterClass, String name) {
+        List<TestObject> result = new ArrayList<TestObject>(testObjects.size());
+        for (Iterator<IIpsObjectPart> iter = testObjects.iterator(); iter.hasNext();) {
             TestObject testObject = (TestObject)iter.next();
             boolean addParameter = true;
 

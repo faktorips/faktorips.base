@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,38 +33,38 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseIpsObject extends IpsObject {
 
-    private List<IpsObjectPartCollection> partCollections = new ArrayList<IpsObjectPartCollection>(1);
+    private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
 
     protected BaseIpsObject(IIpsSrcFile file) {
         super(file);
     }
 
-    protected void addPartCollection(IpsObjectPartCollection container) {
+    protected void addPartCollection(IpsObjectPartCollection<?> container) {
         partCollections.add(container);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsElement[] getChildren() {
         List<IIpsObjectPart> result = new ArrayList<IIpsObjectPart>();
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {
                 result.add(container.getPart(i));
             }
         }
 
-        return ((IIpsElement[])result.toArray(new IIpsElement[result.size()]));
+        return (result.toArray(new IIpsElement[result.size()]));
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
@@ -78,9 +77,9 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void addPart(IIpsObjectPart part) {
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return;
             }
@@ -92,9 +91,9 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void reinitPartCollections() {
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             container.clear();
         }
     }
@@ -102,9 +101,9 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void removePart(IIpsObjectPart part) {
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.removePart(part)) {
                 return;
             }
@@ -116,15 +115,13 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
-        for (Iterator<IpsObjectPartCollection> it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = it.next();
+    public IIpsObjectPart newPart(Class<?> partType) {
+        for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart newPart = container.newPart(partType);
             if (newPart != null) {
                 return newPart;
             }
         }
-
         throw new IllegalArgumentException("Could not create a new part for class " + partType); //$NON-NLS-1$
     }
 }

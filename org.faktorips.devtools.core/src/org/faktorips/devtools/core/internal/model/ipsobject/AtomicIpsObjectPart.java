@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,21 +36,31 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     public AtomicIpsObjectPart() {
         super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
-     * @throws UnsupportedOperationException
      */
-    public final IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknwon type " + partType); //$NON-NLS-1$
+    public final IIpsObjectPart newPart(Class<?> partType) {
+        // Here we IllegalArgumentException (and not an UnsupportedOperationException) as this is
+        // specified in the interface.
+        throw new IllegalArgumentException("AtomicIpsObjectPart does not support newPart. Part type " + partType); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final IIpsObjectPart newPart(Element xmlTag, int id) {
+        // Contract is to return null, not to throw an Exception!
+        return null;
     }
 
     /**
@@ -58,24 +68,17 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
      * 
      * @throws UnsupportedOperationException
      */
-    protected final IIpsObjectPart newPart(Element xmlTag, int id) {
-        return null;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws UnsupportedOperationException
-     */
+    @Override
     protected final void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      * @throws UnsupportedOperationException
      */
+    @Override
     protected final void removePart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
@@ -83,6 +86,7 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final void reinitPartCollections() {
         // nothing to do
     }

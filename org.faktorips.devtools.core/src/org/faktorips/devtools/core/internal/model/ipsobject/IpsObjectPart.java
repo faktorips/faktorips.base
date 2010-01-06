@@ -205,8 +205,10 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(Class adapterType) {
+        // ok, to suppress unchecked warnings, as the method signature is defined by Eclipse
         if (IResource.class.isAssignableFrom(adapterType)) {
             /*
              * This prevents the CVSDecorator from displaying decorations for ipsobjectparts in

@@ -149,7 +149,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     /**
      * This object has no parts.
      */
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 

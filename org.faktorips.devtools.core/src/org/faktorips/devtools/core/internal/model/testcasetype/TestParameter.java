@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -62,12 +62,18 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         valueChanged(oldName, newName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
@@ -95,24 +101,42 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         element.setAttribute(PROPERTY_TEST_PARAMETER_TYPE, type.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isInputOrCombinedParameter() {
         return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isExpextedResultOrCombinedParameter() {
         return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isCombinedParameter() {
         return type.equals(TestParameterType.COMBINED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public TestParameterType getTestParameterType() {
         return type;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public abstract void setTestParameterType(TestParameterType testParameterType);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -124,13 +148,13 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         } else {
             // get all elements on the same level (all children of the parent object)
             IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
-            List testParameterChildrenOfParent = new ArrayList(childrenOfParent.length);
+            List<ITestParameter> testParameterChildrenOfParent = new ArrayList<ITestParameter>(childrenOfParent.length);
             for (int i = 0; i < childrenOfParent.length; i++) {
                 if (childrenOfParent[i] instanceof ITestParameter) {
-                    testParameterChildrenOfParent.add(childrenOfParent[i]);
+                    testParameterChildrenOfParent.add((ITestParameter)childrenOfParent[i]);
                 }
             }
-            testParameters = (ITestParameter[])testParameterChildrenOfParent.toArray(new ITestParameter[0]);
+            testParameters = testParameterChildrenOfParent.toArray(new ITestParameter[0]);
         }
 
         if (testParameters != null) {
@@ -145,7 +169,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         }
 
         // check the correct name format
-        IStatus status = JavaConventions.validateFieldName(name);
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             String text = NLS.bind(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
             Message msg = new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME);

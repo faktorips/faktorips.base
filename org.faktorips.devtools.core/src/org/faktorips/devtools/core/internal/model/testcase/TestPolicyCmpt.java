@@ -472,7 +472,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     public int[] moveTestPolicyCmptLink(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(testPolicyCmptLinks);
+        ListElementMover<ITestPolicyCmptLink> mover = new ListElementMover<ITestPolicyCmptLink>(testPolicyCmptLinks);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;

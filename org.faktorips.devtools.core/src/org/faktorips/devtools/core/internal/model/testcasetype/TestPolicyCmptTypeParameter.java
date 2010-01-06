@@ -65,7 +65,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     private List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>(0);
 
-    private List testPolicyCmptTypeChilds = new ArrayList(0);
+    private List<ITestPolicyCmptTypeParameter> testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>(0);
 
     private int minInstances = 0;
 
@@ -83,7 +83,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     public IIpsElement[] getChildren() {
         int numOfChildren = testAttributes.size() + testPolicyCmptTypeChilds.size();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List childrenList = new ArrayList(numOfChildren);
+        List<IIpsObjectPart> childrenList = new ArrayList<IIpsObjectPart>(numOfChildren);
         childrenList.addAll(testAttributes);
         childrenList.addAll(testPolicyCmptTypeChilds);
         childrenList.toArray(childrenArray);
@@ -92,8 +92,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     protected void reinitPartCollections() {
-        testAttributes = new ArrayList();
-        testPolicyCmptTypeChilds = new ArrayList();
+        testAttributes = new ArrayList<ITestAttribute>();
+        testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             testAttributes.add((ITestAttribute)part);
             return;
         } else if (part instanceof TestPolicyCmptTypeParameter) {
-            testPolicyCmptTypeChilds.add(part);
+            testPolicyCmptTypeChilds.add((TestPolicyCmptTypeParameter)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -306,8 +306,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     public ITestAttribute getTestAttribute(String attributeName) {
-        for (Iterator it = testAttributes.iterator(); it.hasNext();) {
-            ITestAttribute a = (ITestAttribute)it.next();
+        for (Iterator<ITestAttribute> it = testAttributes.iterator(); it.hasNext();) {
+            ITestAttribute a = it.next();
             if (a.getName().equals(attributeName)) {
                 return a;
             }
@@ -337,9 +337,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         testAttributes.remove(attribute);
     }
 
-    public TestPolicyCmptTypeParameter getTestPolicyCmptTypeChild(String name) {
-        for (Iterator it = testPolicyCmptTypeChilds.iterator(); it.hasNext();) {
-            TestPolicyCmptTypeParameter p = (TestPolicyCmptTypeParameter)it.next();
+    public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeChild(String name) {
+        for (ITestPolicyCmptTypeParameter p : testPolicyCmptTypeChilds) {
             if (p.getName().equals(name)) {
                 return p;
             }
@@ -353,9 +352,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return p;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParamChild(String name) {
-        for (Iterator it = testPolicyCmptTypeChilds.iterator(); it.hasNext();) {
-            ITestPolicyCmptTypeParameter p = (ITestPolicyCmptTypeParameter)it.next();
+        for (ITestPolicyCmptTypeParameter p : testPolicyCmptTypeChilds) {
             if (p.getName().equals(name)) {
                 return p;
             }
@@ -372,14 +373,23 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return p;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam() {
         return (ITestPolicyCmptTypeParameter)getParent();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName) {
         testPolicyCmptTypeChilds.remove(testPolicyCmptTypeParamChildName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ITestParameter getRootParameter() {
         ITestParameter current = this;
@@ -424,20 +434,30 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return (!(getParent() instanceof TestPolicyCmptTypeParameter));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveTestAttributes(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(testAttributes);
+        ListElementMover<ITestAttribute> mover = new ListElementMover<ITestAttribute>(testAttributes);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(testPolicyCmptTypeChilds);
+        ListElementMover<ITestPolicyCmptTypeParameter> mover = new ListElementMover<ITestPolicyCmptTypeParameter>(
+                testPolicyCmptTypeChilds);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
             throws CoreException {
 
@@ -471,7 +491,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             // no matching association found
             return new IIpsSrcFile[0];
         }
-        List result = new ArrayList(100);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(100);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             // check all links, if the target matches the defined target in the test case type
@@ -504,9 +524,12 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             }
         }
 
-        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);

@@ -116,7 +116,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 

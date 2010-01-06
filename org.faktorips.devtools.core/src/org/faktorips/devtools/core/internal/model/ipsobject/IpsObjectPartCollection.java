@@ -44,10 +44,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     private IpsObjectPartContainer parent;
     private String xmlTag;
-    // TODO CD die partsBaseClass muss von Typ T oder darunter sein
-    // Beispiel: T ist IEnumAttribute --> partsBaseClass = EnumAttribute.class
-    // --> ? extends T
-    private Class<? extends IpsObjectPart> partsBaseClass;
+    private Class<? extends T> partsBaseClass;
     // TODO CD das Interface muss von Typ T oder dadrueber sein
     // Beispiel: T ist BusinessFunction --> partsPublishedInterface = IBusinessFunction.class
     // --> ? super T
@@ -55,7 +52,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     private List<T> parts = new ArrayList<T>();
 
-    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends IpsObjectPart> partsClazz,
+    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz,
             Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
@@ -63,7 +60,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         ipsObject.addPartCollection(this);
     }
 
-    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class<? extends IpsObjectPart> partsClazz,
+    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class<? extends T> partsClazz,
             Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
@@ -71,8 +68,8 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         ipsObjectPart.addPartCollection(this);
     }
 
-    private IpsObjectPartCollection(Class<? extends IpsObjectPart> partsClazz,
-            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
+    private IpsObjectPartCollection(Class<? extends T> partsClazz, Class<? extends IIpsObjectPart> publishedInterface,
+            String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);
@@ -82,8 +79,8 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     @SuppressWarnings("unchecked")
-    private Constructor<IpsObjectPart> getConstructor(Class<? extends IpsObjectPart> clazz) {
-        Constructor<IpsObjectPart>[] constructors = clazz.getConstructors();
+    private Constructor<T> getConstructor(Class<? extends T> clazz) {
+        Constructor<T>[] constructors = clazz.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
             if (params.length != 2) {
@@ -217,9 +214,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * 
      * @param clazz
      */
-    public T newPart(Class<? extends IpsObjectPart> clazz) {
+    @SuppressWarnings("unchecked")
+    public T newPart(Class<?> clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
-            T newPart = newPartInternal(parent.getNextPartId(), getConstructor(clazz));
+            T newPart = newPartInternal(parent.getNextPartId(), getConstructor((Class<? extends T>)clazz));
             return newPart;
         }
         return null;
@@ -232,9 +230,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * @param part
      * @return Return true if the type of the part is supported by this collection
      */
-    public boolean addPart(T part) {
+    @SuppressWarnings("unchecked")
+    public boolean addPart(IIpsObjectPart part) {
         if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
-            parts.add(part);
+            parts.add((T)part);
             return true;
         }
         return false;
@@ -252,10 +251,9 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * Creates a new part without updating the src file. Subclasses have to instantiate a new object
      * of the concrete subclass of IpsObjectPart.
      */
-    @SuppressWarnings("unchecked")
-    private T newPartInternal(int id, Constructor<IpsObjectPart> constructor) {
+    private T newPartInternal(int id, Constructor<T> constructor) {
         try {
-            T newPart = (T)constructor.newInstance(new Object[] { parent, new Integer(id) });
+            T newPart = constructor.newInstance(new Object[] { parent, new Integer(id) });
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
@@ -274,7 +272,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * @return The new indexes of the moved elements.
      */
     public int[] moveParts(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(parts);
+        ListElementMover<T> mover = new ListElementMover<T>(parts);
         int[] newIndexes = mover.move(indexes, up);
         parent.partsMoved(getParts());
         return newIndexes;

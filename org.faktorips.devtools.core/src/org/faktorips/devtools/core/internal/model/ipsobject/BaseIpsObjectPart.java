@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,8 +33,8 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
-    private List tagsToIgnore = new ArrayList(0);
-    private List partCollections = new ArrayList(1);
+    private List<String> tagsToIgnore = new ArrayList<String>(0);
+    private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
 
     /**
      * @param parent
@@ -53,7 +52,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         super(parent, id);
     }
 
-    protected void addPartCollection(IpsObjectPartCollection container) {
+    protected void addPartCollection(IpsObjectPartCollection<?> container) {
         partCollections.add(container);
     }
 
@@ -66,15 +65,14 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      */
     @Override
     public IIpsElement[] getChildren() {
-        List result = new ArrayList();
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+        List<IIpsObjectPart> result = new ArrayList<IIpsObjectPart>();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {
                 result.add(container.getPart(i));
             }
         }
-        return ((IIpsElement[])result.toArray(new IIpsElement[result.size()]));
+        return result.toArray(new IIpsElement[result.size()]);
     }
 
     /**
@@ -82,8 +80,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
@@ -110,13 +107,12 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      */
     @Override
     protected void addPart(IIpsObjectPart part) {
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return;
             }
         }
-        throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
+        throw new IllegalArgumentException("Could not add part " + part); //$NON-NLS-1$
     }
 
     /**
@@ -124,8 +120,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      */
     @Override
     protected void reinitPartCollections() {
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             container.clear();
         }
     }
@@ -135,8 +130,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      */
     @Override
     protected void removePart(IIpsObjectPart part) {
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+        for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.removePart(part)) {
                 return;
             }
@@ -147,9 +141,8 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
-        for (Iterator it = partCollections.iterator(); it.hasNext();) {
-            IpsObjectPartCollection container = (IpsObjectPartCollection)it.next();
+    public IIpsObjectPart newPart(Class<?> partType) {
+        for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart newPart = container.newPart(partType);
             if (newPart != null) {
                 return newPart;

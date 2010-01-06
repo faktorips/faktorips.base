@@ -38,7 +38,7 @@ public class IpsObjectPartState {
     /**
      * Type information to create a new IIpsObjectPart.
      */
-    private Class type;
+    private Class<?> type;
 
     /**
      * The complete state-information to create a copy of an IIpsObjectPart.
@@ -115,6 +115,7 @@ public class IpsObjectPartState {
      * Returns the string-representation of this state. This string can be parsed back to an object
      * by using the constructor taking a string.
      */
+    @Override
     public String toString() {
         try {
             return XmlUtil.nodeToString(state, "UTF-8"); //$NON-NLS-1$
