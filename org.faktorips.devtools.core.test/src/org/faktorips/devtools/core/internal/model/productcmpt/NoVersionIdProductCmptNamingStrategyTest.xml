@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
- Test data for NoVersionIdProductCmptNamingStrategyTest.java
--->
-<ProductCmptNamingStrategy>
-	<NoVersionIdProductCmptNamingStrategy/>
-</ProductCmptNamingStrategy>
