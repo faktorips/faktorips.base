@@ -82,7 +82,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 
     public void layoutTextPageElement(TextPageElement pageElement) {
         if (pageElement.getType() == TextType.WITHOUT_TYPE) {
-            append(pageElement.getText());
+            append(HtmlUtil.prepareText(pageElement.getText()));
             return;
         }
         append(HtmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText()));

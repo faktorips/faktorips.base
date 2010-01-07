@@ -16,6 +16,8 @@ import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.Documentor;
@@ -133,7 +135,18 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
 			krankenBVB.setDescription("blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
 			krankenBVB.setAbstract(true);
-
+			
+			IValidationRule rule1 = krankenBVB.newRule();
+			rule1.setName("Regel1");
+			rule1.setDescription("Beschreibung der Regel");
+			rule1.setMessageCode("xyz");
+			rule1.setMessageSeverity(MessageSeverity.WARNING);
+			rule1.setMessageText("Hallo, Fehler!");
+			rule1.addValidatedAttribute("xyz");
+			rule1.addValidatedAttribute("xyz2");
+			
+			
+			
 			addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Text1", "String", Modifier.PUBLISHED,
 					AttributeType.CHANGEABLE);
 			addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Geld2", "Money", Modifier.PUBLIC,

@@ -6,15 +6,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTablePageElement;
 
 public class PolicyCmptContentPageElement extends AbstractTypeContentPageElement<PolicyCmptType> {
 
@@ -22,8 +26,33 @@ public class PolicyCmptContentPageElement extends AbstractTypeContentPageElement
 		super(object, config);
 	}
 
-	
-	
+	@Override
+	public void build() {
+		super.build();
+
+		// Regeln hinzufügen
+		addPageElements(createValidationRuleTable());
+	}
+
+	private PageElement createValidationRuleTable() {
+		IValidationRule[] validationRules;
+		validationRules = getPolicyCmptType().getRules();
+
+		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement("Regeln", TextType.HEADING_2));
+
+		if (validationRules.length == 0) {
+			wrapper.addPageElements(new TextPageElement("keine Regeln"));
+			return wrapper;
+		}
+
+		TablePageElement table = new ValidationRuleTablePageElement(getPolicyCmptType());
+
+		wrapper.addPageElements(table);
+
+		return wrapper;
+	}
+
 	@Override
 	protected AttributesTablePageElement getAttributesTablePageElement() {
 		return new AttributesTablePageElement(object) {
@@ -44,14 +73,14 @@ public class PolicyCmptContentPageElement extends AbstractTypeContentPageElement
 			@Override
 			protected List<String> getHeadline() {
 				List<String> headline = super.getHeadline();
-				
+
 				headline.add(PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
 				headline.add(PolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE);
 				headline.add(PolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
 
 				return headline;
 			}
-			
+
 		};
 	}
 
