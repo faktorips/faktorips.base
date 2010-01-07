@@ -150,33 +150,9 @@ public class AddIpsNatureAction extends ActionDelegate {
                     break;
                 }
             }
-            addIpsRuntimeLibraries(javaProject);
-            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
-            IIpsProjectProperties props = ipsProject.getProperties();
-            props.setRuntimeIdPrefix(runtimeIdPrefix);
-            props.setProductDefinitionProject(isProductDefinitionProject);
-            props.setModelProject(isModelProject);
 
-            // use the first registered builder set info as default
-            IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
-                    .getIpsArtefactBuilderSetInfos();
-            props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
-
-            props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
-            DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
-                    " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
-            props.setProductCmptNamingStrategy(namingStrategy);
-            props
-                    .setMinRequiredVersionNumber(
-                            "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
-                    .getChangesOverTimeNamingConvention().getId());
-            IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
-                    .getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
-            if (builderSetInfo != null) {
-                props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
-            }
-            ipsProject.setProperties(props);
+            IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
+                    isModelProject);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
@@ -207,7 +183,51 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
     }
 
-    private void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
+    /**
+     * Create an IpsProject based on the given JavaProject.
+     * 
+     * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
+     * @param runtimeIdPrefix The prefix for RuntimeIDs to be used in this project
+     * @param isProductDefinitionProject <code>true</code> if this is a product definition project.
+     * @param isModelProject <code>true</code> if this is a model project.
+     * @return The new IpsProject.
+     * 
+     * @throws CoreException In case of any Errors.
+     */
+    public static IIpsProject createIpsProject(IJavaProject javaProject,
+            String runtimeIdPrefix,
+            boolean isProductDefinitionProject,
+            boolean isModelProject) throws CoreException {
+        addIpsRuntimeLibraries(javaProject);
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setRuntimeIdPrefix(runtimeIdPrefix);
+        props.setProductDefinitionProject(isProductDefinitionProject);
+        props.setModelProject(isModelProject);
+
+        // use the first registered builder set info as default
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
+                .getIpsArtefactBuilderSetInfos();
+        props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
+
+        props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
+        DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
+        props.setProductCmptNamingStrategy(namingStrategy);
+        props
+                .setMinRequiredVersionNumber(
+                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getId());
+        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(
+                props.getBuilderSetId());
+        if (builderSetInfo != null) {
+            props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
+        }
+        ipsProject.setProperties(props);
+        return ipsProject;
+    }
+
+    private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
         if (targetVersionIsAtLeast5(javaProject)) {
             int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN.length;
@@ -239,7 +259,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     }
 
     // TODO do not change the targetVersion coming from the java options
-    private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
+    private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
 
         String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
