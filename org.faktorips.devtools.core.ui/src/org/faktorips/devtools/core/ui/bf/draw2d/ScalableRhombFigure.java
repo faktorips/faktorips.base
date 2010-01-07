@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,7 +22,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -36,14 +37,13 @@ public class ScalableRhombFigure extends Shape {
     private Rectangle myTemplateBounds;
     private Image errorImage;
     private boolean showError;
-    
-    
+
     public ScalableRhombFigure() {
-        this.addPoint(new Point(20, 0));
-        this.addPoint(new Point(40, 20));
-        this.addPoint(new Point(20, 40));
-        this.addPoint(new Point(0, 20));
-        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"); //$NON-NLS-1$
+        addPoint(new Point(20, 0));
+        addPoint(new Point(40, 20));
+        addPoint(new Point(20, 40));
+        addPoint(new Point(0, 20));
+        errorImage = IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
     }
 
     public void addPoint(Point point) {
@@ -51,22 +51,24 @@ public class ScalableRhombFigure extends Shape {
         myTemplateBounds = null;
     }
 
+    @Override
     protected void fillShape(Graphics graphics) {
         Rectangle bounds = getBounds();
         graphics.pushState();
         graphics.translate(bounds.x, bounds.y);
         int[] points = scalePointList();
         graphics.fillPolygon(points);
-        if(showError){
+        if (showError) {
             graphics.drawImage(errorImage, new Point(points[6] + 10, points[7] - 3));
         }
         graphics.popState();
     }
 
-    public void showError(boolean show){
-        this.showError = show;
+    public void showError(boolean show) {
+        showError = show;
     }
-    
+
+    @Override
     protected void outlineShape(Graphics graphics) {
         Rectangle bounds = getBounds();
         graphics.pushState();
@@ -75,10 +77,10 @@ public class ScalableRhombFigure extends Shape {
         graphics.popState();
     }
 
-    public void showError(MessageList msgList){
-        
+    public void showError(MessageList msgList) {
+
     }
-    
+
     private Rectangle getTemplateBounds() {
         if (myTemplateBounds == null) {
             myTemplateBounds = myTemplate.getBounds().getCopy().union(0, 0);
@@ -103,7 +105,7 @@ public class ScalableRhombFigure extends Shape {
         if (xScale == 1 && yScale == 1) {
             return myTemplate.toIntArray();
         }
-        int[] scaled = (int[])myTemplate.toIntArray().clone();
+        int[] scaled = myTemplate.toIntArray().clone();
         for (int i = 0; i < scaled.length; i += 2) {
             scaled[i] = (int)Math.floor(scaled[i] * xScale);
             scaled[i + 1] = (int)Math.floor(scaled[i + 1] * yScale);

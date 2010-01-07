@@ -21,8 +21,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -155,10 +153,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
                 result.add(file);
             }
         }
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
     }
 
     @Override

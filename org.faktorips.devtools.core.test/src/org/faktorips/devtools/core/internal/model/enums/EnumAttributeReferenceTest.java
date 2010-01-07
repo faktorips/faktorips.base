@@ -40,10 +40,6 @@ public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
         assertEquals("foo", genderIdReference.getName());
     }
 
-    public void testGetImage() {
-        assertNull(genderIdReference.getImage());
-    }
-
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumAttributeReference.XML_TAG));
         assertEquals(5, xmlElement.getChildNodes().getLength());

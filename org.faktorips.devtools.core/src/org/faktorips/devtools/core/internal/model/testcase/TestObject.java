@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -118,10 +117,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
 
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
-    }
-
-    public Image getImage() {
-        return null;
     }
 
 }

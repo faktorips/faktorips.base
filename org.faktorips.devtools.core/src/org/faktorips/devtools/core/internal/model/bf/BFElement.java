@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BFElementType;
@@ -273,11 +272,6 @@ public class BFElement extends IpsObjectPart implements IBFElement {
 
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
-        return null;
-    }
-
-    public Image getImage() {
-        // TODO image handling
         return null;
     }
 

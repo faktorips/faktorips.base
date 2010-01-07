@@ -15,9 +15,7 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -97,11 +95,6 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_VALUEDATATYPE, datatype);
-    }
-
-    @Override
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
     }
 
     @Override

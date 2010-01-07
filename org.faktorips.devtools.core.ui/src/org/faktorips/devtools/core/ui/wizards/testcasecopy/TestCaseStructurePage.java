@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
@@ -71,7 +72,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class TestCaseStructurePage extends WizardPage {
     private UIToolkit toolkit;
-    
+
     // controls
     private ContainerCheckedTreeViewer treeViewer;
     private TableViewer tableViewer;
@@ -84,7 +85,7 @@ public class TestCaseStructurePage extends WizardPage {
      * Special implementation of MessageCueLabelProvider. If an element isn't checked then the
      * validation messages will be ignored.
      */
-    private class CheckMessageCueLabelProvider extends MessageCueLabelProvider{
+    private class CheckMessageCueLabelProvider extends MessageCueLabelProvider {
         public CheckMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
             super(baseProvider, ipsProject);
         }
@@ -92,6 +93,7 @@ public class TestCaseStructurePage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public MessageList getMessages(Object element) throws CoreException {
             MessageList result = new MessageList();
             if (element instanceof IIpsObjectPartContainer) {
@@ -101,27 +103,27 @@ public class TestCaseStructurePage extends WizardPage {
             return result;
         }
     }
-    
+
     public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
         super.setTitle(Messages.TestCaseStructurePage_Title);
-        
+
         this.toolkit = toolkit;
         this.ipsProject = ipsProject;
         setPageComplete(false);
     }
 
     private TestCaseCopyWizard getTestCaseCopyWizard() {
-        return (TestCaseCopyWizard) super.getWizard();
+        return (TestCaseCopyWizard)super.getWizard();
     }
-    
+
     public void createControl(Composite parent) {
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(2, true));
-        
+
         createTree(root);
         createTable(root);
-        
+
         setControl(root);
     }
 
@@ -129,9 +131,9 @@ public class TestCaseStructurePage extends WizardPage {
         Composite treeComposite = toolkit.createComposite(parent);
         treeComposite.setLayout(new GridLayout(1, true));
         treeComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         toolkit.createLabel(treeComposite, Messages.TestCaseStructurePage_LabelTestCaseStructure);
-        
+
         Tree tree = new Tree(treeComposite, SWT.CHECK | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
         treeViewer = new ContainerCheckedTreeViewer(tree);
@@ -141,51 +143,55 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.setLabelProvider(new CheckMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
-        
-        treeViewer.addCheckStateListener(new ICheckStateListener(){
+
+        treeViewer.addCheckStateListener(new ICheckStateListener() {
             public void checkStateChanged(CheckStateChangedEvent event) {
                 pageChanged();
                 treeViewer.refresh(true);
             }
         });
-        
+
         new TreeMessageHoverService(treeViewer) {
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element instanceof IIpsObjectPartContainer) {
                     MessageList result = new MessageList();
                     collectMessages(result, (IIpsObjectPartContainer)element, false);
                     return result;
-                } else
+                } else {
                     return new MessageList();
+                }
             }
-        };        
+        };
     }
 
     private void createTable(Composite parent) {
         Composite candidateListComposite = toolkit.createComposite(parent);
         candidateListComposite.setLayout(new GridLayout(1, true));
         candidateListComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-       
+
         toolkit.createLabel(candidateListComposite, Messages.TestCaseStructurePage_LabelProductCmptCandidates);
 
-        tableViewer = new TableViewer(candidateListComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        tableViewer = new TableViewer(candidateListComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
+                | SWT.FULL_SELECTION);
         tableViewer.setUseHashlookup(true);
         tableViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         tableViewer.getTable().setLinesVisible(true);
-        
+
         TableLayout layout = new TableLayout();
         layout.addColumnData(new ColumnWeightData(ColumnWeightData.MINIMUM_WIDTH));
         layout.addColumnData(new ColumnWeightData(ColumnWeightData.MINIMUM_WIDTH));
         tableViewer.getTable().setLayout(layout);
-        
+
         columns[0] = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         columns[1] = new TableColumn(tableViewer.getTable(), SWT.LEFT);
-        
-        tableViewer.setColumnProperties(new String[]{"check", "productcmpt"}); //$NON-NLS-1$ //$NON-NLS-2$
-        
-        tableViewer.setCellEditors(new CellEditor[]{new CheckboxCellEditor(tableViewer.getTable()), new CheckboxCellEditor(tableViewer.getTable())});
-        
-        tableViewer.setCellModifier(new ICellModifier(){
+
+        tableViewer.setColumnProperties(new String[] { "check", "productcmpt" }); //$NON-NLS-1$ //$NON-NLS-2$
+
+        tableViewer.setCellEditors(new CellEditor[] { new CheckboxCellEditor(tableViewer.getTable()),
+                new CheckboxCellEditor(tableViewer.getTable()) });
+
+        tableViewer.setCellModifier(new ICellModifier() {
             public boolean canModify(Object element, String property) {
                 return true;
             }
@@ -203,13 +209,13 @@ public class TestCaseStructurePage extends WizardPage {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 refreshTree();
-                
+
                 tableViewer.refresh(true);
             }
 
             /*
-             * Refreshs the tree. This method sets the target as new input, because a simple refresh doesn't work
-             * correctly if we change product cmpts and the labels.
+             * Refreshs the tree. This method sets the target as new input, because a simple refresh
+             * doesn't work correctly if we change product cmpts and the labels.
              */
             private void refreshTree() {
                 treeViewer.getTree().setRedraw(false);
@@ -223,7 +229,7 @@ public class TestCaseStructurePage extends WizardPage {
             }
         });
         final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
-        
+
         tableViewer.setContentProvider(new IStructuredContentProvider() {
             public Object[] getElements(Object inputElement) {
                 if (inputElement instanceof IIpsSrcFile[]) {
@@ -241,14 +247,16 @@ public class TestCaseStructurePage extends WizardPage {
         });
         tableViewer.setLabelProvider(new ITableLabelProvider() {
             public Image getColumnImage(Object element, int columnIndex) {
-                if (columnIndex == 1){
+                if (columnIndex == 1) {
                     return defaultLabelProvider.getImage(element);
                 } else {
-                    return element.equals(checkedProductCmpt) ? IpsPlugin.getDefault().getImage("ArrowRight.gif") : null; //$NON-NLS-1$
+                    return element.equals(checkedProductCmpt) ? IpsUIPlugin.getImageHandling().getSharedImage(
+                            "ArrowRight.gif", true) : null; //$NON-NLS-1$
                 }
             }
+
             public String getColumnText(Object element, int columnIndex) {
-                if (columnIndex == 1){
+                if (columnIndex == 1) {
                     return defaultLabelProvider.getText(element);
                 } else {
                     return ""; //$NON-NLS-1$
@@ -269,7 +277,7 @@ public class TestCaseStructurePage extends WizardPage {
             }
         });
     }
-    
+
     private void hookTreeListeners() {
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
@@ -289,7 +297,7 @@ public class TestCaseStructurePage extends WizardPage {
             }
         });
     }
-    
+
     /**
      * Sets and display a given target test case.
      * 
@@ -309,29 +317,31 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.refresh(true);
         pageChanged();
     }
-    
+
     /*
      * Changes the available product cmpt candidates.
      */
-    private void changeCandidatesInTable(IProductCmpt productCmptSelected, ITestPolicyCmptTypeParameter parameter, IProductCmpt parentProductCmpt) throws CoreException{
+    private void changeCandidatesInTable(IProductCmpt productCmptSelected,
+            ITestPolicyCmptTypeParameter parameter,
+            IProductCmpt parentProductCmpt) throws CoreException {
         checkedProductCmpt = null;
-        if (productCmptSelected == null){
+        if (productCmptSelected == null) {
             return;
         }
         checkedProductCmpt = productCmptSelected.getIpsSrcFile();
-        
+
         IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(testCaseContentProvider.getTestCase()
                 .getIpsProject(), parentProductCmpt);
-        List list = new ArrayList();
-        List allowedProductCmptList = Arrays.asList(allowedProductCmpt);
+        List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> allowedProductCmptList = Arrays.asList(allowedProductCmpt);
         list.addAll(allowedProductCmptList);
         // add current product cmpt if not in candidate list
         if (!allowedProductCmptList.contains(productCmptSelected.getIpsSrcFile())) {
             list.add(productCmptSelected.getIpsSrcFile());
         }
-        refreshTable((IIpsSrcFile[])list.toArray(new IIpsSrcFile[list.size()]));
+        refreshTable(list.toArray(new IIpsSrcFile[list.size()]));
     }
-    
+
     /*
      * Clear all product cmpt candidates.
      */
@@ -346,30 +356,31 @@ public class TestCaseStructurePage extends WizardPage {
         columns[1].pack();
         tableViewer.refresh(true);
     }
-    
+
     /*
      * Returns the selected test policy cmpt or null if no test policy cmpt is selected.
      */
     private ITestPolicyCmpt getTestPolicyCmptFromSelection(ISelection selection) {
-        if (selection instanceof IStructuredSelection){
+        if (selection instanceof IStructuredSelection) {
             Object selected = ((IStructuredSelection)selection).getFirstElement();
-            if (selected instanceof ITestPolicyCmpt){
+            if (selected instanceof ITestPolicyCmpt) {
                 return (ITestPolicyCmpt)selected;
             }
         }
         return null;
     }
-    
+
     /*
      * Replace the product cmpt of the selected test policy cmpt object.
      */
     private void replaceSelectedProductCmpt(IProductCmpt cmpt) {
         ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(treeViewer.getSelection());
-        if (testPolicyCmpt == null){
+        if (testPolicyCmpt == null) {
             return;
         }
         testPolicyCmpt.setProductCmpt(cmpt.getQualifiedName());
-        String testPolicyCmptName = testPolicyCmpt.getTestCase().generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, cmpt.getName());
+        String testPolicyCmptName = testPolicyCmpt.getTestCase().generateUniqueNameForTestPolicyCmpt(testPolicyCmpt,
+                cmpt.getName());
         testPolicyCmpt.setName(testPolicyCmptName);
     }
 
@@ -382,10 +393,11 @@ public class TestCaseStructurePage extends WizardPage {
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canFlipToNextPage() {
         boolean newTestCaseCreated = false;
         // create test case if not exists
@@ -395,24 +407,24 @@ public class TestCaseStructurePage extends WizardPage {
         } else {
             // delete previous temporary test case if the target changed
             if (!testCaseContentProvider.getTestCase().getQualifiedName().equals(
-                    getTestCaseCopyWizard().getTargetTestCaseQualifiedName()) ||
-                    getTestCaseCopyWizard().isReplaceParameterChanged()) {
+                    getTestCaseCopyWizard().getTargetTestCaseQualifiedName())
+                    || getTestCaseCopyWizard().isReplaceParameterChanged()) {
                 getTestCaseCopyWizard().deleteTestCase(testCaseContentProvider.getTestCase());
                 getTestCaseCopyWizard().createNewTargetTestCase();
                 newTestCaseCreated = true;
             }
         }
-        
+
         if (newTestCaseCreated) {
             setTargetTestCase(getTestCaseCopyWizard().getTargetTestCase());
         } else {
             validatePage();
         }
-        
+
         return false;
     }
 
-    private boolean validatePage(){
+    private boolean validatePage() {
         setMessage(null);
         setErrorMessage(null);
 
@@ -422,24 +434,23 @@ public class TestCaseStructurePage extends WizardPage {
         }
         return true;
     }
-    
+
     /*
      * Returns all checked objects.
      */
-    Object[] getCheckedObjects(){
+    Object[] getCheckedObjects() {
         return treeViewer.getCheckedElements();
     }
-    
+
     /*
-     * Collect all messages for the given element and all its child's.
-     * If an element isn't checked then this element will be ignored.
+     * Collect all messages for the given element and all its child's. If an element isn't checked
+     * then this element will be ignored.
      */
-    private void collectMessages(MessageList result,
-            IIpsObjectPartContainer container,
-            boolean parentIsChecked) throws CoreException {
+    private void collectMessages(MessageList result, IIpsObjectPartContainer container, boolean parentIsChecked)
+            throws CoreException {
         MessageList msgList = container.getIpsObject().validate(ipsProject);
         boolean checked = treeViewer.getChecked(container);
-        if (checked || (parentIsChecked && container instanceof ITestAttributeValue)){
+        if (checked || (parentIsChecked && container instanceof ITestAttributeValue)) {
             result.add(msgList.getMessagesFor(container));
         }
         IIpsElement[] childs = container.getChildren();
@@ -448,5 +459,5 @@ public class TestCaseStructurePage extends WizardPage {
                 collectMessages(result, (IIpsObjectPartContainer)childs[i], checked);
             }
         }
-    }    
+    }
 }

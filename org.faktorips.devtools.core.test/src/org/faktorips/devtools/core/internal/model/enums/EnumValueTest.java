@@ -69,10 +69,6 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES));
     }
 
-    public void testGetImage() {
-        assertNull(genderEnumValueMale.getImage());
-    }
-
     public void testGetEnumValueContainer() {
         assertEquals(genderEnumContent, genderEnumValueMale.getEnumValueContainer());
     }

@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -79,11 +77,6 @@ public class TestValue extends TestObject implements ITestValue {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_VALUE_PARAMETER, testValueParameter);
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-    }
-
-    @Override
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TestValue.gif"); //$NON-NLS-1$
     }
 
     @Override

@@ -106,11 +106,6 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         return Boolean.valueOf(validFrom.before(now));
     }
 
-    public Image getImage() {
-        return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptImage();
-    }
-
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);

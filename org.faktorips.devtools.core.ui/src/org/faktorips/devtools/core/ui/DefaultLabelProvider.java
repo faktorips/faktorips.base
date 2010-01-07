@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -42,9 +46,18 @@ import org.faktorips.fl.FlFunction;
  */
 public class DefaultLabelProvider extends LabelProvider {
 
-    // TODO actually not used
-    /* indicates the mapping of an ips source files to the their corresponding ips objects */
-    // private boolean ispSourceFile2IpsObjectMapping = false;
+    private ImageDescriptor datatypeImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "Datatype.gif");
+
+    private ImageDescriptor functionImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "Function.gif");
+
+    private ResourceManager resourceManager;
+
+    public DefaultLabelProvider() {
+        super();
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
+    }
 
     /**
      * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an
@@ -54,19 +67,6 @@ public class DefaultLabelProvider extends LabelProvider {
         return new DefaultLabelProvider();
     }
 
-    public DefaultLabelProvider() {
-        super();
-    }
-
-    // protected DefaultLabelProvider(boolean ispSourceFile2IpsObjectMapping) {
-    // super();
-    // this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
-    // }
-
-    // public void setIspSourceFile2IpsObjectMapping(boolean ispSourceFile2IpsObjectMapping) {
-    // this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
-    // }
-
     /**
      * {@inheritDoc}
      */
@@ -74,12 +74,12 @@ public class DefaultLabelProvider extends LabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
-            return IpsUIPlugin.getImage(ipsElement);
+            return IpsUIPlugin.getImageHandling().getImage(ipsElement);
         }
         if (element instanceof Datatype) {
-            return IpsPlugin.getDefault().getImage("Datatype.gif");
+            return (Image)resourceManager.get(datatypeImageDescriptor);
         } else if (element instanceof FlFunction) {
-            return IpsPlugin.getDefault().getImage("Function.gif");
+            return (Image)resourceManager.get(functionImageDescriptor);
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
         } else if (element instanceof IpsSrcFileViewItem) {

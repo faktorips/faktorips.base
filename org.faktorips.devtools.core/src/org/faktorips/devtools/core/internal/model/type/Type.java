@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -939,14 +938,11 @@ public abstract class Type extends BaseIpsObject implements IType {
             for (int i = 0; i < lattributes.length; i++) {
                 if (!attributeNames.contains(lattributes[i].getName())) {
                     attributesToAdd.add(lattributes[i]);
+                    attributeNames.add(lattributes[i].getName());
                 }
             }
-            // Place supertype attributes in front of subtype attributes.
-            Collections.reverse(attributesToAdd);
-            for (IAttribute attribute : attributesToAdd) {
-                attributeNames.add(attribute.getName());
-                attributes.add(0, attribute);
-            }
+            // Place supertype attributes before of subtype attributes.
+            attributes.addAll(0, attributesToAdd);
             return true;
         }
 

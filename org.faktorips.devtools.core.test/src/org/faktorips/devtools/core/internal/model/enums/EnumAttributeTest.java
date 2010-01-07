@@ -16,10 +16,8 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -281,24 +279,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI));
-    }
-
-    public void testGetImage() throws CoreException {
-        Image icon = IpsPlugin.getDefault().getImage(ICON);
-        Image overriddenIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-        Image uniqueIdentifierIcon = IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
-        Image overriddenUniqueIdentifierIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
-
-        assertEquals(uniqueIdentifierIcon, genderEnumAttributeName.getImage());
-        assertEquals(uniqueIdentifierIcon, genderEnumAttributeId.getImage());
-        assertEquals(overriddenUniqueIdentifierIcon, inheritedEnumAttributeName.getImage());
-        assertEquals(overriddenUniqueIdentifierIcon, inheritedEnumAttributeId.getImage());
-
-        IEnumAttribute normal = subEnumType.newEnumAttribute();
-        assertEquals(icon, normal.getImage());
-        IEnumAttribute overridden = subEnumType.newEnumAttribute();
-        overridden.setInherited(true);
-        assertEquals(overriddenIcon, overridden.getImage());
     }
 
     public void testGetEnumType() {

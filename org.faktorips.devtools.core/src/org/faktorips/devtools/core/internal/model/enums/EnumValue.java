@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -68,10 +67,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
-    }
-
-    public Image getImage() {
-        return null;
     }
 
     public List<IEnumAttributeValue> getEnumAttributeValues() {

@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -166,19 +164,6 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ATTRIBUTE, testAttribute);
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-    }
-
-    public Image getImage() {
-        try {
-            // v2 - verwendung fixes image
-            ITestAttribute testAttribute = findTestAttribute(getIpsProject());
-            if (testAttribute != null) {
-                return testAttribute.getImage();
-            }
-        } catch (CoreException e) {
-            // ignore exception, return default image
-        }
-        return IpsPlugin.getDefault().getImage("MissingAttribute.gif"); //$NON-NLS-1$
     }
 
     public boolean isExpextedResultAttribute(IIpsProject ipsProject) {

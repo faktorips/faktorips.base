@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
@@ -85,9 +84,6 @@ public interface IIpsElement extends IAdaptable {
 
     /** Returns <tt>true</tt> if this element has any children, otherwise <tt>false</tt>. */
     public boolean hasChildren() throws CoreException;
-
-    /** Returns this element's image. */
-    public Image getImage();
 
     /** Returns <tt>true</tt> if this element is contained in an archive, <tt>false</tt> otherwise. */
     public boolean isContainedInArchive();

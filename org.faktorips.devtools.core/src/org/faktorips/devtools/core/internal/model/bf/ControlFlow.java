@@ -22,11 +22,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BFElementType;
@@ -52,10 +49,6 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
     public ControlFlow(IIpsObject parent, int id) {
         super(parent, id);
-    }
-
-    public final static ImageDescriptor getImageDescriptor() {
-        return IpsPlugin.getDefault().getImageDescriptor("obj16/" + "ControlFlow.gif");
     }
 
     public List<Bendpoint> getBendpoints() {
@@ -208,11 +201,6 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
-        return null;
-    }
-
-    // TODO image access
-    public Image getImage() {
         return null;
     }
 

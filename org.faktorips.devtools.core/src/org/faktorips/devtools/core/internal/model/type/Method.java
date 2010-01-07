@@ -25,9 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -208,10 +206,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_ELEMENT_NAME);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
     }
 
     @Override

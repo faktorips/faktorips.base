@@ -19,11 +19,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -87,6 +86,10 @@ public class ValidationUtils {
     /**
      * Tests if the given qualified name identifies a policy component type. If not, it adds an
      * error message to the given message list.
+     * <p/>
+     * Use this method instead of
+     * {@link #checkIpsObjectReference(String, IpsObjectType, String, IIpsObjectPartContainer, String, String, MessageList)}
+     * to get the found object for bettter performance.
      * 
      * @param objectName the qualified type name to check.
      * @param mandatory Is the reference mandatory. If yes, it is checked that the reference is not
@@ -100,9 +103,9 @@ public class ValidationUtils {
      * @param msgCode The message code to use if a message has to be created.
      * @param list The list of messages to add a new one.
      * 
-     * @return true if the reference is valid, otherwise false.
+     * @return The checked and found {@link IpsObject} or null if it is not valid
      */
-    public final static IIpsObject checkIpsObjectReference2(String objectName,
+    public final static IIpsObject checkAndGetIpsObjectReference(String objectName,
             IpsObjectType type,
             String propertyDisplayName,
             IIpsObjectPartContainer part,
@@ -318,32 +321,6 @@ public class ValidationUtils {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Returns an image to represent the given message severity
-     * 
-     * @param messageSeverity
-     */
-    public final static Image getSeverityImage(int messageSeverity) {
-        String imageName;
-        switch (messageSeverity) {
-            case Message.ERROR: {
-                imageName = "size8/ErrorMessage.gif"; //$NON-NLS-1$
-                break;
-            }
-            case Message.WARNING: {
-                imageName = "size8/WarningMessage.gif"; //$NON-NLS-1$
-                break;
-            }
-            case Message.INFO: {
-                imageName = "size8/InfoMessage.gif"; //$NON-NLS-1$
-                break;
-            }
-            default:
-                imageName = "size8/NullMessage.gif"; //$NON-NLS-1$
-        }
-        return IpsPlugin.getDefault().getImage(imageName);
     }
 
     /**

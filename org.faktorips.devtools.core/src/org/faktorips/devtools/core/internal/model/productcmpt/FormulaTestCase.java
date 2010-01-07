@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +23,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -156,13 +156,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
         ValueToXmlHelper.addValueToElement(expectedResult, element, StringUtils.capitalize(PROPERTY_EXPECTED_RESULT));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Formula.gif"); //$NON-NLS-1$
     }
 
     /*

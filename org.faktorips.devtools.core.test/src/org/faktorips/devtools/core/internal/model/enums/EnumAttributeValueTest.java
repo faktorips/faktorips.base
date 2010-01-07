@@ -223,10 +223,6 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM));
     }
 
-    public void testGetImage() {
-        assertNull(genderEnumValueMale.getEnumAttributeValues().get(0).getImage());
-    }
-
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }

@@ -18,12 +18,10 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -108,19 +106,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             return (IIpsSrcFile)getParent();
         }
         return null;
-    }
-
-    public Image getImage() {
-        if (getIpsSrcFile().exists()) {
-            return getIpsObjectType().getEnabledImage();
-        } else {
-            /*
-             * The IPS source file doesn't exists, thus the IPS object couldn't be linked to an IPS
-             * source file in the workspace, return the image of the IPS source file to decide
-             * between valid and invalid IPS objects.
-             */
-            return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
-        }
     }
 
     public final boolean isDescriptionChangable() {

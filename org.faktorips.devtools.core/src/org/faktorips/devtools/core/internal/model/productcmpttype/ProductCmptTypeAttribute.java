@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
@@ -157,10 +156,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void removePart(IIpsObjectPart part) {
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
     }
 
 }

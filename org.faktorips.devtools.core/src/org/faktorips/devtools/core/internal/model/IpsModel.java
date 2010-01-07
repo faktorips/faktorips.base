@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.codegen.DatatypeHelper;
@@ -434,10 +433,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public IIpsProject getIpsProject(IProject project) {
         return new IpsProject(this, project.getName());
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsModel.gif"); //$NON-NLS-1$
     }
 
     /**

@@ -19,8 +19,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
@@ -100,10 +98,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
             return newTableStructureReferenceInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableStructure.gif"); //$NON-NLS-1$
     }
 
     @Override
@@ -297,7 +291,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ""; //$NON-NLS-1$
     }
 
-    private class TableStructureReference extends AtomicIpsObjectPart {
+    public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
 
@@ -308,10 +302,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         @Override
         protected Element createElement(Document doc) {
             return doc.createElement(TAG_NAME_TABLE_STRUCTURE);
-        }
-
-        public Image getImage() {
-            return IpsPlugin.getDefault().getImage("TableStructure.gif"); //$NON-NLS-1$
         }
 
         @Override

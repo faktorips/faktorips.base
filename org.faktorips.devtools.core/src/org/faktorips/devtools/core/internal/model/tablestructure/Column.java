@@ -16,10 +16,8 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -63,10 +61,6 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     public void setDatatype(String newDatatype) {
         datatype = newDatatype;
         objectHasChanged();
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
     }
 
     @Override

@@ -21,13 +21,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -139,33 +136,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(identifier));
         element.setAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, String.valueOf(usedAsNameInFaktorIpsUi));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
-    }
-
-    public Image getImage() {
-        try {
-            IIpsProject ipsProject = getIpsProject();
-            if (inherited && findSuperEnumAttribute(ipsProject) == null) {
-                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-            }
-
-            boolean isUniqueIdentifier = EnumUtil.findEnumAttributeIsUnique(this, ipsProject);
-            if (inherited && isUniqueIdentifier) {
-                return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
-            }
-
-            if (isUniqueIdentifier) {
-                return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
-            }
-
-            if (inherited) {
-                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-            }
-
-            return IpsPlugin.getDefault().getImage(ICON);
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -357,14 +327,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         return ipsProject.findValueDatatype(datatype);
     }
 
-    /**
-     * Returns the original <tt>IEnumAttribute</tt> this <tt>IEnumAttribute</tt> is a copy of (if
-     * this <tt>IEnumAttribute</tt> is inherited).
-     * <p>
-     * Returns <tt>null</tt> if this <tt>IEnumAttribute</tt> is not inherited or the super
-     * <tt>IEnumAttribute</tt> cannot be found.
-     */
-    private IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
         if (!inherited) {
             return null;

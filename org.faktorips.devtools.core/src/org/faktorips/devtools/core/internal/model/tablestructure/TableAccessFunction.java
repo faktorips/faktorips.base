@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -88,10 +87,6 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         String[] types = new String[argTypes.length];
         System.arraycopy(argTypes, 0, types, 0, argTypes.length);
         return types; // return defensive copy
-    }
-
-    public Image getImage() {
-        return null;
     }
 
     /**

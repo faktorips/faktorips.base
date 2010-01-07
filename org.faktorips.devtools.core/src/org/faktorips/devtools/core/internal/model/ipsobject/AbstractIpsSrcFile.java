@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -145,10 +144,6 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
             return false;
         }
         return content.isParsable();
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsSrcFile.gif"); //$NON-NLS-1$
     }
 
 }

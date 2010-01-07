@@ -354,6 +354,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns the original <tt>IEnumAttribute</tt> this <tt>IEnumAttribute</tt> is a copy of (if
+     * this <tt>IEnumAttribute</tt> is inherited).
+     * <p>
+     * Returns <tt>null</tt> if this <tt>IEnumAttribute</tt> is not inherited or the super
+     * <tt>IEnumAttribute</tt> cannot be found.
+     */
+    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns <tt>true</tt> if this <tt>IEnumAttribute</tt> is marked to be used as ID in the
      * Faktor-IPS UI, <tt>false</tt> if not.
      * <p>

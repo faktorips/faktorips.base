@@ -15,9 +15,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -83,13 +81,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      */
     public ValueSetType getValueSetType() {
         return type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ValueSet.gif"); //$NON-NLS-1$
     }
 
     /**

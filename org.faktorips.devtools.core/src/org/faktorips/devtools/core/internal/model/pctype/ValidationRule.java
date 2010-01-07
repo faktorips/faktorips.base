@@ -22,8 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -91,10 +89,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         String oldName = name;
         name = newName;
         valueChanged(oldName, newName);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif"); //$NON-NLS-1$
     }
 
     public String[] getBusinessFunctions() {

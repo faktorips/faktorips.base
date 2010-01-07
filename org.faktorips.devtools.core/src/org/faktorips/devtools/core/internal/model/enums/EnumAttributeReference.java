@@ -52,10 +52,6 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
         valueChanged(oldName, name);
     }
 
-    public Image getImage() {
-        return null;
-    }
-
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);

@@ -15,9 +15,7 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -82,10 +80,6 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Parameter.gif"); //$NON-NLS-1$
     }
 
     @Override

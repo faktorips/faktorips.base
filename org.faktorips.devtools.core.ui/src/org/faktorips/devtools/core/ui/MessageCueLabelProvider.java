@@ -13,10 +13,11 @@
 
 package org.faktorips.devtools.core.ui;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -36,9 +38,11 @@ import org.faktorips.util.message.MessageList;
  */
 public class MessageCueLabelProvider extends LabelProvider {
 
+    private ResourceManager resourceManager;
+
     private ILabelProvider baseProvider;
+
     private IIpsProject ipsProject;
-    private HashMap<String, ProblemImageDescriptor> cachedProblemImageDescriptors = new HashMap<String, ProblemImageDescriptor>();
 
     /**
      * Creates a new <code>MessageCueLabelProvider</code>.
@@ -51,9 +55,10 @@ public class MessageCueLabelProvider extends LabelProvider {
     public MessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
         ArgumentCheck.notNull(baseProvider, this);
         ArgumentCheck.notNull(ipsProject, this);
-        
+
         this.baseProvider = baseProvider;
         this.ipsProject = ipsProject;
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     /**
@@ -76,25 +81,8 @@ public class MessageCueLabelProvider extends LabelProvider {
         }
 
         // get the cached problem descriptor for the base image
-        String key = getKey(baseImage, list.getSeverity());
-        ProblemImageDescriptor descriptor = cachedProblemImageDescriptors.get(key);
-        if (descriptor == null && baseImage != null) {
-            descriptor = new ProblemImageDescriptor(baseImage, list.getSeverity());
-            cachedProblemImageDescriptors.put(key, descriptor);
-        }
-        
-        return IpsPlugin.getDefault().getImage(descriptor);
-    }
-
-    /*
-     * Returns a unique key for the given image and severity compination
-     */
-    private String getKey(Image image, int severity) {
-        if (image == null) {
-            return null;
-        }
-        
-        return image.hashCode() + "_" + severity; //$NON-NLS-1$
+        ImageDescriptor descriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, list.getSeverity());
+        return (Image)resourceManager.get(descriptor);
     }
 
     /**
@@ -109,14 +97,14 @@ public class MessageCueLabelProvider extends LabelProvider {
             MessageList msgList = part.getIpsObject().validate(ipsProject);
             collectMessagesForIpsObjectPartContainer(result, msgList, part);
         }
-        
+
         return result;
     }
 
     private void collectMessagesForIpsObjectPartContainer(MessageList result,
             MessageList msgList,
             IIpsObjectPartContainer container) throws CoreException {
-        
+
         result.add(msgList.getMessagesFor(container));
         IIpsElement[] childs = container.getChildren();
         for (int i = 0; i < childs.length; i++) {
@@ -139,15 +127,7 @@ public class MessageCueLabelProvider extends LabelProvider {
      */
     @Override
     public void dispose() {
-        for (Iterator<ProblemImageDescriptor> iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
-            ProblemImageDescriptor problemImageDescriptor = iter.next();
-            Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
-            if (problemImage != null) {
-                problemImage.dispose();
-            }
-        }
-        
-        cachedProblemImageDescriptors.clear();
+        resourceManager.dispose();
         super.dispose();
     }
 }

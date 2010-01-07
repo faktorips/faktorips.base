@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -38,17 +39,18 @@ public class AttributeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IType type;
     private IAttribute attribute;
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Product");
         attribute = ((IProductCmptType)type).newProductCmptTypeAttribute();
     }
-    
+
     public void testValidate_defaultNotInValueset() throws Exception {
         IProductCmptTypeAttribute attributeWithValueSet = ((IProductCmptType)type).newProductCmptTypeAttribute();
         attributeWithValueSet.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -66,7 +68,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET);
         assertNotNull(msg);
         assertEquals(Message.WARNING, msg.getSeverity());
-        
+
         attributeWithValueSet.setDefaultValue(null);
         ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
@@ -75,10 +77,10 @@ public class AttributeTest extends AbstractIpsPluginTest {
     public void testValidate_defaultNotParsableUnknownDatatype() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setDefaultValue("1");
-        
+
         MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
-        
+
         attribute.setDatatype("a");
         ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
@@ -89,7 +91,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
-        
+
         attribute.setDatatype("abc");
         ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
@@ -100,7 +102,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setDefaultValue("1");
         MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
-        
+
         attribute.setDefaultValue("a");
         ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
@@ -110,14 +112,14 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setName("test");
         MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
-        
+
         attribute.setName("a.b");
         ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
     }
 
     public void testSetName() {
-        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_NAME, attribute, "newName");
+        testPropertyAccessReadWrite(Attribute.class, IIpsElement.PROPERTY_NAME, attribute, "newName");
     }
 
     public void testSetModifier() {
@@ -129,8 +131,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype()}.
-     * @throws CoreException 
+     * Test method for
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype()}
+     * .
+     * 
+     * @throws CoreException
      */
     public void testFindValueDatatype() throws CoreException {
         attribute.setDatatype(Datatype.BOOLEAN.getName());
@@ -138,28 +143,21 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setDatatype("unkown");
         assertNull(attribute.findDatatype(ipsProject));
     }
-    
+
     public void testSetDefaultValue() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DEFAULT_VALUE, attribute, "newDefault");
     }
-    
-//    public void testDelete() {
-//        attribute.delete();
-//        assertNull(type.getAttribute(attribute.getName()));
-//        assertEquals(0, type.getNumOfAttributes());
-//    }
 
-    /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#getImage()}.
-     */
-    public void testGetImage() {
-        assertNotNull(attribute.getImage());
-    }
-    
+    // public void testDelete() {
+    // attribute.delete();
+    // assertNull(type.getAttribute(attribute.getName()));
+    // assertEquals(0, type.getNumOfAttributes());
+    // }
+
     public void testInitFromXml() {
         IProductCmptTypeAttribute attr = ((IProductCmptType)type).newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
-        
+
         // product attribute
         attr.setModifier(Modifier.PUBLISHED);
         attr.initFromXml(XmlUtil.getElement(rootEl, Attribute.TAG_NAME, 0));
@@ -167,15 +165,15 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals(Modifier.PUBLIC, attr.getModifier());
         assertEquals("Integer", attr.getDatatype());
     }
-    
+
     public void testToXml() {
         attribute.setName("a1");
         attribute.setDefaultValue("newDefault");
         attribute.setModifier(Modifier.PUBLIC);
         attribute.setDatatype("Date");
-        
+
         Element el = attribute.toXml(newDocument());
-        
+
         IAttribute copy = ((IProductCmptType)type).newProductCmptTypeAttribute();
         copy.initFromXml(el);
         assertEquals(attribute.getName(), copy.getName());
@@ -188,7 +186,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         el = attribute.toXml(newDocument());
         copy.initFromXml(el);
         assertNull(copy.getDefaultValue());
-        
+
     }
-    
+
 }

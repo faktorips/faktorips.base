@@ -13,12 +13,11 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -39,67 +38,67 @@ public class IpsObjectType {
      * Type for enum content.
      */
     public final static IpsObjectType ENUM_CONTENT = new IpsObjectType(
-            "EnumContent", "EnumContent", Messages.IpsObjectType_nameEnumContent, Messages.IpsObjectType_nameEnumContentPlural, "ipsenumcontent", false, true, EnumContent.class, "EnumContent.gif", "EnumContentDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "EnumContent", "EnumContent", Messages.IpsObjectType_nameEnumContent, Messages.IpsObjectType_nameEnumContentPlural, "ipsenumcontent", false, true, EnumContent.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for enum type.
      */
     public final static IpsObjectType ENUM_TYPE = new IpsObjectType(
-            "EnumType", "EnumType", Messages.IpsObjectType_nameEnumType, Messages.IpsObjectType_nameEnumTypePlural, "ipsenumtype", false, false, EnumType.class, "EnumType.gif", "EnumTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "EnumType", "EnumType", Messages.IpsObjectType_nameEnumType, Messages.IpsObjectType_nameEnumTypePlural, "ipsenumtype", false, false, EnumType.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for business function.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = new IpsObjectType(
-            "BusinessFunction", "BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, Messages.IpsObjectType_nameBusinessFunctionPlural, "ipsbf", false, false, BusinessFunction.class, "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "BusinessFunction", "BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, Messages.IpsObjectType_nameBusinessFunctionPlural, "ipsbf", false, false, BusinessFunctionImpl.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = new IpsObjectType(
-            "PolicyCmptType", "PolicyCmptType", Messages.IpsObjectType_namePolicyClass, Messages.IpsObjectType_namePolicyClassPlural, "ipspolicycmpttype", true, false, PolicyCmptType.class, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "PolicyCmptType", "PolicyCmptType", Messages.IpsObjectType_namePolicyClass, Messages.IpsObjectType_namePolicyClassPlural, "ipspolicycmpttype", true, false, PolicyCmptType.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE = new IpsObjectType(
-            "ProductCmptType2", "ProductCmptType2", Messages.IpsObjectType_nameProductClass, Messages.IpsObjectType_nameProductClassPlural, "ipsproductcmpttype", true, false, ProductCmptType.class, "ProductCmptType.gif", "ProductCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "ProductCmptType2", "ProductCmptType2", Messages.IpsObjectType_nameProductClass, Messages.IpsObjectType_nameProductClassPlural, "ipsproductcmpttype", true, false, ProductCmptType.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = new IpsObjectType(
-            "TableStructure", "TableStructure", Messages.IpsObjectType_nameTableStructure, Messages.IpsObjectType_nameTableStructurePlural, "ipstablestructure", false, false, TableStructure.class, "TableStructure.gif", "TableStructureDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "TableStructure", "TableStructure", Messages.IpsObjectType_nameTableStructure, Messages.IpsObjectType_nameTableStructurePlural, "ipstablestructure", false, false, TableStructure.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for product components.
      */
     public final static IpsObjectType PRODUCT_CMPT = new IpsObjectType(
-            "ProductCmpt", "ProductCmpt", Messages.IpsObjectType_nameProductComponent, Messages.IpsObjectType_nameProductComponentPlural, "ipsproduct", false, true, ProductCmpt.class, "ProductCmpt.gif", "ProductCmptDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "ProductCmpt", "ProductCmpt", Messages.IpsObjectType_nameProductComponent, Messages.IpsObjectType_nameProductComponentPlural, "ipsproduct", false, true, ProductCmpt.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = new IpsObjectType(
-            "TableContents", "TableContents", Messages.IpsObjectType_nameTableContents, Messages.IpsObjectType_nameTableContentsPlural, "ipstablecontents", false, true, TableContents.class, "TableContents.gif", "TableContentsDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "TableContents", "TableContents", Messages.IpsObjectType_nameTableContents, Messages.IpsObjectType_nameTableContentsPlural, "ipstablecontents", false, true, TableContents.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for test case types.
      */
     public final static IpsObjectType TEST_CASE_TYPE = new IpsObjectType(
-            "TestCaseType", "TestCaseType", Messages.IpsObjectType_nameTestCaseType, Messages.IpsObjectType_nameTestCaseTypePlural, "ipstestcasetype", false, false, TestCaseType.class, "TestCaseType.gif", "TestCaseTypeDisabled.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "TestCaseType", "TestCaseType", Messages.IpsObjectType_nameTestCaseType, Messages.IpsObjectType_nameTestCaseTypePlural, "ipstestcasetype", false, false, TestCaseType.class); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Type for test cases.
      */
     public final static IpsObjectType TEST_CASE = new IpsObjectType(
-            "TestCase", "TestCase", Messages.IpsObjectType_nameTestCase, Messages.IpsObjectType_nameTestCasePlural, "ipstestcase", false, true, TestCase.class, "TestCase.gif", "TestCaseDisabled.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "TestCase", "TestCase", Messages.IpsObjectType_nameTestCase, Messages.IpsObjectType_nameTestCasePlural, "ipstestcase", false, true, TestCase.class); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
      * Ips source file type for ips objects in none ips source folder.
      */
     public final static IpsObjectType IPS_SOURCE_FILE = new IpsObjectType(
-            "Unknown", "Unknown", "Ips Source file", "Ips Source files", "*", false, true, null, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+            "Unknown", "Unknown", "Ips Source file", "Ips Source files", "*", false, true, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
 
     /**
      * Returns the ips object type that has the given file extension. Returns <code>null</code>, if
@@ -158,21 +157,14 @@ public class IpsObjectType {
     // Extension of files that store objects of this type
     private final String fileExtension;
 
-    // Name of the image file with enabled look
-    private final String enabledImageName;
-    private Image enabledImage = null;
-
-    // Name of the image file with disabled look
-    private final String disabledImageName;
-    private Image disabledImage;
-
     // Flag indicating whether this type defines a datatype
     private final boolean datatype;
 
     // Flag indicating whether this type is a product definition type
     private final boolean productDefinitionType;
 
-    private final Class<? extends IIpsObject> implementingClass;
+    // The class that is implementing the concrete IpsObjectType
+    private final Class<? extends IpsObject> implementingClass;
 
     /**
      * Creates a new ips object for the given file.
@@ -293,45 +285,6 @@ public class IpsObjectType {
     }
 
     /**
-     * Returns the image with the indicated enabled or disabled look.
-     * 
-     * @param enabled Flag indicating whether to return the enabled or disabled look.
-     * 
-     * @return SWT image of this ips object type with the specified look.
-     */
-    public final Image getImage(boolean enabled) {
-        if (enabled) {
-            return getEnabledImage();
-        } else {
-            return getDisabledImage();
-        }
-    }
-
-    /**
-     * Returns the type's image with enabled look.
-     * 
-     * @return SWT image of this ips object type with enabled look.
-     */
-    public Image getEnabledImage() {
-        if (enabledImage == null) {
-            enabledImage = IpsPlugin.getDefault().getImage(enabledImageName);
-        }
-        return enabledImage;
-    }
-
-    /**
-     * Returns the type's image with disabled look.
-     * 
-     * @return SWT image of this ips object type with disabled look.
-     */
-    public Image getDisabledImage() {
-        if (disabledImage == null) {
-            disabledImage = IpsPlugin.getDefault().getImage(disabledImageName);
-        }
-        return disabledImage;
-    }
-
-    /**
      * Returns the name of a file (including the extension) that stores a ips object with the given
      * name.
      * 
@@ -372,12 +325,11 @@ public class IpsObjectType {
      */
     protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
             String fileExtension, boolean datatype, boolean productDefinitionType,
-            Class<? extends IIpsObject> implementingClass, String enabledImage, String disabledImage) {
+            Class<? extends IpsObject> implementingClass) {
 
         ArgumentCheck.notNull(xmlElementName);
         ArgumentCheck.notNull(id);
         ArgumentCheck.notNull(fileExtension);
-        ArgumentCheck.notNull(enabledImage);
 
         this.id = id;
         this.xmlElementName = xmlElementName;
@@ -387,50 +339,9 @@ public class IpsObjectType {
         this.datatype = datatype;
         this.productDefinitionType = productDefinitionType;
         this.implementingClass = implementingClass;
-        enabledImageName = enabledImage;
-        disabledImageName = disabledImage;
     }
 
-    /**
-     * Creates a new ips object type.
-     * 
-     * @param id The name of the new ips object type.
-     * @param xmlElementName The name for the xml element.
-     * @param displayName A human readable name for the new ips object type.
-     * @param displayNamePlural TODO
-     * @param fileExtension The file extension for the new ips object type.
-     * @param datatype Flag indicating whether this new ips object type represents a datatype.
-     * @param productDefinitionType Flag indicating whether this new ips object type is a product
-     *            definition type.
-     * @param enabledImage Image file for enabled look.
-     * @param disabledImage Image file for disabled look.
-     * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
-     *             <code>null</code>.
-     */
-    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
-            String fileExtension, boolean datatype, boolean productDefinitionType,
-            Class<? extends IIpsObject> implementingClass, Image enabledImage, Image disabledImage) {
-
-        ArgumentCheck.notNull(xmlElementName);
-        ArgumentCheck.notNull(id);
-        ArgumentCheck.notNull(fileExtension);
-        ArgumentCheck.notNull(enabledImage);
-
-        this.id = id;
-        this.xmlElementName = xmlElementName;
-        this.displayName = displayName;
-        this.displayNamePlural = displayNamePlural;
-        this.fileExtension = fileExtension;
-        this.datatype = datatype;
-        this.productDefinitionType = productDefinitionType;
-        this.enabledImage = enabledImage;
-        this.disabledImage = disabledImage;
-        this.implementingClass = implementingClass;
-        enabledImageName = "";
-        disabledImageName = "";
-    }
-
-    public Class<? extends IIpsObject> getImplementingClass() {
+    public Class<? extends IpsObject> getImplementingClass() {
         return implementingClass;
     }
 

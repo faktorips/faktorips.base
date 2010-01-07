@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
@@ -107,10 +106,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         } else {
             value = "";
         }
-    }
-
-    public Image getImage() {
-        return null;
     }
 
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException {

@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -58,8 +57,6 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
-
-    private final String POLICY_CMPT_INSTANCE_INSTANCE_IMAGE_NAME = "PolicyCmptInstance.gif"; //$NON-NLS-1$
 
     /* Tags */
     final static String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
@@ -217,14 +214,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         element.setAttribute(PROPERTY_TESTPOLICYCMPTTYPE, testPolicyCmptType);
         element.setAttribute(PROPERTY_POLICYCMPTTYPE, policyCmptType);
         element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
-    }
-
-    @Override
-    public Image getImage() {
-        if (isProductRelevant()) {
-            return IpsPlugin.getDefault().getProductRelevantImage(POLICY_CMPT_INSTANCE_INSTANCE_IMAGE_NAME);
-        }
-        return IpsPlugin.getDefault().getImage(POLICY_CMPT_INSTANCE_INSTANCE_IMAGE_NAME);
     }
 
     public ITestAttributeValue newTestAttributeValue() {

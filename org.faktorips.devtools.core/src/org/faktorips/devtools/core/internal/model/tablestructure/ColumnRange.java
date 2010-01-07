@@ -20,9 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -86,10 +84,6 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         String oldColumnName = to;
         to = columnName;
         valueChanged(oldColumnName, to);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableRange.gif"); //$NON-NLS-1$
     }
 
     @Override

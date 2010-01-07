@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -73,11 +71,6 @@ public class TestRule extends TestObject implements ITestRule {
         element.setAttribute(PROPERTY_TEST_RULE_PARAMETER, testRuleParameter);
         element.setAttribute(PROPERTY_VALIDATIONRULE, validationRule);
         element.setAttribute(PROPERTY_VIOLATED, violationType.getId());
-    }
-
-    @Override
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif"); //$NON-NLS-1$
     }
 
     public String getTestParameterName() {

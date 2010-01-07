@@ -20,8 +20,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -231,18 +229,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
 
         return inverseAssociation;
-    }
-
-    public Image getImage() {
-        String baseImageName = getAssociationType().getImageName();
-        try {
-            if (isConstrainedByProductStructure(getIpsProject())) {
-                return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return IpsPlugin.getDefault().getImage(baseImageName);
     }
 
     @Override

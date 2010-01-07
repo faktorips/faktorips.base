@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
@@ -108,19 +109,19 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
      * 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.getImage()'
      */
     public void testGetImage() {
-        assertEquals(srcFile.getImage(), compareItemRoot.getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(srcFile), compareItemRoot.getImage());
 
         Object[] children = compareItemRoot.getChildren();
         ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];
-        assertEquals(product.getImage(), compareItem.getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(product), compareItem.getImage());
 
         children = compareItem.getChildren();
         ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
-        assertEquals(generation1.getImage(), compareItemGen1.getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(generation1), compareItemGen1.getImage());
         ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
-        assertEquals(generation2.getImage(), compareItemGen2.getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(generation2), compareItemGen2.getImage());
         ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
-        assertEquals(generation3.getImage(), compareItemGen3.getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(generation3), compareItemGen3.getImage());
     }
 
     /*

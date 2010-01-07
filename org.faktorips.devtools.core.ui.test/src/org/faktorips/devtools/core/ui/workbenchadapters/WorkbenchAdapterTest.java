@@ -40,7 +40,7 @@ public class WorkbenchAdapterTest extends AbstractIpsPluginTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        prodCmptDefaultIcon = IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
+        prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif");
         ipsProject = newIpsProject("AdapterTestProject");
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
@@ -66,7 +66,7 @@ public class WorkbenchAdapterTest extends AbstractIpsPluginTest {
         ProductCmptWorkbenchAdapter cmptAdapter = (ProductCmptWorkbenchAdapter)adapter;
 
         // A: standard Icons
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageDescriptor(aSuperCmpt);
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getImageDescriptor(aSuperCmpt);
         assertEquals(prodCmptDefaultIcon, imageDescriptor);
         IconDesc iconDesc = cmptAdapter.getProductCmptIconDesc(aSuperType);
         assertTrue(iconDesc instanceof DefaultIconDesc);
@@ -93,7 +93,7 @@ public class WorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         bNormalType.setInstancesIcon("");
         // C inherits A's standard Icon
-        imageDescriptor = IpsUIPlugin.getImageDescriptor(cSubCmpt);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getImageDescriptor(cSubCmpt);
         assertEquals(prodCmptDefaultIcon, imageDescriptor);
         iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
         assertTrue(iconDesc instanceof DefaultIconDesc);

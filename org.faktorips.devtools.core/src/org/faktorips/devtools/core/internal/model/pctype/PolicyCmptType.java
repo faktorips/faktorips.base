@@ -279,7 +279,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
             } else {
-                IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(
+                IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkAndGetIpsObjectReference(
                         productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE, Messages.PolicyCmptType_productCmptType,
                         this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                         IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);

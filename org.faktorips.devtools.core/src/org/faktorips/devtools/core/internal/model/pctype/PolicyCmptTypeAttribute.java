@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -199,15 +198,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     public boolean isValueSetUpdateable() {
         return true;
-    }
-
-    public Image getImage() {
-        String baseImageName = "AttributePublic.gif"; //$NON-NLS-1$
-        if (isProductRelevant()) {
-            return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
-        } else {
-            return IpsPlugin.getDefault().getImage(baseImageName);
-        }
     }
 
     public String getComputationMethodSignature() {

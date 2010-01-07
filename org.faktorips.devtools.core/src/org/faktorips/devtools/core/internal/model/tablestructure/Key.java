@@ -14,10 +14,9 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -109,13 +108,6 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
      */
     public int getNumOfKeyItems() {
         return items.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableKey.gif"); //$NON-NLS-1$
     }
 
     /**
@@ -224,7 +216,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
      * {@inheritDoc}
      */
     public String getNameOfKeyItemAt(int index) {
-        return items.get(index);
+        return (String)items.get(index);
     }
 
 }

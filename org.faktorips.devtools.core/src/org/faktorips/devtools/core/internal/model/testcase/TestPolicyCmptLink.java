@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -114,36 +112,6 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptTypeParameter);
         element.setAttribute(PROPERTY_TARGET, target);
-    }
-
-    public Image getImage() {
-        // TODO: v2 - fixed Image verwenden.
-        if (isAccoziation()) {
-            // return the linked product cmpt image if the target relates a product cmpt,
-            // or return the linked policy cmpt if target not found or no product cmpt is related
-            try {
-                ITestPolicyCmpt cmpt = findTarget();
-                if (cmpt != null && StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
-                    return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
-                }
-            } catch (CoreException e) {
-                // ignored exception, return default image
-            }
-            return IpsPlugin.getDefault().getImage("LinkedPolicyCmptType.gif"); //$NON-NLS-1$
-        } else {
-            try {
-                ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
-                if (param != null) {
-                    IPolicyCmptTypeAssociation association = param.findAssociation(getIpsProject());
-                    if (association != null) {
-                        return association.getImage();
-                    }
-                }
-            } catch (CoreException e) {
-                // ignore exception, return default image
-            }
-            return IpsPlugin.getDefault().getImage("Link.gif"); //$NON-NLS-1$
-        }
     }
 
     /**

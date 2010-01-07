@@ -77,16 +77,6 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
-    public Image getImage() {
-        // default no image
-        return null;
-    }
-
-    public Image getImage(IIpsProject ipsProject) {
-        // default no image
-        return null;
-    }
-
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);

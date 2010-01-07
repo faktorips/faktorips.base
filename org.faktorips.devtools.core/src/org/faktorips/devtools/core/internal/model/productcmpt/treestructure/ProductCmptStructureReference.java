@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * 
  * @author Thorsten Guenther
  */
-public abstract class ProductCmptStructureReference implements IProductCmptStructureReference {
+public abstract class ProductCmptStructureReference extends PlatformObject implements IProductCmptStructureReference {
 
     private IProductCmptTreeStructure structure;
 
@@ -88,4 +89,8 @@ public abstract class ProductCmptStructureReference implements IProductCmptStruc
      * @return The <code>IIpsElement</code> referenced by this object.
      */
     abstract IIpsElement getWrapped();
+
+    public IIpsElement getWrappedIpsElement() {
+        return getWrapped();
+    }
 }

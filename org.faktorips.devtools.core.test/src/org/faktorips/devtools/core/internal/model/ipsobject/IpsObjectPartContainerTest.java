@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -347,10 +346,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         @Override
         public void setName(String name) {
             this.name = name;
-        }
-
-        public Image getImage() {
-            return null;
         }
 
     }

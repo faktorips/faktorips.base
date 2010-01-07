@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -72,13 +70,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
     }
 
     /**
@@ -204,5 +195,4 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + value; //$NON-NLS-1$
     }
-
 }

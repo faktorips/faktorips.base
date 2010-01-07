@@ -18,8 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -85,18 +83,6 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
 
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type) {
         return new IpsSrcFile(this, filenameWithoutExtension + '.' + type.getFileExtension());
-    }
-
-    public Image getImage() {
-        try {
-            IIpsElement[] children = getChildren();
-            if (children != null && children.length > 0) {
-                return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
-            }
-        } catch (CoreException e) {
-            // nothing to do. If we can't get the content, we consider the package empty.
-        }
-        return IpsPlugin.getDefault().getImage("IpsPackageFragmentEmpty.gif"); //$NON-NLS-1$
     }
 
     public String getLastSegmentName() {

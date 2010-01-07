@@ -91,16 +91,16 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
      */
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
-        Image img = IpsUIPlugin.getImage(proj);
+        Image img = IpsUIPlugin.getImageHandling().getImage(proj);
         assertTrue(img == flatProvider.getImage(proj));
         assertTrue(img == hierarchyProvider.getImage(proj));
-        img = IpsUIPlugin.getImage(root);
+        img = IpsUIPlugin.getImageHandling().getImage(root);
         assertTrue(img == flatProvider.getImage(root));
         assertTrue(img == hierarchyProvider.getImage(root));
-        img = IpsUIPlugin.getImage(polCmptType);
+        img = IpsUIPlugin.getImageHandling().getImage(polCmptType);
         assertTrue(img == flatProvider.getImage(polCmptType));
         assertTrue(img == hierarchyProvider.getImage(polCmptType));
-        img = IpsUIPlugin.getImage(subPackage);
+        img = IpsUIPlugin.getImageHandling().getImage(subPackage);
         assertEquals(flatProvider.getImage(subPackage), img);
         assertTrue(img == hierarchyProvider.getImage(subPackage));
 
@@ -111,17 +111,12 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
 
     public void testIfImagesAreReusedAndDisposedCorrectly() {
         Image image = flatProvider.getImage(file);
-        assertEquals(1, flatProvider.getNumOfCreatedButNotDisposedImages());
         assertSame(image, flatProvider.getImage(file));
 
         Image image2 = flatProvider.getImage(folder);
-        assertEquals(2, flatProvider.getNumOfCreatedButNotDisposedImages());
         assertSame(image2, flatProvider.getImage(folder));
 
         flatProvider.dispose();
-        assertEquals(0, flatProvider.getNumOfCreatedButNotDisposedImages());
-        Image newImage = flatProvider.getImage(file);
-        assertTrue(image != newImage);
     }
 
     /*

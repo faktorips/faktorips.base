@@ -11,25 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.faktorips.devtools.core.internal.model.adapter.IIpsElementWrapper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.eclipse.core.runtime.IAdaptable;
+import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * This Interface provides a simple possibility to retrieve the underling <code>IpsSrcFile</code> of
- * an object. It´s useful to build standardized ui features e.g. "open in editor" which needs an
- * <code>IpsSrcFile</code> as input.
+ * Objects wrapping an {@link IIpsElement} should implement this interface to enable eclipse getting
+ * the wrapped {@link IIpsElement}
  * 
- * @author Faktor Zehn AG
+ * @author dirmeier
  */
-public interface IIpsSrcFileViewItem extends IIpsElementWrapper {
+public interface IIpsElementWrapper extends IAdaptable {
 
     /**
-     * Provide the <code>IpsSrcFile</code> of this object.
+     * Return the wrapped {@link IIpsElement}
      * 
-     * @return <code>IpsSrcFile</code>
+     * @return the wrapped {@link IIpsElement}
      */
-    public IIpsSrcFile getIpsSrcFile();
+    public IIpsElement getWrappedIpsElement();
 
 }

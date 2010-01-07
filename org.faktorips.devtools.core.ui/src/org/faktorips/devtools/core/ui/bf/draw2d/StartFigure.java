@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,7 +22,8 @@ import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 
 /**
  * The figure for the start business function element.
@@ -35,9 +36,10 @@ public class StartFigure extends Shape {
     private boolean showError;
 
     public StartFigure() {
-        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"); //$NON-NLS-1$
+        errorImage = IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
     }
 
+    @Override
     protected void fillShape(Graphics graphics) {
         Rectangle bounds = getBounds();
         graphics.pushState();
@@ -51,9 +53,10 @@ public class StartFigure extends Shape {
     }
 
     public void showError(boolean show) {
-        this.showError = show;
+        showError = show;
     }
 
+    @Override
     protected void outlineShape(Graphics graphics) {
         Rectangle bounds = getBounds();
         graphics.pushState();

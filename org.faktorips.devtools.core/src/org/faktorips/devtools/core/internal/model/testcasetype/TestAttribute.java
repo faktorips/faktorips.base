@@ -17,9 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -206,19 +204,6 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE, policyCmptType);
         element.setAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE, type.getId());
-    }
-
-    public Image getImage() {
-        try {
-            // TODO v2 - hier koennen wir doch auch ein festes Image nehmen, oder?
-            IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
-            if (attribute != null) {
-                return attribute.getImage();
-            }
-        } catch (CoreException e) {
-            // ignore exception, return default image
-        }
-        return IpsPlugin.getDefault().getImage("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
     }
 
     public boolean isExpextedResultAttribute() {

@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -141,13 +140,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, value);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
     }
 
     /**

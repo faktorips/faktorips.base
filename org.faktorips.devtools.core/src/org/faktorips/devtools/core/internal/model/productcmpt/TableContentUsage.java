@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -90,10 +88,6 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableContentsUsage.gif"); //$NON-NLS-1$
     }
 
     public void setStructureUsage(String structureUsage) {

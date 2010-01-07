@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
@@ -47,13 +46,12 @@ public class ProdDefPropertyType extends DefaultEnumValue {
 
     static {
         enumType = new DefaultEnumType("ProdDefPropertyType", ProdDefPropertyType.class); //$NON-NLS-1$
-        VALUE = new ProdDefPropertyType(enumType,
-                "attribute", Messages.ProdDefPropertyType_productAttribute, 10, "ProductAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        VALUE = new ProdDefPropertyType(enumType, "attribute", Messages.ProdDefPropertyType_productAttribute, 10); //$NON-NLS-1$ 
         TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType,
-                "tableContentUsage", Messages.ProdDefPropertyType_tableUsage, 20, "TableContentsUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        FORMULA = new ProdDefPropertyType(enumType, "formula", Messages.ProdDefPropertyType_fomula, 30, "Formula.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+                "tableContentUsage", Messages.ProdDefPropertyType_tableUsage, 20); //$NON-NLS-1$ 
+        FORMULA = new ProdDefPropertyType(enumType, "formula", Messages.ProdDefPropertyType_fomula, 30); //$NON-NLS-1$ 
         DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType,
-                "config", Messages.ProdDefPropertyType_defaultValueAndValueSet, MAX_SORT_ORDER, "PolicyAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+                "config", Messages.ProdDefPropertyType_defaultValueAndValueSet, MAX_SORT_ORDER); //$NON-NLS-1$ 
 
         ALL_TYPES = new ProdDefPropertyType[] { VALUE, TABLE_CONTENT_USAGE, FORMULA, DEFAULT_VALUE_AND_VALUESET };
     }
@@ -63,20 +61,14 @@ public class ProdDefPropertyType extends DefaultEnumValue {
     }
 
     private int sortOrder;
-    private String imageName;
 
     public int getSortOrder() {
         return sortOrder;
     }
 
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage(imageName);
-    }
-
-    private ProdDefPropertyType(DefaultEnumType type, String id, String name, int sortOrder, String imageName) {
+    private ProdDefPropertyType(DefaultEnumType type, String id, String name, int sortOrder) {
         super(type, id, name);
         this.sortOrder = sortOrder;
-        this.imageName = imageName;
     }
 
     /**
@@ -86,6 +78,11 @@ public class ProdDefPropertyType extends DefaultEnumValue {
     public int compareTo(Object o) {
         ProdDefPropertyType otherType = (ProdDefPropertyType)o;
         return sortOrder - otherType.sortOrder;
+    }
+
+    public Image getImage() {
+        return null;
+
     }
 
 }

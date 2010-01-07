@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,15 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
@@ -48,6 +56,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.ide.IDE;
@@ -57,13 +66,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
+import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
-import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -140,14 +149,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private IExtensionRegistry registry;
 
-    /** Registry for image descriptors. */
-    private ImageDescriptorRegistry imageDescriptorRegistry;
-
     private IpsObjectSelectionHistory openIpsObjectHistory;
 
     private IWorkbenchAdapterProvider[] workbenchAdapterProviders;
 
-    private IpsWorkbenchAdapterFactory adapterFactory;
+    private IpsWorkbenchAdapterFactory workbenchAdapterFactory;
 
     /**
      * The constructor.
@@ -179,8 +185,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
                 new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new DefaultControlFactory() };
-        adapterFactory = new IpsWorkbenchAdapterFactory();
-        Platform.getAdapterManager().registerAdapters(adapterFactory, IIpsElement.class);
+        workbenchAdapterFactory = new IpsWorkbenchAdapterFactory();
+        Platform.getAdapterManager().registerAdapters(workbenchAdapterFactory, IIpsElement.class);
     }
 
     /**
@@ -190,9 +196,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
-        if (imageDescriptorRegistry != null) {
-            imageDescriptorRegistry.dispose();
-        }
+        images.stop();
     }
 
     /**
@@ -428,27 +432,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return null;
     }
 
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
-     * with the product relevant image. If the given image is not found return the missing image
-     * overlaid with the product relevant image.
-     * 
-     * @see IpsPlugin#getImage(String)
-     * 
-     * @param baseImageName The name of the image which will be overlaid with the product relevant
-     *            image.
-     */
-    public Image getProductRelevantImage(String baseImageName) {
-        String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
-        Image image = getImageRegistry().get(overlayedImageName);
-        if (image == null) {
-            image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
-            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
-            getImageRegistry().put(overlayedImageName, imageDescriptor);
-        }
-        return image;
-    }
-
     /*
      * Open the given file with the default text editor. And show an information message in the
      * editors status bar to inform the user about using the text editor instead of the IPS object
@@ -482,7 +465,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
              * using the default IPS object editor.
              */
             ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
-                    IpsUIPlugin.getDefault().getImage("size8/InfoMessage.gif"), //$NON-NLS-1$
+                    images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
                     Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
             return editorPart;
         } catch (PartInitException e) {
@@ -559,72 +542,26 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
         List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
         if (workbenchAdapterProviders == null) {
-            ExtensionPoints extPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
-            IExtension[] adapterProviders = extPoints.getExtension(EXTENSION_POINT_ID_ADAPTER_PROVIDER);
-            for (IExtension extension : adapterProviders) {
-                IConfigurationElement[] configElements = extension.getConfigurationElements();
-                for (IConfigurationElement configElement : configElements) {
-                    if (configElement.getName().equals(CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER)) {
-                        result.add(ExtensionPoints.createExecutableExtension(extension, configElement,
-                                CONFIG_PROPERTY_CLASS, IWorkbenchAdapterProvider.class));
+            try {
+                ExtensionPoints extPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
+                IExtension[] adapterProviders = extPoints.getExtension(EXTENSION_POINT_ID_ADAPTER_PROVIDER);
+                for (IExtension extension : adapterProviders) {
+                    if (extension != null) {
+                        IConfigurationElement[] configElements = extension.getConfigurationElements();
+                        for (IConfigurationElement configElement : configElements) {
+                            if (configElement != null
+                                    && configElement.getName().equals(CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER)) {
+                                result.add(ExtensionPoints.createExecutableExtension(extension, configElement,
+                                        CONFIG_PROPERTY_CLASS, IWorkbenchAdapterProvider.class));
+                            }
+                        }
                     }
                 }
+            } catch (Exception e) {
+                IpsPlugin.log(e);
             }
         }
         return result;
-    }
-
-    public Image getImage(ImageDescriptor descriptor) {
-        return getImageDescriptorRegistry().get(descriptor);
-    }
-
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
-     * with the indicated name is found, a missing image is returned.
-     * 
-     * @param name The image name, e.g. <code>IpsProject.gif</code>
-     */
-    public Image getImage(String name) {
-        return getImage(name, false);
-    }
-
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image is
-     * found and <code>returnNull</code> is true, null is returned. Otherwise (no image found, but
-     * <code>returnNull</code> is false), the missing image is returned.
-     * 
-     * @param name The name of the image.
-     * @param returnNull <code>true</code> to get null as return value if the image is not found,
-     *            <code>false</code> to get the missing image in this case.
-     */
-    public Image getImage(String name, boolean returnNull) {
-        Image image = getImageRegistry().get(name);
-        if (image == null) {
-            URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-            if (url == null && returnNull) {
-                return null;
-            }
-            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
-            getImageRegistry().put(name, descriptor);
-            image = getImageRegistry().get(name);
-        }
-        return image;
-    }
-
-    public ImageDescriptor getImageDescriptor(String name) {
-        URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-        return ImageDescriptor.createFromURL(url);
-    }
-
-    private ImageDescriptorRegistry getImageDescriptorRegistry() {
-        /*
-         * Must use lazy initialization, as the current display is not necessarily available when
-         * the plug-in is started.
-         */
-        if (imageDescriptorRegistry == null) {
-            imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
-        }
-        return imageDescriptorRegistry;
     }
 
     public void addHistoryItem(IIpsSrcFile ipsSrcFile) {
@@ -686,33 +623,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return settings;
     }
 
-    public final static ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
-        if (adapter == null) {
-            return null;
-        } else {
-            return adapter.getImageDescriptor(ipsElement);
-        }
-    }
-
-    public final static Image getImage(IIpsElement ipsElement) {
-        return getDefault().getImage(getImageDescriptor(ipsElement));
-    }
-
-    public Image getDisabledImage(IIpsElement ipsElement) {
-        return getDisabledImage(getImageDescriptor(ipsElement));
-    }
-
-    public Image getDisabledImage(ImageDescriptor enabledImageDescriptor) {
-        ImageDescriptor disabledImageDesc = getDisabledImageDescriptor(enabledImageDescriptor);
-        return getImage(disabledImageDesc);
-    }
-
-    private ImageDescriptor getDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor) {
-        ImageDescriptor disabledImageDesc = ImageDescriptor.createWithFlags(enabledImageDescriptor, SWT.IMAGE_DISABLE);
-        return disabledImageDesc;
-    }
-
     public final static String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
@@ -722,9 +632,377 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
     }
 
-    public <T extends IIpsElement> IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<T> ipsElementClass) {
-        IpsElementWorkbenchAdapter adapter = (IpsElementWorkbenchAdapter)adapterFactory.getAdapter(ipsElementClass,
-                IWorkbenchAdapter.class);
-        return adapter;
+    // ************************************************
+    // IMAGE HANDLING
+    // ************************************************
+
+    private final static ImageHandling images = new ImageHandling();
+
+    public static ImageHandling getImageHandling() {
+        return images;
     }
+
+    /**
+     * Images in eclipse is not so easy as it looks like. If you are not familiar with the basics of
+     * image handling in eclipse, read this short article <a href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
+     * >Using Images in the Eclipse UI</a>
+     * <p>
+     * In Faktor IPS we have a two kinds of images handled by the image handling. The first kind of
+     * image is a plugin shared image. Only use shared images for those icons that are realy
+     * importeant for several components of the plugin and more important, those does not change
+     * over time.
+     * <p>
+     * The second kind of images are not shared images. You have to look for the
+     * 
+     * @author dirmeier
+     */
+    public static class ImageHandling {
+
+        public static final Map<ImageDescriptor, ImageDescriptor> enableDisableMap = new HashMap<ImageDescriptor, ImageDescriptor>();
+
+        private ResourceManager resourceManager;
+
+        public ResourceManager getResourceManager() {
+            if (resourceManager == null) {
+                resourceManager = createResourceManager();
+            }
+            return resourceManager;
+        }
+
+        private ResourceManager createResourceManager() {
+
+            // If we are in the UI Thread use that
+            if (Display.getCurrent() != null) {
+                return new LocalResourceManager(JFaceResources.getResources(Display.getCurrent()));
+            }
+
+            if (PlatformUI.isWorkbenchRunning()) {
+                return new LocalResourceManager(JFaceResources.getResources(PlatformUI.getWorkbench().getDisplay()));
+            }
+
+            // Invalid thread access if it is not the UI Thread
+            // and the workbench is not created.
+            throw new SWTError(SWT.ERROR_THREAD_INVALID_ACCESS);
+        }
+
+        public ImageRegistry getImageRegistry() {
+            return getDefault().getImageRegistry();
+        }
+
+        /**
+         * Returns the image with the indicated name from the <code>icons</code> folder. If no image
+         * with the indicated name is found and createIfAbsent is false null is returned.
+         * 
+         * @param name The image name, e.g. <code>IpsProject.gif</code>
+         * @param createIfAbsent true to create a new image if not already registered
+         */
+        public Image getSharedImage(String name, boolean createIfAbsent) {
+            Image image = getImageRegistry().get(name);
+            if (image == null && createIfAbsent) {
+                ImageDescriptor descriptor = getSharedImageDescriptor(name, true);
+                image = getImage(descriptor);
+            }
+            return image;
+        }
+
+        /**
+         * To get an image descriptor to a specified name. If the image descriptor is not already
+         * registered in the plugin's image registry and the flag createIfAbsent is true, this
+         * method does. Only use this method for images you want to share for the whole plugin.
+         * 
+         * @see ImageHandling
+         * 
+         * @param name the name of the image equal to the filename in the subfolder icons
+         * @param createIfAbsent
+         * @return the shared image descriptor
+         */
+        public ImageDescriptor getSharedImageDescriptor(String name, boolean createIfAbsent) {
+            ImageDescriptor descriptor = getImageRegistry().getDescriptor(name);
+            if (descriptor == null && createIfAbsent) {
+                descriptor = createImageDescriptor(name);
+                registerSharedImageDescriptor(name, descriptor);
+            }
+            return descriptor;
+        }
+
+        /**
+         * To register an image descriptor in the image registry. The name of the image is the
+         * filename in the subfolder <i>icons</i> that means the path to the image is
+         * IpsUIPlugin/icons/name
+         * 
+         * @param name
+         * @return
+         */
+        public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
+            if (descriptor != null && descriptor != ImageDescriptor.getMissingImageDescriptor()) {
+                getImageRegistry().put(name, descriptor);
+            }
+        }
+
+        /**
+         * Get the disabled version of a shared image for an ips element
+         * 
+         * @param ipsElement
+         * @return
+         */
+        public Image getDisabledImage(IIpsElement ipsElement) {
+            return getImage(getDisabledImageDescriptor(ipsElement));
+        }
+
+        /**
+         * Get the shared descriptor for disable image with the descriptor of an enabled image
+         * 
+         * @param enabledImageDescriptor
+         * @return
+         */
+        public ImageDescriptor getDisabledImageDescriptor(IIpsElement ipsElement) {
+            ImageDescriptor enabledImageDescriptor = getImageDescriptor(ipsElement);
+            ImageDescriptor disabledImageDescriptor = enableDisableMap.get(enabledImageDescriptor);
+            if (disabledImageDescriptor == null) {
+                disabledImageDescriptor = createDisabledImageDescriptor(enabledImageDescriptor);
+            }
+            return disabledImageDescriptor;
+        }
+
+        /**
+         * Return a shared image which is the disabled version of the given image descriptor
+         * 
+         * @param enabledImage
+         * @return
+         */
+        public Image getDisabledSharedImage(ImageDescriptor enabledImage) {
+            ImageDescriptor disabledID = createDisabledImageDescriptor(enabledImage);
+            return getImage(disabledID);
+        }
+
+        /**
+         * Create the disabled version of a shared image descriptor
+         * 
+         * @param enabledImageDescriptor
+         * @return
+         */
+        public ImageDescriptor createDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor) {
+            ImageDescriptor disabledImageDesc = ImageDescriptor.createWithFlags(enabledImageDescriptor,
+                    SWT.IMAGE_DISABLE);
+            return disabledImageDesc;
+        }
+
+        /**
+         * Just create a image descriptor with the specified name as image filename in the icons
+         * subfolder does not register anything in the image registry or the image description
+         * registry. Only use for images of this plugin!
+         * <p>
+         * Use this method when you only want to have an image descriptor for any eclipse object
+         * e.g. an Action or a Wizard Normally eclipse does instantiate and dispose the image
+         * 
+         * @param name
+         * @return the new created image descriptor
+         */
+        public ImageDescriptor createImageDescriptor(String name) {
+            URL url = getDefault().getBundle().getEntry("icons/" + name); //$NON-NLS-1$
+            return ImageDescriptor.createFromURL(url);
+        }
+
+        /**
+         * To get an image for an image descriptor from resource manager. If no such resource
+         * already exists the resource manager creates a new one. The image will remain allocated
+         * for the lifetime of the plugin. If the image is not potentially needed by other classes
+         * use the methods {@link #createImage(ImageDescriptor)} and
+         * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
+         * 
+         * @param descriptor
+         * @return
+         */
+        public Image getImage(ImageDescriptor descriptor) {
+            if (descriptor != null) {
+                return (Image)getResourceManager().get(descriptor);
+            }
+            return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+        }
+
+        /**
+         * Create an image in the resource manager. You have to dispose the image by calling
+         * {@link #disposeImage(ImageDescriptor)} if you do not need it any longer. If you want to
+         * share the image with other components, use one of the shared image methods. If the image
+         * descriptor is already registered as a shared image, the descriptor is not registered
+         * twice. You do not have to worry about calling the disposeImage method because a shared
+         * image also would not be disposed
+         * 
+         * @param descriptor
+         * @param image
+         */
+        public Image createImage(ImageDescriptor descriptor) {
+            if (descriptor != null) {
+                return getResourceManager().createImage(descriptor);
+            }
+            return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+        }
+
+        /**
+         * To dispose a self registered image. Do not dispose shared images (in fact this method
+         * wouldn't do).
+         * 
+         * @param descriptor the descriptor of the image you want to dispose
+         * 
+         */
+        public void disposeImage(ImageDescriptor descriptor) {
+            getResourceManager().destroyImage(descriptor);
+        }
+
+        /**
+         * Getting an image descriptor by calling the {@link IWorkbenchAdapter} of the ips element
+         * If there is no registered adapter this method returns null. If the registered adapter has
+         * no image, this method also returns null
+         * 
+         * @param ipsElement
+         * @return the image descriptor or null if there is no image or no registered adapter
+         */
+        public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
+            if (ipsElement == null) {
+                return null;
+            }
+            IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+            if (adapter == null) {
+                return ImageDescriptor.getMissingImageDescriptor();
+            } else {
+                ImageDescriptor descriptor = adapter.getImageDescriptor(ipsElement);
+                if (descriptor != null) {
+                    return descriptor;
+                } else {
+                    return ImageDescriptor.getMissingImageDescriptor();
+                }
+            }
+        }
+
+        /**
+         * Getting the image for an ips element by calling the {@link IWorkbenchAdapter} for the
+         * specified ips element. The image is either a shared image (if someone already registered
+         * the corresponding image descriptor) or a not shared one if no one registered the image
+         * before. If it is a no shared image, someone (maybe you - normally the workbench adapter)
+         * have dispose the image.
+         * 
+         * @param ipsElement
+         * @return
+         */
+        public Image getImage(IIpsElement ipsElement) {
+            return getImage(getImageDescriptor(ipsElement));
+        }
+
+        /**
+         * Get the enabled or disabled image for the given element.
+         * 
+         * @see #getImage(IIpsElement) and @see {@link #getDisabledImage(IIpsElement)}
+         * 
+         * @param ipsElement
+         * @param enabled
+         * @return
+         */
+        public Image getImage(IIpsElement ipsElement, boolean enabled) {
+            if (enabled) {
+                return getImage(ipsElement);
+            } else {
+                return getDisabledImage(ipsElement);
+            }
+        }
+
+        /**
+         * Get the default image descriptor for an ips element class. May return null. Note: The
+         * workbench adapters are registered for concrete implementations not for interfaces
+         * 
+         * @param ipsElementClass
+         * @return
+         */
+        public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
+            IpsElementWorkbenchAdapter adapter = getDefault().workbenchAdapterFactory.getAdapterByClass(
+                    ipsElementClass, IWorkbenchAdapter.class);
+            if (adapter instanceof IpsElementWorkbenchAdapter) {
+                IpsElementWorkbenchAdapter ipsWA = adapter;
+                return ipsWA.getDefaultImageDescriptor();
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Get the default image for an ips element class. May return null. Note: The workbench
+         * adapters are registered for concrete implementations not for interfaces
+         * 
+         * @param ipsElementClass
+         * @return
+         */
+        public Image getDefaultImage(Class<? extends IpsElement> ipsElementClass) {
+            ImageDescriptor descriptor = getDefaultImageDescriptor(ipsElementClass);
+            if (descriptor != null) {
+                return getImage(descriptor);
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Returns the image with the indicated name from the <code>icons</code> folder and overlays
+         * it with the specified overlay image. If the given image is not found return the missing
+         * image overlaid with the product relevant image.
+         * 
+         * 
+         * @param baseImageName The name of the image which will be overlaid with the overlay image.
+         * @param overlayImageName The name of the overlay image
+         * @param quadrant the quadrant where the overlay is painted, one of
+         *            {@link IDecoration#TOP_LEFT} {@link IDecoration#TOP_RIGHT},
+         *            {@link IDecoration#BOTTOM_LEFT} or {@link IDecoration#BOTTOM_RIGHT}
+         */
+        public ImageDescriptor getSharedOverlayImage(String baseImageName, String overlayImageName, int quadrant) {
+            if (StringUtils.isEmpty(overlayImageName)) {
+                return getSharedImageDescriptor(baseImageName, true);
+            }
+            String overlayedImageName = overlayImageName + "_" + baseImageName; //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
+            if (imageDescriptor == null) {
+                Image baseImage = getSharedImage(baseImageName, true);
+                ImageDescriptor overlay = createImageDescriptor(overlayImageName);
+                imageDescriptor = new DecorationOverlayIcon(baseImage, overlay, quadrant);
+                registerSharedImageDescriptor(overlayedImageName, imageDescriptor);
+            }
+            return imageDescriptor;
+        }
+
+        /**
+         * Returns the image with the indicated name from the <code>icons</code> folder and overlaid
+         * by the specified overlay images. The array contains the names of the overlays, sorted in
+         * following order: top-left, top-right, bottom-left, bottom-right. If the given image is
+         * not found return the missing image overlaid with the product relevant image.
+         * 
+         * 
+         * @param baseImageName The name of the image which will be overlaid with the overlay image.
+         * @param overlayImageNames The names of the overlay images
+         */
+        public ImageDescriptor getSharedOverlayImage(String baseImageName, String[] overlayImageNames) {
+            String overlayedImageName = Arrays.toString(overlayImageNames) + "_" + baseImageName; //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
+            if (imageDescriptor == null) {
+                Image baseImage = getSharedImage(baseImageName, true);
+                ImageDescriptor[] overlays = new ImageDescriptor[overlayImageNames.length];
+                for (int i = 0; i < overlayImageNames.length; i++) {
+                    if (overlayImageNames[i] != null) {
+                        overlays[i] = createImageDescriptor(overlayImageNames[i]);
+                    }
+                }
+                imageDescriptor = new DecorationOverlayIcon(baseImage, overlays);
+                registerSharedImageDescriptor(overlayedImageName, imageDescriptor);
+            }
+            return imageDescriptor;
+        }
+
+        public void stop() {
+            if (resourceManager != null) {
+                resourceManager.dispose();
+            }
+        }
+
+        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
+            return getDefault().workbenchAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
+        }
+
+    }
+
 }

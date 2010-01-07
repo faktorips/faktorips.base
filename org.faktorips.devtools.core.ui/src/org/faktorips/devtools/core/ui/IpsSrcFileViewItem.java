@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -23,11 +25,13 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
  * TableViewer. The components {@link IpsElementDragListener} and {@link IpsAction} are able to
  * handle instances of this wrapper as <code>IpsSrcFile</code>-Objects by calling the getIpsSrcFile
  * method.
+ * <p>
+ * IpsSrcFileViewItems are adaptable to IIpsSrcFile
  * 
  * @author dirmeier
  * 
  */
-public abstract class IpsSrcFileViewItem implements IIpsSrcFileViewItem {
+public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsSrcFileViewItem {
 
     private IIpsSrcFile ipsSrcFile;
 
@@ -47,6 +51,10 @@ public abstract class IpsSrcFileViewItem implements IIpsSrcFileViewItem {
      */
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
+    }
+
+    public IIpsElement getWrappedIpsElement() {
+        return getIpsSrcFile();
     }
 
 }

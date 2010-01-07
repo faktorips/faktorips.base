@@ -24,7 +24,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -235,13 +234,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         compiler.setIdentifierResolver(resolver);
 
         return compiler;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Formula.gif"); //$NON-NLS-1$    
     }
 
     /**

@@ -20,8 +20,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -240,42 +238,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, requiresProductCmpt ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute(PROPERTY_MIN_INSTANCES, "" + minInstances); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * If no association is specified then return the policy cmpt type image or if a product cmpt is
-     * required the the product cmpt image. If a association is specified then return the image
-     * which is provided by the association or if the association is not found the default
-     * "association.gif" image.
-     */
-    @Override
-    public Image getImage() {
-        return getImage(getIpsProject());
-    }
-
-    @Override
-    public Image getImage(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(association)) {
-            if (requiresProductCmpt) {
-                return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
-            } else {
-                return IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage();
-            }
-        }
-
-        if (!isRoot()) {
-            try {
-                IPolicyCmptTypeAssociation association = findAssociation(ipsProject);
-                if (association != null) {
-                    return association.getImage();
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-        return IpsPlugin.getDefault().getImage("Association.gif"); //$NON-NLS-1$
     }
 
     public ITestAttribute newInputTestAttribute() {

@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -89,13 +87,6 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public String getName() {
         return target;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ProductCmptLink.gif"); //$NON-NLS-1$
     }
 
     /**

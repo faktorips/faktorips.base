@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,12 +35,13 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyAttribute;
-    
+
     private IProductCmptTypeAttribute productAttribute;
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -48,31 +49,24 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttribute.setName("policyAttribute");
         policyAttribute.setDatatype(Datatype.INTEGER.getName());
-        
+
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmptType.setPolicyCmptType("Policy");
 
         productAttribute = productCmptType.newProductCmptTypeAttribute();
         productAttribute.setName("productAttribute");
     }
-    
+
     public void testDelete() {
         productAttribute.delete();
         assertNull(productCmptType.getProductCmptTypeAttribute(productAttribute.getName()));
         assertEquals(0, productCmptType.getNumOfAttributes());
     }
 
-    /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#getImage()}.
-     */
-    public void testGetImage() {
-        assertNotNull(productAttribute.getImage());
-    }
-    
     public void testInitFromXml() {
         IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
-        
+
         // product attribute
         attr.setModifier(Modifier.PUBLISHED);
         attr.initFromXml(XmlUtil.getElement(rootEl, ProductCmptTypeAttribute.TAG_NAME, 0));
@@ -80,22 +74,22 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(Modifier.PUBLIC, attr.getModifier());
         assertEquals("Integer", attr.getDatatype());
     }
-    
+
     public void testToXml_ProductAttribute() {
         Element el = productAttribute.toXml(newDocument());
-        
+
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         a.initFromXml(el);
         assertEquals(productAttribute.getName(), a.getName());
         assertEquals(productAttribute.getModifier(), a.getModifier());
         assertEquals(productAttribute.getDatatype(), a.getDatatype());
     }
-    
+
     /**
-     * Tests if a attributes with properties containing null can be transformed to xml without exceptions
-     * as null handling can be a problem especially transforming the xml to strings.
+     * Tests if a attributes with properties containing null can be transformed to xml without
+     * exceptions as null handling can be a problem especially transforming the xml to strings.
      * 
-     * @throws TransformerException 
+     * @throws TransformerException
      */
     public void testToXml_NullHandlng() throws TransformerException {
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();

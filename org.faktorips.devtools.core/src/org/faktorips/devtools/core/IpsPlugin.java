@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,13 +31,10 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -83,9 +79,6 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     // The shared instance.
     private static IpsPlugin plugin;
-
-    // registry for image descriptors
-    private ImageDescriptorRegistry imageDescriptorRegistry;
 
     // the document builder factory provides the DocumentBuilder for this plugin
     private DocumentBuilderFactory docBuilderFactory;
@@ -188,9 +181,6 @@ public class IpsPlugin extends AbstractUIPlugin {
         super.stop(context);
         ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
         model = null;
-        if (imageDescriptorRegistry != null) {
-            imageDescriptorRegistry.dispose();
-        }
     }
 
     /**
@@ -209,78 +199,6 @@ public class IpsPlugin extends AbstractUIPlugin {
     public Version getVersionIdentifier() {
         String version = (String)getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
         return Version.parseVersion(version);
-    }
-
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
-     * with the indicated name is found, a missing image is returned.
-     * 
-     * @param name The image name, e.g. <code>IpsProject.gif</code>
-     */
-    public Image getImage(String name) {
-        return getImage(name, false);
-    }
-
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
-     * with the product relevant image. If the given image is not found return the missing image
-     * overlaid with the product relevant image.
-     * 
-     * @see IpsPlugin#getImage(String)
-     * 
-     * @param baseImageName The name of the image which will be overlaid with the product relevant
-     *            image.
-     */
-    public Image getProductRelevantImage(String baseImageName) {
-        String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
-        Image image = getImageRegistry().get(overlayedImageName);
-        if (image == null) {
-            image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
-            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
-            getImageRegistry().put(overlayedImageName, imageDescriptor);
-        }
-        return image;
-    }
-
-    /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no image is
-     * found and <code>returnNull</code> is true, null is returned. Otherwise (no image found, but
-     * <code>returnNull</code> is false), the missing image is returned.
-     * 
-     * @param name The name of the image.
-     * @param returnNull <code>true</code> to get null as return value if the image is not found,
-     *            <code>false</code> to get the missing image in this case.
-     */
-    public Image getImage(String name, boolean returnNull) {
-        Image image = getImageRegistry().get(name);
-        if (image == null) {
-            URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-            if (url == null && returnNull) {
-                return null;
-            }
-            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
-            getImageRegistry().put(name, descriptor);
-            image = getImageRegistry().get(name);
-        }
-        return image;
-    }
-
-    public Image getImage(ImageDescriptor descriptor) {
-        return getImageDescriptorRegistry().get(descriptor);
-    }
-
-    private ImageDescriptorRegistry getImageDescriptorRegistry() {
-        // must use lazy initialization, as the current display is not necessarily
-        // available when the plugin is started.
-        if (imageDescriptorRegistry == null) {
-            imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
-        }
-        return imageDescriptorRegistry;
-    }
-
-    public ImageDescriptor getImageDescriptor(String name) {
-        URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-        return ImageDescriptor.createFromURL(url);
     }
 
     /**

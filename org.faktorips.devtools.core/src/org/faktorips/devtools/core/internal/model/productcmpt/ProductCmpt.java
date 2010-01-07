@@ -20,11 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -383,17 +379,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public String getMetaClass() {
         return getProductCmptType();
-    }
-
-    @Override
-    public Image getImage() {
-        // TODO remove all this shit
-        IWorkbenchAdapter adapter = ((IWorkbenchAdapter)getAdapter(IWorkbenchAdapter.class));
-        if (adapter != null) {
-            ImageDescriptor imageDescriptor = adapter.getImageDescriptor(this);
-            return IpsPlugin.getDefault().getImage(imageDescriptor);
-        }
-        return null;
     }
 
 }

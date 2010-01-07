@@ -18,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -128,10 +126,6 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage(getAssociationType().getImageName());
     }
 
 }

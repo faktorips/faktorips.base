@@ -36,6 +36,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     IIpsProject ipsProject;
     IEnumType enum1;
 
+    @Override
     public void setUp() throws Exception {
         ipsProject = newIpsProject("TestProject");
 
@@ -87,7 +88,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     }
 
     public void testGetDatatypeValueIds() throws Exception {
-        Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
+        Combo combo = new Combo(Display.getCurrent().getActiveShell(), SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null));
         field.setValue("a");
         assertEquals("a", field.getValue());
@@ -126,7 +127,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         values.get(1).setValue("CNameContent");
         values.get(2).setValue("CDescContent");
 
-        Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
+        Combo combo = new Combo(Display.getCurrent().getActiveShell(), SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent));
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());

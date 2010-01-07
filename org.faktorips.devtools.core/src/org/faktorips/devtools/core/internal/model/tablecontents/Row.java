@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -128,10 +126,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         column = Math.max(0, column);
         column = Math.min(values.size(), column);
         values.remove(column);
-    }
-
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableRow.gif"); //$NON-NLS-1$
     }
 
     /**

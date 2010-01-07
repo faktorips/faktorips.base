@@ -45,7 +45,6 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
@@ -700,13 +699,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IpsProjectProperties properties = getPropertiesInternal();
         return getIpsModel().getChangesOverTimeNamingConvention(
                 properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsProject.gif"); //$NON-NLS-1$
     }
 
     /**
