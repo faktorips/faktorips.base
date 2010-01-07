@@ -270,8 +270,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
 
     }
 
-    @SuppressWarnings("unchecked")
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<?> partType) {
         return null;
     }
 

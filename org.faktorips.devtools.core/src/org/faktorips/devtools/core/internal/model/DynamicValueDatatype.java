@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -57,7 +57,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
         if (StringUtils.isEmpty(javaClass)) {
             javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
         }
-        datatype.setAdaptedClassName(javaClass); //$NON-NLS-1$
+        datatype.setAdaptedClassName(javaClass);
         datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
         if (element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
             datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
@@ -124,14 +124,16 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     }
 
     public void setAdaptedClass(Class<?> clazz) {
-        this.adaptedClass = clazz;
-        this.className = clazz.getName();
+        adaptedClass = clazz;
+        className = clazz.getName();
     }
 
+    @Override
     public String getAdaptedClassName() {
         return className;
     }
 
+    @Override
     protected void clearCache() {
         super.clearCache();
         adaptedClass = null;
@@ -140,17 +142,18 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public Class getAdaptedClass() {
         if (adaptedClass == null) {
             try {
                 classLoaderProvider = ((IpsProject)ipsProject).getClassLoaderProviderForJavaProject();
-                adaptedClass = classLoaderProvider.getClassLoader().loadClass(this.className);
+                adaptedClass = classLoaderProvider.getClassLoader().loadClass(className);
                 listener = new Listener();
                 classLoaderProvider.addClasspathChangeListener(listener);
             } catch (Throwable t) {
                 IpsPlugin.log(t);
-                adaptedClass = null; // datatype remains invalid as long as the class can't be loaded.
+                adaptedClass = null; // datatype remains invalid as long as the class can't be
+                                     // loaded.
                 // or an exception occurs while adding the classpath change listener
             }
         }
