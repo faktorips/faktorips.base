@@ -1,1 +1,0 @@
-This project contains the Faktor-IPS runtime for Java 1.5.
