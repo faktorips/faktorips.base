@@ -33,16 +33,14 @@ Export-Package: org.faktorips.devtools.htmlexport;
   uses:="org.faktorips.devtools.core.model.type,
    org.faktorips.devtools.core.internal.model.pctype,
    org.faktorips.devtools.htmlexport.pages.elements,
+   org.faktorips.devtools.htmlexport.documentor,
    org.faktorips.devtools.core.internal.model.productcmpttype,
    org.faktorips.devtools.core.model.ipsobject",
  org.faktorips.devtools.htmlexport.helper;uses:="org.faktorips.devtools.core.model.ipsproject,org.faktorips.devtools.htmlexport.documentor",
  org.faktorips.devtools.htmlexport.helper.filter;uses:="org.faktorips.devtools.core.model,org.faktorips.devtools.core.model.ipsproject",
  org.faktorips.devtools.htmlexport.helper.html;uses:="org.faktorips.devtools.htmlexport.pages.elements,junit.framework",
  org.faktorips.devtools.htmlexport.helper.path;uses:="org.faktorips.devtools.core.model,org.faktorips.devtools.core.model.ipsproject,org.faktorips.devtools.core.model.ipsobject",
- org.faktorips.devtools.htmlexport.io;uses:="org.faktorips.devtools.core.model,org.faktorips.devtools.htmlexport.documentor",
- org.faktorips.devtools.htmlexport.io.html;uses:="org.faktorips.devtools.core.model,org.faktorips.devtools.htmlexport.documentor,org.faktorips.devtools.htmlexport.io",
  org.faktorips.devtools.htmlexport.pages.elements;uses:="org.faktorips.devtools.core.model,org.faktorips.devtools.htmlexport.generators",
- org.faktorips.devtools.htmlexport.pages.helper;uses:="org.faktorips.devtools.htmlexport.pages.elements",
  org.faktorips.devtools.htmlexport.properties;uses:="org.eclipse.ui.dialogs,org.eclipse.swt.widgets",
  org.faktorips.devtools.htmlexport.standard;uses:="org.faktorips.devtools.htmlexport.documentor,org.faktorips.devtools.htmlexport",
- org.faktorips.devtools.htmlexport.standard.generators;uses:="org.faktorips.devtools.htmlexport.pages.elements,org.faktorips.devtools.core.model.ipsproject"
+ org.faktorips.devtools.htmlexport.standard.pages;uses:="org.faktorips.devtools.htmlexport.pages.elements,org.faktorips.devtools.core.model.ipsproject"

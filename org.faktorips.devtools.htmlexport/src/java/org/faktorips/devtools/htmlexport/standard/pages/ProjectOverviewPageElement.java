@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.standard.generators;
+package org.faktorips.devtools.htmlexport.standard.pages;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;

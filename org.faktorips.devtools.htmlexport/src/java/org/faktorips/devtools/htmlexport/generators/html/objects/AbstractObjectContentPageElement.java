@@ -70,8 +70,6 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	private void addValidationErrors() {
 		try {
 			
-			
-			
 			MessageList messageList = object.validate(object.getIpsProject());
 			if (messageList.isEmpty())
 				return;
