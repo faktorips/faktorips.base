@@ -63,7 +63,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     public EnumImportWizard() {
         setWindowTitle(Messages.EnumImportWizard_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumImportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/EnumImportWizard.png")); //$NON-NLS-1$
     }
 
     @Override

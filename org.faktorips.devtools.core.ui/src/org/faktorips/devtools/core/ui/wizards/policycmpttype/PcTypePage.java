@@ -50,12 +50,13 @@ public class PcTypePage extends TypePage {
      */
     public PcTypePage(IStructuredSelection selection) throws JavaModelException {
         super(IpsObjectType.POLICY_CMPT_TYPE, selection, Messages.PcTypePage_title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.png")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewPolicyCmptTypeWizard.png")); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
         return toolkit.createPcTypeRefControl(null, container);
     }
@@ -64,12 +65,13 @@ public class PcTypePage extends TypePage {
      * Associates the product component type page
      */
     public void setProductCmptTypePage(ProductCmptTypePage page) {
-        this.pageOfAssociatedType = page;
+        pageOfAssociatedType = page;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
 
@@ -85,6 +87,7 @@ public class PcTypePage extends TypePage {
     /**
      * Returns true if the page is complete and the policy component type is configurable.
      */
+    @Override
     public boolean canFlipToNextPage() {
         return isPolicyCmptTypeConfigurable();
     }
@@ -99,6 +102,7 @@ public class PcTypePage extends TypePage {
     /**
      * Returns true if the page is complete and the policy component type is not configurable.
      */
+    @Override
     public boolean finishWhenThisPageIsComplete() {
         return isPageComplete() && !isPolicyCmptTypeConfigurable();
     }
@@ -111,6 +115,7 @@ public class PcTypePage extends TypePage {
         return settings;
     }
 
+    @Override
     protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
         super.valueChangedExtension(e);
         if (e.field == configurableField) {
@@ -123,6 +128,7 @@ public class PcTypePage extends TypePage {
     /**
      * Sets the configurable property to true if the supertype is also configurable and disables it.
      */
+    @Override
     protected void supertypeChanged(TextButtonField supertypeField) throws CoreException {
         String qualifiedName = (String)supertypeField.getValue();
         IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(qualifiedName);
@@ -139,6 +145,7 @@ public class PcTypePage extends TypePage {
         }
     }
 
+    @Override
     protected void validateName() throws CoreException {
         super.validateName();
         if (getIpsProject() == null) {
@@ -151,6 +158,7 @@ public class PcTypePage extends TypePage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validatePageExtension() throws CoreException {
         super.validatePageExtension();
         if (isPolicyCmptTypeConfigurable()) {
@@ -177,7 +185,8 @@ public class PcTypePage extends TypePage {
     /**
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
+    @Override
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
         if (isPolicyCmptTypeConfigurable()) {
             IPolicyCmptType type = (IPolicyCmptType)newIpsObject;

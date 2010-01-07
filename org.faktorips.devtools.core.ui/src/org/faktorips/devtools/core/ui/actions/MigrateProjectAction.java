@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,22 +25,23 @@ import org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardActio
  * @author Thorsten Guenther
  */
 public class MigrateProjectAction extends Action {
-	private IWorkbenchWindow window;
+    private IWorkbenchWindow window;
     private IStructuredSelection selection;
-	
-	public MigrateProjectAction(IWorkbenchWindow window, IStructuredSelection selection){
-		super();
-		this.window = window;
+
+    public MigrateProjectAction(IWorkbenchWindow window, IStructuredSelection selection) {
+        super();
+        this.window = window;
         this.selection = selection;
-		setText(Messages.MigrateProjectAction_text);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("MigrationWizard.gif")); //$NON-NLS-1$
-	}
-	
-	public void run(){
+        setText(Messages.MigrateProjectAction_text);
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("MigrationWizard.gif")); //$NON-NLS-1$
+    }
+
+    @Override
+    public void run() {
         OpenMigrationWizardAction action = new OpenMigrationWizardAction();
         action.init(window);
         action.selectionChanged(this, selection);
         action.run(this);
-	}
+    }
 
 }

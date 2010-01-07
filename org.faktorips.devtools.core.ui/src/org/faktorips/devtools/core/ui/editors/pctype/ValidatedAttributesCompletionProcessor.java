@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -62,8 +63,8 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
 
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAttribute attribute, int documentOffset) {
         String name = attribute.getName();
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), attribute
-                .getImage(), name, null, attribute.getDescription());
+        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
+                .getImageHandling().getImage(attribute), name, null, attribute.getDescription());
         result.add(proposal);
     }
 }

@@ -117,13 +117,13 @@ public class DeepCopyWizard extends ResizableWizard {
 
         if (type == TYPE_COPY_PRODUCT) {
             super.setWindowTitle(Messages.DeepCopyWizard_title);
-            super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/DeepCopyWizard.png")); //$NON-NLS-1$
         } else {
             String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
             super.setWindowTitle(title);
-            super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/NewVersionWizard.png")); //$NON-NLS-1$
         }
     }

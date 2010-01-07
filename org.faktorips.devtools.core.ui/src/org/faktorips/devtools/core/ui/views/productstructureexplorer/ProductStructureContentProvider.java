@@ -64,7 +64,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // // add product cmpt associations and product cmpts
         // if (parentElement instanceof IProductCmptReference) {
         // IProductCmptTypeRelationReference[] ralationReferences = structure
-        // .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement, true);
+        // .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement, false);
         // if (ralationReferences.length > 1) {
         // children.addAll(Arrays.asList(ralationReferences));
         // } else {

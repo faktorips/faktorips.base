@@ -40,7 +40,7 @@ public class NewEnumContentAction extends Action {
 
         this.window = window;
         setText(Messages.NewEnumContentAction_title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE));
     }
 
     /**

@@ -64,6 +64,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -104,7 +105,6 @@ import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 /**
@@ -277,7 +277,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
             }
 
             @Override
@@ -295,10 +295,11 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
+        final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif");
         Action refreshAction = new Action() {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+                return refreshDescriptor;
             }
 
             @Override
@@ -321,42 +322,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
 
         // collapse all action
-        toolBarManager.add(new Action() {
-            @Override
-            public void run() {
-                tree.collapseAll();
-            }
+        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("CollapseAll.gif")) {//$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        tree.collapseAll();
+                    }
 
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.ProductStructureExplorer_menuCollapseAll_toolkit;
-            }
-        });
+                    @Override
+                    public String getToolTipText() {
+                        return Messages.ProductStructureExplorer_menuCollapseAll_toolkit;
+                    }
+                });
 
         // clear action
-        toolBarManager.add(new Action() {
-            @Override
-            public void run() {
-                tree.setInput(null);
-                tree.refresh();
-                showEmptyMessage();
-            }
+        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        tree.setInput(null);
+                        tree.refresh();
+                        showEmptyMessage();
+                    }
 
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.ProductStructureExplorer_tooltipClear;
-            }
-        });
+                    @Override
+                    public String getToolTipText() {
+                        return Messages.ProductStructureExplorer_tooltipClear;
+                    }
+                });
     }
 
     /**
@@ -411,13 +402,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         });
 
         prevButton = new Button(adjustmentDatePanel, SWT.NONE);
-        prevButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowLeft_small.gif")); //$NON-NLS-1$
+        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true)); //$NON-NLS-1$
         prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip,
                 generationConceptName));
         prevButton.setEnabled(false);
 
         nextButton = new Button(adjustmentDatePanel, SWT.NONE);
-        nextButton.setImage(IpsUIPlugin.getDefault().getImage("ArrowRight_small.gif")); //$NON-NLS-1$
+        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true)); //$NON-NLS-1$
         nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip,
                 generationConceptName));
         nextButton.setEnabled(false);
@@ -475,7 +466,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         labelProvider = new ProductStructureLabelProvider();
 
-        tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingLabelProvider decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager
+                .getLabelDecorator());
+        tree.setLabelProvider(decoratedLabelProvider);
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));

@@ -258,17 +258,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterInput);
-                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterExpected);
-                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.COMBINED) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterCombined);
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterCombined_ToolTip);
             }
         }
@@ -357,7 +357,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 if (association == null) {
                     return null;
                 }
-                return association.getImage();
+                return IpsUIPlugin.getImageHandling().getImage(association);
             } catch (CoreException e) {
                 return null;
             }
@@ -493,7 +493,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResult);
                 actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResult);
             }
-            actionStoreActualValue.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+            actionStoreActualValue.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "TestCaseStoreExpResult.gif")); //$NON-NLS-1$
 
             manager.add(actionStoreActualValue);
@@ -1067,7 +1067,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionAll.setChecked(false);
         actionAll.setToolTipText(Messages.TestCaseSection_ToolBar_FlatStructure);
-        actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(detailAreaSection);
         toolBarManager.add(actionAll);
@@ -1085,8 +1085,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionAssociation.setChecked(true); // default is show associations
         actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
-        actionAssociation.setImageDescriptor(IpsUIPlugin.getDefault()
-                .getImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+        actionAssociation.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(structureSection);
         toolBarManager.add(actionAssociation);
@@ -1106,7 +1106,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
         actionRunAndStoreExpectedResult.setToolTipText(Messages.TestCaseSection_Action_RunTestAndStoreExpectedResults);
-        actionRunAndStoreExpectedResult.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
+        actionRunAndStoreExpectedResult.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "TestCaseRunAndStoreExpResult.png")); //$NON-NLS-1$
         // enable run test case functionality only if a toc file exists for this test case
         try {
@@ -1123,7 +1123,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
         actionTest.setToolTipText(Messages.TestCaseSection_ToolBar_RunTest);
-        actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        actionTest.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
 
         // enable run test case functionality only if a toc file exists for this test case
         try {

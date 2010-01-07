@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,12 +37,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * Dialog for changing the sort order of IIpsPackageFragments.
- *
+ * 
  * @author Markus Blum
  */
 public class IpsPackageSortDefDialog extends TrayDialog {
@@ -51,7 +52,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
     private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
     private static final int SETTINGS_DEFAULT_HEIGTH = 480;
-    private static final int SETTINGS_DEFAULT_WIDTH  = 640;
+    private static final int SETTINGS_DEFAULT_WIDTH = 640;
 
     private String title;
     private IIpsProject project;
@@ -69,7 +70,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
     /**
      * New instance.
-     *
+     * 
      * @param parentShell The active shell.
      * @param title Title of the dialog.
      * @param project The selected IIpsProject.
@@ -84,7 +85,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         toolkit = new UIToolkit(null);
 
         int shellStyle = getShellStyle();
-        setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX );
+        setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX);
 
         loadDialogSettings();
     }
@@ -92,11 +93,12 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         getShell().setText(title);
 
         container = (Composite)super.createDialogArea(parent);
-        GridData layoutData = new GridData(SWT.FILL,SWT.FILL, true, true);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 
         // restore size
         int width = Math.max(settings.getInt(SETTINGS_SIZE_X), layoutData.heightHint);
@@ -115,7 +117,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         Dialog.applyDialogFont(parent);
 
-        //LayoutDebugUtil.colorize(container);
+        // LayoutDebugUtil.colorize(container);
 
         return container;
     }
@@ -148,15 +150,15 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         restoreComposite.setLayout(layout);
 
         restore = toolkit.createButton(restoreComposite, Messages.IpsPackageSortDefDialog_restore);
-        restore.addSelectionListener(new SelectionAdapter()
-        {
+        restore.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 restorePressed();
                 treeViewer.refresh();
             }
         });
 
-        restoreComposite.setLayoutData(new GridData(SWT.TRAIL,SWT.DEFAULT, false, false));
+        restoreComposite.setLayoutData(new GridData(SWT.TRAIL, SWT.DEFAULT, false, false));
     }
 
     /**
@@ -166,7 +168,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         Composite sortComposite = toolkit.createComposite(parent);
 
-        sortComposite.setLayoutData(new GridData(SWT.FILL,SWT.FILL, true, true));
+        sortComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         GridLayout layout = new GridLayout();
         layout.numColumns = 2;
@@ -182,7 +184,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private void createTreeViewer(Composite sortComposite) {
         treeViewer = new TreeViewer(sortComposite);
         treeViewer.setLabelProvider(new IpsPackageSortDefLabelProvider());
-        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL,SWT.FILL, true, true));
+        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         treeViewer.setContentProvider(sortOrderPM);
         treeViewer.setInput(sortOrderPM);
@@ -202,8 +204,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         upDownComposite.setLayout(layout);
 
         up = toolkit.createButton(upDownComposite, Messages.IpsPackageSortDefDialog_up);
-        up.addSelectionListener(new SelectionAdapter()
-        {
+        up.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 upPressed();
                 treeViewer.refresh();
@@ -213,11 +215,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         setButtonLayoutData(up);
 
         down = toolkit.createButton(upDownComposite, Messages.IpsPackageSortDefDialog_down);
-        down.addSelectionListener(new SelectionAdapter()
-        {
+        down.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 downPressed();
-             }
+            }
         });
         setButtonLayoutData(down);
     }
@@ -238,7 +240,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>down</code>.
      */
     protected void downPressed() {
-        Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+        Object element = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
@@ -251,18 +253,19 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>up</code>.
      */
     protected void upPressed() {
-        Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+        Object element = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
-         }
+        }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void okPressed() {
         // write changes to filesystem.
         try {
@@ -277,6 +280,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean close() {
 
         saveDialogSettings();
@@ -327,23 +331,26 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
     /**
      * New LabelProvider for the TreeViewer <code>treeViewer</code>.
+     * 
      * @author Markus Blum
      */
     private class IpsPackageSortDefLabelProvider extends LabelProvider {
 
+        @Override
         public Image getImage(Object element) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
 
             Image image;
             if (fragment.isDefaultPackage()) {
-                image = fragment.getRoot().getImage();
+                image = IpsUIPlugin.getImageHandling().getImage(fragment.getRoot());
             } else {
-                image = fragment.getImage();
+                image = IpsUIPlugin.getImageHandling().getImage(fragment);
             }
 
             return image;
         }
 
+        @Override
         public String getText(Object element) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             String name;

@@ -28,6 +28,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -85,7 +89,6 @@ import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -100,7 +103,6 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
-import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -114,6 +116,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
@@ -124,9 +127,8 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeSection extends IpsSection {
-    private Image empytImage;
 
-    private HashMap cachedProblemImageDescriptors = new HashMap();
+    private ResourceManager resourceManager;
 
     // The editing test case type
     private ITestCaseType testCaseType;
@@ -175,7 +177,7 @@ public class TestCaseTypeSection extends IpsSection {
     // used to update the attribute edit fields if the test case type changed,
     // thus if the type of a test policy cmpt type param changed the attribute will
     // show the correct validation result
-    private List attributeControllers = new ArrayList();
+    private List<UIController> attributeControllers = new ArrayList<UIController>();
 
     // Object cache for the detail area
     private SectionDetailObjectCache objectCache;
@@ -269,13 +271,13 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private class SectionDetailObjectCache {
         // Containers for all sections and their objects
-        private HashMap sections = new HashMap();
-        private HashMap sectionObjects = new HashMap();
-        private HashMap sectionFirstEditField = new HashMap();
-        private HashMap attributeIdx = new HashMap();
-        private HashMap sectionButtons = new HashMap();
-        private HashMap attributeTableViewers = new HashMap();
-        private HashMap attributeDetailsMap = new HashMap();
+        private HashMap<Integer, Section> sections = new HashMap<Integer, Section>();
+        private HashMap<Integer, IIpsObjectPart> sectionObjects = new HashMap<Integer, IIpsObjectPart>();
+        private HashMap<Integer, EditField> sectionFirstEditField = new HashMap<Integer, EditField>();
+        private HashMap<Integer, Integer> attributeIdx = new HashMap<Integer, Integer>();
+        private HashMap<Integer, SectionButtons> sectionButtons = new HashMap<Integer, SectionButtons>();
+        private HashMap<Integer, TableViewer> attributeTableViewers = new HashMap<Integer, TableViewer>();
+        private HashMap<Integer, AttributeDetails> attributeDetailsMap = new HashMap<Integer, AttributeDetails>();
 
         /*
          * Returns the key identifier for the given object
@@ -324,28 +326,27 @@ public class TestCaseTypeSection extends IpsSection {
                 mainSectionObject = (IIpsObjectPart)((ITestAttribute)mainSectionObject).getParent();
             }
 
-            return (Section)sections.get(getKeyFor(mainSectionObject));
+            return sections.get(getKeyFor(mainSectionObject));
         }
 
         public IIpsObjectPart getObject(IIpsObjectPart object) {
-            return (IIpsObjectPart)sectionObjects.get(getKeyFor(object));
+            return sectionObjects.get(getKeyFor(object));
         }
 
-        public Collection getAllSections() {
+        public Collection<Section> getAllSections() {
             return sections.values();
         }
 
         public EditField getSectionFirstEditField(Object selected) {
-            return (EditField)sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
+            return sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
         }
 
         public Integer getIdxFromAttribute(ITestAttribute testAttribute) {
-            return (Integer)attributeIdx.get(getKeyFor(testAttribute));
+            return attributeIdx.get(getKeyFor(testAttribute));
         }
 
         public ITestAttribute getAttributeByIndex(Integer idx) {
-            for (Iterator iter = attributeIdx.keySet().iterator(); iter.hasNext();) {
-                Integer key = (Integer)iter.next();
+            for (Integer key : attributeIdx.keySet()) {
                 if (idx.equals(attributeIdx.get(key))) {
                     return (ITestAttribute)getObjectByKey(key);
                 }
@@ -353,19 +354,19 @@ public class TestCaseTypeSection extends IpsSection {
             return null;
         }
 
-        public Collection getAllSectionKeys() {
+        public Collection<Integer> getAllSectionKeys() {
             return sections.keySet();
         }
 
         public Section getSectionByKey(Integer key) {
-            return (Section)sections.get(key);
+            return sections.get(key);
         }
 
         public Object getObjectByKey(Integer key) {
             return sectionObjects.get(key);
         }
 
-        public Collection getAllSectionButtons() {
+        public Collection<SectionButtons> getAllSectionButtons() {
             return sectionButtons.values();
         }
 
@@ -374,10 +375,10 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public TableViewer getAttributeTable(ITestParameter testParam) {
-            return (TableViewer)attributeTableViewers.get(getKeyFor(testParam));
+            return attributeTableViewers.get(getKeyFor(testParam));
         }
 
-        public Collection getAllAttributeTable() {
+        public Collection<TableViewer> getAllAttributeTable() {
             return attributeTableViewers.values();
         }
 
@@ -386,10 +387,10 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public AttributeDetails getAttributeDetails(ITestParameter testParam) {
-            return (AttributeDetails)attributeDetailsMap.get(getKeyFor(testParam));
+            return attributeDetailsMap.get(getKeyFor(testParam));
         }
 
-        public Collection getAllAttributeDetails() {
+        public Collection<AttributeDetails> getAllAttributeDetails() {
             return attributeDetailsMap.values();
         }
     }
@@ -635,60 +636,68 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider {
 
+        private ResourceManager resourceManager;
+
         private IIpsProject ipsProject;
 
         public TestAttributeTblLabelProvider() {
             ipsProject = testCaseType.getIpsProject();
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+
+        @Override
+        public void dispose() {
+            resourceManager.dispose();
+            super.dispose();
         }
 
         public Image getColumnImage(Object element, int columnIndex) {
-            Image defaultImage = null;
+            Image baseImage;
             try {
                 ITestAttribute testAttribute = ((ITestAttribute)element);
                 MessageList msgList = testAttribute.validate(ipsProject);
                 switch (columnIndex) {
                     case 0:
                         // test attribute name (used in test case)
-                        defaultImage = empytImage;
                         msgList = msgList.getMessagesFor(element, IIpsElement.PROPERTY_NAME);
                         if (!msgList.isEmpty()) {
-                            return getImageForMsgList(defaultImage, msgList);
+                            return (Image)resourceManager.get(IpsProblemOverlayIcon.getOverlay(msgList.getSeverity()));
                         }
                         return null;
                     case 1:
                         // type input or expected
-                        defaultImage = testAttribute.getTestAttributeType().getImage();
-                        msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
-                        if (!msgList.isEmpty()) {
-                            return getImageForMsgList(defaultImage, msgList);
+                        if (testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT) {
+                            baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
+                                    .createImageDescriptor("TestCaseExpResult.gif"));
+                        } else {
+                            baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
+                                    .createImageDescriptor("TestCaseInput.gif"));
                         }
+                        msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
                         break;
                     case 2:
                         // attribute
                         if (StringUtils.isEmpty(testAttribute.getAttribute())) {
                             return null;
                         }
-                        defaultImage = getImageForAttribute(element);
+                        baseImage = getImageForAttribute(element);
                         msgList = msgList.getMessagesFor(element);
-                        if (!msgList.isEmpty()) {
-                            return getImageForMsgList(defaultImage, msgList);
-                        }
                         break;
                     case 3:
                         // datatype
-                        defaultImage = IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
+                        baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "Datatype.gif")); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
-                        if (!msgList.isEmpty()) {
-                            return getImageForMsgList(defaultImage, msgList);
-                        }
                         break;
                     default:
-                        break;
+                        return null;
                 }
+                return (Image)resourceManager.get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
+                        .getSeverity()));
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
+                return null;
             }
-            return defaultImage;
         }
 
         public String getColumnText(Object element, int columnIndex) {
@@ -734,7 +743,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         private Image getImageForAttribute(Object element) throws CoreException {
-            return ((ITestAttribute)element).getImage();
+            return IpsUIPlugin.getImageHandling().getImage((ITestAttribute)element);
         }
     }
 
@@ -939,7 +948,8 @@ public class TestCaseTypeSection extends IpsSection {
             final String title, String detailTitle, ScrolledForm form) {
         super(parent, ExpandableComposite.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
-        empytImage = new Image(getDisplay(), 16, 16);
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
+
         objectCache = new SectionDetailObjectCache();
 
         this.testCaseType = testCaseType;
@@ -956,17 +966,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     @Override
     public void dispose() {
-        empytImage.dispose();
-
-        for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
-            ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
-            Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
-            if (problemImage != null) {
-                problemImage.dispose();
-            }
-        }
-        cachedProblemImageDescriptors.clear();
-
+        resourceManager.dispose();
         super.dispose();
     }
 
@@ -1084,7 +1084,7 @@ public class TestCaseTypeSection extends IpsSection {
         };
         actionAll.setChecked(showAll);
         actionAll.setToolTipText(Messages.TestCaseTypeSection_Action_ShowAll_ToolTip);
-        actionAll.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
         form.getToolBarManager().add(actionAll);
         form.updateToolBar();
     }
@@ -1200,11 +1200,23 @@ public class TestCaseTypeSection extends IpsSection {
         if (errorMessageText.length() > 0) {
             FormToolkit toolkit = new FormToolkit(form.getParent().getDisplay());
             FormText formText = toolkit.createFormText(section, false);
-            formText.setImage(
-                    "imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage(), msgList)); //$NON-NLS-1$
-            formText
-                    .setImage(
-                            "imageassociation", getImageForMsgList(IpsPlugin.getDefault().getImage("Association.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
+            if (testParam instanceof ITestPolicyCmptTypeParameter) {
+                ITestPolicyCmptTypeParameter pcTypeParameter = (ITestPolicyCmptTypeParameter)testParam;
+                try {
+                    IPolicyCmptType pcType = pcTypeParameter.findPolicyCmptType(pcTypeParameter.getIpsProject());
+                    Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
+                    ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
+                            .getSeverity());
+                    formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage));
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+            Image baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "Association.gif"));
+            ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
+                    .getSeverity());
+            formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$ 
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
             section.setDescriptionControl(formText);
@@ -1294,9 +1306,8 @@ public class TestCaseTypeSection extends IpsSection {
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         updateDetailButtonStatus(null);
-        Collection allAttributeDetails = objectCache.getAllAttributeDetails();
-        for (Iterator iter = allAttributeDetails.iterator(); iter.hasNext();) {
-            AttributeDetails details = (AttributeDetails)iter.next();
+        Collection<AttributeDetails> allAttributeDetails = objectCache.getAllAttributeDetails();
+        for (AttributeDetails details : allAttributeDetails) {
             toolkit.setDataChangeable(details.attributesPolicyCmptType, false);
         }
     }
@@ -1422,11 +1433,11 @@ public class TestCaseTypeSection extends IpsSection {
             return;
         }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
-
+        ITestAttribute testAttribute = (ITestAttribute)object;
         ITestParameter param = (ITestParameter)object.getParent();
 
-        for (Iterator iter = getSelectedAttributes(object).iterator(); iter.hasNext();) {
-            ((ITestAttribute)iter.next()).delete();
+        for (Iterator<ITestAttribute> iter = getSelectedAttributes(testAttribute).iterator(); iter.hasNext();) {
+            iter.next().delete();
         }
 
         redrawDetailArea((ITestPolicyCmptTypeParameter)param, (ITestPolicyCmptTypeParameter)param);
@@ -1549,36 +1560,10 @@ public class TestCaseTypeSection extends IpsSection {
     }
 
     /*
-     * Returns the image for the given message list (e.g. if there is an error return a problem
-     * image)
-     */
-    private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
-        // get the cached problem descriptor for the base image
-        String key = getKey(defaultImage, msgList.getSeverity());
-        ProblemImageDescriptor descriptor = (ProblemImageDescriptor)cachedProblemImageDescriptors.get(key);
-        if (descriptor == null && defaultImage != null) {
-            descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
-            cachedProblemImageDescriptors.put(key, descriptor);
-        }
-        return IpsPlugin.getDefault().getImage(descriptor);
-    }
-
-    /*
-     * Returns an unique key for the given image and severity compination.
-     */
-    private String getKey(Image image, int severity) {
-        if (image == null) {
-            return null;
-        }
-        return image.hashCode() + "_" + severity; //$NON-NLS-1$
-    }
-
-    /*
      * Update the enable status of the detail buttons
      */
     private void updateDetailButtonStatus(IIpsObjectPart currSelectedDetailObject) {
-        for (Iterator iter = objectCache.getAllSectionButtons().iterator(); iter.hasNext();) {
-            SectionButtons buttons = (SectionButtons)iter.next();
+        for (SectionButtons buttons : objectCache.getAllSectionButtons()) {
             buttons.updateDetailButtonStatus(getRootSectionObject(currSelectedDetailObject), currSelectedDetailObject);
         }
     }
@@ -1602,8 +1587,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Reset the selection color of all sections
      */
     private void resetSectionSelectedColor() {
-        for (Iterator iter = objectCache.getAllSections().iterator(); iter.hasNext();) {
-            Section section = (Section)iter.next();
+        for (Section section : objectCache.getAllSections()) {
             section.setBackground(form.getBackground());
         }
     }
@@ -2015,8 +1999,8 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Return the selected attributes in the attribute table
      */
-    private Set getSelectedAttributes(IIpsObjectPart object) {
-        Set testAttributesSelected = new HashSet(1);
+    private Set<ITestAttribute> getSelectedAttributes(ITestAttribute object) {
+        Set<ITestAttribute> testAttributesSelected = new HashSet<ITestAttribute>(1);
         testAttributesSelected.add(object);
 
         ITestParameter param = (ITestParameter)object.getParent();
@@ -2024,8 +2008,9 @@ public class TestCaseTypeSection extends IpsSection {
         if (attributeTable != null) {
             ISelection selection = attributeTable.getSelection();
             if (selection instanceof IStructuredSelection) {
-                for (Iterator iter = ((IStructuredSelection)selection).iterator(); iter.hasNext();) {
-                    Object element = iter.next();
+                IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+                for (Iterator<?> iter = structuredSelection.iterator(); iter.hasNext();) {
+                    ITestAttribute element = (ITestAttribute)iter.next();
                     if (element instanceof ITestAttribute) {
                         testAttributesSelected.add(element);
                     }
@@ -2039,11 +2024,11 @@ public class TestCaseTypeSection extends IpsSection {
      * Moves the give test attribute up or down
      */
     private void moveTestAttribute(ITestAttribute testAttribute, boolean up) {
-        Set selectedAttributes = getSelectedAttributes(testAttribute);
+        Set<ITestAttribute> selectedAttributes = getSelectedAttributes(testAttribute);
         int[] selectedAttributesIndexes = new int[selectedAttributes.size()];
         int i = 0;
-        for (Iterator iter = selectedAttributes.iterator(); iter.hasNext();) {
-            ITestAttribute element = (ITestAttribute)iter.next();
+        for (Iterator<ITestAttribute> iter = selectedAttributes.iterator(); iter.hasNext();) {
+            ITestAttribute element = iter.next();
             Integer testAttributeIdx = objectCache.getIdxFromAttribute(element);
             if (testAttributeIdx == null) {
                 throw new RuntimeException(Messages.TestCaseTypeSection_Error_WrongTestAttributeIndex);
@@ -2057,10 +2042,10 @@ public class TestCaseTypeSection extends IpsSection {
         redrawDetailArea(testPolicyCmptTypeParameter, testAttribute);
 
         TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParameter);
-        List newAttributeIdx = new ArrayList(selectedAttributes.size());
+        List<ITestAttribute> newAttributeIdx = new ArrayList<ITestAttribute>(selectedAttributes.size());
         if (attrTable != null) {
-            for (int j = 0; j < movedAttributesIndexes.length; j++) {
-                ITestAttribute movedAttribute = objectCache.getAttributeByIndex(new Integer(movedAttributesIndexes[j]));
+            for (int movedAttributesIndexe : movedAttributesIndexes) {
+                ITestAttribute movedAttribute = objectCache.getAttributeByIndex(new Integer(movedAttributesIndexe));
                 if (movedAttribute != null) {
                     newAttributeIdx.add(movedAttribute);
                 }
@@ -2087,7 +2072,7 @@ public class TestCaseTypeSection extends IpsSection {
             testCaseType.moveTestParameters(selectedTestParamIndexes, up);
         } else {
             ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)testParameter.getParent();
-            List childs = Arrays.asList(parent.getTestPolicyCmptTypeParamChilds());
+            List<ITestPolicyCmptTypeParameter> childs = Arrays.asList(parent.getTestPolicyCmptTypeParamChilds());
             selectedTestParamIndexes = new int[] { childs.indexOf(testParameter) };
             parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
         }
@@ -2220,8 +2205,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Refresh the attribute table
      */
     private void refreshAttributeTable() {
-        for (Iterator iter = objectCache.getAllAttributeTable().iterator(); iter.hasNext();) {
-            TableViewer table = (TableViewer)iter.next();
+        for (TableViewer table : objectCache.getAllAttributeTable()) {
             table.refresh();
         }
     }
@@ -2254,8 +2238,8 @@ public class TestCaseTypeSection extends IpsSection {
      * Refreshs all section titles
      */
     private void refreshSectionTitles() {
-        for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
-            Integer key = (Integer)iter.next();
+        for (Iterator<Integer> iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
+            Integer key = iter.next();
             Section section = objectCache.getSectionByKey(key);
             if (section.isDisposed()) {
                 continue;
@@ -2273,9 +2257,8 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void redrawDetailArea(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam, IIpsObjectPart selectedObject) {
         // store the expanded sections state
-        List expandedSectionKeys = new ArrayList();
-        for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
-            Integer key = (Integer)iter.next();
+        List<Integer> expandedSectionKeys = new ArrayList<Integer>();
+        for (Integer key : objectCache.getAllSectionKeys()) {
             if (objectCache.getSectionByKey(key).isExpanded()) {
                 expandedSectionKeys.add(key);
             }
@@ -2290,8 +2273,8 @@ public class TestCaseTypeSection extends IpsSection {
             selectSection(objectCache.getSection(selectedObject));
 
             // restore the expanded section states
-            for (Iterator iter = expandedSectionKeys.iterator(); iter.hasNext();) {
-                Section section = objectCache.getSectionByKey((Integer)iter.next());
+            for (Integer integer : expandedSectionKeys) {
+                Section section = objectCache.getSectionByKey(integer);
                 if (section == null) {
                     return;
                 }
@@ -2324,8 +2307,8 @@ public class TestCaseTypeSection extends IpsSection {
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields
-                    for (Iterator iter = attributeControllers.iterator(); iter.hasNext();) {
-                        UIController controller = (UIController)iter.next();
+                    for (Iterator<UIController> iter = attributeControllers.iterator(); iter.hasNext();) {
+                        UIController controller = iter.next();
                         controller.updateUI();
                     }
                     updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));

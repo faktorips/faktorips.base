@@ -19,10 +19,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
 public class DeepCopyLabelProvider implements ILabelProvider {
@@ -62,14 +62,14 @@ public class DeepCopyLabelProvider implements ILabelProvider {
      */
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
-            return ((IProductCmptReference)element).getProductCmpt().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeRelationReference)element).getRelation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(
+                    ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
         }
-
-        return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$
+        return null;
     }
 
     /**
@@ -89,6 +89,6 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     }
 
     public Image getErrorImage() {
-        return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
+        return IpsUIPlugin.getImageHandling().getSharedImage("error_tsk.gif", true); //$NON-NLS-1$
     }
 }

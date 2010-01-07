@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -52,12 +53,13 @@ public class NewFolderAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.NewFolderAction_name);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
         IContainer container = getContainer(selected);
@@ -72,28 +74,28 @@ public class NewFolderAction extends IpsAction {
         InputDialog d = new InputDialog(shell, Messages.NewFolderAction_titleNewFolder, message,
                 Messages.NewFolderAction_valueNewFolder, validator);
         d.open();
-        if (d.getReturnCode() == InputDialog.OK) {
+        if (d.getReturnCode() == Window.OK) {
             createFolder(container, d.getValue());
         }
     }
 
     private IContainer getContainer(Object selected) {
-        if(selected == null){
+        if (selected == null) {
             return null;
         }
-        IResource res= null;
+        IResource res = null;
         if (selected instanceof IIpsProject) {
-            res= ((IIpsProject)selected).getProject();
+            res = ((IIpsProject)selected).getProject();
         } else if (selected instanceof IIpsElement) {
-            res= ((IIpsElement)selected).getEnclosingResource();
+            res = ((IIpsElement)selected).getEnclosingResource();
         } else if (selected instanceof IResource) {
-            res= (IResource)selected;
+            res = (IResource)selected;
         }
         // search for next folder
         while (res != null && !(res instanceof IContainer)) {
             res = res.getParent();
         }
-        return (IContainer) res;
+        return (IContainer)res;
     }
 
     public void createFolder(IContainer container, String name) {
@@ -106,9 +108,9 @@ public class NewFolderAction extends IpsAction {
 
     /**
      * If <code>createResource</code> is false this method creates an <code>IFolder</code> which
-     * might or might not exist. If <code>createResource</code> is true folders are
-     * created in the filsystem. In this case the method creates the folder represented by the given
-     * path string, and all of its parentfolders if they have not been existing yet.
+     * might or might not exist. If <code>createResource</code> is true folders are created in the
+     * filsystem. In this case the method creates the folder represented by the given path string,
+     * and all of its parentfolders if they have not been existing yet.
      */
     private IFolder conditionalCreateFolder(IContainer parent, String name, boolean createResource) {
         if (name.indexOf(DOT) != -1) {
@@ -147,7 +149,8 @@ public class NewFolderAction extends IpsAction {
     }
 
     /**
-     * Checks that the entered name does not result in an existing folder. 
+     * Checks that the entered name does not result in an existing folder.
+     * 
      * @author Thorsten Guenther
      * @author Stefan Widmaier
      */
@@ -168,13 +171,14 @@ public class NewFolderAction extends IpsAction {
             if (newText.trim().equals(EMPTY_STRING)) {
                 return Messages.NewFolderAction_InvalidFoldername;
             }
-            if (JavaConventions.validatePackageName(newText).getSeverity()==IStatus.ERROR) {
+            if (JavaConventions.validatePackageName(newText).getSeverity() == IStatus.ERROR) {
                 return Messages.NewFolderAction_InvalidFoldername;
             }
             IFolder folder = getFolder(parent, newText);
             if (folder != null) {
                 if (folder.exists()) {
-                    return NLS.bind(Messages.NewFolderAction_msgFolderAllreadyExists, folder.getFullPath().toOSString());
+                    return NLS
+                            .bind(Messages.NewFolderAction_msgFolderAllreadyExists, folder.getFullPath().toOSString());
                 }
             }
             return null;

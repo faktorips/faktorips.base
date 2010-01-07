@@ -29,15 +29,20 @@ public class IpsPackageFragmentWorkbenchAdapter extends IpsElementWorkbenchAdapt
             try {
                 IIpsElement[] children = packageFragment.getChildren();
                 if (children != null && children.length > 0) {
-                    return IpsUIPlugin.getDefault().getImageDescriptor("IpsPackageFragment.gif"); //$NON-NLS-1$
+                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsPackageFragment.gif", true); //$NON-NLS-1$
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return IpsUIPlugin.getDefault().getImageDescriptor("IpsPackageFragmentEmpty.gif"); //$NON-NLS-1$
+            return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsPackageFragmentEmpty.gif", true); //$NON-NLS-1$
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ImageDescriptor getDefaultImageDescriptor() {
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsPackageFragment.gif", true); //$NON-NLS-1$
     }
 
 }

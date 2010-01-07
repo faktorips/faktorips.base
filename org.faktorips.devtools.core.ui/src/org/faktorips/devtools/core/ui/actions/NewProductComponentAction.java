@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,21 +25,22 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWiza
  */
 public class NewProductComponentAction extends Action {
 
-	private IWorkbenchWindow window;
-	
-	public NewProductComponentAction(IWorkbenchWindow window) {
-		super();
-		this.window = window;
-		setText(Messages.NewProductComponentAction_name);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
-	}
+    private IWorkbenchWindow window;
 
-	/** 
-	 * {@inheritDoc}
-	 */
-	public void run() {
-		OpenNewProductCmptWizardAction o = new OpenNewProductCmptWizardAction();
-		o.init(window);
-		o.run(this);
-	}
+    public NewProductComponentAction(IWorkbenchWindow window) {
+        super();
+        this.window = window;
+        setText(Messages.NewProductComponentAction_name);
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        OpenNewProductCmptWizardAction o = new OpenNewProductCmptWizardAction();
+        o.init(window);
+        o.run(this);
+    }
 }

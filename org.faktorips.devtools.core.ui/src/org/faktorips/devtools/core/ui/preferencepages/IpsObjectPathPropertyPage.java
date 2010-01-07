@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,8 +32,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * <p>Property page for configuring the IPS object path.</p>
- * <p>This class is derived from JDT's BuildPathsPropertyPage.</p>
+ * <p>
+ * Property page for configuring the IPS object path.
+ * </p>
+ * <p>
+ * This class is derived from JDT's BuildPathsPropertyPage.
+ * </p>
  * 
  * @see <div>org.eclipse.jdt.internal.ui.preferences.BuildPathsPropertyPage</div>
  * @author Roman Grutza
@@ -48,8 +52,9 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createContents(Composite parent) {
-        
+
         // ensure the page has no special buttons
         noDefaultAndApplyButton();
 
@@ -75,7 +80,8 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
 
     private Control createForClosedProject(Composite parent) {
         Label label = new Label(parent, SWT.LEFT);
-        label.setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
+        label
+                .setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
         objectPathsContainer = null;
         setValid(true);
         return label;
@@ -94,7 +100,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     }
 
     /*
-     * Determine IPS project instance for which the property page has to be created 
+     * Determine IPS project instance for which the property page has to be created
      */
     private IIpsProject getIpsProject() {
         IProject project = getProject();
@@ -109,11 +115,10 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     private IProject getProject() {
         IAdaptable adaptable = getElement();
         IProject project = null;
-        
+
         if (adaptable instanceof IProject) {
-            project = (IProject) adaptable;
-        }
-        else {
+            project = (IProject)adaptable;
+        } else {
             IJavaElement elem = (IJavaElement)adaptable.getAdapter(IJavaElement.class);
             if (elem instanceof IJavaProject) {
                 project = ((IJavaProject)elem).getProject();
@@ -135,17 +140,21 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setVisible(boolean visible) {
-        
-        if (objectPathsContainer != null) {
-            if (! visible) {
-                if (objectPathsContainer.hasChangesInDialog()) {
-                    String title = Messages.IpsObjectPathPropertyPage_changes_in_dialog_title; 
-                    String message = Messages.IpsObjectPathPropertyPage_apply_discard_applyLater_message; 
-                    String[] buttonLabels = new String[] { Messages.IpsObjectPathPropertyPage_apply_button, Messages.IpsObjectPathPropertyPage_discard_button, Messages.IpsObjectPathPropertyPage_apply_later_button };
 
-                    MessageDialog dialog= new MessageDialog(getShell(), title, null, message, MessageDialog.QUESTION, buttonLabels, 0);
-                    int res= dialog.open();
+        if (objectPathsContainer != null) {
+            if (!visible) {
+                if (objectPathsContainer.hasChangesInDialog()) {
+                    String title = Messages.IpsObjectPathPropertyPage_changes_in_dialog_title;
+                    String message = Messages.IpsObjectPathPropertyPage_apply_discard_applyLater_message;
+                    String[] buttonLabels = new String[] { Messages.IpsObjectPathPropertyPage_apply_button,
+                            Messages.IpsObjectPathPropertyPage_discard_button,
+                            Messages.IpsObjectPathPropertyPage_apply_later_button };
+
+                    MessageDialog dialog = new MessageDialog(getShell(), title, null, message, MessageDialog.QUESTION,
+                            buttonLabels, 0);
+                    int res = dialog.open();
                     if (res == 0) {
                         performOk();
                     } else if (res == 1) {
@@ -167,6 +176,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean performOk() {
         if (objectPathsContainer.hasChangesInDialog()) {
             objectPathsContainer.saveToIpsProjectFile();
@@ -177,6 +187,12 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
             }
         }
         return super.performOk();
+    }
+
+    @Override
+    public void dispose() {
+        objectPathsContainer.dispose();
+        super.dispose();
     }
 
 }

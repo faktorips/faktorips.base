@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,19 +35,20 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Control which displays two lists, seperated by four buttons. The left list
- * contains the source values, the right one the target values. The buttons between
- * the both lists allow to take values from one list to the other. 
+ * Control which displays two lists, seperated by four buttons. The left list contains the source
+ * values, the right one the target values. The buttons between the both lists allow to take values
+ * from one list to the other.
  * <p>
- * To the right of the target list, two buttons allow to modify the sort order
- * of the items in this list.
+ * To the right of the target list, two buttons allow to modify the sort order of the items in this
+ * list.
  * 
  * @author Thorsten Guenther
  */
@@ -55,43 +56,43 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private static final int DATA_COLUMN = 1;
     private static final int IMG_COLUMN = 0;
-    
+
     private Label sourceLabel;
     private Label targetLabel;
-    
-	private UIToolkit toolkit;
-	private TableViewer source;
+
+    private UIToolkit toolkit;
+    private TableViewer source;
     private Table sourceTable;
-	private TableViewer target;
+    private TableViewer target;
     private Table targetTable;
-	private Button addSelected;
-	private Button addAll;
-	private Button removeSelected;
-	private Button removeAll;
-	private Button up;
-	private Button down;
-    
+    private Button addSelected;
+    private Button addAll;
+    private Button removeSelected;
+    private Button removeAll;
+    private Button up;
+    private Button down;
+
     private boolean dataChangeable;
-	
-	/**
-	 * Creates a new list chooser.
-	 *  
-	 * @param parent The parent control.
-	 * @param toolkit Toolkit to easily create the UI.
-	 * @param sourceContent All values which should show up in the source list.
-	 * @param targetContent All values which should show up in the target list.
-	 */
-	public ListChooser(Composite parent, UIToolkit toolkit) {
-		super(parent, SWT.NONE);
-		this.toolkit = toolkit;
-        
-        this.setLayout(new GridLayout(4, false));
-        
+
+    /**
+     * Creates a new list chooser.
+     * 
+     * @param parent The parent control.
+     * @param toolkit Toolkit to easily create the UI.
+     * @param sourceContent All values which should show up in the source list.
+     * @param targetContent All values which should show up in the target list.
+     */
+    public ListChooser(Composite parent, UIToolkit toolkit) {
+        super(parent, SWT.NONE);
+        this.toolkit = toolkit;
+
+        setLayout(new GridLayout(4, false));
+
         sourceLabel = toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
         toolkit.createLabel(this, ""); //$NON-NLS-1$
         targetLabel = toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
         toolkit.createLabel(this, ""); //$NON-NLS-1$
-        
+
         TableLayoutComposite srcParent = new TableLayoutComposite(this, SWT.NONE);
         srcParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         sourceTable = new Table(srcParent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -99,7 +100,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         newTableColumns(sourceTable, srcParent);
         source = new TableViewer(sourceTable);
         addChooseButtons();
-        
+
         TableLayoutComposite targetParent = new TableLayoutComposite(this, SWT.NONE);
         targetParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         targetTable = new Table(targetParent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -114,20 +115,20 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         source.setLabelProvider(new TableLabelProvider());
         target.setContentProvider(new ContentProvider());
         target.setLabelProvider(new TableLabelProvider());
-        
+
         addSelected.addSelectionListener(new ChooseListener(sourceTable, targetTable, false));
         removeSelected.addSelectionListener(new ChooseListener(targetTable, sourceTable, false));
         addAll.addSelectionListener(new ChooseListener(sourceTable, targetTable, true));
         removeAll.addSelectionListener(new ChooseListener(targetTable, sourceTable, true));
-        
+
         new MessageService(source);
-        new MessageService(target);           
-	}
-    
+        new MessageService(target);
+    }
+
     public TableViewer getTargetViewer() {
         return target;
     }
-    
+
     private void newTableColumns(Table parent, TableLayoutComposite parentLayouter) {
         parentLayouter.addColumnData(new ColumnPixelData(20, false)); // message image
         parentLayouter.addColumnData(new ColumnWeightData(100, true));
@@ -141,7 +142,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
     public void setSourceLabel(String label) {
         sourceLabel.setText(label);
     }
-    
+
     /**
      * Sets the targets section's label text.
      */
@@ -150,102 +151,103 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
     }
 
     /**
-	 * Set the content of the source-list.
-	 */
-	protected void setSourceContent(String[] srcContent) {
+     * Set the content of the source-list.
+     */
+    protected void setSourceContent(String[] srcContent) {
         source.setInput(srcContent);
-	}
+    }
 
-	/**
-	 * Set the content of the target-list.
-	 */
-	protected void setTargetContent(String[] targetContent) {
+    /**
+     * Set the content of the target-list.
+     */
+    protected void setTargetContent(String[] targetContent) {
         target.setInput(targetContent);
-	}
+    }
 
-	/**
-	 * Returns all values contained in the target list. The order of the items in the array
-	 * is the order the user has choosen.
-	 */
-	public String[] getTargetContent() {
-		return (String[])target.getInput();
-	}
-    
-	/**
-	 * Add the buttons to take a value from left to right or vice versa.
-	 */
-	private void addChooseButtons() {
-		Composite root = new Composite(this, SWT.NONE);
-		root.setLayout(new GridLayout(1, false));
+    /**
+     * Returns all values contained in the target list. The order of the items in the array is the
+     * order the user has choosen.
+     */
+    public String[] getTargetContent() {
+        return (String[])target.getInput();
+    }
+
+    /**
+     * Add the buttons to take a value from left to right or vice versa.
+     */
+    private void addChooseButtons() {
+        Composite root = new Composite(this, SWT.NONE);
+        root.setLayout(new GridLayout(1, false));
         GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, false, true);
         layoutData.horizontalIndent = 5;
-		root.setLayoutData(layoutData);
-		
-		addSelected = toolkit.createButton(root, ">"); //$NON-NLS-1$
-		removeSelected = toolkit.createButton(root, "<"); //$NON-NLS-1$
-		addAll = toolkit.createButton(root, ">>"); //$NON-NLS-1$
-		removeAll = toolkit.createButton(root, "<<"); //$NON-NLS-1$
+        root.setLayoutData(layoutData);
 
-		addSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		removeSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		addAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		removeAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-	}
+        addSelected = toolkit.createButton(root, ">"); //$NON-NLS-1$
+        removeSelected = toolkit.createButton(root, "<"); //$NON-NLS-1$
+        addAll = toolkit.createButton(root, ">>"); //$NON-NLS-1$
+        removeAll = toolkit.createButton(root, "<<"); //$NON-NLS-1$
 
-	/**
-	 * Add the buttons to move a value in the target list up or down.
-	 */
-	private void addMoveButtons() {
-		Composite root = new Composite(this, SWT.NONE);
-		root.setLayout(new GridLayout(1, false));
-		root.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
-		
-		up = toolkit.createButton(root, Messages.ListChooser_buttonUp);
-		down = toolkit.createButton(root, Messages.ListChooser_buttonDown);
-		
-		up.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		down.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		up.addSelectionListener(new MoveListener());
-		down.addSelectionListener(new MoveListener());
-	}
+        addSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        removeSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        addAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        removeAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+    }
 
-	/**
-	 * This method is called when new values are added to the target list.
-	 * @param values The new values.
-	 */
-	public abstract void valuesAdded(String[] values);
-	
-	/**
-	 * This method is called when values are removed from the target list.
-	 * @param values The removed values.
-	 */
-	public abstract void valuesRemoved(String[] values);
-	
-	/**
-	 * This method is called, when the order of items has changed in the target list.
+    /**
+     * Add the buttons to move a value in the target list up or down.
+     */
+    private void addMoveButtons() {
+        Composite root = new Composite(this, SWT.NONE);
+        root.setLayout(new GridLayout(1, false));
+        root.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
+
+        up = toolkit.createButton(root, Messages.ListChooser_buttonUp);
+        down = toolkit.createButton(root, Messages.ListChooser_buttonDown);
+
+        up.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        down.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+        up.addSelectionListener(new MoveListener());
+        down.addSelectionListener(new MoveListener());
+    }
+
+    /**
+     * This method is called when new values are added to the target list.
      * 
-	 * @param text The text presentation of the value moved.
-	 * @param oldIndex The index, the value was located.
+     * @param values The new values.
+     */
+    public abstract void valuesAdded(String[] values);
+
+    /**
+     * This method is called when values are removed from the target list.
+     * 
+     * @param values The removed values.
+     */
+    public abstract void valuesRemoved(String[] values);
+
+    /**
+     * This method is called, when the order of items has changed in the target list.
+     * 
+     * @param text The text presentation of the value moved.
+     * @param oldIndex The index, the value was located.
      * @param newIndex The index, the value is moved to.
-	 * @param up <code>true</code> if the value is moved upwards, <code>false</code> otherwise.
-	 */
-	public abstract void valueMoved(String text, int oldIndex, int newIndex, boolean up);
-	
+     * @param up <code>true</code> if the value is moved upwards, <code>false</code> otherwise.
+     */
+    public abstract void valueMoved(String text, int oldIndex, int newIndex, boolean up);
+
     public abstract MessageList getMessagesFor(String value);
-    
-	private void notify(Table modified, String[] values, boolean removed) {
+
+    private void notify(Table modified, String[] values, boolean removed) {
         if (modified == sourceTable) {
-			return;
-		}
-		
-		if (removed) {
-			valuesRemoved(values);
-		}
-		else {
-			valuesAdded(values);
-		}
-	}
+            return;
+        }
+
+        if (removed) {
+            valuesRemoved(values);
+        } else {
+            valuesAdded(values);
+        }
+    }
 
     private String[] getData(TableItem[] items) {
         String[] result = new String[items.length];
@@ -254,141 +256,137 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         }
         return result;
     }
-    
 
-	/**
-	 * Listener to handle the modification of object-order in
-	 * target list. 
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class MoveListener implements SelectionListener {
+    /**
+     * Listener to handle the modification of object-order in target list.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class MoveListener implements SelectionListener {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			int[] selected = targetTable.getSelectionIndices();
-			int[] newSelection = new int[selected.length];
-            
-			if (selected.length == 0) {
-				return;
-			}
-			
-			Arrays.sort(selected);
+        /**
+         * {@inheritDoc}
+         */
+        public void widgetSelected(SelectionEvent e) {
+            int[] selected = targetTable.getSelectionIndices();
+            int[] newSelection = new int[selected.length];
 
-			if (e.getSource() == up) {
-				if (selected[0] == 0) {
-					// allready at top
-					return;
-				}
-				for (int i = 0; i < selected.length; i++) {
+            if (selected.length == 0) {
+                return;
+            }
+
+            Arrays.sort(selected);
+
+            if (e.getSource() == up) {
+                if (selected[0] == 0) {
+                    // allready at top
+                    return;
+                }
+                for (int i = 0; i < selected.length; i++) {
                     String newTxt = targetTable.getItem(selected[i]).getText(DATA_COLUMN);
-                    String oldTxt = targetTable.getItem(selected[i]-1).getText(DATA_COLUMN);
+                    String oldTxt = targetTable.getItem(selected[i] - 1).getText(DATA_COLUMN);
 
-                    valueMoved(newTxt, selected[i], selected[i]-1, true);
-					targetTable.getItem(selected[i]-1).setText(DATA_COLUMN, newTxt);
+                    valueMoved(newTxt, selected[i], selected[i] - 1, true);
+                    targetTable.getItem(selected[i] - 1).setText(DATA_COLUMN, newTxt);
                     targetTable.getItem(selected[i]).setText(DATA_COLUMN, oldTxt);
-                    newSelection[i] = selected[i]-1;
+                    newSelection[i] = selected[i] - 1;
                     selected[i]--;
-				}
-			} else {
-				if (selected[selected.length-1] == targetTable.getItemCount()-1) {
-					// allready at bottom
-					return;
-				}
+                }
+            } else {
+                if (selected[selected.length - 1] == targetTable.getItemCount() - 1) {
+                    // allready at bottom
+                    return;
+                }
 
-				for (int i = 0; i < selected.length; i++) {
+                for (int i = 0; i < selected.length; i++) {
                     String newTxt = targetTable.getItem(selected[i]).getText(DATA_COLUMN);
-                    String oldTxt = targetTable.getItem(selected[i]+1).getText(DATA_COLUMN);
+                    String oldTxt = targetTable.getItem(selected[i] + 1).getText(DATA_COLUMN);
 
-                    valueMoved(newTxt, selected[i], selected[i]+1, false);
-					targetTable.getItem(selected[i]+1).setText(DATA_COLUMN, newTxt);
+                    valueMoved(newTxt, selected[i], selected[i] + 1, false);
+                    targetTable.getItem(selected[i] + 1).setText(DATA_COLUMN, newTxt);
                     targetTable.getItem(selected[i]).setText(DATA_COLUMN, oldTxt);
-                    newSelection[i] = selected[i]+1;
-					selected[i]++;
-				}
-			}
+                    newSelection[i] = selected[i] + 1;
+                    selected[i]++;
+                }
+            }
             target.setInput(getData(targetTable.getItems()));
             targetTable.setSelection(newSelection);
-		}
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
-		}
-		
-	}
-	
-	/**
-	 * Listener to handle the move of values from source to target and vice versa.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class ChooseListener implements SelectionListener {
+        /**
+         * {@inheritDoc}
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+        }
 
-		private Table src;
-		private Table trgt;
-		private boolean moveAll;
-		
-		/**
-		 * Creates a new listener to handle modifcations at the given lists.
-		 * 
-		 * @param source The source where to remove the objects
-		 * @param target The target where to put the objects
-		 * @param all Flag to respect the selection (<code>false</code>) or take 
-		 * all values (<code>true</code>).
-		 */
-		public ChooseListener(Table source, Table target, boolean all) {
-			this.src = source;
-			this.trgt = target;
-			this.moveAll = all;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			String[] toMove;
-			if (moveAll) {
-				toMove = getData(src.getItems());
-				src.removeAll();
-			}
-			else {
-				toMove = getData(src.getSelection());
-				src.remove(src.getSelectionIndices());
-			}
+    }
+
+    /**
+     * Listener to handle the move of values from source to target and vice versa.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class ChooseListener implements SelectionListener {
+
+        private Table src;
+        private Table trgt;
+        private boolean moveAll;
+
+        /**
+         * Creates a new listener to handle modifcations at the given lists.
+         * 
+         * @param source The source where to remove the objects
+         * @param target The target where to put the objects
+         * @param all Flag to respect the selection (<code>false</code>) or take all values (
+         *            <code>true</code>).
+         */
+        public ChooseListener(Table source, Table target, boolean all) {
+            src = source;
+            trgt = target;
+            moveAll = all;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void widgetSelected(SelectionEvent e) {
+            String[] toMove;
+            if (moveAll) {
+                toMove = getData(src.getItems());
+                src.removeAll();
+            } else {
+                toMove = getData(src.getSelection());
+                src.remove(src.getSelectionIndices());
+            }
             String old[] = getData(trgt.getItems());
             String toAdd[] = new String[toMove.length + old.length];
             System.arraycopy(old, 0, toAdd, 0, old.length);
-			for (int i = old.length; i < toAdd.length; i++) {
-                toAdd[i] = toMove[i-old.length];
-			}
+            for (int i = old.length; i < toAdd.length; i++) {
+                toAdd[i] = toMove[i - old.length];
+            }
 
             if (trgt == sourceTable) {
                 source.setInput(toAdd);
                 target.setInput(getData(src.getItems()));
-            }
-            else {
+            } else {
                 target.setInput(toAdd);
                 source.setInput(getData(src.getItems()));
             }
 
             ListChooser.this.notify(src, toMove, true);
-			ListChooser.this.notify(trgt, toMove, false);
-		}
+            ListChooser.this.notify(trgt, toMove, false);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+        }
 
-	}
-    
+    }
+
     private class ContentProvider implements IStructuredContentProvider {
 
         public Object[] getElements(Object inputElement) {
@@ -400,22 +398,23 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
-        
+
     }
- 
+
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
-        
+
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != IMG_COLUMN) {
                 return null;
             }
             MessageList messages = getMessagesFor((String)element);
             if (!messages.isEmpty()) {
-                return ValidationUtils.getSeverityImage(messages.getSeverity());
+                return IpsUIPlugin.getImageHandling()
+                        .getImage(IpsProblemOverlayIcon.getOverlay(messages.getSeverity()));
             }
             return null;
         }
-        
+
         public String getColumnText(Object element, int columnIndex) {
             if (columnIndex == IMG_COLUMN) {
                 return ""; //$NON-NLS-1$
@@ -437,6 +436,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         /**
          * {@inheritDoc}
          */
+        @Override
         protected MessageList getMessagesFor(Object element) throws CoreException {
             return ListChooser.this.getMessagesFor((String)element);
         }
@@ -453,8 +453,8 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        this.dataChangeable = changeable;
-        
+        dataChangeable = changeable;
+
         toolkit.setDataChangeable(addSelected, changeable);
         toolkit.setDataChangeable(removeSelected, changeable);
         toolkit.setDataChangeable(addAll, changeable);

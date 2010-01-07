@@ -38,6 +38,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -60,6 +64,7 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,6 +83,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -454,10 +460,20 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
     }
 
     private class SourceTreeCellLabelProvider extends CellLabelProvider {
+
+        private ResourceManager resourceManager;
+
         private DeepCopyLabelProvider labelProvider;
 
         public SourceTreeCellLabelProvider(DeepCopyLabelProvider labelProvider) {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
             this.labelProvider = labelProvider;
+        }
+
+        @Override
+        public void dispose() {
+            replaceInput.dispose();
+            super.dispose();
         }
 
         @Override
@@ -468,13 +484,17 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                 cell.setText(labelProvider.getText(element));
                 if (element instanceof IProductCmptReference) {
                     if (linkedElements.contains(element)) {
-                        cell.setImage(IpsPlugin.getDefault().getImage("LinkProductCmpt.gif")); //$NON-NLS-1$
+                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "LinkProductCmpt.gif");
+                        cell.setImage((Image)resourceManager.get(imageDescriptor));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
                     }
                 } else if (element instanceof IProductCmptStructureTblUsageReference) {
                     if (linkedElements.contains(element)) {
-                        cell.setImage(IpsPlugin.getDefault().getImage("LinkTableContents.gif")); //$NON-NLS-1$
+                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "LinkTableContents.gif");
+                        cell.setImage((Image)resourceManager.get(imageDescriptor));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
                     };

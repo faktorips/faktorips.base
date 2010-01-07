@@ -39,7 +39,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     public ProductCmptWorkbenchAdapter() {
         super();
-        prodCmptDefaultIcon = IpsUIPlugin.getDefault().getImageDescriptor("ProductCmpt.gif");
+        prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif");
     }
 
     private ImageDescriptor getProductCmptImageDescriptor(IProductCmptType type) {
@@ -98,7 +98,8 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
         return null;
     }
 
-    protected ImageDescriptor getDefaultImageDescriptor() {
+    @Override
+    public ImageDescriptor getDefaultImageDescriptor() {
         return prodCmptDefaultIcon;
     }
 

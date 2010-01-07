@@ -15,14 +15,16 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -53,12 +55,20 @@ public class LinksLabelProvider implements ILabelProvider {
      */
     public Image getImage(Object element) {
         if (element instanceof IProductCmptLink) {
-            return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
+            IProductCmptLink link = (IProductCmptLink)element;
+            IProductCmpt product;
+            try {
+                product = link.findTarget(link.getIpsProject());
+                return IpsUIPlugin.getImageHandling().getImage(product);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
         if (element instanceof IProductCmptTypeRelationReference) {
-            return IpsPlugin.getDefault().getImage(AssociationType.COMPOSITION_MASTER_TO_DETAIL.getImageName());
+            IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)element;
+            return IpsUIPlugin.getImageHandling().getImage(reference.getRelation());
         }
-        return IpsPlugin.getDefault().getImage(Messages.RelationsLabelProvider_undefined);
+        return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
     }
 
     /**

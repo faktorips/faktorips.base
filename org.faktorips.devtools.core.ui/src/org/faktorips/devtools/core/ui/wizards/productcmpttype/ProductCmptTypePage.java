@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,13 +41,13 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.policycmpttype.PcTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
 
-
 /**
- * An IpsObjectPage for the IpsObjectType ProductCmptType. 
+ * An IpsObjectPage for the IpsObjectType ProductCmptType.
  */
 public class ProductCmptTypePage extends TypePage {
-    
+
     private TextButtonField pcTypeField;
+
     /**
      * @param pageName
      * @param selection
@@ -55,61 +55,65 @@ public class ProductCmptTypePage extends TypePage {
      */
     public ProductCmptTypePage(IStructuredSelection selection, PcTypePage pcTypePage) throws JavaModelException {
         super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.ProductCmptTypePage_title);
-        this.pageOfAssociatedType = pcTypePage;
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
+        pageOfAssociatedType = pcTypePage;
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
         return toolkit.createProductCmptTypeRefControl(null, container, false);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      * Adds the setting of the selected PolicyCmptType.
      */
+    @Override
     protected void setDefaults(IResource selectedResource) throws CoreException {
         super.setDefaults(selectedResource);
-        if(pageOfAssociatedType == null){
+        if (pageOfAssociatedType == null) {
             IIpsObject ipsObject = getSelectedIpsObject();
-            if(ipsObject instanceof IPolicyCmptType){
+            if (ipsObject instanceof IPolicyCmptType) {
                 IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
-                if(StringUtils.isEmpty(selectedPcType.getProductCmptType())){
+                if (StringUtils.isEmpty(selectedPcType.getProductCmptType())) {
                     pcTypeField.setValue(selectedPcType.getQualifiedName());
                     abstractField.setValue(new Boolean(selectedPcType.isAbstract()));
                 }
             }
         }
     }
-    
+
     /**
      * Sets default values to the fields of this page.
      */
-    public void pageEntered() throws CoreException{
-        if(pageOfAssociatedType == null){
+    @Override
+    public void pageEntered() throws CoreException {
+        if (pageOfAssociatedType == null) {
             return;
         }
-        if(!isAlreadyBeenEntered()){
-            if(StringUtils.isEmpty(getPackage())){
+        if (!isAlreadyBeenEntered()) {
+            if (StringUtils.isEmpty(getPackage())) {
                 setPackage(pageOfAssociatedType.getPackage());
             }
-            if(StringUtils.isEmpty(getSourceFolder())){
+            if (StringUtils.isEmpty(getSourceFolder())) {
                 setSourceFolder(pageOfAssociatedType.getSourceFolder());
             }
-            if(StringUtils.isEmpty(getSuperType())){
-                if(!StringUtils.isEmpty(pageOfAssociatedType.getSuperType())){
-                    IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
-                    if(superPcType != null) {
+            if (StringUtils.isEmpty(getSuperType())) {
+                if (!StringUtils.isEmpty(pageOfAssociatedType.getSuperType())) {
+                    IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(
+                            pageOfAssociatedType.getSuperType());
+                    if (superPcType != null) {
                         setSuperType(superPcType.getProductCmptType());
                     }
                 }
             }
-            if(StringUtils.isEmpty(getIpsObjectName())){
+            if (StringUtils.isEmpty(getIpsObjectName())) {
                 String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
-                if(!StringUtils.isEmpty(postfix)){
+                if (!StringUtils.isEmpty(postfix)) {
                     setIpsObjectName(pageOfAssociatedType.getIpsObjectName() + postfix);
                 }
             }
@@ -117,23 +121,25 @@ public class ProductCmptTypePage extends TypePage {
         }
         super.pageEntered();
     }
-    
+
     /**
      * Returns true if the policy component type is configurable
      */
-    public boolean canCreateIpsSrcFile(){
-        if(pageOfAssociatedType == null){
+    @Override
+    public boolean canCreateIpsSrcFile() {
+        if (pageOfAssociatedType == null) {
             return true;
         }
         return ((PcTypePage)pageOfAssociatedType).isPolicyCmptTypeConfigurable();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
-        if(pageOfAssociatedType == null){
+        if (pageOfAssociatedType == null) {
             toolkit.createFormLabel(nameComposite, Messages.ProductCmptTypePage_labelConfigures);
             IpsObjectRefControl pcTypeControl = toolkit.createPcTypeRefControl(null, nameComposite);
             pcTypeField = new TextButtonField(pcTypeControl);
@@ -141,46 +147,49 @@ public class ProductCmptTypePage extends TypePage {
         }
         addAbstractField(nameComposite, toolkit);
     }
-    
+
     private IPolicyCmptType getPolicyCmptType() throws CoreException {
         String pcTypeQualifiedName = pcTypeField.getText();
-        if(getIpsProject() != null){
+        if (getIpsProject() != null) {
             IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
-            if(policyCmptType != null){
+            if (policyCmptType != null) {
                 return policyCmptType;
             }
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
         super.valueChangedExtension(e);
-        if(e.field == pcTypeField){
+        if (e.field == pcTypeField) {
             IPolicyCmptType policyCmptType = getPolicyCmptType();
-            if(policyCmptType != null){
+            if (policyCmptType != null) {
                 setAbstract(policyCmptType.isAbstract());
             }
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
-        if(pageOfAssociatedType == null){
+        if (pageOfAssociatedType == null) {
             IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-            if (root!=null) {
+            if (root != null) {
                 ((IpsObjectRefControl)pcTypeField.getControl()).setIpsProject(root.getIpsProject());
             } else {
                 ((IpsObjectRefControl)pcTypeField.getControl()).setIpsProject(null);
             }
         }
     }
-    
+
+    @Override
     protected void validateName() throws CoreException {
         super.validateName();
         if (getIpsProject() == null) {
@@ -189,21 +198,22 @@ public class ProductCmptTypePage extends TypePage {
         setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
                 IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
-    
+
     /**
      * Calles the super class method and additionally validates if the supertype of the product
      * component type is within the super type hierarchy of the product component type of the
      * supertype of the policy component type.
      */
+    @Override
     protected void validatePageExtension() throws CoreException {
         super.validatePageExtension();
         if (pageOfAssociatedType != null) {
             if (!StringUtils.isEmpty(pageOfAssociatedType.getSuperType())) {
                 IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
-                if(superPcType != null){
+                if (superPcType != null) {
                     IProductCmptType policyCmptProductCmptSuperType = superPcType.findProductCmptType(getIpsProject());
                     IProductCmptType superType = null;
-                    if(!StringUtils.isEmpty(getSuperType())) {
+                    if (!StringUtils.isEmpty(getSuperType())) {
                         superType = getIpsProject().findProductCmptType(getSuperType());
                     }
                     validateSupertype(superType, policyCmptProductCmptSuperType);
@@ -213,64 +223,69 @@ public class ProductCmptTypePage extends TypePage {
                     pageOfAssociatedType.getAbstract(), getAbstract(), null));
         }
         if (pageOfAssociatedType != null) {
-            if(!StringUtils.isEmpty(getSuperType())) {
+            if (!StringUtils.isEmpty(getSuperType())) {
                 IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
-                if(superType != null && superType.isConfigurationForPolicyCmptType()){
-                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superType.getPolicyCmptType());
-                    if(StringUtils.isEmpty(pageOfAssociatedType.getSuperType())){
+                if (superType != null && superType.isConfigurationForPolicyCmptType()) {
+                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superType
+                            .getPolicyCmptType());
+                    if (StringUtils.isEmpty(pageOfAssociatedType.getSuperType())) {
                         setErrorMessage(msg);
                         return;
                     }
-                    IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
-                    if(policyCmptType == null){
+                    IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(
+                            pageOfAssociatedType.getSuperType());
+                    if (policyCmptType == null) {
                         setErrorMessage(msg);
                         return;
                     }
-                    if(!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())){
+                    if (!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
                         setErrorMessage(msg);
                         return;
                     }
                 }
             }
         }
-        
-        if(pageOfAssociatedType == null && 
-           !StringUtils.isEmpty((String)pcTypeField.getValue())){
+
+        if (pageOfAssociatedType == null && !StringUtils.isEmpty((String)pcTypeField.getValue())) {
             IPolicyCmptType configuableType = getIpsProject().findPolicyCmptType((String)pcTypeField.getValue());
-            if(configuableType == null){
+            if (configuableType == null) {
                 setErrorMessage(Messages.ProductCmptTypePage_msgPcTypeDoesNotExist);
-            } else if(!StringUtils.isEmpty(configuableType.getProductCmptType())){
-                setErrorMessage(Messages.ProductCmptTypePage_msgPcTypeAlreadyConfigured);                
+            } else if (!StringUtils.isEmpty(configuableType.getProductCmptType())) {
+                setErrorMessage(Messages.ProductCmptTypePage_msgPcTypeAlreadyConfigured);
             } else {
                 FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(getIpsProject());
                 IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
                 finder.start(superType);
-                if(finder.nextConfiguringSupertype != null){
-                    IPolicyCmptType superTypePolicyCmptType = getIpsProject().findPolicyCmptType(finder.qualifiedNameOfConfiguredType);
-                    if(superTypePolicyCmptType != null){
-                        if(configuableType != null){
-                            IPolicyCmptType superPcType = (IPolicyCmptType)configuableType.findSupertype(getIpsProject());
-                            if(superPcType == null || !superPcType.equals(superTypePolicyCmptType)){
-                                setErrorMessage(NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superTypePolicyCmptType.getQualifiedName()));
+                if (finder.nextConfiguringSupertype != null) {
+                    IPolicyCmptType superTypePolicyCmptType = getIpsProject().findPolicyCmptType(
+                            finder.qualifiedNameOfConfiguredType);
+                    if (superTypePolicyCmptType != null) {
+                        if (configuableType != null) {
+                            IPolicyCmptType superPcType = (IPolicyCmptType)configuableType
+                                    .findSupertype(getIpsProject());
+                            if (superPcType == null || !superPcType.equals(superTypePolicyCmptType)) {
+                                setErrorMessage(NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
+                                        superTypePolicyCmptType.getQualifiedName()));
                             }
                         }
                     }
                 }
-                
+
                 setErrorMessage(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
                         configuableType.isAbstract(), getAbstract(), null));
-                
+
             }
         }
     }
 
     private void validateSupertype(final IProductCmptType superType,
             final IProductCmptType productCmptTypeOfPolicyCmptSupertype) throws CoreException {
-        if(productCmptTypeOfPolicyCmptSupertype == null){
+        if (productCmptTypeOfPolicyCmptSupertype == null) {
             return;
         }
-        String msg = NLS.bind(Messages.ProductCmptTypePage_msgSupertypeMustBeInHierarchy, productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
-        if(superType == null){
+        String msg = NLS.bind(Messages.ProductCmptTypePage_msgSupertypeMustBeInHierarchy,
+                productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
+        if (superType == null) {
             setErrorMessage(msg);
             return;
         }
@@ -278,6 +293,7 @@ public class ProductCmptTypePage extends TypePage {
             final Boolean[] holder = new Boolean[] { Boolean.FALSE };
             if (productCmptTypeOfPolicyCmptSupertype != null) {
                 new TypeHierarchyVisitor(getIpsProject()) {
+                    @Override
                     protected boolean visit(IType currentType) throws CoreException {
                         if (currentType.equals(productCmptTypeOfPolicyCmptSupertype)) {
                             holder[0] = Boolean.TRUE;
@@ -292,10 +308,11 @@ public class ProductCmptTypePage extends TypePage {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
         IProductCmptType productCmptType = (IProductCmptType)newIpsObject;
@@ -307,9 +324,9 @@ public class ProductCmptTypePage extends TypePage {
             }
         } else {
             String configuredpcType = (String)pcTypeField.getValue();
-            if(!StringUtils.isEmpty(configuredpcType)){
+            if (!StringUtils.isEmpty(configuredpcType)) {
                 IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(configuredpcType);
-                if(policyCmptType != null){
+                if (policyCmptType != null) {
                     policyCmptType.setConfigurableByProductCmptType(true);
                     policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
                     modifiedIpsObjects.add(policyCmptType);
@@ -323,26 +340,26 @@ public class ProductCmptTypePage extends TypePage {
         productCmptType.setConfigurationForPolicyCmptType(false);
     }
 
-    
-    private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor{
-    
+    private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor {
+
         private IProductCmptType nextConfiguringSupertype;
         private String qualifiedNameOfConfiguredType;
 
         public FindNextConfiguredSuperType(IIpsProject ipsProject) {
             super(ipsProject);
         }
-        
+
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             IProductCmptType superType = (IProductCmptType)currentType;
-            if(!StringUtils.isEmpty(superType.getPolicyCmptType())){
+            if (!StringUtils.isEmpty(superType.getPolicyCmptType())) {
                 nextConfiguringSupertype = superType;
                 qualifiedNameOfConfiguredType = superType.getPolicyCmptType();
                 return false;
             }
             return true;
         }
-        
+
     }
-    
+
 }

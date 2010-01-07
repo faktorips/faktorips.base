@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,14 +15,18 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,6 +49,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -55,7 +60,8 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
-import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -63,6 +69,7 @@ import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
 import org.faktorips.devtools.core.ui.table.ColumnIdentifier;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -77,100 +84,100 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private static final int IDX_COLUMN_NAME = 1;
     private static final int IDX_COLUMN_EXPECTED_RESULT = 2;
     private static final int IDX_COLUMN_ACTUAL_RESULT = 3;
-    
+
     private static final String PROPERTY_ACTUAL_RESULT = "actualResult"; //$NON-NLS-1$
-    
+
     private static final int TEST_ERROR = 1;
     private static final int TEST_FAILURE = 2;
     private static final int TEST_OK = 3;
     private static final int TEST_UNKNOWN = 4;
-    
+
     private UIToolkit uiToolkit;
-    
-    private Image empytImage;
-    
-    private HashMap cachedProblemImageDescriptors = new HashMap();
-    
+
     /* Controller of the dependent ips object part */
     private IpsObjectUIController uiController;
-    
+
     /*
      * Composite controler contains the dependent object part ui controller and the dummy contoler
      * to update the ui for this composite e.g. the actual value will be set afer executing the
      * formula
      */
     private CompositeUIController compositeUiController;
-    
-    /* The formula test cases which are displayed in the table */
-    private List formulaTestCases = new ArrayList();
 
-    /* The config element the displayed formula test cases belongs to */ 
+    /* The formula test cases which are displayed in the table */
+    private List<ExtDataForFormulaTestCase> formulaTestCases = new ArrayList<ExtDataForFormulaTestCase>();
+
+    /* The config element the displayed formula test cases belongs to */
     private IFormula formula;
-    
+
     private IIpsProject ipsProject;
-    
+
     /* Contains the table viewer to display and edit the formula test cases */
     private TableViewer formulaTestCaseTableViewer;
-    
+
     /*
      * Contains the table to display the details of the currently selected formula test case which
      * is selected in the formula test case table
      */
     private FormulaTestInputValuesControl formulaTestInputValuesControl;
-    
+
     /* The status bar which contains the corresponding color of the last test run */
     private Control testStatusBar;
-    
+
     /* Buttons */
     private Button btnNewFormulaTestCase;
     private Button btnDeleteFormulaTestCase;
     private Button btnUpdateFormulaTestCase;
     private Button btnMoveFormulaTestCaseUp;
     private Button btnMoveFormulaTestCaseDown;
-    
+
     /* Contains the colors for the test status */
     private Color failureColor;
     private Color okColor;
-    
+
     /* Indicates errors or failures during the calculation */
     private boolean isCalculationErrorOrFailure;
     private boolean dataChangeable;
-    
+
     /*
      * Extended data which is displayed beside the model data in the table
      */
     public class ExtDataForFormulaTestCase {
         private IFormulaTestCase formulaTestCase;
-        
+
         private String actualResult = ""; //$NON-NLS-1$
         private String message = ""; //$NON-NLS-1$
-        
+
         public ExtDataForFormulaTestCase(IFormulaTestCase formulaTestCase) {
             super();
             this.formulaTestCase = formulaTestCase;
         }
+
         public String getActualResult() {
             return actualResult;
         }
+
         public void setActualResult(String actualResult) {
             this.actualResult = actualResult;
         }
+
         public String getMessage() {
             return message;
         }
+
         public void setMessage(String message) {
             this.message = message;
         }
-        
-        public IFormulaTestCase getFormulaTestCase(){
+
+        public IFormulaTestCase getFormulaTestCase() {
             return formulaTestCase;
         }
-        
-        public IIpsElement getParent(){
+
+        public IIpsElement getParent() {
             return formulaTestCase.getParent();
         }
-        
-        public IFormula getFormula(){
+
+        public IFormula getFormula() {
             return formulaTestCase.getFormula();
         }
 
@@ -181,52 +188,52 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         public void setName(String name) {
             formulaTestCase.setName(name);
         }
-        
-        public String getExpectedResult(){
+
+        public String getExpectedResult() {
             return formulaTestCase.getExpectedResult();
         }
 
-        public void setExpectedResult(String expectedResult){
+        public void setExpectedResult(String expectedResult) {
             formulaTestCase.setExpectedResult(expectedResult);
         }
-        
-        public MessageList validate() throws CoreException{
+
+        public MessageList validate() throws CoreException {
             return formulaTestCase.validate(formula.getIpsProject());
         }
-        
-        public Object execute() throws Exception{
+
+        public Object execute() throws Exception {
             return formulaTestCase.execute(formulaTestCase.getIpsProject());
         }
-        
-        public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifier){
+
+        public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifier) {
             return formulaTestCase.addOrDeleteFormulaTestInputValues(newIdentifier, formulaTestCase.getIpsProject());
         }
-        
-        public IFormulaTestInputValue[] getFormulaTestInputValues(){
+
+        public IFormulaTestInputValue[] getFormulaTestInputValues() {
             return formulaTestCase.getFormulaTestInputValues();
         }
-        
-        public void delete(){
+
+        public void delete() {
             formulaTestCase.delete();
         }
     }
-   
+
     /*
      * Returns the status error, failure, or ok of the given formula test case
      */
-    private int getFormulaTestCaseTestStatus(ExtDataForFormulaTestCase formulaTestCase){
+    private int getFormulaTestCaseTestStatus(ExtDataForFormulaTestCase formulaTestCase) {
         String actualResult = formulaTestCase.getActualResult();
-        if (StringUtils.isEmpty(actualResult)){
+        if (StringUtils.isEmpty(actualResult)) {
             return TEST_UNKNOWN;
         }
         String expectedResult = formulaTestCase.getExpectedResult();
-        if (StringUtils.isEmpty(expectedResult)){
-            if (StringUtils.isNotEmpty(actualResult)){
+        if (StringUtils.isEmpty(expectedResult)) {
+            if (StringUtils.isNotEmpty(actualResult)) {
                 return TEST_ERROR;
             }
         } else {
-            if (StringUtils.isNotEmpty(actualResult)){
-                if (compareResult(actualResult, expectedResult)){
+            if (StringUtils.isNotEmpty(actualResult)) {
+                if (compareResult(actualResult, expectedResult)) {
                     return TEST_OK;
                 } else {
                     return TEST_FAILURE;
@@ -235,7 +242,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 return TEST_ERROR;
             }
         }
-        if (actualResult != null){
+        if (actualResult != null) {
             return TEST_ERROR;
         }
         return TEST_UNKNOWN;
@@ -244,7 +251,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private boolean compareResult(String actualResult, String expectedResult) {
         try {
             ValueDatatype datatype = formula.findValueDatatype(ipsProject);
-            if (datatype == null){
+            if (datatype == null) {
                 throw new CoreException(new IpsStatus("Result datatype not found for formula: " + formula.getName()));
             }
             return datatype.areValuesEqual(actualResult, expectedResult);
@@ -252,33 +259,52 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
-        
+
     }
-    
+
     /*
      * Label provider for the formula test input value.
      */
-    private class FormulaTestCaseTblLabelProvider extends LabelProvider implements ITableLabelProvider{
+    private class FormulaTestCaseTblLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        private ResourceManager resourceManager;
+
+        private ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "obj16/test.gif");
+
+        public FormulaTestCaseTblLabelProvider() {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+
+        @Override
+        public void dispose() {
+            resourceManager.dispose();
+            super.dispose();
+        }
+
         public Image getColumnImage(Object element, int columnIndex) {
-            if (! (element instanceof ExtDataForFormulaTestCase)){
+            if (!(element instanceof ExtDataForFormulaTestCase)) {
                 return null;
             }
             try {
                 switch (columnIndex) {
                     case IDX_COLUMN_IMAGE:
-                        ExtDataForFormulaTestCase formulaTestCase = (ExtDataForFormulaTestCase) element;
-                        Image defaultImage = empytImage;
+                        ExtDataForFormulaTestCase formulaTestCase = (ExtDataForFormulaTestCase)element;
+                        Image baseImage = (Image)resourceManager.get(testImageDescriptor);
                         int result = getFormulaTestCaseTestStatus(formulaTestCase);
-                        if (result == TEST_ERROR){
-                            defaultImage = IpsPlugin.getDefault().getImage("obj16/testerr.gif"); //$NON-NLS-1$
-                        } else if (result == TEST_OK){
-                            defaultImage = IpsPlugin.getDefault().getImage("obj16/testok.gif"); //$NON-NLS-1$
-                        } else if (result == TEST_FAILURE){
-                            defaultImage = IpsPlugin.getDefault().getImage("obj16/testfail.gif"); //$NON-NLS-1$
+                        ImageDescriptor[] overlays = new ImageDescriptor[4];
+                        if (result == TEST_ERROR) {
+                            overlays[2] = OverlayIcons.ERROR_OVR_DESC;
+                        } else if (result == TEST_OK) {
+                            overlays[2] = OverlayIcons.SUCCESS_OVR_DESC;
+                        } else if (result == TEST_FAILURE) {
+                            overlays[2] = OverlayIcons.FAILURE_OVR_DESC;
                         }
                         MessageList msgList = formulaTestCase.validate();
                         // displays the validation image in the name column
-                        return getImageForMsgList(defaultImage, msgList);
+                        overlays[0] = IpsProblemOverlayIcon.getOverlay(msgList.getSeverity());
+                        ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage, overlays);
+                        return (Image)resourceManager.get(imageDescriptor);
                 }
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -287,48 +313,49 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
 
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof ExtDataForFormulaTestCase){
-                ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase) element;
+            if (element instanceof ExtDataForFormulaTestCase) {
+                ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase)element;
                 IFormula formula = ftc.getFormula();
-                ValueDatatype vd = ValueDatatype.STRING;
+                ValueDatatype vd = Datatype.STRING;
                 try {
                     vd = formula.findValueDatatype(ipsProject);
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
-                
+
                 if (columnIndex == IDX_COLUMN_NAME) {
                     return getTextInNullPresentationIfNull(ftc.getName());
                 } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT) {
-                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd, ftc.getExpectedResult());
+                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd,
+                            ftc.getExpectedResult());
                 } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT) {
-                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd, ftc.getActualResult());
+                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd,
+                            ftc.getActualResult());
                 }
             }
             return null;
         }
-        
+
         private String getTextInNullPresentationIfNull(String value) {
-            if (value==null) {
-                value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            if (value == null) {
+                value = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }
             return value;
-        } 
+        }
     }
-    
-    public FormulaTestCaseControl(Composite parent, UIToolkit uiToolkit,
-            IpsObjectUIController uiController, IFormula formula) {
-        
+
+    public FormulaTestCaseControl(Composite parent, UIToolkit uiToolkit, IpsObjectUIController uiController,
+            IFormula formula) {
+
         super(parent, SWT.NONE);
-        ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController, formula});
+        ArgumentCheck.notNull(new Object[] { parent, uiToolkit, uiController, formula });
         this.formula = formula;
-        this.ipsProject = formula.getIpsProject();
+        ipsProject = formula.getIpsProject();
         this.uiToolkit = uiToolkit;
         this.uiController = uiController;
-        this.empytImage = new Image(getShell().getDisplay(), 16, 16);
 
         // create images for ok and failure indicators
-        //   colors are taken from the JUnit test runner to show a corporate identify for test support
+        // colors are taken from the JUnit test runner to show a corporate identify for test support
         failureColor = new Color(getDisplay(), 159, 63, 63);
         okColor = new Color(getDisplay(), 95, 191, 95);
     }
@@ -336,43 +363,32 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
-        empytImage.dispose();
-        
-        for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
-            ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
-            Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
-            if (problemImage != null){
-                problemImage.dispose();
-            }
-        }
-        cachedProblemImageDescriptors.clear();   
-        
         failureColor.dispose();
         okColor.dispose();
-        
+
         super.dispose();
     }
 
     /**
      * Sets and updates the to be displaying formula test cases.
-     */    
-    public void storeFormulaTestCases(List newFormulaTestCases) {
+     */
+    public void storeFormulaTestCases(List<ExtDataForFormulaTestCase> newFormulaTestCases) {
         boolean changed = true;
         if (newFormulaTestCases.size() == formulaTestCases.size()) {
             changed = false;
             for (int i = 0; i < newFormulaTestCases.size(); i++) {
-                if (!newFormulaTestCases.get(i).equals(
-                        ((ExtDataForFormulaTestCase)formulaTestCases.get(i)).getFormulaTestCase())) {
+                if (!newFormulaTestCases.get(i).equals((formulaTestCases.get(i)).getFormulaTestCase())) {
                     changed = true;
                     break;
                 }
             }
         }
-        if (changed){
-            this.formulaTestCases.clear();
-            
-            for (Iterator iter = newFormulaTestCases.iterator(); iter.hasNext();) {
+        if (changed) {
+            formulaTestCases.clear();
+
+            for (Iterator<ExtDataForFormulaTestCase> iter = newFormulaTestCases.iterator(); iter.hasNext();) {
                 formulaTestCases.add(new ExtDataForFormulaTestCase((IFormulaTestCase)iter.next()));
             }
         } else {
@@ -385,107 +401,112 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     /**
-     * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropriate
-     * setter method.
+     * Creates the compoiste's controls. This method has to be called by this controls client, after
+     * the control has been configured via the appropriate setter method.
      */
     public void initControl() {
         setLayout(uiToolkit.createNoMarginGridLayout(1, false));
         setLayoutData(new GridData(GridData.FILL_BOTH));
 
         testStatusBar = uiToolkit.createVerticalSpacer(this, 5);
-        
+
         Group formulaTestCaseGroup = uiToolkit.createGroup(this, Messages.FormulaTestCaseControl_GroupLabel_TestCases);
 
         Composite formulaTestCaseArea = uiToolkit.createComposite(formulaTestCaseGroup);
         formulaTestCaseArea.setLayout(uiToolkit.createNoMarginGridLayout(2, false));
         formulaTestCaseArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         createFormulaTestCaseTable(formulaTestCaseArea, uiToolkit);
 
         // create buttons
         Composite btns = uiToolkit.createComposite(formulaTestCaseArea);
         btns.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         btns.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-        
+
         Button btnExecFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_ExecuteAll);
-        btnExecFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnExecFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnExecFormulaTestCase.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 executeClicked();
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
-        });  
+        });
 
         uiToolkit.createVerticalSpacer(btns, 5);
         uiToolkit.createHorizonzalLine(btns);
         uiToolkit.createVerticalSpacer(btns, 5);
-        
-        if (formula != null){
+
+        if (formula != null) {
             btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
-            btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+            btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent e) {
                     newClicked();
                 }
+
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
-            });  
+            });
         }
-        
+
         btnDeleteFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_Delete);
         btnDeleteFormulaTestCase.setEnabled(false);
-        btnDeleteFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnDeleteFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnDeleteFormulaTestCase.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 deleteClicked();
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
         btnMoveFormulaTestCaseUp = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_Up);
         btnMoveFormulaTestCaseUp.setEnabled(false);
-        btnMoveFormulaTestCaseUp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnMoveFormulaTestCaseUp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnMoveFormulaTestCaseUp.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 moveFormulaTestInputValues(getSelectedFormulaTestCase(), true);
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
         btnMoveFormulaTestCaseDown = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_Down);
         btnMoveFormulaTestCaseDown.setEnabled(false);
-        btnMoveFormulaTestCaseDown.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnMoveFormulaTestCaseDown.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnMoveFormulaTestCaseDown.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 moveFormulaTestInputValues(getSelectedFormulaTestCase(), false);
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
         uiToolkit.createVerticalSpacer(btns, 5);
-        
+
         btnUpdateFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_Update);
         btnUpdateFormulaTestCase.setEnabled(false);
-        btnUpdateFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnUpdateFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnUpdateFormulaTestCase.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 updateClicked();
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        btnUpdateFormulaTestCase
-                .setToolTipText(Messages.FormulaTestCaseControl_ToolTip_BtnUpdate);
-        
-        // create the formula test detail table, to display and editing the formula test input values
+        btnUpdateFormulaTestCase.setToolTipText(Messages.FormulaTestCaseControl_ToolTip_BtnUpdate);
+
+        // create the formula test detail table, to display and editing the formula test input
+        // values
         compositeUiController = new CompositeUIController();
         compositeUiController.add(uiController);
-        
+
         Group formulaTestInputGroup = uiToolkit.createGroup(this, Messages.FormulaTestCaseControl_GroupLabel_TestInput);
         formulaTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestInputGroup, uiToolkit,
                 compositeUiController, ipsProject);
@@ -501,7 +522,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private void newClicked() {
         ArgumentCheck.notNull(formula);
         IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
-        String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
+        String name = newFormulaTestCase
+                .generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
         newFormulaTestCase.setName(name);
         try {
             String[] identifiers = formula.getParameterIdentifiersUsedInFormula(ipsProject);
@@ -512,7 +534,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             if (uiController != null) {
                 uiController.updateUI();
             }
-            
+
             formulaTestCaseTableViewer.setSelection(new StructuredSelection(newFormulaTestCase));
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -522,22 +544,22 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /*
      * Moves the given formula test case up or down
      */
-    private void moveFormulaTestInputValues(ExtDataForFormulaTestCase formulaTestCase, boolean up){
+    private void moveFormulaTestInputValues(ExtDataForFormulaTestCase formulaTestCase, boolean up) {
         int[] selectedIndexes = null;
         IFormula formula = formulaTestCase.getFormula();
         IFormulaTestCase[] ftcs = formula.getFormulaTestCases();
         for (int i = 0; i < ftcs.length; i++) {
-            if (ftcs[i].equals(formulaTestCase.getFormulaTestCase())){
-                selectedIndexes = new int[]{i};
+            if (ftcs[i].equals(formulaTestCase.getFormulaTestCase())) {
+                selectedIndexes = new int[] { i };
                 break;
             }
         }
-        if (selectedIndexes != null){
+        if (selectedIndexes != null) {
             formula.moveFormulaTestCases(selectedIndexes, up);
             uiController.updateUI();
         }
     }
-    
+
     /*
      * Update the currently selected formula test case store new formula test input values and
      * delete unnecessary parameters
@@ -556,43 +578,43 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             }
 
             // refresh ui
-            repackAndResfreshForumlaTestCaseTable();  
+            repackAndResfreshForumlaTestCaseTable();
             uiController.updateUI();
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    /* 
+    /*
      * Generates and returns the message which informs about the new and deleted parameters
      */
     private String buildMessageForUpdateInformation(ExtDataForFormulaTestCase selElement) throws CoreException {
         IFormula formula = selElement.getFormula();
         String[] identifiersInFormula = formula.getParameterIdentifiersUsedInFormula(ipsProject);
-        List idsInFormula = new ArrayList(identifiersInFormula.length);
+        List<String> idsInFormula = new ArrayList<String>(identifiersInFormula.length);
         idsInFormula.addAll(Arrays.asList(identifiersInFormula));
-        List idsInTestCase = new ArrayList();
+        List<String> idsInTestCase = new ArrayList<String>();
         IFormulaTestInputValue[] inputValues = selElement.getFormulaTestInputValues();
         for (int i = 0; i < inputValues.length; i++) {
             boolean found = false;
-            for (int j = idsInFormula.size()-1; j >= 0; j--) {
-                if (idsInFormula.get(j).equals(inputValues[i].getIdentifier())){
+            for (int j = idsInFormula.size() - 1; j >= 0; j--) {
+                if (idsInFormula.get(j).equals(inputValues[i].getIdentifier())) {
                     idsInFormula.remove(j);
                     found = true;
                     break;
                 }
             }
-            if (!found){
+            if (!found) {
                 idsInTestCase.add(inputValues[i].getIdentifier());
             }
         }
         String newParams = ""; //$NON-NLS-1$
-        for (Iterator iter = idsInFormula.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = idsInFormula.iterator(); iter.hasNext();) {
             newParams += newParams.length() > 0 ? ", " : ""; //$NON-NLS-1$ //$NON-NLS-2$
             newParams += iter.next();
         }
         String delParams = ""; //$NON-NLS-1$
-        for (Iterator iter = idsInTestCase.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = idsInTestCase.iterator(); iter.hasNext();) {
             delParams += delParams.length() > 0 ? ", " : ""; //$NON-NLS-1$ //$NON-NLS-2$
             delParams += iter.next();
         }
@@ -606,25 +628,26 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 + (idsInTestCase.size() > 0 ? messageDelParameter : ""); //$NON-NLS-1$
         return messageForChangeInfoDialog;
     }
-    
+
     /*
      * Execute the formula for all formula test cases
      */
     protected void executeClicked() {
         isCalculationErrorOrFailure = false;
-        
+
         if (formulaTestCases.size() > 0
-                && !FormulaTestInputValuesControl.checkPrecondition(this.getShell(), 
-                        ((ExtDataForFormulaTestCase)formulaTestCases.get(0)).getFormulaTestCase())) {
+                && !FormulaTestInputValuesControl.checkPrecondition(getShell(), (formulaTestCases.get(0))
+                        .getFormulaTestCase())) {
             return;
         }
-        
+
         Runnable calculate = new Runnable() {
             public void run() {
-                if (isDisposed())
+                if (isDisposed()) {
                     return;
-                for (Iterator iter = formulaTestCases.iterator(); iter.hasNext();) {
-                    ExtDataForFormulaTestCase element = (ExtDataForFormulaTestCase)iter.next();
+                }
+                for (Iterator<ExtDataForFormulaTestCase> iter = formulaTestCases.iterator(); iter.hasNext();) {
+                    ExtDataForFormulaTestCase element = iter.next();
                     Object result = ""; //$NON-NLS-1$
                     try {
                         IFormula formula = element.getFormula();
@@ -637,13 +660,13 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                         } else {
                             element.setMessage(mlformula.getFirstMessage(Message.ERROR).getText());
                         }
-                        ValueDatatype vd = formula.findValueDatatype(ipsProject);
+                        formula.findValueDatatype(ipsProject);
                         element.setActualResult(result == null ? "" : result.toString());
                     } catch (Exception e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                     int testResultStatus = getFormulaTestCaseTestStatus(element);
-                    if (testResultStatus != TEST_OK){
+                    if (testResultStatus != TEST_OK) {
                         isCalculationErrorOrFailure = true;
                     }
                 }
@@ -652,7 +675,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         };
         BusyIndicator.showWhile(getDisplay(), calculate);
 
-        if (isCalculationErrorOrFailure){
+        if (isCalculationErrorOrFailure) {
             testStatusBar.setBackground(failureColor);
         } else {
             testStatusBar.setBackground(okColor);
@@ -664,28 +687,28 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      */
     private void deleteClicked() {
         ExtDataForFormulaTestCase selElement = getSelectedFormulaTestCase();
-        if (selElement == null){
+        if (selElement == null) {
             return;
         }
         // get the object which will be selected after the delete
-        int idxBeforeLast = formulaTestCases.size()>1?formulaTestCases.size()-2:0;
-        ExtDataForFormulaTestCase nextElement = (ExtDataForFormulaTestCase) formulaTestCases.get(idxBeforeLast);
-        for (int i = formulaTestCases.size()-1; i >= 0 ; i--) {
-            if (selElement.equals(formulaTestCases.get(i))){
+        int idxBeforeLast = formulaTestCases.size() > 1 ? formulaTestCases.size() - 2 : 0;
+        ExtDataForFormulaTestCase nextElement = formulaTestCases.get(idxBeforeLast);
+        for (int i = formulaTestCases.size() - 1; i >= 0; i--) {
+            if (selElement.equals(formulaTestCases.get(i))) {
                 break;
             }
-            nextElement = (ExtDataForFormulaTestCase) formulaTestCases.get(i);
+            nextElement = formulaTestCases.get(i);
         }
-        
+
         formulaTestCases.remove(selElement);
         selElement.delete();
         repackAndResfreshForumlaTestCaseTable();
-        
+
         // select the next object which was evaluated before
-        if (nextElement!=null){
+        if (nextElement != null) {
             formulaTestCaseTableViewer.setSelection(new StructuredSelection(nextElement));
-        } 
-        if (formulaTestCases.size() == 0){
+        }
+        if (formulaTestCases.size() == 0) {
             formulaTestInputValuesControl.storeFormulaTestCase(null);
         }
         uiController.updateUI();
@@ -694,7 +717,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /*
      * Returns the first selected formula test case or <code>null</code> if nothing is selected.
      */
-    private ExtDataForFormulaTestCase getSelectedFormulaTestCase(){
+    private ExtDataForFormulaTestCase getSelectedFormulaTestCase() {
         ISelection selection = formulaTestCaseTableViewer.getSelection();
         if (selection instanceof IStructuredSelection) {
             ExtDataForFormulaTestCase selectedFromulaTestCase = (ExtDataForFormulaTestCase)((IStructuredSelection)selection)
@@ -703,16 +726,16 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
         return null;
     }
-    
+
     /*
      * Creates the table to dipsplay and editing the formula test case.
      */
     private void createFormulaTestCaseTable(Composite c, UIToolkit uiToolkit) {
         Table table = new Table(c, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
-        table.setHeaderVisible (true);
-        table.setLinesVisible (true);
-        
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
         // create the columns of the table
         TableColumn column = new TableColumn(table, SWT.LEFT);
         column.setText(""); //$NON-NLS-1$
@@ -722,34 +745,35 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         column.setText(Messages.FormulaTestCaseControl_TableTestCases_ColumnExpectedResult);
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.FormulaTestCaseControl_TableTestCases_Column_ActualResult);
-        
+
         // Create the viewer and connect it to the view
         formulaTestCaseTableViewer = new TableViewer(table);
-        formulaTestCaseTableViewer.setContentProvider (new ArrayContentProvider());
-        formulaTestCaseTableViewer.setLabelProvider (new FormulaTestCaseTblLabelProvider());
-        
+        formulaTestCaseTableViewer.setContentProvider(new ArrayContentProvider());
+        formulaTestCaseTableViewer.setLabelProvider(new FormulaTestCaseTblLabelProvider());
+
         // create the cell editor
         createTableCellModifier(uiToolkit);
-        
-        hookFormulaTestCaseTableListener();     
-        
-        setTableInput(new ArrayList());
-        
+
+        hookFormulaTestCaseTableListener();
+
+        setTableInput(new ArrayList<ExtDataForFormulaTestCase>());
+
         // pack the table
         repackAndResfreshForumlaTestCaseTable();
     }
 
     private void createTableCellModifier(UIToolkit uiToolkit) {
-        ValueDatatype resultValueDatatype = ValueDatatype.STRING;
+        ValueDatatype resultValueDatatype = Datatype.STRING;
         try {
             resultValueDatatype = formula.findValueDatatype(ipsProject);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this, ipsProject);
-        tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
+        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this,
+                ipsProject);
+        tableCellModifier.initModifier(uiToolkit, new String[] { null, IIpsElement.PROPERTY_NAME,
                 IFormulaTestCase.PROPERTY_EXPECTED_RESULT, PROPERTY_ACTUAL_RESULT }, new ValueDatatype[] { null,
-                ValueDatatype.STRING, resultValueDatatype, null });
+                Datatype.STRING, resultValueDatatype, null });
         tableCellModifier.addListener(this);
     }
 
@@ -760,8 +784,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         // add listener to the table view
         formulaTestCaseTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             Object prevObject;
+
             public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection){
+                if (event.getSelection() instanceof IStructuredSelection) {
                     final Object selObject = ((IStructuredSelection)event.getSelection()).getFirstElement();
                     if (prevObject != selObject) {
                         prevObject = selObject;
@@ -770,8 +795,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 }
             }
         });
-        
+
         new TableMessageHoverService(formulaTestCaseTableViewer) {
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element instanceof ExtDataForFormulaTestCase) {
                     ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase)element;
@@ -779,8 +805,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     int status = getFormulaTestCaseTestStatus(ftc);
                     if (status == TEST_FAILURE) {
                         Object actualResult = ftc.getActualResult();
-                        String actualResultStr = actualResult == null ? ""+null : actualResult.toString(); //$NON-NLS-1$
-                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, formatValue(ftc.getFormulaTestCase()), actualResultStr);
+                        String actualResultStr = actualResult == null ? "" + null : actualResult.toString(); //$NON-NLS-1$
+                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas,
+                                formatValue(ftc.getFormulaTestCase()), actualResultStr);
                         Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                         ml.add(msg);
                     } else if (status == TEST_ERROR) {
@@ -796,16 +823,17 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                             ml.add(msg);
                         } else {
                             Object actualResult = ftc.getActualResult();
-                            String actualResultStr = actualResult == null ? ""+null : actualResult.toString(); //$NON-NLS-1$
-                            String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, ftc
-                                    .getExpectedResult(), actualResultStr);
+                            String actualResultStr = actualResult == null ? "" + null : actualResult.toString(); //$NON-NLS-1$
+                            String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas,
+                                    ftc.getExpectedResult(), actualResultStr);
                             Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                             ml.add(msg);
                         }
                     }
                     return ml;
-                } else
+                } else {
                     return null;
+                }
             }
         };
     }
@@ -815,14 +843,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         try {
             expectedResult = ftc.getExpectedResult();
             IFormula formula = ftc.getFormula();
-            expectedResult = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(formula.findValueDatatype(ipsProject),
-                    (String)(expectedResult == null ? null : expectedResult.toString()));
+            expectedResult = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
+                    formula.findValueDatatype(ipsProject), (expectedResult == null ? null : expectedResult.toString()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return expectedResult;
     }
-    
+
     /*
      * Method to indicate that the selection in the formula test case table has changed
      */
@@ -835,14 +863,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             return;
         }
         formulaTestInputValuesControl.storeFormulaTestCase(selectedFormulaTestCase.getFormulaTestCase());
-        
+
         btnDeleteFormulaTestCase.setEnabled(true);
         btnMoveFormulaTestCaseUp.setEnabled(true);
         btnMoveFormulaTestCaseDown.setEnabled(true);
         updateStatusOfUpdateButton(selectedFormulaTestCase);
-        
+
         // if the data is not changeable disable all buttons in any case
-        if (!isDataChangeable()){
+        if (!isDataChangeable()) {
             btnDeleteFormulaTestCase.setEnabled(false);
             btnMoveFormulaTestCaseUp.setEnabled(false);
             btnMoveFormulaTestCaseDown.setEnabled(false);
@@ -851,29 +879,29 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     /*
-     * Updates the status of the update button to enabled or disabled. Enable the button if
-     * there is an mismatch between the formulas and the formula test case parameters
+     * Updates the status of the update button to enabled or disabled. Enable the button if there is
+     * an mismatch between the formulas and the formula test case parameters
      */
     private void updateStatusOfUpdateButton(ExtDataForFormulaTestCase selectedFormulaTestCase) {
-        if (btnUpdateFormulaTestCase == null){
+        if (btnUpdateFormulaTestCase == null) {
             return;
         }
         btnUpdateFormulaTestCase.setEnabled(false);
-        if (selectedFormulaTestCase == null){
+        if (selectedFormulaTestCase == null) {
             return;
         }
         try {
             btnUpdateFormulaTestCase.setEnabled(false);
             MessageList ml;
             ml = selectedFormulaTestCase.validate();
-            if (ml.getMessageByCode(IFormulaTestCase.MSGCODE_IDENTIFIER_MISMATCH) != null){
+            if (ml.getMessageByCode(IFormulaTestCase.MSGCODE_IDENTIFIER_MISMATCH) != null) {
                 btnUpdateFormulaTestCase.setEnabled(true);
-            }             
+            }
         } catch (CoreException e) {
             // exception ignored, the validation exception will not be diplayed here
         }
     }
-    
+
     /*
      * Repacks the columns in the table
      */
@@ -885,7 +913,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestCaseTableViewer.refresh();
     }
 
-    private void setTableInput(List formulaTestCases) {
+    private void setTableInput(List<ExtDataForFormulaTestCase> formulaTestCases) {
         formulaTestCaseTableViewer.setInput(formulaTestCases);
     }
 
@@ -895,54 +923,30 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     /*
-     * Returns the image for the given message list (e.g. if there is an error return a problem image)
-     */
-    private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
-        // get the cached problem descriptor for the base image
-        String key = getKey(defaultImage, msgList.getSeverity());
-        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
-        if (descriptor == null && defaultImage != null){
-            descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
-            cachedProblemImageDescriptors.put(key, descriptor);
-        }
-        return IpsPlugin.getDefault().getImage(descriptor);
-    } 
-    
-    /*
-     * Returns an unique key for the given image and severity compination.
-     */
-    private String getKey(Image image, int severity) {
-        if (image == null){
-            return null;
-        }
-        return image.hashCode() + "_" + severity; //$NON-NLS-1$
-    }     
-
-    /*
      * Performs and returns validation messages on the given element.
      */
-    private MessageList validateElement(Object element) throws CoreException{
+    private MessageList validateElement(Object element) throws CoreException {
         MessageList messageList = new MessageList();
         // validate element
-        if (element instanceof IIpsObjectPartContainer){
+        if (element instanceof IIpsObjectPartContainer) {
             messageList.add(((IIpsObjectPartContainer)element).validate(ipsProject));
         }
         return messageList;
     }
-    
-    public void valueChanged(ColumnIdentifier columnIdentifier, Object value){
+
+    public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
         // resets the color of the last test run
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
-        if (tc != null){
+        if (tc != null) {
             tc.setActualResult(""); //$NON-NLS-1$
         }
         resetTestRunColor();
     }
-    
-    private void calculateAndStoreActualResult(){
+
+    private void calculateAndStoreActualResult() {
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
-        if (tc != null){
-            tc.setActualResult((String)formulaTestInputValuesControl.calculateFormulaIfValid(ipsProject)); //$NON-NLS-1$
+        if (tc != null) {
+            tc.setActualResult((String)formulaTestInputValuesControl.calculateFormulaIfValid(ipsProject));
         }
     }
 
@@ -950,11 +954,11 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        this.dataChangeable = changeable;
-        
+        dataChangeable = changeable;
+
         // trigger update state of buttons
         selectionFormulaTestCaseChanged(getSelectedFormulaTestCase());
-        
+
         uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
         formulaTestInputValuesControl.setDataChangeable(changeable);
     }

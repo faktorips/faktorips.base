@@ -38,6 +38,11 @@ public class DefaultIpsObjectWorkbenchAdapter extends IpsObjectWorkbenchAdapter 
     }
 
     @Override
+    public ImageDescriptor getDefaultImageDescriptor() {
+        return imageDescriptor;
+    }
+
+    @Override
     protected String getLabel(IIpsSrcFile ipsSrcFile) {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
     }

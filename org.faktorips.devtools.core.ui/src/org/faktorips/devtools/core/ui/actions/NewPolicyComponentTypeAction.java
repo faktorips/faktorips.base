@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,19 +24,20 @@ import org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizard
  * @author Stefan Widmaier
  */
 public class NewPolicyComponentTypeAction extends Action {
-	private IWorkbenchWindow window;
-	
-	public NewPolicyComponentTypeAction(IWorkbenchWindow window){
-		super();
-		this.window = window;
-		setText(Messages.NewPolicyComponentTypeAction_name);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewPolicyCmptTypeWizard.gif")); //$NON-NLS-1$
-	}
-	
-	public void run(){
-		OpenNewPcTypeWizardAction openAction = new OpenNewPcTypeWizardAction();
-		openAction.init(window);
-		openAction.run(this);
-	}
-	
+    private IWorkbenchWindow window;
+
+    public NewPolicyComponentTypeAction(IWorkbenchWindow window) {
+        super();
+        this.window = window;
+        setText(Messages.NewPolicyComponentTypeAction_name);
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewPolicyCmptTypeWizard.gif")); //$NON-NLS-1$
+    }
+
+    @Override
+    public void run() {
+        OpenNewPcTypeWizardAction openAction = new OpenNewPcTypeWizardAction();
+        openAction.init(window);
+        openAction.run(this);
+    }
+
 }

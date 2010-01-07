@@ -88,14 +88,14 @@ public class TableImportExportAction extends IpsAction {
     protected void initImportAction() {
         setText(Messages.TableImportExportAction_importActionTitle);
         setToolTipText(Messages.TableImportExportAction_importActionTooltip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Import.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("Import.gif")); //$NON-NLS-1$
         isImport = true;
     }
 
     protected void initExportAction() {
         setText(Messages.TableImportExportAction_exportActionTitle);
         setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Export.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("Export.gif")); //$NON-NLS-1$
     }
 
     @Override

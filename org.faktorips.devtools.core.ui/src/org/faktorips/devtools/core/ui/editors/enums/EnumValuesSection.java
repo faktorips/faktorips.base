@@ -71,6 +71,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -101,9 +102,6 @@ import org.faktorips.util.message.MessageList;
  * @since 2.3
  */
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
-
-    /** The image to show for columns that contain unique identifier values. */
-    private final static Image UNIQUE_IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
 
     /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
     private IEnumValueContainer enumValueContainer;
@@ -300,7 +298,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         newColumn.setWidth(200);
 
         if (identifierColumnn) {
-            newColumn.setImage(UNIQUE_IDENTIFIER_COLUMN_IMAGE);
+            newColumn.setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true));
         }
         columnNames.add(columnName);
     }
@@ -854,12 +852,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The label provider for the table viewer. */
     private class EnumValuesLabelProvider implements ITableLabelProvider {
 
-        /** Image for validation errors. */
-        private final Image errorImage = IpsPlugin.getDefault().getImage("ovr16/error_co.gif");
-
         public Image getColumnImage(Object element, int columnIndex) {
             if (hasErrorsAt((IEnumValue)element, columnIndex)) {
-                return errorImage;
+                return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
             }
             return null;
         }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -72,17 +72,16 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     private PaletteRoot paletteRoot;
     private IpsProblemsLabelDecorator decorator;
     private ScrollingGraphicalViewer viewer;
-    
+
     /*
-     * Storage for the user's decision not to load the changes made directly in the
-     * file system.
+     * Storage for the user's decision not to load the changes made directly in the file system.
      */
     private boolean dontLoadChanges = false;
-    
+
     private boolean isCheckingForChangesMadeOutsideEclipse = false;
 
     private ActivationListener activationListener;
-    
+
     public BusinessFunctionEditor() {
         decorator = new IpsProblemsLabelDecorator();
     }
@@ -100,7 +99,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
      */
     // TODO duplicate code in IpsObjectEditor
     private Image getDecoratedImage() throws CoreException {
-        Image titleImage = ipsSrcFile.getIpsObjectType().getImage(true);
+        Image titleImage = IpsUIPlugin.getImageHandling().getImage(ipsSrcFile);
         return decorator.decorateImage(titleImage, ipsSrcFile);
     }
 
@@ -120,10 +119,10 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     }
 
     /**
-     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>. 
+     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>.
      */
     private boolean isActive() {
-        return this==getSite().getPage().getActiveEditor();
+        return this == getSite().getPage().getActiveEditor();
     }
 
     // TODO duplicate code in IpsObjectEditor
@@ -133,7 +132,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             shell.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     try {
-                        if(isActive()){
+                        if (isActive()) {
                             refresh();
                         }
                         setTitleImage(getDecoratedImage());
@@ -239,7 +238,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         decorator.dispose();
         IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
-        if(activationListener != null){
+        if (activationListener != null) {
             activationListener.dispose();
         }
     }
@@ -266,14 +265,15 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         }
         return super.getAdapter(adapter);
     }
-    
+
     /**
      * Refreshes the controls on the active page with the data from the model.<br>
      * Calls to this refresh method are ignored if the activate attribute is set to
      * <code>false</code>.
      */
     private void refresh() {
-        //ipsSrcFile can be null if the editor is opend on a ips source file that is not in a ips package
+        // ipsSrcFile can be null if the editor is opend on a ips source file that is not in a ips
+        // package
         if (ipsSrcFile == null || !ipsSrcFile.exists()) {
             return;
         }
@@ -281,15 +281,16 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             if (!ipsSrcFile.isContentParsable()) {
                 return;
             }
-            // here we have to request the ips object once, to make sure that 
+            // here we have to request the ips object once, to make sure that
             // it's state is is synchronized with the enclosing resource.
-            // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
+            // otherwise if some part of the ui keeps a reference to the ips object, it won't
+            // contain
             // the correct state.
-            ipsSrcFile.getIpsObject(); 
+            ipsSrcFile.getIpsObject();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        if(viewer != null){
+        if (viewer != null) {
             viewer.getContents().refresh();
         }
     }
@@ -298,7 +299,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         checkForChangesMadeOutsideEclipse();
         refresh();
     }
-    
+
     private void checkForChangesMadeOutsideEclipse() {
         if (dontLoadChanges || isCheckingForChangesMadeOutsideEclipse) {
             return;
@@ -306,11 +307,13 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         try {
             isCheckingForChangesMadeOutsideEclipse = true;
             if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
-                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
-                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
-                        new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
+                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
                 dlg.open();
-                if (dlg.getReturnCode()==0) {
+                if (dlg.getReturnCode() == 0) {
                     try {
                         ipsSrcFile.getEnclosingResource().refreshLocal(0, null);
                         refresh();
@@ -320,14 +323,13 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
                 } else {
                     dontLoadChanges = true;
                 }
-                
+
             }
         } finally {
             isCheckingForChangesMadeOutsideEclipse = false;
         }
     }
 
-    
     /**
      * Internal part and shell activation listener.
      * 
@@ -337,10 +339,10 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     private class ActivationListener implements IPartListener, IWindowListener {
 
         private IPartService partService;
-        
+
         /**
          * Creates this activation listener.
-         *
+         * 
          * @param partService the part service on which to add the part listener
          * @since 3.1
          */
@@ -352,17 +354,17 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         /**
          * Disposes this activation listener.
-         *
+         * 
          * @since 3.1
          */
         public void dispose() {
             partService.removePartListener(this);
             PlatformUI.getWorkbench().removeWindowListener(this);
-            partService= null;
+            partService = null;
         }
 
         public void partActivated(IWorkbenchPart part) {
-            if (part!=BusinessFunctionEditor.this) {
+            if (part != BusinessFunctionEditor.this) {
                 return;
             }
             handleEditorActivation();
@@ -372,7 +374,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         }
 
         public void partClosed(IWorkbenchPart part) {
-            if (part!=BusinessFunctionEditor.this) {
+            if (part != BusinessFunctionEditor.this) {
                 return;
             }
             ipsSrcFile.discardChanges();
@@ -381,11 +383,11 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         public void partDeactivated(IWorkbenchPart part) {
         }
-        
+
         private void removeListeners() {
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(BusinessFunctionEditor.this);
         }
-        
+
         public void partOpened(IWorkbenchPart part) {
         }
 

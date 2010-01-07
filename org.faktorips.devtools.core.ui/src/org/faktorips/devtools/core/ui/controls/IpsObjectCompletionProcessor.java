@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,79 +26,75 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
-
 
 /**
  *
  */
 public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
-    
+
     private IpsObjectRefControl control;
     private IpsObjectType ipsObjectType;
 
     public IpsObjectCompletionProcessor(IpsObjectRefControl control) {
         ArgumentCheck.notNull(control);
         this.control = control;
-        this.ipsProject = control.getIpsProject();
+        ipsProject = control.getIpsProject();
         ipsObjectType = null;
     }
-    
+
     public IpsObjectCompletionProcessor(IIpsProject ipsProject, IpsObjectType type) {
         super(ipsProject);
         ArgumentCheck.notNull(type);
         ipsObjectType = type;
         control = null;
     }
-    
+
     /**
-	 * Returns whether the given qualified name will match the given package and
-	 * name prefixes.
-	 * 
-	 * @param pack
-	 *            The package the given qualified name must match. Can be empty,
-	 *            but must not be <code>null</code>.
-	 * @param prefix
-	 *            The prefix the unqualifed name must match. Can be emtpy, but
-	 *            must not be <code>null</code>.
-	 * @param qualifiedName
-	 *            The qulified name to match against the given package and name
-	 *            prefix.
-	 * 
-	 * @return <code>true</code> if the given qualified name matches,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean match(String pack, String prefix, String qualifiedName) {
-		String toMatchPack = StringUtil.getPackageName(qualifiedName).toLowerCase();
-		String toMatchName = StringUtil.unqualifiedName(qualifiedName).toLowerCase();
+     * Returns whether the given qualified name will match the given package and name prefixes.
+     * 
+     * @param pack The package the given qualified name must match. Can be empty, but must not be
+     *            <code>null</code>.
+     * @param prefix The prefix the unqualifed name must match. Can be emtpy, but must not be
+     *            <code>null</code>.
+     * @param qualifiedName The qulified name to match against the given package and name prefix.
+     * 
+     * @return <code>true</code> if the given qualified name matches, <code>false</code> otherwise.
+     */
+    private boolean match(String pack, String prefix, String qualifiedName) {
+        String toMatchPack = StringUtil.getPackageName(qualifiedName).toLowerCase();
+        String toMatchName = StringUtil.unqualifiedName(qualifiedName).toLowerCase();
 
-		return (StringUtils.isEmpty(pack) || toMatchPack.startsWith(pack.toLowerCase()))
-				&& (StringUtils.isEmpty(prefix) || toMatchName.startsWith(prefix.toLowerCase()));
-	}
-
-    public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-    	if (ipsProject == null && control != null) {
-    		ipsProject = control.getIpsProject();
-    	}
-    	return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
+        return (StringUtils.isEmpty(pack) || toMatchPack.startsWith(pack.toLowerCase()))
+                && (StringUtils.isEmpty(prefix) || toMatchName.startsWith(prefix.toLowerCase()));
     }
 
-	
-	protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
-        if (control==null && ipsProject==null) {
+    @Override
+    public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl,
+            int documentOffset) {
+        if (ipsProject == null && control != null) {
+            ipsProject = control.getIpsProject();
+        }
+        return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
+    }
+
+    @Override
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+        if (control == null && ipsProject == null) {
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgNoProject);
             return;
         }
         String match = prefix.toLowerCase();
-        
+
         String matchPack = StringUtil.getPackageName(match);
         String matchName = StringUtil.unqualifiedName(match);
-        
+
         try {
             IIpsSrcFile[] ipsSrcFiles;
             if (control != null) {
-                ipsSrcFiles = control.getIpsSrcFiles();    
+                ipsSrcFiles = control.getIpsSrcFiles();
             } else {
                 ipsSrcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
             }
@@ -106,16 +102,17 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 QualifiedNameType qnt = ipsSrcFiles[i].getQualifiedNameType();
                 if (match(matchPack, matchName, qnt.getName())) {
                     String qName = qnt.getName();
-                    String displayText = qnt.getUnqualifiedName() + " - " + mapDefaultPackageName(ipsSrcFiles[i].getIpsPackageFragment().getName()); //$NON-NLS-1$
+                    String displayText = qnt.getUnqualifiedName()
+                            + " - " + mapDefaultPackageName(ipsSrcFiles[i].getIpsPackageFragment().getName()); //$NON-NLS-1$
                     String description = null;
-                    if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()){
+                    if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()) {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
                         description = ipsSrcFiles[i].getIpsObject().getDescription();
                     }
-                    
+
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
-                            ipsSrcFiles[i].getIpsObjectType().getEnabledImage(), displayText, null, description);
+                            IpsUIPlugin.getImageHandling().getImage(ipsSrcFiles[i]), displayText, null, description);
                     result.add(proposal);
                 }
             }
@@ -147,5 +144,5 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             IpsPlugin.log(e);
             return;
         }
-	}
+    }
 }

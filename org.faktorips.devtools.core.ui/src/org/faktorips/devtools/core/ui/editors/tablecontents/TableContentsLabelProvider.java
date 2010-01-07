@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,6 +20,8 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -31,21 +33,15 @@ import org.faktorips.util.message.MessageList;
 public class TableContentsLabelProvider implements ITableLabelProvider {
 
     private ValueDatatype[] datatypes;
-    
+
     /**
-     * The image indicating an error in a table cell.
-     */
-    private Image errorImage= IpsPlugin.getDefault().getImage("ovr16/error_co.gif"); //$NON-NLS-1$
-    
-    /**
-     * Returns an error-icon if the given element has an error at the given columnIndex.
-     * Returns <code>null</code> otherwise.
-     * {@inheritDoc}
+     * Returns an error-icon if the given element has an error at the given columnIndex. Returns
+     * <code>null</code> otherwise. {@inheritDoc}
      */
     public Image getColumnImage(Object element, int columnIndex) {
-        if(element instanceof IRow){
-            if(hasRowErrorsAt((IRow) element, columnIndex)){
-                return errorImage;
+        if (element instanceof IRow) {
+            if (hasRowErrorsAt((IRow)element, columnIndex)) {
+                return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
             }
         }
         return null;
@@ -54,10 +50,10 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     public void setValueDatatypes(ValueDatatype[] datatypes) {
         this.datatypes = datatypes;
     }
-    
+
     /**
-     * Returns <code>true</code> if the given row validation detects an error at the given columnIndex,
-     * <code>false</code> otherwise.
+     * Returns <code>true</code> if the given row validation detects an error at the given
+     * columnIndex, <code>false</code> otherwise.
      * 
      * @param row
      * @param columnIndex
@@ -66,7 +62,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     private boolean hasRowErrorsAt(IRow row, int columnIndex) {
         try {
             MessageList messageList = row.validate(row.getIpsProject());
-            messageList= messageList.getMessagesFor(row, IRow.PROPERTY_VALUE, columnIndex);
+            messageList = messageList.getMessagesFor(row, IRow.PROPERTY_VALUE, columnIndex);
             return !messageList.isEmpty();
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -75,49 +71,45 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     }
 
     /**
-     * Supports null-representation strings. If the value retrieved from the given element 
-     * is <code>null</code> the null-representation string is returned instead.
+     * Supports null-representation strings. If the value retrieved from the given element is
+     * <code>null</code> the null-representation string is returned instead.
      * <p>
-     * Returns <code>null</code> if the given element is not an <code>IRow</code>.
-     * {@inheritDoc}
+     * Returns <code>null</code> if the given element is not an <code>IRow</code>. {@inheritDoc}
      */
     public String getColumnText(Object element, int columnIndex) {
-        if(element instanceof IRow){
+        if (element instanceof IRow) {
             IRow row = (IRow)element;
-            if (row.getTableContents().getNumOfColumns()==0) {
+            if (row.getTableContents().getNumOfColumns() == 0) {
                 return null;
             }
-            String value= row.getValue(columnIndex);
-            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatypes[columnIndex], value);
+            String value = row.getValue(columnIndex);
+            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
+                    datatypes[columnIndex], value);
         }
         return null;
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void addListener(ILabelProviderListener listener) {
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void dispose() {
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void removeListener(ILabelProviderListener listener) {
     }

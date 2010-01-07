@@ -50,7 +50,7 @@ public class NewEnumValueAction extends Action {
 
         this.enumValuesTableViewer = enumValuesTableViewer;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelNewValue);
         setToolTipText(Messages.EnumValuesSection_tooltipNewValue);
     }

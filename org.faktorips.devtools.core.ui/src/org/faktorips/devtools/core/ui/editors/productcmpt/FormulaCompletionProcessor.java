@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,10 +33,10 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.util.ArgumentCheck;
-
 
 /**
  * 
@@ -45,36 +45,35 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private IMethod signature;
     private IFormula formula;
-    
+
     public FormulaCompletionProcessor(IFormula formula) throws CoreException {
         super();
         ArgumentCheck.notNull(formula);
         this.formula = formula;
         setIpsProject(formula.getIpsProject());
-        this.signature = formula.findFormulaSignature(formula.getIpsProject());
+        signature = formula.findFormulaSignature(formula.getIpsProject());
         setComputeProposalForEmptyPrefix(true);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
-        return new char[] {'.'};
+        return new char[] { '.' };
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
-    public void doComputeCompletionProposals(
-            String prefix, 
-            int documentOffset, 
-            List result) throws Exception {
-        
+    @Override
+    public void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+
         String identifier = getLastIdentifier(prefix);
         int pos = identifier.lastIndexOf('.');
-        if (pos>0) {
+        if (pos > 0) {
             String paramName = identifier.substring(0, pos);
-            String attributePrefix = identifier.substring(pos+1);
+            String attributePrefix = identifier.substring(pos + 1);
             int replacementOffset = prefix.length() - attributePrefix.length();
             addMatchingAttributes(result, paramName, attributePrefix, replacementOffset);
             addMatchingEnumValues(result, paramName, attributePrefix, replacementOffset);
@@ -86,73 +85,82 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             addMatchingEnumTypes(result, identifier, replacementOffset);
         }
     }
-    
-    private void addMatchingEnumTypes(List result, String enumTypePrefix, int replacementOffset) throws CoreException{
-    	EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
-    	for (int i = 0; i < enumTypes.length; i++) {
-			if(enumTypes[i].getName().startsWith(enumTypePrefix)){
-		        CompletionProposal proposal = new CompletionProposal(
-		        		enumTypes[i].getName(), replacementOffset, enumTypePrefix.length(), enumTypes[i].getName().length(),  
-		                new DefaultLabelProvider().getImage(enumTypes[i]), enumTypes[i].getName(), null, null);
-		        result.add(proposal);
-			}
-		}
+
+    private void addMatchingEnumTypes(List result, String enumTypePrefix, int replacementOffset) throws CoreException {
+        EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
+        for (int i = 0; i < enumTypes.length; i++) {
+            if (enumTypes[i].getName().startsWith(enumTypePrefix)) {
+                CompletionProposal proposal = new CompletionProposal(enumTypes[i].getName(), replacementOffset,
+                        enumTypePrefix.length(), enumTypes[i].getName().length(), new DefaultLabelProvider()
+                                .getImage(enumTypes[i]), enumTypes[i].getName(), null, null);
+                result.add(proposal);
+            }
+        }
     }
-    
-    private void addMatchingEnumValues(List result, String enumTypeName, String enumValuePrefix, int replacementOffset) throws CoreException{
-		EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
-		for (int i = 0; i < enumTypes.length; i++) {
-			if(enumTypes[i].getName().equals(enumTypeName)){
-				String[] valueIds = enumTypes[i].getAllValueIds(false);
-				for (int t = 0; t < valueIds.length; t++) {
-				    String valueId = valueIds[t];
-		    		if(valueId.startsWith(enumValuePrefix)){
-		    			addEnumValueToResult(result, enumTypes[i], valueId, replacementOffset, enumValuePrefix.length());
-		    		}
-				}
-				return;
-			}
-		}
+
+    private void addMatchingEnumValues(List result, String enumTypeName, String enumValuePrefix, int replacementOffset)
+            throws CoreException {
+        EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
+        for (int i = 0; i < enumTypes.length; i++) {
+            if (enumTypes[i].getName().equals(enumTypeName)) {
+                String[] valueIds = enumTypes[i].getAllValueIds(false);
+                for (int t = 0; t < valueIds.length; t++) {
+                    String valueId = valueIds[t];
+                    if (valueId.startsWith(enumValuePrefix)) {
+                        addEnumValueToResult(result, enumTypes[i], valueId, replacementOffset, enumValuePrefix.length());
+                    }
+                }
+                return;
+            }
+        }
     }
-    
-    private void addEnumValueToResult(List result, EnumDatatype enumType, String enumValue, int replacementOffset, int replacementLength){
-        CompletionProposal proposal = new CompletionProposal(
-                enumValue, replacementOffset, replacementLength, enumValue.length(),  
-                new DefaultLabelProvider().getImage(enumType), enumValue, null, null);
+
+    private void addEnumValueToResult(List result,
+            EnumDatatype enumType,
+            String enumValue,
+            int replacementOffset,
+            int replacementLength) {
+        CompletionProposal proposal = new CompletionProposal(enumValue, replacementOffset, replacementLength, enumValue
+                .length(), new DefaultLabelProvider().getImage(enumType), enumValue, null, null);
         result.add(proposal);
     }
-    
-    private void addMatchingProductCmptTypeAttributes(List result, String prefix, int replacementOffset) throws CoreException{
+
+    private void addMatchingProductCmptTypeAttributes(List result, String prefix, int replacementOffset)
+            throws CoreException {
         IIpsProject ipsProject = formula.getIpsProject();
         IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
-        if(productCmptType != null){
+        if (productCmptType != null) {
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
             for (int i = 0; i < attributes.length; i++) {
-                if(attributes[i].getName().startsWith(prefix)){
-                    addPartToResult(result, attributes[i], attributes[i].getDatatype(), replacementOffset, prefix.length());
+                if (attributes[i].getName().startsWith(prefix)) {
+                    addPartToResult(result, attributes[i], attributes[i].getDatatype(), replacementOffset, prefix
+                            .length());
                 }
             }
         }
     }
 
-    private void addPartToResult(List result, IIpsObjectPart part, String datatype, int replacementOffset, int replacementLength) {
+    private void addPartToResult(List result,
+            IIpsObjectPart part,
+            String datatype,
+            int replacementOffset,
+            int replacementLength) {
         String name = part.getName();
         String displayText = name + " - " + datatype; //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
-                new DefaultLabelProvider().getImage(part), displayText, null, null);
+        CompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
+                replacementOffset + name.length(), new DefaultLabelProvider().getImage(part), displayText, null, null);
         result.add(proposal);
     }
-    
+
     private void addMatchingParameters(List result, String prefix, int replacementOffset) {
         IParameter[] params = signature.getParameters();
-        for (int i=0; i<params.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             if (params[i].getName().startsWith(prefix)) {
                 addPartToResult(result, params[i], params[i].getDatatype(), replacementOffset, prefix.length());
             }
         }
     }
-    
+
     private void addMatchingFunctions(List result, String prefix, int replacementOffset) throws CoreException {
         ExprCompiler compiler = formula.newExprCompiler(formula.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
@@ -164,20 +172,20 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
                 return f1.getName().compareTo(f2.getName());
             }
         });
-        for (int i=0; i<functions.length; i++) {
+        for (int i = 0; i < functions.length; i++) {
             if (functions[i].getName().toLowerCase().startsWith(prefix.toLowerCase())) {
                 addFunctionToResult(result, functions[i], replacementOffset, prefix.length());
             }
         }
     }
-    
+
     private void addFunctionToResult(List result, FlFunction function, int replacementOffset, int replacementLength) {
         String name = function.getName();
         StringBuffer displayText = new StringBuffer(name);
         displayText.append('(');
         Datatype[] argTypes = function.getArgTypes();
-        for (int i=0; i<argTypes.length; i++) {
-            if (i>0) {
+        for (int i = 0; i < argTypes.length; i++) {
+            if (i > 0) {
                 displayText.append(", "); //$NON-NLS-1$
             }
             displayText.append(argTypes[i].getName());
@@ -188,29 +196,26 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String description = function.getDescription();
         description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
-        CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
-                new DefaultLabelProvider().getImage(function), displayText.toString(), null, description);
+        CompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
+                replacementOffset + name.length(), new DefaultLabelProvider().getImage(function), displayText
+                        .toString(), null, description);
         result.add(proposal);
     }
-    
-    private void addMatchingAttributes(
-            List result, 
-            String paramName, 
-            String attributePrefix, 
-            int replacementOffset) throws CoreException {
-        
+
+    private void addMatchingAttributes(List result, String paramName, String attributePrefix, int replacementOffset)
+            throws CoreException {
+
         IParameter param = getParameter(paramName);
-        if (param==null) {
+        if (param == null) {
             return;
         }
         Datatype datatype = param.findDatatype(ipsProject);
-        if(!(datatype instanceof IType)){
+        if (!(datatype instanceof IType)) {
             return;
         }
         IAttribute[] attributes = ((IType)datatype).findAllAttributes(ipsProject);
         List attributeNames = new ArrayList();
-        for (int i=0; i<attributes.length; i++) {
+        for (int i = 0; i < attributes.length; i++) {
             if (attributes[i].getName().startsWith(attributePrefix)) {
                 if (!attributeNames.contains(attributes[i].getName())) {
                     addAttributeToResult(result, paramName, attributes[i], replacementOffset, attributePrefix.length());
@@ -219,24 +224,22 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             }
         }
     }
-    
-    private void addAttributeToResult(
-            List result, 
-            String paramName, 
-            IAttribute attribute, 
+
+    private void addAttributeToResult(List result,
+            String paramName,
+            IAttribute attribute,
             int replacementOffset,
             int replacementLength) {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, name.length(),  
-                attribute.getImage(), displayText, null, attribute.getDescription());
+        CompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength, name.length(),
+                IpsUIPlugin.getImageHandling().getImage(attribute), displayText, null, attribute.getDescription());
         result.add(proposal);
     }
-    
+
     private IParameter getParameter(String name) {
         IParameter[] params = signature.getParameters();
-        for (int i=0; i<params.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             if (params[i].getName().equals(name)) {
                 return params[i];
             }
@@ -245,20 +248,21 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     /*
-     * The characters that are checked within this method have to be in sych with the identifier tokens defined
-     * in the ffl.jjt grammar
-     */ 
+     * The characters that are checked within this method have to be in sych with the identifier
+     * tokens defined in the ffl.jjt grammar
+     */
     private String getLastIdentifier(String s) {
         if (StringUtils.isEmpty(s)) {
             return ""; //$NON-NLS-1$
         }
-        int i=s.length()-1;
-        while (i>=0) {
-            if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i)!='.' && s.charAt(i)!='_' && s.charAt(i)!='-') {
-               break; 
+        int i = s.length() - 1;
+        while (i >= 0) {
+            if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i) != '.' && s.charAt(i) != '_'
+                    && s.charAt(i) != '-') {
+                break;
             }
             i--;
         }
-        return s.substring(i+1);
+        return s.substring(i + 1);
     }
 }

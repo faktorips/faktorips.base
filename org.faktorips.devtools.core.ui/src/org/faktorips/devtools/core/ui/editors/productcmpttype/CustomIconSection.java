@@ -153,9 +153,9 @@ public class CustomIconSection extends IpsSection {
         if (!(type instanceof IProductCmptType)) {
             return;
         }
-        ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getDefault()
+        ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getImageHandling()
                 .getWorkbenchAdapterFor(ProductCmpt.class);
-        iconPreview.setImage(IpsUIPlugin.getDefault().getImage(
+        iconPreview.setImage(IpsUIPlugin.getImageHandling().getImage(
                 adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
     }
 

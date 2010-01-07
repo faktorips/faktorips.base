@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.bf.properties;
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version
- * 0.1 (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
@@ -64,14 +64,15 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -135,10 +136,11 @@ public class ParametersEditControl extends Composite {
     public void setInput(IBusinessFunction paramContainer) {
         ArgumentCheck.notNull(paramContainer);
         this.paramContainer = paramContainer;
-        this.ipsProject = paramContainer.getIpsProject();
+        ipsProject = paramContainer.getIpsProject();
         fTableViewer.setInput(paramContainer);
-        if (paramContainer.getParameterBFEs().size() > 0)
+        if (paramContainer.getParameterBFEs().size() > 0) {
             fTableViewer.setSelection(new StructuredSelection(paramContainer.getParameterBFEs().get(0)));
+        }
         CellEditor[] editors = fTableViewer.getCellEditors();
         installParameterTypeContentAssist(editors[TYPE_PROP].getControl());
     }
@@ -181,6 +183,7 @@ public class ParametersEditControl extends Composite {
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
 
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 return validate((IParameterBFE)element);
             }
@@ -201,6 +204,7 @@ public class ParametersEditControl extends Composite {
             }
         });
         table.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F2 && e.stateMask == SWT.NONE) {
                     editColumnOrNextPossible(0);
@@ -214,26 +218,30 @@ public class ParametersEditControl extends Composite {
 
     private void editColumnOrNextPossible(int column) {
         IParameterBFE[] selected = getSelectedElements();
-        if (selected.length != 1)
+        if (selected.length != 1) {
             return;
+        }
         int nextColumn = column;
         do {
             fTableViewer.editElement(selected[0], nextColumn);
-            if (fTableViewer.isCellEditorActive())
+            if (fTableViewer.isCellEditorActive()) {
                 return;
+            }
             nextColumn = nextColumn(nextColumn);
         } while (nextColumn != column);
     }
 
     private void editColumnOrPrevPossible(int column) {
         IParameterBFE[] selected = getSelectedElements();
-        if (selected.length != 1)
+        if (selected.length != 1) {
             return;
+        }
         int prevColumn = column;
         do {
             fTableViewer.editElement(selected[0], prevColumn);
-            if (fTableViewer.isCellEditorActive())
+            if (fTableViewer.isCellEditorActive()) {
                 return;
+            }
             prevColumn = prevColumn(prevColumn);
         } while (prevColumn != column);
     }
@@ -248,11 +256,13 @@ public class ParametersEditControl extends Composite {
 
     private IParameterBFE[] getSelectedElements() {
         ISelection selection = fTableViewer.getSelection();
-        if (selection == null)
+        if (selection == null) {
             return new IParameterBFE[0];
+        }
 
-        if (!(selection instanceof IStructuredSelection))
+        if (!(selection instanceof IStructuredSelection)) {
             return new IParameterBFE[0];
+        }
 
         List selected = ((IStructuredSelection)selection).toList();
         return (IParameterBFE[])selected.toArray(new IParameterBFE[selected.size()]);
@@ -279,10 +289,12 @@ public class ParametersEditControl extends Composite {
     }
 
     private void updateButtonsEnabledState() {
-        if (fAddButton != null)
+        if (fAddButton != null) {
             fAddButton.setEnabled(true);
-        if (fRemoveButton != null)
+        }
+        if (fRemoveButton != null) {
             fRemoveButton.setEnabled(getTableSelectionCount() != 0);
+        }
     }
 
     private int getTableSelectionCount() {
@@ -309,6 +321,7 @@ public class ParametersEditControl extends Composite {
         Button button = uiToolkit.createButton(buttonComposite, Messages.getString("ParametersEditControl.AddLabel")); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IParameterBFE p = paramContainer.newParameter();
                 p.setName("newParam"); //$NON-NLS-1$
@@ -324,9 +337,11 @@ public class ParametersEditControl extends Composite {
     }
 
     private Button createRemoveButton(Composite buttonComposite) {
-        final Button button = uiToolkit.createButton(buttonComposite, Messages.getString("ParametersEditControl.RemoveLabel")); //$NON-NLS-1$
+        final Button button = uiToolkit.createButton(buttonComposite, Messages
+                .getString("ParametersEditControl.RemoveLabel")); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int index = getTable().getSelectionIndices()[0];
                 IParameterBFE[] selected = getSelectedElements();
@@ -402,6 +417,7 @@ public class ParametersEditControl extends Composite {
             });
             // support switching rows while editing:
             editor.getControl().addKeyListener(new KeyAdapter() {
+                @Override
                 public void keyPressed(KeyEvent e) {
                     if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
                         if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
@@ -412,15 +428,17 @@ public class ParametersEditControl extends Composite {
                         }
                     }
 
-                    if (e.stateMask != SWT.NONE)
+                    if (e.stateMask != SWT.NONE) {
                         return;
+                    }
 
                     switch (e.keyCode) {
                         case SWT.ARROW_DOWN:
                             e.doit = false;
                             int nextRow = getTableSelectionIndex() + 1;
-                            if (nextRow >= getTableItemCount())
+                            if (nextRow >= getTableItemCount()) {
                                 break;
+                            }
                             getTable().setSelection(nextRow);
                             editColumnOrPrevPossible(editorColumn);
                             break;
@@ -428,8 +446,9 @@ public class ParametersEditControl extends Composite {
                         case SWT.ARROW_UP:
                             e.doit = false;
                             int prevRow = getTableSelectionIndex() - 1;
-                            if (prevRow < 0)
+                            if (prevRow < 0) {
                                 break;
+                            }
                             getTable().setSelection(prevRow);
                             editColumnOrPrevPossible(editorColumn);
                             break;
@@ -471,8 +490,9 @@ public class ParametersEditControl extends Composite {
     }
 
     private SubjectControlContentAssistant installParameterTypeContentAssist(Control control) {
-        if (!(control instanceof Text))
+        if (!(control instanceof Text)) {
             return null;
+        }
         Text text = (Text)control;
         DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
@@ -496,13 +516,14 @@ public class ParametersEditControl extends Composite {
     }
 
     private class ParameterInfoLabelProvider extends LabelProvider implements ITableLabelProvider {
+
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != MESSAGE_PROP) {
                 return null;
             }
             try {
                 MessageList list = validate((IParameterBFE)element);
-                return ValidationUtils.getSeverityImage(list.getSeverity());
+                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return null;
@@ -511,13 +532,15 @@ public class ParametersEditControl extends Composite {
 
         public String getColumnText(Object element, int columnIndex) {
             IParameterBFE info = (IParameterBFE)element;
-            if (columnIndex == MESSAGE_PROP)
+            if (columnIndex == MESSAGE_PROP) {
                 return ""; //$NON-NLS-1$
+            }
             if (columnIndex == TYPE_PROP) {
                 return info.getDatatype();
             }
-            if (columnIndex == NEWNAME_PROP)
+            if (columnIndex == NEWNAME_PROP) {
                 return info.getName();
+            }
             throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
         }
     }
@@ -534,16 +557,19 @@ public class ParametersEditControl extends Composite {
             IParameterBFE param = (IParameterBFE)element;
             if (property.equals(PROPERTIES[TYPE_PROP])) {
                 return param.getDatatype();
-            } else if (property.equals(PROPERTIES[NEWNAME_PROP]))
+            } else if (property.equals(PROPERTIES[NEWNAME_PROP])) {
                 return param.getName();
+            }
             return null;
         }
 
         public void modify(Object element, String property, Object value) {
-            if (element instanceof TableItem)
+            if (element instanceof TableItem) {
                 element = ((TableItem)element).getData();
-            if (!(element instanceof IParameterBFE))
+            }
+            if (!(element instanceof IParameterBFE)) {
                 return;
+            }
             IParameterBFE param = (IParameterBFE)element;
             if (property.equals(PROPERTIES[NEWNAME_PROP])) {
                 param.setName((String)value);
@@ -557,8 +583,7 @@ public class ParametersEditControl extends Composite {
             // dependencies between the parameters.
             // e.g. if the parameter name of two parameters is the same then an error is to display
             // for both parameters.
-            ParametersEditControl.this.fTableViewer
-                    .update(paramContainer.getParameterBFEs(), new String[] { property });
+            fTableViewer.update(paramContainer.getParameterBFEs(), new String[] { property });
         }
     }
 }

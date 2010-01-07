@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,21 +35,22 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
 public class ElementSelectionPage extends WizardPage {
-    private Set ipsElementsToFix;
+    private Set<Object> ipsElementsToFix;
     private CheckboxTreeViewer treeViewer;
     private ContentProvider contentProvider;
 
-    public ElementSelectionPage(Set ipsElementsToFix) {
+    public ElementSelectionPage(Set<Object> ipsElementsToFix) {
         super(Messages.ElementSelectionPage_SelectElementsMessage);
         this.ipsElementsToFix = ipsElementsToFix;
-        this.setTitle(Messages.FixDifferencesToModelWizard_Title);
-        if (!(ipsElementsToFix.size() > 0)){
+        setTitle(Messages.FixDifferencesToModelWizard_Title);
+        if (!(ipsElementsToFix.size() > 0)) {
             this.setMessage(Messages.ElementSelectionPage_ElementSelectionPage_NoElementsFoundMessage);
         } else {
             this.setMessage(Messages.ElementSelectionPage_SelectElementsMessage);
@@ -72,22 +73,22 @@ public class ElementSelectionPage extends WizardPage {
 
         treeViewer.setExpandedElements(contentProvider.getElements(null));
         treeViewer.setCheckedElements(contentProvider.getAllElements());
-        
-        treeViewer.addCheckStateListener(new ICheckStateListener(){
+
+        treeViewer.addCheckStateListener(new ICheckStateListener() {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
                 Object element = event.getElement();
-                if(element instanceof IIpsPackageFragment){
+                if (element instanceof IIpsPackageFragment) {
                     treeViewer.setSubtreeChecked(element, treeViewer.getChecked(element));
                     treeViewer.setGrayed(element, false);
-                }else{
+                } else {
                     Object parent = contentProvider.getParent(element);
                     boolean checked = treeViewer.getChecked(element);
                     Object[] children = contentProvider.getChildren(parent);
                     treeViewer.setGrayed(parent, false);
                     for (int i = 0; i < children.length; i++) {
                         boolean checked2 = treeViewer.getChecked(children[i]);
-                        if(checked2!=checked){
+                        if (checked2 != checked) {
                             treeViewer.setGrayed(parent, true);
                         }
                         checked = checked | checked2;
@@ -96,7 +97,7 @@ public class ElementSelectionPage extends WizardPage {
                 }
                 setPageComplete(getElementsToFix().length > 0);
             }
-            
+
         });
         setPageComplete(getElementsToFix().length > 0);
         super.setControl(root);
@@ -107,61 +108,63 @@ public class ElementSelectionPage extends WizardPage {
      */
     protected IFixDifferencesToModelSupport[] getElementsToFix() {
         Object[] checked = treeViewer.getCheckedElements();
-        Set elements = new HashSet();
+        Set<Object> elements = new HashSet<Object>();
         for (int i = 0; i < checked.length; i++) {
-            if(checked[i] instanceof IFixDifferencesToModelSupport){
-                elements.add((IFixDifferencesToModelSupport)checked[i]);
+            if (checked[i] instanceof IFixDifferencesToModelSupport) {
+                elements.add(checked[i]);
             }
         }
-        return (IFixDifferencesToModelSupport[])elements.toArray(new IFixDifferencesToModelSupport[elements.size()]);
+        return elements.toArray(new IFixDifferencesToModelSupport[elements.size()]);
     }
-    
+
     private class TreeLabelProvider extends LabelProvider {
 
+        @Override
         public String getText(Object element) {
             return ((IIpsElement)element).getName();
         }
 
+        @Override
         public Image getImage(Object element) {
-            return ((IIpsElement)element).getImage();
+            return IpsUIPlugin.getImageHandling().getImage((IIpsElement)element);
         }
     }
 
     private class ContentProvider implements ITreeContentProvider {
 
-        private Map packages;
+        private Map<IIpsPackageFragment, Set<Object>> packages;
         private Object[] allElements;
-        
-        ContentProvider(){
+
+        ContentProvider() {
             Object[] elements = ipsElementsToFix.toArray();
-            packages = new HashMap();
+            packages = new HashMap<IIpsPackageFragment, Set<Object>>();
             for (int i = 0; i < elements.length; i++) {
                 Object object = elements[i];
-                if(object instanceof IpsObject){
-                    IIpsPackageFragment pack = ((IpsObject) object).getIpsPackageFragment();
-                    Set children = (Set)packages.get(pack);
-                    if(children==null){
-                        children = new HashSet();
+                if (object instanceof IpsObject) {
+                    IIpsPackageFragment pack = ((IpsObject)object).getIpsPackageFragment();
+                    Set<Object> children = packages.get(pack);
+                    if (children == null) {
+                        children = new HashSet<Object>();
                     }
                     children.add(object);
                     packages.put(pack, children);
                 }
             }
-            allElements = new Object[elements.length+packages.size()];
+            allElements = new Object[elements.length + packages.size()];
             System.arraycopy(elements, 0, allElements, 0, elements.length);
             int i = elements.length;
-            for (Iterator it = packages.keySet().iterator(); it.hasNext();) {
-                Object pack = (Object)it.next();
+            for (Iterator<IIpsPackageFragment> it = packages.keySet().iterator(); it.hasNext();) {
+                Object pack = it.next();
                 allElements[i++] = pack;
-            }    
+            }
         }
 
         /**
          * {@inheritDoc}
          */
         public Object[] getChildren(Object parentElement) {
-            if(parentElement instanceof IIpsPackageFragment){
-                return ((Set)packages.get(parentElement)).toArray();
+            if (parentElement instanceof IIpsPackageFragment) {
+                return (packages.get(parentElement)).toArray();
             }
             return new Object[0];
         }
@@ -170,8 +173,8 @@ public class ElementSelectionPage extends WizardPage {
          * {@inheritDoc}
          */
         public Object getParent(Object element) {
-            if(element instanceof IpsObject){
-                return ((IpsObject) element).getIpsPackageFragment();
+            if (element instanceof IpsObject) {
+                return ((IpsObject)element).getIpsPackageFragment();
             }
             return null;
         }
@@ -180,8 +183,8 @@ public class ElementSelectionPage extends WizardPage {
          * {@inheritDoc}
          */
         public boolean hasChildren(Object element) {
-            if(element instanceof IIpsPackageFragment){
-                return packages.get(element)!=null;
+            if (element instanceof IIpsPackageFragment) {
+                return packages.get(element) != null;
             }
             return false;
         }
@@ -192,8 +195,8 @@ public class ElementSelectionPage extends WizardPage {
         public Object[] getElements(Object inputElement) {
             return packages.keySet().toArray();
         }
-        
-        private Object[] getAllElements(){
+
+        private Object[] getAllElements() {
             return allElements;
         }
 

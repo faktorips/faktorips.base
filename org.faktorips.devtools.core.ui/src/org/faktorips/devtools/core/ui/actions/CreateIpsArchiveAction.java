@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,12 +37,13 @@ public class CreateIpsArchiveAction extends IpsAction {
         super.setText(Messages.CreateIpsArchiveAction_Name);
         super.setDescription(Messages.CreateIpsArchiveAction_Description);
         super.setToolTipText(Messages.CreateIpsArchiveAction_Tooltip);
-        super.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IStructuredSelection selection) {
         if (selection == null) {
             return;
@@ -53,6 +54,5 @@ public class CreateIpsArchiveAction extends IpsAction {
                 .getShell(), wizard);
         dialog.open();
     }
-    
-    
+
 }

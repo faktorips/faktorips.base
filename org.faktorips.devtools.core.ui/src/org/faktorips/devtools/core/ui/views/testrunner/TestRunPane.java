@@ -28,9 +28,13 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -42,6 +46,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 
 /**
@@ -55,16 +61,19 @@ public class TestRunPane {
 
     private boolean showErrorsOrFailureOnly = false;
 
-    private List tableFailureItems = new ArrayList();
+    private List<TableItem> tableFailureItems = new ArrayList<TableItem>();
 
     private int currErrorOrFailure = 0;
 
     private IpsTestRunnerViewPart testRunnerViewPart;
 
-    private List missingTestEntries = new ArrayList();
+    private List<String> missingTestEntries = new ArrayList<String>();
 
     // Maps test Ids to the stored table items.
-    private Map fTableItemMap = new HashMap();
+    private Map<String, TestTableEntry> fTableItemMap = new HashMap<String, TestTableEntry>();
+
+    private final ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "obj16/test.gif");
 
     public TestRunPane(Composite parent, final IpsTestRunnerViewPart testRunnerViewPart) {
         this.testRunnerViewPart = testRunnerViewPart;
@@ -199,7 +208,7 @@ public class TestRunPane {
         TestTableEntry testEntry = (TestTableEntry)tableItem.getData();
         String details[] = EMPTY_STRING_ARRAY;
         if (testEntry.isFailure()) {
-            details = (String[])testEntry.getFailureDetails().toArray(new String[0]);
+            details = testEntry.getFailureDetails().toArray(new String[0]);
         } else if (testEntry.isError()) {
             details = testEntry.getErrorDetails();
         }
@@ -223,8 +232,8 @@ public class TestRunPane {
             return;
         }
 
-        fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(0)));
-        showDetailsInFailurePane((TableItem)tableFailureItems.get(0));
+        fTable.setSelection(fTable.indexOf(tableFailureItems.get(0)));
+        showDetailsInFailurePane(tableFailureItems.get(0));
     }
 
     /**
@@ -240,8 +249,8 @@ public class TestRunPane {
             currErrorOrFailure = 0;
         }
 
-        fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
-        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
+        fTable.setSelection(fTable.indexOf(tableFailureItems.get(currErrorOrFailure)));
+        showDetailsInFailurePane(tableFailureItems.get(currErrorOrFailure));
     }
 
     /**
@@ -258,8 +267,8 @@ public class TestRunPane {
             currErrorOrFailure = tableFailureItems.size() - 1;
         }
 
-        fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
-        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
+        fTable.setSelection(fTable.indexOf(tableFailureItems.get(currErrorOrFailure)));
+        showDetailsInFailurePane(tableFailureItems.get(currErrorOrFailure));
     }
 
     public String[] getFailureDetailsOfSelectedTestCase(int failureIndex) {
@@ -271,10 +280,10 @@ public class TestRunPane {
         return entry.getDetailsOfSingleFailure(failureIndex);
     }
 
-    public List getAllFailureDetailsOfSelectedTestCase() {
+    public List<String[]> getAllFailureDetailsOfSelectedTestCase() {
         TableItem ti = getSelectedItem();
         if (ti == null) {
-            return new ArrayList(0);
+            return new ArrayList<String[]>(0);
         }
         TestTableEntry entry = (TestTableEntry)ti.getData();
         return entry.getFailureOrErrorDetailList();
@@ -306,7 +315,7 @@ public class TestRunPane {
 
         TableItem tableItem = new TableItem(fTable, SWT.NONE);
         tableItem.setText(qualifiedTestName);
-        tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/test.gif")); //$NON-NLS-1$
+        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(testImageDescriptor));
 
         TestTableEntry testTableEntry = new TestTableEntry(testId, qualifiedTestName, tableItem);
         fTableItemMap.put(testId, testTableEntry);
@@ -319,7 +328,7 @@ public class TestRunPane {
      * The given test ends.
      */
     public void endTest(String testId, String qualifiedTestName) {
-        TestTableEntry testTableEntry = (TestTableEntry)fTableItemMap.get(testId);
+        TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             missingTestEntries.add(testId);
             return;
@@ -332,15 +341,17 @@ public class TestRunPane {
      */
     private void updateTestEntryStatusImage(TestTableEntry testTableEntry) {
         TableItem tableItem = testTableEntry.getTableItem();
+        Image baseImage = (Image)testRunnerViewPart.getResourceManager().get(testImageDescriptor);
+        ImageDescriptor overlay = null;
         if (testTableEntry.isError()) {
-            tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testerr.gif")); //$NON-NLS-1$
+            overlay = OverlayIcons.ERROR_OVR_DESC;
         } else if (testTableEntry.isFailure()) {
-            tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
+            overlay = OverlayIcons.FAILURE_OVR_DESC;
         } else if (testTableEntry.isOk()) {
-            tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testok.gif")); //$NON-NLS-1$
-        } else {
-            tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/test.gif")); //$NON-NLS-1$
+            overlay = OverlayIcons.SUCCESS_OVR_DESC;
         }
+        ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage, overlay, IDecoration.BOTTOM_LEFT);
+        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         if (showErrorsOrFailureOnly && !(testTableEntry.isError() || testTableEntry.isFailure())) {
             // remove successfully tested element from table,
@@ -356,13 +367,14 @@ public class TestRunPane {
      * @param scrollLocked
      */
     public void startTest(String testId, String qualifiedTestName, boolean scrollLocked) {
-        TestTableEntry testTableEntry = (TestTableEntry)fTableItemMap.get(testId);
+        TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             return;
         }
 
         TableItem tableItem = testTableEntry.getTableItem();
-        tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testrun.gif")); //$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.gif");
+        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         // select current item and scroll
         if (!scrollLocked) {
@@ -374,7 +386,7 @@ public class TestRunPane {
      * The given test fails with the given details.
      */
     public void failureTest(String testId, String failure, String[] failureDetails) {
-        TestTableEntry testTableEntry = (TestTableEntry)fTableItemMap.get(testId);
+        TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             return;
         }
@@ -392,15 +404,16 @@ public class TestRunPane {
      * There was an error while running the given test.
      */
     public void errorInTest(String testId, String qualifiedTestName, String[] errorDetails) {
-        TestTableEntry testTableEntry = (TestTableEntry)fTableItemMap.get(testId);
+        TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             // in case of an error before starting a single test
             // create an error entry
             newTableEntry(testId, Messages.TestRunPane_ErrorStartingTest_Entry, ""); //$NON-NLS-1$
-            testTableEntry = (TestTableEntry)fTableItemMap.get(testId);
+            testTableEntry = fTableItemMap.get(testId);
         }
         TableItem tableItem = testTableEntry.getTableItem();
-        tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testerr.gif")); //$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.gif");
+        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
         testTableEntry.setErrorDetails(errorDetails);
         testTableEntry.setStatus(TestTableEntry.ERROR);
 
@@ -454,18 +467,14 @@ public class TestRunPane {
         private String fullPath;
         private TableItem tableItem;
         private int status = UNKNOWN;
-        private List failures = new ArrayList();
-        private List failureDetailList = new ArrayList();
+        private List<String> failures = new ArrayList<String>();
+        private List<String[]> failureDetailList = new ArrayList<String[]>();
         private String[] errorDetails = EMPTY_STRING_ARRAY;
 
         TestTableEntry(String testId, String qualifiedTestName, TableItem tableItem) {
             this.testId = testId;
             this.qualifiedTestName = qualifiedTestName;
             this.tableItem = tableItem;
-        }
-
-        public String getTestId() {
-            return testId;
         }
 
         public String getQualifiedTestName() {
@@ -504,7 +513,7 @@ public class TestRunPane {
             failures.add(failure);
         }
 
-        public List getFailureDetails() {
+        public List<String> getFailureDetails() {
             return failures;
         }
 
@@ -524,13 +533,13 @@ public class TestRunPane {
             if (idx >= failureDetailList.size()) {
                 return EMPTY_STRING_ARRAY;
             } else {
-                return (String[])failureDetailList.get(idx);
+                return failureDetailList.get(idx);
             }
         }
 
-        public List getFailureOrErrorDetailList() {
+        public List<String[]> getFailureOrErrorDetailList() {
             if (errorDetails.length > 0) {
-                ArrayList result = new ArrayList(1);
+                ArrayList<String[]> result = new ArrayList<String[]>(1);
                 result.add(errorDetails);
                 return result;
             } else {
@@ -552,9 +561,9 @@ public class TestRunPane {
             return;
         }
         synchronized (missingTestEntries) {
-            for (Iterator iter = missingTestEntries.iterator(); iter.hasNext();) {
-                String element = (String)iter.next();
-                TestTableEntry testTableEntry = (TestTableEntry)fTableItemMap.get(element);
+            for (Iterator<String> iter = missingTestEntries.iterator(); iter.hasNext();) {
+                String element = iter.next();
+                TestTableEntry testTableEntry = fTableItemMap.get(element);
                 if (testTableEntry == null) {
                     missingTestEntries.add(element);
                     return;
@@ -578,14 +587,16 @@ public class TestRunPane {
     }
 
     private void showAllElementsInTable() {
-        for (Iterator iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
-            TestTableEntry tableEntry = (TestTableEntry)iterator.next();
+        for (Iterator<TestTableEntry> iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
+            TestTableEntry tableEntry = iterator.next();
             if (tableEntry.getTableItem() == null) {
                 TableItem tableItem = new TableItem(fTable, SWT.NONE);
                 tableItem.setText(tableEntry.getQualifiedTestName());
                 // test was successful before, because it was not visible <- show only error or
                 // failure filter
-                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testok.gif")); //$NON-NLS-1$
+                ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                        "obj16/testok.gif");
+                tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
                 tableItem.setData(tableEntry);
                 tableEntry.setTableItem(tableItem);
             }
@@ -594,8 +605,8 @@ public class TestRunPane {
 
     private void removeNonErrorsAndFailuresFromTable() {
         List<Integer> nonErrorsOrFailuresIndices = new ArrayList<Integer>();
-        for (Iterator iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
-            TestTableEntry testTableEntry = (TestTableEntry)iterator.next();
+        for (Iterator<TestTableEntry> iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
+            TestTableEntry testTableEntry = iterator.next();
             if (!(testTableEntry.isError() || testTableEntry.isFailure())) {
                 TableItem tableItem = testTableEntry.getTableItem();
                 if (tableItem == null) {

@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.StringUtil;
@@ -138,7 +139,8 @@ public class ParameterMethodRefControl extends TextButtonControl {
             for (IMethod method : getSelectableMethods()) {
                 if (method.getName().startsWith(match)) {
                     result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
-                            method.getImage(), method.getSignatureString(), null, method.getDescription()));
+                            IpsUIPlugin.getImageHandling().getImage(method), method.getSignatureString(), null, method
+                                    .getDescription()));
                 }
             }
         }

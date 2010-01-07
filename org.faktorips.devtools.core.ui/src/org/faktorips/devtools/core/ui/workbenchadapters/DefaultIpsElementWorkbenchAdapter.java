@@ -29,4 +29,9 @@ public class DefaultIpsElementWorkbenchAdapter extends IpsElementWorkbenchAdapte
         return imageDescriptor;
     }
 
+    @Override
+    public ImageDescriptor getDefaultImageDescriptor() {
+        return imageDescriptor;
+    }
+
 }

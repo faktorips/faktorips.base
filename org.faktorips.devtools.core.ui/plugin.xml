@@ -247,7 +247,7 @@
                relative="org.eclipse.jdt.ui.PackageExplorer"
                visible="false"
                relationship="stack"
-               id="org.faktorips.plugin.pdexplorer">
+               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer">
          </view>
          <view
                closeable="true"
@@ -889,23 +889,28 @@
          name="IPS-Problemsdecorator"
          point="org.eclipse.ui.decorators">
       <decorator
-            adaptable="false"
+            adaptable="true"
             class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
-            icon="icons/ovr16/error_co.gif"
+            icon="icons/ovr16/error_ovr.gif"
             id="org.faktorips.devtools.core.ipsproblemsdecorator"
-            label="IpsProblemsDecorator"
+            label="Faktor-IPS Problems Decorator"
             lightweight="true"
             location="BOTTOM_LEFT"
             state="true">
          <enablement>
-            <objectClass name="org.faktorips.devtools.core.model.IIpsElement"/>
+               <objectClass
+                     name="org.faktorips.devtools.core.model.IIpsElement">
+               </objectClass>
          </enablement>
+         <description>
+            Decorator to indicate Problems in Faktor-IPS elements
+         </description>
       </decorator>
       <decorator
             adaptable="false"
             class="org.faktorips.devtools.core.ui.preferencepages.ObjectPathEntryLabelDecorator"
             id="org.faktorips.devtools.core.ipsobjectpathentrydecorator"
-            label="IpsObjectPathEntryDecorator"
+            label="Faktor-IPS Object Path Decorator"
             lightweight="true"
             location="BOTTOM_LEFT"
             state="true">

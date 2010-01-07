@@ -20,8 +20,10 @@ import java.util.Map;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsElement;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -47,32 +49,49 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
-            if (ipsSrcFile.exists()) {
-                Class<? extends IIpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
-                if (implementingClass != null) {
-                    return getAdapter(implementingClass, adapterType);
-                }
-                /*
-                 * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
-                 * exists, thus the IPS object couldn't be linked to an IPS source file in the
-                 * workspace, return the image of the IPS source file to decide between valid and
-                 * invalid IPS objects.
-                 */
+            try {
+                if (ipsSrcFile.exists() && ipsSrcFile.isContentParsable()) {
+                    Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
+                    if (implementingClass != null) {
+                        return getAdapterByClass(implementingClass, adapterType);
+                    }
+                    /*
+                     * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
+                     * exists, thus the IPS object couldn't be linked to an IPS source file in the
+                     * workspace, return the image of the IPS source file to decide between valid
+                     * and invalid IPS objects.
+                     */
 
+                }
+            } catch (Exception e) {
+                IpsPlugin.log(e);
             }
         }
-        return getAdapter(adaptableObject.getClass(), adapterType);
+        if (adaptableObject instanceof IpsElement) {
+            return getAdapterByClass((Class<? extends IpsElement>)adaptableObject.getClass(), adapterType);
+        } else {
+            return null;
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    // IWorkbenchAdapter is not generic
-    public Object getAdapter(Class adaptableClass, Class adapterType) {
+    /**
+     * Getting the workbench adapter by class.
+     * 
+     * @param adaptableClass
+     * @param adapterType
+     * @return
+     */
+    public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass, Class<?> adapterType) {
         IpsElementWorkbenchAdapter result = null;
         while (result == null) {
             result = workbenchAdapterMap.get(adaptableClass);
             if (result == null) {
-                adaptableClass = adaptableClass.getSuperclass();
-                if (adaptableClass == null) {
+                Class<?> superClass = adaptableClass.getSuperclass();
+                if (IpsElement.class.isAssignableFrom(superClass)) {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends IpsElement> castedClass = (Class<? extends IpsElement>)superClass;
+                    adaptableClass = castedClass;
+                } else {
                     return null;
                 }
             }

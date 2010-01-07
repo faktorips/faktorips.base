@@ -30,7 +30,7 @@ class NavigateToTableStructureAction extends Action {
         this.tableContents = tableContents;
         setText(Messages.NavigateToTableStructureAction_Label);
         setToolTipText(Messages.NavigateToTableStructureAction_ToolTip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TableStructure.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TableStructure.gif")); //$NON-NLS-1$
     }
 
     /**
@@ -38,6 +38,7 @@ class NavigateToTableStructureAction extends Action {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         try {
             if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {

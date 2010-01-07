@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,11 +34,12 @@ public class BFPage extends IpsObjectPage {
 
     public BFPage(IStructuredSelection selection) {
         super(BusinessFunctionIpsObjectType.getInstance(), selection, Messages.getString("BFPage.Title")); //$NON-NLS-1$
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewBusinessFunctionWizard.png")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("wizards/NewBusinessFunctionWizard.png")); //$NON-NLS-1$
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException{
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IBusinessFunction bf = (IBusinessFunction)newIpsObject;
         bf.newStart(new Point(200, 20));
         bf.newEnd(new Point(200, 120));

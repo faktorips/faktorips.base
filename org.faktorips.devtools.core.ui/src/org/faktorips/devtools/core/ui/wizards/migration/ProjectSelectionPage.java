@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * 
@@ -95,7 +96,7 @@ public class ProjectSelectionPage extends WizardPage {
 
         @Override
         public Image getImage(Object element) {
-            return ((IIpsProject)element).getImage();
+            return IpsUIPlugin.getImageHandling().getImage((IIpsProject)element);
         }
     }
 

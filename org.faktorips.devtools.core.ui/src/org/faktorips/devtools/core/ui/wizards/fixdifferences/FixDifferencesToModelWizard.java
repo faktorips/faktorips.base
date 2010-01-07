@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,11 +41,11 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
         ArgumentCheck.notNull(ipsElementsToFix, this);
         this.ipsElementsToFix = ipsElementsToFix;
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
-        this
-                .setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
-                        "wizards/FixDifferencesToModelWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/FixDifferencesToModelWizard.png")); //$NON-NLS-1$
     }
 
+    @Override
     public boolean performFinish() {
         final IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
         final IWorkspaceRunnable op = new IWorkspaceRunnable() {
@@ -57,29 +57,25 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
                         elementsToFix[i].getIpsSrcFile().save(true, null);
                         monitor.worked(1);
                     }
-                }
-                catch (CoreException e) {
+                } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
-                }
-                finally {
+                } finally {
                     monitor.done();
                 }
             }
         };
 
         try {
-            getContainer().run(true, true, new IRunnableWithProgress(){
+            getContainer().run(true, true, new IRunnableWithProgress() {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
-                    }
-                    catch (CoreException e) {
+                    } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
-                }                
+                }
             });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
@@ -92,6 +88,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
         setNeedsProgressMonitor(true);
     }
 
+    @Override
     public void addPages() {
         super.addPages();
         elementSelectionPage = new ElementSelectionPage(ipsElementsToFix);

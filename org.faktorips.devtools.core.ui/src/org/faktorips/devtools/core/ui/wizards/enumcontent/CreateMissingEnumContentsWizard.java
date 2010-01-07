@@ -145,7 +145,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         /** Creates the <tt>SelectEnumContentsPage</tt>. */
         protected SelectEnumContentsPage() {
             super(Messages.SelectEnumContentsPage_title);
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/CreateMissingEnumContentsWizard.png"));
             setMessage(Messages.SelectEnumContentsPage_prompt);
             setTitle(Messages.SelectEnumContentsPage_title);
@@ -385,15 +385,14 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             @Override
             public Image getImage(Object element) {
-                IpsUIPlugin defaultUiPlugin = IpsUIPlugin.getDefault();
                 if (element instanceof IEnumType) {
-                    return defaultUiPlugin.getImage("NewEnumContent.gif");
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewEnumContent.gif", true);
                 }
                 IIpsPackageFragment pack = (IIpsPackageFragment)element;
                 if (pack == null || !(pack.exists())) {
-                    return defaultUiPlugin.getImage("NewIpsPackageFragment.gif");
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.gif", true);
                 }
-                return defaultUiPlugin.getImage("IpsPackageFragment.gif");
+                return IpsUIPlugin.getImageHandling().getSharedImage("IpsPackageFragment.gif", true);
             }
 
         }

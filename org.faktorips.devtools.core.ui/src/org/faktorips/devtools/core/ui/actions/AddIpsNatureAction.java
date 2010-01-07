@@ -38,6 +38,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -508,13 +510,17 @@ public class AddIpsNatureAction extends ActionDelegate {
          */
         @Override
         protected Control createContents(Composite parent) {
-
             Control contents = super.createContents(parent);
             setTitle(Messages.AddIpsNatureAction_dialogTitle);
-            dlgTitleImage = IpsUIPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
+            dlgTitleImage = IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
             setTitleImage(dlgTitleImage);
             setMessage(Messages.AddIpsNatureAction_dialogMessage);
-
+            parent.addDisposeListener(new DisposeListener() {
+                public void widgetDisposed(DisposeEvent e) {
+                    dlgTitleImage.dispose();
+                }
+            });
             return contents;
         }
 

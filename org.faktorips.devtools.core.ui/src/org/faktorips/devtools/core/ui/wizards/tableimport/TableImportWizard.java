@@ -56,7 +56,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
     public TableImportWizard() {
         setWindowTitle(Messages.TableImport_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/TableImportWizard.png")); //$NON-NLS-1$
     }
 
     @Override

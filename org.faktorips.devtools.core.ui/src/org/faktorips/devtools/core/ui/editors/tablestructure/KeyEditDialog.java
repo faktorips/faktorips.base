@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -51,7 +54,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -59,59 +62,60 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.core.util.ArrayElementMover;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-
 /**
  * A dialog to edit a unique or foreign key.
  */
 public class KeyEditDialog extends IpsPartEditDialog {
-    
+
     // the key being edited
     private IKey key;
-    
+
     // table viewer to show the item candidates that can be added to the key.
     private TableViewer candidatesViewer;
-    
+
     // table viewer to show the key's items.
     private TableViewer itemsViewer;
-    
+
     // fields
     private TextButtonField tableStructureRefField;
     private TextField uniqueKeyRefField;
 
     // completion processor for a table structure's unique keys.
     UniqueKeyCompletionProcessor completionProcessor;
-    
+
     // buttons
     private Button addButton;
     private Button removeButton;
     private Button upButton;
     private Button downButton;
-    
+
     public KeyEditDialog(IKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialog_title, true);
         this.key = key;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
-        
+
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.KeyEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
-        
+
         createDescriptionTabItem(folder);
         refreshUi();
         return folder;
     }
-    
+
     private Control createGeneralPage(TabFolder folder) {
         Composite pageComposite;
         Composite itemEditComposite;
@@ -121,7 +125,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
             GridLayout layout = (GridLayout)refTableComposite.getLayout();
             layout.marginHeight = 12;
             uiToolkit.createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceStructure);
-            TableStructureRefControl refControl = uiToolkit.createTableStructureRefControl(key.getIpsProject(), refTableComposite);
+            TableStructureRefControl refControl = uiToolkit.createTableStructureRefControl(key.getIpsProject(),
+                    refTableComposite);
             refControl.setFocus();
             tableStructureRefField = new TextButtonField(refControl);
             tableStructureRefField.addChangeListener(new ValueChangeListener() {
@@ -135,26 +140,28 @@ public class KeyEditDialog extends IpsPartEditDialog {
                     // and then update the ui.
                     ((IForeignKey)key).setReferencedTableStructure(tableStructureRefField.getText());
                     try {
-                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
+                        ITableStructure structure = ((IForeignKey)key)
+                                .findReferencedTableStructure(key.getIpsProject());
                         completionProcessor.setTableStructure(structure);
-                        if (structure!=null) {
+                        if (structure != null) {
                             IUniqueKey[] keys = structure.getUniqueKeys();
-                            if (keys.length>0) {
+                            if (keys.length > 0) {
                                 uniqueKeyRefField.setText(keys[0].getName());
                             }
                         }
                     } catch (CoreException e1) {
                         IpsPlugin.log(e1);
-                    } 
+                    }
                     refreshUi();
                 }
-                
+
             });
             uiToolkit.createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
             Text ukRefControl = uiToolkit.createText(refTableComposite);
             completionProcessor = new UniqueKeyCompletionProcessor();
-            ContentAssistHandler.createHandlerForText(ukRefControl, CompletionUtil.createContentAssistant(completionProcessor));
-            
+            ContentAssistHandler.createHandlerForText(ukRefControl, CompletionUtil
+                    .createContentAssistant(completionProcessor));
+
             uniqueKeyRefField = new TextField(ukRefControl);
             uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
 
@@ -163,9 +170,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
                     ((IForeignKey)key).setReferencedUniqueKey(uniqueKeyRefField.getText());
                     refreshUi();
                 }
-                
+
             });
-            
+
             uiToolkit.createHorizonzalLine(pageComposite);
             itemEditComposite = uiToolkit.createGridComposite(pageComposite, 3, false, false);
         } else {
@@ -175,44 +182,45 @@ public class KeyEditDialog extends IpsPartEditDialog {
         Composite left = uiToolkit.createGridComposite(itemEditComposite, 1, false, true);
         Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
         createKeyItemsComposite(leftGroup);
-        
+
         Composite middle = uiToolkit.createGridComposite(itemEditComposite, 1, true, true);
         middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
         createButtons(middle);
-        
+
         Composite right = uiToolkit.createGridComposite(itemEditComposite, 1, false, true);
         Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.KeyEditDialog_groupTitle);
         createItemCandidatesComposite(rightGroup);
-        
+
         return pageComposite;
     }
-    
+
     /**
      * Creates the composite showing the key's items.
      */
     private void createKeyItemsComposite(Composite parent) {
         Composite c = uiToolkit.createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-		table.setHeaderVisible(false);
-		table.setLinesVisible(false);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		data.widthHint = 180;
-		data.heightHint = 200;
+        table.setHeaderVisible(false);
+        table.setLinesVisible(false);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.widthHint = 180;
+        data.heightHint = 200;
         table.setLayoutData(data);
         itemsViewer = new TableViewer(table);
         itemsViewer.setLabelProvider(new KeyItemLabelProvider());
-		new TableMessageHoverService(itemsViewer) {
+        new TableMessageHoverService(itemsViewer) {
 
+            @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 MessageList list = key.validate(key.getIpsProject());
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
-		    
-		};
+
+        };
         itemsViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-                return key.getKeyItemNames();    
+                return key.getKeyItemNames();
             }
 
             public void dispose() {
@@ -220,24 +228,24 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
-            
+
         });
         itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledState();
             }
-            
+
         });
         itemsViewer.setInput(this);
     }
-    
+
     private void createButtons(Composite middle) {
         uiToolkit.createVerticalSpacer(middle, 10);
-        
+
         addButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        addButton.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
+        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -247,10 +255,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
-        removeButton= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+
+        removeButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        removeButton.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
+        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         removeButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -260,12 +268,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
         uiToolkit.createVerticalSpacer(middle, 10);
-        
+
         upButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        upButton.setImage(IpsPlugin.getDefault().getImage("ArrowUp.gif")); //$NON-NLS-1$
+        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
         upButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -275,11 +283,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
-        
+
         downButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        downButton.setImage(IpsPlugin.getDefault().getImage("ArrowDown.gif")); //$NON-NLS-1$
+        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
         downButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -289,24 +296,25 @@ public class KeyEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
     }
-    
+
     private void createItemCandidatesComposite(Composite parent) {
         Composite c = uiToolkit.createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-		table.setHeaderVisible(false);
-		table.setLinesVisible(false);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		data.widthHint = 180;
-		data.heightHint = 200;
+        table.setHeaderVisible(false);
+        table.setLinesVisible(false);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.widthHint = 180;
+        data.heightHint = 200;
         table.setLayoutData(data);
         table.addMouseListener(new MouseAdapter() {
 
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
                 addSelectedItems();
             }
-            
+
         });
         candidatesViewer = new TableViewer(table);
         candidatesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -314,13 +322,13 @@ public class KeyEditDialog extends IpsPartEditDialog {
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledState();
             }
-            
+
         });
         candidatesViewer.setLabelProvider(new DefaultLabelProvider());
         candidatesViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-                return key.getItemCandidates();    
+                return key.getItemCandidates();
             }
 
             public void dispose() {
@@ -328,79 +336,81 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
-            
+
         });
         candidatesViewer.setInput(this);
     }
-    
-    /** 
+
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
      */
+    @Override
     protected void connectToModel() {
         super.connectToModel();
-        if (tableStructureRefField!=null) {
-            uiController.add(tableStructureRefField, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);    
+        if (tableStructureRefField != null) {
+            uiController.add(tableStructureRefField, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
             uiController.add(uniqueKeyRefField, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
         }
     }
-    
+
     private void addSelectedItems() {
-        if (!isDataChangeable()){
+        if (!isDataChangeable()) {
             return;
         }
         ISelection selection = candidatesViewer.getSelection();
         if (selection.isEmpty()) {
             return;
         }
-        List items = CollectionUtil.toArrayList(key.getKeyItemNames());
+        List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator it= structuredSelection.iterator(); it.hasNext(); ) {
-            IKeyItem item = (IKeyItem)it.next();
+        for (Iterator<IKeyItem> it = structuredSelection.iterator(); it.hasNext();) {
+            IKeyItem item = it.next();
             items.add(item.getName());
         }
-        key.setKeyItems((String[])items.toArray(new String[items.size()]));
+        key.setKeyItems(items.toArray(new String[items.size()]));
         refreshUi();
     }
-    
+
     private void removeSelectedItems() {
-        if (!isDataChangeable()){
+        if (!isDataChangeable()) {
             return;
-        }        
+        }
         ISelection selection = itemsViewer.getSelection();
         if (selection.isEmpty()) {
             return;
         }
-        List items = CollectionUtil.toArrayList(key.getKeyItemNames());
+        List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator it= structuredSelection.iterator(); it.hasNext(); ) {
-            String item = (String)it.next();
+        for (Iterator<String> it = structuredSelection.iterator(); it.hasNext();) {
+            String item = it.next();
             items.remove(item);
         }
-        key.setKeyItems((String[])items.toArray(new String[items.size()]));
+        key.setKeyItems(items.toArray(new String[items.size()]));
         refreshUi();
     }
-    
+
     private void moveSelectedItems(boolean up) {
-        
+
         Table table = itemsViewer.getTable();
-		if (table.getSelectionCount() == 0) {
-		    return;
-		}
-		String[] items = key.getKeyItemNames();
-		ArrayElementMover mover = new ArrayElementMover(items);
-		int[] newSelection;
-		if (up) {
-		    newSelection = mover.moveUp(table.getSelectionIndices());
-		} else {
-		    newSelection = mover.moveDown(table.getSelectionIndices());
-		}
-		key.setKeyItems(items);
-		itemsViewer.refresh(); // must refresh before changing selection!
-		table.setSelection(newSelection);
-		refreshUi();
+        if (table.getSelectionCount() == 0) {
+            return;
+        }
+        String[] items = key.getKeyItemNames();
+        ArrayElementMover mover = new ArrayElementMover(items);
+        int[] newSelection;
+        if (up) {
+            newSelection = mover.moveUp(table.getSelectionIndices());
+        } else {
+            newSelection = mover.moveDown(table.getSelectionIndices());
+        }
+        key.setKeyItems(items);
+        itemsViewer.refresh(); // must refresh before changing selection!
+        table.setSelection(newSelection);
+        refreshUi();
     }
-    
+
     private void refreshUi() {
         uiController.updateUI();
         itemsViewer.refresh();
@@ -409,13 +419,13 @@ public class KeyEditDialog extends IpsPartEditDialog {
         updateButtonEnabledState();
         validate();
     }
-    
-    private void validate(){
+
+    private void validate() {
         try {
             MessageList msgList = key.validate(key.getIpsProject());
-            if(msgList.isEmpty()){
-               setMessage(null);
-               return;
+            if (msgList.isEmpty()) {
+                setMessage(null);
+                return;
             }
             Message msg = msgList.getMessage(0);
             setMessage(msg.getText(), uiToolkit.convertToJFaceSeverity(msg.getSeverity()));
@@ -423,26 +433,34 @@ public class KeyEditDialog extends IpsPartEditDialog {
             IpsPlugin.log(e);
         }
     }
-    
+
     private void updateButtonEnabledState() {
         addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
         removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
         upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
         downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
     }
-    
+
     private class KeyItemLabelProvider extends DefaultLabelProvider {
-        
-        private HashMap cachedProblemImageDescriptors = new HashMap();
-        
+
+        private ResourceManager resourceManager;
+
+        ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TableColumn.gif");
+
+        public KeyItemLabelProvider() {
+            super();
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+
+        @Override
         public Image getImage(Object element) {
             String item = (String)element;
             Image image;
-            IColumnRange range = key.getTableStructure().getRange(item); 
-            if (range!=null) {
+            IColumnRange range = key.getTableStructure().getRange(item);
+            if (range != null) {
                 image = super.getImage(range);
             } else {
-                image = IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
+                image = (Image)resourceManager.get(tableColumnDescriptor);
             }
             MessageList list;
             try {
@@ -451,45 +469,25 @@ public class KeyEditDialog extends IpsPartEditDialog {
                 IpsPlugin.log(e);
                 return image;
             }
-            if (list.getSeverity()==Message.NONE) {
-    		    return image;
-    		}
-            
-            MessageList itemMsgList = list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName(item));
-            if(itemMsgList.getSeverity() == Message.NONE){
+            if (list.getSeverity() == Message.NONE) {
                 return image;
             }
-            
-            // get the cached problem descriptor for the base image
-            String key = getKey(image, itemMsgList.getSeverity());
-            ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
-            if (descriptor == null && image != null){
-                descriptor = new ProblemImageDescriptor(image, itemMsgList.getSeverity());
-                cachedProblemImageDescriptors.put(key, descriptor);
-            }            
-    		return IpsPlugin.getDefault().getImage(descriptor);
+
+            MessageList itemMsgList = list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key
+                    .getIndexForKeyItemName(item));
+            if (itemMsgList.getSeverity() == Message.NONE) {
+                return image;
+            }
+
+            ImageDescriptor descriptor = IpsProblemOverlayIcon.createOverlayIcon(image, itemMsgList.getSeverity());
+            return (Image)resourceManager.get(descriptor);
         }
 
+        @Override
         public void dispose() {
-            for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
-                ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
-                Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
-                if (problemImage != null){
-                    problemImage.dispose();
-                }
-            }
-            cachedProblemImageDescriptors.clear();   
+            resourceManager.dispose();
             super.dispose();
         }
-        
-        /*
-         * Returns an unique key for the given image and severity compination.
-         */
-        private String getKey(Image image, int severity) {
-            if (image == null){
-                return null;
-            }
-            return image.hashCode() + "_" + severity; //$NON-NLS-1$
-        }        
+
     }
 }

@@ -135,7 +135,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         public GotoGenerationAction(GenerationPropertiesPage generationPropertiesPage, String imageName) {
             this.generationPropertiesPage = generationPropertiesPage;
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(imageName));
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(imageName));
             update();
         }
 

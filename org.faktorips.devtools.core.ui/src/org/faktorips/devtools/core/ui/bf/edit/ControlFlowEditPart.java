@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -46,7 +48,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     private CLabel label;
     private Color labelBackground;
     private LabelPositioner labelPositioner;
-    
+
     private class LabelPositioner implements FigureListener {
 
         public void figureMoved(IFigure source) {
@@ -70,11 +72,12 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     }
 
     private void setText(String text) {
-        //since the label is added to the canvas of the viewer directly and hence doesn't fit into the
-        //framework the life cycle of the label is different than the one of the figure. Especially
-        //there can be scenarios where the label is already disposed but the deactivate() method
-        //has not been called
-        if(label.isDisposed()){
+        // since the label is added to the canvas of the viewer directly and hence doesn't fit into
+        // the
+        // framework the life cycle of the label is different than the one of the figure. Especially
+        // there can be scenarios where the label is already disposed but the deactivate() method
+        // has not been called
+        if (label.isDisposed()) {
             return;
         }
         label.setText(text);
@@ -140,11 +143,11 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     }
 
     private void showError(MessageList msgList) {
-        if(label.isDisposed()){
+        if (label.isDisposed()) {
             return;
         }
         if (!msgList.isEmpty()) {
-            label.setImage(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif")); //$NON-NLS-1$
+            label.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC));
             label.setSize(label.computeSize(-1, -1));
         } else {
             label.setImage(null);

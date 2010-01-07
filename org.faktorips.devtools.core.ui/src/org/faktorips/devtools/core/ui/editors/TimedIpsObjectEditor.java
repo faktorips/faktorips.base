@@ -20,9 +20,6 @@ import java.util.List;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -40,7 +37,6 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
             1);
 
     private IIpsObjectGeneration generation;
-    private Image uneditableGenerationImage;
 
     public TimedIpsObjectEditor() {
         super();
@@ -134,23 +130,4 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         return object.getGenerationByEffectiveDate(workingDate);
     }
 
-    /**
-     * Returns the image for uneditable generations.
-     */
-    public Image getUneditableGenerationImage(Image editableImage) {
-        if (uneditableGenerationImage == null) {
-            uneditableGenerationImage = new Image(Display.getDefault(), editableImage, SWT.IMAGE_DISABLE);
-        }
-        return uneditableGenerationImage;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void disposeInternal() {
-        if (uneditableGenerationImage != null) {
-            uneditableGenerationImage.dispose();
-        }
-    }
 }

@@ -104,6 +104,14 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  */
 public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
+    public static final String NEW_MENU_ID = "group.new";
+
+    public static final String GROUP_MODELDEF = "group.modeldef";
+
+    public static final String GROUP_PRODUCTDEF = "group.productdef";
+
+    public static final String GROUP_COMMON = "group.common";
+
     private ActionGroup openActionGroup;
 
     private ModelExplorerDeleteAction deleteAction;
@@ -227,7 +235,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     protected void createNewMenu(IMenuManager manager, Object selected) {
         selected = mapIpsSrcFile2IpsObject(selected);
-        MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew);
+        MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew, NEW_MENU_ID);
 
         if ((selected instanceof IFolder) || (selected instanceof IIpsProject)) {
             newMenu.add(new NewFolderAction(viewSite.getShell(), treeViewer));
@@ -236,6 +244,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         if ((selected instanceof IIpsElement) && !(selected instanceof IIpsProject)) {
             IWorkbenchWindow workbenchWindow = viewSite.getWorkbenchWindow();
+
+            newMenu.add(new Separator(GROUP_MODELDEF));
 
             // Model side elements
             if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
@@ -257,7 +267,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 newMenu.add(new NewTestCaseTypeAction(workbenchWindow));
             }
 
-            newMenu.add(new Separator());
+            newMenu.add(new Separator(GROUP_PRODUCTDEF));
 
             // Product side elements
             if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
@@ -273,7 +283,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 newMenu.add(new NewTestCaseAction(workbenchWindow));
             }
 
-            newMenu.add(new Separator());
+            newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+            newMenu.add(new Separator(GROUP_COMMON));
 
             // Ips package and default file actions
             newMenu.add(new NewIpsPacketAction(viewSite.getShell(), treeViewer));

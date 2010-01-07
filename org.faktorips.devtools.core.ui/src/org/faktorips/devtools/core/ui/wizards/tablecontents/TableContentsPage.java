@@ -61,7 +61,7 @@ public class TableContentsPage extends IpsObjectPage {
      */
     public TableContentsPage(IStructuredSelection selection) throws JavaModelException {
         super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png"));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewTableContentsWizard.png"));
     }
 
     String getTableStructureName() {

@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.util.StringUtil;
 
@@ -43,15 +44,16 @@ public class ProductStructureLabelProvider extends LabelProvider {
     @Override
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
-            return ((IProductCmptReference)element).getProductCmpt().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeRelationReference)element).getRelation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
+            return IpsUIPlugin.getImageHandling().getImage(
+                    ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getImage();
         }
-        return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
+        return null;
     }
 
     /**

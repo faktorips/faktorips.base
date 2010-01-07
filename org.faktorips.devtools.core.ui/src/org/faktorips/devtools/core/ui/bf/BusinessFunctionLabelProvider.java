@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,12 +18,10 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.bf.ControlFlow;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.CallMethodActionEditPart;
@@ -34,7 +32,7 @@ import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
 
-//TODO string externalization
+// TODO string externalization
 /**
  * Provides display text and images for business function elements. It is used by the property view.
  */
@@ -46,32 +44,35 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
     public Image getImage(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
-        if(editPart instanceof ParameterEditPart){
-            return BFElementType.PARAMETER.getImage();
-        }
-        if(editPart instanceof CallMethodActionEditPart){
-            return BFElementType.ACTION_METHODCALL.getImage(); 
-        }
-        if(editPart instanceof InlineActionEditPart){
-            return BFElementType.ACTION_INLINE.getImage(); 
-        }
-        if(editPart instanceof CallBusinessFunctionActionEditPart){
-            return BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage(); 
-        }
-        if(editPart instanceof MergeEditPart){
-            return BFElementType.MERGE.getImage(); 
-        }
-        if(editPart instanceof DecisionEditPart){
-            return BFElementType.DECISION.getImage(); 
-        }
-        if(editPart instanceof CallMethodDecisionEditPart){
-            return BFElementType.DECISION_METHODCALL.getImage(); 
-        }
-        if(editPart instanceof ControlFlowEditPart){
-            return IpsPlugin.getDefault().getImage(ControlFlow.getImageDescriptor());
-        }
-        IIpsElement ipsElement = (IIpsElement)editPart.getModel();
-        return ipsElement.getImage();
+        return IpsUIPlugin.getImageHandling().getImage((IIpsElement)editPart.getModel());
+        // XXX TODO Test this
+        // if(editPart instanceof ParameterEditPart){
+        // return BFElementType.PARAMETER.getImage();
+        // }
+        // if(editPart instanceof CallMethodActionEditPart){
+        // return BFElementType.ACTION_METHODCALL.getImage();
+        // }
+        // if(editPart instanceof InlineActionEditPart){
+        // return BFElementType.ACTION_INLINE.getImage();
+        // }
+        // if(editPart instanceof CallBusinessFunctionActionEditPart){
+        // return BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage();
+        // }
+        // if(editPart instanceof MergeEditPart){
+        // return BFElementType.MERGE.getImage();
+        // }
+        // if(editPart instanceof DecisionEditPart){
+        // return BFElementType.DECISION.getImage();
+        // }
+        // if(editPart instanceof CallMethodDecisionEditPart){
+        // return BFElementType.DECISION_METHODCALL.getImage();
+        // }
+        // if(editPart instanceof ControlFlowEditPart){
+        // return IpsUIPlugin.getImageHandling().getImage(editPart.getModel());
+        // IpsPlugin.getDefault().getImage(ControlFlow.getImageDescriptor());
+        // }
+        // IIpsElement ipsElement = (IIpsElement)editPart.getModel();
+        // return ipsElement.getImage();
     }
 
     /**
@@ -88,10 +89,10 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
             return Messages.getString("BusinessFunctionLabelProvider.parameters"); //$NON-NLS-1$
         }
         IIpsElement ipsElement = (IIpsElement)editPart.getModel();
-        if(ipsElement == null){
+        if (ipsElement == null) {
             return ""; //$NON-NLS-1$
         }
-        if(editPart instanceof ControlFlowEditPart){
+        if (editPart instanceof ControlFlowEditPart) {
             return Messages.getString("BusinessFunctionLabelProvider.controlFlow"); //$NON-NLS-1$
         }
         String displayName = ((IBFElement)ipsElement).getDisplayString();

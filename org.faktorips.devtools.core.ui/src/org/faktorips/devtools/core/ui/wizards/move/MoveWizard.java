@@ -83,13 +83,12 @@ public class MoveWizard extends Wizard {
         this.operation = operation;
         if (operation == OPERATION_MOVE) {
             super.setWindowTitle(Messages.MoveWizard_titleMove);
-            super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/MoveAndRenameWizard.png")); //$NON-NLS-1$
         } else if (operation == OPERATION_RENAME) {
             super.setWindowTitle(Messages.MoveWizard_titleRename);
-            super
-                    .setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
-                            "wizards/RenameWizard.png")); //$NON-NLS-1$
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "wizards/RenameWizard.png")); //$NON-NLS-1$
         } else {
             String msg = NLS.bind(Messages.MoveWizard_warnInvalidOperation, "" + operation); //$NON-NLS-1$
             IpsStatus status = new IpsStatus(msg);

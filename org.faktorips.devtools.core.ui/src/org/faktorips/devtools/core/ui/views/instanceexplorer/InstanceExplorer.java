@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
@@ -34,13 +34,13 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
@@ -101,6 +101,8 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     private Display display;
 
+    private DecoratingLabelProvider decoratedLabelProvider;
+
     /**
      * The default constructor setup the listener and loads the default view.
      */
@@ -128,6 +130,8 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
 
         labelProvider = new InstanceLabelProvider();
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
 
         selectedElementLabel = new CLabel(panel, SWT.LEFT);
         selectedElementLabel.setLayout(new GridLayout());
@@ -151,7 +155,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         tableViewer = new TableViewer(panel);
         tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        tableViewer.setLabelProvider(labelProvider);
+        tableViewer.setLabelProvider(decoratedLabelProvider);
         tableViewer.setContentProvider(contentProvider);
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(DoubleClickEvent event) {
@@ -184,11 +188,8 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         toolBarManager.add(subtypeSearchAction);
 
         // refresh action
-        Action refreshAction = new Action() {
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
-            }
+        Action refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin
+                .getImageHandling().createImageDescriptor("Refresh.gif")) {
 
             @Override
             public void run() {
@@ -207,15 +208,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         toolBarManager.add(retargetAction);
 
         // clear action
-        toolBarManager.add(new Action() {
+        toolBarManager.add(new Action(Messages.InstanceExplorer_tooltipClear, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("Clear.gif")) {
             @Override
             public void run() {
                 setInputData(null);
-            }
-
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
             }
 
             @Override
@@ -322,11 +319,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
                 }
                 if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
                     if (element != null) {
-                        selectedElementLabel.setText(labelProvider.getText(element));
+                        selectedElementLabel.setText(decoratedLabelProvider.getText(ipsObject));
                     } else {
                         selectedElementLabel.setText("");
                     }
-                    selectedElementLabel.setImage(labelProvider.getImage(element));
+                    selectedElementLabel.setImage(decoratedLabelProvider.getImage(ipsObject));
                 }
                 tableViewer.refresh();
             }
@@ -417,6 +414,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         private static final String SUBTYPE_SEARCH_IMG = "InstanceExplorerSubtypeSearch.gif";
 
         public SubtypeSearchAction() {
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(SUBTYPE_SEARCH_IMG));
             setChecked(true);
             labelProvider.setSubTypeSearch(isChecked());
             contentProvider.setSubTypeSearch(isChecked());
@@ -433,11 +431,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             contentProvider.setSubTypeSearch(isChecked());
             setInputData(contentProvider.getActualElement());
             super.run();
-        }
-
-        @Override
-        public ImageDescriptor getImageDescriptor() {
-            return IpsUIPlugin.getDefault().getImageDescriptor(SUBTYPE_SEARCH_IMG);
         }
 
         @Override
@@ -473,11 +466,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         @Override
         public String getName() {
             return Messages.InstanceExplorer_noMetaClassFound;
-        }
-
-        @Override
-        public Image getImage() {
-            return null;
         }
 
         @Override

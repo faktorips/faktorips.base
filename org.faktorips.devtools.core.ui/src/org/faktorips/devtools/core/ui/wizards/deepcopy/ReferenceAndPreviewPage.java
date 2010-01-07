@@ -25,6 +25,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -41,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -54,6 +59,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
@@ -290,7 +296,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * @author Thorsten Guenther
      */
     private class LabelProvider extends StyledCellLabelProvider {
-        private Object getWrapped(Object in) {
+
+        private ResourceManager resourceManager;
+
+        public LabelProvider() {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+
+        private IIpsElement getWrapped(IProductCmptStructureReference in) {
             if (in instanceof IProductCmptReference) {
                 return ((IProductCmptReference)in).getProductCmpt();
             } else if (in instanceof IProductCmptTypeRelationReference) {
@@ -339,64 +352,76 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         public Image getImage(Object element) {
-            Object wrapped = getWrapped(element);
-            Image image = ((IIpsObjectPartContainer)wrapped).getImage();
-            if (wrapped instanceof IProductCmpt) {
-                if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
-                    image = IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+            if (element instanceof IProductCmptStructureReference) {
+                IProductCmptStructureReference structureReference = (IProductCmptStructureReference)element;
+                if (isInError(structureReference)) {
+                    return IpsUIPlugin.getImageHandling().getSharedImage("structureReference", true);
                 }
-                if (isInError((IProductCmptStructureReference)element)) {
-                    return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
+                IIpsElement wrapped = getWrapped(structureReference);
+                if (wrapped instanceof IProductCmpt) {
+                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "LinkProductCmpt.gif");
+                        return (Image)resourceManager.get(imageDescriptor);
+                    }
+                } else if (wrapped instanceof ITableContentUsage) {
+                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "LinkTableContents.gif");
+                        return (Image)resourceManager.get(imageDescriptor);
+                    }
                 }
+                Image image = IpsUIPlugin.getImageHandling().getImage(wrapped);
                 return image;
-            } else if (wrapped instanceof ITableContentUsage) {
-                if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
-                    image = IpsPlugin.getDefault().getImage("LinkTableContents.gif"); //$NON-NLS-1$
-                }
-                if (isInError((IProductCmptStructureReference)element)) {
-                    return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
-                }
+            } else {
+                return null;
             }
-            return image;
         }
 
         public String getText(Object element) {
-            Object wrapped = getWrapped(element);
-            if (wrapped instanceof IProductCmpt) {
-                String name = ((IProductCmpt)wrapped).getName();
-                if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
-                    name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(element);
-                    if (name == null) {
-                        name = getNewName(null, (IIpsObject)wrapped);
-                    }
-                }
-                if (isInError((IProductCmptStructureReference)element)) {
-                    name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
-                            + getErrorMessage((IProductCmptStructureReference)element);
-                }
-                return name;
-            } else if (wrapped instanceof ITableContentUsage) {
-                String name = StringUtil.unqualifiedName(((ITableContentUsage)wrapped).getTableContentName());
-                if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
-                    name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(element);
-                    if (name == null) {
-                        try {
-                            ITableContents tableContents = ((ITableContentUsage)wrapped)
-                                    .findTableContents(getDeepCopyWizard().getIpsProject());
-                            name = getNewName(null, tableContents);
-                        } catch (CoreException e) {
-                            // should be displayed as validation error before
-                            IpsPlugin.log(e);
+            if (element instanceof IProductCmptStructureReference) {
+                IProductCmptStructureReference structureReference = (IProductCmptStructureReference)element;
+                Object wrapped = getWrapped(structureReference);
+                if (wrapped instanceof IProductCmpt) {
+                    String name = ((IProductCmpt)wrapped).getName();
+                    if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(structureReference)) {
+                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(
+                                structureReference);
+                        if (name == null) {
+                            name = getNewName(null, (IIpsObject)wrapped);
                         }
                     }
+                    if (isInError(structureReference)) {
+                        name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
+                                + getErrorMessage(structureReference);
+                    }
+                    return name;
+                } else if (wrapped instanceof ITableContentUsage) {
+                    String name = StringUtil.unqualifiedName(((ITableContentUsage)wrapped).getTableContentName());
+                    if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(structureReference)) {
+                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(
+                                structureReference);
+                        if (name == null) {
+                            try {
+                                ITableContents tableContents = ((ITableContentUsage)wrapped)
+                                        .findTableContents(getDeepCopyWizard().getIpsProject());
+                                name = getNewName(null, tableContents);
+                            } catch (CoreException e) {
+                                // should be displayed as validation error before
+                                IpsPlugin.log(e);
+                            }
+                        }
+                    }
+                    if (isInError(structureReference)) {
+                        name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
+                                + getErrorMessage(structureReference);
+                    }
+                    return name;
                 }
-                if (isInError((IProductCmptStructureReference)element)) {
-                    name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
-                            + getErrorMessage((IProductCmptStructureReference)element);
-                }
-                return name;
+                return ((IIpsObjectPartContainer)wrapped).getName();
+            } else {
+                return element.toString();
             }
-            return ((IIpsObjectPartContainer)wrapped).getName();
         }
 
         @Override
@@ -405,6 +430,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         @Override
         public void dispose() {
+            resourceManager.dispose();
         }
 
         @Override

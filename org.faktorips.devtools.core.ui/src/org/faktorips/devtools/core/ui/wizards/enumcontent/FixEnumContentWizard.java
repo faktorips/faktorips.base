@@ -95,7 +95,7 @@ public class FixEnumContentWizard extends Wizard {
 
         setWindowTitle(Messages.FixEnumContentWizard_title);
         setNeedsProgressMonitor(false);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE));
     }
 
     @Override

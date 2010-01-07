@@ -53,7 +53,8 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     private AbstractIpsObjectNewWizardPage objectPage;
 
     public NewIpsObjectWizard() {
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/IpsElementWizard.png")); //$NON-NLS-1$
         setNeedsProgressMonitor(false);
     }
 

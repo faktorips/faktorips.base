@@ -49,7 +49,7 @@ public class LockAndSyncLiteralNameAction extends Action {
 
         this.enumValuesSection = enumValuesSection;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setToolTipText(Messages.EnumValuesSection_tooltipLockAndSync);
     }
 

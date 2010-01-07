@@ -65,7 +65,7 @@ public class OpenFixEnumContentWizardAction extends Action {
         this.parentShell = parentShell;
         this.editorPage = editorPage;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumContentPage_labelOpenFixEnumTypeDialog);
         setToolTipText(Messages.EnumContentPage_tooltipOpenFixEnumTypeDialog);
     }

@@ -66,7 +66,7 @@ public class IpsTestAction extends IpsAction {
         super.setText(Messages.IpsTestCaseAction_name);
         super.setDescription(Messages.IpsTestCaseAction_description);
         super.setToolTipText(Messages.IpsTestCaseAction_tooltip);
-        super.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
     }
 
     public IpsTestAction(ISelectionProvider selectionProvider, String mode) {

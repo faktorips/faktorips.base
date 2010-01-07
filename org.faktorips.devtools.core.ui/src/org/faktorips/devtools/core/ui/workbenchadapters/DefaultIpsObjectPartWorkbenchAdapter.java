@@ -35,4 +35,9 @@ public class DefaultIpsObjectPartWorkbenchAdapter extends IpsObjectPartWorkbench
         return ipsObjectPart.getName();
     }
 
+    @Override
+    public ImageDescriptor getDefaultImageDescriptor() {
+        return imageDescriptor;
+    }
+
 }

@@ -94,7 +94,7 @@ public class EnumTypePage extends IpsObjectPage {
      */
     public EnumTypePage(IStructuredSelection selection) {
         super(IpsObjectType.ENUM_TYPE, selection, Messages.Page_Title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(PAGE_IMAGE));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(PAGE_IMAGE));
     }
 
     @Override

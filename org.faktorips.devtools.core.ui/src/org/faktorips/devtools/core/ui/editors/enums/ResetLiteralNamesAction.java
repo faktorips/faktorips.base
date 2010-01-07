@@ -65,7 +65,7 @@ public class ResetLiteralNamesAction extends Action {
         this.enumValuesTableViewer = enumValuesTableViewer;
         this.enumType = enumType;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelResetLiteralNames);
         setToolTipText(Messages.EnumValuesSection_tooltipResetLiteralNames);
     }

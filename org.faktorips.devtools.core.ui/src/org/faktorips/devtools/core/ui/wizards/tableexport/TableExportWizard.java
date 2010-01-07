@@ -56,7 +56,8 @@ public class TableExportWizard extends IpsObjectExportWizard {
      */
     public TableExportWizard() {
         setWindowTitle(Messages.TableExport_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/TableExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);

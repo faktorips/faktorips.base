@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,11 +28,12 @@ public class IpsTestCaseCopyAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.IpsTestCaseCopyAction_name);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
     }
 
+    @Override
     public void run(IStructuredSelection selection) {
-        Object selected  = selection.getFirstElement();
+        Object selected = selection.getFirstElement();
         if (!(selected instanceof ITestCase)) {
             return;
         }

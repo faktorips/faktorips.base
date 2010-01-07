@@ -33,6 +33,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 
 /**
@@ -143,7 +144,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      */
     public AbstractCompareItem(AbstractCompareItem parent, IIpsElement content) {
         Assert.isNotNull(content);
-        this.ipsElement = content;
+        ipsElement = content;
         this.parent = parent;
         if (parent != null) {
             parent.addChild(this);
@@ -282,6 +283,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * Returns true if this compareitem and the given compareitem are equal in name,
      * policycomponenttype and runtime id. Children are not included in the compare. {@inheritDoc}
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof AbstractCompareItem) {
             if (isRoot() && ((AbstractCompareItem)o).isRoot()) {
@@ -293,6 +295,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
         return false;
     }
 
+    @Override
     public int hashCode() {
         return getContentStringWithoutWhiteSpace().hashCode();
     }
@@ -302,7 +305,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      */
     public Image getImage() {
         if (ipsElement != null) {
-            return ipsElement.getImage();
+            return IpsUIPlugin.getImageHandling().getImage(ipsElement);
         }
         return null;
     }

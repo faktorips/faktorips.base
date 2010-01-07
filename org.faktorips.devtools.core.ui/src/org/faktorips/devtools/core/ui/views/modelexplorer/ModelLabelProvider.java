@@ -13,29 +13,27 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
  * This class provides the ModelExplorer with labels for its tree-elements. Label names for
@@ -52,7 +50,9 @@ public class ModelLabelProvider implements ILabelProvider {
 
     private boolean productDefinitionLabelProvider = false;
 
-    private HashMap<ImageDescriptor, Image> imagesByDescriptor = new HashMap<ImageDescriptor, Image>();
+    private ResourceManager resourceManager;
+
+    private IpsProblemsLabelDecorator problemsDecorator;
 
     public ModelLabelProvider() {
         this(false);
@@ -61,6 +61,7 @@ public class ModelLabelProvider implements ILabelProvider {
     public ModelLabelProvider(boolean flatLayout) {
         isFlatLayout = flatLayout;
         defaultLabelProvider = new DefaultLabelProvider();
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     public Image getImage(Object element) {
@@ -76,9 +77,9 @@ public class ModelLabelProvider implements ILabelProvider {
             // therefore to differ between "valid" and "invalid" ips objects in the model explorer
             // we return
             // a different icon
-            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)element);
-            if (ipsElement != null && ipsElement instanceof IIpsSrcFile) {
-                return defaultLabelProvider.getImage(ipsElement);
+
+            if (IpsObjectType.getTypeForExtension(((IResource)element).getFileExtension()) != null) {
+                return IpsUIPlugin.getImageHandling().getDefaultImage(IpsSrcFile.class);
             }
 
             IWorkbenchAdapter adapter = null;
@@ -92,12 +93,7 @@ public class ModelLabelProvider implements ILabelProvider {
             if (descriptor == null) {
                 return null;
             }
-            Image image = imagesByDescriptor.get(descriptor);
-            if (image == null) {
-                image = descriptor.createImage();
-                imagesByDescriptor.put(descriptor, image);
-            }
-
+            Image image = (Image)resourceManager.get(descriptor);
             return image;
         }
 
@@ -106,13 +102,6 @@ public class ModelLabelProvider implements ILabelProvider {
 
     public String getText(Object element) {
         if (element instanceof IIpsElement) {
-
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                if (ipsSrcFile.exists()) {
-                    return getText(ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile));
-                }
-            }
 
             if (element instanceof IIpsPackageFragment) {
                 IIpsPackageFragment fragment = (IIpsPackageFragment)element;
@@ -154,17 +143,7 @@ public class ModelLabelProvider implements ILabelProvider {
     }
 
     public void dispose() {
-        Set<Entry<ImageDescriptor, Image>> entries = imagesByDescriptor.entrySet();
-        List<Entry<ImageDescriptor, Image>> entryList = new ArrayList<Entry<ImageDescriptor, Image>>(entries);
-        for (Iterator<Entry<ImageDescriptor, Image>> it = entryList.iterator(); it.hasNext();) {
-            Map.Entry<ImageDescriptor, Image> entry = it.next();
-            imagesByDescriptor.remove(entry.getKey());
-            (entry.getValue()).dispose();
-        }
-    }
-
-    public int getNumOfCreatedButNotDisposedImages() {
-        return imagesByDescriptor.size();
+        resourceManager.dispose();
     }
 
     public boolean isLabelProperty(Object element, String property) {
@@ -182,6 +161,23 @@ public class ModelLabelProvider implements ILabelProvider {
      */
     /* package */void setIsFlatLayout(boolean b) {
         isFlatLayout = b;
+        getProblemsDecorator().setFlatLayout(isFlatLayout);
+    }
+
+    private IpsProblemsLabelDecorator getProblemsDecorator() {
+        if (problemsDecorator == null) {
+            IBaseLabelProvider decorator = IpsUIPlugin.getDefault().getWorkbench().getDecoratorManager()
+                    .getBaseLabelProvider(IpsProblemsLabelDecorator.EXTENSION_ID);
+            if (decorator instanceof IpsProblemsLabelDecorator) {
+                problemsDecorator = (IpsProblemsLabelDecorator)decorator;
+            }
+        }
+        if (problemsDecorator == null) {
+            return new IpsProblemsLabelDecorator();
+        } else {
+            return problemsDecorator;
+        }
+
     }
 
     /**

@@ -24,9 +24,13 @@ import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -38,12 +42,28 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class ActionEditPart extends NodeEditPart {
 
-    private ImageDescriptor image;
+    private ImageDescriptor imageDescriptor;
+
+    private ResourceManager resourceManager;
+
     private IFigure errorDisplay;
 
-    public ActionEditPart(ImageDescriptor image) {
-        ArgumentCheck.notNull(image, this);
-        this.image = image;
+    public ActionEditPart(ImageDescriptor imageDescriptor) {
+        ArgumentCheck.notNull(imageDescriptor, this);
+        this.imageDescriptor = imageDescriptor;
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
+    }
+
+    @Override
+    public void activate() {
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        // if edit part is reactivated, the images will be allocated again
+        resourceManager.dispose();
+        super.deactivate();
     }
 
     public IActionBFE getActionBFE() {
@@ -100,7 +120,7 @@ public abstract class ActionEditPart extends NodeEditPart {
         iconSection.setOutline(false);
         iconSection.setFill(false);
         Label iconLabel = new Label();
-        iconLabel.setIcon(IpsUIPlugin.getDefault().getImage(image));
+        iconLabel.setIcon((Image)resourceManager.get(imageDescriptor));
         iconLabel.setLocation(new Point(0, 0));
         iconLabel.setSize(new Dimension(20, 20));
         iconSection.add(iconLabel);
@@ -118,7 +138,7 @@ public abstract class ActionEditPart extends NodeEditPart {
         iconSection.setOutline(false);
         iconSection.setFill(false);
         Label iconLabel = new Label();
-        iconLabel.setIcon(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif")); //$NON-NLS-1$
+        iconLabel.setIcon(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC));
         iconLabel.setLocation(new Point(0, 0));
         iconLabel.setSize(new Dimension(20, 20));
         iconSection.add(iconLabel);
@@ -135,4 +155,5 @@ public abstract class ActionEditPart extends NodeEditPart {
         }
         errorDisplay.setVisible(false);
     }
+
 }

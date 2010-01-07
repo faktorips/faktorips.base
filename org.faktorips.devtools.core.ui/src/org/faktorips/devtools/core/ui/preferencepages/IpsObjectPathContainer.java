@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,8 +14,11 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,6 +34,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Ips object path preference page container
@@ -39,34 +43,48 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class IpsObjectPathContainer {
 
+    private static final ImageDescriptor packageFragmentRootImage = IpsUIPlugin.getImageHandling()
+            .createImageDescriptor("IpsPackageFragmentRoot.gif");
+
+    private static final ImageDescriptor projectImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "IpsProject.gif");
+
+    private static final ImageDescriptor archiveImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "IpsAr.gif");
+
+    private static final ImageDescriptor objectPathImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
+            "obj16/cp_order_obj.gif");
+
     private IIpsProject currentIpsProject;
-    
+
     private IIpsObjectPath ipsObjectPath;
-    
+
     private int pageIndex;
 
     private ReferencedProjectsComposite refProjectsComposite;
     private ArchiveComposite archiveComposite;
     private SrcFolderComposite srcFolderComposite;
     private ObjectPathOrderComposite orderComposite;
-    
+
+    private ResourceManager resourceManager;
+
     public IpsObjectPathContainer(int pageToShow, IWorkbenchPreferenceContainer preferenceContainer) {
         pageIndex = pageToShow;
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
-    
-    
+
     /**
      * @param ipsProject The IPS project to configure.
-     * @throws CoreException 
-     */ 
+     * @throws CoreException
+     */
     public void init(IIpsProject ipsProject) throws CoreException {
 
         currentIpsProject = ipsProject;
-        this.ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath = ipsProject.getIpsObjectPath();
 
         reinitComposites();
     }
-    
+
     /**
      * Main UI creation method for configuring IPS objectpath entries
      * 
@@ -93,44 +111,44 @@ public class IpsObjectPathContainer {
         refProjectsComposite = new ReferencedProjectsComposite(folder);
         archiveComposite = new ArchiveComposite(folder);
         orderComposite = new ObjectPathOrderComposite(folder);
-        
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_source, 
-                IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"), srcFolderComposite); //$NON-NLS-1$
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, 
-                IpsPlugin.getDefault().getImage("IpsProject.gif"), refProjectsComposite); //$NON-NLS-1$
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, 
-                IpsPlugin.getDefault().getImage("IpsAr.gif"), archiveComposite); //$NON-NLS-1$
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, 
-                IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$ //$NON-NLS-2$
+
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_source, (Image)resourceManager
+                .get(packageFragmentRootImage), srcFolderComposite);
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(projectImage),
+                refProjectsComposite);
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(archiveImage),
+                archiveComposite);
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, (Image)resourceManager.get(objectPathImage),
+                orderComposite);
 
         srcFolderComposite.init(ipsObjectPath);
         refProjectsComposite.init(ipsObjectPath);
         archiveComposite.init(ipsObjectPath);
         orderComposite.init(ipsObjectPath);
-        
+
         folder.setSelection(pageIndex);
-        
+
         folder.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 tabChanged(e.item);
-            }   
+            }
         });
 
         Dialog.applyDialogFont(composite);
         return composite;
     }
-    
+
     private TabItem addTabItem(TabFolder parent, String tabName, Image tabImage, Composite composite) {
         TabItem item = new TabItem(parent, SWT.NONE);
-        item.setText(tabName); 
+        item.setText(tabName);
         item.setImage(tabImage);
         item.setData(composite);
         item.setControl(composite);
 
-        return item; 
+        return item;
     }
-    
-    
+
     private void tabChanged(Widget widget) {
         if (widget instanceof TabItem) {
             TabItem tabItem = (TabItem)widget;
@@ -145,34 +163,32 @@ public class IpsObjectPathContainer {
      * @return true if changes made in the dialog could be committed successfully, false otherwise
      */
     public boolean saveToIpsProjectFile() {
-        
+
         try {
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
         } catch (CoreException e) {
-            
+
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
         return true;
     }
 
-
     /**
      * Check whether values have been modified
+     * 
      * @return true if data has changed, false otherwise
      */
     public boolean hasChangesInDialog() {
-        return (archiveComposite.isDataChanged() 
-                || orderComposite.isDataChanged() 
-                || refProjectsComposite.isDataChanged() 
-                || srcFolderComposite.isDataChanged());
+        return (archiveComposite.isDataChanged() || orderComposite.isDataChanged()
+                || refProjectsComposite.isDataChanged() || srcFolderComposite.isDataChanged());
     }
 
     /**
      * Manually update the UI
      */
     public void doUpdateUI() {
-        switch(pageIndex) {
+        switch (pageIndex) {
             case 0:
                 srcFolderComposite.doUpdateUI();
                 break;
@@ -184,10 +200,9 @@ public class IpsObjectPathContainer {
                 break;
             case 3:
                 orderComposite.doUpdateUI();
-                break;    
+                break;
         }
     }
-
 
     private void reinitComposites() {
         if (archiveComposite != null) {
@@ -203,5 +218,9 @@ public class IpsObjectPathContainer {
             srcFolderComposite.init(ipsObjectPath);
         }
     }
-    
+
+    public void dispose() {
+        resourceManager.dispose();
+    }
+
 }

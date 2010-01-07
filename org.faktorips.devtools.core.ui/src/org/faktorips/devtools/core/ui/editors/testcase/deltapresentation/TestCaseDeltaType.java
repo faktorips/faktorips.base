@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,10 +13,10 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Type for test case deltas. The following types are supported:
@@ -36,66 +36,70 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
  * @author Joerg Ortmann
  */
 class TestCaseDeltaType extends DefaultEnumValue {
-	
+
     /* Test case side */
-    
-	/**
-	 * A config element test parameter exists, but the test objects are missing (e.g. test value or test policy cmpt)
-	 */
-	public static final TestCaseDeltaType MISSING_ROOT_TEST_OBJECT;
-	
-	/**
-	 * A config element test attribute exists, but the test attribute value is missing.
-	 */
-	public static final TestCaseDeltaType MISSING_TEST_ATTRIBUTE_VALUE;
-	
+
+    /**
+     * A config element test parameter exists, but the test objects are missing (e.g. test value or
+     * test policy cmpt)
+     */
+    public static final TestCaseDeltaType MISSING_ROOT_TEST_OBJECT;
+
+    /**
+     * A config element test attribute exists, but the test attribute value is missing.
+     */
+    public static final TestCaseDeltaType MISSING_TEST_ATTRIBUTE_VALUE;
+
     /* Test case type side */
 
     /**
-     * A test policy cmpt, test policy cmpt link, or test value exisits, but the config element is missing.
+     * A test policy cmpt, test policy cmpt link, or test value exisits, but the config element is
+     * missing.
      */
     public static final TestCaseDeltaType MISSING_TEST_PARAM;
-    
+
     /**
      * A test policy cmpt attribute exists, but the config element test attribute is missing.
-     */    
+     */
     public static final TestCaseDeltaType MISSING_TEST_ATTRIBUTE;
-    
+
     /**
      * The sort order of the test parameter and the corresponding test objetcs is different.
-     */    
+     */
     public static final TestCaseDeltaType DIFFERENT_SORT_ORDER;
-    
-    private final static DefaultEnumType enumType; 
+
+    private final static DefaultEnumType enumType;
 
     static {
         enumType = new DefaultEnumType("TestCaseDeltaType", TestCaseDeltaType.class); //$NON-NLS-1$
-        MISSING_ROOT_TEST_OBJECT = new TestCaseDeltaType(enumType,
-                "missingRootTestObject", Messages.TestCaseDeltaType_MissingRootTestObject, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        MISSING_ROOT_TEST_OBJECT = new TestCaseDeltaType(
+                enumType,
+                "missingRootTestObject", Messages.TestCaseDeltaType_MissingRootTestObject, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
         MISSING_TEST_ATTRIBUTE_VALUE = new TestCaseDeltaType(
                 enumType,
-                "missingTestAttributeValue", Messages.TestCaseDeltaType_MissingTestAttributeValue, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "missingTestAttributeValue", Messages.TestCaseDeltaType_MissingTestAttributeValue, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         MISSING_TEST_PARAM = new TestCaseDeltaType(enumType,
-                "missingTestParam", Messages.TestCaseDeltaType_MissingTestParam, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        MISSING_TEST_ATTRIBUTE = new TestCaseDeltaType(enumType,
-                "missingTestAttribute", Messages.TestCaseDeltaType_MissingTestAttribute, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "missingTestParam", Messages.TestCaseDeltaType_MissingTestParam, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        MISSING_TEST_ATTRIBUTE = new TestCaseDeltaType(
+                enumType,
+                "missingTestAttribute", Messages.TestCaseDeltaType_MissingTestAttribute, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         DIFFERENT_SORT_ORDER = new TestCaseDeltaType(enumType,
-                "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
     }
 
-    private Image icon;
-    
+    private ImageDescriptor imageDescriptor;
+
     private TestCaseDeltaType(DefaultEnumType type, String id, String name, String icon) {
         super(type, id, name);
-        this.icon = IpsPlugin.getDefault().getImage(icon);
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(icon);
     }
-    
+
     /**
      * @return The image for this type.
      */
-    public Image getImage() {
-    	return icon;
+    public ImageDescriptor getImageDescriptor() {
+        return imageDescriptor;
     }
 }

@@ -42,7 +42,7 @@ public class DeleteRowAction extends IpsAction {
         setControlWithDataChangeableSupport(page);
         setText(Messages.DeleteRowAction_Label);
         setToolTipText(Messages.DeleteRowAction_Tooltip);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("DeleteRow.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("DeleteRow.gif")); //$NON-NLS-1$
     }
 
     /**

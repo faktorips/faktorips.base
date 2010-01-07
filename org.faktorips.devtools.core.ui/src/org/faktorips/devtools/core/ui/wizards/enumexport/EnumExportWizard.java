@@ -59,7 +59,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
 
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumExportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/EnumExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);

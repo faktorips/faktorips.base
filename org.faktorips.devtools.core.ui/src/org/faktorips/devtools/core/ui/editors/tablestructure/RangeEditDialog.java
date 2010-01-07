@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,26 +35,25 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 
-
 /**
  * A dialog to edit a range.
  */
 public class RangeEditDialog extends IpsPartEditDialog {
-    
+
     private IColumnRange range;
     private TableViewer columnViewer;
-    
+
     private TextField fromField;
     private TextField toField;
     private EnumValueField rangeTypeField;
@@ -65,7 +64,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     private Button toRight2;
     private Label fromLabel;
     private Label toLabel;
-    
+
     /**
      * @param parentShell
      * @param title
@@ -75,21 +74,23 @@ public class RangeEditDialog extends IpsPartEditDialog {
         this.range = range;
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
-        
+
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.RangeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
-        
+
         createDescriptionTabItem(folder);
         return folder;
     }
-    
+
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
@@ -145,6 +146,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
         // set the inital state depending on the range type
@@ -152,26 +154,26 @@ public class RangeEditDialog extends IpsPartEditDialog {
         return control;
     }
 
-    private void adjustEnableStateToRangeType(ColumnRangeType type){
-        if(type.equals(ColumnRangeType.TWO_COLUMN_RANGE)){
+    private void adjustEnableStateToRangeType(ColumnRangeType type) {
+        if (type.equals(ColumnRangeType.TWO_COLUMN_RANGE)) {
             setEnabledForFromFieldControls(true);
             setEnabledForToFieldControls(true);
             return;
         }
-        
-        if(type.equals(ColumnRangeType.ONE_COLUMN_RANGE_FROM)){
+
+        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_FROM)) {
             setEnabledForFromFieldControls(true);
             setEnabledForToFieldControls(false);
             return;
         }
-        
-        if(type.equals(ColumnRangeType.ONE_COLUMN_RANGE_TO)){
+
+        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_TO)) {
             setEnabledForFromFieldControls(false);
             setEnabledForToFieldControls(true);
         }
     }
 
-    private void setEnabledForToFieldControls(boolean enabled){
+    private void setEnabledForToFieldControls(boolean enabled) {
         toField.getControl().setEnabled(enabled);
         toField.getControl().setEnabled(enabled);
         toLeft2.setEnabled(enabled);
@@ -179,18 +181,18 @@ public class RangeEditDialog extends IpsPartEditDialog {
         toLabel.setEnabled(enabled);
     }
 
-    private void setEnabledForFromFieldControls(boolean enabled){
+    private void setEnabledForFromFieldControls(boolean enabled) {
         fromField.getControl().setEnabled(enabled);
         toField.getControl().setEnabled(enabled);
         toLeft.setEnabled(enabled);
         toRight.setEnabled(enabled);
         fromLabel.setEnabled(enabled);
     }
-    
+
     private void createButtons(Composite middle) {
         toLeft = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
+        toLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         toLeft.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -200,10 +202,10 @@ public class RangeEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
-        toRight= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+
+        toRight = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
+        toRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         toRight.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -213,12 +215,12 @@ public class RangeEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
         uiToolkit.createVerticalSpacer(middle, 10);
-        
+
         toLeft2 = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft2.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
+        toLeft2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         toLeft2.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -228,11 +230,10 @@ public class RangeEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
-        
-        toRight2= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+
+        toRight2 = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toRight2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight2.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
+        toRight2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         toRight2.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -242,30 +243,30 @@ public class RangeEditDialog extends IpsPartEditDialog {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
     }
-    
+
     private void createColumnSelectionComposite(Composite parent) {
         Composite c = uiToolkit.createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setHeaderVisible(false);
-		table.setLinesVisible(false);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		data.widthHint = 180;
-		data.heightHint = 200;
+        table.setHeaderVisible(false);
+        table.setLinesVisible(false);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.widthHint = 180;
+        data.heightHint = 200;
         table.setLayoutData(data);
         columnViewer = new TableViewer(table);
         columnViewer.setLabelProvider(new DefaultLabelProvider());
         columnViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-            	IColumn[] columns = range.getTableStructure().getColumns();
-            	ArrayList result = new ArrayList();
-            	for (int i = 0; i < columns.length; i++) {
-					if (!columns[i].getDatatype().equals(Datatype.BOOLEAN.getName())) {
-						result.add(columns[i]);
-					}
-				}
+                IColumn[] columns = range.getTableStructure().getColumns();
+                ArrayList result = new ArrayList();
+                for (int i = 0; i < columns.length; i++) {
+                    if (!columns[i].getDatatype().equals(Datatype.BOOLEAN.getName())) {
+                        result.add(columns[i]);
+                    }
+                }
                 return result.toArray();
             }
 
@@ -274,15 +275,17 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
-            
+
         });
         columnViewer.setInput(this);
     }
-    
-    /** 
+
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
      */
+    @Override
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(rangeTypeField, IColumnRange.PROPERTY_RANGE_TYPE);
@@ -290,7 +293,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
         uiController.add(toField, IColumnRange.PROPERTY_TO_COLUMN);
         uiController.add(parameterNameField, IColumnRange.PROPERTY_PARAMETER_NAME);
     }
-    
+
     private void selectColumn(TextField field) {
         ISelection selection = columnViewer.getSelection();
         if (selection.isEmpty()) {
@@ -300,7 +303,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
         field.setValue(column.getName());
         uiController.updateModel();
     }
-    
+
     private void clearColumn(TextField field) {
         field.setValue(""); //$NON-NLS-1$
         uiController.updateModel();

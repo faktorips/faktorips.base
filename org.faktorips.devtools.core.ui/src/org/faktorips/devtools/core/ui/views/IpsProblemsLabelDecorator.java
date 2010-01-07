@@ -18,23 +18,19 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.ui.JavaElementImageDescriptor;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.faktorips.devtools.core.ImageDescriptorRegistry;
-import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * This decorator marks <tt>IIpsObject</tt>s, <tt>IIpsPackageFragment</tt>s,
@@ -48,8 +44,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
 
-    private static final IMarker[] EMPTY_MARKER_ARRAY = new IMarker[0];
-
     /**
      * Indicates if the LabelDecorator works with a flat or hierarchical view structure where
      * <tt>true</tt> means flat layout and <tt>false</tt> means hierarchical layout. Default is
@@ -59,33 +53,28 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
 
-    private ImageDescriptorRegistry registry = null;
-
     private ArrayList<ILabelProviderListener> listeners = null;
 
-    private final static int NO_ADORNMENT = 0;
-    
+    private final static int DEFAULT_FLAG = -1;
+
+    private ResourceManager resourceManager;
+
     /**
      * {@inheritDoc}
      */
-    public Image decorateImage(Image image, Object element) {
-        if (image != null) {
+    public Image decorateImage(Image baseImage, Object element) {
+        if (baseImage != null) {
             try {
-                ImageDescriptor baseImage = new ImageImageDescriptor(image);
-                Rectangle bounds = image.getBounds();
-                return getRegistry().get(
-                        new JavaElementImageDescriptor(baseImage, computeAdornmentFlags(element), new Point(
-                                bounds.width, bounds.height)));
+                return (Image)getResourceManager().get(
+                        IpsProblemOverlayIcon.createMarkerOverlayIcon(baseImage, findMaxProblemSeverity(element)));
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
-        return image;
+        return baseImage;
     }
 
-    private int computeAdornmentFlags(Object element) throws CoreException {
-        int flag = NO_ADORNMENT;
-        IMarker[] markers = EMPTY_MARKER_ARRAY;
+    private int findMaxProblemSeverity(Object element) throws CoreException {
         IResource res = null;
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
@@ -93,18 +82,22 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 if (ipsElement instanceof IIpsProject) {
                     return computeAdornmentFlagsProject((IIpsProject)ipsElement);
                 } else {
-                    // As we don't show ips source file in the user interface, but the ips object, we handle ips objects as ips source files.
+                    // As we don't show ips source file in the user interface, but the ips object,
+                    // we handle ips objects as ips source files.
                     // Added due to bug 1513
                     if (ipsElement instanceof IIpsObject) {
                         ipsElement = ipsElement.getParent();
                     }
-                    // Following line changed from getEnclosingRessource to getCorrespondingRessource() due to bug 1500
-                    // The special handling of ips obejcts parts in former version, was removed as parts return null
-                    // as corresponding ressource. If for some reaseon we have to switch back to getEnclosingRessource()
+                    // Following line changed from getEnclosingRessource to
+                    // getCorrespondingRessource() due to bug 1500
+                    // The special handling of ips obejcts parts in former version, was removed as
+                    // parts return null
+                    // as corresponding ressource. If for some reaseon we have to switch back to
+                    // getEnclosingRessource()
                     // we must readd the special handling to ips object parts.
                     res = ipsElement.getCorrespondingResource();
                     if (res == null || !res.isAccessible()) {
-                        return NO_ADORNMENT;
+                        return DEFAULT_FLAG;
                     }
                     if (isFlatLayout && !(element instanceof IIpsPackageFragmentRoot)) {
                         /*
@@ -115,29 +108,19 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                          * other hand should always be decorated with the problem markers of their
                          * package fragments.
                          */
-                        markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
+                        return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
                     } else {
-                        markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+                        return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
                     }
                 }
+            } else {
+                return DEFAULT_FLAG;
             }
         } else if (element instanceof IResource) {
-            markers = ((IResource)element).findMarkers(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+            return ((IResource)element).findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
         } else {
-            return NO_ADORNMENT;
+            return DEFAULT_FLAG;
         }
-
-        for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
-            if (markers[i].exists()) {
-                int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
-                if (prio == IMarker.SEVERITY_WARNING) {
-                    flag = JavaElementImageDescriptor.WARNING;
-                } else if (prio == IMarker.SEVERITY_ERROR) {
-                    flag = JavaElementImageDescriptor.ERROR;
-                }
-            }
-        }
-        return flag;
     }
 
     /**
@@ -148,22 +131,22 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     private int computeAdornmentFlagsProject(IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-        int flag = 0;
+        int result = 0;
         for (int i = 0; i < roots.length; i++) {
-            flag = flag | computeAdornmentFlags(roots[i]);
+            int flag = findMaxProblemSeverity(roots[i]);
+            if (flag == IMarker.SEVERITY_ERROR) {
+                return flag;
+            } else {
+                result |= flag;
+            }
         }
 
         // Check for errors in .ipsproject file.
-        flag = flag | computeAdornmentFlags(project.getIpsProjectPropertiesFile());
-
-        return flag;
-    }
-
-    private ImageDescriptorRegistry getRegistry() {
-        if (registry == null) {
-            this.registry = new ImageDescriptorRegistry();
+        int flag = findMaxProblemSeverity(project.getIpsProjectPropertiesFile());
+        if (flag == IMarker.SEVERITY_ERROR) {
+            return flag;
         }
-        return this.registry;
+        return result |= flag;
     }
 
     /**
@@ -188,11 +171,10 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * {@inheritDoc}
      */
     public void dispose() {
-        if (registry != null) {
-            registry.dispose();
-            registry = null;
+        if (resourceManager != null) {
+            resourceManager.dispose();
         }
-        this.listeners = null;
+        listeners = null;
     }
 
     /**
@@ -207,7 +189,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     public void removeListener(ILabelProviderListener listener) {
         if (listener != null && listeners != null) {
-            this.listeners.remove(listener);
+            listeners.remove(listener);
         }
     }
 
@@ -216,12 +198,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     public void decorate(Object element, IDecoration decoration) {
         try {
-            int adornmentFlags = computeAdornmentFlags(element);
-            if ((adornmentFlags & JavaElementImageDescriptor.ERROR) == JavaElementImageDescriptor.ERROR) {
-                decoration.addOverlay(IpsUIPlugin.getDefault().getImageDescriptor("ovr16/error_co.gif")); //$NON-NLS-1$
-            } else if ((adornmentFlags & JavaElementImageDescriptor.WARNING) == JavaElementImageDescriptor.WARNING) {
-                decoration.addOverlay(IpsPlugin.getDefault().getImageDescriptor("ovr16/warning_co.gif")); //$NON-NLS-1$
-            }
+            decoration.addOverlay(IpsProblemOverlayIcon.getMarkerOverlay(findMaxProblemSeverity(element)));
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -232,5 +209,13 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     public void setFlatLayout(boolean isFlatLayout) {
         this.isFlatLayout = isFlatLayout;
+    }
+
+    private ResourceManager getResourceManager() {
+        // Lazy load because the decorator is instantiated before JFaceResources
+        if (resourceManager == null) {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+        return resourceManager;
     }
 }

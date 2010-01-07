@@ -64,7 +64,6 @@ import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
-import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 
@@ -131,7 +130,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * Decorator for problems in ips objects. This decorator is adjusted according to the current
      * layout style.
      */
-    private IpsProblemsLabelDecorator ipsDecorator = new IpsProblemsLabelDecorator();
+    // TODO where to get the registered one?
+    // private IpsProblemsLabelDecorator ipsDecorator;
 
     private ToggleLinkingAction toggleLinking;
 
@@ -270,10 +270,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     private void createMenu(IMenuManager menuManager) {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
-        flatLayoutAction.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
+        flatLayoutAction.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
         IAction hierarchicalLayoutAction = new LayoutAction(this, false);
         hierarchicalLayoutAction.setText(Messages.ModelExplorer_actionHierarchicalLayout);
-        hierarchicalLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
+        hierarchicalLayoutAction.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "ModelExplorerHierarchicalLayout.gif")); //$NON-NLS-1$
 
         // Actions are unchecked as per default, check action for current layout
@@ -356,7 +357,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     private void setLayoutStyle(LayoutStyle newStyle) {
         ArgumentCheck.notNull(newStyle);
         layoutStyle = newStyle;
-        ipsDecorator.setFlatLayout(isFlatLayout());
+        // TODO see declaration
+        // ipsDecorator.setFlatLayout(isFlatLayout());
         contentProvider.setLayoutStyle(newStyle);
         labelProvider.setIsFlatLayout(isFlatLayout());
 

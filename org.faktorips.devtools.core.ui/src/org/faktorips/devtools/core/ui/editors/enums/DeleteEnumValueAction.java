@@ -56,7 +56,7 @@ public class DeleteEnumValueAction extends Action {
 
         this.enumValuesTableViewer = enumValuesTableViewer;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelDeleteValue);
         setToolTipText(Messages.EnumValuesSection_tooltipDeleteValue);
     }

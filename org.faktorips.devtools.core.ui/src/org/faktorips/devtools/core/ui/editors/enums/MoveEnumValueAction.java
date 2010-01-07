@@ -66,11 +66,11 @@ public class MoveEnumValueAction extends Action {
         this.up = up;
 
         if (up) {
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME_UP));
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_UP));
             setText(Messages.EnumValuesSection_labelMoveEnumValueUp);
             setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueUp);
         } else {
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME_DOWN));
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_DOWN));
             setText(Messages.EnumValuesSection_labelMoveEnumValueDown);
             setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueDown);
         }

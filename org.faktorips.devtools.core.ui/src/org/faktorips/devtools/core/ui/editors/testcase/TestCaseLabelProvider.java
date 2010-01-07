@@ -15,6 +15,10 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -23,7 +27,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -35,8 +38,8 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -45,35 +48,39 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class TestCaseLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
+
     private IIpsProject ipsProject;
+
+    private ResourceManager resourceManager;
 
     public TestCaseLabelProvider(IIpsProject ipsProject) {
         // super();
         this.ipsProject = ipsProject;
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     /**
      * {@inheritDoc}
      */
     public Image getImage(Object element) {
+        return (Image)resourceManager.get(getImageDescriptor(element));
+    }
+
+    public ImageDescriptor getImageDescriptor(Object element) {
         if (element instanceof TestCaseTypeAssociation) {
             return getImageFromAssociationType((TestCaseTypeAssociation)element);
-        } else if (element instanceof ITestParameter) {
-            // the test parameter uses the attribute to get the image for
-            // thus the find method (with the ips project) is used to find the correct attribute
-            return ((ITestParameter)element).getImage(ipsProject);
         } else if (element instanceof IIpsObjectPart) {
-            return ((IIpsObjectPart)element).getImage();
+            return IpsUIPlugin.getImageHandling().getImageDescriptor((IIpsObjectPart)element);
         } else if (element instanceof TestCaseTypeRule) {
-            return ((TestCaseTypeRule)element).getImage();
+            return ((TestCaseTypeRule)element).getImageDescriptor();
         }
-        return null;
+        return ImageDescriptor.getMissingImageDescriptor();
     }
 
     /**
      * Returns the image of the given association test case type parameter.
      */
-    private Image getImageFromAssociationType(TestCaseTypeAssociation dummyAssociation) {
+    private ImageDescriptor getImageFromAssociationType(TestCaseTypeAssociation dummyAssociation) {
         ITestPolicyCmptTypeParameter typeParam = dummyAssociation.getTestPolicyCmptTypeParam();
         if (typeParam == null) {
             return null;
@@ -82,15 +89,15 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             // root node
             return getImageForRootPolicyCmptTypeParamNode(typeParam);
         } else {
-            return typeParam.getImage();
+            return IpsUIPlugin.getImageHandling().getImageDescriptor(typeParam);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public Image getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
-        return IpsPlugin.getDefault().getImage("TestParameterRootObject.gif"); //$NON-NLS-1$
+    public ImageDescriptor getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
+        return IpsUIPlugin.getImageHandling().createImageDescriptor("TestParameterRootObject.gif"); //$NON-NLS-1$
     }
 
     @Override
@@ -257,6 +264,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      */
     @Override
     public void dispose() {
+        resourceManager.dispose();
     }
 
     /**

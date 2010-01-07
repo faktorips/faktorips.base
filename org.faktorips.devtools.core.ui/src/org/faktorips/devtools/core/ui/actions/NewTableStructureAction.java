@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,18 +26,19 @@ import org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructu
  */
 public class NewTableStructureAction extends Action {
     private IWorkbenchWindow window;
-    
-    public NewTableStructureAction(IWorkbenchWindow window){
+
+    public NewTableStructureAction(IWorkbenchWindow window) {
         super();
         this.window = window;
         setText(Messages.NewTableStructureAction_name);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTableStructureWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableStructureWizard.gif")); //$NON-NLS-1$
     }
-    
-    public void run(){
+
+    @Override
+    public void run() {
         IWorkbenchWindowActionDelegate openAction = new OpenNewTableStructureWizardAction();
         openAction.init(window);
         openAction.run(this);
     }
-    
+
 }

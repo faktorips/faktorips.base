@@ -24,96 +24,64 @@ import org.faktorips.devtools.core.model.IIpsElement;
 
 public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, IWorkbenchAdapter2 {
 
-    private static final Object[] EMPTY_ARRAY = new Object[0];
-
-    public final Object[] getChildren(Object o) {
+    public Object[] getChildren(Object o) {
         if (o instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)o;
             try {
-                return getChildren(ipsElement);
+                return ipsElement.getChildren();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
+                return new Object[0];
             }
+        } else {
+            return null;
         }
-        return EMPTY_ARRAY;
-    }
-
-    protected IIpsElement[] getChildren(IIpsElement ipsElement) throws CoreException {
-        return ipsElement.getChildren();
     }
 
     public final ImageDescriptor getImageDescriptor(Object object) {
         if (object instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)object;
             return getImageDescriptor(ipsElement);
+        } else {
+            return null;
         }
-        return null;
     }
 
     protected abstract ImageDescriptor getImageDescriptor(IIpsElement ipsElement);
 
-    public final String getLabel(Object object) {
-        if (object instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)object;
-            String label = getLabel(ipsElement);
-            if (label == null) {
-                return "";
-            } else {
-                return label;
-            }
+    public abstract ImageDescriptor getDefaultImageDescriptor();
+
+    public final String getLabel(Object o) {
+        if (o instanceof IIpsElement) {
+            IIpsElement ipsElement = (IIpsElement)o;
+            return getLabel(ipsElement);
+        } else {
+            return "";
         }
-        return "";
     }
 
     protected String getLabel(IIpsElement ipsElement) {
         return ipsElement.getName();
     }
 
-    public final Object getParent(Object o) {
+    public Object getParent(Object o) {
         if (o instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)o;
-            return getParent(ipsElement);
+            return ipsElement.getParent();
+        } else {
+            return null;
         }
-        return null;
-    }
-
-    protected IIpsElement getParent(IIpsElement ipsElement) {
-        return ipsElement.getParent();
     }
 
     public RGB getBackground(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
-            return getBackground(ipsElement);
-        }
-        return null;
-    }
-
-    protected RGB getBackground(IIpsElement ipsElement) {
         return null;
     }
 
     public FontData getFont(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
-            return getFont(ipsElement);
-        }
-        return null;
-    }
-
-    protected FontData getFont(IIpsElement ipsElement) {
         return null;
     }
 
     public RGB getForeground(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
-            return getForeground(ipsElement);
-        }
-        return null;
-    }
-
-    protected RGB getForeground(IIpsElement ipsElement) {
         return null;
     }
 

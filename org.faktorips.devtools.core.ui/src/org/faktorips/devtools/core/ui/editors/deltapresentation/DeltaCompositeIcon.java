@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,64 +13,34 @@
 
 package org.faktorips.devtools.core.ui.editors.deltapresentation;
 
-import org.eclipse.jface.resource.CompositeImageDescriptor;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 
 /**
- * Composite image to indicate changes to an object
+ * Decoration Oeverlay Icon to indicate changes to an object
  * 
  * @author Thorsten Guenther
+ * @author dirmeier
  */
-public class DeltaCompositeIcon extends CompositeImageDescriptor {
-    private final Point DEFAULT_SIZE = new Point(16, 16);
-    private Image baseImage;
-    
-    private static final int ADD = 1;
-    private static final int DELETE = 2;
-    private static final int MODIFY = 3;
-    
-    private int imageFor = 0;
-    
-    public static Image createDeleteImage(Image baseImage){
-        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, DELETE));
-    }
-    
-    public static Image createAddImage(Image baseImage){
-        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, ADD));
-    }
-    
-    public static Image createModifyImage(Image baseImage){
-        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, MODIFY));
+public class DeltaCompositeIcon extends DecorationOverlayIcon {
+
+    public DeltaCompositeIcon(Image baseImage, ImageDescriptor overlayImage, int quadrant) {
+        super(baseImage, overlayImage, quadrant);
     }
 
-    private DeltaCompositeIcon(Image baseImage, int imageFor){
-        this.imageFor = imageFor;
-        this.baseImage = baseImage;
-    }
-    
-    protected void drawCompositeImage(int width, int height) {
-        if (baseImage == null){
-            return;
-        }
-            
-        drawImage(baseImage.getImageData(), 0, 0);
-        
-        switch (imageFor) {
-            case ADD:
-                drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
-                break;
-            case DELETE:
-                drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
-                break;
-            case MODIFY:
-                drawImage(IpsPlugin.getDefault().getImage("ModifyOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
-                break;
-        }
+    public static ImageDescriptor createDeleteImage(Image baseImage) {
+        return new DeltaCompositeIcon(baseImage, OverlayIcons.DELETED_OVR_DESC, IDecoration.TOP_RIGHT);
     }
 
-    protected Point getSize() {
-        return DEFAULT_SIZE;
+    public static ImageDescriptor createAddImage(Image baseImage) {
+        return new DeltaCompositeIcon(baseImage, OverlayIcons.ADDED_OVR_DESC, IDecoration.TOP_RIGHT);
     }
+
+    public static ImageDescriptor createModifyImage(Image baseImage) {
+        return new DeltaCompositeIcon(baseImage, OverlayIcons.MODIFIED_OVR_DESC, IDecoration.TOP_RIGHT);
+    }
+
 }

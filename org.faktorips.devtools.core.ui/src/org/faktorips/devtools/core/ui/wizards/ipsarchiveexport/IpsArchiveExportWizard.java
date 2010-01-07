@@ -51,7 +51,8 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
     public IpsArchiveExportWizard() {
         super();
         setWindowTitle(Messages.IpsArchiveExportWizard_Export);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/ExportIpsArchiveWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/ExportIpsArchiveWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);

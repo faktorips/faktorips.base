@@ -91,7 +91,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      */
     public EnumContentPage(IStructuredSelection selection) {
         super(selection, Messages.Page_Title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(PAGE_IMAGE));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(PAGE_IMAGE));
 
     }
 

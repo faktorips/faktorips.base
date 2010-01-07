@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -60,21 +61,20 @@ public class ReferencedProjectsComposite extends Composite {
     private Button addButton;
     private Button removeButton;
     private TableViewer tableViewer;
-    
+
     // flag to indicate changes in referenced IPS projects
     private boolean dataChanged = false;
 
-    
     public ReferencedProjectsComposite(Composite parent) {
 
         super(parent, SWT.NONE);
-        this.toolkit = new UIToolkit(null);
+        toolkit = new UIToolkit(null);
 
-        this.setLayout(new GridLayout(1, true));
+        setLayout(new GridLayout(1, true));
 
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         IpsProjectsAdapter projectAdapter = new IpsProjectsAdapter();
 
         Label tableViewerLabel = new Label(tableWithButtons, SWT.NONE);
@@ -108,33 +108,32 @@ public class ReferencedProjectsComposite extends Composite {
     }
 
     private TableViewer createViewer(Composite parent, IpsProjectsAdapter projectAdapter, UIToolkit toolkit) {
-        
+
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(projectAdapter);
-        
+
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
-        contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsProjectRefEntry.class}));
+        contentProvider.setIncludedClasses(Arrays.asList(new Class[] { IIpsProjectRefEntry.class }));
         tableViewer.setContentProvider(contentProvider);
 
-        tableViewer.setLabelProvider(new  DecoratingLabelProvider(
-                new IpsObjectPathLabelProvider(),
-                IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
-        ));
-        
+        tableViewer.setLabelProvider(new DecoratingLabelProvider(new IpsObjectPathLabelProvider(), IpsPlugin
+                .getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()));
+
         return tableViewer;
     }
 
     /**
      * Initializes the composite with the given Ips object path
+     * 
      * @param ipsObjectPath, must not be null
-     * @throws CoreException 
+     * @throws CoreException
      */
     public void init(final IIpsObjectPath ipsObjectPath) {
-        
+
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
-        
+
         tableViewer.setInput(ipsObjectPath);
 
         if (Display.getCurrent() != null) {
@@ -150,13 +149,13 @@ public class ReferencedProjectsComposite extends Composite {
 
     /**
      * Referenced IPS projects for the current IPS projects have been modified
+     * 
      * @return true if current project's project-reference list has been modified, false otherwise
      */
     public final boolean isDataChanged() {
         return dataChanged;
     }
 
-    
     // add new project references to current IPS project, based on items selected in dialog
     private void addIpsProjects() {
 
@@ -174,12 +173,12 @@ public class ReferencedProjectsComposite extends Composite {
         dialog.setTitle(Messages.ReferencedProjectsComposite_select_projects_title);
         dialog.setInitialSelections(ipsObjectPath.getProjectRefEntries());
         if (dialog.open() == Window.OK) {
-            
+
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
                 for (int i = 0; i < selectedReferencedProjects.length; i++) {
 
-                    ipsObjectPath.newIpsProjectRefEntry( (IIpsProject) selectedReferencedProjects[i]);
+                    ipsObjectPath.newIpsProjectRefEntry((IIpsProject)selectedReferencedProjects[i]);
                     tableViewer.refresh(false);
                 }
                 dataChanged = true;
@@ -192,58 +191,62 @@ public class ReferencedProjectsComposite extends Composite {
         IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
         if (selection.size() > 0) {
             dataChanged = true;
-            for (Iterator it = selection.iterator(); it.hasNext(); ) {
-                IIpsProjectRefEntry refEntry = (IIpsProjectRefEntry) it.next();
-                ipsObjectPath.removeProjectRefEntry( (refEntry).getReferencedIpsProject() );
+            for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+                IIpsProjectRefEntry refEntry = (IIpsProjectRefEntry)it.next();
+                ipsObjectPath.removeProjectRefEntry((refEntry).getReferencedIpsProject());
                 tableViewer.refresh(false);
             }
-        }        
+        }
     }
 
-
-    // Get open IPS projects from the current workspace. Skip already referenced projects and the current project.
+    // Get open IPS projects from the current workspace. Skip already referenced projects and the
+    // current project.
     private IIpsProject[] getSelectableIpsProjects() throws CoreException {
-        
-        ArrayList resultList = new ArrayList();
+
+        ArrayList<IIpsProject> resultList = new ArrayList<IIpsProject>();
         IIpsProjectRefEntry[] projectRefEntries = ipsObjectPath.getProjectRefEntries();
-        ArrayList references = new ArrayList();
+        ArrayList<IIpsProject> references = new ArrayList<IIpsProject>();
         for (int i = 0; i < projectRefEntries.length; i++) {
             references.add(projectRefEntries[i].getReferencedIpsProject());
         }
-        
+
         IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
         IIpsProject currentIpsProject = ipsObjectPath.getIpsProject();
-        
+
         for (int i = 0; i < ipsProjects.length; i++) {
-            IIpsProject ipsProject =  (IIpsProject) ipsProjects[i];
+            IIpsProject ipsProject = ipsProjects[i];
             if (ipsProject.equals(currentIpsProject) || references.contains(ipsProject)) {
                 continue;
             }
             resultList.add(ipsProject);
         }
-        
+
         IIpsProject[] refIpsProject = new IIpsProject[resultList.size()];
-        
-        return (IIpsProject[]) resultList.toArray(refIpsProject);
+
+        return resultList.toArray(refIpsProject);
     }
-    
+
     private static final class TableLabelProvider extends LabelProvider {
-        
+
         private static final String PROJECT_IMG = "IpsProject.gif"; //$NON-NLS-1$
 
+        @Override
         public Image getImage(Object element) {
-          return IpsPlugin.getDefault().getImage(PROJECT_IMG);            
+            return IpsUIPlugin.getImageHandling().getSharedImage(PROJECT_IMG, true);
         }
 
+        @Override
         public String getText(Object element) {
-            if (element instanceof IIpsProjectRefEntry)
-                return ((IIpsProjectRefEntry) element).getReferencedIpsProject().getName();
-            if (element instanceof IIpsProject)
-                return ((IIpsProject) element).getName();
+            if (element instanceof IIpsProjectRefEntry) {
+                return ((IIpsProjectRefEntry)element).getReferencedIpsProject().getName();
+            }
+            if (element instanceof IIpsProject) {
+                return ((IIpsProject)element).getName();
+            }
             return Messages.ReferencedProjectsComposite_label_provider_invalid_element;
         }
     }
-    
+
     // widget action handling
     private class IpsProjectsAdapter implements ISelectionChangedListener, SelectionListener {
 
@@ -265,7 +268,8 @@ public class ReferencedProjectsComposite extends Composite {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
+        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        }
     }
 
     /**
