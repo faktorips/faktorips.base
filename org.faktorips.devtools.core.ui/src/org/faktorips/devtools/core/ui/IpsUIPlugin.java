@@ -195,8 +195,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
+        images.dispose();
         super.stop(context);
-        images.stop();
     }
 
     /**
@@ -993,14 +993,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return imageDescriptor;
         }
 
-        public void stop() {
+        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
+            return getDefault().workbenchAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
+        }
+
+        public void dispose() {
             if (resourceManager != null) {
                 resourceManager.dispose();
             }
-        }
-
-        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
-            return getDefault().workbenchAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
         }
 
     }
