@@ -1,5 +1,0 @@
-<project name="org.faktorips.devtools.ant" default="">
-	<target name="buildjar">
-		<ant dir=".." antfile="scripts/buildExtraJAR.xml" target="main"/>
-	</target>
-</project>
