@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ProductCmpt description="" policyCmptType="home.HomePolicy">
-    <Generation description="" validFrom="2005-01-01">
-        <ConfigElement attribute="taxRate" value="0.16"/>
-        <ConfigElement attribute="fixedCosts" value="10EUR"/>
-    </Generation>
-</ProductCmpt>
-
