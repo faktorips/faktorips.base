@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -54,8 +55,6 @@ public class ReferenceDropListener extends DropTargetAdapter {
     private boolean enabled = true;
 
     private IProductCmptLink toMove;
-
-    // private TreeViewer treeViewer;
 
     @Override
     public void dragEnter(DropTargetEvent event) {
@@ -139,35 +138,41 @@ public class ReferenceDropListener extends DropTargetAdapter {
 
     @Override
     public void drop(DropTargetEvent event) {
-        boolean result = handleDrop(event);
-        notifyDropDoneListener(event, result);
+        IIpsSrcFile srcFile = getTargetSrcFile(event);
+        boolean srcFileDirty = false;
+        if (srcFile != null) {
+            srcFileDirty = srcFile.isDirty();
+        }
+        List<IProductCmptLink> result = handleDrop(event);
+        notifyDropDoneListener(event, result, srcFileDirty);
     }
 
-    // returns true if something changed
-    private boolean handleDrop(DropTargetEvent event) {
+    // returns a list of created ProductCmptLinks (maybe an empty list)
+    private List<IProductCmptLink> handleDrop(DropTargetEvent event) {
         Object insertAt = getInsertAt(event);
+        List<IProductCmptLink> result = new ArrayList<IProductCmptLink>(1);
 
         // found no relation or relationtype which gives us the information
-        // about
-        // the position of the insert, so dont drop.
+        // about the position of the insert, so dont drop.
         if (insertAt == null) {
-            return false;
+            return result;
         }
 
         if (event.operations == DND.DROP_MOVE) {
-            return move(insertAt);
+            IProductCmptLink movedLink = move(insertAt);
+            if (movedLink != null) {
+                result.add(movedLink);
+            }
         } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            boolean result = false;
             // we have a file transfer
             String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
             for (int i = 0; i < filenames.length; i++) {
                 IFile file = getFile(filenames[i]);
                 // at least one have to succeed
-                result |= insert(file, insertAt);
+                result.add(insert(file, insertAt));
             }
-            return result;
         }
-        return false;
+        return result;
     }
 
     @Override
@@ -204,13 +209,13 @@ public class ReferenceDropListener extends DropTargetAdapter {
         return null;
     }
 
-    private boolean move(Object insertBefore) {
+    private IProductCmptLink move(Object insertBefore) {
         if (insertBefore instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)insertBefore;
             link.getProductCmptGeneration().moveLink(getToMove(), (IProductCmptLink)insertBefore);
-            return true;
+            return link;
         }
-        return false;
+        return null;
     }
 
     private Object getInsertAt(DropTargetEvent event) {
@@ -227,6 +232,18 @@ public class ReferenceDropListener extends DropTargetAdapter {
         return null;
     }
 
+    private IIpsSrcFile getTargetSrcFile(DropTargetEvent event) {
+        Object o = getInsertAt(event);
+        if (o instanceof IProductCmptStructureReference) {
+            IProductCmptStructureReference reference = (IProductCmptStructureReference)o;
+            return reference.getWrappedIpsObject().getIpsSrcFile();
+        } else if (o instanceof IProductCmptLink) {
+            IProductCmptLink link = (IProductCmptLink)o;
+            return link.getIpsSrcFile();
+        }
+        return null;
+    }
+
     /**
      * Insert a new relation to the product component contained in the given file. If the file is
      * <code>null</code> or does not contain a product component, the insert is aborted.
@@ -235,7 +252,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
      *            then).
      * @param insertAt The relation or relation type to insert at.
      */
-    private boolean insert(IFile file, Object insertAt) {
+    private IProductCmptLink insert(IFile file, Object insertAt) {
         try {
             IProductCmpt cmpt = getProductCmpt(file);
             if (cmpt != null) {
@@ -244,7 +261,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -256,10 +273,11 @@ public class ReferenceDropListener extends DropTargetAdapter {
      *            object (which means the new relation has the same product component relation type
      *            as the given one or is of the given type).
      */
-    private boolean insert(IProductCmpt droppedCmpt, Object insertAt) {
+    private IProductCmptLink insert(IProductCmpt droppedCmpt, Object insertAt) {
         String droppedCmptName = droppedCmpt.getQualifiedName();
         IAssociation association = null;
         IProductCmptLink insertBefore = null;
+        // only save if changed in vie (insertAt is a reference type) and src file not already dirty
         try {
             IProductCmptGeneration generation = null;
             if (insertAt instanceof IProductCmptTypeRelationReference) {
@@ -280,7 +298,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
                         reference.getStructure().getValidAt());
                 IProductCmptType cmptType = reference.getProductCmpt().findProductCmptType(ipsProject);
                 if (generation == null || cmptType == null) {
-                    return false;
+                    return null;
                 }
                 List<IAssociation> associations = cmptType.findAllNotDerivedAssociations();
                 List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
@@ -292,6 +310,7 @@ public class ReferenceDropListener extends DropTargetAdapter {
                 if (possibleAssos.size() == 1) {
                     association = possibleAssos.get(0);
                 }
+                // TODO bei mehreren gültigen Assoziationen soll eine auswählbar sein!
 
             } else if (insertAt instanceof IProductCmptLink) {
                 // Product Cmpt Link in linkSection of product cmpt editor
@@ -303,13 +322,15 @@ public class ReferenceDropListener extends DropTargetAdapter {
                 }
                 insertBefore = link;
             }
-            if (generation != null && association != null) {
-                return newLink(generation, droppedCmptName, association, insertBefore) != null;
+
+            if (generation != null && association != null && generation.getIpsSrcFile().isMutable()) {
+                IProductCmptLink newLink = newLink(generation, droppedCmptName, association, insertBefore);
+                return newLink;
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -365,15 +386,27 @@ public class ReferenceDropListener extends DropTargetAdapter {
         }
     }
 
-    private void notifyDropDoneListener(DropTargetEvent event, boolean changedSomething) {
+    private void notifyDropDoneListener(DropTargetEvent event, List<IProductCmptLink> result, boolean srcFileDirty) {
         for (IDropDoneListener listener : listeners) {
-            listener.dropDone(event, changedSomething);
+            listener.dropDone(event, result, srcFileDirty);
         }
     }
 
+    /**
+     * A listener that is notified if a reference drop was done
+     * 
+     * @author dirmeier
+     */
     public interface IDropDoneListener {
 
-        public void dropDone(DropTargetEvent event, boolean changedSomething);
+        /**
+         * notifies the listener that a drop was done.
+         * 
+         * @param event The drop event
+         * @param result the list of created or modified links
+         * @param srcFileWasDirty
+         */
+        public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean srcFileWasDirty);
 
     }
 

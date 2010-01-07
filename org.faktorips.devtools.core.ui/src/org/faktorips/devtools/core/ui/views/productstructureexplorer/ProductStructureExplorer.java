@@ -91,7 +91,6 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ReferenceDropListener;
@@ -168,6 +167,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
     }
 
+    /**
+     * This drop listener is only responsible to view ne objects not to drag into the structure. For
+     * making new associations {@link ReferenceDropListener} is used
+     * 
+     * @author dirmeier
+     */
     private class ProductCmptDropListener extends IpsElementDropListener {
 
         public void dragEnter(DropTargetEvent event) {
@@ -306,7 +311,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             public void run() {
                 refresh();
                 // XXX tree.expandAll();
-                expandTreeToReferences();
 
             }
 
@@ -448,13 +452,28 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree = new TreeViewer(viewerPanel);
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        ReferenceDropListener dropListener = new ReferenceDropListener();
+        final ReferenceDropListener dropListener = new ReferenceDropListener();
         tree.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                 TextTransfer.getInstance() }, dropListener);
         dropListener.addDropDoneListener(new IDropDoneListener() {
 
-            public void dropDone(DropTargetEvent event, boolean changedSomething) {
+            public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean srcFileWasDirty) {
+                Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+                for (IProductCmptLink link : result) {
+                    IIpsSrcFile srcFile = link.getIpsSrcFile();
+                    srcFiles.add(srcFile);
+                }
+                for (IIpsSrcFile srcFile : srcFiles) {
+                    if (srcFile != null && !srcFileWasDirty && srcFile.isMutable()) {
+                        try {
+                            srcFile.save(false, null);
+                        } catch (CoreException e) {
+                            IpsPlugin.logAndShowErrorDialog(e);
+                        }
+                    }
+                }
                 refresh();
+
             }
         });
 
@@ -473,8 +492,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
-        // XXX tree.expandAll();
-        expandTreeToReferences();
+        tree.expandAll();
 
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
                 tree));
@@ -727,31 +745,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         viewerPanel.getParent().layout();
 
         tree.setInput(input);
-        // XXX tree.expandAll();
-        expandTreeToReferences();
-    }
-
-    private void expandTreeToReferences() {
-        if (tree.getInput() instanceof IProductCmptTreeStructure) {
-            IProductCmptTreeStructure structure = (IProductCmptTreeStructure)tree.getInput();
-            IProductCmptReference parent = structure.getRoot();
-            IProductCmptTypeRelationReference[] relationsReferences = structure
-                    .getChildProductCmptTypeRelationReferences(parent, false);
-            if (relationsReferences == null || relationsReferences.length == 0) {
-                return;
-            }
-            int level = 2; // first level is root node. Always expand at least the root node
-            while (relationsReferences.length == 1) {
-                IProductCmptReference[] cmptReferences = structure.getChildProductCmptReferences(parent);
-                // because there are similar types in in one association i take anly the first one
-                // for better performance
-                parent = cmptReferences[0];
-                relationsReferences = structure.getChildProductCmptTypeRelationReferences(parent, true);
-                // one level for the product cmpt references and one for the associations
-                level++;
-            }
-            tree.expandToLevel(level);
-        }
+        // XXX
+        tree.expandAll();
     }
 
     private void showEmptyMessage() {

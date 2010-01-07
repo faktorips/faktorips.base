@@ -57,8 +57,8 @@ public class LinksContentProvider implements ITreeContentProvider {
             IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
             if (pcType == null) {
                 // type can't be found, so extract the association name from the links in the
-                // generation
-                // this is the reason we return Strings instead of association objects as elements.
+                // generation in this case we return Strings instead of association objects as
+                // elements.
                 return getAssociationNames(generation);
             } else {
                 // find association using the product cmpt's project
