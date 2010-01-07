@@ -27,9 +27,17 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         subElements = new ArrayList<PageElement>();
     }
 
+    /**
+     * fuegt dem Composite neue Elemente hinzu
+     * @param pageElements
+     * @throws ClassCastException wenn nur bestimmte Typen an Elemente zugelassen werden
+     */
     public void addPageElements(PageElement... pageElements) {
+    	// TODO check auf richtigen Typen anders lösen (z.B. Filter) und Rückgabewert
         for (PageElement pageElement : pageElements) {
             checkPageElementType(pageElement);
+        }
+        for (PageElement pageElement : pageElements) {
         	subElements.add(pageElement);
         }
     }

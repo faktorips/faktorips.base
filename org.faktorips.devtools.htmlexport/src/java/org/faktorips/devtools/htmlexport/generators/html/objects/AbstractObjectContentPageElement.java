@@ -1,8 +1,5 @@
 package org.faktorips.devtools.htmlexport.generators.html.objects;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -14,14 +11,12 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
-import org.faktorips.util.message.Message;
+import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
 public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends RootPageElement {
@@ -69,7 +64,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 
 	private void addValidationErrors() {
 		try {
-			
+
 			MessageList messageList = object.validate(object.getIpsProject());
 			if (messageList.isEmpty())
 				return;
@@ -77,23 +72,8 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
 			wrapper.addPageElements(new TextPageElement("Validation Errors", TextType.HEADING_2));
 
-			TablePageElement tablePageElement = new TablePageElement();
+			TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
 
-			tablePageElement.addPageElements(new TableRowPageElement(
-					new PageElement[] { new TextPageElement("code"), new TextPageElement("message"),
-							new TextPageElement("severity"), new TextPageElement("properties") }));
-
-			for (Iterator iterator = messageList.iterator(); iterator.hasNext();) {
-				Message msg = (Message) iterator.next();
-				int severity = msg.getSeverity();
-				tablePageElement.addPageElements(new TableRowPageElement(new PageElement[] {
-						new TextPageElement(msg.getCode()),
-						new TextPageElement(msg.getText()),
-						new TextPageElement(severity == Message.ERROR ? "ERROR"
-								: severity == Message.WARNING ? "WARNING" : severity == Message.INFO ? "INFO"
-										: "Severity " + severity),
-						new TextPageElement(Arrays.toString(msg.getInvalidObjectProperties())) }));
-			}
 			wrapper.addPageElements(tablePageElement);
 
 			addPageElements(wrapper);

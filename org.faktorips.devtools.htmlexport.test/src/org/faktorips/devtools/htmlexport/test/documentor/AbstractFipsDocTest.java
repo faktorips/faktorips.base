@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -18,9 +17,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.Documentor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
@@ -135,6 +132,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 			krankenBVB.setSupertype(baseSubBVB.getQualifiedName());
 
 			krankenBVB.setDescription("blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
+			krankenBVB.setAbstract(true);
 
 			addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Text1", "String", Modifier.PUBLISHED,
 					AttributeType.CHANGEABLE);
@@ -148,19 +146,32 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 			String methodNameZahl3 = "berechneZahl3";
 			methodCompZahl3.setName(methodNameZahl3);
 			methodCompZahl3.setDatatype("Integer");
-			methodCompZahl3.setFormulaSignatureDefinition(false);
+			methodCompZahl3.setFormulaSignatureDefinition(true);
+			methodCompZahl3.setFormulaName("Formelname");
+			methodCompZahl3.setDescription("Die Methode berechneZahl3 ...");
 			attributeZahl3.setComputationMethodSignature(methodNameZahl3 + "()");
 			
-
-			ProductCmptType newProductCmp = (ProductCmptType) ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE,
+			IProductCmptTypeMethod methodCompXyz = ipsProject.findProductCmptType(krankenBVB.getProductCmptType()).newProductCmptTypeMethod();
+			String methodNameXyz = "berechneXyz";
+			methodCompXyz.setName(methodNameXyz);
+			methodCompXyz.setDatatype("String");
+			methodCompXyz.setFormulaSignatureDefinition(false);
+			methodCompXyz.setDescription("Die Methode berechneXyz ...");
+			methodCompXyz.setAbstract(true);
+			methodCompXyz.newParameter("Integer", "zahl");
+			methodCompXyz.newParameter("String", "name");
+			
+			ProductCmptType krankenBVBArt = (ProductCmptType) ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE,
 					krankenBVB.getProductCmptType());
-			newProductCmp.setPolicyCmptType(krankenBVB.getQualifiedName());
-			newProductCmp.setSupertype(baseSubBVB.getProductCmptType());
+			krankenBVBArt.setPolicyCmptType(krankenBVB.getQualifiedName());
+			krankenBVBArt.setSupertype(baseSubBVB.getProductCmptType());
+			krankenBVBArt.setAbstract(true);
+			
 
-			addAttribute(newProductCmp.newAttribute(), "Geld1", "Money", Modifier.PUBLIC);
-			addAttribute(newProductCmp.newAttribute(), "Zahl2", "Integer", Modifier.PUBLISHED);
-			addAttribute(newProductCmp.newAttribute(), "Text3", "Money", Modifier.PUBLIC);
-			newProductCmp
+			addAttribute(krankenBVBArt.newAttribute(), "Geld1", "Money", Modifier.PUBLIC);
+			addAttribute(krankenBVBArt.newAttribute(), "Zahl2", "Integer", Modifier.PUBLISHED);
+			addAttribute(krankenBVBArt.newAttribute(), "Text3", "Money", Modifier.PUBLIC);
+			krankenBVBArt
 					.setDescription("Produkt blabla\nblablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
 
 			newPolicyAndProductCmptType(ipsProject, "kranken.sub.KrankenSubBVB", "kranken.sub.KrankenSubBVBArt");

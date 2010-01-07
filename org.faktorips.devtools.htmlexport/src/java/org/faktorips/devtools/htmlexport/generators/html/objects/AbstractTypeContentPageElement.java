@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -25,6 +24,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
 public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<IType> {
 
@@ -61,6 +62,25 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
 		// Assozationen
 		addPageElements(createAssociationsTable());
+		
+		// Methoden
+		addPageElements(createMethodsTable());
+	}
+
+	protected PageElement createMethodsTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement("Methoden", TextType.HEADING_2));
+		
+		if (object.getMethods().length == 0) {
+			wrapper.addPageElements(new TextPageElement("keine Methoden vorhanden"));
+			return wrapper;
+		}
+		wrapper.addPageElements(getMethodsTablePageElement());
+		return wrapper;
+	}
+
+	protected MethodsTablePageElement getMethodsTablePageElement() {
+		return new MethodsTablePageElement(object);
 	}
 
 	@Override
@@ -136,6 +156,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		}
 	}
 
+	// TODO extrahieren in eigene Klasse
 	protected PageElement createAssociationsTable() {
 		IAssociation[] associations = object.getAssociations();
 
@@ -151,8 +172,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
 		List<String> headLine = createAssociationsHeadline();
 
-		TableRowPageElement headerRow = new TableRowPageElement(PageElementUtils.createTextPageElements(null,
-				TextType.WITHOUT_TYPE, headLine));
+		TableRowPageElement headerRow = new TableRowPageElement(PageElementUtils.createTextPageElements(headLine,
+				null, TextType.WITHOUT_TYPE));
 
 		table.addPageElements(headerRow);
 
@@ -235,48 +256,14 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 			return wrapper;
 		}
 
-		TablePageElement table = new TablePageElement();
-
-		List<String> headLine = createAttributesHeadline();
-
-		TableRowPageElement headerRow = new TableRowPageElement(PageElementUtils.createTextPageElements(null,
-				TextType.WITHOUT_TYPE, headLine));
-
-		table.addPageElements(headerRow);
-
-		for (int i = 0; i < attributes.length; i++) {
-			List<String> attributeLine = createAttributeValueLine(attributes[i]);
-			table.addPageElements(new TableRowPageElement(PageElementUtils.createTextPageElements(null,
-					TextType.WITHOUT_TYPE, attributeLine)));
-		}
+		TablePageElement table = getAttributesTablePageElement();
 
 		wrapper.addPageElements(table);
 
 		return wrapper;
 	}
 
-	protected List<String> createAttributeValueLine(IAttribute attribute) {
-		List<String> propertyValues = new ArrayList<String>();
-
-		propertyValues.add(attribute.getName());
-		propertyValues.add(attribute.getDatatype());
-		propertyValues.add(attribute.getModifier().getName());
-		propertyValues.add(attribute.getDefaultValue());
-		propertyValues.add(attribute.getDescription());
-
-		return propertyValues;
+	protected AttributesTablePageElement getAttributesTablePageElement() {
+		return new AttributesTablePageElement(object);
 	}
-
-	protected List<String> createAttributesHeadline() {
-		List<String> properties = new ArrayList<String>();
-
-		properties.add(IAttribute.PROPERTY_NAME);
-		properties.add(IAttribute.PROPERTY_DATATYPE);
-		properties.add(IAttribute.PROPERTY_MODIFIER);
-		properties.add(IAttribute.PROPERTY_DEFAULT_VALUE);
-		properties.add(IAttribute.PROPERTY_DESCRIPTION);
-
-		return properties;
-	}
-
 }

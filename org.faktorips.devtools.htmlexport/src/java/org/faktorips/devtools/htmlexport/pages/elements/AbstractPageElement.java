@@ -8,7 +8,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 public abstract class AbstractPageElement implements PageElement {
 
     public Set<Style> styles = new LinkedHashSet<Style>();
-
+    
     public AbstractPageElement() {
         super();
     }
@@ -34,5 +34,4 @@ public abstract class AbstractPageElement implements PageElement {
     }
     
     public abstract void acceptLayouter(ILayouter layouter);
-
 }

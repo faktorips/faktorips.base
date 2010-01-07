@@ -112,7 +112,7 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config) {
-        RootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config.getIpsProject());
+        RootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         projectOverviewHtml.build();
         FileHandler.writeFile(config, "standard/summary.html", getPageContent(config, projectOverviewHtml));
     }
