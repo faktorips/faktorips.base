@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -99,19 +100,22 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                     if (res == null || !res.isAccessible()) {
                         return DEFAULT_FLAG;
                     }
-                    if (isFlatLayout && !(element instanceof IIpsPackageFragmentRoot)) {
-                        /*
-                         * In flat layout every package fragment is represented in its own tree
-                         * item, thus package fragments of parent folders should not be decorated.
-                         * Only search the package fragments children (files) for problems, no
-                         * search is needed in the tree of sub folders. PackageFragmentRoots on the
-                         * other hand should always be decorated with the problem markers of their
-                         * package fragments.
-                         */
-                        return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
-                    } else {
-                        return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+
+                    /*
+                     * In flat layout every package fragment is represented in its own tree item,
+                     * thus package fragments of parent folders should not be decorated. Only search
+                     * the package fragments children (files) for problems, no search is needed in
+                     * the tree of sub folders. PackageFragmentRoots on the other hand should always
+                     * be decorated with the problem markers of their package fragments.
+                     */
+                    int depth = IResource.DEPTH_INFINITE;
+                    if (ipsElement instanceof IIpsPackageFragment) {
+                        IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                        if (packageFragment.isDefaultPackage() || isFlatLayout) {
+                            depth = IResource.DEPTH_ONE;
+                        }
                     }
+                    return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, depth);
                 }
             } else {
                 return DEFAULT_FLAG;
