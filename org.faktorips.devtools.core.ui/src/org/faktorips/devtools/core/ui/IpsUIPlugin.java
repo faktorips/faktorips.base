@@ -809,15 +809,35 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * for the lifetime of the plugin. If the image is not potentially needed by other classes
          * use the methods {@link #createImage(ImageDescriptor)} and
          * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
+         * <p/>
+         * If descriptor is null, the missing image is returned
          * 
          * @param descriptor
          * @return
          */
         public Image getImage(ImageDescriptor descriptor) {
+            return getImage(descriptor, true);
+        }
+
+        /**
+         * To get an image for an image descriptor from resource manager. If no such resource
+         * already exists the resource manager creates a new one. The image will remain allocated
+         * for the lifetime of the plugin. If the image is not potentially needed by other classes
+         * use the methods {@link #createImage(ImageDescriptor)} and
+         * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
+         * 
+         * @param descriptor
+         * @param returnMissingImage if true, the MissingImage is returned instead of null
+         * @return
+         */
+        public Image getImage(ImageDescriptor descriptor, boolean returnMissingImage) {
             if (descriptor != null) {
                 return (Image)getResourceManager().get(descriptor);
             }
-            return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+            if (returnMissingImage) {
+                return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+            }
+            return null;
         }
 
         /**

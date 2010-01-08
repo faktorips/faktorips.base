@@ -523,7 +523,8 @@ public class ParametersEditControl extends Composite {
             }
             try {
                 MessageList list = validate((IParameterBFE)element);
-                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
+                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
+                        false);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return null;

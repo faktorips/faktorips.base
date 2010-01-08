@@ -355,7 +355,8 @@ public class MessageCueController {
          * Returns the cue image based on the message list's severity.
          */
         private Image getCueImage() {
-            return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(messageList.getSeverity()));
+            return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(messageList.getSeverity()),
+                    false);
         }
     }
 

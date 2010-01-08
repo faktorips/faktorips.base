@@ -171,8 +171,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
      */
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(10, false)); // message image
-        layouter.addColumnData(new ColumnWeightData(100, true));
+        layouter.addColumnData(new ColumnPixelData(15, false)); // message image
+        layouter.addColumnData(new ColumnWeightData(95, true));
     }
 
     /**
@@ -242,7 +242,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             }
             try {
                 MessageList list = validate(element);
-                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
+                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
+                        false);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return null;

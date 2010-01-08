@@ -111,7 +111,8 @@ public abstract class ChangeParametersControl extends Composite implements IData
             }
             try {
                 MessageList list = validate((ParameterInfo)element);
-                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
+                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
+                        false);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return null;

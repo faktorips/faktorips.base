@@ -409,8 +409,8 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
             }
             MessageList messages = getMessagesFor((String)element);
             if (!messages.isEmpty()) {
-                return IpsUIPlugin.getImageHandling()
-                        .getImage(IpsProblemOverlayIcon.getOverlay(messages.getSeverity()));
+                return IpsUIPlugin.getImageHandling().getImage(
+                        IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false);
             }
             return null;
         }

@@ -166,7 +166,7 @@ public class ValidatedAttributesControl extends EditTableControl {
                 return null;
             }
             MessageList list = validate(element);
-            return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
+            return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()), false);
         }
 
         public String getColumnText(Object element, int columnIndex) {

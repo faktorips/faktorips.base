@@ -187,7 +187,8 @@ public class RuleFunctionsControl extends EditTableControl {
             }
             try {
                 MessageList list = validate(element);
-                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()));
+                return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
+                        false);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return null;
