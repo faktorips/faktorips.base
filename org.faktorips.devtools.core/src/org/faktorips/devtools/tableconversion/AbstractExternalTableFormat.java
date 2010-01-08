@@ -152,7 +152,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
             }
             // Manually handle GregorianCalendarAsDateDatatype
             if (datatype instanceof GregorianCalendarAsDateDatatype) {
-                return getConverter(Datatype.GREGORIAN_CALENDAR_DATE);
+                return getConverter(Datatype.GREGORIAN_CALENDAR);
             }
         }
         return defaultValueConverter;

@@ -16,6 +16,7 @@ package org.faktorips.datatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
@@ -94,9 +95,21 @@ public interface Datatype extends Comparable {
     public final static ValueDatatype STRING = new StringDatatype();
 
     /**
+     * Datatype representing <code>java.util.GregorianCalendar</code>. Note that in Faktor-IPS
+     * values of that datatype only contain the information about the date, not the time.
+     * <p>
+     * We have to solve the problem, that conceptually we have more like three datatypes for date,
+     * time and datetime, but in Java it is messed up with the gregorian calendar.
+     */
+    public final static ValueDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
+
+    /**
      * Datatype representing <code>java.util.GregorianCalendar</code> with only the date information
      * (year, month, date) used.
+     * 
+     * @see GregorianCalendarDatatype
      */
+    @Deprecated
     public final static ValueDatatype GREGORIAN_CALENDAR_DATE = new GregorianCalendarDatatype("Date", false);
 
     /**
