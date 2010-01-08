@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -38,9 +37,6 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
 
     @Override
     protected String generate() throws CoreException {
-        if (((ITableStructure)getIpsObject()).isModelEnumType()) {
-            return null;
-        }
         TableRowGenerator generator = new TableRowGenerator();
         generator.setImportContainer(getImportContainer());
         generator.setJavaSourceFileBuilder(this);

@@ -140,14 +140,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fRanges = null;
     }
 
-    @Override
-    protected String generate() throws CoreException {
-        if (getTableStructure().isModelEnumType()) {
-            return null;
-        }
-        return super.generate();
-    }
-
     /**
      * {@inheritDoc}
      */

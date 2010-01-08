@@ -47,8 +47,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
-import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
-import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -146,8 +144,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private ProductCmptImplClassBuilder productCmptImplClassBuilder;
 
-    private EnumClassesBuilder enumClassesBuilder;
-
     private EnumTypeBuilder enumTypeBuilder;
 
     private final String version;
@@ -157,9 +153,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
         version = "2.4.0";
-        // TODO AW: out commented code, please fix
+        // Following code sections sets the version to the stdbuilder-plugin/bundle version.
+        // Most of the time we hardwire the version of the generated code here, but from time to
+        // time
+        // we want to sync it with the plugin version, so the code remains here.
+        // 
         // Version versionObj =
-        // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org
+        // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle(
+        // ).getHeaders().get(org
         // .osgi.framework.Constants.BUNDLE_VERSION));
         // StringBuffer buf = new StringBuffer();
         // buf.append(versionObj.getMajor());
@@ -248,7 +249,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult(");
 
-        // TODO pk: findRow is not correct in general
+        // TODO pk: findRow is not correct in general. JO: Why?
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
                 code.append(", ");
@@ -385,14 +386,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
 
         IpsObjectType objectType = ipsSrcFile.getIpsObjectType();
-        if (IpsObjectType.TABLE_CONTENTS.equals(objectType)
-                && EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
-            return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-        }
-        if (IpsObjectType.TABLE_STRUCTURE.equals(objectType)
-                && EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
-            return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-        }
         if (BusinessFunctionIpsObjectType.getInstance().equals(objectType)) {
             return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
         }
@@ -452,11 +445,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
 
-        EnumTypeInterfaceBuilder enumTypeInterfaceBuilder = new EnumTypeInterfaceBuilder(this,
-                EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
-        enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID,
-                enumTypeInterfaceBuilder);
-
         BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this,
                 BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
         //
@@ -508,17 +496,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder,
-                    enumContentBuilder, enumXmlAdapterBuilder };
+                    formulaTestBuilder, tocFileBuilder, policyModelTypeBuilder, productModelTypeBuilder,
+                    businessFunctionBuilder, enumTypeBuilder, enumContentBuilder, enumXmlAdapterBuilder };
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    businessFunctionBuilder, enumTypeBuilder, enumContentBuilder };
+                    formulaTestBuilder, tocFileBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder };
         }
     }
 
