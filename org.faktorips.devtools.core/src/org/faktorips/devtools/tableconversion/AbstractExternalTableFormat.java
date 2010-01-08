@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -142,17 +141,10 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     }
 
     // TODO rg: cache converters in a map instead of for-loop
-    // add testcase for GregorianCalendarAsDateDatatype
     private IValueConverter getConverter(Datatype datatype) {
         for (IValueConverter converter : converters) {
-            IValueConverter valueConverter = converter;
-
-            if (valueConverter.getSupportedDatatype().equals(datatype)) {
-                return valueConverter;
-            }
-            // Manually handle GregorianCalendarAsDateDatatype
-            if (datatype instanceof GregorianCalendarAsDateDatatype) {
-                return getConverter(Datatype.GREGORIAN_CALENDAR);
+            if (converter.getSupportedDatatype().equals(datatype)) {
+                return converter;
             }
         }
         return defaultValueConverter;
@@ -236,6 +228,11 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         public void setTableFormat(ITableFormat tableFormat) {
             this.tableFormat = tableFormat;
         }
+
+        public ITableFormat getTableFormat() {
+            return tableFormat;
+        }
+
     }
 
 }
