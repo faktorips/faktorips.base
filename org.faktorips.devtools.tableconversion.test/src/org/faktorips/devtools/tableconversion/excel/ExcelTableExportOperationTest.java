@@ -45,6 +45,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         format.addValueConverter(new DecimalValueConverter());
         format.addValueConverter(new DoubleValueConverter());
         format.addValueConverter(new DateValueConverter());
+        format.addValueConverter(new GregorianCalendarValueConverter());
         format.addValueConverter(new IntegerValueConverter());
         format.addValueConverter(new LongValueConverter());
         format.addValueConverter(new MoneyValueConverter());

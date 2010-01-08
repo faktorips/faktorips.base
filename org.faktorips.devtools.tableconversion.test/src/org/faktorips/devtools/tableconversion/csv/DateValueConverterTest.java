@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,24 +15,21 @@ package org.faktorips.devtools.tableconversion.csv;
 
 import junit.framework.TestCase;
 
-import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.devtools.tableconversion.csv.DateValueConverter;
 import org.faktorips.util.message.MessageList;
 
 public class DateValueConverterTest extends TestCase {
     private MessageList ml;
     private DateValueConverter converter;
-    private DateDatatype datatype;
     private ITableFormat tableFormat;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ml = new MessageList();
         tableFormat = new CSVTableFormat();
         converter = new DateValueConverter();
-        converter.setTableFormat(tableFormat);
-        datatype = new DateDatatype();
+        tableFormat.addValueConverter(converter);
     }
 
     public void testGetIpsValueUsingCustomDateFormat() {
@@ -50,7 +47,7 @@ public class DateValueConverterTest extends TestCase {
         value = converter.getIpsValue("xx01.10.2009", ml);
         assertFalse(ml.isEmpty());
     }
-    
+
     public void testGetExternalDataValue() {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         Object extValue = converter.getExternalDataValue("2009-10-15", ml);
