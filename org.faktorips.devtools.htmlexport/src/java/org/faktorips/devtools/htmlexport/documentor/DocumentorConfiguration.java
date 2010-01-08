@@ -1,9 +1,8 @@
 package org.faktorips.devtools.htmlexport.documentor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -14,34 +13,25 @@ import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 public class DocumentorConfiguration {
-    private Set<IpsObjectType> linkedTypes = new HashSet<IpsObjectType>();
+
+	private IpsObjectType[] linkedIpsObjectTypes = new IpsObjectType[0];
     private String path;
     private List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
     private IIpsProject ipsProject;
     private ILayouter layouter;
     
-    public void setLinkPolicyClasses(boolean linkPolicyClasses) {
-        if (linkPolicyClasses) {
-            linkedTypes.add(IpsObjectType.POLICY_CMPT_TYPE);
-            return;
-        }
-        linkedTypes.remove(IpsObjectType.POLICY_CMPT_TYPE);
-    }
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
+	public void setLinkedIpsObjectClasses(IpsObjectType... ipsObjectTypes ){
+    	linkedIpsObjectTypes = ipsObjectTypes;
+    }
+    
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
-    }
-
-    public void setLinkProductClasses(boolean linkProductClasses) {
-        if (linkProductClasses) {
-            linkedTypes.add(IpsObjectType.PRODUCT_CMPT_TYPE);
-            return;
-        }
-        linkedTypes.remove(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
 
     public String getPath() {
@@ -52,9 +42,8 @@ public class DocumentorConfiguration {
         this.path = path;
     }
 
-    public IpsObjectType[] getLinkedTypes() {
-        IpsObjectType[] array = linkedTypes.toArray(new IpsObjectType[linkedTypes.size()]);
-        return array;
+    public IpsObjectType[] getLinkedIpsObjectTypes() {
+        return linkedIpsObjectTypes;
     }
 
     public List<IIpsObject> getLinkedObjects() {
@@ -74,7 +63,7 @@ public class DocumentorConfiguration {
     public List<IIpsSrcFile> getLinkedSources() {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
-            ipsProject.findAllIpsSrcFiles(result, getLinkedTypes());
+            ipsProject.findAllIpsSrcFiles(result, getLinkedIpsObjectTypes());
         } catch (CoreException e) {
             e.printStackTrace();
         }
@@ -96,6 +85,9 @@ public class DocumentorConfiguration {
     public void setLayouter(ILayouter layouter) {
         this.layouter = layouter;
     }
-    
+
+	public SimpleDateFormat getSimpleDateFormat() {
+		return dateFormat;
+	}
     
 }

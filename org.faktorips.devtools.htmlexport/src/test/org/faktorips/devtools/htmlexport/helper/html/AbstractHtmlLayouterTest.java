@@ -4,8 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 import junit.framework.TestCase;
 

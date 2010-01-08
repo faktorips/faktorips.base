@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.generators.html.objects;
+package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,15 +15,15 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 

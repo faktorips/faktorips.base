@@ -2,13 +2,13 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.util.List;
 
-import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
 /**
  * Test fuer das HTML-Layout

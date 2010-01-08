@@ -1,21 +1,22 @@
-package org.faktorips.devtools.htmlexport.generators.html.objects;
+package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
@@ -26,14 +27,17 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 
 	public static RootPageElement getInstance(IIpsObject object, DocumentorConfiguration config) {
 		if (object.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE)
-			return new PolicyCmptContentPageElement((PolicyCmptType) object, config);
+			return new PolicyCmptTypeContentPageElement((IPolicyCmptType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE)
-			return new ProductCmptContentPageElement((ProductCmptType) object, config);
+			return new ProductCmptTypeContentPageElement((IProductCmptType) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT)
+			return new ProductCmptContentPageElement((IProductCmpt) object, config);
 		throw new NotImplementedException();
 	}
 
 	protected AbstractObjectContentPageElement(T object, DocumentorConfiguration config) {
 		this.object = object;
+		this.config = config;
 		setTitle(object.getName());
 	}
 

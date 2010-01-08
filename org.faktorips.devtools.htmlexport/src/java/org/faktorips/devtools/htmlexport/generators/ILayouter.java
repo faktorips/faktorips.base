@@ -1,11 +1,11 @@
 package org.faktorips.devtools.htmlexport.generators;
 
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
 public interface ILayouter extends IGenerator {
     

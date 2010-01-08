@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.generators.html.objects;
+package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.List;
 
@@ -11,18 +11,18 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTablePageElement;
 
-public class PolicyCmptContentPageElement extends AbstractTypeContentPageElement<PolicyCmptType> {
+public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageElement<PolicyCmptType> {
 
-	PolicyCmptContentPageElement(PolicyCmptType object, DocumentorConfiguration config) {
+	PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 

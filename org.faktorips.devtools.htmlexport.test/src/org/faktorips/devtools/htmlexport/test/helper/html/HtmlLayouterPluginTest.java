@@ -7,8 +7,8 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	protected IIpsProject ipsProject;

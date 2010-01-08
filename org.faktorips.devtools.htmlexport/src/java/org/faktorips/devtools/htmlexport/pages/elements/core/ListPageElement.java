@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.pages.elements;
+package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public class ListPageElement extends AbstractCompositePageElement {
         super();
     }
 
-    public ListPageElement(List<PageElement> listElements) {
+    public ListPageElement(List<? extends PageElement> listElements) {
         super();
-        this.subElements = listElements;
+        this.subElements.addAll(listElements);
     }
 
     @Override

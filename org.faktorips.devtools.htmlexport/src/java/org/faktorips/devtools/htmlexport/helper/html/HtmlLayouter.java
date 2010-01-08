@@ -7,14 +7,14 @@ import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
-import org.faktorips.devtools.htmlexport.pages.elements.ICompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
 public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 

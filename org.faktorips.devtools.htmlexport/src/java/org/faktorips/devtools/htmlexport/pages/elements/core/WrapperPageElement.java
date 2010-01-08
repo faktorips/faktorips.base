@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.pages.elements;
+package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.Set;
 

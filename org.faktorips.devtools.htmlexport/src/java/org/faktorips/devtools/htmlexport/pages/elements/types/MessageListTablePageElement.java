@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

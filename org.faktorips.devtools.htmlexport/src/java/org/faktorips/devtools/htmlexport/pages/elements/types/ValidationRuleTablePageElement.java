@@ -6,9 +6,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 
+/**
+ * Tabelle zur Darstellung von Validierungsregeln
+ * @author dicker
+ *
+ */
 public class ValidationRuleTablePageElement extends AbstractSpecificTablePageElement {
 	protected IPolicyCmptType policyCmptType;
 	

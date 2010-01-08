@@ -10,8 +10,7 @@ public class StandardDocumentorScriptTest extends AbstractFipsDocTest {
     protected void setUp() throws Exception {
         super.setUp();
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkPolicyClasses(true);
-        documentorConfig.setLinkProductClasses(true);
+        documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
     }
 
     public void testWriteWithoutException()  {

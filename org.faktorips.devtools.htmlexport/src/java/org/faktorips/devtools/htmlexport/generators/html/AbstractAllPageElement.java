@@ -9,7 +9,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
-import org.faktorips.devtools.htmlexport.pages.elements.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
 
 public abstract class AbstractAllPageElement extends RootPageElement {
 

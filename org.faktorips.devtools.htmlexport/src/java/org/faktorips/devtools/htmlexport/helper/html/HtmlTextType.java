@@ -1,6 +1,6 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
 public enum HtmlTextType {
     H1, H2, H3, H4, H5, H6, DIV, SPAN;

@@ -2,11 +2,11 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.htmlexport.pages.elements.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
 public abstract class AbstractSpecificTablePageElement extends TablePageElement {
 

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.htmlexport.pages.elements.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 
 public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
 	protected IType type;
