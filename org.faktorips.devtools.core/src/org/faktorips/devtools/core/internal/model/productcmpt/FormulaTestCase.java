@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;

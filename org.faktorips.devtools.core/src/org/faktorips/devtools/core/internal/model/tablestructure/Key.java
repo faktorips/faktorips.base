@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -216,7 +215,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
      * {@inheritDoc}
      */
     public String getNameOfKeyItemAt(int index) {
-        return (String)items.get(index);
+        return items.get(index);
     }
 
 }
