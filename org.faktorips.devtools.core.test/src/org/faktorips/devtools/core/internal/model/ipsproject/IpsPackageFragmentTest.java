@@ -183,7 +183,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IFile file = srcFile.getCorrespondingFile();
         file.setContents(new ByteArrayInputStream("Bla".getBytes()), true, false, null);
 
-        ArrayList result = new ArrayList();
+        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>();
         pack.findIpsObjects(IpsObjectType.PRODUCT_CMPT, result);
         assertEquals(1, result.size());
         assertEquals(srcFile.getIpsObject(), result.get(0));
@@ -201,7 +201,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         
         IpsPackageFragment fragment = (IpsPackageFragment)obj1.getIpsPackageFragment();
 
-        ArrayList result = new ArrayList();
+        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>();
         fragment.findIpsObjects(result);
         
         assertTrue(result.contains(obj1));
@@ -229,7 +229,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsObject obj1 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "motorCoverage");
 
-        ArrayList result = new ArrayList();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
 
         // case sensitive
         pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
@@ -317,7 +317,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         Object[] nonIpsResources= pack.getNonIpsResources();
         assertEquals(2, nonIpsResources.length);
-        List list= Arrays.asList(nonIpsResources);
+        List<?> list= Arrays.asList(nonIpsResources);
         assertTrue(list.contains(nonIpsFile));
         assertTrue(list.contains(nonIpsFile2));
         // manually created folder is interpreted as IpsPackageFragment
@@ -371,7 +371,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         IIpsPackageFragment products2 = rootPackage.getIpsPackageFragment("products2");
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("products2");
 
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
@@ -441,7 +441,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
         // sorted: valid files and entries
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("products");
 
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
@@ -499,7 +499,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
         // sorted: valid files and entries
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("products");
 
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
@@ -530,7 +530,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
         list.add("hausrat");
         list.add("folder");
-        sortDef.setSegmentNames((String[])list.toArray(new String[list.size()]));
+        sortDef.setSegmentNames(list.toArray(new String[list.size()]));
         list.clear();
 
         hausrat.setSortDefinition(sortDef);
@@ -559,7 +559,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
         // sorted: valid files and entries
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("products");
 
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);

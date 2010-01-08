@@ -29,12 +29,12 @@ import org.osgi.framework.Bundle;
  */
 public class TestLogger implements ILog {
 
-    private List logEntries = new ArrayList();
+    private List<IStatus> logEntries = new ArrayList<IStatus>();
     
     /**
      * Returns the log entries added to this logger.
      */
-    public List getLogEntries(){
+    public List<IStatus> getLogEntries(){
         return logEntries;
     }
     

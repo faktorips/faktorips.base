@@ -41,23 +41,23 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
     public void testloadExtensions() {
 
-        Map attributes = new HashMap();
+        Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("value", "first");
         TestConfigurationElement discreteValue1 = new TestConfigurationElement("discreteValue", attributes, null, new IConfigurationElement[0]);
         
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("value", "second");
         TestConfigurationElement discreteValue2 = new TestConfigurationElement("discreteValue", attributes, null, new IConfigurationElement[0]);
         
         
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("value", "third");
         TestConfigurationElement discreteValue3 = new TestConfigurationElement("discreteValue", attributes, null, new IConfigurationElement[0]);
         
-        TestConfigurationElement discreteValuesEl = new TestConfigurationElement("discreteValues", new HashMap(), null, 
+        TestConfigurationElement discreteValuesEl = new TestConfigurationElement("discreteValues", new HashMap<String, String>(), null, 
                 new IConfigurationElement[]{discreteValue1, discreteValue2, discreteValue3});
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("name", "logLevel");
         attributes.put("type", "enum");
         attributes.put("label", "Log Level");
@@ -107,7 +107,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
     
     public void testloadExtensionsIntegerValue() {
 
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "debugLevel");
         attributes.put("type", "integer");
         attributes.put("label", "Debug Level");
@@ -141,7 +141,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
     public void testloadExtensionsBooleanValue() {
         
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
         attributes.put("label", "use Change  Listener");
@@ -166,7 +166,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
     public void testloadExtensionsExtensionPointValue() {
         
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "loggingConnectorRef");
         attributes.put("type", "extensionPoint");
         attributes.put("label", "Logging Connector Ref");
@@ -201,7 +201,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertNotNull(propertyDef.validateValue("anotherConnector"));
         assertNull(propertyDef.validateValue(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
         
-        List values = Arrays.asList(propertyDef.getDiscreteValues());
+        List<String> values = Arrays.asList(propertyDef.getDiscreteValues());
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".log4jLoggingConnector"));
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".ownLoggingConnector"));
@@ -210,12 +210,12 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
     
     public void testloadExtensionsWithClassSpecfied() {
         
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
-        HashMap executableExtensionMap = new HashMap();
+        HashMap<String, Object> executableExtensionMap = new HashMap<String, Object>();
 
-        HashMap properties = new HashMap();
+        HashMap<String, String> properties = new HashMap<String, String>();
         properties.put("name", "testProperty");
         properties.put("type", "boolean");
         properties.put("defaultValue", "true");
@@ -237,24 +237,24 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
     
     public void testValidateAvailability(){
 
-        Map attributes = new HashMap();
+        Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("value", "1.4");
         TestConfigurationElement jdk14 = new TestConfigurationElement("level", attributes, null, new IConfigurationElement[] {});
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("value", "1.5");
         TestConfigurationElement jdk15 = new TestConfigurationElement("level", attributes, null,
                 new IConfigurationElement[] {});
         
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("value", "1.6");
         TestConfigurationElement jdk16 = new TestConfigurationElement("level", attributes, null,
                 new IConfigurationElement[] {});
         
-        TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels", new HashMap(), null,
+        TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels", new HashMap<String, String>(), null,
                 new IConfigurationElement[] {jdk14, jdk15, jdk16});
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("name", "logLevel");
         attributes.put("type", "integer");
         attributes.put("label", "Log Level");

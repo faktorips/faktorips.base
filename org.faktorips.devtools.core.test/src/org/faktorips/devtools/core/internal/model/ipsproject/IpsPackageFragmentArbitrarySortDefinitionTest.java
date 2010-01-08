@@ -63,7 +63,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
         // create files
-        ArrayList list = new ArrayList(2);
+        ArrayList<String> list = new ArrayList<String>(2);
         list.add("products");
 
         createPackageOrderFile((IFolder)rootPackage.getCorrespondingResource(), list);

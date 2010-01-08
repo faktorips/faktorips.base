@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,21 +22,24 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An implementation of the {@link IExtensionPoint} interface for testing purposes. Not all of the methods are implemented but can be implemented
- * as needed. Those methods that are not implemented throw a RuntimeException.
+ * An implementation of the {@link IExtensionPoint} interface for testing purposes. Not all of the
+ * methods are implemented but can be implemented as needed. Those methods that are not implemented
+ * throw a RuntimeException.
  * 
  * @author Peter Erzberger
  */
+@SuppressWarnings("deprecation")
 public class TestExtensionPoint implements IExtensionPoint {
 
     private IExtension[] extensions;
     private String nameSpaceIdentifier;
     private String simpleIdentifier;
-    
+
     /**
-     * Create a new TestExtensionPoint with the provide {@link IExtension}s a nameSpaceIdentifier and a simpleIdentifier
+     * Create a new TestExtensionPoint with the provide {@link IExtension}s a nameSpaceIdentifier
+     * and a simpleIdentifier
      */
-    public TestExtensionPoint(IExtension[] extensions, String nameSpaceIdentifier, String simpleIdentifier){
+    public TestExtensionPoint(IExtension[] extensions, String nameSpaceIdentifier, String simpleIdentifier) {
         ArgumentCheck.notNull(extensions, this);
         ArgumentCheck.notNull(nameSpaceIdentifier, this);
         ArgumentCheck.notNull(simpleIdentifier, this);
@@ -44,7 +47,7 @@ public class TestExtensionPoint implements IExtensionPoint {
         this.nameSpaceIdentifier = nameSpaceIdentifier;
         this.simpleIdentifier = simpleIdentifier;
     }
-    
+
     /**
      * Throws RuntimeException
      */
@@ -56,21 +59,21 @@ public class TestExtensionPoint implements IExtensionPoint {
      * Throws RuntimeException
      */
     public IContributor getContributor() throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented yet.");       
+        throw new RuntimeException("Not implemented yet.");
     }
 
     /**
      * Throws RuntimeException
      */
     public IPluginDescriptor getDeclaringPluginDescriptor() throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented yet.");       
+        throw new RuntimeException("Not implemented yet.");
     }
 
     /**
      * Throws RuntimeException
      */
     public IExtension getExtension(String extensionId) throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented yet.");       
+        throw new RuntimeException("Not implemented yet.");
     }
 
     /**
@@ -105,7 +108,7 @@ public class TestExtensionPoint implements IExtensionPoint {
      * Throws RuntimeException
      */
     public String getSchemaReference() throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented yet.");    
+        throw new RuntimeException("Not implemented yet.");
     }
 
     /**

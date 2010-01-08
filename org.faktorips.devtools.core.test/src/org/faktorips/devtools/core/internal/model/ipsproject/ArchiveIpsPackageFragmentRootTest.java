@@ -141,22 +141,22 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsSourceFiles() throws CoreException{
-        List result = new ArrayList();
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);
         assertEquals(2, result.size());
-        List qualifiedNameTypes = new ArrayList();
-        for (Iterator it = result.iterator(); it.hasNext();) {
-            IIpsSrcFile pcTypeSrcFile = (IIpsSrcFile)it.next();
+        List<QualifiedNameType> qualifiedNameTypes = new ArrayList<QualifiedNameType>();
+        for (Iterator<IIpsSrcFile> it = result.iterator(); it.hasNext();) {
+            IIpsSrcFile pcTypeSrcFile = it.next();
             qualifiedNameTypes.add(pcTypeSrcFile.getQualifiedNameType());
         }
         assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
         
-        result = new ArrayList();
+        result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE, null, result);
         assertEquals(1, result.size());
 
-        result = new ArrayList();
+        result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT, null, result);
         assertEquals(1, result.size());
 

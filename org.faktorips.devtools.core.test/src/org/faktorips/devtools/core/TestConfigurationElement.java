@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,32 +26,32 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A test implementation of the IConfigurationElement to test extension point loading code without interfering with definitions
- * in plugin descriptors within the workspace. Not all methods of this class are implemented. Not implemented methods throw a
- * RuntimeException.
- * methods 
+ * A test implementation of the IConfigurationElement to test extension point loading code without
+ * interfering with definitions in plugin descriptors within the workspace. Not all methods of this
+ * class are implemented. Not implemented methods throw a RuntimeException. methods
  * 
  * @author Peter Erzberger
  */
 public class TestConfigurationElement implements IConfigurationElement {
 
     private String name;
-    private Map attributes;
+    private Map<String, String> attributes;
     private String value;
-    private Map executableExtensionMap = new HashMap();
+    private Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
     private IConfigurationElement[] children;
 
-    
-    public TestConfigurationElement(String name, Map attributes, String value, IConfigurationElement[] children){
-        this(name, attributes, value, children, new HashMap());
+    public TestConfigurationElement(String name, Map<String, String> attributes, String value,
+            IConfigurationElement[] children) {
+        this(name, attributes, value, children, new HashMap<String, Object>());
     }
-    
+
     /**
      * @param name
      * @param attributes
      * @param children
      */
-    public TestConfigurationElement(String name, Map attributes, String value, IConfigurationElement[] children, Map executableExtensionMap) {
+    public TestConfigurationElement(String name, Map<String, String> attributes, String value,
+            IConfigurationElement[] children, Map<String, Object> executableExtensionMap) {
         ArgumentCheck.notNull(name, this);
         ArgumentCheck.notNull(attributes, this);
         ArgumentCheck.notNull(children, this);
@@ -67,7 +67,7 @@ public class TestConfigurationElement implements IConfigurationElement {
     }
 
     public String getAttribute(String name) throws InvalidRegistryObjectException {
-        return (String)attributes.get(name);
+        return attributes.get(name);
     }
 
     public String getAttributeAsIs(String name) throws InvalidRegistryObjectException {
@@ -75,8 +75,8 @@ public class TestConfigurationElement implements IConfigurationElement {
     }
 
     public String[] getAttributeNames() throws InvalidRegistryObjectException {
-        Set nameSet = attributes.keySet();
-        return (String[])attributes.keySet().toArray(new String[nameSet.size()]);
+        Set<String> nameSet = attributes.keySet();
+        return attributes.keySet().toArray(new String[nameSet.size()]);
     }
 
     public IConfigurationElement[] getChildren() throws InvalidRegistryObjectException {
@@ -84,13 +84,13 @@ public class TestConfigurationElement implements IConfigurationElement {
     }
 
     public IConfigurationElement[] getChildren(String name) throws InvalidRegistryObjectException {
-        ArrayList result = new ArrayList();
+        ArrayList<IConfigurationElement> result = new ArrayList<IConfigurationElement>();
         for (int i = 0; i < children.length; i++) {
-            if(children[i].getName().equals(name)){
+            if (children[i].getName().equals(name)) {
                 result.add(children[i]);
             }
         }
-        return (IConfigurationElement[])result.toArray(new IConfigurationElement[result.size()]);
+        return result.toArray(new IConfigurationElement[result.size()]);
     }
 
     public IContributor getContributor() throws InvalidRegistryObjectException {

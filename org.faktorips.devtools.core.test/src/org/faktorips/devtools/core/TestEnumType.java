@@ -22,10 +22,10 @@ public class TestEnumType {
 	public final static TestEnumType SECONDVALUE = new TestEnumType("2", "second");
 	public final static TestEnumType THIRDVALUE = new TestEnumType("3", "third");
 	
-	private final static List allValues;
+	private final static List<TestEnumType> allValues;
 	
 	static{
-		allValues = new ArrayList();
+		allValues = new ArrayList<TestEnumType>();
 		allValues.add(FIRSTVALUE);
 		allValues.add(SECONDVALUE);
 		allValues.add(THIRDVALUE);
@@ -41,7 +41,7 @@ public class TestEnumType {
 	}
 
 	public final static TestEnumType[] getAllValues(){
-		return (TestEnumType[])allValues.toArray(new TestEnumType[allValues.size()]);
+		return allValues.toArray(new TestEnumType[allValues.size()]);
 	}
 	
 	public boolean isValueOf(String id){

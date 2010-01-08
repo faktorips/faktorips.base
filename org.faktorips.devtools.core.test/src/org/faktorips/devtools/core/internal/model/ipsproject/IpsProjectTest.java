@@ -348,7 +348,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(ipsProject, baseProject.getReferencingProjects(false)[0]);
 
         assertEquals(2, baseProject.getReferencingProjects(true).length);
-        List list = Arrays.asList(baseProject.getReferencingProjects(true));
+        List<IIpsProject> list = Arrays.asList(baseProject.getReferencingProjects(true));
         assertTrue(list.contains(ipsProject));
         assertTrue(list.contains(ipsProject2));
     }
@@ -898,6 +898,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c a.Unknown"));
     }
 
+    @SuppressWarnings("deprecation")
+    // ok to supredd, as the method under test is deprecated
     public void testFindIpsObjects() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
         root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
@@ -1355,7 +1357,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] generations = ipsProject.findReferencingProductCmptGenerations(tobereferenced
                 .getQualifiedNameType());
 
-        List resultList = Arrays.asList((IProductCmptGeneration[])generations);
+        List<IProductCmptGeneration> resultList = Arrays.asList((IProductCmptGeneration[])generations);
         assertEquals(2, resultList.size());
         assertTrue(resultList.contains(gen1));
         assertTrue(resultList.contains(gen2));
@@ -1383,12 +1385,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IPolicyCmptType[] results = ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
         assertEquals(4, results.length);
 
-        HashSet resultSet = new HashSet();
+        HashSet<IPolicyCmptType> resultSet = new HashSet<IPolicyCmptType>();
         resultSet.add(results[0]);
         resultSet.add(results[1]);
         resultSet.add(results[2]);
         resultSet.add(results[3]);
-        HashSet expectedSet = new HashSet();
+        HashSet<IPolicyCmptType> expectedSet = new HashSet<IPolicyCmptType>();
         expectedSet.add(pcType);
         expectedSet.add(pcType2);
         expectedSet.add(pcType3);
@@ -1404,11 +1406,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         results = ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
         assertEquals(3, results.length);
 
-        resultSet = new HashSet();
+        resultSet = new HashSet<IPolicyCmptType>();
         resultSet.add(results[0]);
         resultSet.add(results[1]);
         resultSet.add(results[2]);
-        expectedSet = new HashSet();
+        expectedSet = new HashSet<IPolicyCmptType>();
         expectedSet.add(pcType);
         expectedSet.add(pcType2);
         expectedSet.add(pcType3);
@@ -1489,7 +1491,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.getJavaProject().setRawClasspath(result, null);
 
         Object[] nonIpsResources = ipsProject.getNonIpsResources();
-        List list = Arrays.asList(nonIpsResources);
+        List<?> list = Arrays.asList(nonIpsResources);
         assertTrue(list.contains(nonIpsRoot));
         assertTrue(list.contains(nonIpsFile));
         // /bin, /src and /extension are outputfolders or classpath entries and thus filtered out
@@ -1642,10 +1644,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // etablish the dependency so that projectB is dependent from projectA
         IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();
-        ArrayList projectBIpsObjectPathEntries = new ArrayList(Arrays.asList(projectBIpsObjectPath.getEntries()));
+        ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<IIpsObjectPathEntry>(Arrays
+                .asList(projectBIpsObjectPath.getEntries()));
         projectBIpsObjectPathEntries.add(new IpsProjectRefEntry(projectBIpsObjectPath, ipsProject));
 
-        projectBIpsObjectPath.setEntries((IIpsObjectPathEntry[])projectBIpsObjectPathEntries
+        projectBIpsObjectPath.setEntries(projectBIpsObjectPathEntries
                 .toArray(new IIpsObjectPathEntry[projectBIpsObjectPathEntries.size()]));
         projectBIpsObjectPath.setOutputDefinedPerSrcFolder(false);
         projectBIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
@@ -1684,8 +1687,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
 
-        List result = new ArrayList();
-        ipsProject.findAllIpsObjects(result);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
 
@@ -1705,8 +1708,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject.setIpsObjectPath(path);
 
-        result = new ArrayList();
-        ipsProject.findAllIpsObjects(result);
+        result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
         ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
@@ -1735,8 +1738,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject13);
         ipsProject12.setIpsObjectPath(path);
 
-        result = new ArrayList();
-        ipsProject.findAllIpsObjects(result);
+        result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
 
         ml = ipsProject10.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
@@ -1807,6 +1810,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }
 
+    @SuppressWarnings("deprecation")
     public void testFindAllIpsObjects() throws CoreException {
         IIpsObject a = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, "a");
         IIpsObject b = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT, "b");
@@ -1817,7 +1821,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObject g = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE_TYPE, "g");
         IIpsObject h = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT_TYPE, "h");
 
-        List result = new ArrayList(7);
+        List<IIpsObject> result = new ArrayList<IIpsObject>(7);
         ipsProject.findAllIpsObjects(result);
 
         assertTrue(result.contains(a));
@@ -1838,7 +1842,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableContents contents2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "Gender");
         contents2.setTableStructure(structure.getQualifiedName());
 
-        ArrayList tableContents = new ArrayList();
+        ArrayList<ITableContents> tableContents = new ArrayList<ITableContents>();
         ipsProject.findTableContents(structure, tableContents);
         assertEquals(2, tableContents.size());
         assertTrue(tableContents.contains(contents1));
@@ -1922,7 +1926,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertTrue(containsIpsSrcFile(result, productCmptType0));
 
-        List resultList = new ArrayList();
+        List<IIpsSrcFile> resultList = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(resultList);
         assertEquals(9, resultList.size());
 

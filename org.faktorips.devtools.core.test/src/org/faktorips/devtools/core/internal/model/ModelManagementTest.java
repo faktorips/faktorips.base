@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,14 +24,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 
 /**
- * Test für threading issues (we hopefully once HAD).
+ * Test fï¿½r threading issues (we hopefully once HAD).
  * 
  * @author Jan Ortmann
  */
@@ -39,6 +38,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType type;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
@@ -52,11 +52,11 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
                 type.newPolicyCmptTypeAssociation();
                 type.getIpsSrcFile().save(true, null);
             }
-            
+
         };
         ResourcesPlugin.getWorkspace().run(action, null);
     }
-    
+
     public void test1() {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test1() =====");
@@ -66,7 +66,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             System.out.println("===== Finished test1() =====");
         }
     }
-    
+
     public void test2() {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test2() =====");
@@ -76,7 +76,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             System.out.println("===== Finished test2() =====");
         }
     }
-    
+
     public void testDirectChangesToTheCorrespondingFile() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start testDirectChangesToTheCorrespondingFile() =====");
@@ -95,7 +95,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             System.out.println("===== Finished testDirectChangesToTheCorrespondingFile() =====");
         }
     }
-    
+
     public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");
@@ -103,9 +103,9 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         IIpsSrcFile ipsFile = type.getIpsSrcFile();
         type.setDescription("Blabla");
         ipsFile.save(true, null);
-        Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a 
-        // different timestamp, otherwise refreshLocal won't refresh! 
-        // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!  
+        Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a
+        // different timestamp, otherwise refreshLocal won't refresh!
+        // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!
         String encoding = type.getIpsProject().getXmlFileCharset();
         IFile file = type.getIpsSrcFile().getCorrespondingFile();
         String content = StringUtil.readFromInputStream(file.getContents(), encoding);
@@ -115,15 +115,15 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         writer.write(content);
         writer.flush();
         writer.close();
-        
+
         // before the refresh, object shouldn't be changed
         type = (IPolicyCmptType)ipsFile.getIpsObject();
         assertEquals("Blabla", type.getDescription());
-        
+
         // now refresh the file from disk
         file.refreshLocal(IResource.DEPTH_INFINITE, null);
         System.out.println("ModStamp=" + file.getModificationStamp());
-        
+
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
         assertEquals("NewBlabla", type.getDescription());
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {

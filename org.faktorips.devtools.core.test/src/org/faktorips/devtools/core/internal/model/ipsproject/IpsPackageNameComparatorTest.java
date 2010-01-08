@@ -127,7 +127,7 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
 
-        ArrayList orderList = new ArrayList(2);
+        ArrayList<String> orderList = new ArrayList<String>(2);
 
         orderList.add("b"); //$NON-NLS-1$
         orderList.add("c"); //$NON-NLS-1$
@@ -176,7 +176,7 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
 
         comparator = new IpsPackageNameComparator(false);
 
-        ArrayList orderList = new ArrayList(2);
+        ArrayList<String> orderList = new ArrayList<String>(2);
 
         orderList.add("d"); //$NON-NLS-1$
         orderList.add("a"); //$NON-NLS-1$

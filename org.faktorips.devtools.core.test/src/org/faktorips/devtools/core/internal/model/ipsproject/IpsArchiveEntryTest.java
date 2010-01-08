@@ -79,15 +79,15 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IIpsSrcFile motorPolFile = motorPol.getIpsSrcFile();
         IIpsSrcFile motorColFile = motorCol.getIpsSrcFile();
         
-        List result = new ArrayList();
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         
-        Set visitedEntries = new HashSet();
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(motorPolFile));
         assertTrue(result.contains(motorColFile));
         
-        result = new ArrayList();
+        result = new ArrayList<IIpsSrcFile>();
         visitedEntries.clear();
         entry.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result, visitedEntries);
         assertEquals(0, result.size());
@@ -102,8 +102,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     
     public void testFindIpsSrcFiles() throws Exception{
         
-        ArrayList result = new ArrayList();
-        Set visitedEntries = new HashSet();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
 
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
@@ -115,15 +115,15 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     public void testFindIpsSrcFilesWithPackageFragment() throws Exception{
         
-        ArrayList result = new ArrayList();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack1", result, new HashSet());
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack1", result, new HashSet<IIpsObjectPathEntry>());
 
         assertEquals(1, result.size());
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         assertTrue(result.contains(motorPolicy.getIpsSrcFile()));
 
-        result = new ArrayList();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack2", result, new HashSet());
+        result = new ArrayList<IIpsSrcFile>();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack2", result, new HashSet<IIpsObjectPathEntry>());
         
         assertEquals(1, result.size());
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);

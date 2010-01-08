@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -403,7 +404,8 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         // relevant!
 
         // test property type = null
-        Map propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(null, ipsProject);
+        Map<String, IProdDefProperty> propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(null,
+                ipsProject);
         assertEquals(8, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
@@ -759,7 +761,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IProductCmptType aProductType = a.findProductCmptType(ipsProject);
         IProductCmptType bProductType = b.findProductCmptType(ipsProject);
 
-        List dependencies = Arrays.asList(aProductType.dependsOn());
+        List<IDependency> dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(1, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
@@ -882,12 +884,12 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
 
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
-        ArrayList newbPathEntries = new ArrayList();
+        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
         for (int i = 0; i < bPathEntries.length; i++) {
             newbPathEntries.add(bPathEntries[i]);
         }
-        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries
+        bPath.setEntries(newbPathEntries
                 .toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);
 

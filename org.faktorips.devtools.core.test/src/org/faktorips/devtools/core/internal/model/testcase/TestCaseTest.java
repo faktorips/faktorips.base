@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -290,13 +291,13 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     }
 
     public void testDependsOn() throws Exception {
-        List dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
+        List<IDependency> dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(1, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createInstanceOfDependency(testCase
                 .getQualifiedNameType(), testCaseType.getQualifiedNameType())));
 
         ITestCase testCase2 = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseType2");
-        List dependsOnList2 = CollectionUtil.toArrayList(testCase2.dependsOn());
+        List<IDependency> dependsOnList2 = CollectionUtil.toArrayList(testCase2.dependsOn());
         assertEquals(0, dependsOnList2.size());
 
         IProductCmpt prodCmpt1 = newProductCmpt(root, "ProductCmpt1");
@@ -434,7 +435,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
 
         IValidationRule[] testRuleParameters = testCase.getTestRuleCandidates(ipsProject);
         assertEquals(3, testRuleParameters.length);
-        List testRuleParametersList = Arrays.asList(testRuleParameters);
+        List<IValidationRule> testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(ruleA));
         assertTrue(testRuleParametersList.contains(ruleB));
         assertTrue(testRuleParametersList.contains(ruleC));
@@ -591,7 +592,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testPolicyCmpt.setName("root2_child2");
 
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
-        List allTestPolicyCmptNames = new ArrayList();
+        List<String> allTestPolicyCmptNames = new ArrayList<String>();
         for (int i = 0; i < allTestPolicyCmpt.length; i++) {
             allTestPolicyCmptNames.add(allTestPolicyCmpt[i].getName());
         }
@@ -646,14 +647,14 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         IProductCmpt prodCmpt1 = newProductCmpt(root, "ProductCmpt1");
         IProductCmpt prodCmpt2 = newProductCmpt(root, "ProductCmpt2");
 
-        List referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
+        List<String> referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
         assertEquals(0, referencedProductCmpts.size());
 
         ITestPolicyCmpt testPolicyCmpt1 = testCase.newTestPolicyCmpt();
         testPolicyCmpt1.setProductCmpt(prodCmpt1.getQualifiedName());
         referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
         assertEquals(1, referencedProductCmpts.size());
-        assertEquals(prodCmpt1.getQualifiedName(), ((String)referencedProductCmpts.get(0)));
+        assertEquals(prodCmpt1.getQualifiedName(), referencedProductCmpts.get(0));
 
         ITestPolicyCmptLink testAssociation1 = testPolicyCmpt1.newTestPolicyCmptLink();
         ITestPolicyCmpt testPolicyCmpt2 = testAssociation1.newTargetTestPolicyCmptChild();

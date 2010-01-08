@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -80,7 +81,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsObjectsByIpsObjectType() throws CoreException {
-        List result = new ArrayList();
+        List<IIpsObject> result = new ArrayList<IIpsObject>();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
         IIpsObject obj = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "mycompany.motor.Policy");
@@ -90,12 +91,12 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsObjects() throws CoreException {
-        List result = new ArrayList();
+        List<IIpsObject> result = new ArrayList<IIpsObject>();
         pack.findIpsObjects(result);
         assertEquals(2, result.size());
-        List qnts = new ArrayList();
-        for (Iterator it = result.iterator(); it.hasNext();) {
-            IIpsObject ipsObject = (IIpsObject)it.next();
+        List<QualifiedNameType> qnts = new ArrayList<QualifiedNameType>();
+        for (Iterator<IIpsObject> it = result.iterator(); it.hasNext();) {
+            IIpsObject ipsObject = it.next();
             qnts.add(ipsObject.getQualifiedNameType());
         }
         
@@ -183,7 +184,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
         IIpsPackageFragment service = rootPackage.getIpsPackageFragment("products.kranken.leistungsarten");
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("products");
 
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);

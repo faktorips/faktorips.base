@@ -28,11 +28,6 @@ import org.w3c.dom.NamedNodeMap;
 
 public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
-    private final static String ICON = "EnumAttribute.gif";
-    private final static String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
-    private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif";
-    private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
-
     private IEnumType subEnumType;
     private IEnumAttribute inheritedEnumAttributeId;
     private IEnumAttribute inheritedEnumAttributeName;

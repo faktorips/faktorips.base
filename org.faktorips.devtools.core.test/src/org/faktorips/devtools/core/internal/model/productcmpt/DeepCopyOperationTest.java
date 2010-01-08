@@ -68,19 +68,19 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
         IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
 
-        Hashtable handles = new Hashtable();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
         for (int i = 0; i < toCopy.length; i++) {
         	IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
         	handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
-        	assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
+        	assertFalse(handles.get(toCopy[i]).exists());
 		}
         
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
         dco.run(null);
         
         for (int i = 0; i < toCopy.length; i++) {
-        	IIpsSrcFile src = (IIpsSrcFile)handles.get(toCopy[i]);
+        	IIpsSrcFile src = handles.get(toCopy[i]);
         	assertTrue(src.exists());
 
         	// we have a race condition, because files are written async. So loop for some times...
@@ -143,18 +143,18 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertEquals(3, copyCount);
         assertEquals(2, refCount);
         
-    	Hashtable handles = new Hashtable();
+    	Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
         for (int i = 0; i < toCopy.length; i++) {
         	IProductCmpt cmpt = toCopy[i].getProductCmpt();
         	handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
-        	assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
+        	assertFalse(handles.get(toCopy[i]).exists());
 		}
         
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
         dco.run(null);
         for (int i = 0; i < toCopy.length; i++) {
-        	IIpsSrcFile src = (IIpsSrcFile)handles.get(toCopy[i]);
+        	IIpsSrcFile src = handles.get(toCopy[i]);
         	assertTrue(src.exists());
 
         	// we have a race condition, because files are written async. So loop for some times...
@@ -165,7 +165,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         	assertFalse(src.isDirty());
 		}
         
-        IProductCmpt base = (IProductCmpt)((IIpsSrcFile)handles.get(toCopy[toCopy.length-1])).getIpsObject();
+        IProductCmpt base = (IProductCmpt)handles.get(toCopy[toCopy.length-1]).getIpsObject();
         IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerationsOrderedByValidDate()[0];
         IProductCmptLink[] rels = gen.getLinks("TplCoverageType");
         assertEquals(1, rels.length);
@@ -181,12 +181,12 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmptTreeStructure structure = product.getStructure(ipsProject);
         IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
         
-        Hashtable handles = new Hashtable();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
         for (int i = 0; i < toCopy.length; i++) {
             IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
             handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(), ipsObject.getIpsObjectType()));
-            assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
+            assertFalse(handles.get(toCopy[i]).exists());
         }
         
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
@@ -195,7 +195,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         dco.run(null);
         
         for (int i = 0; i < toCopy.length; i++) {
-            IIpsSrcFile src = (IIpsSrcFile)handles.get(toCopy[i]);
+            IIpsSrcFile src = handles.get(toCopy[i]);
             assertTrue(src.exists());
 
             // we have a race condition, because files are written async. So loop for some times...

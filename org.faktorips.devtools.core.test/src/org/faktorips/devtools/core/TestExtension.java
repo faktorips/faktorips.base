@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,11 +22,13 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An implementation of the {@link IExtension} interface for testing purposes. Not all of the methods are implemented but can be implemented
- * as needed. Those methods that are not implemented throw a RuntimeException.
+ * An implementation of the {@link IExtension} interface for testing purposes. Not all of the
+ * methods are implemented but can be implemented as needed. Those methods that are not implemented
+ * throw a RuntimeException.
  * 
  * @author Peter Erzberger
  */
+@SuppressWarnings("deprecation")
 public class TestExtension implements IExtension {
 
     private IConfigurationElement[] elements;
@@ -34,14 +36,15 @@ public class TestExtension implements IExtension {
     private String namespaceIdentifier = "";
 
     /**
-     * Creates a TestExtension with the specified IConfigurationElement and simpleIdentifier. 
+     * Creates a TestExtension with the specified IConfigurationElement and simpleIdentifier.
      */
     public TestExtension(IConfigurationElement[] elements, String simpleIdentifier) {
         this(elements, "", simpleIdentifier);
     }
 
     /**
-     * Creates a TestExtension with the specified IConfigurationElement namespaceIdentifier and simpleIdentifier. 
+     * Creates a TestExtension with the specified IConfigurationElement namespaceIdentifier and
+     * simpleIdentifier.
      */
     public TestExtension(IConfigurationElement[] elements, String namespaceIdentifier, String simpleIdentifier) {
         ArgumentCheck.notNull(elements, this);
@@ -113,9 +116,9 @@ public class TestExtension implements IExtension {
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         StringBuffer buf = new StringBuffer();
         buf.append(namespaceIdentifier);
-        if(!StringUtils.isEmpty(namespaceIdentifier)){
+        if (!StringUtils.isEmpty(namespaceIdentifier)) {
             buf.append('.');
-            
+
         }
         buf.append(simpleIdentifier);
         return buf.toString();

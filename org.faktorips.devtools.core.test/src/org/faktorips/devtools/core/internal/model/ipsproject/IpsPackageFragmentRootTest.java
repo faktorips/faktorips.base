@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,9 +33,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-
 
 /**
  *
@@ -45,6 +42,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IpsPackageFragmentRoot ipsRoot;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
@@ -56,7 +54,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertNotNull(entry);
     }
 
-    public void testGetArtefactDestination() throws CoreException{
+    public void testGetArtefactDestination() throws CoreException {
         IFolder destination = ipsRoot.getArtefactDestination(false);
         assertNotNull(destination);
         IIpsSrcFolderEntry srcEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
@@ -89,8 +87,9 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(folderB, children[2]);
         assertEquals(folderC, children[3]);
         assertEquals(folderD, children[4]);
-        
-        // test if folders that aren't packages because they don't adhere to the naming convention are igored
+
+        // test if folders that aren't packages because they don't adhere to the naming convention
+        // are igored
         IFolder invalidPack = ((IFolder)ipsRoot.getCorrespondingResource()).getFolder("invalid package");
         invalidPack.create(true, false, null);
         children = ipsRoot.getIpsPackageFragments();
@@ -129,10 +128,10 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.exists());
         IIpsPackageFragmentRoot root2 = ipsProject.getIpsPackageFragmentRoot("unknown");
         assertFalse(root2.exists());
-        IFolder corrFolder2 = (IFolder)root2.getCorrespondingResource(); 
+        IFolder corrFolder2 = (IFolder)root2.getCorrespondingResource();
         corrFolder2.create(true, true, null);
         assertFalse(root2.exists());
-        
+
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newSourceFolderEntry(corrFolder2);
         ipsProject.setIpsObjectPath(path);
@@ -155,8 +154,8 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile file1 = ob1.getIpsSrcFile();
         IIpsSrcFile file2 = ob2.getIpsSrcFile();
-        
-        ArrayList result = new ArrayList();
+
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "MotorP", false, result);
         assertEquals(1, result.size());
         assertTrue(result.contains(file1));
@@ -196,23 +195,23 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testGetIpsDefaultPackageFragment() {
-    	IIpsPackageFragment def = this.ipsRoot.getDefaultIpsPackageFragment();
-    	assertEquals(def.getName(), "");
+        IIpsPackageFragment def = ipsRoot.getDefaultIpsPackageFragment();
+        assertEquals(def.getName(), "");
     }
 
-    public void testGetNonIpsResources() throws CoreException{
-        IIpsPackageFragment fragment= ipsRoot.createPackageFragment("fragment", true, null);
-        IIpsPackageFragment subFragment= ipsRoot.createPackageFragment("fragment.sub", true, null);
+    public void testGetNonIpsResources() throws CoreException {
+        IIpsPackageFragment fragment = ipsRoot.createPackageFragment("fragment", true, null);
+        IIpsPackageFragment subFragment = ipsRoot.createPackageFragment("fragment.sub", true, null);
 
-        IFolder rootHandle= (IFolder) ipsRoot.getCorrespondingResource();
-        IFile nonIpsFile= rootHandle.getFile("nonIpsFile");
+        IFolder rootHandle = (IFolder)ipsRoot.getCorrespondingResource();
+        IFile nonIpsFile = rootHandle.getFile("nonIpsFile");
         nonIpsFile.create(null, true, null);
-        IFile nonIpsFile2= rootHandle.getFile("nonIpsFile2");
+        IFile nonIpsFile2 = rootHandle.getFile("nonIpsFile2");
         nonIpsFile2.create(null, true, null);
 
-        Object[] nonIpsResources= ipsRoot.getNonIpsResources();
+        Object[] nonIpsResources = ipsRoot.getNonIpsResources();
         assertEquals(2, nonIpsResources.length);
-        List list= Arrays.asList(nonIpsResources);
+        List<?> list = Arrays.asList(nonIpsResources);
         assertTrue(list.contains(nonIpsFile));
         assertTrue(list.contains(nonIpsFile2));
         assertFalse(list.contains(fragment));
@@ -235,20 +234,20 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         ipsRoot.createPackageFragment("unfall", true, null);
         ipsRoot.createPackageFragment("haftpflicht", true, null);
 
-        ArrayList strings = new ArrayList();
+        ArrayList<String> strings = new ArrayList<String>();
         strings.add("kranken");
         strings.add("unfall");
         strings.add("hausrat");
         strings.add("haftpflicht");
 
-        createPackageOrderFile((IFolder) ipsRoot.getCorrespondingResource(), strings);
+        createPackageOrderFile((IFolder)ipsRoot.getCorrespondingResource(), strings);
 
         strings.clear();
         strings.add("vertragsarten");
         strings.add("gruppenarten");
         strings.add("leistungsarten");
 
-        createPackageOrderFile((IFolder) kranken.getCorrespondingResource(), strings);
+        createPackageOrderFile((IFolder)kranken.getCorrespondingResource(), strings);
 
         // sorted: valid files and entries
         children = ipsRoot.getSortedIpsPackageFragments();

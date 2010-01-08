@@ -258,7 +258,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         formula.setFormulaSignature(method.getFormulaName());
         formula.setExpression("param1 + param2 + policyInputX.attributeInput1");
         
-        List identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
+        List<String> identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
         assertEquals(3, identifierInFormula.size());
         assertTrue(identifierInFormula.contains("param1"));
         assertTrue(identifierInFormula.contains("param2"));

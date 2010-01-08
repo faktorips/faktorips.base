@@ -20,8 +20,10 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -57,8 +59,8 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
         
-        ArrayList result = new ArrayList();
-        Set visitedEntries = new HashSet();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
         
         assertTrue(result.contains(a.getIpsSrcFile()));
@@ -87,16 +89,16 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
 
-        ArrayList result = new ArrayList();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet());
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet<IIpsObjectPathEntry>());
         
         assertEquals(2, result.size());
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
         assertFalse(result.contains(c.getIpsSrcFile()));
 
-        result = new ArrayList();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet());
+        result = new ArrayList<IIpsSrcFile>();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet<IIpsObjectPathEntry>());
         
         assertEquals(2, result.size());
         assertTrue(result.contains(a2.getIpsSrcFile()));

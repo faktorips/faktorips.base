@@ -572,7 +572,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     }
 
     private void asserContains(IIpsSrcFile[] allowedProductCmpt, IProductCmpt productCmpt) {
-        List list = Arrays.asList(allowedProductCmpt);
+        List<IIpsSrcFile> list = Arrays.asList(allowedProductCmpt);
         assertTrue(list.contains(productCmpt.getIpsSrcFile()));
     }
 

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.TestExtensionRegistry;
 import org.faktorips.devtools.core.TestLogger;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
@@ -45,7 +46,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
     
     public void setUp(){
         
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "loggingConntectors");
         attributes.put("type", "boolean");
         attributes.put("label", "Logging Connectors");
@@ -55,7 +56,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         TestConfigurationElement propertyDef1 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
                 new IConfigurationElement[] {});
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
         attributes.put("label", "Use Change Listener");
@@ -65,7 +66,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         TestConfigurationElement propertyDef2 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
                 new IConfigurationElement[] {});
         
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("name", "coypSupport");
         attributes.put("type", "boolean");
         attributes.put("label", "Copy Support");
@@ -75,7 +76,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         TestConfigurationElement propertyDef3 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
                 new IConfigurationElement[] {});
 
-        attributes = new HashMap();
+        attributes = new HashMap<String, String>();
         attributes.put("class", DefaultBuilderSet.class.getName());
         TestConfigurationElement element = new TestConfigurationElement("builderSet", attributes, null,
                 new IConfigurationElement[] {propertyDef1, propertyDef2, propertyDef3});
@@ -85,7 +86,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint});
         
         logger = new TestLogger();
-        ArrayList builderSetInfoList = new ArrayList();
+        ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
         IIpsModel ipsModel = createTestIpsModel();
         
         IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
@@ -109,7 +110,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
     
     public void testValidateIpsArtefactBuilderSetConfig(){
         IIpsProject ipsProject = createTestIpsProject("1.4");
-        HashMap properties = new HashMap();
+        HashMap<String, String> properties = new HashMap<String, String>();
         properties.put("loggingConntectors", "true");
         properties.put("useChangeListener", "false");
         IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
@@ -117,7 +118,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
         assertTrue(msgList.isEmpty());
 
-        properties = new HashMap();
+        properties = new HashMap<String, String>();
         properties.put("loggingConntectors", "true");
         properties.put("useChangeListener", "false");
         properties.put("hanswurst", "false");
@@ -137,7 +138,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
                     if(args.length < 1){
                         return null;
                     }
-                    HashMap properties = new HashMap();
+                    HashMap<String, String> properties = new HashMap<String, String>();
                     properties.put("type", "boolean");
                     properties.put("defaultValue", "false");
                     properties.put("disableValue", "false");

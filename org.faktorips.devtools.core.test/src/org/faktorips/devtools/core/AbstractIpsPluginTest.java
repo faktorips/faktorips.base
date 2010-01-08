@@ -325,9 +325,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     private void waitForIndexer() throws JavaModelException {
         SearchEngine engine = new SearchEngine();
-        engine.searchAllTypeNames(new char[] {}, new char[] {}, SearchPattern.R_EXACT_MATCH,
-                IJavaSearchConstants.CLASS, SearchEngine.createJavaSearchScope(new IJavaElement[0]),
-                new TypeNameRequestor() {
+        engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
+                SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS, SearchEngine
+                        .createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
                 }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
@@ -824,10 +824,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      * @throws IOException
      */
-    protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class[] adaptedClass)
+    protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class<?>[] adaptedClass)
             throws CoreException, IOException {
 
-        ArrayList dataTypes = new ArrayList(adaptedClass.length);
+        ArrayList<DynamicValueDatatype> dataTypes = new ArrayList<DynamicValueDatatype>(adaptedClass.length);
         IIpsProjectProperties properties = project.getProperties();
         DynamicValueDatatype[] definedDatatypes = properties.getDefinedValueDatatypes();
         for (int i = 0; i < definedDatatypes.length; i++) {
@@ -848,15 +848,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             createEnumClassFileInProjectOutputLocation(project, adaptedClass[i]);
         }
 
-        DynamicEnumDatatype[] returnValue = (DynamicEnumDatatype[])dataTypes
-                .toArray(new DynamicEnumDatatype[adaptedClass.length]);
+        DynamicEnumDatatype[] returnValue = dataTypes.toArray(new DynamicEnumDatatype[adaptedClass.length]);
         properties.setDefinedDatatypes(returnValue);
         properties.setJavaProjectContainsClassesForDynamicDatatypes(true);
         project.setProperties(properties);
         return returnValue;
     }
 
-    private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class adaptedClass)
+    private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException, CoreException {
         IPath outputLocation = project.getJavaProject().getResource().getLocation().append(
                 project.getJavaProject().getOutputLocation().removeFirstSegments(1));
@@ -904,7 +903,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      * 
      */
-    protected void configureProject(IIpsProject project, String ipsProjectFileName, Class[] dependencies)
+    protected void configureProject(IIpsProject project, String ipsProjectFileName, Class<?>[] dependencies)
             throws CoreException {
         IPath outputPath = project.getJavaProject().getOutputLocation();
         IFolder output = project.getProject().getFolder(outputPath);
@@ -956,12 +955,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         return (IpsModel)IpsPlugin.getDefault().getIpsModel();
     }
 
-    protected void testPropertyAccessReadWrite(Class clazz, String propertyName) {
+    protected void testPropertyAccessReadWrite(Class<?> clazz, String propertyName) {
         testPropertyAccessReadOnly(clazz, propertyName);
         testPropertyAccessWriteOnly(clazz, propertyName);
     }
 
-    protected void testPropertyAccessReadWrite(Class clazz, String propertyName, Object object, Object testValueToSet) {
+    protected void testPropertyAccessReadWrite(Class<?> clazz, String propertyName, Object object, Object testValueToSet) {
         testPropertyAccessReadWrite(clazz, propertyName);
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         ModelChangeListener listener = new ModelChangeListener();
@@ -986,7 +985,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
     }
 
-    protected void testPropertyAccessWriteOnly(Class clazz, String propertyName) {
+    protected void testPropertyAccessWriteOnly(Class<?> clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method writeMethod = prop.getWriteMethod();
         assertNotNull("Class " + clazz.getName() + " hasn't got a write method for property " + propertyName,
@@ -995,7 +994,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 + " must have exactly 1 argument", 1, writeMethod.getParameterTypes().length);
     }
 
-    protected void testPropertyAccessReadOnly(Class clazz, String propertyName) {
+    protected void testPropertyAccessReadOnly(Class<?> clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method readMethod = prop.getReadMethod();
         assertNotNull("Class " + clazz.getName() + " hasn't got a read method for property " + propertyName, readMethod);
@@ -1011,7 +1010,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws IOException
      * @throws CoreException
      */
-    protected void createPackageOrderFile(IFolder folder, List strings) throws IOException, CoreException {
+    protected void createPackageOrderFile(IFolder folder, List<?> strings) throws IOException, CoreException {
 
         IFile file = folder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
 
@@ -1024,7 +1023,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         print = print.concat("# comment" + lineSeparator);
 
-        for (Iterator iter = strings.iterator(); iter.hasNext();) {
+        for (Iterator<?> iter = strings.iterator(); iter.hasNext();) {
             String element = (String)iter.next();
 
             print = print.concat(element + lineSeparator);

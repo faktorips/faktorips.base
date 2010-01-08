@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -292,12 +293,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     public void testGetIpsObjectExtensionProperties() {
-        Class extendedClass = model.getClass();
+        Class<?> extendedClass = model.getClass();
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
         property.setPropertyId("prop1");
         property.setExtendedType(extendedClass);
         model.addIpsObjectExtensionProperty(property);
-        List props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
+        List<IExtensionPropertyDefinition> props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
         assertEquals(1, props.size());
         assertSame(property, props.get(0));
         props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
@@ -482,7 +483,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     private static class TestContentsChangeListener implements ContentsChangeListener {
 
-        List changedFiles = new ArrayList();
+        List<IIpsSrcFile> changedFiles = new ArrayList<IIpsSrcFile>();
         ContentChangeEvent lastEvent;
 
         public void contentsChanged(ContentChangeEvent event) {
@@ -494,7 +495,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     private static class TestModStatusListener implements IModificationStatusChangeListener {
 
-        List modifiedFiles = new ArrayList();
+        List<IIpsSrcFile> modifiedFiles = new ArrayList<IIpsSrcFile>();
         ModificationStatusChangedEvent lastEvent;
 
         public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
@@ -517,7 +518,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         IIpsPackageFragment products = root.getIpsPackageFragment("products");
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("kranken");
         list.add("unfall");
         list.add("hausrat");

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -181,7 +182,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
     }
 
     public void testDependsOn() throws Exception {
-        List dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        List<IDependency> dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(0, dependsOnList.size());
 
         IPolicyCmptType pcType1 = newPolicyCmptType(root, "PolicyCmptType1");
@@ -258,7 +259,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         childParam1.setName("ChildPolicyCmpt2");
         testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(3, testRuleParameters.length);
-        List testRuleParametersList = Arrays.asList(testRuleParameters);
+        List<IValidationRule> testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(rule1));
         assertTrue(testRuleParametersList.contains(rule2));
         assertTrue(testRuleParametersList.contains(ruleBase));
@@ -275,7 +276,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         ITestValueParameter valueParameter = type.newInputTestValueParameter();
 
         ITestParameter[] params = ((TestCaseType)type).getAllTestParameter();
-        List paramsList = Arrays.asList(params);
+        List<ITestParameter> paramsList = Arrays.asList(params);
         assertEquals("" + 8, "" + params.length);
         assertTrue(paramsList.contains(testParameter1));
         assertTrue(paramsList.contains(testParameter1_1));

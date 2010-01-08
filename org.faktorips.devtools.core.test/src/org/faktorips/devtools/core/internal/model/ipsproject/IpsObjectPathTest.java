@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
@@ -302,8 +303,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
         
-        ArrayList result = new ArrayList();
-        Set visitedEntries = new HashSet();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         path.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(obj1.getIpsSrcFile()));
@@ -316,8 +317,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
         IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
         
-        ArrayList result = new ArrayList();
-        Set visitedEntries = new HashSet();
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result, visitedEntries);
         
         assertTrue(result.contains(obj1.getIpsSrcFile()));

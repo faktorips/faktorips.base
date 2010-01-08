@@ -110,9 +110,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         
         // check only that the name must not be empty and is not qualified,
         // the other naming conventions are specified in the implementation of IProductCmptNamingStrategy
-        List validNames = new ArrayList();
-        List invalidNames = new ArrayList();
-        List invalidNamesMsgCodes = new ArrayList();
+        List<String> validNames = new ArrayList<String>();
+        List<String> invalidNames = new ArrayList<String>();
+        List<String> invalidNamesMsgCodes = new ArrayList<String>();
         
         // check unqualified names
         invalidNames.add("");
@@ -148,9 +148,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
     
     private void testCommonJavaTypeNameValidation(IpsObjectType type) throws CoreException {
-        List validNames = new ArrayList();
-        List invalidNames = new ArrayList();
-        List invalidNamesMsgCodes = new ArrayList();
+        List<String> validNames = new ArrayList<String>();
+        List<String> invalidNames = new ArrayList<String>();
+        List<String> invalidNamesMsgCodes = new ArrayList<String>();
         
         // check unqualified names
         getCommonJavaTypeQualifiedNamesTestData(validNames, invalidNames, invalidNamesMsgCodes);
@@ -168,9 +168,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
     
     private void testCommonOSNameValidation(IpsObjectType type) throws CoreException {
-        List validNames = new ArrayList();
-        List invalidNames = new ArrayList();
-        List invalidNamesMsgCodes = new ArrayList();
+        List<String> validNames = new ArrayList<String>();
+        List<String> invalidNames = new ArrayList<String>();
+        List<String> invalidNamesMsgCodes = new ArrayList<String>();
         
         // check unqualified names
         validNames.add("test test");
@@ -211,7 +211,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         validateAndAssertNames(type, true, validNames, invalidNames, invalidNamesMsgCodes);
     }
     
-    private void getCommonJavaTypeQualifiedNamesTestData(List validNames, List invalidNames, List invalidNamesMsgCodes){
+    private void getCommonJavaTypeQualifiedNamesTestData(List<String> validNames, List<String> invalidNames, List<String> invalidNamesMsgCodes){
         validNames.add("Test");
         validNames.add("TEST");
         
@@ -235,14 +235,14 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
      * For each invalid name the relevant message code must be given, to perform the assert against this message code.
      */
     private void validateAndAssertNames(IpsObjectType type, boolean qualifiedNames,
-            List validNames,
-            List invalidNames,
-            List invalidNamesMsgCodes) throws CoreException {
+            List<String> validNames,
+            List<String> invalidNames,
+            List<String> invalidNamesMsgCodes) throws CoreException {
         assertEquals("Wrong usage of assert method, each invalid name should have a message code", invalidNames.size(),
                 invalidNamesMsgCodes.size());
         
-        for (Iterator iter = validNames.iterator(); iter.hasNext();) {
-            String validName= (String )iter.next();
+        for (Iterator<String> iter = validNames.iterator(); iter.hasNext();) {
+            String validName= iter.next();
             MessageList ml = null;
             if (qualifiedNames){
                  ml = namingConventions.validateQualifiedIpsObjectName(type, validName);
@@ -253,8 +253,8 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         }
  
         for (int i = 0; i < invalidNames.size(); i++) {
-            String invalidName = (String)invalidNames.get(i);
-            String msgCode = (String)invalidNamesMsgCodes.get(i);
+            String invalidName = invalidNames.get(i);
+            String msgCode = invalidNamesMsgCodes.get(i);
             MessageList ml = null;
             if (qualifiedNames) {
                 ml = namingConventions.validateQualifiedIpsObjectName(type, invalidName);
