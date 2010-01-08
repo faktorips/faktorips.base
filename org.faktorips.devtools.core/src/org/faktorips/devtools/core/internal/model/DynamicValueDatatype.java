@@ -143,7 +143,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
      * {@inheritDoc}
      */
     @Override
-    public Class getAdaptedClass() {
+    public Class<?> getAdaptedClass() {
         if (adaptedClass == null) {
             try {
                 classLoaderProvider = ((IpsProject)ipsProject).getClassLoaderProviderForJavaProject();
@@ -153,7 +153,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             } catch (Throwable t) {
                 IpsPlugin.log(t);
                 adaptedClass = null; // datatype remains invalid as long as the class can't be
-                                     // loaded.
+                // loaded.
                 // or an exception occurs while adding the classpath change listener
             }
         }
