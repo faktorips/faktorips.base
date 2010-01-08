@@ -56,7 +56,9 @@ public interface ITableFormat {
     public String getDefaultExtension();
 
     /**
-     * Add a converter to tranform external values to internal values (and vice versa).
+     * Add a converter to tranform external values to internal values (and vice versa). This method
+     * also sets the tabel format in the given converter via its
+     * {@link IValueConverter#setTableFormat(ITableFormat)} method.
      * 
      * @param converter The additional converter.
      */

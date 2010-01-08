@@ -118,6 +118,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      */
     public void addValueConverter(IValueConverter converter) {
         converters.add(converter);
+        converter.setTableFormat(this);
     }
 
     /**
@@ -190,9 +191,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      * 
      * @author Thorsten Guenther
      */
-    private class DefaultValueConverter implements IValueConverter {
-
-        private ITableFormat tableFormat;
+    private class DefaultValueConverter extends AbstractValueConverter {
 
         /**
          * {@inheritDoc}
@@ -223,14 +222,6 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
          */
         public Object getExternalDataValue(String ipsValue, MessageList messageList) {
             return ipsValue;
-        }
-
-        public void setTableFormat(ITableFormat tableFormat) {
-            this.tableFormat = tableFormat;
-        }
-
-        public ITableFormat getTableFormat() {
-            return tableFormat;
         }
 
     }

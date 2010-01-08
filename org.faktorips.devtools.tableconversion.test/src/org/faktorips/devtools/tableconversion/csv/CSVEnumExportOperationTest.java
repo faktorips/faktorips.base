@@ -30,10 +30,11 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
     private String filename;
     private IIpsProject ipsProject;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        this.ipsProject = newIpsProject("test");
+        ipsProject = newIpsProject("test");
         IIpsProjectProperties props = ipsProject.getProperties();
         String[] datatypes = getColumnDatatypes();
         props.setPredefinedDatatypesUsed(datatypes);
@@ -46,14 +47,16 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         format.addValueConverter(new DecimalValueConverter());
         format.addValueConverter(new DoubleValueConverter());
         format.addValueConverter(new DateValueConverter());
+        format.addValueConverter(new GregorianCalendarValueConverter());
         format.addValueConverter(new IntegerValueConverter());
         format.addValueConverter(new LongValueConverter());
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
 
-        this.filename = "enum" + format.getDefaultExtension();
+        filename = "enum" + format.getDefaultExtension();
     }
 
+    @Override
     protected void tearDownExtension() throws Exception {
         new File(filename).delete();
     }

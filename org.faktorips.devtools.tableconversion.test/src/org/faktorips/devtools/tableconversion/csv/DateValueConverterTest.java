@@ -29,7 +29,7 @@ public class DateValueConverterTest extends TestCase {
         ml = new MessageList();
         tableFormat = new CSVTableFormat();
         converter = new DateValueConverter();
-        converter.setTableFormat(tableFormat);
+        tableFormat.addValueConverter(converter);
     }
 
     public void testGetIpsValueUsingCustomDateFormat() {

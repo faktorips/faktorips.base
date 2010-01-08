@@ -63,9 +63,22 @@ public interface IValueConverter {
     public Object getExternalDataValue(String ipsValue, MessageList messageList);
 
     /**
-     * TODO rg: javadoc!
+     * Sets the table format this converter belongs to. A converter can be assigned to a table
+     * format only once. This method should only be is called by
+     * {@link ITableFormat#addValueConverter(IValueConverter)}. It is published API, as new
+     * ValueConverts must implement the method to function correctly.
      * 
      * @param format
+     * 
+     * @throws NullPointerException if format is <code><code>null</code>.
+     * @throws RuntimeException if the format has already been set and the new format is a different
+     *             one.
      */
     public void setTableFormat(ITableFormat format);
+
+    /**
+     * Returns the table format this converter belongs to.
+     */
+    public ITableFormat getTableFormat();
+
 }

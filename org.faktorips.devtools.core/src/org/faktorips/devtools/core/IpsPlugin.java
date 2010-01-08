@@ -392,8 +392,6 @@ public class IpsPlugin extends AbstractUIPlugin {
         for (int i = 0; i < valueConverters.length; i++) {
             try {
                 IValueConverter converter = (IValueConverter)valueConverters[i].createExecutableExtension("class"); //$NON-NLS-1$
-                converter.setTableFormat(format);
-
                 format.addValueConverter(converter);
             } catch (CoreException e) {
                 IpsPlugin.log(e);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,10 +17,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.util.message.Message;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 
@@ -54,9 +54,11 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
             } catch (IllegalArgumentException ignored) {
             }
         }
-        
+
         if (error) {
-            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+            messageList
+                    .add(ExtSystemsMessageUtil
+                            .createConvertExtToIntErrorMessage(
                                     "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
             return externalDataValue.toString();
         }
@@ -73,14 +75,12 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
         if (ipsValue == null) {
             return null;
         }
-        
-        GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
+
         try {
-            GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
-            return cal.getTime();
+            return new DateDatatype().getValue(ipsValue);
         } catch (RuntimeException e) {
-            messageList.add(new Message(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(
-                    ipsValue, getSupportedDatatype().getQualifiedName(), GregorianCalendar.class.getName()))); //$NON-NLS-1$
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
+                    .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
         }
     }
