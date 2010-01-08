@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;

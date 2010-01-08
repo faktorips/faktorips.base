@@ -46,18 +46,6 @@ import org.w3c.dom.Element;
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
 
-    /** The icon representing an <tt>IEnumAttribute</tt>. */
-    private final static String ICON = "EnumAttribute.gif"; //$NON-NLS-1$
-
-    /** The icon representing an overridden <tt>IEnumAttribute</tt>. */
-    private final static String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif"; //$NON-NLS-1$
-
-    /** The icon representing an <tt>IEnumAttribute</tt> that is marked as being unique. */
-    private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif"; //$NON-NLS-1$
-
-    /** The icon representing an overridden unique <tt>IEnumAttribute</tt>. */
-    private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif"; //$NON-NLS-1$
-
     /** The data type of this <tt>IEnumAttribute</tt>. */
     protected String datatype;
 
