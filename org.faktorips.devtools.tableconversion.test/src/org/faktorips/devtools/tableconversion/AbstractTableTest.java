@@ -45,7 +45,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     private final String[] datatypes = new String[] { Datatype.BOOLEAN.getQualifiedName(),
             Datatype.DECIMAL.getQualifiedName(), Datatype.DOUBLE.getQualifiedName(),
-            Datatype.GREGORIAN_CALENDAR_DATE.getQualifiedName(), Datatype.INTEGER.getQualifiedName(),
+            Datatype.GREGORIAN_CALENDAR.getQualifiedName(), Datatype.INTEGER.getQualifiedName(),
             Datatype.LONG.getQualifiedName(), Datatype.MONEY.getQualifiedName(), Datatype.STRING.getQualifiedName() };
 
     public ITableStructure getStructure() {

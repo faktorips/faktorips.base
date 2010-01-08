@@ -89,7 +89,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
      * {@inheritDoc}
      */
     public Datatype getSupportedDatatype() {
-        return Datatype.GREGORIAN_CALENDAR_DATE;
+        return Datatype.GREGORIAN_CALENDAR;
     }
 
 }

@@ -32,11 +32,11 @@ public class GregorianCalendarValueConverterTest extends TestCase {
         MessageList ml = new MessageList();
         GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();
         String value = converter.getIpsValue(new Long(1234), ml);
-        assertTrue(Datatype.GREGORIAN_CALENDAR_DATE.isParsable(value));
+        assertTrue(Datatype.GREGORIAN_CALENDAR.isParsable(value));
         assertTrue(ml.isEmpty());
 
         value = converter.getIpsValue(new Date(), ml);
-        assertTrue(Datatype.GREGORIAN_CALENDAR_DATE.isParsable(value));
+        assertTrue(Datatype.GREGORIAN_CALENDAR.isParsable(value));
         assertTrue(ml.isEmpty());
 
         value = converter.getIpsValue("0", ml);
@@ -58,8 +58,8 @@ public class GregorianCalendarValueConverterTest extends TestCase {
         final String VALID = "2001-03-26";
         final String INVALID = "invalid";
 
-        assertTrue(Datatype.GREGORIAN_CALENDAR_DATE.isParsable(VALID));
-        assertFalse(Datatype.GREGORIAN_CALENDAR_DATE.isParsable(INVALID));
+        assertTrue(Datatype.GREGORIAN_CALENDAR.isParsable(VALID));
+        assertFalse(Datatype.GREGORIAN_CALENDAR.isParsable(INVALID));
 
         Object value = converter.getExternalDataValue(VALID, ml);
         assertEquals(new GregorianCalendar(2001, 02, 26).getTime(), value);
