@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -89,9 +90,21 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         }
     }
 
-    private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) {
+    private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) throws CoreException {
         if (isAddedOrRemoved(delta)) {
-            registerForRefresh(ipsElement.getParent());
+            IIpsElement parentEl = (IIpsElement)getParent(ipsElement);
+            if (parentEl instanceof IIpsPackageFragment) {
+                IIpsPackageFragment pack = (IIpsPackageFragment)parentEl;
+                if (pack.isDefaultPackage() && pack.getChildren().length == 1) {
+                    // This is the first element in the default package. As the default package is
+                    // only
+                    // shown, when it contains at least one file/element, we must refresh the
+                    // package root!
+                    parentEl = pack.getParent();
+                }
+
+            }
+            registerForRefresh(parentEl);
             return false;
         } else { // changed ips element
             if (delta.getResource().getType() == IResource.FILE) {
