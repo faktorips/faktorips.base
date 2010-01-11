@@ -181,6 +181,7 @@
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
+<!--
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
@@ -224,7 +225,7 @@
                 -->
             </depends>      
         </project>
-
+-->
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder branch: v2_2_patches-->
         <!--=====================================================-->
