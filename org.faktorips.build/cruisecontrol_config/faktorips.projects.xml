@@ -181,7 +181,6 @@
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
-<!--
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
@@ -190,7 +189,6 @@
             <jvmarg arg="-Xmx600m"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
-<!--
                 <cvs module="org.faktorips.util"/>
                 <cvs module="org.faktorips.valuetypes"/>
                 <cvs module="org.faktorips.dtflcommon"/>
@@ -206,7 +204,6 @@
                 <cvs module="org.faktorips.devtools.ormext.ui"/>
                                 
                 <!-- plugin test dependencies-->
-<!--
                 <cvs module="org.faktorips.devtools.core.test"/>
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
@@ -215,7 +212,6 @@
                 <cvs module="org.faktorips.uml.test"/> 
 
 				<!-- features -->
-<!--
                 <cvs module="org.faktorips.feature"/> 
                 <cvs module="org.faktorips.feature.test"/> 
                 <cvs module="org.faktorips.uml.feature"/> 
@@ -226,10 +222,9 @@
                 <cvs module="de.qv.ormext.builder"/>
                 <cvs module="de.qv.ormext.builder.test"/>
                 -->
-<!--
             </depends>      
         </project>
--->
+
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder branch: v2_2_patches-->
         <!--=====================================================-->
