@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
@@ -40,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.ui.views.productstructureexplorer.AssociationSelectionDialog;
 
 public class LinkDropListener extends ViewerDropAdapter {
 
@@ -154,27 +156,34 @@ public class LinkDropListener extends ViewerDropAdapter {
             return false;
         }
         List<IAssociation> associations = cmptType.findAllNotDerivedAssociations();
-        List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
+            List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
             for (IAssociation aAssoziation : associations) {
                 if (generation.canCreateValidLink(draggedCmpt, aAssoziation, generation.getIpsProject())) {
                     possibleAssos.add(aAssoziation);
                 }
             }
+            if (possibleAssos.size() > 0 && !createLinks) {
+                result = true;
+            }
             if (possibleAssos.size() == 1) {
+                result = true;
                 if (createLinks) {
                     IAssociation association = possibleAssos.get(0);
                     createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
                 }
-                result = true;
             } else if (possibleAssos.size() > 1) {
-                IAssociation association = selectAssociation(possibleAssos);
-                if (association != null) {
-                    createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
-                } else {
-                    return false;
+                Object[] selectedAssociations = selectAssociation(draggedCmpt.getName(), possibleAssos);
+                if (selectedAssociations != null) {
+                    for (Object object : selectedAssociations) {
+                        if (object instanceof IAssociation) {
+                            IAssociation association = (IAssociation)object;
+                            createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
+                            result = true;
+                        }
+                    }
                 }
             } else {
                 return false;
@@ -183,12 +192,19 @@ public class LinkDropListener extends ViewerDropAdapter {
         return result;
     }
 
-    private IAssociation selectAssociation(List<IAssociation> possibleAssos) {
-        SelectionDialog dialog = new SelectionDialog(new Shell(Display.getDefault())) {
-
-        };
+    private Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
+        Shell shell = Display.getDefault().getActiveShell();
+        if (shell == null) {
+            shell = new Shell(Display.getDefault());
+        }
+        SelectionDialog dialog = new AssociationSelectionDialog(shell, possibleAssos, NLS.bind(
+                Messages.LinkDropListener_selectAssociation, droppedCmptName));
+        dialog.setBlockOnOpen(true);
+        dialog.setHelpAvailable(false);
         if (dialog.open() == Window.OK) {
-            return null;
+            if (dialog.getResult().length > 0) {
+                return dialog.getResult();
+            }
         }
         // TODO Auto-generated method stub
         return null;
