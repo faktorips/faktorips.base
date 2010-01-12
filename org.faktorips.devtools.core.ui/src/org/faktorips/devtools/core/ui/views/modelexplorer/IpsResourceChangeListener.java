@@ -13,11 +13,11 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -33,7 +33,7 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     /**
      * The viewer's tree content provider
      */
-    private ITreeContentProvider contentProvider;
+    private ModelContentProvider contentProvider;
 
     /**
      * Creates a new ResourceChangeListener which will update the given StructuredViewer if a
@@ -42,12 +42,12 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
      * @param viewer The viewer to update.
      * 
      * @throws NullPointerException if viewer is <code>null</code>.
-     * @throws ClassCastException if viewer has no tree content provider
+     * @throws ClassCastException if viewer has no model content provider
      */
     public IpsResourceChangeListener(StructuredViewer viewer) {
         ArgumentCheck.notNull(viewer);
         this.viewer = viewer;
-        contentProvider = (ITreeContentProvider)viewer.getContentProvider();
+        contentProvider = (ModelContentProvider)viewer.getContentProvider();
     }
 
     /**
@@ -62,7 +62,7 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
                     IResourceDelta delta = event.getDelta();
                     try {
                         IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
-                        delta.accept(visitor);
+                        delta.accept(visitor, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
                         for (Object element : visitor.getElementsToRefresh()) {
                             viewer.refresh(element);
                         }
