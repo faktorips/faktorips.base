@@ -16,11 +16,12 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -38,9 +39,9 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     private Set<Object> objectsToRefresh = new HashSet<Object>();
     private Set<Object> objectsToUpdate = new HashSet<Object>();
 
-    private ITreeContentProvider contentProvider;
+    private ModelContentProvider contentProvider;
 
-    public IpsViewRefreshVisitor(ITreeContentProvider contentProvider) {
+    public IpsViewRefreshVisitor(ModelContentProvider contentProvider) {
         super();
         ArgumentCheck.notNull(contentProvider);
         this.contentProvider = contentProvider;
@@ -48,11 +49,63 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
     public boolean visit(IResourceDelta delta) throws CoreException {
         IResource resource = delta.getResource();
+        if (resource.isTeamPrivateMember()) {
+            return handlePrivateTeamMember(resource);
+        }
+        if (isJavaResource(resource)) {
+            return false;
+        }
         IIpsElement element = getIpsElement(resource);
         if (element == null) {
             return handleResource(delta);
         }
         return handleIpsElement(delta, element);
+    }
+
+    private boolean isJavaResource(IResource resource) {
+        if (resource == null) {
+            return false;
+        }
+        IProject project = resource.getProject();
+        if (project == null) {
+            // At least the workspace root does return null as project!
+            return false;
+        }
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+        if (ipsProject == null) {
+            return false;
+        }
+        IJavaProject javaProject = ipsProject.getJavaProject();
+        if (javaProject == null || !javaProject.exists()) {
+            return false;
+        }
+        return contentProvider.isJavaResource(javaProject, resource);
+    }
+
+    /**
+     * Team private members are resources maintained by a TeamProvider like the CVS and Subversion
+     * Plugins. If a team private member has changed, the status of a none-team resource might have
+     * changed and label decorations must be updated. So if a team private member is changed, we
+     * refresh the parent resource/ips-element it is contained in.
+     */
+    private boolean handlePrivateTeamMember(IResource privateTeamMember) {
+        IResource parentResource = privateTeamMember.getParent();
+        if (isJavaResource(parentResource)) {
+            // if the team status of a Java resource has changed, we must update the Project
+            // to update is't label decoration as well!
+            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(parentResource.getProject());
+            if (ipsProject != null) {
+                registerForUpdate(ipsProject);
+            }
+            return false;
+        }
+        IIpsElement parentElement = getIpsElement(parentResource);
+        if (parentElement != null) {
+            registerForRefresh(parentElement);
+        } else {
+            registerForRefresh(parentResource);
+        }
+        return false;
     }
 
     /**
@@ -112,6 +165,10 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
                 // ips archives!
                 registerForRefresh(ipsElement);
                 return false;
+            } else {
+                // This branch is for example executed if a team private member like a CVS folder
+                // has changed.
+                registerForUpdate(ipsElement);
             }
         }
         return true;

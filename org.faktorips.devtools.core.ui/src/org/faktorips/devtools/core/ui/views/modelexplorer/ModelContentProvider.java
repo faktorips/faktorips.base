@@ -237,18 +237,14 @@ public class ModelContentProvider implements ITreeContentProvider {
         return false;
     }
 
-    /*
+    /**
      * Examins the given <code>JavaProject</code> and its relation to the given
      * <code>IResource</code>. Returns true if the given resource corresponds to a classpath entry
      * of the javaproject. Returns true if the given resource corresponds to a folder that is either
      * the javaprojects default output location or the output location of one of the projects
      * classpathentries. False otherwise.
-     * 
-     * @param resource
-     * 
-     * @return
      */
-    private boolean isJavaResource(IJavaProject jProject, IResource resource) {
+    public boolean isJavaResource(IJavaProject jProject, IResource resource) {
         try {
             IPath outputPath = jProject.getOutputLocation();
             IClasspathEntry[] entries = jProject.getResolvedClasspath(true);
