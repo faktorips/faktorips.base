@@ -22,8 +22,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.SelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -99,7 +103,10 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean performDrop(Object data) {
-        List<IProductCmpt> droppedCmpts = getTransferElements(getCurrentEvent().currentDataType);
+        if (!(data instanceof String[])) {
+            return false;
+        }
+        List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
         Object target = getCurrentTarget();
         boolean haveToSave = autoSave;
         try {
@@ -162,12 +169,29 @@ public class LinkDropListener extends ViewerDropAdapter {
                     createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
                 }
                 result = true;
+            } else if (possibleAssos.size() > 1) {
+                IAssociation association = selectAssociation(possibleAssos);
+                if (association != null) {
+                    createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-            // TODO bei mehreren gültigen Assoziationen soll eine auswählbar sein!
         }
         return result;
+    }
+
+    private IAssociation selectAssociation(List<IAssociation> possibleAssos) {
+        SelectionDialog dialog = new SelectionDialog(new Shell(Display.getDefault())) {
+
+        };
+        if (dialog.open() == Window.OK) {
+            return null;
+        }
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private boolean processAssociationReference(List<IProductCmpt> draggedCmpts,
@@ -271,42 +295,48 @@ public class LinkDropListener extends ViewerDropAdapter {
         }
         if (FileTransfer.getInstance().isSupportedType(transferType)) {
             String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(transferType);
-
-            // TODO debug for linux!
-            // Under some platforms, the data is not available during dragOver.
-            if (filenames == null) {
-                return new ArrayList<IProductCmpt>();
+            List<IProductCmpt> productCmpts = getProductCmpts(filenames);
+            if (productCmpts != null) {
+                actualTransferElements = productCmpts;
+                actualTransferType = transferType;
+                return actualTransferElements;
             }
+        }
+        actualTransferType = null;
+        actualTransferElements = null;
+        return null;
+    }
 
-            List<IProductCmpt> result = new ArrayList<IProductCmpt>();
+    private List<IProductCmpt> getProductCmpts(String[] filenames) {
+        // TODO debug for linux!
+        // Under some platforms, the data is not available during dragOver.
+        if (filenames == null) {
+            return new ArrayList<IProductCmpt>();
+        }
 
-            for (int i = 0; i < filenames.length; i++) {
-                IFile file = getFile(filenames[i]);
-                if (file == null) {
+        List<IProductCmpt> result = new ArrayList<IProductCmpt>();
+
+        for (int i = 0; i < filenames.length; i++) {
+            IFile file = getFile(filenames[i]);
+            if (file == null) {
+                return null;
+            }
+            try {
+                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+                if (element == null || !element.exists()) {
                     return null;
                 }
-                try {
-                    IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-                    if (element == null || !element.exists()) {
-                        return null;
-                    }
-                    IProductCmpt draggedCmpt = getProductCmpt(element);
-                    if (draggedCmpt == null) {
-                        return null;
-                    }
-                    result.add(draggedCmpt);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IProductCmpt draggedCmpt = getProductCmpt(element);
+                if (draggedCmpt == null) {
+                    return null;
                 }
+                result.add(draggedCmpt);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return null;
             }
-            actualTransferType = transferType;
-            actualTransferElements = result;
-            return actualTransferElements;
-        } else {
-            actualTransferType = null;
-            actualTransferElements = null;
-            return null;
         }
+        return result;
     }
 
 }
