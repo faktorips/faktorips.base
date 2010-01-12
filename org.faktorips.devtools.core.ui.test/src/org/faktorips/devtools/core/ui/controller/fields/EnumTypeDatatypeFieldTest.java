@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.EnumTypeDisplay;
@@ -36,6 +37,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     IIpsProject ipsProject;
     IEnumType enum1;
 
+    @Override
     public void setUp() throws Exception {
         ipsProject = newIpsProject("TestProject");
 
@@ -87,7 +89,9 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     }
 
     public void testGetDatatypeValueIds() throws Exception {
-        Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
+        Shell shell = new Shell(Display.getDefault());
+
+        Combo combo = new Combo(shell, SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null));
         field.setValue("a");
         assertEquals("a", field.getValue());
@@ -103,6 +107,8 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     }
 
     public void testGetDatatypeValueIdsWithEnumContent() throws Exception {
+        Shell shell = new Shell(Display.getDefault());
+
         enum1.setContainingValues(false);
         enum1.deleteEnumAttributeWithValues(enum1.getEnumLiteralNameAttribute());
         enum1.setEnumContentName(enum1.getIpsPackageFragment().getName());
@@ -126,7 +132,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         values.get(1).setValue("CNameContent");
         values.get(2).setValue("CDescContent");
 
-        Combo combo = new Combo(Display.getDefault().getActiveShell(), SWT.None);
+        Combo combo = new Combo(shell, SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent));
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());
