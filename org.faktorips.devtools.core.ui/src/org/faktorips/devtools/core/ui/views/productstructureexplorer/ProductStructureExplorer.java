@@ -129,6 +129,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private TreeViewer tree;
     private IIpsSrcFile file;
     private IProductCmpt productComponent;
+    // TODO use LinkLabelProvider to get correct message cue
     private ProductStructureLabelProvider labelProvider;
     private Label errormsg;
 

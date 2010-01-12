@@ -23,7 +23,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -69,7 +68,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.ReferenceDropListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
@@ -198,8 +196,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             layoutData.widthHint = 50;
             tree.setLayoutData(layoutData);
 
-            LinksLabelProvider labelProvider = new LinksLabelProvider();
-
             selectionChangedListener = new SelectionChangedListener();
 
             treeViewer = new TreeViewer(tree);
@@ -221,13 +217,12 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
             treeViewer.expandAll();
 
-            final LinkSectionMessageCueLabelProvider msgCueLp = new LinkSectionMessageCueLabelProvider(labelProvider,
-                    generation.getIpsProject());
-            treeViewer.setLabelProvider(msgCueLp);
+            final LinksLabelProvider labelProvider = new LinksLabelProvider(generation);
+            treeViewer.setLabelProvider(labelProvider);
             new TreeMessageHoverService(treeViewer) {
                 @Override
                 protected MessageList getMessagesFor(Object element) throws CoreException {
-                    return msgCueLp.getMessages(element);
+                    return labelProvider.getMessages(element);
                 }
             };
 
@@ -552,31 +547,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         if (delAction != null) {
             delAction.setEnabled(enabled);
         }
-    }
-
-    /**
-     * Special cue label provider to get messages for product component type relations from the
-     * generations instead of the product component type relation itself.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class LinkSectionMessageCueLabelProvider extends MessageCueLabelProvider {
-
-        public LinkSectionMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
-            super(baseProvider, ipsProject);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public MessageList getMessages(Object element) throws CoreException {
-            if (element instanceof String) {
-                return generation.validate(generation.getIpsProject()).getMessagesFor(element);
-            }
-            return super.getMessages(element);
-        }
-
     }
 
     class OpenProductCmptRelationDialogAction extends IpsAction {

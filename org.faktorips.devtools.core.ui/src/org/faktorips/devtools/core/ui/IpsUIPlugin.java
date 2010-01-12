@@ -41,13 +41,17 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -623,6 +627,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return settings;
     }
 
+    public static LabelProvider getDecoratedLabelProvider(ILabelProvider labelProvider) {
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        return new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
+    }
+
     public final static String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
@@ -879,7 +888,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
             if (ipsElement == null) {
-                return null;
+                return ImageDescriptor.getMissingImageDescriptor();
             }
             IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
             if (adapter == null) {
