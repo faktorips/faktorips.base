@@ -83,8 +83,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // all ips elements above the package containg the added type needn't be refresh, but
-        // must be updated (except for modelPack, see below)
+        // all ips elements above the package containing the added type needn't be refresh, but
+        // must be updated
         assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
         assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
         assertFalse(elementsToRefresh.contains(ipsProject));
@@ -92,8 +92,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         assertFalse(elementsToRefresh.contains(packRoot));
         assertTrue(elementsToUpdate.contains(packRoot));
         assertFalse(elementsToRefresh.contains(modelPack));
-        assertFalse(elementsToUpdate.contains(modelPack)); // model package is not a parent in the
-        // flay layout style!
+        assertTrue(elementsToUpdate.contains(modelPack)); // model package is not a parent in the
+        // flay layout style, but gets updated anyways
 
         // The package to that a new child was added must be refresh.
         assertTrue(elementsToRefresh.contains(basePack));
@@ -108,8 +108,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         elementsToUpdate = visitor.getElementsToUpdate();
 
         // test case 3: all ips elements above the package containg the added type needn't be
-        // refresh, but
-        // must be updated
+        // refresh, but must be updated
         assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
         assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
         assertFalse(elementsToRefresh.contains(ipsProject));
@@ -134,7 +133,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         assertTrue(elementsToUpdate.contains(ipsProject));
         assertFalse(elementsToRefresh.contains(packRoot));
         assertTrue(elementsToUpdate.contains(packRoot));
-        // model pack is not a parent in the flat layout style!
+        // model pack is not a parent in the flat layout style! but gets updated anyways
         assertFalse(elementsToRefresh.contains(basePack));
         assertTrue(elementsToUpdate.contains(basePack));
         // the IpsSrcFile itself must be refreshed
