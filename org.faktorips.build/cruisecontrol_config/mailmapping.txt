@@ -12,7 +12,6 @@
 <map alias="mornau" address="franz.mornau@faktorzehn.de" />
 -->
 <!-- active user 
--->               
 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
 <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -23,4 +22,5 @@
 <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de" />
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+-->               
 <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de" />
