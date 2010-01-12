@@ -93,4 +93,23 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     public IIpsElement getWrappedIpsElement() {
         return getWrapped();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!this.getClass().equals(obj.getClass())) {
+            return false;
+        }
+        ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
+        return getWrappedIpsElement() == other.getWrappedIpsElement() && getStructure() == other.getStructure();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + getWrappedIpsElement().hashCode();
+        return 31 * hash + getStructure().hashCode();
+    }
 }

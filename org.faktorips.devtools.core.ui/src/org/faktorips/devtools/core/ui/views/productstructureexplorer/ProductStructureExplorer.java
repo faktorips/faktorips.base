@@ -93,8 +93,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.ReferenceDropListener;
-import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
@@ -452,30 +452,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree = new TreeViewer(viewerPanel);
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final ReferenceDropListener dropListener = new ReferenceDropListener();
-        tree.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
-                TextTransfer.getInstance() }, dropListener);
-        dropListener.addDropDoneListener(new IDropDoneListener() {
-
-            public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean srcFileWasDirty) {
-                Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
-                for (IProductCmptLink link : result) {
-                    IIpsSrcFile srcFile = link.getIpsSrcFile();
-                    srcFiles.add(srcFile);
-                }
-                for (IIpsSrcFile srcFile : srcFiles) {
-                    if (srcFile != null && !srcFileWasDirty && srcFile.isMutable()) {
-                        try {
-                            srcFile.save(false, null);
-                        } catch (CoreException e) {
-                            IpsPlugin.logAndShowErrorDialog(e);
-                        }
-                    }
-                }
-                refresh();
-
-            }
-        });
+        final LinkDropListener dropListener = new LinkDropListener(tree);
+        dropListener.setAutoSave(true);
+        tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
+                dropListener);
+        // TODO
+        // dropListener.addDropDoneListener(new IDropDoneListener() {
+        //
+        // public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean
+        // srcFileWasDirty) {
+        // Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        // for (IProductCmptLink link : result) {
+        // IIpsSrcFile srcFile = link.getIpsSrcFile();
+        // srcFiles.add(srcFile);
+        // }
+        // for (IIpsSrcFile srcFile : srcFiles) {
+        // if (srcFile != null && !srcFileWasDirty && srcFile.isMutable()) {
+        // try {
+        // srcFile.save(false, null);
+        // } catch (CoreException e) {
+        // IpsPlugin.logAndShowErrorDialog(e);
+        // }
+        // }
+        // }
+        // refresh();
+        // }
+        // });
 
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setAssociationTypeShowing(showAssociationNode);
@@ -492,7 +494,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
-        tree.expandAll();
+        // XXX tree.expandAll();
 
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
                 tree));
@@ -607,7 +609,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void refresh() {
-        Control ctrl = tree.getControl();
+        final Control ctrl = tree.getControl();
 
         if (ctrl == null || ctrl.isDisposed()) {
             return;
@@ -626,7 +628,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                                 handleCircle(e);
                                 return;
                             }
-                            showTreeInput(structure);
+                            // showTreeInput(structure);
+                            tree.refresh();
                         } else {
                             showEmptyMessage();
                         }
@@ -746,7 +749,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         tree.setInput(input);
         // XXX
-        tree.expandAll();
+        // tree.expandAll();
     }
 
     private void showEmptyMessage() {

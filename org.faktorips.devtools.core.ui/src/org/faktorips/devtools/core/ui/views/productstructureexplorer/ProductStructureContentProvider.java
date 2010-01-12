@@ -41,7 +41,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     private boolean fShowAssociationType = true;
 
-    private IProductCmptReference root;
+    // private IProductCmptReference root;
 
     private boolean showTableContents = true;
 
@@ -145,7 +145,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
-            return new Object[] { root };
+            return new Object[] { structure.getRoot() };
         } else {
             return new Object[0];
         }
@@ -161,7 +161,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         }
 
         structure = (IProductCmptTreeStructure)newInput;
-        root = structure.getRoot();
+        // root = structure.getRoot();
     }
 
     /**
