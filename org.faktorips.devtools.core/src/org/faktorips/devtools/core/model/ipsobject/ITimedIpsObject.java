@@ -76,7 +76,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * Returns the generation effective on the given date. That is the generation which's effective
      * date lies before the given date and among all generations with such an effective date, this
      * is the one with the most recent effective date. Returns <code>null</code> if no generation is
-     * found Returns the first Generation if date is <code>null</code>
+     * found. Returns null if date is <code>null</code>
      */
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date);
 

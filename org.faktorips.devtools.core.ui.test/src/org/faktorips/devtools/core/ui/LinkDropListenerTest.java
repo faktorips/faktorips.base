@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -94,7 +95,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         cmptC3 = newProductCmpt(typeC, "CmptC3");
 
         contentProvider = new ProductStructureContentProvider(true);
-        structure = cmptA.getStructure(ipsProject);
+        structure = cmptA.getStructure(new GregorianCalendar(), ipsProject);
 
         TreeViewer treeViewer = new TreeViewer(new Shell(Display.getDefault()));
         treeViewer.setContentProvider(contentProvider);

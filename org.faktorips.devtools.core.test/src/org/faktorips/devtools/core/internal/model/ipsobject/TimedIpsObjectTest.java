@@ -124,7 +124,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         assertNull(genFound);
 
         genFound = timedObject.findGenerationEffectiveOn(null);
-        assertEquals(gen2, genFound);
+        assertNull(genFound);
     }
 
     public void testGetGenerationByEffectiveDate() {
