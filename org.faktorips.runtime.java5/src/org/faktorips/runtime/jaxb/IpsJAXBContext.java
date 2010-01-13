@@ -28,6 +28,7 @@ import org.w3c.dom.Node;
  * 
  * @author Jan Ortmann
  */
+@SuppressWarnings("deprecation")
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;
