@@ -276,12 +276,16 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
         link.setTarget(cmptC3.getName());
         dropListener.setTarget(link);
+        ipsSrcFile.save(false, null);
         checkSaveFile(ipsSrcFile);
     }
 
     private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         dropListener.setAutoSave(false);
+        assertFalse(ipsSrcFile.isDirty());
         assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(ipsSrcFile.isDirty());
+        assertTrue(dropListener.performDrop(getFilenames(cmptC2)));
         assertTrue(ipsSrcFile.isDirty());
         ipsSrcFile.discardChanges();
 
@@ -290,7 +294,8 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertFalse(ipsSrcFile.isDirty());
 
         IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
-        links[0].delete();
+        // delete the last one
+        links[links.length - 1].delete();
         assertTrue(ipsSrcFile.isDirty());
         assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
         assertTrue(ipsSrcFile.isDirty());
