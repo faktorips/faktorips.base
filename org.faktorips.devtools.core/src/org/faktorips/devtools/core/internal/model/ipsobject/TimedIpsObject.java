@@ -109,7 +109,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
         if (date == null) {
-            return null;
+            return getFirstGeneration();
         }
         IIpsObjectGeneration generation = null;
         for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {

@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
@@ -72,9 +73,9 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        // if (getCurrentOperation() != DND.DROP_LINK) {
-        // return false;
-        // }
+        if (operation != DND.DROP_LINK) {
+            return false;
+        }
         List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
         if (draggedCmpts == null) {
             return false;
@@ -84,21 +85,25 @@ public class LinkDropListener extends ViewerDropAdapter {
             return true;
         }
         try {
-            if (target instanceof IProductCmptReference) {
-                // product cmpt reference in product structure view
-                IProductCmptReference reference = (IProductCmptReference)target;
-                return processProductCmptReference(draggedCmpts, reference, false);
-            } else if (target instanceof IProductCmptTypeRelationReference) {
-                IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)target;
-                return processAssociationReference(draggedCmpts, reference, false);
-            } else if (target instanceof IProductCmptLink) {
-                IProductCmptLink link = ((IProductCmptLink)target);
-                return processProductCmptLink(draggedCmpts, link, false);
-            } else {
-                return false;
-            }
+            return validateDrop(target, operation, draggedCmpts);
         } catch (CoreException e) {
             IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+    private boolean validateDrop(Object target, int operation, List<IProductCmpt> draggedCmpts) throws CoreException {
+        if (target instanceof IProductCmptReference) {
+            // product cmpt reference in product structure view
+            IProductCmptReference reference = (IProductCmptReference)target;
+            return processProductCmptReference(draggedCmpts, reference, false);
+        } else if (target instanceof IProductCmptTypeRelationReference) {
+            IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)target;
+            return processAssociationReference(draggedCmpts, reference, false);
+        } else if (target instanceof IProductCmptLink) {
+            IProductCmptLink link = ((IProductCmptLink)target);
+            return processProductCmptLink(draggedCmpts, link, false);
+        } else {
             return false;
         }
     }
@@ -145,12 +150,10 @@ public class LinkDropListener extends ViewerDropAdapter {
     private boolean processProductCmptReference(List<IProductCmpt> draggedCmpts,
             IProductCmptReference reference,
             boolean createLinks) throws CoreException {
-        List<IProductCmptLink> createdLinks = new ArrayList<IProductCmptLink>();
 
-        IProductCmptGeneration generation;
         IIpsProject ipsProject = reference.getProductCmpt().getIpsProject();
-        generation = (IProductCmptGeneration)reference.getProductCmpt().findGenerationEffectiveOn(
-                reference.getStructure().getValidAt());
+        IProductCmptGeneration generation = (IProductCmptGeneration)reference.getProductCmpt()
+                .findGenerationEffectiveOn(reference.getStructure().getValidAt());
         IProductCmptType cmptType = reference.getProductCmpt().findProductCmptType(ipsProject);
         if (generation == null || cmptType == null) {
             return false;
@@ -165,34 +168,40 @@ public class LinkDropListener extends ViewerDropAdapter {
                     possibleAssos.add(aAssoziation);
                 }
             }
-            if (possibleAssos.size() > 0 && !createLinks) {
+            if (possibleAssos.size() > 0) {
                 result = true;
+            } else if (!createLinks) {
+                return false;
             }
-            if (possibleAssos.size() == 1) {
-                result = true;
-                if (createLinks) {
+            if (createLinks) {
+                if (possibleAssos.size() == 1) {
                     IAssociation association = possibleAssos.get(0);
-                    createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
-                }
-            } else if (possibleAssos.size() > 1) {
-                Object[] selectedAssociations = selectAssociation(draggedCmpt.getName(), possibleAssos);
-                if (selectedAssociations != null) {
-                    for (Object object : selectedAssociations) {
-                        if (object instanceof IAssociation) {
-                            IAssociation association = (IAssociation)object;
-                            createdLinks.add(createLink(draggedCmpt.getName(), generation, association));
-                            result = true;
+                    createLink(draggedCmpt.getName(), generation, association);
+                } else if (possibleAssos.size() > 1) {
+                    Object[] selectedAssociations = selectAssociation(draggedCmpt.getName(), possibleAssos);
+                    if (selectedAssociations != null) {
+                        for (Object object : selectedAssociations) {
+                            if (object instanceof IAssociation) {
+                                IAssociation association = (IAssociation)object;
+                                createLink(draggedCmpt.getName(), generation, association);
+                                result = true;
+                            }
                         }
                     }
                 }
-            } else {
-                return false;
             }
         }
         return result;
     }
 
-    private Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
+    /**
+     * Set to protected to test without clicking dialogs
+     * 
+     * @param droppedCmptName
+     * @param possibleAssos
+     * @return
+     */
+    protected Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
         Shell shell = Display.getDefault().getActiveShell();
         if (shell == null) {
             shell = new Shell(Display.getDefault());
@@ -216,8 +225,8 @@ public class LinkDropListener extends ViewerDropAdapter {
         IAssociation association;
         IProductCmptGeneration generation;
         IProductCmpt parentCmpt = ((IProductCmptReference)reference.getParent()).getProductCmpt();
-        generation = (IProductCmptGeneration)parentCmpt.getGenerationByEffectiveDate(reference.getStructure()
-                .getValidAt());
+        generation = (IProductCmptGeneration)parentCmpt
+                .findGenerationEffectiveOn(reference.getStructure().getValidAt());
         association = reference.getRelation();
         // should only return true if all dragged cmpts are valid
         boolean result = false;
@@ -238,8 +247,7 @@ public class LinkDropListener extends ViewerDropAdapter {
     private boolean processProductCmptLink(List<IProductCmpt> draggedCmpts, IProductCmptLink link, boolean createLink)
             throws CoreException {
         IAssociation association;
-        IProductCmptGeneration generation;
-        generation = link.getProductCmptGeneration();
+        IProductCmptGeneration generation = link.getProductCmptGeneration();
         association = link.findAssociation(generation.getIpsProject());
         // should only return true if all dragged cmpts are valid
         boolean result = false;
