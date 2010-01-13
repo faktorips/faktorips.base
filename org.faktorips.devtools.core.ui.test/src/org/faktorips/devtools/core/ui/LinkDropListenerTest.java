@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DND;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -252,7 +254,51 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         links[1].delete();
         links[2].delete();
         links[3].delete();
+    }
 
+    public void testSaveFile() throws CoreException {
+        IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
+        assertTrue(ipsSrcFile.isMutable());
+        ipsSrcFile.save(false, null);
+        assertFalse(ipsSrcFile.isDirty());
+
+        // test with cmpt reference target
+        dropListener.setTarget(structure.getRoot());
+        checkSaveFile(ipsSrcFile);
+
+        // test with association reference target
+        IProductCmptTypeRelationReference[] references = structure.getChildProductCmptTypeRelationReferences(structure
+                .getRoot());
+        dropListener.setTarget(references[2]);
+        checkSaveFile(ipsSrcFile);
+
+        // test with link target
+        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
+        link.setTarget(cmptC3.getName());
+        dropListener.setTarget(link);
+        checkSaveFile(ipsSrcFile);
+    }
+
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+        dropListener.setAutoSave(false);
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(ipsSrcFile.isDirty());
+        ipsSrcFile.discardChanges();
+
+        dropListener.setAutoSave(true);
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertFalse(ipsSrcFile.isDirty());
+
+        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links[0].delete();
+        assertTrue(ipsSrcFile.isDirty());
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(ipsSrcFile.isDirty());
+
+        // reset for next test
+        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links[0].delete();
+        ipsSrcFile.save(false, null);
     }
 
     /**
