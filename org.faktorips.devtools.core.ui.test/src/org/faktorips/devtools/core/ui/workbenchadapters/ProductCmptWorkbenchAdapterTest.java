@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
 // TODO Joerg warum musste vom IpsUIPluginTest abgeleitet werden
 // Problem beim der Autotestsuite (stefan w.)?
 // die Tests von IpsUIPluginTest wurden immer mit ausgefuehrt
-public class WorkbenchAdapterTest extends AbstractIpsPluginTest {
+public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
 

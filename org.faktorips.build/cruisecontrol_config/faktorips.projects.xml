@@ -213,6 +213,7 @@
                 <cvs module="org.faktorips.uml"/>
                 <cvs module="org.faktorips.devtools.ormext"/>
                 <cvs module="org.faktorips.devtools.ormext.ui"/>
+                <cvs module="org.faktorips.analysis"/>
                                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
@@ -271,12 +272,6 @@
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/>  
-                <cvs module="org.faktorips.devtools.ormext.test"/> 
-                                
-                <!-- customer plugins -->              
-                <cvs module="de.qv.faktorips"/>
-                <cvs module="de.qv.ormext.builder"/>
-                <cvs module="de.qv.ormext.builder.test"/>                  
             </depends>      
         </project>
         
@@ -316,10 +311,6 @@
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/>  
                 
-                <!-- customer plugins -->              
-                <cvs module="de.qv.faktorips"/>
-                <cvs module="de.qv.ormext.builder"/>
-                <cvs module="de.qv.ormext.builder.test"/>                  
             </depends>      
         </project>
         

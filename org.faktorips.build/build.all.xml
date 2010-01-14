@@ -38,7 +38,9 @@
     	<ant dir="../org.faktorips.devtools.ormext/build" antfile="build.xml" target="buildjar"/>
         
     	<ant dir="../org.faktorips.devtools.ormext.ui/build" antfile="build.xml" target="buildjar"/>
-        
+
+    	<ant dir="../org.faktorips.devtools.analysis/build" antfile="build.xml" target="buildjar"/>
+
     	<ant dir="../de.qv.faktorips/build" antfile="build.xml" target="buildjar"/>
     	
 <!-- none plugin projects 
