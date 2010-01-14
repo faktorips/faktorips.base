@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
@@ -69,6 +70,14 @@ public class LinkDropListener extends ViewerDropAdapter {
      */
     public boolean isAutoSave() {
         return autoSave;
+    }
+
+    @Override
+    public void dragEnter(DropTargetEvent event) {
+        if (event.detail == DND.DROP_DEFAULT) {
+            event.detail = DND.DROP_LINK;
+        }
+        super.dragEnter(event);
     }
 
     @Override
@@ -215,7 +224,6 @@ public class LinkDropListener extends ViewerDropAdapter {
                 return dialog.getResult();
             }
         }
-        // TODO Auto-generated method stub
         return null;
     }
 
