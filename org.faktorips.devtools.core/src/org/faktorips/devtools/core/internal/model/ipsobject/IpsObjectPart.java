@@ -212,8 +212,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     public Object getAdapter(Class adapterType) {
         if (IResource.class.isAssignableFrom(adapterType) | ResourceMapping.class.isAssignableFrom(adapterType)) {
             /*
-             * This prevents the CVSDecorator from displaying decorations for ipsobjectparts in
-             * ModelExplorer and ProductExplorer.
+             * This prevents the CVSLightweightDecorator from displaying decorations for
+             * ipsobjectparts in ModelExplorer and ProductExplorer.
              */
             return null;
         } else {
