@@ -188,7 +188,21 @@
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
-	
+
+	<target name="analysis" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.analysis' project">
+    	<property name="checkoutdir" value="checkout"/>
+    	<property name="cvsTag" value="HEAD"/>
+        <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
+
+        <property name="cvsModule" value="org.faktorips.devtools.analysis"/>
+        <property name="projectDir" value="${checkoutdir}"/>
+        <!--checkout/update project-->
+		<antcall target="-checkout.all" />
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
     <!--============================================================================================-->
     <!--project targets for additional customers plugins, e.g. BBV, KQV-->
     <!--============================================================================================-->

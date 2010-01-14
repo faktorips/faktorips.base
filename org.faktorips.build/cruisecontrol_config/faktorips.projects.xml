@@ -178,6 +178,17 @@
         </project>
 
         <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.analysis-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.devtools.analysis" mainbuildtarget="analysis">
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+                <project name="org.faktorips.devtools.core.ui"/>
+                <project name="org.faktorips.nebula"/>
+            </depends>
+        </project>
+
+        <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
