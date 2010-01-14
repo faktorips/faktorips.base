@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -206,10 +207,10 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @SuppressWarnings("unchecked")
+    // ok, to suppress unchecked warnings, as the method signature is defined by Eclipse
     @Override
     public Object getAdapter(Class adapterType) {
-        // ok, to suppress unchecked warnings, as the method signature is defined by Eclipse
-        if (IResource.class.isAssignableFrom(adapterType)) {
+        if (IResource.class.isAssignableFrom(adapterType) | ResourceMapping.class.isAssignableFrom(adapterType)) {
             /*
              * This prevents the CVSDecorator from displaying decorations for ipsobjectparts in
              * ModelExplorer and ProductExplorer.
