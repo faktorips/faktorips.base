@@ -360,6 +360,10 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         return productCmpt;
     }
 
+    @SuppressWarnings("unchecked")
+    // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[] while returning
+    // Contructor<T>[]
+    // The Javaoc Class.getDeclaredConstructors() for more information
     @Override
     protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
 
