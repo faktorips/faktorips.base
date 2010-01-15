@@ -249,10 +249,7 @@ public class DeepCopyPreview {
             } else {
                 // could't determine kind id, thus add copy of in front of the name
                 // to get an unique new name
-                if (targetPackage != null) {
-                    newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
-                            newName);
-                }
+                newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter, newName);
             }
         }
 
@@ -277,7 +274,7 @@ public class DeepCopyPreview {
             IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(
                     newName));
             if (ipsSrcFile.exists()) {
-                return getNewName(targetPackage, correspondingIpsObject, ++uniqueCopyOfCounter);
+                return getNewName(targetPackage, correspondingIpsObject, uniqueCopyOfCounter + 1);
             }
         }
 

@@ -472,7 +472,9 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
         @Override
         public void dispose() {
-            replaceInput.dispose();
+            if (replaceInput != null) {
+                replaceInput.dispose();
+            }
             super.dispose();
         }
 
