@@ -360,10 +360,6 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         return productCmpt;
     }
 
-    @SuppressWarnings("unchecked")
-    // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[] while returning
-    // Contructor<T>[]
-    // The Javaoc Class.getDeclaredConstructors() for more information
     @Override
     protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
 
@@ -383,14 +379,19 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
         try {
-            Constructor<T>[] constructors = clazz.getDeclaredConstructors();
+            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
             Constructor<T> constructor = null;
-            for (Constructor<T> currentConstructor : constructors) {
+            for (Constructor<?> currentConstructor : constructors) {
                 if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
                     if (parameterTypes.length == 2 && parameterTypes[0] == List.class
                             && parameterTypes[1] == IRuntimeRepository.class) {
-                        constructor = currentConstructor;
+                        @SuppressWarnings("unchecked")
+                        // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
+                        // while returning Contructor<T>[]
+                        // The Javaoc Class.getDeclaredConstructors() for more information
+                        Constructor<T> castedConstructor = (Constructor<T>)currentConstructor;
+                        constructor = castedConstructor;
                     }
                 }
             }
