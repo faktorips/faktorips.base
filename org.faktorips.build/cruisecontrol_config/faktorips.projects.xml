@@ -252,7 +252,7 @@
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvsTag" value="v2_2_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
                 <cvs module="org.faktorips.util"/>
