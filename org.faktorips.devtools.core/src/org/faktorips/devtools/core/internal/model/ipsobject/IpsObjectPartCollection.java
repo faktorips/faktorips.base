@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -78,21 +77,21 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         this.xmlTag = xmlTag;
     }
 
-    @SuppressWarnings("unchecked")
     private Constructor<T> getConstructor(Class<? extends T> clazz) {
-        Constructor<T>[] constructors = clazz.getConstructors();
+        Constructor<?>[] constructors = clazz.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
-            Class[] params = constructors[i].getParameterTypes();
+            Class<?>[] params = constructors[i].getParameterTypes();
             if (params.length != 2) {
                 continue;
             }
             if (params[1].equals(Integer.TYPE)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
-                    return constructors[i];
-                }
-                // TODO CD unreachable because IIpsObject extends IIpsObjectPartContainer
-                if (IIpsObject.class.isAssignableFrom(params[0])) {
-                    return constructors[i];
+                    @SuppressWarnings("unchecked")
+                    // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
+                    // while returning Contructor<T>[]
+                    // The Javaoc Class.getDeclaredConstructors() for more information
+                    Constructor<T> castedConstructor = (Constructor<T>)constructors[i];
+                    return castedConstructor;
                 }
             }
         }
