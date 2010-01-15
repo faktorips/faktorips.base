@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -813,7 +812,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                         GregorianCalendar nextDate = validFromIterator.next();
                         lastAdjDate = new AdjustmentDate(nextDate, lastDate);
                         lastDate = (GregorianCalendar)nextDate.clone();
-                        lastDate.add(Calendar.DATE, -1);
+                        lastDate.setTimeInMillis(lastDate.getTimeInMillis() - 1);// add(Calendar.DATE,
+                                                                                 // -1);
                         result.add(lastAdjDate);
                     }
                     return result.toArray();

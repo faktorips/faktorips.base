@@ -100,7 +100,10 @@ public class ProductStructureLabelProvider extends LabelProvider {
             label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label,
                     generationText);
         } else {
-            label += " (" + new AdjustmentDate(generation.getValidFrom(), generation.getValidTo()).getText() + ")";
+            AdjustmentDate genAdjDate = new AdjustmentDate(generation.getValidFrom(), generation.getValidTo());
+            if (!genAdjDate.equals(adjustmentDate)) {
+                label += " (" + genAdjDate.getText() + ")";
+            }
         }
         return label;
     }

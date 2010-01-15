@@ -47,9 +47,9 @@ public class AdjustmentDate {
     public boolean equals(Object obj) {
         if (obj instanceof AdjustmentDate) {
             AdjustmentDate other = (AdjustmentDate)obj;
-            return validFrom.equals(other.validFrom)
-                    && (getValidTo() != null ? getValidTo().equals(other.getValidTo()) : getValidTo() == other
-                            .getValidTo());
+            return validFrom.getTimeInMillis() == other.validFrom.getTimeInMillis()
+                    && (getValidTo() != null ? getValidTo().getTimeInMillis() == other.getValidTo().getTimeInMillis()
+                            : getValidTo() == other.getValidTo());
         } else {
             return false;
         }
