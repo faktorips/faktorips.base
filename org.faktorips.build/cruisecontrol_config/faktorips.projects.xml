@@ -242,7 +242,7 @@
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
         <project name="org.faktorips.pluginbuilder.v2_2_patches" mainbuildtarget="pluginbuilder.faktorips"
-            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_2/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
             cvstag="v2_2_patches"
             cvsmodul="org.faktorips.pluginbuilder"
@@ -250,7 +250,7 @@
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
             <jvmarg arg="-Xmx600m"/>
             <!-- property for the ant build script -->
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_2"/>
             <property name="cvsTag" value="v2_2_patches"/>
             <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>
             <depends>
@@ -389,11 +389,11 @@
         <!--Project definition: org.faktorips.integrationtest.v2_2_patches-->
         <!--=====================================================-->    
         <project name="org.faktorips.integrationtest.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
-            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_2/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300"
             cvstag="v2_2_patches">
             <jvmarg arg="-Dprg=cruise.integrationtest"/>
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_2"/>
             <property name="cvsTag" value="v2_2_patches"/>
             <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>            
             <depends>
@@ -406,11 +406,11 @@
         <!--Project definition: org.faktorips.integrationtest.java5.v2_2_patches-->
         <!--============================================================-->    
         <project name="org.faktorips.integrationtest.java5.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
-            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testresult="${workdir}/../pluginbuilder_tmp_branch_2_2/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300"
             cvstag="v2_2_patches">
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
-            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="checkoutdir" value="checkout_branch_2_2"/>
             <property name="cvsTag" value="v2_2_patches"/>
             <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>             
             <depends>
