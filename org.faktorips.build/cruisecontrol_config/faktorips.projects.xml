@@ -395,7 +395,7 @@
             <jvmarg arg="-Dprg=cruise.integrationtest"/>
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvsTag" value="v2_2_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>            
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
 <!-- TODO to receive emails add cvs projects -->
@@ -412,7 +412,7 @@
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvsTag" value="v2_2_patches"/>
-            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>             
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>             
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
             </depends>         
