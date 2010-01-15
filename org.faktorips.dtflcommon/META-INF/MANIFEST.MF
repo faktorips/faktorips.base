@@ -4,7 +4,6 @@ Bundle-Name: Faktor- IPS Common code for Devtools and Formula Language
 Bundle-SymbolicName: org.faktorips.dtflcommon
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Bundle-Localization: plugin
 Require-Bundle: org.faktorips.util,
  org.faktorips.valuetypes,
  org.junit
