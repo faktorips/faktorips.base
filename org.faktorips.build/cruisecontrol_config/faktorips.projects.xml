@@ -596,7 +596,7 @@ TODO bbv und msgp
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                     <property name="workspaceName" value="workspace_integrationtest"/>
-                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>
                 </antpublisher>
         </publisher>
 
@@ -611,7 +611,7 @@ TODO bbv und msgp
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                     <property name="workspaceName" value="workspace_integrationtest_java5"/>
-                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>
                 </antpublisher>
         </publisher>
         
@@ -626,7 +626,7 @@ TODO bbv und msgp
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                     <property name="workspaceName" value="workspace"/>
-                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+                    <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch_2_2"/>
                 </antpublisher>
         </publisher>
         
