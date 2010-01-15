@@ -92,7 +92,7 @@ import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
-import org.faktorips.devtools.core.ui.workbenchadapters.IpsWorkbenchAdapterFactory;
+import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementsAdapterFactory;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -157,7 +157,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private static IWorkbenchAdapterProvider[] workbenchAdapterProviders;
 
-    private IpsWorkbenchAdapterFactory workbenchAdapterFactory;
+    private IpsElementsAdapterFactory ipsElementsAdapterFactory;
 
     /**
      * The constructor.
@@ -189,8 +189,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
                 new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new DefaultControlFactory() };
-        workbenchAdapterFactory = new IpsWorkbenchAdapterFactory();
-        Platform.getAdapterManager().registerAdapters(workbenchAdapterFactory, IIpsElement.class);
+        ipsElementsAdapterFactory = new IpsElementsAdapterFactory();
+        Platform.getAdapterManager().registerAdapters(ipsElementsAdapterFactory, IIpsElement.class);
     }
 
     /**
@@ -942,7 +942,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @return
          */
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
-            IpsElementWorkbenchAdapter adapter = getDefault().workbenchAdapterFactory.getAdapterByClass(
+            IpsElementWorkbenchAdapter adapter = getDefault().ipsElementsAdapterFactory.getAdapterByClass(
                     ipsElementClass, IWorkbenchAdapter.class);
             if (adapter instanceof IpsElementWorkbenchAdapter) {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
@@ -1023,7 +1023,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
-            return getDefault().workbenchAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
+            return getDefault().ipsElementsAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
         }
 
         public void dispose() {

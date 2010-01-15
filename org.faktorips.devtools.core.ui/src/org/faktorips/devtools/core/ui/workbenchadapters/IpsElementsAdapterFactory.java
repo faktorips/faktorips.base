@@ -27,11 +27,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
+public class IpsElementsAdapterFactory implements IAdapterFactory {
 
     Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
 
-    public IpsWorkbenchAdapterFactory() {
+    public IpsElementsAdapterFactory() {
         super();
         workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
         registerAdapters();
