@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -x
 #
 # Script to update (generate) the cruise control configuration
 #
@@ -14,7 +15,7 @@ ANT_HOME=/opt/cc/apache-ant-1.6.5
 
 cvsUpdate()
 {
-  cvs -d $CVS_ROOT co -d $CVS_CHECKOUT $CRUISE_CONTROL_SOURCE_PATH >> /dev/null 2>&1
+  cvs -d $CVS_ROOT co -d $CVS_CHECKOUT $CVS_CRUISE_CONTROL_SOURCE_LOCATION >> /dev/null 2>&1
 }
 
 generateCruiseControlConfig()
@@ -22,8 +23,7 @@ generateCruiseControlConfig()
   $ANT_HOME/bin/ant -buildfile $CVS_CHECKOUT/generate.cc.config.xml generate.config.xml -Dskip.pretty.print=true -Dconfig.xml=$OUTPUT_FILE
 }
 
-#the update of this folder will be done using crontab
-#cvsUpdate
+cvsUpdate
 
 CHANGE_FOUND="false"
 for file in ${INPUT_FILES[*]} ; do
