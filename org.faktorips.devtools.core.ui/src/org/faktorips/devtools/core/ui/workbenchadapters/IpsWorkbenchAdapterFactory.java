@@ -38,7 +38,7 @@ public class IpsWorkbenchAdapterFactory implements IAdapterFactory {
     }
 
     protected void registerAdapters() {
-        List<IWorkbenchAdapterProvider> providers = IpsUIPlugin.getDefault().getWorkbenchAdapterProviders();
+        List<IWorkbenchAdapterProvider> providers = IpsUIPlugin.getWorkbenchAdapterProviders();
         for (IWorkbenchAdapterProvider provider : providers) {
             workbenchAdapterMap.putAll(provider.getAdapterMap());
         }

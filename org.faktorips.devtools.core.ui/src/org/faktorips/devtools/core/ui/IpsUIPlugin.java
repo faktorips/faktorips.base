@@ -151,11 +151,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private Map<String, IExtensionPropertyEditFieldFactory> extensionPropertyEditFieldFactoryMap;
 
-    private IExtensionRegistry registry;
+    private static IExtensionRegistry registry;
 
     private IpsObjectSelectionHistory openIpsObjectHistory;
 
-    private IWorkbenchAdapterProvider[] workbenchAdapterProviders;
+    private static IWorkbenchAdapterProvider[] workbenchAdapterProviders;
 
     private IpsWorkbenchAdapterFactory workbenchAdapterFactory;
 
@@ -167,10 +167,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * This method is protected for test purposes only.
+     * This method is public for test purposes only.
      */
-    public void setExtensionRegistry(IExtensionRegistry registry) {
-        this.registry = registry;
+    public static void setExtensionRegistry(IExtensionRegistry registry) {
+        IpsUIPlugin.registry = registry;
     }
 
     /**
@@ -543,7 +543,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return factory;
     }
 
-    public List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
+    public static List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
         List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
         if (workbenchAdapterProviders == null) {
             try {
