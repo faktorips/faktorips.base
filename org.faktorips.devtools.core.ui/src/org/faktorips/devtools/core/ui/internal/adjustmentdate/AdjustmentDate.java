@@ -72,8 +72,11 @@ public class AdjustmentDate {
 
     public String getText() {
         StringBuffer result = new StringBuffer(getDateFormat().format(getValidFrom().getTime()));
+        result.append(" - "); //$NON-NLS-1$
         if (getValidTo() != null) {
-            result.append(" - ").append(getDateFormat().format(getValidTo().getTime())); //$NON-NLS-1$
+            result.append(getDateFormat().format(getValidTo().getTime()));
+        } else {
+            result.append(Messages.AdjustmentDate_infinite);
         }
         return result.toString();
     }
