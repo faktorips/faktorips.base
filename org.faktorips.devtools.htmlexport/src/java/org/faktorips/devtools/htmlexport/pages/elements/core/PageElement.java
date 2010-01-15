@@ -8,10 +8,10 @@ public interface PageElement {
 
     public Set<Style> getStyles();
 
-    public void setStyles(Set<Style> styles);
+    public void addStyles(Style... style);
 
-    public void addStyle(Style style);
-    
+    public void removeStyles(Style... style);
+
     public void acceptLayouter(ILayouter layouter);
     
     public void build();

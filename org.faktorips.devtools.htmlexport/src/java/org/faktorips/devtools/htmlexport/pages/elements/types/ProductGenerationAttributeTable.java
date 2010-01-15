@@ -8,8 +8,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 public class ProductGenerationAttributeTable extends AbstractSpecificTablePageElement {
 
@@ -43,7 +43,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 			cells[i + 1] = new TextPageElement(value);
 		}
 
-		subElements.add(new TableRowPageElement(cells));
+		addSubElement(new TableRowPageElement(cells));
 
 	}
 

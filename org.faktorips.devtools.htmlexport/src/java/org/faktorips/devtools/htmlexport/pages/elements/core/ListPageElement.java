@@ -14,7 +14,7 @@ public class ListPageElement extends AbstractCompositePageElement {
 
     public ListPageElement(List<? extends PageElement> listElements) {
         super();
-        this.subElements.addAll(listElements);
+        getSubElements().addAll(listElements);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ListPageElement extends AbstractCompositePageElement {
 
     @Override
     public void visitSubElements(ILayouter layouter) {
-        for (PageElement subElement : subElements) {
+        for (PageElement subElement : getSubElements()) {
             layouter.layoutWrapperPageElement(new WrapperPageElement(LayouterWrapperType.LISTITEM, subElement));
         }
     }

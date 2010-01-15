@@ -6,7 +6,7 @@ import java.util.List;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
 	protected IType type;
@@ -26,7 +26,7 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
 	}
 
 	protected void addMethodRow(IMethod method) {
-		subElements.add(new TableRowPageElement(PageElementUtils.createTextPageElements(getMethodData(method))));
+		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getMethodData(method))));
 	}
 
 	protected List<String> getMethodData(IMethod method) {

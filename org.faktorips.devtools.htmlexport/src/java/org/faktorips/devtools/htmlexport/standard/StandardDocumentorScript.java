@@ -10,8 +10,6 @@ import org.faktorips.devtools.htmlexport.AbstractDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.html.AllClassesPageElement;
-import org.faktorips.devtools.htmlexport.generators.html.AllPackagesPageElement;
 import org.faktorips.devtools.htmlexport.generators.html.BaseFrameHtmlGenerator;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIIpsPackageFilter;
@@ -19,6 +17,8 @@ import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AllClassesPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AllPackagesPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 

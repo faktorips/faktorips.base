@@ -29,7 +29,7 @@ public class ProjectOverviewPageElement extends RootPageElement {
 	@Override
 	public void build() {
 		super.build();
-		addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
+		addPageElements(new TextPageElement(getTitle(), TextType.HEADING_1));
 
 		addPageElements(new TextPageElement("Jetzt ne zündende Idee für die Projektübersicht!"));
 

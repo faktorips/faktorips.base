@@ -28,12 +28,25 @@ public class HtmlUtil {
 	}
 
 	public static String createHtmlHead(String title) {
+		return createHtmlHead(title, null);
+	}
+
+	public static String createHtmlHead(String title, String styles) {
 		StringBuilder builder = new StringBuilder();
 
+		builder.append("<?xml version=\"1.0\" ?>\n");
 		builder
-				.append("<?xml version=\"1.0\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>");
+				.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+		builder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>");
 		builder.append(title);
-		builder.append("</title></head><body>");
+		builder.append("</title>");
+		if (!StringUtils.isBlank(styles)) {
+			builder.append("<style type=\"text/css\">\n<!--");
+			builder.append(styles);
+			builder.append("-->\n</style>");
+		}
+
+		builder.append("</head><body>");
 
 		return builder.toString();
 	}

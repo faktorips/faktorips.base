@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.generators.html;
+package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
 import java.util.Collections;

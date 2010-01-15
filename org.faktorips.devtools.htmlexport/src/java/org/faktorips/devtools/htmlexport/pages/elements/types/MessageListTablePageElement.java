@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -28,7 +28,7 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
 
 	protected void addMessageRow(Message msg) {
 		int severity = msg.getSeverity();
-		subElements.add(new TableRowPageElement(new PageElement[] {
+		addSubElement(new TableRowPageElement(new PageElement[] {
 				new TextPageElement(msg.getCode()),
 				new TextPageElement(msg.getText()),
 				new TextPageElement(severity == Message.ERROR ? "ERROR" : severity == Message.WARNING ? "WARNING"

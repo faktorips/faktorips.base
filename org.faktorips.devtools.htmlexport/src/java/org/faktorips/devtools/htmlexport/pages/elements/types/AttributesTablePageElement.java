@@ -6,7 +6,7 @@ import java.util.List;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 public class AttributesTablePageElement extends AbstractSpecificTablePageElement {
 
@@ -28,7 +28,7 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
 	
 
 	protected void addAttributeRow(IAttribute attribute) {
-		subElements.add(new TableRowPageElement(PageElementUtils.createTextPageElements(getAttributeData(attribute))));
+		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getAttributeData(attribute))));
 	}
 
 	

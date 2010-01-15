@@ -92,7 +92,7 @@ public class HtmlTable {
     
     public String generate() {
         StringBuilder builder = new StringBuilder();
-        builder.append(HtmlUtil.createHtmlElementOpenTag("table", new HtmlAttribute("border","1"), new HtmlAttribute("class", tableClasses)));
+        builder.append(HtmlUtil.createHtmlElementOpenTag("table", new HtmlAttribute("class", tableClasses)));
         for (int i = 0; i < htmlTableCells.length; i++) {
             generateRow(builder, i);
             

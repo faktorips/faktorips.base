@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class PageElementUtils {
 
 		for (IIpsObject object : objects) {
 			LinkPageElement linkPageElement = new LinkPageElement(srcObject, object, target, new TextPageElement(object.getName()));
-			linkPageElement.setStyles(styles);
+			linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
 			liste.add(linkPageElement);
 		}
 		

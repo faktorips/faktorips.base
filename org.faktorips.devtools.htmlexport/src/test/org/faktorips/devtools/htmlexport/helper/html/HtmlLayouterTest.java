@@ -5,121 +5,117 @@ import java.util.List;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
  * Test fuer das HTML-Layout
  * 
- * <div>Achtung: Für die Generierung der Links sind momentan noch IPS-Objekte notwendig und werden daher im Plugin-Test-Projekt getestet</div>
+ * <div>Achtung: Für die Generierung der Links sind momentan noch IPS-Objekte
+ * notwendig und werden daher im Plugin-Test-Projekt getestet</div>
  */
 public class HtmlLayouterTest extends AbstractHtmlLayouterTest {
-    public void testHtmlLayouterRootPageElement() throws Exception {
-        RootPageElement pageElement = new RootPageElement();
-        pageElement.setTitle("Test");
+	public void testHtmlLayouterRootPageElement() throws Exception {
+		RootPageElement pageElement = new RootPageElement();
+		pageElement.setTitle("Test");
 
-        String[] containments = { "<html", "</html>", "<head>", "</head>", "<title>" + pageElement.getTitle() + "</title>", "<body>", "</body>" };
-        assertContains(layout(pageElement), containments);
-    }
+		String[] containments = { "<html", "</html>", "<head>", "</head>",
+				"<title>" + pageElement.getTitle() + "</title>", "<body>", "</body>" };
+		assertContains(layout(pageElement), containments);
+	}
 
-    public void testHtmlLayouterTextPageElementEinfach() throws Exception {
-        String text = "text beispiel";
-        TextPageElement pageElement = new TextPageElement(text);
+	public void testHtmlLayouterTextPageElementEinfach() {
+		String text = "text beispiel";
+		TextPageElement pageElement = new TextPageElement(text);
 
-        assertEquals(text, layout(pageElement));
-    }
+		assertEquals(text, layout(pageElement));
+	}
 
-    public void testHtmlLayouterTextPageElementInline() throws Exception {
-        String text = "text beispiel";
-        TextPageElement pageElement = new TextPageElement(text, TextType.INLINE);
+	public void testHtmlLayouterTextPageElementInline() {
+		String text = "text beispiel";
+		TextPageElement pageElement = new TextPageElement(text, TextType.INLINE);
 
-        assertEquals("<span>" + text + "</span>", layout(pageElement));
-    }
+		assertEquals("<span>" + text + "</span>", layout(pageElement));
+	}
 
-    public void testHtmlLayouterTextPageElementBlock() throws Exception {
-        String text = "text beispiel";
-        TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
+	public void testHtmlLayouterTextPageElementBlock() {
+		String text = "text beispiel";
+		TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
 
-        assertEquals("<div>" + text + "</div>", layout(pageElement));
-    }
+		assertEquals("<div>" + text + "</div>", layout(pageElement));
+	}
 
-    public void testHtmlLayouterTextPageElementUeberschrift() throws Exception {
-        String text = "text bespiel";
-        TextPageElement pageElement = new TextPageElement(text, TextType.HEADING_3);
+	/*
+	 * da die Links ipsobjekte brauchen, muessen sie als plugin test getestet
+	 * werden
+	 */
+	/*
+	 * public void testHtmlLayouterLinkPageElement() throws Exception { String
+	 * text = "text beispiel";
+	 * 
+	 * LinkPageElement pageElement = new LinkPageElement();
+	 * 
+	 * assertEquals("<h3>" + text + "</h3>", layout(pageElement)); }
+	 */
 
-        assertEquals("<h3>" + text + "</h3>", layout(pageElement));
-    }
+	public void testHtmlLayouterListPageElement() {
 
+		String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" };
+		List<PageElement> elementListe = createPageElementListe(texte);
 
-    /*
-     * da die Links ipsobjekte brauchen, muessen sie als plugin test getestet werden
-     */
-    /*
-    public void testHtmlLayouterLinkPageElement() throws Exception {
-        String text = "text beispiel";
-        
-        LinkPageElement pageElement = new LinkPageElement();
+		ListPageElement pageElement = new ListPageElement(elementListe);
 
-        assertEquals("<h3>" + text + "</h3>", layout(pageElement));
-    }
-    */
+		String html = layout(pageElement);
+		assertContains(html, texte);
 
-    public void testHtmlLayouterListPageElement() throws Exception {
+		String[] tags = { "<ul>", "<li>", "</li>", "</ul>" };
+		assertContains(html, tags);
+	}
 
-        String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" };
-        List<PageElement> elementListe = createPageElementListe(texte);
+	public void testHtmlLayouterListPageElementUngeordnet() {
 
-        ListPageElement pageElement = new ListPageElement(elementListe);
+		String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" };
+		List<PageElement> elementListe = createPageElementListe(texte);
 
-        String html = layout(pageElement);
-        assertContains(html, texte);
-        
-        String[] tags = { "<ul>", "<li>", "</li>", "</ul>" };
-        assertContains(html, tags);
-    }
+		ListPageElement pageElement = new ListPageElement(elementListe);
+		pageElement.setOrdered(false);
 
-    public void testHtmlLayouterListPageElementUngeordnet() throws Exception {
+		String html = layout(pageElement);
+		assertContains(html, texte);
 
-        String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" };
-        List<PageElement> elementListe = createPageElementListe(texte);
+		String[] tags = { "<ol>", "<li>", "</li>", "</ol>" };
+		assertContains(html, tags);
+	}
 
-        ListPageElement pageElement = new ListPageElement(elementListe);
-        pageElement.setOrdered(false);
-        
-        String html = layout(pageElement);
-        assertContains(html, texte);
-        
-        String[] tags = { "<ol>", "<li>", "</li>", "</ol>" };
-        assertContains(html, tags);
-    }
-    
-    public void testHtmlLayouterTablePageElement() throws Exception {
-    	int rows = 3;
-    	int cols = 4;
+	public void testHtmlLayouterTablePageElement() {
+		int rows = 3;
+		int cols = 4;
 
-    	String[][] texte = new String[rows][cols];
-    	for (int i = 0; i < rows; i++) {
+		String[][] texte = new String[rows][cols];
+		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				texte[i][j] = i + "-" + j;
 			}
 		}
-    	
-    	TablePageElement table = new TablePageElement();
 
-    	for (String[] zeile : texte) {
-        	table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0])));
-			
+		TablePageElement table = new TablePageElement();
+
+		for (String[] zeile : texte) {
+			table
+					.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(
+							new TextPageElement[0])));
+
 		}
-    	
-        String html = layout(table);
-        for (int i = 0; i < texte.length; i++) {
-            assertContains(html, texte[i]);
+
+		String html = layout(table);
+		for (int i = 0; i < texte.length; i++) {
+			assertContains(html, texte[i]);
 		}
-        
-        String[] tags = { "<table", "<tr>", "<td>", "</td>", "</tr>" , "</table>"};
-        assertContains(html, tags);
-    }
+
+		String[] tags = { "<table", "<tr>", "<td>", "</td>", "</tr>", "</table>" };
+		assertContains(html, tags);
+	}
 
 }

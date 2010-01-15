@@ -19,11 +19,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 

@@ -7,7 +7,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 
 public abstract class AbstractCompositePageElement extends AbstractPageElement implements ICompositePageElement {
-    protected List<PageElement> subElements = new ArrayList<PageElement>();
+    private List<PageElement> subElements = new ArrayList<PageElement>();
     protected String title;
     protected final LayouterWrapperType wrapperType = LayouterWrapperType.NONE;
 
@@ -33,14 +33,18 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
      * @throws ClassCastException wenn nur bestimmte Typen an Elemente zugelassen werden
      */
     public void addPageElements(PageElement... pageElements) {
-    	// TODO check auf richtigen Typen anders lösen (z.B. Filter) und Rückgabewert
         for (PageElement pageElement : pageElements) {
-            checkPageElementType(pageElement);
-        }
-        for (PageElement pageElement : pageElements) {
-        	subElements.add(pageElement);
+        	addSubElement(pageElement);
         }
     }
+
+    /**
+     * Fügt eine {@link PageElement} hinzu. Kann überschrieben werden, um Typ zu überprüfen, um Parent zu setzen und Styles durchzureichen etc. 
+     * @param pageElement
+     */
+	protected void addSubElement(PageElement pageElement) {
+		subElements.add(pageElement);
+	}
 
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : subElements) {
@@ -48,10 +52,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
             subElement.acceptLayouter(layouter);
         }
     }
-    
-    /**
-     * wirft eine ClassCastException, wenn dem Composite ein Element vom falschen Typ uebergeben wird
-     * @param pageElement
-     */
-    protected void checkPageElementType(PageElement pageElement) {}
+
+	public List<PageElement> getSubElements() {
+		return subElements;
+	}
 }

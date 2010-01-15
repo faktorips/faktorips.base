@@ -13,10 +13,11 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTablePageElement;
 
@@ -74,9 +75,11 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 			protected List<String> getHeadline() {
 				List<String> headline = super.getHeadline();
 
-				headline.add(PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+				addHeadlineAndColumnLayout(headline, PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Style.CENTER);
+				
 				headline.add(PolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE);
-				headline.add(PolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
+
+				addHeadlineAndColumnLayout(headline, PolicyCmptTypeAttribute.PROPERTY_OVERWRITES, Style.CENTER);
 
 				return headline;
 			}

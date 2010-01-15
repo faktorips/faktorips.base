@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TableRowPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
  * Tabelle zur Darstellung von Validierungsregeln
@@ -40,7 +40,7 @@ public class ValidationRuleTablePageElement extends AbstractSpecificTablePageEle
 		ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
 		ruleData.add(rule.getDescription());
 
-		subElements.add(new TableRowPageElement(PageElementUtils.createTextPageElements(ruleData)));
+		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(ruleData)));
 		
 	}
 

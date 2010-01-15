@@ -41,11 +41,16 @@ public abstract class AbstractHtmlLayouterTest extends TestCase {
         }
     }
 
-    protected String layout(PageElement pageElement) throws UnsupportedEncodingException {
+    protected String layout(PageElement pageElement)  {
         pageElement.acceptLayouter(layouter);
         byte[] generate = layouter.generate();
     
-        String html = new String(generate, "UTF-8").trim();
+        String html;
+		try {
+			html = new String(generate, "UTF-8").trim();
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
         System.out.println(html);
         return html;
     }

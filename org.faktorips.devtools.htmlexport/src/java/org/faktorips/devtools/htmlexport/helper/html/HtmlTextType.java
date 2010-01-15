@@ -14,7 +14,7 @@ public enum HtmlTextType {
         if (textType == TextType.HEADING_6) return H6;
         if (textType == TextType.BLOCK) return DIV;
         if (textType == TextType.INLINE) return SPAN;
-        return null;
+        return SPAN;
     }
     
     public String getTagName() {
