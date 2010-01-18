@@ -13,20 +13,17 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -53,18 +50,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
-import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
+import org.faktorips.devtools.core.util.ProjectUtil;
 
 /**
  * An action that adds the ips nature to a project.
@@ -151,8 +145,8 @@ public class AddIpsNatureAction extends ActionDelegate {
                 }
             }
 
-            IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
-                    isModelProject);
+            IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, runtimeIdPrefix,
+                    isProductDefinitionProject, isModelProject);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
@@ -181,89 +175,6 @@ public class AddIpsNatureAction extends ActionDelegate {
             ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null, status);
             IpsPlugin.log(e);
         }
-    }
-
-    /**
-     * Create an IpsProject based on the given JavaProject.
-     * 
-     * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
-     * @param runtimeIdPrefix The prefix for RuntimeIDs to be used in this project
-     * @param isProductDefinitionProject <code>true</code> if this is a product definition project.
-     * @param isModelProject <code>true</code> if this is a model project.
-     * @return The new IpsProject.
-     * 
-     * @throws CoreException In case of any Errors.
-     */
-    public static IIpsProject createIpsProject(IJavaProject javaProject,
-            String runtimeIdPrefix,
-            boolean isProductDefinitionProject,
-            boolean isModelProject) throws CoreException {
-        addIpsRuntimeLibraries(javaProject);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setRuntimeIdPrefix(runtimeIdPrefix);
-        props.setProductDefinitionProject(isProductDefinitionProject);
-        props.setModelProject(isModelProject);
-
-        // use the first registered builder set info as default
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
-                .getIpsArtefactBuilderSetInfos();
-        props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
-
-        props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
-        DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
-        props.setProductCmptNamingStrategy(namingStrategy);
-        props
-                .setMinRequiredVersionNumber(
-                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
-                .getChangesOverTimeNamingConvention().getId());
-        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(
-                props.getBuilderSetId());
-        if (builderSetInfo != null) {
-            props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
-        }
-        ipsProject.setProperties(props);
-        return ipsProject;
-    }
-
-    private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
-        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        if (targetVersionIsAtLeast5(javaProject)) {
-            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN.length;
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            for (int i = 0; i < numOfJars; i++) {
-                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN[i]);
-                Path srcZipPath = null;
-                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i])) {
-                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i]);
-                }
-                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
-            }
-            javaProject.setRawClasspath(entries, null);
-        } else {
-            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            for (int i = 0; i < numOfJars; i++) {
-                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
-                Path srcZipPath = null;
-                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
-                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
-                }
-                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
-            }
-            javaProject.setRawClasspath(entries, null);
-        }
-    }
-
-    // TODO do not change the targetVersion coming from the java options
-    private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-
-        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
-        return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
-                || Integer.parseInt(targetVersion[0]) > 1;
     }
 
     /**
