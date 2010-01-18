@@ -167,6 +167,13 @@ public interface IType extends IIpsObject, Datatype {
     public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns this type's association and the attributes within the supertype hierarchy.
+     * 
+     * @throws CoreException if an exception occurs while collecting the associations
+     */
+    public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
      * does not search the supertype hierarchy.) If more than one attribute with the name exist, the
      * first attribute with the name is returned. Returns <code>null</code> if no attribute with the

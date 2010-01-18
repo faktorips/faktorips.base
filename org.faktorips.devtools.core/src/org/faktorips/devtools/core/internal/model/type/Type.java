@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -203,6 +204,15 @@ public abstract class Type extends BaseIpsObject implements IType {
         AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
         return finder.getAttributes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException {
+        AllAssociationFinder finder = new AllAssociationFinder(ipsProject);
+        finder.start(this);
+        return finder.getAssociations();
     }
 
     /**
@@ -941,13 +951,42 @@ public abstract class Type extends BaseIpsObject implements IType {
                     attributeNames.add(lattributes[i].getName());
                 }
             }
-            // Place supertype attributes before of subtype attributes.
+            // Place supertype attributes before subtype attributes.
             attributes.addAll(0, attributesToAdd);
             return true;
         }
 
         private IAttribute[] getAttributes() {
             return attributes.toArray(new IAttribute[attributes.size()]);
+        }
+
+    }
+
+    private static class AllAssociationFinder extends TypeHierarchyVisitor {
+
+        private List<IAssociation> associations;
+
+        private Set<String> associationNames;
+
+        public AllAssociationFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+            associations = new ArrayList<IAssociation>();
+            associationNames = new HashSet<String>();
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            IAssociation[] lassociations = currentType.getAssociations();
+            // Place supertype associations before subtype associations.
+            associations.addAll(0, Arrays.asList(lassociations));
+            for (IAssociation assoc : lassociations) {
+                associationNames.add(assoc.getName());
+            }
+            return true;
+        }
+
+        private IAssociation[] getAssociations() {
+            return associations.toArray(new IAssociation[associations.size()]);
         }
 
     }

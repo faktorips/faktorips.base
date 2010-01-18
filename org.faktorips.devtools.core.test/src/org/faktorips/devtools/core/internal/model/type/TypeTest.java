@@ -833,4 +833,33 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertFalse(methods[1].overrides(m2));
     }
 
+    public void testFindAllAssociations() throws CoreException {
+        IType superSuperType = newProductCmptType(ipsProject, "AbstractProduct");
+        IType superType = newProductCmptType(ipsProject, "Product");
+        type.setSupertype(superType.getQualifiedName());
+        superType.setSupertype(superSuperType.getQualifiedName());
+        IType targetType = newProductCmptType(ipsProject, "Target");
+
+        IAssociation typeAssoc = type.newAssociation();
+        typeAssoc.setTarget(targetType.getQualifiedName());
+        typeAssoc.setTargetRoleSingular("Ziel");
+        typeAssoc.setTargetRolePlural("Ziele");
+
+        IAssociation superTypeAssoc = superType.newAssociation();
+        superTypeAssoc.setTarget(targetType.getQualifiedName());
+        superTypeAssoc.setTargetRoleSingular("SuperZiel");
+        superTypeAssoc.setTargetRolePlural("SuperZiele");
+
+        IAssociation superSuperTypeAssoc = superSuperType.newAssociation();
+        superSuperTypeAssoc.setTarget(targetType.getQualifiedName());
+        superSuperTypeAssoc.setTargetRoleSingular("SuperSuperZiel");
+        superSuperTypeAssoc.setTargetRolePlural("SuperSuperZiele");
+
+        IAssociation[] assocs = type.findAllAssociations(ipsProject);
+        assertEquals(3, assocs.length);
+        assertEquals("SuperSuperZiel", assocs[0].getTargetRoleSingular());
+        assertEquals("SuperZiel", assocs[1].getTargetRoleSingular());
+        assertEquals("Ziel", assocs[2].getTargetRoleSingular());
+    }
+
 }
