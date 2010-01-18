@@ -47,7 +47,6 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
                 IIpsProject project = newIpsProject("TestProject");
                 IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
                 IFile file = folder.getFile("A.ipspct");
-                System.out.println("" + file + ", exists=" + file.exists());
                 type = newPolicyCmptType(project, "A");
                 type.newPolicyCmptTypeAssociation();
                 type.getIpsSrcFile().save(true, null);
@@ -122,7 +121,6 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
 
         // now refresh the file from disk
         file.refreshLocal(IResource.DEPTH_INFINITE, null);
-        System.out.println("ModStamp=" + file.getModificationStamp());
 
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
         assertEquals("NewBlabla", type.getDescription());

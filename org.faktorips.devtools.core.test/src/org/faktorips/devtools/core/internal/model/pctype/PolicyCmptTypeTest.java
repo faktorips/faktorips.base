@@ -68,6 +68,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
@@ -462,7 +463,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         aAttr.setName("aAttr");
 
         // make sure the policy component type is valid
-        System.out.println(type.validate(ipsProject));
         assertTrue(type.validate(ipsProject).isEmpty());
 
         // make sure datatype is available
@@ -579,7 +579,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         r2.setTarget("t2");
 
-        Element element = policyCmptType.toXml(this.newDocument());
+        Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copy = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copy.setConfigurableByProductCmptType(false);

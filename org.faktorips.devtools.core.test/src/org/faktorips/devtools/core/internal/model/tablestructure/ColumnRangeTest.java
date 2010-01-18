@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
@@ -35,8 +35,8 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private ColumnRange range;
-    
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -45,11 +45,11 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range = (ColumnRange)table.newRange();
         ipsSrcFile.save(true, null);
     }
-    
+
     public void testRemove() {
         IColumnRange r1 = table.newRange();
         IColumnRange r2 = table.newRange();
-        
+
         r1.delete();
         assertEquals(2, table.getNumOfRanges());
         assertEquals(range, table.getRanges()[0]);
@@ -63,7 +63,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
         Element element = range.toXml(newDocument());
-        assertEquals("1", element.getAttribute(IColumnRange.PROPERTY_ID));
+        assertEquals("1", element.getAttribute(IIpsObjectPart.PROPERTY_ID));
         assertEquals(ColumnRange.TAG_NAME, element.getNodeName());
         assertEquals("twoColumn", element.getAttribute(IColumnRange.PROPERTY_RANGE_TYPE));
         assertEquals("ageFrom", element.getAttribute(IColumnRange.PROPERTY_FROM_COLUMN));
@@ -91,7 +91,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         String dataType = range.getDatatype();
         assertEquals("int", dataType);
     }
-    
+
     public void testGetColumns() {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -106,12 +106,12 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertEquals(2, columns.length);
         assertEquals(c0, columns[0]);
         assertEquals(c1, columns[1]);
-        
+
         range.setFromColumn("unknownColumn");
         range.setToColumn("unknownColumn");
         columns = range.getColumns();
         assertEquals(0, columns.length);
-        
+
         // from column range
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         range.setFromColumn("c0");
@@ -119,11 +119,11 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         columns = range.getColumns();
         assertEquals(1, columns.length);
         assertEquals(c0, columns[0]);
-        
+
         range.setFromColumn("unknownColumn");
         columns = range.getColumns();
         assertEquals(0, columns.length);
-        
+
         // to column range
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
         range.setFromColumn("");
@@ -131,55 +131,61 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         columns = range.getColumns();
         assertEquals(1, columns.length);
         assertEquals(c1, columns[0]);
-        
+
         range.setToColumn("unknownColumn");
         columns = range.getColumns();
         assertEquals(0, columns.length);
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			range.newPart(IPolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            range.newPart(IPolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     /**
-     * Tests if validate correctly signals an error for the missing parameter name of a newly created
-     * range. Also tests if a correctly assigned parameter name does not raise an error on validate().
-     *
+     * Tests if validate correctly signals an error for the missing parameter name of a newly
+     * created range. Also tests if a correctly assigned parameter name does not raise an error on
+     * validate().
+     * 
      */
     public void testValidate() {
-    	try {
-			// the empty range will signal an error for the missing parameter name
-    		MessageList list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
-			if (list.isEmpty() || !list.containsErrorMsg()) {
-				fail();
-			}
-			
-            // the parameter name must be a valid Java identifier, see FS #1415 
-			range.setParameterName("#invalidJavaIdentifier");
-            list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+        try {
+            // the empty range will signal an error for the missing parameter name
+            MessageList list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range,
+                    IColumnRange.PROPERTY_PARAMETER_NAME);
             if (list.isEmpty() || !list.containsErrorMsg()) {
                 fail();
             }
-			
-			// an assigned parameter name must not signal an error message for the parameter name property
-			range.setParameterName("test");
-			list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
-			if (list.containsErrorMsg()) {
-				fail();
-			}
-		} catch (CoreException e) {
-			fail();
-		}
+
+            // the parameter name must be a valid Java identifier, see FS #1415
+            range.setParameterName("#invalidJavaIdentifier");
+            list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range,
+                    IColumnRange.PROPERTY_PARAMETER_NAME);
+            if (list.isEmpty() || !list.containsErrorMsg()) {
+                fail();
+            }
+
+            // an assigned parameter name must not signal an error message for the parameter name
+            // property
+            range.setParameterName("test");
+            list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range,
+                    IColumnRange.PROPERTY_PARAMETER_NAME);
+            if (list.containsErrorMsg()) {
+                fail();
+            }
+        } catch (CoreException e) {
+            fail();
+        }
     }
-    
+
     public void testValidateRangeDatatype() throws CoreException {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setParameterName("egon");
@@ -189,21 +195,20 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         IColumn to = table.newColumn();
         to.setDatatype(Datatype.INTEGER.getName());
         to.setName("to");
-        
+
         range.setFromColumn("from");
         range.setToColumn("to");
-        
+
         table.getIpsSrcFile().save(true, null);
-        
+
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
-        System.out.println(ml);
         assertTrue(ml.isEmpty());
-        
+
         from.setDatatype(Datatype.BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
-        
+
         from.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
         ml = range.validate(ipsSrcFile.getIpsProject());
@@ -220,7 +225,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
     }
-    
+
     public void testValidateTwoColumnRangeWithSameDatatype() throws CoreException {
         // test two column rage with same datatypes
         IColumn c0 = table.newColumn();
@@ -244,12 +249,12 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertFalse(ml.isEmpty());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
         assertNotNull(ml.getMessagesFor(range));
-        
+
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         ((ColumnRange)range).setParameterName("c0");
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());
-        
+
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
         ((ColumnRange)range).setParameterName("c1");
         ml = range.validate(ipsSrcFile.getIpsProject());
@@ -260,7 +265,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertFalse(ml.isEmpty());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
-        
+
         c0.setDatatype(Datatype.DECIMAL.getName());
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());

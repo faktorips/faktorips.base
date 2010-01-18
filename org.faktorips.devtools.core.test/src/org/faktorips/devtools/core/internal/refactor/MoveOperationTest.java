@@ -221,7 +221,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         move.run(null);
         productCmpt = ipsProject.findProductCmptByRuntimeId(coverage.getRuntimeId());
 
-        System.out.println(StringUtil.unqualifiedName(productCmpt.getQualifiedName()));
         assertEquals(StringUtil.unqualifiedName(productCmpt.getQualifiedName()), testPolicyCmpt.getName());
     }
 

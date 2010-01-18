@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,7 +36,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
 
     private IpsPreferences pref;
     private String oldPresentationString;
-    
+
     public IpsPluginTest() {
         super();
     }
@@ -44,24 +44,26 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     public IpsPluginTest(String name) {
         super(name);
     }
-    
+
+    @Override
     protected void setUp() {
         pref = IpsPlugin.getDefault().getIpsPreferences();
-        oldPresentationString = pref.getNullPresentation(); 
+        oldPresentationString = pref.getNullPresentation();
     }
-    
+
+    @Override
     protected void tearDownExtension() {
         pref.setNullPresentation(oldPresentationString);
     }
-    
+
     public void testGetDocumentBuilder() throws UnsupportedEncodingException, SAXException, IOException {
         DocumentBuilder docBuilder = IpsPlugin.getDefault().newDocumentBuilder();
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>" ;
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
         docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
     }
 
     public void testIpsPreferencesInclListener() {
-        
+
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         IPreferenceStore store = IpsPlugin.getDefault().getPreferenceStore();
         store.addPropertyChangeListener(listener);
@@ -70,17 +72,17 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         assertNotNull(listener.lastEvent);
         assertEquals("-", listener.lastEvent.getNewValue());
     }
-    
+
     class MyPropertyChangeListener implements IPropertyChangeListener {
-        
+
         PropertyChangeEvent lastEvent;
-        
+
         public void propertyChange(PropertyChangeEvent event) {
             lastEvent = event;
         }
     }
-    
-    public void testGetIpsLoggingFrameworkConnectors() throws CoreException{
+
+    public void testGetIpsLoggingFrameworkConnectors() throws CoreException {
         IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
         List<String> connectorIds = new ArrayList<String>();
         for (int i = 0; i < connectors.length; i++) {
@@ -88,8 +90,8 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         }
         assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }
-    
-    public void testGetIpsFeatureVersion(){
-        System.out.println(IpsPlugin.getDefault().getIpsFeatureVersion());
+
+    public void testGetIpsFeatureVersion() {
+        IpsPlugin.getDefault().getIpsFeatureVersion();
     }
 }
