@@ -125,7 +125,6 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Returns the name of the ips object stored in the file.
      */
-    // TODO Refactor: getIpsObjecName -> getIpsObjectName
     public String getIpsObjectName();
 
     /**

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -156,7 +156,7 @@ public class JavaCodeFragment {
         indentIfBol();
         sourcecode.append(s);
         return this;
-   }
+    }
 
     /**
      * Encloses the given String with doublequotes (") and appends it to the sourcecode.
@@ -173,7 +173,7 @@ public class JavaCodeFragment {
         indentIfBol();
         sourcecode.append(c);
         return this;
-   }
+    }
 
     /**
      * Transform the given int into a String and appends it to the sourcecode.
@@ -181,7 +181,7 @@ public class JavaCodeFragment {
     public JavaCodeFragment append(int i) {
         append("" + i);
         return this;
-   }
+    }
 
     /**
      * Transform the given boolean into a String and appends it to the sourcecode.
@@ -216,7 +216,7 @@ public class JavaCodeFragment {
     public JavaCodeFragment appendInnerClassName(Class<?> clazz) {
         appendInnerClassName(clazz.getName());
         return this;
-   }
+    }
 
     /**
      * Appends the unqualified class name of an public inner class to the sourcecode and updates the
@@ -227,7 +227,7 @@ public class JavaCodeFragment {
     public JavaCodeFragment appendInnerClassName(String qualifiedClassName) {
         appendClassName(qualifiedClassName.replaceAll("\\$", "\\."));
         return this;
-   }
+    }
 
     /**
      * Appends the unqualified class name to the source code and updates the import declaration (if
@@ -262,8 +262,8 @@ public class JavaCodeFragment {
         String unqualifiedClassName = StringUtil.unqualifiedName(qualifiedClassName);
         // don't add two imports for the same unqualified name
         for (Iterator<String> iterator = importDecl.iterator(); iterator.hasNext();) {
-            String imp = (String)iterator.next();
-            if (imp.substring(imp.lastIndexOf('.')+1).equals(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
+            String imp = iterator.next();
+            if (imp.substring(imp.lastIndexOf('.') + 1).equals(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
                 append(qualifiedClassName);
                 return this;
             }
@@ -271,7 +271,7 @@ public class JavaCodeFragment {
         append(unqualifiedClassName);
         if (qualifiedClassName.indexOf('.') < 0) {
             return this;
-       }
+        }
         int bracketIndex = qualifiedClassName.indexOf("[]");
         if (bracketIndex > -1) {
             importDecl.add(qualifiedClassName.substring(0, bracketIndex));
@@ -279,7 +279,7 @@ public class JavaCodeFragment {
             importDecl.add(qualifiedClassName);
         }
         return this;
-   }
+    }
 
     /**
      * Adds an import entry to this code fragment.
@@ -297,7 +297,7 @@ public class JavaCodeFragment {
     public JavaCodeFragment appendln() {
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
         return this;
-   }
+    }
 
     /**
      * Appends the given String and a line separator to the sourcecode.
@@ -316,7 +316,7 @@ public class JavaCodeFragment {
         sourcecode.append(arg);
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
         return this;
-  }
+    }
 
     /**
      * Appends the given char to the sourcecode.
@@ -326,7 +326,7 @@ public class JavaCodeFragment {
         sourcecode.append(c);
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
         return this;
-   }
+    }
 
     /**
      * Appends the given fragment to his fragment and idents it properly.
@@ -347,7 +347,7 @@ public class JavaCodeFragment {
             appendln("");
         }
         return this;
-   }
+    }
 
     /**
      * Two fragments are equal if they contain the same sourcecode and have the same import
@@ -355,6 +355,7 @@ public class JavaCodeFragment {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof JavaCodeFragment)) {
             return false;
@@ -378,6 +379,7 @@ public class JavaCodeFragment {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return importDecl.toString() + SystemUtils.LINE_SEPARATOR + sourcecode;
     }
@@ -387,8 +389,12 @@ public class JavaCodeFragment {
      */
     private void indentIfBol() {
         if (bol()) {
-            sourcecode.append(INDENT_HELPER.substring(0, indentation * indentLevel));
+            int length = indentation * indentLevel;
+            if (length < INDENT_HELPER.length()) {
+                sourcecode.append(INDENT_HELPER.substring(0, length));
+            } else {
+                sourcecode.append(INDENT_HELPER);
+            }
         }
     }
-
 }
