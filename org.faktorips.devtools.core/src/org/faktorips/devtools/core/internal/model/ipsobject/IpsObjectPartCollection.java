@@ -47,12 +47,12 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     // TODO CD das Interface muss von Typ T oder dadrueber sein
     // Beispiel: T ist BusinessFunction --> partsPublishedInterface = IBusinessFunction.class
     // --> ? super T
-    private Class<? extends IIpsObjectPart> partsPublishedInterface;
+    private Class<T> partsPublishedInterface;
 
     private List<T> parts = new ArrayList<T>();
 
-    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz,
-            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
+    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz, Class<T> publishedInterface,
+            String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
@@ -60,15 +60,14 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class<? extends T> partsClazz,
-            Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
+            Class<T> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
         this.parent = ipsObjectPart;
         ipsObjectPart.addPartCollection(this);
     }
 
-    private IpsObjectPartCollection(Class<? extends T> partsClazz, Class<? extends IIpsObjectPart> publishedInterface,
-            String xmlTag) {
+    private IpsObjectPartCollection(Class<? extends T> partsClazz, Class<T> publishedInterface, String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);

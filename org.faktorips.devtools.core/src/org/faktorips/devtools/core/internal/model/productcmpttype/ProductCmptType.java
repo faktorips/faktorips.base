@@ -97,8 +97,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     @Override
     protected IpsObjectPartCollection<? extends IMethod> createCollectionForMethods() {
-        return new IpsObjectPartCollection<IMethod>(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class,
-                "Method");
+        return new IpsObjectPartCollection<IProductCmptTypeMethod>(this, ProductCmptTypeMethod.class,
+                IProductCmptTypeMethod.class, "Method");
     }
 
     /**
