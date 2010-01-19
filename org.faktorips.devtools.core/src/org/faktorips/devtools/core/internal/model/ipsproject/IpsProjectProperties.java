@@ -83,7 +83,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private boolean modelProject;
     private boolean productDefinitionProject;
-    private boolean persistentProject = true;
+    private boolean persistentProject;
 
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
@@ -374,6 +374,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute(
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
+        projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -458,7 +459,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        persistentProject = true; // Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue();
+        persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue();
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$

@@ -21,11 +21,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
+ * Section to display the persistence properties of the attributes specific to an
+ * {@link IPolicyCmptType}).
+ * <p/>
+ * The properties are Attibute Name, Table Column Name, Size amongst others.
  * 
  * @author Roman Grutza
  */
@@ -165,8 +170,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     public Image getImage() {
-        //        IpsPlugin.getDefault().getImage("FIXME.gif"); //$NON-NLS-1$
-        return null;
+        return policyComponentTypeAttribute.getImage();
     }
 
 }

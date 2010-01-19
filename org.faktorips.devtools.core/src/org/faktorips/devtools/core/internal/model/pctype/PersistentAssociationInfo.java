@@ -153,12 +153,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
-        // IpsPlugin.getDefault().getImage("FIXME.gif"); //$NON-NLS-1$
-        return null;
+        return policyComponentTypeAssociation.getImage();
     }
 
 }

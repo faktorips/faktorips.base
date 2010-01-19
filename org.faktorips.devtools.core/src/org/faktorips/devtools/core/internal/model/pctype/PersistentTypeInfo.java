@@ -39,6 +39,16 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private DescriminatorDatatype descriminatorDatatype = DescriminatorDatatype.STRING;
     private String descriminatorColumnName = "DTYPE";
 
+    private boolean notJoinedSubclass = true;
+
+    public boolean isNotJoinedSubclass() {
+        return notJoinedSubclass;
+    }
+
+    public void setNotJoinedSubclass(boolean notJoinedSubclass) {
+        this.notJoinedSubclass = notJoinedSubclass;
+    }
+
     /**
      * @param policyComponentType
      */
@@ -99,6 +109,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     public void setInheritanceStrategy(InheritanceStrategy newStrategy) {
         InheritanceStrategy oldValue = inheritanceStrategy;
         inheritanceStrategy = newStrategy;
+        notJoinedSubclass = (newStrategy != InheritanceStrategy.JOINED_SUBCLASS);
 
         valueChanged(oldValue, newStrategy);
     }
@@ -193,7 +204,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
      * {@inheritDoc}
      */
     public Image getImage() {
-        // IpsPlugin.getDefault().getImage("FIXME.gif"); //$NON-NLS-1$
-        return null;
+        return getParent().getImage();
     }
 }

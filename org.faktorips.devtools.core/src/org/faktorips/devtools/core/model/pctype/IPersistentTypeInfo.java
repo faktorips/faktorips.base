@@ -41,6 +41,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     public final static String PROPERTY_DESCRIMINATOR_DATATYPE = "descriminatorDatatype";
 
+    public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass";
+
     /**
      * Prefix for all message codes of this class.
      */
@@ -110,7 +112,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      */
     public enum InheritanceStrategy {
         SINGLE_TABLE,
-        JOINED_SUBCLASS;
+        JOINED_SUBCLASS,
+        MIXED;
     }
 
     /**
