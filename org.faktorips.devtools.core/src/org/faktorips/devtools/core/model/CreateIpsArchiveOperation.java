@@ -195,7 +195,9 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                     throw new OperationCanceledException();
                 }
             }
-            addJavaFiles(root, os, monitor);
+            if (inclJavaBinaries || inclJavaSources) {
+                addJavaFiles(root, os, monitor);
+            }
         } finally {
             monitor.done();
         }
