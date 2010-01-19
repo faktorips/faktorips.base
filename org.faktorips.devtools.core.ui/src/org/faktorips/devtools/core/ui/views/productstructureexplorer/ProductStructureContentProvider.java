@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 
 /**
  * Provides the elements of product structure
@@ -39,19 +41,21 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * Flag to tell the content provider to show (<code>true</code>) or not to show the
      * Association-Type as Node.
      */
-    private boolean fShowAssociationType = true;
+    private boolean fShowAssociationNodes = true;
 
     // private IProductCmptReference root;
 
     private boolean showTableContents = true;
+
+    private boolean showAssociatedCmpts;
 
     /**
      * Creates a new content provider.
      * 
      * @param showAssociationType <code>true</code> to show the association types as nodes.
      */
-    public ProductStructureContentProvider(boolean showAssociationType) {
-        fShowAssociationType = showAssociationType;
+    public ProductStructureContentProvider(boolean showAssociationNodes) {
+        fShowAssociationNodes = showAssociationNodes;
     }
 
     /**
@@ -84,19 +88,43 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // }
         // ENDE: Entwicklungsstand SMART-MODE
 
-        IProductCmptStructureReference[] childsForAssociationProductCmpts = new IProductCmptStructureReference[0];
         // add product cmpt associations and product cmpts
-        if (!fShowAssociationType && parentElement instanceof IProductCmptReference) {
-            childsForAssociationProductCmpts = structure
-                    .getChildProductCmptReferences((IProductCmptReference)parentElement);
+        if (!fShowAssociationNodes && parentElement instanceof IProductCmptReference) {
+            // Arrays.asLists returns an AbstractList that could not be modified
+            List<IProductCmptReference> list = new ArrayList<IProductCmptReference>(Arrays.asList(structure
+                    .getChildProductCmptReferences((IProductCmptReference)parentElement)));
+            if (!showAssociatedCmpts) {
+                for (Iterator<IProductCmptReference> iterator = list.iterator(); iterator.hasNext();) {
+                    IProductCmptReference aProductCmptReference = iterator.next();
+                    if (aProductCmptReference.getParent() instanceof IProductCmptTypeRelationReference) {
+                        IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)aProductCmptReference
+                                .getParent();
+                        if (relationReference.getRelation().isAssoziation()) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+            children.addAll(list);
         } else if (parentElement instanceof IProductCmptReference) {
-            childsForAssociationProductCmpts = structure
-                    .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
-        } else if (parentElement instanceof IProductCmptStructureReference) {
-            childsForAssociationProductCmpts = structure
-                    .getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
+            // Arrays.asLists returns an AbstractList that could not be modified
+            List<IProductCmptTypeRelationReference> list = new ArrayList<IProductCmptTypeRelationReference>(Arrays
+                    .asList(structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement)));
+            if (!showAssociatedCmpts) {
+                for (Iterator<IProductCmptTypeRelationReference> iterator = list.iterator(); iterator.hasNext();) {
+                    IProductCmptTypeRelationReference aRelationReference = iterator.next();
+                    if (aRelationReference.getRelation().isAssoziation()) {
+                        iterator.remove();
+                    }
+
+                }
+            }
+            children.addAll(list);
+        } else if (parentElement instanceof IProductCmptTypeRelationReference) {
+            List<IProductCmptReference> list = Arrays.asList(structure
+                    .getChildProductCmptReferences((IProductCmptTypeRelationReference)parentElement));
+            children.addAll(list);
         }
-        children.addAll(Arrays.asList(childsForAssociationProductCmpts));
 
         // add table content usages
         if (showTableContents && parentElement instanceof IProductCmptReference) {
@@ -115,7 +143,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (!fShowAssociationType && element instanceof IProductCmptReference) {
+        if (!fShowAssociationNodes && element instanceof IProductCmptReference) {
             return structure.getParentProductCmptReference((IProductCmptReference)element);
         } else if (element instanceof IProductCmptReference) {
             return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
@@ -171,7 +199,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * @return true if association type showing is on
      */
     public boolean isAssociationTypeShowing() {
-        return fShowAssociationType;
+        return fShowAssociationNodes;
     }
 
     /**
@@ -179,8 +207,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * 
      * @param showAssociationType set true for showing association type
      */
-    public void setAssociationTypeShowing(boolean showAssociationType) {
-        fShowAssociationType = showAssociationType;
+    public void setShowAssociationNodes(boolean showAssociationType) {
+        fShowAssociationNodes = showAssociationType;
     }
 
     /**
@@ -199,5 +227,9 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     public void setShowTableContents(boolean showTableContents) {
         this.showTableContents = showTableContents;
+    }
+
+    public void setShowAssociatedCmpts(boolean showAssociations) {
+        showAssociatedCmpts = showAssociations;
     }
 }

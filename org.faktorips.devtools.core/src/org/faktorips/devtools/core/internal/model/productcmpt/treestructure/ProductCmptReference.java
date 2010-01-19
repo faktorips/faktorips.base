@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -25,40 +26,50 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
  * 
  * @author Thorsten Guenther
  */
-public class ProductCmptReference extends ProductCmptStructureReference
-		implements IProductCmptReference {
+public class ProductCmptReference extends ProductCmptStructureReference implements IProductCmptReference {
 
-	private IProductCmpt cmpt;
-	
-	/**
-	 * @param structure
-	 * @param parent
-	 * @throws CycleInProductStructureException 
-	 */
-	public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent, IProductCmpt cmpt) throws CycleInProductStructureException {
-		super(structure, parent);
-		this.cmpt = cmpt;
-	}
+    private IProductCmpt cmpt;
+    private final IProductCmptLink link;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmpt getProductCmpt() {
-		return cmpt;
-	}
+    /**
+     * @param structure
+     * @param parent
+     * @throws CycleInProductStructureException
+     */
+    public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
+            IProductCmpt cmpt, IProductCmptLink link) throws CycleInProductStructureException {
+        super(structure, parent);
+        this.cmpt = cmpt;
+        this.link = link;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	IIpsElement getWrapped() {
-		return cmpt;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmpt getProductCmpt() {
+        return cmpt;
+    }
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    IIpsElement getWrapped() {
+        return cmpt;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public IIpsObject getWrappedIpsObject() {
         return cmpt;
+    }
+
+    /**
+     * @return Returns the link.
+     */
+    public IProductCmptLink getLink() {
+        return link;
     }
 
 }

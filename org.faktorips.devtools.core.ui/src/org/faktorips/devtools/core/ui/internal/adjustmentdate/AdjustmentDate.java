@@ -48,8 +48,8 @@ public class AdjustmentDate {
         if (obj instanceof AdjustmentDate) {
             AdjustmentDate other = (AdjustmentDate)obj;
             return validFrom.getTimeInMillis() == other.validFrom.getTimeInMillis()
-                    && (getValidTo() != null ? getValidTo().getTimeInMillis() == other.getValidTo().getTimeInMillis()
-                            : getValidTo() == other.getValidTo());
+                    && (validTo != null && other.validTo != null ? validTo.getTimeInMillis() == other.validTo
+                            .getTimeInMillis() : validTo == other.validTo);
         } else {
             return false;
         }

@@ -83,7 +83,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
         workingDate = date;
         ipsProject = project;
-        this.root = buildNode(root, null);
+        this.root = buildNode(root, null, null);
     }
 
     /**
@@ -104,7 +104,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * {@inheritDoc}
      */
     public void refresh() throws CycleInProductStructureException {
-        root = buildNode(root.getProductCmpt(), null);
+        root = buildNode(root.getProductCmpt(), null, null);
     }
 
     /**
@@ -160,9 +160,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * @param parent The parent-node for the new one.
      * @throws CycleInProductStructureException
      */
-    private ProductCmptReference buildNode(IProductCmpt cmpt, ProductCmptStructureReference parent)
-            throws CycleInProductStructureException {
-        ProductCmptReference node = new ProductCmptReference(this, parent, cmpt);
+    private ProductCmptReference buildNode(IProductCmpt cmpt,
+            IProductCmptLink link,
+            ProductCmptStructureReference parent) throws CycleInProductStructureException {
+        ProductCmptReference node = new ProductCmptReference(this, parent, cmpt, link);
         node.setChildren(buildChildNodes(cmpt, node));
         return node;
     }
@@ -186,9 +187,9 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 IProductCmpt p = ipsProject.findProductCmpt(links[i].getTarget());
                 if (p != null) {
                     if (association.isAssoziation()) {
-                        children.add(new ProductCmptReference(this, parent, p));
+                        children.add(new ProductCmptReference(this, parent, p, links[i]));
                     } else {
-                        children.add(buildNode(p, parent));
+                        children.add(buildNode(p, links[i], parent));
                     }
                 }
             } catch (CoreException e) {

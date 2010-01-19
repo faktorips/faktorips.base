@@ -17,7 +17,9 @@ import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerLabel;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -25,22 +27,23 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.util.StringUtil;
 
-public class ProductStructureLabelProvider extends LabelProvider {
+public class ProductStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
+
+    private boolean showAssociationNodes = false;
 
     private AdjustmentDate adjustmentDate;
 
     private boolean showTableStructureUsageName = false;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
@@ -56,9 +59,6 @@ public class ProductStructureLabelProvider extends LabelProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
@@ -85,26 +85,6 @@ public class ProductStructureLabelProvider extends LabelProvider {
 
     public String getProductCmptLabel(IProductCmpt productCmpt) {
         String label = productCmpt.getName();
-
-        GregorianCalendar date = null;
-        if (getAdjustmentDate() != null) {
-            date = getAdjustmentDate().getValidFrom();
-        }
-        IIpsObjectGeneration generation = productCmpt.findGenerationEffectiveOn(date);
-
-        if (generation == null) {
-            // no generations avaliable,
-            // show additional text to inform that no generations exists
-            String generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                    .getGenerationConceptNameSingular();
-            label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label,
-                    generationText);
-        } else {
-            AdjustmentDate genAdjDate = new AdjustmentDate(generation.getValidFrom(), generation.getValidTo());
-            if (!genAdjDate.equals(adjustmentDate)) {
-                label += " (" + genAdjDate.getText() + ")";
-            }
-        }
         return label;
     }
 
@@ -131,4 +111,93 @@ public class ProductStructureLabelProvider extends LabelProvider {
     public AdjustmentDate getAdjustmentDate() {
         return adjustmentDate;
     }
+
+    public StyledString getStyledText(Object element) {
+        StyledString styledString = new StyledString(getText(element));
+        if (element instanceof IProductCmptReference) {
+            IProductCmptReference productCmptReference = (IProductCmptReference)element;
+
+            if (!isShowAssociationNodes()) {
+                styledString.append(getRolenameLabel(productCmptReference), StyledString.DECORATIONS_STYLER);
+            }
+
+            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
+                    StyledString.QUALIFIER_STYLER);
+        }
+        return styledString;
+    }
+
+    /**
+     * returns the rolename of the association this reference belongs to, if there are more than one
+     * associations with the same target
+     */
+    private String getRolenameLabel(IProductCmptReference productCmptReference) {
+        IProductCmptStructureReference parent = productCmptReference.getParent();
+        // get the parent of the reference, should be a ProductCmptTypeRelationReference
+        if (parent instanceof IProductCmptTypeRelationReference) {
+            IProductCmptTypeRelationReference associationReference = (IProductCmptTypeRelationReference)parent;
+            // for associations always show the rolename
+            if (associationReference.getRelation().isAssoziation()) {
+                return getRolenameLabel(associationReference.getRelation());
+            }
+            parent = associationReference.getParent();
+            // The parent of the ProductCmptTypeRelationReference should be a ProductCmptReference
+            if (parent instanceof IProductCmptReference) {
+                IProductCmptReference parentCmptReference = (IProductCmptReference)parent;
+                // getting all associations of the parent ProductCmptReference
+                IProductCmptTypeRelationReference[] associationReferences = parentCmptReference.getStructure()
+                        .getChildProductCmptTypeRelationReferences(parentCmptReference, true);
+                for (IProductCmptTypeRelationReference aReference : associationReferences) {
+                    // if the assicuation is anotherone but have the same target... show role name
+                    if (aReference != associationReference
+                            && aReference.getRelation().getTarget().equals(
+                                    associationReference.getRelation().getTarget())) {
+                        return getRolenameLabel(associationReference.getRelation());
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    private String getRolenameLabel(IAssociation association) {
+        return " - " + association.getTargetRoleSingular();
+    }
+
+    private String getGenerationLabel(IProductCmpt productCmpt) {
+        GregorianCalendar date = null;
+        if (getAdjustmentDate() != null) {
+            date = getAdjustmentDate().getValidFrom();
+        }
+        IIpsObjectGeneration generation = productCmpt.findGenerationEffectiveOn(date);
+        if (generation == null) {
+            // no generations avaliable,
+            // show additional text to inform that no generations exists
+            String generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular();
+            return NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForDate, generationText);
+        } else {
+            AdjustmentDate genAdjDate = new AdjustmentDate(generation.getValidFrom(), generation.getValidTo());
+            if (!genAdjDate.equals(adjustmentDate)) {
+                return " (" + genAdjDate.getText() + ")";
+            } else {
+                return "";
+            }
+        }
+    }
+
+    /**
+     * @param showAssciations The showAssciations to set.
+     */
+    public void setShowAssociationNodes(boolean showAssciations) {
+        showAssociationNodes = showAssciations;
+    }
+
+    /**
+     * @return Returns the showAssciations.
+     */
+    public boolean isShowAssociationNodes() {
+        return showAssociationNodes;
+    }
+
 }

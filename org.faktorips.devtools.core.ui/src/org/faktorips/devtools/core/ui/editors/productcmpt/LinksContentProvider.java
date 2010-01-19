@@ -74,7 +74,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         List<IProductCmptTypeRelationReference> result = new ArrayList<IProductCmptTypeRelationReference>();
         IProductCmptTreeStructure structure = new ProductCmptTreeStructure(productCmpGen.getProductCmpt(),
                 productCmpGen.getValidFrom(), productCmpGen.getIpsProject());
-        ProductCmptReference parent = new ProductCmptReference(structure, null, productCmpGen.getProductCmpt());
+        ProductCmptReference parent = new ProductCmptReference(structure, null, productCmpGen.getProductCmpt(), null);
         for (IAssociation association : type.findAllNotDerivedAssociations()) {
             result
                     .add(new ProductCmptTypeRelationReference(structure, parent,

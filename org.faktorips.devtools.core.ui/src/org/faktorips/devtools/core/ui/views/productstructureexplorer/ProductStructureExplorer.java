@@ -31,13 +31,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -123,7 +123,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     // Used for saving the current layout style in a eclipse memento.
     private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
+
     private static final String CHECK_MENU_STATE = "checkedmenus"; //$NON-NLS-1$
+
+    private static final int OPTION_REFERENCE_TABLE = 1 << 0;
+
+    private static final int OPTION_TABLE_STRUCTURE_ROLE_NAME = 1 << 1;
+
+    private static final int OPTION_ASSOCIATION_NODE = 1 << 2;
+
+    private static final int OPTION_ASSOCIATIONED_CMPTS = 1 << 3;
 
     private TreeViewer tree;
     private IIpsSrcFile file;
@@ -135,6 +144,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private boolean showAssociationNode = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
+    private boolean showAssociatedCmpts = true;
 
     private Composite viewerPanel;
 
@@ -226,6 +236,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         Action showAssociationNodeAction = createShowAssociationNodeAction();
         showAssociationNodeAction.setChecked(showAssociationNode);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
+        Action showAssociatedCmptsAction = createShowAssociatedCmptsAction();
+        showAssociatedCmptsAction.setChecked(showAssociatedCmpts);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociatedCmptsAction);
         Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
@@ -287,14 +300,33 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
             @Override
             public void run() {
-                contentProvider.setAssociationTypeShowing(!contentProvider.isAssociationTypeShowing());
-                showAssociationNode = contentProvider.isAssociationTypeShowing();
+                setShowAssociationNode(!isShowAssociationNode());
                 refresh();
             }
 
             @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+            }
+        };
+    }
+
+    private Action createShowAssociatedCmptsAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowAssociatedCmpts_name, IAction.AS_CHECK_BOX) {
+            // @Override
+            // public ImageDescriptor getImageDescriptor() {
+            //                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+            // }
+
+            @Override
+            public void run() {
+                setShowAssociatedCmpts(!isShowAssociatedCmpts());
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
             }
         };
     }
@@ -310,8 +342,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             @Override
             public void run() {
                 refresh();
-                // XXX tree.expandAll();
-
             }
 
             @Override
@@ -338,10 +368,24 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     }
                 });
 
+        // TODO expand all action
+        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("ExpandAll.gif")) {//$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        tree.expandAll();
+                    }
+
+                    @Override
+                    public String getToolTipText() {
+                        return Messages.ProductStructureExplorer_menuExpandAll_toolkit;
+                    }
+                });
+
         // clear action
         toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$
                     @Override
                     public void run() {
+                        productComponent = null;
                         tree.setInput(null);
                         tree.refresh();
                         showEmptyMessage();
@@ -456,40 +500,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         dropListener.setAutoSave(true);
         tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
                 dropListener);
-        // TODO
-        // dropListener.addDropDoneListener(new IDropDoneListener() {
-        //
-        // public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean
-        // srcFileWasDirty) {
-        // Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
-        // for (IProductCmptLink link : result) {
-        // IIpsSrcFile srcFile = link.getIpsSrcFile();
-        // srcFiles.add(srcFile);
-        // }
-        // for (IIpsSrcFile srcFile : srcFiles) {
-        // if (srcFile != null && !srcFileWasDirty && srcFile.isMutable()) {
-        // try {
-        // srcFile.save(false, null);
-        // } catch (CoreException e) {
-        // IpsPlugin.logAndShowErrorDialog(e);
-        // }
-        // }
-        // }
-        // refresh();
-        // }
-        // });
 
         contentProvider = new ProductStructureContentProvider(false);
-        contentProvider.setAssociationTypeShowing(showAssociationNode);
+        contentProvider.setShowAssociationNodes(showAssociationNode);
+        contentProvider.setShowAssociatedCmpts(showAssociatedCmpts);
         contentProvider.setShowTableContents(showReferencedTable);
 
         tree.setContentProvider(contentProvider);
 
         labelProvider = new ProductStructureLabelProvider();
+        labelProvider.setShowAssociationNodes(showAssociationNode);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingLabelProvider decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager
-                .getLabelDecorator());
+        DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(labelProvider,
+                decoManager.getLabelDecorator(), new DecorationContext());
         tree.setLabelProvider(decoratedLabelProvider);
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
@@ -500,16 +524,38 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 tree));
 
         MenuManager menumanager = new MenuManager();
-        menumanager.setRemoveAllWhenShown(true);
-        menumanager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                if (isReferenceAndOpenActionSupportedForSelection()) {
-                    manager.add(new OpenEditorAction(tree));
-                    manager.add(new FindProductReferencesAction(tree));
-                    manager.add(new ShowInstanceAction(tree));
-                }
+        menumanager.setRemoveAllWhenShown(false);
+        // menumanager.addMenuListener(new IMenuListener() {
+        //
+        // public void menuAboutToShow(IMenuManager manager) {
+        // if (isReferenceAndOpenActionSupportedForSelection()) {
+        // TODO add-action
+        // manager.add(new Action("Add",
+        // IpsUIPlugin.getImageHandling().createImageDescriptor(
+        // "add_correction.gif")) {
+        // });
+        final IAction openAction = new OpenEditorAction(tree);
+        menumanager.add(openAction);
+        menumanager.add(new Separator());
+        menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+        menumanager.add(new Separator());
+        final IAction findReferenceAction = new FindProductReferencesAction(tree);
+        menumanager.add(findReferenceAction);
+        final IAction showInstancesAction = new ShowInstanceAction(tree);
+        menumanager.add(showInstancesAction);
+
+        tree.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                boolean enabled = isReferenceAndOpenActionSupportedForSelection();
+                openAction.setEnabled(enabled);
+                findReferenceAction.setEnabled(enabled);
+                showInstancesAction.setEnabled(enabled);
             }
         });
+        // }
+        // }
+        // });
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
@@ -520,6 +566,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         IActionBars actionBars = getViewSite().getActionBars();
         initMenu(actionBars.getMenuManager());
         initToolBar(actionBars.getToolBarManager());
+        hookGlobalActions();
+    }
+
+    private void hookGlobalActions() {
+        IActionBars bars = getViewSite().getActionBars();
+        bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), new ReferenceDeleteAction(tree));
     }
 
     private boolean isReferenceAndOpenActionSupportedForSelection() {
@@ -748,8 +800,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         viewerPanel.getParent().layout();
 
         tree.setInput(input);
-        // XXX
-        // tree.expandAll();
+        tree.expandToLevel(2);
     }
 
     private void showEmptyMessage() {
@@ -786,13 +837,48 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void intitMenuStateFields(int checkedMenuState) {
-        showReferencedTable = (checkedMenuState & 1) > 0;
-        showTableStructureRoleName = (checkedMenuState & 2) > 0;
-        showAssociationNode = (checkedMenuState & 4) > 0;
+        showReferencedTable = (checkedMenuState & OPTION_REFERENCE_TABLE) == OPTION_REFERENCE_TABLE;
+        showTableStructureRoleName = (checkedMenuState & OPTION_TABLE_STRUCTURE_ROLE_NAME) == OPTION_TABLE_STRUCTURE_ROLE_NAME;
+        showAssociationNode = (checkedMenuState & OPTION_ASSOCIATION_NODE) == OPTION_ASSOCIATION_NODE;
+        showAssociatedCmpts = (checkedMenuState & OPTION_ASSOCIATIONED_CMPTS) == OPTION_ASSOCIATIONED_CMPTS;
     }
 
     private int evalMenuStates() {
-        return ((showReferencedTable ? 1 : 0) | (showTableStructureRoleName ? 2 : 0) | (showAssociationNode ? 4 : 0));
+        return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0) | //
+                (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0) | //
+                (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATIONED_CMPTS
+                : 0)); //
+    }
+
+    /**
+     * @param showAssociationNode The showAssociationNode to set.
+     */
+    public void setShowAssociationNode(boolean showAssociationNode) {
+        this.showAssociationNode = showAssociationNode;
+        contentProvider.setShowAssociationNodes(showAssociationNode);
+        labelProvider.setShowAssociationNodes(showAssociationNode);
+    }
+
+    /**
+     * @return Returns the showAssociationNode.
+     */
+    public boolean isShowAssociationNode() {
+        return showAssociationNode;
+    }
+
+    /**
+     * @param showAssociations The showAssociations to set.
+     */
+    public void setShowAssociatedCmpts(boolean showAssociatedCmpts) {
+        this.showAssociatedCmpts = showAssociatedCmpts;
+        contentProvider.setShowAssociatedCmpts(showAssociatedCmpts);
+    }
+
+    /**
+     * @return Returns the showAssociations.
+     */
+    public boolean isShowAssociatedCmpts() {
+        return showAssociatedCmpts;
     }
 
     private static class AdjustmentDateContentProvider extends DeferredStructuredContentProvider {
@@ -813,7 +899,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                         lastAdjDate = new AdjustmentDate(nextDate, lastDate);
                         lastDate = (GregorianCalendar)nextDate.clone();
                         lastDate.setTimeInMillis(lastDate.getTimeInMillis() - 1);// add(Calendar.DATE,
-                                                                                 // -1);
+                        // -1);
                         result.add(lastAdjDate);
                     }
                     return result.toArray();
