@@ -35,7 +35,10 @@ public class PersistencePage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, true));
-        new PersistentTypeInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
+        PersistentTypeInfoSection persistenceSection = new PersistentTypeInfoSection((IPolicyCmptType)getIpsObject(),
+                formBody, toolkit);
+        persistenceSection.setExpanded(true);
+
         new PersistentAttributeSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
         new PersistentAssociationSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
     }

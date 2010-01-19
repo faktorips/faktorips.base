@@ -54,13 +54,8 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
     class PersistenceAttributesComposite extends PersistenceComposite {
 
-        // private final String[] columnHeaders = { "Attribute Name", "Column Name", "Converter",
-        // "Unique", "Nullable",
-        // "Size", "Precision", "Scale" };
-
         @Override
         public String[] getColumnHeaders() {
-            // return columnHeaders;
             return new String[] { "Attribute Name", "Column Name", "Converter", "Unique", "Nullable", "Size",
                     "Precision", "Scale" };
 

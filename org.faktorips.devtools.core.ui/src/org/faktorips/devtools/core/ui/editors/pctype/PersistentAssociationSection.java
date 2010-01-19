@@ -36,6 +36,14 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
+/**
+ * Section to display the persistence properties of the associations specific to an
+ * {@link IPolicyCmptType}.
+ * <p/>
+ * The editable properties are Join Table Name and Fetch Type amongst others.
+ * 
+ * @author Roman Grutza
+ */
 public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
@@ -53,10 +61,6 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     }
 
     public class PersistenceAssociationsComposite extends PersistenceComposite {
-
-        // private final String[] columnHeaders = { "Join Table Name", "Source Column Name",
-        // "Target Column Name",
-        // "Fetch Type" };
 
         public PersistenceAssociationsComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
             super(ipsObject, parent, toolkit);

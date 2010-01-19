@@ -21,22 +21,31 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DescriminatorDatatype;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
-import org.faktorips.devtools.core.ui.controller.fields.DatatypeField;
-import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
+/**
+ * Section to display and edit the persistence properties specific to an {@link IPolicyCmptType}.
+ * <p/>
+ * The editable properties are Table Name, Inheritance Strategy amongst others.
+ * 
+ * @author Roman Grutza
+ */
 public class PersistentTypeInfoSection extends IpsSection {
 
     private final IPolicyCmptType ipsObject;
 
     public PersistentTypeInfoSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, GridData.FILL_HORIZONTAL, toolkit);
         this.ipsObject = ipsObject;
 
         initControls();
         setText("Entity Information");
+        setExpanded(false);
     }
 
     @Override
@@ -56,7 +65,8 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(composite, "Inheritance Strategy");
         Combo inheritanceStrategyCombo = toolkit.createCombo(composite);
-        ComboField inheritanceStrategyField = new ComboField(inheritanceStrategyCombo);
+        setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
+        ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
         bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
 
@@ -64,22 +74,46 @@ public class PersistentTypeInfoSection extends IpsSection {
         Text descriminatorColumnNameText = toolkit.createText(composite);
         bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_COLUMN_NAME);
+        // disable this control if the inheritance strategy JoinedSubclass is used
+        bindingContext.bindEnabled(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
 
         toolkit.createLabel(composite, "Descriminator Datatype");
-        DatatypeRefControl descriminatorDatatypeRefEdit = toolkit.createDatatypeRefEdit(ipsObject.getIpsProject(),
-                composite);
-        DatatypeField datatypeField = new DatatypeField(descriminatorDatatypeRefEdit);
-        bindingContext.bindContent(datatypeField, ipsObject.getPersistenceTypeInfo(),
+        Combo descriminatorDatatypeCombo = toolkit.createCombo(composite);
+        setComboItems(descriminatorDatatypeCombo, DescriminatorDatatype.class);
+        ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DescriminatorDatatype.class);
+        bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_DATATYPE);
+        bindingContext.bindEnabled(descriminatorDatatypeCombo, ipsObject.getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
 
         toolkit.createLabel(composite, "Descriminator Column Value");
         Text descriminatorColumnValueText = toolkit.createText(composite);
         bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_VALUE);
+        bindingContext.bindEnabled(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+    }
+
+    /**
+     * Enables or disables the expanded state on this section.
+     */
+    public void setExpanded(boolean expanded) {
+        getSectionControl().setExpanded(expanded);
+    }
+
+    private void setComboItems(Combo combo, Class<? extends Enum> class1) {
+        Enum[] allEnumConstants = class1.getEnumConstants();
+        String[] allEnumValues = new String[allEnumConstants.length];
+        for (int i = 0; i < allEnumConstants.length; i++) {
+            allEnumValues[i] = allEnumConstants[i].toString();
+        }
+        combo.setItems(allEnumValues);
     }
 
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
     }
+
 }
