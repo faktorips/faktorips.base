@@ -16,8 +16,13 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -58,47 +63,40 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         newTableContents(project, "tableContentsWithoutKindId");
     }
 
-    public void testDummy() {
+    public void testGetPackage() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+        assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
 
+        IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
+        IProductCmptLink link = gen.newLink("RoleName");
+        link.setTarget(middle.getQualifiedName());
+        inside.getIpsSrcFile().save(true, null);
+
+        page = getSourcePageFor(inside);
+        assertEquals(middle.getIpsPackageFragment(), page.getTargetPackage());
     }
 
-    // TODO Joerg i.A.
-    // public void testGetPackage() throws Exception {
-    // SourcePage page = getSourcePageFor(inside);
-    // assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
-    //
-    // IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
-    // IProductCmptLink link = gen.newLink("RoleName");
-    // link.setTarget(middle.getQualifiedName());
-    // inside.getIpsSrcFile().save(true, null);
-    //
-    // page = getSourcePageFor(inside);
-    // assertEquals(middle.getIpsPackageFragment(), page.getTargetPackage());
-    // }
+    public void testGetNewNameWithoutKindId() throws Exception {
+        IIpsProjectProperties properties = project.getProperties();
+        DateBasedProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy();
+        strategy.setVersionIdSeparator(" ");
+        properties.setProductCmptNamingStrategy(strategy);
+        project.setProperties(properties);
 
-    // // TODO Joerg i.A.
-    // public void testGetNewNameWithoutKindId() throws Exception {
-    // IIpsProjectProperties properties = project.getProperties();
-    // DateBasedProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy();
-    // strategy.setVersionIdSeparator(" ");
-    // properties.setProductCmptNamingStrategy(strategy);
-    // project.setProperties(properties);
-    //
-    // IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
-    // ITableContentUsage usage = gen.newTableContentUsage(tableStructureUsage);
-    // String oldName = "tableContentsWithoutKindId";
-    // usage.setTableContentName(oldName);
-    //
-    // ReferenceAndPreviewPage referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside,
-    // DeepCopyWizard.TYPE_NEW_VERSION);
-    // String newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
-    // assertFalse(newName.equals(oldName));
-    //
-    // referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside,
-    // DeepCopyWizard.TYPE_COPY_PRODUCT);
-    // newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
-    // assertFalse(newName.equals(oldName));
-    // }
+        IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
+        ITableContentUsage usage = gen.newTableContentUsage(tableStructureUsage);
+        String oldName = "tableContentsWithoutKindId";
+        usage.setTableContentName(oldName);
+
+        ReferenceAndPreviewPage referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside,
+                DeepCopyWizard.TYPE_NEW_VERSION);
+        String newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
+        assertFalse(newName.equals(oldName));
+
+        referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside, DeepCopyWizard.TYPE_COPY_PRODUCT);
+        newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
+        assertFalse(newName.equals(oldName));
+    }
 
     private SourcePage getSourcePageFor(IProductCmpt cmpt) {
         DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, DeepCopyWizard.TYPE_COPY_PRODUCT);

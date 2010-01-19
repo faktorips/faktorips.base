@@ -240,17 +240,19 @@ public class DeepCopyPreview {
         String newName = oldName;
         IProductCmptNamingStrategy namingStrategy = sourcePage.getNamingStrategy();
         String kindId = null;
-
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
             MessageList list = namingStrategy.validate(newName);
             if (!list.containsErrorMsg()) {
                 kindId = namingStrategy.getKindId(newName);
-                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
-            } else {
-                // could't determine kind id, thus add copy of in front of the name
-                // to get an unique new name
-                newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter, newName);
             }
+            if (kindId != null) {
+                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
+            }
+        }
+        if (kindId == null) {
+            // could't determine kind id, thus add copy of in front of the name
+            // to get an unique new name
+            newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter, newName);
         }
 
         if (deepCopyWizard.getType() == DeepCopyWizard.TYPE_COPY_PRODUCT) {
