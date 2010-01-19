@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,9 +35,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
@@ -103,28 +103,35 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     String targetName = association.getTarget();
                     if (targetName != null && targetName.length() > 0) {
                         if (model instanceof IPolicyCmptType) {
-                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                    getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(
+                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet())
+                                    .getGenerator(getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(
                                             false));
                         } else if (model instanceof IProductCmptType) {
-                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                    getIpsProject().findProductCmptType(targetName)).getQualifiedName(
+                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet())
+                                    .getGenerator(getIpsProject().findProductCmptType(targetName)).getQualifiedName(
                                             false));
                         }
                     } else {
                         modelTypeAssociation.setAttribute("target", null);
                     }
-                    modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association.getMinCardinality()));
-                    modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association.getMaxCardinality()));
+                    modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association
+                            .getMinCardinality()));
+                    modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association
+                            .getMaxCardinality()));
                     modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
+                    modelTypeAssociation.setAttribute("isTargetRolePluralRequired", Boolean.toString(association
+                            .isTargetRolePluralRequired()));
+                    modelTypeAssociation.setAttribute("isDerivedUnion", Boolean.toString(association.isDerivedUnion()));
+                    modelTypeAssociation.setAttribute("isSubsetOfADerivedUnion", Boolean.toString(association
+                            .isSubsetOfADerivedUnion()));
                     try {
                         modelTypeAssociation
-                        .setAttribute(
-                                "isProductRelevant",
-                                Boolean
-                                .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                        .isConstrainedByProductStructure(getIpsProject())
-                                        : true));
+                                .setAttribute(
+                                        "isProductRelevant",
+                                        Boolean
+                                                .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
+                                                        .isConstrainedByProductStructure(getIpsProject())
+                                                        : true));
                     } catch (DOMException e) {
                         // don't bother
                     } catch (CoreException e) {
@@ -164,9 +171,13 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     }
                     modelTypeAttribute.setAttribute("valueSetType", getValueSetType(attribute));
                     modelTypeAttribute.setAttribute("attributeType", getAttributeType(attribute));
-                    modelTypeAttribute.setAttribute("isProductRelevant", Boolean
-                            .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
-                                    .isProductRelevant() : true));
+                    modelTypeAttribute
+                            .setAttribute(
+                                    "isProductRelevant",
+                                    Boolean
+                                            .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
+                                                    .isProductRelevant()
+                                                    : true));
                     addExtensionProperties(modelTypeAttribute, attribute);
                 }
             }
@@ -175,7 +186,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private void addExtensionProperties(Element modelElement, IExtensionPropertyAccess element) {
         IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
-        .getExtensionPropertyDefinitions(element.getClass(), true);
+                .getExtensionPropertyDefinitions(element.getClass(), true);
         Element extensionProperties = doc.createElement("ExtensionProperties");
         modelElement.appendChild(extensionProperties);
         for (int i = 0; i < extensionPropertyDefinitions.length; i++) {
@@ -245,12 +256,14 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }
 
     /**
-     * Returns the path to the (generated) xml resource as used by the Class.getResourceAsStream() Method.
+     * Returns the path to the (generated) xml resource as used by the Class.getResourceAsStream()
+     * Method.
      * 
      * @see Class#getResourceAsStream(java.lang.String)
      */
@@ -259,5 +272,4 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         return packageInternal.replace('.', '/') + '/' + type.getName() + ".xml";
     }
 
-    
 }
