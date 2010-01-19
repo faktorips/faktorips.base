@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJpaAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -153,6 +155,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private final String version;
 
     private final Map<IType, GenType> ipsObjectTypeGenerators;
+
+    private Map<AnnotatedJavaElementType, List<AnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
@@ -496,6 +500,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setEnumTypeBuilder(enumTypeBuilder);
         tocFileBuilder.setEnumXmlAdapterBuilder(enumXmlAdapterBuilder);
 
+        createAnnotationGeneratorMap();
+
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
                     KIND_MODEL_TYPE);
@@ -520,6 +526,69 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
                     businessFunctionBuilder, enumTypeBuilder, enumContentBuilder };
         }
+    }
+
+    private void createAnnotationGeneratorMap() throws CoreException {
+        annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<AnnotationGenerator>>();
+        List<AnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
+
+        for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
+            ArrayList<AnnotationGenerator> annotationGenerators = new ArrayList<AnnotationGenerator>();
+            for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
+                AnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
+                // if (annotationGenerator != null) {
+                annotationGenerators.add(annotationGenerator);
+                // }
+            }
+            annotationGeneratorsMap.put(type, annotationGenerators);
+        }
+    }
+
+    private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
+        List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
+        factories.add(new PolicyCmptImplClassJpaAnnotationGeneratorFactory());
+        // TODO Add JAXB annotation factory
+        return factories;
+    }
+
+    /**
+     * Returns a code fragment containing all annotations to the given Java Element Type and
+     * IpsElement.
+     * 
+     * @param type Determines the type of annotation to generate. See
+     *            {@link AnnotatedJavaElementType} for a list of possible types.
+     * @param ipsElement The IPS element to create the annotations for.
+     */
+    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
+        JavaCodeFragment code = new JavaCodeFragment();
+        List<AnnotationGenerator> generators = annotationGeneratorsMap.get(type);
+        if (generators == null) {
+            return code;
+        }
+        for (AnnotationGenerator generator : generators) {
+            code.append(generator.createAnnotation(ipsElement));
+        }
+        return code;
+    }
+
+    /**
+     * Returns a code fragment containing all annotations to the given Java Element Type and
+     * IpsElement using the given builder.
+     * 
+     * @param type Determines the type of annotation to generate. See
+     *            {@link AnnotatedJavaElementType} for a list of possible types.
+     * @param ipsElement The IPS element to create the annotations for.
+     * @param builder The builder for the Java Code Fragment to be generated.
+     */
+    public void addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement, JavaCodeFragmentBuilder builder) {
+        List<AnnotationGenerator> generators = annotationGeneratorsMap.get(type);
+        if (generators == null) {
+            return;
+        }
+        for (AnnotationGenerator generator : generators) {
+            builder.append(generator.createAnnotation(ipsElement));
+        }
+        return;
     }
 
     @Override
