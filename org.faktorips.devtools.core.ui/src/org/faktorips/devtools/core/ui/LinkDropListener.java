@@ -74,7 +74,7 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public void dragEnter(DropTargetEvent event) {
-        if ((event.detail & DND.DROP_DEFAULT) == DND.DROP_DEFAULT || (event.detail & DND.DROP_NONE) == DND.DROP_NONE) {
+        if ((event.detail & DND.DROP_DEFAULT) == DND.DROP_DEFAULT || event.detail == DND.DROP_NONE) {
             event.detail = DND.DROP_LINK;
         }
         super.dragEnter(event);
@@ -82,6 +82,9 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
+        if ((operation & DND.DROP_LINK) != DND.DROP_LINK) {
+            return false;
+        }
         List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
         if (draggedCmpts == null) {
             return false;
@@ -116,7 +119,7 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean performDrop(Object data) {
-        if (getCurrentOperation() != DND.DROP_LINK) {
+        if ((getCurrentOperation() & DND.DROP_LINK) != DND.DROP_LINK) {
             return false;
         }
         if (!(data instanceof String[])) {

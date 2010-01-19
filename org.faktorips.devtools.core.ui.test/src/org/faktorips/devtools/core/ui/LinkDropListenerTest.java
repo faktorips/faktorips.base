@@ -376,6 +376,11 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
             return target;
         }
 
+        @Override
+        protected int getCurrentOperation() {
+            return DND.DROP_LINK;
+        }
+
         /**
          * @param target The target to set.
          */
