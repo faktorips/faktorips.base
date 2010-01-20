@@ -26,6 +26,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
@@ -546,7 +547,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
         List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        factories.add(new PolicyCmptImplClassJpaAnnotationGeneratorFactory());
+        PolicyCmptImplClassJpaAnnotationGeneratorFactory jpaFactory = new PolicyCmptImplClassJpaAnnotationGeneratorFactory();
+
+        try {
+            if (jpaFactory.isRequiredFor(getIpsProject())) {
+                factories.add(jpaFactory);
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+
         // TODO Add JAXB annotation factory
         return factories;
     }
@@ -577,7 +587,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * 
      * @param type Determines the type of annotation to generate. See
      *            {@link AnnotatedJavaElementType} for a list of possible types.
-     * @param ipsElement The IPS element to create the annotations for.
+     * @param ipsElement The IPS element to create the annotations for. <br/>
+     *            <code>Null</code> is permitted for certain AnnotatedJavaElementTypes which do not
+     *            need further information. This is the case if <code>type</code> is
+     *            POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD.
+     * 
      * @param builder The builder for the Java Code Fragment to be generated.
      */
     public void addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement, JavaCodeFragmentBuilder builder) {

@@ -32,6 +32,8 @@ public class PolicyCmptImplClassJpaAnnotationGeneratorFactory implements Annotat
                 return new PolicyCmptImplClassAttributeGetterJpaAnnotationGenerator();
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER:
                 return new PolicyCmptImplClassAttributeSetterJpaAnnotationGenerator();
+            case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
+                return new PolicyCmptImplClassTransientFieldJpaAnnotationGenerator();
             default:
                 throw new CoreException(new IpsStatus("Could not find an annotation generator for " + type));
         }

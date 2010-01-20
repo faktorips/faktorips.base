@@ -1127,10 +1127,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * private AbstractModelObject parentModelObject;
      * </pre>
      */
-    private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder) {
+    private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String javadoc = getLocalizedText(getPcType(), "FIELD_PARENT_JAVADOC");
         memberVarsBuilder.javaDoc(javadoc, ANNOTATION_GENERATED);
 
+        getGenPolicyCmptType().getBuilderSet().addAnnotations(
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, null, memberVarsBuilder);
+
+        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
+        // AnnotationGenerator and add it to the Standard Builder Set)
         if (isGenerateJaxbSuppert()) {
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-object.id");
@@ -1312,6 +1317,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         getGenPolicyCmptType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS,
                 getPcType(), builder);
 
+        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
+        // AnnotationGenerator and add it to the Standard Builder Set)
         if (!getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport()) {
             return;
         }

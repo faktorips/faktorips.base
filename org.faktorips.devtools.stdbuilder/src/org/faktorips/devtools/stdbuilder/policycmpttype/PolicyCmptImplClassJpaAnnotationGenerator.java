@@ -17,44 +17,84 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
 
 public class PolicyCmptImplClassJpaAnnotationGenerator implements AnnotationGenerator {
 
-    public final static String ANNOTATION_ENTITY = "@Entity";
-    public final static String ANNOTATION_TABLE = "@Table";
-    public final static String ANNOTATION_SECONDARY_TABLE = "@SecondaryTable";
+    private final static String ANNOTATION_ENTITY = "@Entity";
+    private final static String ANNOTATION_TABLE = "@Table";
+    private final static String ANNOTATION_SECONDARY_TABLE = "@SecondaryTable";
+    private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
+    private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
 
     private static final String IMPORT_ENTITY = "javax.persistence.Entity";
     private static final String IMPORT_TABLE = "javax.persistence.Table";
     private static final String IMPORT_SECONDARY_TABLE = "javax.persistence.SecondaryTable";
+    private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
+    private static final String IMPORT_DISCRIMINATOR_TYPE = "javax.persistence.DiscriminatorType";
+    private static final String IMPORT_DISCRIMINATOR_VALUE = "javax.persistence.DiscriminatorValue";
+
+    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
+        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
+    }
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         IPolicyCmptType pcType = (IPolicyCmptType)ipsElement;
 
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
-        InheritanceStrategy inheritanceStrategy = persistenceTypeInfo.getInheritanceStrategy();
 
         fragment.append(ANNOTATION_ENTITY);
         fragment.addImport(IMPORT_ENTITY);
-        if (inheritanceStrategy != InheritanceStrategy.MIXED) {
-            fragment.append(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
-            fragment.addImport(IMPORT_TABLE);
 
-        } else {
-            fragment.append(ANNOTATION_SECONDARY_TABLE + "(name = \"" + persistenceTypeInfo.getSecondaryTableName()
-                    + "\")");
-            fragment.addImport(IMPORT_SECONDARY_TABLE);
-        }
+        addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
+        addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
 
         return fragment;
     }
 
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
+    private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
+
+        InheritanceStrategy inheritanceStrategy = persistenceTypeInfo.getInheritanceStrategy();
+
+        switch (inheritanceStrategy) {
+            case SINGLE_TABLE:
+                fragment.append(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
+                fragment.addImport(IMPORT_TABLE);
+
+                break;
+            case JOINED_SUBCLASS:
+                fragment.append(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
+                fragment.addImport(IMPORT_TABLE);
+
+                break;
+
+            case MIXED:
+                fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \""
+                        + persistenceTypeInfo.getSecondaryTableName() + "\")");
+                fragment.addImport(IMPORT_SECONDARY_TABLE);
+                break;
+        }
     }
 
+    private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
+        if (persistenceTypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
+            return;
+        }
+
+        DiscriminatorDatatype discriminatorDatatype = persistenceTypeInfo.getDiscriminatorDatatype();
+        String discriminatorColumnName = persistenceTypeInfo.getDiscriminatorColumnName();
+        String discriminatorValue = persistenceTypeInfo.getDescriminatorValue();
+
+        fragment.appendln(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
+                + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype + ")");
+        fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
+
+        fragment.addImport(IMPORT_DISCRIMINATOR_COLUMN);
+        fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);
+        fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
+    }
 }
