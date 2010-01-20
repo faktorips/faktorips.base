@@ -212,6 +212,13 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
+    @Override
+    public ImageRegistry getImageRegistry() {
+        IpsPlugin.log(new CoreException(new Status(IStatus.WARNING, PLUGIN_ID,
+                "Image Registry is used - please use resource manager")));
+        return super.getImageRegistry();
+    }
+
     /**
      * Returns the settings for ips object editors.
      * 
@@ -671,6 +678,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         private ResourceManager resourceManager;
 
+        /**
+         * used to map image names (also composit names for overlays) to descriptors
+         */
+        private Map<String, ImageDescriptor> descriptorMap = new HashMap<String, ImageDescriptor>();
+
         public ResourceManager getResourceManager() {
             if (resourceManager == null) {
                 resourceManager = createResourceManager();
@@ -694,10 +706,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             throw new SWTError(SWT.ERROR_THREAD_INVALID_ACCESS);
         }
 
-        public ImageRegistry getImageRegistry() {
-            return getDefault().getImageRegistry();
-        }
-
         /**
          * Returns the image with the indicated name from the <code>icons</code> folder. If no image
          * with the indicated name is found and createIfAbsent is false null is returned.
@@ -706,12 +714,16 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @param createIfAbsent true to create a new image if not already registered
          */
         public Image getSharedImage(String name, boolean createIfAbsent) {
-            Image image = getImageRegistry().get(name);
-            if (image == null && createIfAbsent) {
-                ImageDescriptor descriptor = getSharedImageDescriptor(name, true);
-                image = getImage(descriptor);
+            ImageDescriptor descriptor = getSharedImageDescriptor(name, createIfAbsent);
+            if (createIfAbsent) {
+                return getImage(descriptor);
+            } else {
+                if (descriptor != null) {
+                    return (Image)resourceManager.find(descriptor);
+                } else {
+                    return null;
+                }
             }
-            return image;
         }
 
         /**
@@ -726,7 +738,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @return the shared image descriptor
          */
         public ImageDescriptor getSharedImageDescriptor(String name, boolean createIfAbsent) {
-            ImageDescriptor descriptor = getImageRegistry().getDescriptor(name);
+            ImageDescriptor descriptor = descriptorMap.get(name);
             if (descriptor == null && createIfAbsent) {
                 descriptor = createImageDescriptor(name);
                 registerSharedImageDescriptor(name, descriptor);
@@ -744,7 +756,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
             if (descriptor != null && descriptor != ImageDescriptor.getMissingImageDescriptor()) {
-                getImageRegistry().put(name, descriptor);
+                descriptorMap.put(name, descriptor);
             }
         }
 
