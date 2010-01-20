@@ -22,10 +22,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 
 /**
- *
+ * 
+ *@deprecated use {@link OpenIpsObjectSelectionDialog} instead
  */
+@Deprecated
 public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
 
     public IpsObjectSelectionDialog(Shell parent, String title, String message) {
