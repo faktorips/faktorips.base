@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -81,7 +80,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
                 public void menuAboutToShow(IMenuManager manager) {
-                    manager.add(new Separator());
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
                     manager.add(refactorSubmenu);
@@ -89,7 +87,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
             });
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            page.getEditor().getSite().registerContextMenu(manager, getPartsComposite());
         }
 
         @Override
