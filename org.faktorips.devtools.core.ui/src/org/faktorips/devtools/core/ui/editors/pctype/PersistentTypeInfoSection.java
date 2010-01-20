@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DescriminatorDatatype;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -80,8 +80,8 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(composite, "Descriminator Datatype");
         Combo descriminatorDatatypeCombo = toolkit.createCombo(composite);
-        setComboItems(descriminatorDatatypeCombo, DescriminatorDatatype.class);
-        ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DescriminatorDatatype.class);
+        setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
+        ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_DATATYPE);
         bindingContext.bindEnabled(descriminatorDatatypeCombo, ipsObject.getPersistenceTypeInfo(),

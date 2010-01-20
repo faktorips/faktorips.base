@@ -36,7 +36,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private String secondaryTableName = "";
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
     private String descriminatorValue;
-    private DescriminatorDatatype descriminatorDatatype = DescriminatorDatatype.STRING;
+    private DiscriminatorDatatype descriminatorDatatype = DiscriminatorDatatype.STRING;
     private String descriminatorColumnName = "DTYPE";
 
     private boolean notJoinedSubclass = true;
@@ -61,11 +61,11 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         descriminatorValue = ipsObject.getName();
     }
 
-    public String getDescriminatorColumnName() {
+    public String getDiscriminatorColumnName() {
         return descriminatorColumnName;
     }
 
-    public DescriminatorDatatype getDescriminatorDatatype() {
+    public DiscriminatorDatatype getDiscriminatorDatatype() {
         return descriminatorDatatype;
     }
 
@@ -92,8 +92,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, newDescriminatorColumnName);
     }
 
-    public void setDescriminatorDatatype(DescriminatorDatatype newDescriminatorDatatype) {
-        DescriminatorDatatype oldValue = descriminatorDatatype;
+    public void setDescriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype) {
+        DiscriminatorDatatype oldValue = descriminatorDatatype;
         descriminatorDatatype = newDescriminatorDatatype;
 
         valueChanged(oldValue, newDescriminatorDatatype);
@@ -156,9 +156,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         // Descriminator columns are used only for the strategy SINGLE_TABLE
         boolean invalidInheritanceStrategy = (inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
-                && descriminatorDatatype != DescriminatorDatatype.VOID;
+                && descriminatorDatatype != DiscriminatorDatatype.VOID;
         invalidInheritanceStrategy = (invalidInheritanceStrategy || inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE)
-                && descriminatorDatatype == DescriminatorDatatype.VOID;
+                && descriminatorDatatype == DiscriminatorDatatype.VOID;
         if (invalidInheritanceStrategy) {
             String text = "Descriminator columns are used only for the inheritance strategy SINGLE_TABLE. Either use this strategy or set the descriminator datatype to VOID.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR, this,
@@ -196,7 +196,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         secondaryTableName = element.getAttribute(PROPERTY_SECONDARY_TABLE_NAME);
         inheritanceStrategy = InheritanceStrategy.valueOf(element.getAttribute(PROPERTY_INHERITANCE_STRATEGY));
         descriminatorColumnName = element.getAttribute(PROPERTY_DESCRIMINATOR_COLUMN_NAME);
-        descriminatorDatatype = DescriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DESCRIMINATOR_DATATYPE));
+        descriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DESCRIMINATOR_DATATYPE));
         descriminatorValue = element.getAttribute(PROPERTY_DESCRIMINATOR_VALUE);
     }
 

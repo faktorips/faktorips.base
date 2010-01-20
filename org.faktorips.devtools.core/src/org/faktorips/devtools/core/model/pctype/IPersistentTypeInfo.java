@@ -95,7 +95,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     public void setInheritanceStrategy(InheritanceStrategy newStrategy);
 
-    public String getDescriminatorColumnName();
+    public String getDiscriminatorColumnName();
 
     public void setDescriminatorColumnName(String newDescriminatorColumnName);
 
@@ -103,9 +103,9 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     public void setDescriminatorValue(String newDescriminatorValue);
 
-    public DescriminatorDatatype getDescriminatorDatatype();
+    public DiscriminatorDatatype getDiscriminatorDatatype();
 
-    public void setDescriminatorDatatype(DescriminatorDatatype newDescriminatorDatatype);
+    public void setDescriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype);
 
     /**
      * For now only the strategies SINGLE_TABLE and JOINED_SUBCLASS are supported.
@@ -119,7 +119,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Constrains the possible Descriminator Value.
      */
-    public enum DescriminatorDatatype {
+    public enum DiscriminatorDatatype {
         VOID, // no type in case of JOINED_SUBCLASS
         STRING,
         CHAR,
