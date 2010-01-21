@@ -798,6 +798,9 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="de.qv.ormext.builder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
 		<!-- checkout faktorips analysis plugins and feature -->
+	    <cvs command="co" package="org.faktorips.analysis" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.core.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
