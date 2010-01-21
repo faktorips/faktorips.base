@@ -368,7 +368,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     }
                 });
 
-        // TODO expand all action
+        // expand all action
         toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("ExpandAll.gif")) {//$NON-NLS-1$
                     @Override
                     public void run() {
@@ -537,6 +537,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         final IAction openAction = new OpenEditorAction(tree);
         menumanager.add(openAction);
         menumanager.add(new Separator());
+        final IAction addAction = new AddCmptAction(tree);
+        // TODO enable/disable
+        menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
         menumanager.add(new Separator());
         final IAction findReferenceAction = new FindProductReferencesAction(tree);
@@ -553,9 +556,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 showInstancesAction.setEnabled(enabled);
             }
         });
-        // }
-        // }
-        // });
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);

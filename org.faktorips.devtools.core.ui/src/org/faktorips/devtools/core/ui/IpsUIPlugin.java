@@ -900,7 +900,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
             if (ipsElement == null) {
-                return ImageDescriptor.getMissingImageDescriptor();
+                return getSharedImageDescriptor("IpsElement_broken.gif", true);
             }
             IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
             if (adapter == null) {

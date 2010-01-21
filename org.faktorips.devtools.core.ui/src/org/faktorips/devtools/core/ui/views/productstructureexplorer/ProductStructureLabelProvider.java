@@ -175,7 +175,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             // show additional text to inform that no generations exists
             String generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                     .getGenerationConceptNameSingular();
-            return NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForDate, generationText);
+            return " " + NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForDate, generationText);
         } else {
             AdjustmentDate genAdjDate = new AdjustmentDate(generation.getValidFrom(), generation.getValidTo());
             if (!genAdjDate.equals(adjustmentDate)) {

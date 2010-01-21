@@ -33,6 +33,12 @@ import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
  */
 public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
 
+    private String definingMetaClass;
+
+    private boolean duplicateName = false;
+
+    private boolean instanceOfSubtype = false;
+
     /**
      * Creates an item for each ips source file and marks the itens as duplicate, if two (or more)
      * ips source files have the same unqualified name.
@@ -87,11 +93,6 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
     public InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
         super(ipsSrcFile);
     }
-
-    private String definingMetaClass;
-
-    private boolean duplicateName = false;
-    private boolean instanceOfSubtype = false;
 
     /**
      * Get the name of defining meta class

@@ -77,7 +77,7 @@ public class ReferenceDeleteAction extends Action {
         IProductCmptLink[] links = new IProductCmptLink[selectedObject.length];
         int i = 0;
         for (Object o : selectedObject) {
-            // first check all objects if there is a link.
+            // first check all objects if it has a link.
             // Only delete if only links are selected
             if (o instanceof IProductCmptReference) {
                 IProductCmptReference cmptReference = (IProductCmptReference)o;

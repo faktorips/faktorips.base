@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
@@ -26,7 +25,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
-import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
@@ -45,26 +43,11 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     private String dialogMessage;
     private ContentAssistHandler handler;
 
-    private IpsObjectCompletionProcessor completionProcessor;
-
-    private ILabelProvider labelProvider;
-
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
-        this(project, parent, toolkit, dialogTitle, dialogMessage, DefaultLabelProvider
-                .createWithIpsSourceFileMapping());
-    }
-
-    /**
-     * @param parent
-     * @param style
-     */
-    public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
-            String dialogMessage, ILabelProvider labelProvider) {
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
-        this.labelProvider = labelProvider;
         setIpsProject(project);
     }
 

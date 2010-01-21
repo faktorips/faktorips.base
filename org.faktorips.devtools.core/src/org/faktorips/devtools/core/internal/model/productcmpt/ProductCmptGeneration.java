@@ -468,7 +468,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return false;
         }
         // is correct type
-        if (!target.findProductCmptType(ipsProject).isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
+        IProductCmptType targetType = target.findProductCmptType(ipsProject);
+        if (targetType == null) {
+            return false;
+        }
+        if (!targetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
             return false;
         }
 

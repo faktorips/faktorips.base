@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -93,6 +94,9 @@ public class LinksLabelProvider extends MessageCueLabelProvider {
                 IProductCmpt product;
                 try {
                     product = link.findTarget(link.getIpsProject());
+                    if (product == null) {
+                        return IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmpt.class);
+                    }
                     return IpsUIPlugin.getImageHandling().getImage(product);
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
