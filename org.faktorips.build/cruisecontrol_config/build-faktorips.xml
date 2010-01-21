@@ -801,11 +801,12 @@ ${faktoripsProductLinuxZipPath}
 	    <cvs command="co" package="org.faktorips.analysis" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.analysis.core.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.analysis.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.ui" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
 		<!-- checkout de.qv.faktorips.feature and plugin -->
 		<cvs command="co" package="de.qv.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
