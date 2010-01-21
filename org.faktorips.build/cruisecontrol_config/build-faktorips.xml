@@ -189,12 +189,12 @@
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
-	<target name="analysis" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.analysis' project">
+	<target name="analysis" depends="updateBuildTemplate" description="builds the 'org.faktorips.analysis.core' project">
     	<property name="checkoutdir" value="checkout"/>
     	<property name="cvsTag" value="HEAD"/>
         <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
 
-        <property name="cvsModule" value="org.faktorips.devtools.analysis"/>
+        <property name="cvsModule" value="org.faktorips.analysis.core"/>
         <property name="projectDir" value="${checkoutdir}"/>
         <!--checkout/update project-->
 		<antcall target="-checkout.all" />
@@ -262,10 +262,11 @@
     	<property name="checkoutdir" value="checkout"/>
     	<property name="cvsTag" value="HEAD"/>
     	<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
+    	<property name="pluginbuildermodule" value="${cvsPluginbuildermodule}"/>
         <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
         <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
-    	<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/org.faktorips.pluginbuilder"/>
-    	<property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
+    	<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/${pluginbuildermodule}"/>
+    	<property name="pluginbuilder.config" value="${projectsRootDir}/${pluginbuildermodule}/pluginbuilder.config"/>
 
     	<cvs command="co" package="${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	<antcall target="-checkout.all" />
@@ -278,9 +279,9 @@
          </condition>
         <antcall inheritall="true" target="-disable.automated.test" />
         <antcall inheritall="true" target="-enable.automated.test" />
-		
+
         <!-- delegate to the pluginbuilder target -->
-    	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
+    	<ant dir="${projectsRootDir}/${pluginbuildermodule}/" antfile="build.xml" target="main-cc">
             <property name="label" value="${label}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
@@ -797,11 +798,11 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="de.qv.ormext.builder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
 		<!-- checkout faktorips analysis plugins and feature -->
-	    <cvs command="co" package="org.faktorips.analysis.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.devtools.analysis" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.devtools.analysis.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.devtools.analysis.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-	    <cvs command="co" package="org.faktorips.devtools.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.core.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	    <cvs command="co" package="org.faktorips.analysis.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
 		<!-- checkout de.qv.faktorips.feature and plugin -->
 		<cvs command="co" package="de.qv.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>

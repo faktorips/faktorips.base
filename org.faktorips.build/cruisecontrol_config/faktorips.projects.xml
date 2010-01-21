@@ -178,9 +178,9 @@
         </project>
 
         <!--=====================================================-->
-        <!--Project definition: org.faktorips.devtools.analysis-->
+        <!--Project definition: org.faktorips.analysis.core-->
         <!--=====================================================-->          
-        <project name="org.faktorips.devtools.analysis" mainbuildtarget="analysis">
+        <project name="org.faktorips.analysis.core" mainbuildtarget="analysis">
             <depends>
                 <project name="org.faktorips.devtools.core"/>
                 <project name="org.faktorips.devtools.core.ui"/>
@@ -483,7 +483,7 @@
                 <project name="org.faktorips.pluginbuilder.v2_4_patches"/>
             </depends>         
         </project>    
-                    
+                   
         <!--*****************************************************-->
         <!-- Customer projects -->
         <!--*****************************************************-->
