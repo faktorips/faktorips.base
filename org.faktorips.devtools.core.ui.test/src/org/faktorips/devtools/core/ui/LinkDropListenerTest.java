@@ -372,10 +372,11 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         private Object target;
 
-        private LinkCreatorUtil myLinkCreator = new MyLinkCreator(false);
+        private LinkCreatorUtil myLinkCreator = new MyLinkCreator(true);
 
         public TestDropListener(Viewer viewer) {
             super(viewer);
+            setLinkCreator(myLinkCreator);
         }
 
         @Override
@@ -393,11 +394,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
          */
         public void setTarget(Object target) {
             this.target = target;
-        }
-
-        @Override
-        public LinkCreatorUtil getLinkCreator() {
-            return myLinkCreator;
         }
 
         /**
