@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -85,6 +86,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (input instanceof ProductCmptEditorInput) {
             ignoreHandlingOfWorkingDateMissmatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMissmatch();
         }
+        ProductEditorDeleteAction deleteAction = new ProductEditorDeleteAction(this);
+        getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+
     }
 
     /**
