@@ -51,13 +51,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.devtools.core.ui.StyledCellMessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
@@ -80,29 +79,6 @@ public class TestCaseStructurePage extends WizardPage {
     private IIpsProject ipsProject;
     private IIpsSrcFile checkedProductCmpt = null;
     private TestCaseContentProvider testCaseContentProvider;
-
-    /*
-     * Special implementation of MessageCueLabelProvider. If an element isn't checked then the
-     * validation messages will be ignored.
-     */
-    private class CheckMessageCueLabelProvider extends MessageCueLabelProvider {
-        public CheckMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
-            super(baseProvider, ipsProject);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public MessageList getMessages(Object element) throws CoreException {
-            MessageList result = new MessageList();
-            if (element instanceof IIpsObjectPartContainer) {
-                IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
-                collectMessages(result, part, false);
-            }
-            return result;
-        }
-    }
 
     public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
@@ -140,27 +116,28 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         TestCaseLabelProvider labelProvider = new TestCaseLabelProvider(ipsProject);
-        treeViewer.setLabelProvider(new CheckMessageCueLabelProvider(labelProvider, ipsProject));
+        // TODO Joerg Erweiterung nur wenn checked dann validation fehler sichtbar
+        treeViewer.setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
 
         treeViewer.addCheckStateListener(new ICheckStateListener() {
             public void checkStateChanged(CheckStateChangedEvent event) {
                 pageChanged();
-                treeViewer.refresh(true);
+                treeViewer.refresh();
             }
         });
 
         new TreeMessageHoverService(treeViewer) {
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
+                MessageList result = new MessageList();
                 if (element instanceof IIpsObjectPartContainer) {
-                    MessageList result = new MessageList();
-                    collectMessages(result, (IIpsObjectPartContainer)element, false);
-                    return result;
-                } else {
-                    return new MessageList();
+                    IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
+                    MessageList msgList = part.getIpsObject().validate(ipsProject);
+                    collectMessages(result, msgList, part);
                 }
+                return result;
             }
         };
     }
@@ -203,29 +180,36 @@ public class TestCaseStructurePage extends WizardPage {
             public void modify(Object element, String property, Object value) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
                 checkedProductCmpt = ipsSrcFile;
+                IProductCmpt newProductCmpt = null;
+                IProductCmpt oldProductCmpt = null;
                 try {
-                    replaceSelectedProductCmpt((IProductCmpt)ipsSrcFile.getIpsObject());
+                    newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                    oldProductCmpt = replaceSelectedProductCmpt(newProductCmpt);
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
+                    return;
                 }
-                refreshTree();
-
-                tableViewer.refresh(true);
+                refreshTree(oldProductCmpt, newProductCmpt);
+                tableViewer.refresh();
             }
 
             /*
-             * Refreshs the tree. This method sets the target as new input, because a simple refresh
-             * doesn't work correctly if we change product cmpts and the labels.
+             * Refreshs the tree. This method resets the target as new input, because a simple
+             * refresh doesn't work correctly if we change product cmpts and the labels.
              */
-            private void refreshTree() {
-                treeViewer.getTree().setRedraw(false);
-                ISelection selection = treeViewer.getSelection();
-                TreeViewerExpandStateStorage storage = new TreeViewerExpandStateStorage(treeViewer);
-                storage.storeExpandedStatus();
-                setTargetTestCase(getTestCaseCopyWizard().getTargetTestCase());
-                storage.restoreExpandedStatus();
-                treeViewer.setSelection(selection);
-                treeViewer.getTree().setRedraw(true);
+            private void refreshTree(IProductCmpt oldProductCmpt, IProductCmpt newProductCmpt) {
+                try {
+                    treeViewer.getTree().setRedraw(false);
+                    TreeViewerExpandStateStorage storage = new TreeViewerExpandStateStorage(treeViewer);
+                    storage.storeExpandedStatus();
+                    pageChanged();
+                    treeViewer.refresh();
+                    // TODO Joerg check state get lost? Workaround: check all again
+                    treeViewer.setAllChecked(true);
+                    storage.restoreExpandedStatus();
+                } finally {
+                    treeViewer.getTree().setRedraw(true);
+                }
             }
         });
         final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
@@ -314,7 +298,7 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.setInput(targetTestCase);
         treeViewer.expandAll();
         treeViewer.setAllChecked(true);
-        treeViewer.refresh(true);
+        treeViewer.refresh();
         pageChanged();
     }
 
@@ -326,6 +310,8 @@ public class TestCaseStructurePage extends WizardPage {
             IProductCmpt parentProductCmpt) throws CoreException {
         checkedProductCmpt = null;
         if (productCmptSelected == null) {
+            // parameter doens't need product cmpt, therefore clear table
+            refreshTable(new IIpsSrcFile[0]);
             return;
         }
         checkedProductCmpt = productCmptSelected.getIpsSrcFile();
@@ -371,17 +357,27 @@ public class TestCaseStructurePage extends WizardPage {
     }
 
     /*
-     * Replace the product cmpt of the selected test policy cmpt object.
+     * Replace the product cmpt of the selected test policy cmpt object. Returns the product cmpt
+     * which was replaced.
      */
-    private void replaceSelectedProductCmpt(IProductCmpt cmpt) {
+    private IProductCmpt replaceSelectedProductCmpt(IProductCmpt cmpt) {
         ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(treeViewer.getSelection());
         if (testPolicyCmpt == null) {
-            return;
+            return null;
+        }
+        IProductCmpt oldProductCmp;
+        try {
+            oldProductCmp = testPolicyCmpt.findProductCmpt(ipsProject);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return null;
         }
         testPolicyCmpt.setProductCmpt(cmpt.getQualifiedName());
         String testPolicyCmptName = testPolicyCmpt.getTestCase().generateUniqueNameForTestPolicyCmpt(testPolicyCmpt,
                 cmpt.getName());
         testPolicyCmpt.setName(testPolicyCmptName);
+
+        return oldProductCmp;
     }
 
     private void pageChanged() {
@@ -446,18 +442,19 @@ public class TestCaseStructurePage extends WizardPage {
      * Collect all messages for the given element and all its child's. If an element isn't checked
      * then this element will be ignored.
      */
-    private void collectMessages(MessageList result, IIpsObjectPartContainer container, boolean parentIsChecked)
+    private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container)
             throws CoreException {
-        MessageList msgList = container.getIpsObject().validate(ipsProject);
         boolean checked = treeViewer.getChecked(container);
-        if (checked || (parentIsChecked && container instanceof ITestAttributeValue)) {
+        if (checked) {
             result.add(msgList.getMessagesFor(container));
         }
+
         IIpsElement[] childs = container.getChildren();
         for (int i = 0; i < childs.length; i++) {
             if (childs[i] instanceof IIpsObjectPartContainer) {
-                collectMessages(result, (IIpsObjectPartContainer)childs[i], checked);
+                collectMessages(result, msgList, (IIpsObjectPartContainer)childs[i]);
             }
         }
     }
+
 }
