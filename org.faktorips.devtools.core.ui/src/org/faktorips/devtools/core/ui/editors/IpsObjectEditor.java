@@ -412,9 +412,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Refreshes the controls on the active page with the data from the model.<br />
-     * Calls to this refresh method are ignored if the activate attribute is set to
-     * <code>false</code>.
+     * Refreshes the controls on the active page with the data from the model.<br /> Calls to this
+     * refresh method are ignored if the activate attribute is set to <code>false</code>.
      */
     protected void refresh() {
         if (updatingPageStructure) {
@@ -1016,6 +1015,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          * {@inheritDoc}
          */
         public void problemsChanged(IResource[] changedResources) {
+            if (ipsObjectEditor.getIpsSrcFile() == null) {
+                return; // can happen during editor init
+            }
             IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource();
             if (correspondingResource != null) {
                 for (int i = 0; i < changedResources.length; i++) {
