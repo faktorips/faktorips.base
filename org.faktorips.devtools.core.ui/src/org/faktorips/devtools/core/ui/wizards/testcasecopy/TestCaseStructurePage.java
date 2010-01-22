@@ -67,9 +67,6 @@ import org.faktorips.util.message.MessageList;
 /**
  * Page to show the test case structure and replace product cmpt or deselect test objects.
  * 
- * TODO Joerg if changing selection in tree from need product to doesn't need product then right
- * side will not be cleared!
- * 
  * @author Joerg Ortmann
  */
 public class TestCaseStructurePage extends WizardPage {
@@ -311,6 +308,8 @@ public class TestCaseStructurePage extends WizardPage {
             IProductCmpt parentProductCmpt) throws CoreException {
         checkedProductCmpt = null;
         if (productCmptSelected == null) {
+            // parameter doens't need product cmpt, therefore clear table
+            refreshTable(new IIpsSrcFile[0]);
             return;
         }
         checkedProductCmpt = productCmptSelected.getIpsSrcFile();
@@ -419,7 +418,6 @@ public class TestCaseStructurePage extends WizardPage {
         return false;
     }
 
-    // TODO Joerg additional feature: finish not allowed if tree contains validation errors?
     private boolean validatePage() {
         setMessage(null);
         setErrorMessage(null);
