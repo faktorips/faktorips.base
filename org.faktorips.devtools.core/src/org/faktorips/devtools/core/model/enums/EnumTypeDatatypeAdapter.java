@@ -336,7 +336,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public String toString() {
-        return enumContent.getQualifiedName();
+        return getEnumValueContainer().getQualifiedName();
     }
 
 }
