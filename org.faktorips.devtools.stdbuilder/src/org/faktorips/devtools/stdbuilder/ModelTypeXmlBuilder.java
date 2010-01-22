@@ -115,6 +115,11 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association
                             .getMaxCardinality()));
                     modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
+                    modelTypeAssociation.setAttribute("isTargetRolePluralRequired", Boolean.toString(association
+                            .isTargetRolePluralRequired()));
+                    modelTypeAssociation.setAttribute("isDerivedUnion", Boolean.toString(association.isDerivedUnion()));
+                    modelTypeAssociation.setAttribute("isSubsetOfADerivedUnion", Boolean.toString(association
+                            .isSubsetOfADerivedUnion()));
                     try {
                         modelTypeAssociation
                                 .setAttribute(

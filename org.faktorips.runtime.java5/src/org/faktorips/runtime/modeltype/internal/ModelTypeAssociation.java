@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,12 +32,15 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private String namePlural = null;
     private String targetJavaClassName = null;
     private boolean isProductRelevant = false;
+    private boolean isDerivedUnion = false;
+    private boolean isSubsetOfADerivedUnion = false;
+    private Boolean isTargetRolePluralRequired = false;
 
     public ModelTypeAssociation(ModelType modelType) {
         super(modelType.getAbstractRepository());
         this.modelType = modelType;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -115,6 +118,12 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 associationType = AssociationType.valueOf(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
                 isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
+            } else if (parser.getAttributeLocalName(i).equals("isDerivedUnion")) {
+                isDerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
+            } else if (parser.getAttributeLocalName(i).equals("isSubsetOfADerivedUnion")) {
+                isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
+            } else if (parser.getAttributeLocalName(i).equals("isTargetRolePluralRequired")) {
+                isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
         initExtPropertiesFromXml(parser);
@@ -125,12 +134,18 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getName());
+        StringBuilder sb = new StringBuilder(getUsedName());
         sb.append(": ");
         sb.append(targetJavaClassName);
         sb.append('(');
         sb.append(associationType);
         sb.append(' ');
+        if (isDerivedUnion) {
+            sb.append(", Derived Union ");
+        }
+        if (isSubsetOfADerivedUnion) {
+            sb.append(", Subset of a Derived Union ");
+        }
         sb.append(minCardinality);
         sb.append("..");
         sb.append(maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality);
@@ -140,6 +155,18 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         }
         sb.append(')');
         return sb.toString();
+    }
+
+    public String getUsedName() {
+        return isTargetRolePluralRequired ? getNamePlural() : getName();
+    }
+
+    public boolean isDerivedUnion() {
+        return isDerivedUnion;
+    }
+
+    public boolean isSubsetOfADerivedUnion() {
+        return isSubsetOfADerivedUnion;
     }
 
 }

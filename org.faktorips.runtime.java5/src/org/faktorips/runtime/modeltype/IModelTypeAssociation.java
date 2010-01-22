@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.runtime.modeltype;
-
 
 /**
  * 
@@ -50,6 +49,12 @@ public interface IModelTypeAssociation extends IModelElement {
     public String getNamePlural();
 
     /**
+     * Returns the singular or plural form of this model type's name as used in code generation
+     * depending on cardinality.
+     */
+    public String getUsedName();
+
+    /**
      * Returns the type of this association.
      */
     public AssociationType getAssociationType();
@@ -58,12 +63,24 @@ public interface IModelTypeAssociation extends IModelElement {
      * Enum defining the possible association types.
      */
     public enum AssociationType {
-        Association, Composition, CompositionToMaster;
+        Association,
+        Composition,
+        CompositionToMaster;
     }
 
     /**
      * Returns if this association is product relevant.
      */
     public boolean isProductRelevant();
+
+    /**
+     * Returns if this association is a derived union.
+     */
+    public boolean isDerivedUnion();
+
+    /**
+     * Returns if this association is a subset of a derived union.
+     */
+    public boolean isSubsetOfADerivedUnion();
 
 }
