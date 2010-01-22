@@ -157,7 +157,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private final Map<IType, GenType> ipsObjectTypeGenerators;
 
-    private Map<AnnotatedJavaElementType, List<AnnotationGenerator>> annotationGeneratorsMap;
+    private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
@@ -530,16 +530,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private void createAnnotationGeneratorMap() throws CoreException {
-        annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<AnnotationGenerator>>();
+        annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>();
         List<AnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
 
         for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
-            ArrayList<AnnotationGenerator> annotationGenerators = new ArrayList<AnnotationGenerator>();
+            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
             for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
-                AnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
-                // if (annotationGenerator != null) {
+                IAnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
                 annotationGenerators.add(annotationGenerator);
-                // }
             }
             annotationGeneratorsMap.put(type, annotationGenerators);
         }
@@ -547,7 +545,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
         List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        PolicyCmptImplClassJpaAnnotationGeneratorFactory jpaFactory = new PolicyCmptImplClassJpaAnnotationGeneratorFactory();
+        PolicyCmptImplClassJpaAnnotationGeneratorFactory jpaFactory = new PolicyCmptImplClassJpaAnnotationGeneratorFactory(
+                this);
 
         try {
             if (jpaFactory.isRequiredFor(getIpsProject())) {
@@ -571,11 +570,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
         JavaCodeFragment code = new JavaCodeFragment();
-        List<AnnotationGenerator> generators = annotationGeneratorsMap.get(type);
+        List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
         if (generators == null) {
             return code;
         }
-        for (AnnotationGenerator generator : generators) {
+        for (IAnnotationGenerator generator : generators) {
             code.append(generator.createAnnotation(ipsElement));
         }
         return code;
@@ -595,11 +594,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * @param builder The builder for the Java Code Fragment to be generated.
      */
     public void addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement, JavaCodeFragmentBuilder builder) {
-        List<AnnotationGenerator> generators = annotationGeneratorsMap.get(type);
+        List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
         if (generators == null) {
             return;
         }
-        for (AnnotationGenerator generator : generators) {
+        for (IAnnotationGenerator generator : generators) {
             builder.append(generator.createAnnotation(ipsElement));
         }
         return;

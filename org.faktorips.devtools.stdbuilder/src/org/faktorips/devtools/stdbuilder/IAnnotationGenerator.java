@@ -13,17 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.model.IIpsElement;
 
-public interface AnnotationGeneratorFactory {
+public interface IAnnotationGenerator {
 
-    /**
-     * Returns <code>true</code> if the factory is required for the given project, as the
-     * appropriate annotations have to be generated.
-     */
-    public boolean isRequiredFor(IIpsProject ipsProject) throws CoreException;
+    public AnnotatedJavaElementType getAnnotatedJavaElementType();
 
-    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException;
+    public JavaCodeFragment createAnnotation(IIpsElement ipsElement);
 
 }

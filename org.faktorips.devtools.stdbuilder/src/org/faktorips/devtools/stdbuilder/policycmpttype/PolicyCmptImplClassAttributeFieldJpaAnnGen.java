@@ -15,15 +15,30 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class PolicyCmptImplClassAttributeFieldJpaAnnotationGenerator implements AnnotationGenerator {
+public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotationGenerator {
+
+    private static final String ANNOTATION_COLUMN = "@Column";
+    private static final String IMPORT_COLUMN = "javax.persistence.Column";
+
+    public PolicyCmptImplClassAttributeFieldJpaAnnGen(StandardBuilderSet builderSet) {
+        super(builderSet);
+    }
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
 
-        // TODO: flesh
+        IPersistentAttributeInfo jpaAttributeInfo = ((IPolicyCmptTypeAttribute)ipsElement)
+                .getPersistenceAttributeInfo();
+
+        fragment.addImport(IMPORT_COLUMN);
+        fragment.appendln(ANNOTATION_COLUMN + "(name = \"" + jpaAttributeInfo.getTableColumnName() + "\", nullable = "
+                + jpaAttributeInfo.getTableColumnNullable() + ")");
+
         return fragment;
     }
 

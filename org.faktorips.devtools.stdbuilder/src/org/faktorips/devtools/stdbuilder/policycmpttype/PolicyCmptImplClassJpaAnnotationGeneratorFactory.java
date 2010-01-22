@@ -17,23 +17,32 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class PolicyCmptImplClassJpaAnnotationGeneratorFactory implements AnnotationGeneratorFactory {
 
-    public AnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
+    private final StandardBuilderSet standardBuilderSet;
+
+    public PolicyCmptImplClassJpaAnnotationGeneratorFactory(StandardBuilderSet standardBuilderSet) {
+        this.standardBuilderSet = standardBuilderSet;
+    }
+
+    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS:
-                return new PolicyCmptImplClassJpaAnnotationGenerator();
+                return new PolicyCmptImplClassJpaAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
-                return new PolicyCmptImplClassAttributeFieldJpaAnnotationGenerator();
+                return new PolicyCmptImplClassAttributeFieldJpaAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER:
-                return new PolicyCmptImplClassAttributeGetterJpaAnnotationGenerator();
+                return new PolicyCmptImplClassAttributeGetterJpaAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER:
-                return new PolicyCmptImplClassAttributeSetterJpaAnnotationGenerator();
+                return new PolicyCmptImplClassAttributeSetterJpaAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
-                return new PolicyCmptImplClassTransientFieldJpaAnnotationGenerator();
+                return new PolicyCmptImplClassTransientFieldJpaAnnGen(standardBuilderSet);
+            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
+                return new PolicyCmptImplClassAssociationJpaAnnGen(standardBuilderSet);
             default:
                 throw new CoreException(new IpsStatus("Could not find an annotation generator for " + type));
         }

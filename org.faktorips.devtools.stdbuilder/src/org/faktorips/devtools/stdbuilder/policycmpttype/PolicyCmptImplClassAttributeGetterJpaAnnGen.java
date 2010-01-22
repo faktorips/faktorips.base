@@ -11,15 +11,27 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public interface AnnotationGenerator {
+public class PolicyCmptImplClassAttributeGetterJpaAnnGen extends AbstractAnnotationGenerator {
 
-    public AnnotatedJavaElementType getAnnotatedJavaElementType();
+    public PolicyCmptImplClassAttributeGetterJpaAnnGen(StandardBuilderSet builderSet) {
+        super(builderSet);
+    }
 
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement);
+    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
 
+        // TODO: flesh
+        return fragment;
+    }
+
+    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
+        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER;
+    }
 }

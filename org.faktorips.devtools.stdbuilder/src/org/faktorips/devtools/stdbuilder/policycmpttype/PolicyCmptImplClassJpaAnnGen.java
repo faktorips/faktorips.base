@@ -20,9 +20,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class PolicyCmptImplClassJpaAnnotationGenerator implements AnnotationGenerator {
+public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
+
+    public PolicyCmptImplClassJpaAnnGen(StandardBuilderSet builderSet) {
+        super(builderSet);
+    }
 
     private final static String ANNOTATION_ENTITY = "@Entity";
     private final static String ANNOTATION_TABLE = "@Table";

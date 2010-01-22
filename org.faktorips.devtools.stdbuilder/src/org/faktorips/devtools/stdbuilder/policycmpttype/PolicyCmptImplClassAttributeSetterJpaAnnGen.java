@@ -16,23 +16,24 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class PolicyCmptImplClassTransientFieldJpaAnnotationGenerator implements AnnotationGenerator {
+public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractAnnotationGenerator {
 
-    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
-    private static final String ANNOTATION_TRANSIENT = "@Transient";
+    public PolicyCmptImplClassAttributeSetterJpaAnnGen(StandardBuilderSet builderSet) {
+        super(builderSet);
+        // TODO Auto-generated constructor stub
+    }
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendln(ANNOTATION_TRANSIENT);
-        fragment.addImport(IMPORT_TRANSIENT);
 
+        // TODO: flesh
         return fragment;
     }
 
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD;
+        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER;
     }
 
 }

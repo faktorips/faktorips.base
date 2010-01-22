@@ -13,21 +13,20 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGenerator;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 
-public class PolicyCmptImplClassAttributeGetterJpaAnnotationGenerator implements AnnotationGenerator {
+public abstract class AbstractAnnotationGenerator implements IAnnotationGenerator {
 
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
+    private final StandardBuilderSet builderSet;
 
-        // TODO: flesh
-        return fragment;
+    public AbstractAnnotationGenerator(StandardBuilderSet builderSet) {
+        this.builderSet = builderSet;
     }
 
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER;
+    protected String getQualifiedImplClassName(IPolicyCmptType targetPcType) {
+        return GenType.getQualifiedName(targetPcType, builderSet, false);
     }
 }
