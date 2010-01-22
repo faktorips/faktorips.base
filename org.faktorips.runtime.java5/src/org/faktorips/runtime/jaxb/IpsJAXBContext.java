@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
  * 
  * @author Jan Ortmann
  */
+@SuppressWarnings("deprecation")
+// can't get rid of warnings as createValidator() must be implemented, but Validator is deprecated!
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;
