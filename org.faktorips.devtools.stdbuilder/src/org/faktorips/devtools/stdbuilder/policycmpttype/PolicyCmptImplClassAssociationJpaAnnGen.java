@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+// TODO: javadoc
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationGenerator {
 
     private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
@@ -73,11 +74,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             fragment.addImport(targetQName);
 
             fragment.append(ANNOTATION_ONE_TO_ONE);
-            fragment.append('(');
-            fragment.append("targetEntity = ");
+            fragment.append('(').append("targetEntity = ");
 
-            fragment.appendClassName(targetQName);
-            fragment.appendln(')');
+            fragment.appendClassName(targetQName).append(".class").appendln(')');
         }
     }
 

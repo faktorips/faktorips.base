@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.DependantObject;
@@ -182,7 +183,6 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      */
-
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -201,6 +201,11 @@ public class GenAssociationToMany extends GenAssociation {
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
+            // TODO: for now transient as assoc. codegen incomplete
+            getGenType().getBuilderSet().addAnnotations(
+                    AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, association, builder);
+
+            // TODO: introduce Generator for JAXB
             if (isGenerateJaxbSupport()) {
                 if (!isCompositionDetailToMaster()) {
                     builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()

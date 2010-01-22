@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
@@ -124,10 +123,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected void generateCodeForAssociation(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-
-        // FIXME: undesirably generates code for Interfaces too
-        getGenPolicyCmptType().getBuilderSet().addAnnotations(
-                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION, association, fieldsBuilder);
 
         GenAssociation generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(
                 association);

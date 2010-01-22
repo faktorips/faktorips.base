@@ -51,8 +51,8 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 
-        fragment.append(ANNOTATION_ENTITY);
         fragment.addImport(IMPORT_ENTITY);
+        fragment.appendln(ANNOTATION_ENTITY);
 
         addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
         addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
@@ -66,12 +66,12 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         switch (inheritanceStrategy) {
             case SINGLE_TABLE:
-                fragment.append(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
+                fragment.appendln(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
                 fragment.addImport(IMPORT_TABLE);
 
                 break;
             case JOINED_SUBCLASS:
-                fragment.append(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
+                fragment.appendln(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
                 fragment.addImport(IMPORT_TABLE);
 
                 break;
