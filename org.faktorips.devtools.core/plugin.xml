@@ -164,6 +164,10 @@
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.PrimitiveLongDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveLongHelper"/>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
+      </datatypeDefinition>
    </extension>
 
 <!-- 
