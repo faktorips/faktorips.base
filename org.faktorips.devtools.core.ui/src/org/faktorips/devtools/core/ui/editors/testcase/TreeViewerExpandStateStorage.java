@@ -47,24 +47,30 @@ public class TreeViewerExpandStateStorage {
     }
 
     public void restoreExpandedStatus() {
+        treeViewer.collapseAll();
         for (Iterator<String> iter = expandedItems.iterator(); iter.hasNext();) {
             String itemPath = iter.next();
             TreeItem childs[] = treeViewer.getTree().getItems();
             searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
+        }
+        if (selection.isEmpty()) {
+            return;
         }
         treeViewer.setSelection(selection);
     }
 
     private boolean searchAndExpandInTree(String itemPath, TreeItem childs[], String parent) {
         for (int i = 0; i < childs.length; i++) {
+            if (childs[i].isDisposed()) {
+                continue;
+            }
             String pathOfChild = getItemPath(parent, childs[i]);
-            if (!pathOfChild.startsWith(parent)) {
+            if (pathOfChild != null && !pathOfChild.startsWith(parent)) {
                 return false;
             }
 
             if (itemPath.equals(pathOfChild)) {
                 treeViewer.setExpandedState(childs[i].getData(), true);
-                // childs[i].setExpanded(true);
                 return true;
             }
             TreeItem subChilds[] = childs[i].getItems();
@@ -78,8 +84,11 @@ public class TreeViewerExpandStateStorage {
     private void checkExpandedStatus(ArrayList<String> expandedItems, TreeItem childs[], String parent) {
         for (int i = 0; i < childs.length; i++) {
             TreeItem item = childs[i];
+            String itemPath = getItemPath(parent, item);
+            if (item.isDisposed() || itemPath == null) {
+                continue;
+            }
             if (item.getExpanded()) {
-                String itemPath = getItemPath(parent, item);
                 expandedItems.add(itemPath);
                 checkExpandedStatus(expandedItems, item.getItems(), itemPath);
             }
@@ -87,6 +96,15 @@ public class TreeViewerExpandStateStorage {
     }
 
     private String getItemPath(String parent, TreeItem item) {
-        return parent + "//" + System.identityHashCode(item.getData()); //$NON-NLS-1$
+        if (item.getData() == null) {
+            return null;
+        }
+        Object obj = item.getData();
+        if (obj instanceof TestCaseTypeAssociation) {
+            // special case for presentation object,
+            // use always the model object to identify the path
+            obj = ((TestCaseTypeAssociation)obj).getTestParameter();
+        }
+        return parent + "//" + System.identityHashCode(obj);
     }
 }
