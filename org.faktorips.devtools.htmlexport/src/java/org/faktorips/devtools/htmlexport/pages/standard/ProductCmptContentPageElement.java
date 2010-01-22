@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -31,11 +31,10 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	protected void addStructureData() {
 		IProductCmptType productCmptType = getProductCmptType();
 
-		addPageElements(new WrapperPageElement(LayouterWrapperType.BLOCK,
+		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK,
 				new PageElement[] {
 						new TextPageElement("Vorlage: "),
-						new LinkPageElement(object, productCmptType, "content", new TextPageElement(productCmptType
-								.getName())) }));
+						new LinkPageElement(object, productCmptType, "content", productCmptType.getName(), true) }));
 	}
 
 	protected IProductCmptType getProductCmptType() {
@@ -58,7 +57,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	}
 
 	private PageElement createGenerationAttributeTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
 		if (object.getNumOfGenerations() == 0) {
@@ -87,7 +86,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	protected PageElement createGenerationsList() {
 		IIpsObjectGeneration[] generations = object.getGenerationsOrderedByValidDate();
 
-		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Anpassungsstufen", TextType.HEADING_2));
 
 		if (generations.length == 0) {

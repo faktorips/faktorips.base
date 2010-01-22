@@ -19,6 +19,7 @@ public class AlternateTablePageElementLayout extends DefaultTablePageElementLayo
 
 	private Style getStyle(int row) {
 		if (row % 2 == 0 && ignoreFirstLine) return Style.TABLE_ROW_EVEN;
+		if (row % 2 == 1 && !ignoreFirstLine) return Style.TABLE_ROW_EVEN;
 		return Style.TABLE_ROW_UNEVEN;
 	}
 }

@@ -9,10 +9,11 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -20,12 +21,12 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
 import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
-public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends RootPageElement {
+public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
 	protected T object;
 	protected DocumentorConfiguration config;
 
-	public static RootPageElement getInstance(IIpsObject object, DocumentorConfiguration config) {
+	public static AbstractRootPageElement getInstance(IIpsObject object, DocumentorConfiguration config) {
 		if (object.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE)
 			return new PolicyCmptTypeContentPageElement((IPolicyCmptType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE)
@@ -44,8 +45,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	@Override
 	public void build() {
 		super.build();
-		addPageElements(new LinkPageElement(object, object.getIpsPackageFragment(), "classes", new TextPageElement(Util
-				.getIpsPackageName(object.getIpsPackageFragment()))));
+		addPageElements(new LinkPageElement(object, object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object.getIpsPackageFragment()), true));
 		addPageElements(new TextPageElement(object.getName(), TextType.HEADING_1));
 
 		// Typhierarchie
@@ -73,7 +73,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			if (messageList.isEmpty())
 				return;
 
-			WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+			WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 			wrapper.addPageElements(new TextPageElement("Validation Errors", TextType.HEADING_2));
 
 			TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
@@ -98,4 +98,11 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	 */
 	protected void addTypeHierarchie() {
 	}
+
+	@Override
+	public String getPathToRoot() {
+		return PathUtilFactory.createPathUtil(object).getPathToRoot();
+	}
+	
+	
 }

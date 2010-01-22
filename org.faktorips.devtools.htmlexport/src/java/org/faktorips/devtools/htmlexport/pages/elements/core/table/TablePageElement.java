@@ -27,9 +27,12 @@ public class TablePageElement extends AbstractCompositePageElement {
 	@Override
 	protected void addSubElement(PageElement pageElement) {
 		TableRowPageElement rowPageElement = (TableRowPageElement) pageElement;
+		
+		/*
 		if (hasBorder()) {
 			rowPageElement.addStyles(Style.BORDER);
 		}
+		*/
 		
 		super.addSubElement(rowPageElement);
 		rowPageElement.setTablePageElement(this);

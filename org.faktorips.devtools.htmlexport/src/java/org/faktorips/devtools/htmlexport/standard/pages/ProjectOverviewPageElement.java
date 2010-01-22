@@ -6,16 +6,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
-public class ProjectOverviewPageElement extends RootPageElement {
+public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
 	protected IIpsProject project;
 	protected DocumentorConfiguration config;
@@ -33,7 +34,7 @@ public class ProjectOverviewPageElement extends RootPageElement {
 
 		addPageElements(new TextPageElement("Jetzt ne zündende Idee für die Projektübersicht!"));
 
-		addPageElements(new WrapperPageElement(LayouterWrapperType.BLOCK,
+		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK,
 				new PageElement[] { new TextPageElement("Validierungsfehler", TextType.HEADING_2), new MessageListTablePageElement(validateLinkedObjects()) }));
 	}
 
@@ -49,4 +50,11 @@ public class ProjectOverviewPageElement extends RootPageElement {
 		}
 		return ml;
 	}
+
+	@Override
+	public String getPathToRoot() {
+		return PathUtilFactory.createPathUtil(project).getPathToRoot();
+	}
+	
+	
 }

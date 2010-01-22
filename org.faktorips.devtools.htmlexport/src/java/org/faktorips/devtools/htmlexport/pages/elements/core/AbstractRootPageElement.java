@@ -2,9 +2,9 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
-public class RootPageElement extends AbstractCompositePageElement {
+public abstract class AbstractRootPageElement extends AbstractCompositePageElement {
 
-    @Override
+	@Override
     public void build() {
         reset();
     }
@@ -13,4 +13,10 @@ public class RootPageElement extends AbstractCompositePageElement {
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutRootPageElement(this);
     }
+    
+    /**
+     * 
+     * @return Pfad zum Root-Verzeichnis der Dokumentation
+     */
+    public abstract String getPathToRoot();
 }

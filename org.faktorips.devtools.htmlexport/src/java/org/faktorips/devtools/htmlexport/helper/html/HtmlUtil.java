@@ -40,10 +40,11 @@ public class HtmlUtil {
 		builder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>");
 		builder.append(title);
 		builder.append("</title>");
+		builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />");
 		if (!StringUtils.isBlank(styles)) {
-			builder.append("<style type=\"text/css\">\n<!--");
+			builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
 			builder.append(styles);
-			builder.append("-->\n</style>");
+			builder.append("\">");
 		}
 
 		builder.append("</head><body>");
@@ -79,6 +80,12 @@ public class HtmlUtil {
 		return builder.toString();
 	}
 
+	public static String createHtmlElement(String element, HtmlAttribute... attribute) {
+		StringBuilder builder = createHtmlElementOpenTagBase(element, attribute);
+		builder.append("/>");
+		return builder.toString();
+	}
+
 	/**
 	 * 
 	 * @param text
@@ -89,7 +96,7 @@ public class HtmlUtil {
 	}
 
 	public static String createHtmlElementOpenTag(String element, String classes) {
-		if (classes == null || classes.trim().equals("")) {
+		if (StringUtils.isBlank(classes)) {
 			return createHtmlElementOpenTag(element, new HtmlAttribute[] {});
 		}
 		HtmlAttribute classesAttr = new HtmlAttribute("class", classes);
@@ -97,6 +104,12 @@ public class HtmlUtil {
 	}
 
 	static String createHtmlElementOpenTag(String element, HtmlAttribute... attributes) {
+		StringBuilder builder = createHtmlElementOpenTagBase(element, attributes);
+		builder.append('>');
+		return builder.toString();
+	}
+
+	private static StringBuilder createHtmlElementOpenTagBase(String element, HtmlAttribute... attributes) {
 		StringBuilder builder = new StringBuilder();
 		builder.append('\n');
 		builder.append('<');
@@ -110,8 +123,7 @@ public class HtmlUtil {
 			builder.append(attribute.getValue());
 			builder.append("\"");
 		}
-		builder.append('>');
-		return builder.toString();
+		return builder;
 	}
 
 	public static String createHtmlElementCloseTag(String element) {
@@ -124,13 +136,17 @@ public class HtmlUtil {
 
 	public static String createLinkOpenTag(String href, String target, String classes) {
 		HtmlAttribute hrefAttr = new HtmlAttribute("href", href);
-		HtmlAttribute classAttr = new HtmlAttribute("class", classes);
+		HtmlAttribute targetAttr = (target == null ? null : new HtmlAttribute("target", target));
 
 		StringBuilder builder = new StringBuilder();
 
-		HtmlAttribute targetAttr = (target == null ? null : new HtmlAttribute("target", target));
-		builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr));
+		if (StringUtils.isBlank(classes)) {
+			builder.append(createHtmlElementOpenTag("a", hrefAttr, targetAttr));
+			return builder.toString();
+		}
 
+		HtmlAttribute classAttr = new HtmlAttribute("class", classes);
+		builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr));
 		return builder.toString();
 	}
 
@@ -158,6 +174,12 @@ public class HtmlUtil {
 	public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileTypes linkedFileType) {
 		IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
 		return pathUtil.getPathFromRoot(linkedFileType);
+	}
+
+	public static String createImage(String src, String alt) {
+		HtmlAttribute[] attribute = new HtmlAttribute[] { new HtmlAttribute("src", src), new HtmlAttribute("alt", alt) };
+		return createHtmlElement("img", attribute).toString();
+
 	}
 
 	/**

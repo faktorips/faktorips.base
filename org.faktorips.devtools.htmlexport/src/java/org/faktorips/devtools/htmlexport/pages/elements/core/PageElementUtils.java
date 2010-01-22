@@ -1,7 +1,6 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -9,8 +8,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 public class PageElementUtils {
 
-	public static TextPageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
-		TextPageElement[] textPageElements = new TextPageElement[texts.size()];
+	public static PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
+		PageElement[] textPageElements = new PageElement[texts.size()];
 
 		for (int i = 0; i < textPageElements.length; i++) {
 			textPageElements[i] = new TextPageElement(texts.get(i), styles, type);
@@ -19,7 +18,7 @@ public class PageElementUtils {
 		return textPageElements;
 	}
 
-	public static TextPageElement[] createTextPageElements(List<String> texts) {
+	public static PageElement[] createTextPageElements(List<String> texts) {
 		return createTextPageElements(texts, null, TextType.WITHOUT_TYPE);
 	}
 
@@ -27,7 +26,7 @@ public class PageElementUtils {
 		List<LinkPageElement> liste = new ArrayList<LinkPageElement>();
 
 		for (IIpsObject object : objects) {
-			LinkPageElement linkPageElement = new LinkPageElement(srcObject, object, target, new TextPageElement(object.getName()));
+			LinkPageElement linkPageElement = new LinkPageElement(srcObject, object, target, object.getName(), true);
 			linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
 			liste.add(linkPageElement);
 		}

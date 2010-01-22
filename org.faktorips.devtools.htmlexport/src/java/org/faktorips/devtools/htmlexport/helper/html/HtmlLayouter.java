@@ -5,16 +5,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.LayoutResource;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
+import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -23,7 +27,15 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
 
 public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 
-	String styleDefinitions;
+	private static final String HTML_BASE_CSS = "html/base.css";
+	private String resourcePath;
+	private String pathToRoot;
+
+	public HtmlLayouter(String resourcePath) {
+		super();
+		this.resourcePath = resourcePath;
+		initBaseResources();
+	}
 
 	public void layoutLinkPageElement(LinkPageElement pageElement) {
 		String linkBase = HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes
@@ -48,8 +60,8 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	}
 
 	public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
-		LayouterWrapperType wrapperType = wrapperPageElement.getWrapperType();
-		if (wrapperType == LayouterWrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
+		PageElementWrapperType wrapperType = wrapperPageElement.getWrapperType();
+		if (wrapperType == PageElementWrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
 			visitSubElements(wrapperPageElement);
 			return;
 		}
@@ -59,27 +71,33 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
 	}
 
-	private String getHtmlElementByWrappingType(LayouterWrapperType wrapper) {
-		if (wrapper == LayouterWrapperType.LISTITEM)
+	private String getHtmlElementByWrappingType(PageElementWrapperType wrapper) {
+		if (wrapper == PageElementWrapperType.LISTITEM)
 			return "li";
-		if (wrapper == LayouterWrapperType.TABLEROW)
+		if (wrapper == PageElementWrapperType.TABLEROW)
 			return "tr";
-		if (wrapper == LayouterWrapperType.TABLECELL)
+		if (wrapper == PageElementWrapperType.TABLECELL)
 			return "td";
-		if (wrapper == LayouterWrapperType.BLOCK)
+		if (wrapper == PageElementWrapperType.BLOCK)
 			return "div";
 		return "span";
 	}
 
-	public void layoutRootPageElement(RootPageElement pageElement) {
-		clean();
-		append(HtmlUtil.createHtmlHead(pageElement.getTitle(), getStyleDefinitions()));
+	public void layoutRootPageElement(AbstractRootPageElement pageElement) {
+		initRootPage(pageElement);
+		
+		append(HtmlUtil.createHtmlHead(pageElement.getTitle(), pathToRoot + getStyleDefinitionPath()));
 		visitSubElements(pageElement);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		append(HtmlUtil.createHtmlElement("small", "Created " + sdf.format(new Date())));
 
 		append(HtmlUtil.createHtmlFoot());
+	}
+
+	private void initRootPage(AbstractRootPageElement pageElement) {
+		pathToRoot = pageElement.getPathToRoot();
+		clean();
 	}
 
 	public void layoutTextPageElement(TextPageElement pageElement) {
@@ -113,15 +131,28 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		pageElement.visitSubElements(this);
 	}
 
-	protected String getStyleDefinitions() {
-		if (styleDefinitions == null) {
-			try {
-				styleDefinitions = FileHandler.readFile("org.faktorips.devtools.htmlexport", "html/base.css");
-			} catch (IOException e) {
-				styleDefinitions = "";
-			}
+	protected void initBaseResources() {
+		try {
+			LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), FileHandler.readFile(
+					"org.faktorips.devtools.htmlexport", HTML_BASE_CSS));
+
+			addLayoutResource(cssResource);
+
+		} catch (IOException e) {
+			System.out.println("Resourcen nicht korrekt geladen: " + e.getMessage());
 		}
-		return styleDefinitions;
+	}
+
+	private String getStyleDefinitionPath() {
+		return resourcePath + '/' + HTML_BASE_CSS;
+	}
+
+	public void layoutImagePageElement(ImagePageElement imagePageElement) {
+
+		String path = resourcePath + "/images/" + imagePageElement.getPath() + ".png";
+		addLayoutResource(new LayoutResource(path, Util.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
+		
+		append(HtmlUtil.createImage(pathToRoot + path, imagePageElement.getTitle()));
 	}
 
 }

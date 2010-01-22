@@ -12,7 +12,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	protected IIpsProject ipsProject;
-	private HtmlLayouter layouter = new HtmlLayouter();
+	private HtmlLayouter layouter = new HtmlLayouter(".resource");
 
 	@Override
 	protected void setUp() throws Exception {

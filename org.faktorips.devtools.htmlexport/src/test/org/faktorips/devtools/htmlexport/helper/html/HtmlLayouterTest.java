@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
@@ -18,7 +18,14 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  */
 public class HtmlLayouterTest extends AbstractHtmlLayouterTest {
 	public void testHtmlLayouterRootPageElement() throws Exception {
-		RootPageElement pageElement = new RootPageElement();
+		AbstractRootPageElement pageElement = new AbstractRootPageElement() {
+
+			@Override
+			public String getPathToRoot() {
+				return "";
+			}
+			
+		};
 		pageElement.setTitle("Test");
 
 		String[] containments = { "<html", "</html>", "<head>", "</head>",

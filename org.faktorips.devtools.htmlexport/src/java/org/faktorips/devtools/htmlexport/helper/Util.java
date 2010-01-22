@@ -1,9 +1,12 @@
 package org.faktorips.devtools.htmlexport.helper;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -33,6 +36,15 @@ public class Util {
 		}
     	
     	return objects;
-    	
     }
+	
+	public static byte[] convertImageDataToByteArray(ImageData imageData, int format) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+		ImageLoader imageLoader = new ImageLoader();
+		imageLoader.data = new ImageData[] {imageData};
+		imageLoader.save(out, format);
+		
+		return out.toByteArray();
+	}
 }

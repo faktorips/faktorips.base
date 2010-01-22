@@ -3,7 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
@@ -12,7 +12,7 @@ public class TableRowPageElement extends WrapperPageElement {
 	private TablePageElement tablePageElement;
 	
 	public TableRowPageElement(PageElement[] pageElements) {
-		super(LayouterWrapperType.TABLEROW, pageElements);
+		super(PageElementWrapperType.TABLEROW, pageElements);
 	}
 
 	@Override

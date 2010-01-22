@@ -23,7 +23,7 @@ public class DocumentorTest extends AbstractFipsDocTest {
     public void testWriteOverview() throws Exception {
         createStandardProjekt();
         
-        documentorConfig.setPath(FIPSDOC_GENERIERT_HOME);
+        documentorConfig.setPath(zielpfad);
 
         documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
         

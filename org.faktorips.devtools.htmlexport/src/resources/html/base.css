@@ -1,7 +1,8 @@
 @CHARSET "UTF-8";
 
 body {
-	font-size: 0.8em;
+	font-size: 0.9em;
+	font-family: Verdana, sans-serif;
 }
 
 .BOLD {
@@ -49,13 +50,21 @@ table.BORDER {
 .TABLE_HEADLINE {
 	color: white;
 	background-color: #333333;
-	font-size: 120%;
+	font-size: 110%;
 }
 
 .TABLE_ROW_EVEN {
-	background-color: #BBBBBB;
+	background-color: #CCCCCC;
 }
 
 .TABLE_ROW_UNEVEN {
-	background-color: #DDDDDD;
+	background-color: #EEEEEE;
+}
+
+img {
+	border-width: 0px;
+}
+
+a {
+	text-decoration: none;
 }

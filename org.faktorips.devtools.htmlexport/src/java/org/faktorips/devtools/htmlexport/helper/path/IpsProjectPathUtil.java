@@ -6,10 +6,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> {
 
-    private static final String INDES_HTML = "indes.html";
+    private static final String INDEX_HTML = "indes.html";
 
     public String getPathFromRoot(LinkedFileTypes linkedFileType) {
-        return INDES_HTML;
+        return INDEX_HTML;
     }
 
     public String getPathToRoot() {

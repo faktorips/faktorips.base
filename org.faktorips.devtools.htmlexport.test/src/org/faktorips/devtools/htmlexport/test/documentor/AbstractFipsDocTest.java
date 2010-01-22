@@ -1,15 +1,16 @@
 package org.faktorips.devtools.htmlexport.test.documentor;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -34,7 +35,7 @@ import org.faktorips.util.message.MessageList;
 
 public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
-	protected static final String FIPSDOC_GENERIERT_HOME = "/home/dicker/fipsdoc/generiert";
+	protected String zielpfad;
 	protected IIpsProject ipsProject;
 	protected DocumentorConfiguration documentorConfig;
 	protected Documentor documentor;
@@ -54,9 +55,14 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 		ipsProject = newIpsProject("TestProjekt");
 
 		documentorConfig = new DocumentorConfiguration();
-		documentorConfig.setPath(FIPSDOC_GENERIERT_HOME);
+		
+        String location = System.getProperty("java.io.tmpdir") + File.separator + "fips";
+        // So werden Dateien im Projekt gespeichert
+		// IPath location = ipsProject.getProject().getLocation();
+		
+		documentorConfig.setPath(location + File.separator + "html");
 		documentorConfig.setIpsProject(ipsProject);
-		documentorConfig.setLayouter(new HtmlLayouter());
+		documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
 		documentor = new Documentor(documentorConfig);
 	}
@@ -66,6 +72,8 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 			newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 			newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
 			newPolicyCmptType(ipsProject, "BVB");
+			
+			
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}

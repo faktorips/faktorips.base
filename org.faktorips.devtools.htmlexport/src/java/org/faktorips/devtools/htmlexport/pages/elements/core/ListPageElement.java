@@ -3,7 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 
 public class ListPageElement extends AbstractCompositePageElement {
     private boolean ordered = true;
@@ -37,7 +37,7 @@ public class ListPageElement extends AbstractCompositePageElement {
     @Override
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : getSubElements()) {
-            layouter.layoutWrapperPageElement(new WrapperPageElement(LayouterWrapperType.LISTITEM, subElement));
+            layouter.layoutWrapperPageElement(new WrapperPageElement(PageElementWrapperType.LISTITEM, subElement));
         }
     }
 }

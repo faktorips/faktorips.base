@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public abstract class AbstractHtmlLayouterTest extends TestCase {
 
-    HtmlLayouter layouter = new HtmlLayouter();
+    HtmlLayouter layouter = new HtmlLayouter(".resources");
 
     public AbstractHtmlLayouterTest() {
         super();

@@ -12,7 +12,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -50,7 +50,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			throw new RuntimeException(e);
 		}
 		
-		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Produktbausteine", TextType.HEADING_2));
 
 		if (productCmpts.size() == 0) {
@@ -76,9 +76,9 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 				addPageElements(TextPageElement.newBlock("Vertragsklasse: keine"));
 				return;
 			}
-			addPageElements(new WrapperPageElement(LayouterWrapperType.BLOCK, new PageElement[] {
+			addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
 					new TextPageElement("Vertragsklasse: "),
-					new LinkPageElement(object, to, "content", new TextPageElement(to.getName())) }));
+					new LinkPageElement(object, to, "content", to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

@@ -10,7 +10,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -39,7 +39,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 		IValidationRule[] validationRules;
 		validationRules = getPolicyCmptType().getRules();
 
-		WrapperPageElement wrapper = new WrapperPageElement(LayouterWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Regeln", TextType.HEADING_2));
 
 		if (validationRules.length == 0) {
@@ -97,9 +97,9 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 				addPageElements(TextPageElement.newBlock("Produktbausteinklasse: keine"));
 				return;
 			}
-			addPageElements(new WrapperPageElement(LayouterWrapperType.BLOCK, new PageElement[] {
+			addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
 					new TextPageElement("Produktbausteinklasse: "),
-					new LinkPageElement(object, to, "content", new TextPageElement(to.getName())) }));
+					new LinkPageElement(object, to, "content", to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

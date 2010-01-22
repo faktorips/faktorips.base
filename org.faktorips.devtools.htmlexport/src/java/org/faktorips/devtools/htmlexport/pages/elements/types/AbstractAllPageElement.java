@@ -9,9 +9,10 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.RootPageElement;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 
-public abstract class AbstractAllPageElement extends RootPageElement {
+public abstract class AbstractAllPageElement extends AbstractRootPageElement {
 
     protected IIpsElement baseIpsElement;
     protected String linkTarget;
@@ -62,4 +63,11 @@ public abstract class AbstractAllPageElement extends RootPageElement {
     public void setLinkTarget(String linkTarget) {
         this.linkTarget = linkTarget;
     }
+
+	@Override
+	public String getPathToRoot() {
+		return PathUtilFactory.createPathUtil(baseIpsElement).getPathToRoot();
+	}
+    
+    
 }

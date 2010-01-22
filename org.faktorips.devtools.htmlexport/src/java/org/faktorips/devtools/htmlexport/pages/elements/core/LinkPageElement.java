@@ -8,12 +8,29 @@ public class LinkPageElement extends AbstractCompositePageElement {
     private IIpsElement to;
     private String target;
 
-    public LinkPageElement(IIpsElement from, IIpsElement to, String target, PageElement... pageElements) {
+
+    private LinkPageElement(IIpsElement from, IIpsElement to, String target) {
         super();
         this.from = from;
         this.to = to;
         this.target = target;
-        addPageElements(pageElements);
+    }
+    
+    public LinkPageElement(IIpsElement from, IIpsElement to, String target, PageElement... pageElements) {
+    	this(from, to, target);
+    	addPageElements(pageElements);
+    }
+
+    public LinkPageElement(IIpsElement from, IIpsElement to, String target, String text, boolean useImage) {
+    	this(from, to, target);
+        
+    	if (!useImage) {
+            addPageElements(new TextPageElement(text));
+            return;
+        }
+    	
+    	addPageElements(new ImagePageElement(to));	
+        addPageElements(new TextPageElement(" " + text));
     }
 
     public LinkPageElement(IIpsElement from, IIpsElement to, PageElement...pageElements) {

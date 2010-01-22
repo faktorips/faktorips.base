@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.LayouterWrapperType;
+import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 
 public abstract class AbstractCompositePageElement extends AbstractPageElement implements ICompositePageElement {
     private List<PageElement> subElements = new ArrayList<PageElement>();
     protected String title;
-    protected final LayouterWrapperType wrapperType = LayouterWrapperType.NONE;
+    protected final PageElementWrapperType wrapperType = PageElementWrapperType.NONE;
 
     public abstract void acceptLayouter(ILayouter layouter);
 
