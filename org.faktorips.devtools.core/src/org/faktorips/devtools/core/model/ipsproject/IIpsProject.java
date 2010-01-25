@@ -195,7 +195,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @throws CoreException if an errors occurs while searching the projects
      */
-    public IIpsProject[] getReferencingProjects(boolean includeIndirect) throws CoreException;
+    public IIpsProject[] findReferencingProjects(boolean includeIndirect) throws CoreException;
 
     /**
      * Returns all {@link IIpsProject}s that reference this ips project, excluding projects that are
@@ -224,7 +224,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *         another result
      * @throws CoreException if an error occours while searching the project
      */
-    public IIpsProject[] getReferencingProjectLeavesOrSelf() throws CoreException;
+    public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException;
 
     /**
      * Returns <code>true</code> if this project depends on the other project, because it is

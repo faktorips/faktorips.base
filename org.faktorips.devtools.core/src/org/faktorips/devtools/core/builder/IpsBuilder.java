@@ -694,7 +694,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             boolean searchInstanceOfDependencyOnly) throws CoreException {
 
         visitedProjects.add(ipsProject);
-        IIpsProject[] dependantProjects = ipsProject.getReferencingProjects(false);
+        IIpsProject[] dependantProjects = ipsProject.findReferencingProjects(false);
         for (int i = 0; i < dependantProjects.length && !visitedProjects.contains(dependantProjects[i]); i++) {
             collectDependenciesForProject(root, dependantProjects[i], visitedProjects, dependenciesForProjectMap,
                     counter, searchInstanceOfDependencyOnly);

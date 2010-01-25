@@ -330,47 +330,47 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testGetReferencingProjects() throws CoreException {
-        assertEquals(0, baseProject.getReferencingProjects(true).length);
+        assertEquals(0, baseProject.findReferencingProjects(true).length);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjects(true).length);
-        assertEquals(ipsProject, baseProject.getReferencingProjects(true)[0]);
+        assertEquals(1, baseProject.findReferencingProjects(true).length);
+        assertEquals(ipsProject, baseProject.findReferencingProjects(true)[0]);
 
         IIpsProject ipsProject2 = newIpsProject("IpsProject2");
         path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject2.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjects(false).length);
-        assertEquals(ipsProject, baseProject.getReferencingProjects(false)[0]);
+        assertEquals(1, baseProject.findReferencingProjects(false).length);
+        assertEquals(ipsProject, baseProject.findReferencingProjects(false)[0]);
 
-        assertEquals(2, baseProject.getReferencingProjects(true).length);
-        List<IIpsProject> list = Arrays.asList(baseProject.getReferencingProjects(true));
+        assertEquals(2, baseProject.findReferencingProjects(true).length);
+        List<IIpsProject> list = Arrays.asList(baseProject.findReferencingProjects(true));
         assertTrue(list.contains(ipsProject));
         assertTrue(list.contains(ipsProject2));
     }
 
     public void testGetReferencingProjectsLeavesOrSelf() throws CoreException {
-        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
-        assertEquals(baseProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+        assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
+        assertEquals(baseProject, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
-        assertEquals(ipsProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+        assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
         IIpsProject ipsProject2 = newIpsProject("IpsProject2");
         path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject2.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
-        assertEquals(ipsProject2, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+        assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject2, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
         IIpsProject ipsProject3 = newIpsProject("IpsProject3");
         path = ipsProject3.getIpsObjectPath();
@@ -379,8 +379,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsProject notIn = newIpsProject("notIn");
 
-        assertEquals(2, baseProject.getReferencingProjectLeavesOrSelf().length);
-        List<IIpsProject> list = Arrays.asList(baseProject.getReferencingProjectLeavesOrSelf());
+        assertEquals(2, baseProject.findReferencingProjectLeavesOrSelf().length);
+        List<IIpsProject> list = Arrays.asList(baseProject.findReferencingProjectLeavesOrSelf());
         assertTrue(list.contains(ipsProject2));
         assertTrue(list.contains(ipsProject3));
 
@@ -388,8 +388,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(notIn);
         ipsProject3.setIpsObjectPath(path);
 
-        assertEquals(2, baseProject.getReferencingProjectLeavesOrSelf().length);
-        list = Arrays.asList(baseProject.getReferencingProjectLeavesOrSelf());
+        assertEquals(2, baseProject.findReferencingProjectLeavesOrSelf().length);
+        list = Arrays.asList(baseProject.findReferencingProjectLeavesOrSelf());
         assertTrue(list.contains(ipsProject2));
         assertTrue(list.contains(ipsProject3));
 
@@ -397,8 +397,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject3);
         ipsProject2.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
-        assertEquals(ipsProject2, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+        assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject2, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
         path = ipsProject2.getIpsObjectPath();
         path.removeProjectRefEntry(ipsProject3);
@@ -410,8 +410,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject3);
         lastProject.setIpsObjectPath(path);
 
-        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
-        assertEquals(lastProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+        assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
+        assertEquals(lastProject, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
     }
 

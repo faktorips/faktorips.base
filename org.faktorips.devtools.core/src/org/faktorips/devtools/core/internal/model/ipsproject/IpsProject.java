@@ -390,7 +390,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IIpsProject[] getReferencingProjects(boolean includeIndirect) throws CoreException {
+    public IIpsProject[] findReferencingProjects(boolean includeIndirect) throws CoreException {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
         List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
         for (int i = 0; i < projects.length; i++) {
@@ -405,7 +405,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IIpsProject[] getReferencingProjectLeavesOrSelf() throws CoreException {
+    public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
         List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
         result.add(this);

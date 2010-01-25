@@ -487,7 +487,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-        IIpsProject[] searchProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
+        IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
             result.addAll(Arrays.asList(project.findAllTestCaseSrcFiles(this)));
         }

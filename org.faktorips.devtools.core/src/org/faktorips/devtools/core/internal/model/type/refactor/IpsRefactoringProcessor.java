@@ -304,7 +304,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
-        IIpsProject[] ipsProjects = getIpsProject().getReferencingProjectLeavesOrSelf();
+        IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
             IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
             for (IIpsSrcFile ipsSrcFile : srcFiles) {
