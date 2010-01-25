@@ -203,8 +203,6 @@ public class TestCaseStructurePage extends WizardPage {
                     storage.storeExpandedStatus();
                     pageChanged();
                     treeViewer.refresh();
-                    // TODO Joerg check state get lost? Workaround: check all again
-                    treeViewer.setAllChecked(true);
                     storage.restoreExpandedStatus();
                 } finally {
                     treeViewer.getTree().setRedraw(true);

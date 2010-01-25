@@ -14,8 +14,11 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.TreeItem;
@@ -35,6 +38,9 @@ public class TreeViewerExpandStateStorage {
     // Contains the currently selected tree item
     private ISelection selection;
 
+    // contains all checked elements
+    private Object[] checkedElements;
+
     public TreeViewerExpandStateStorage(TreeViewer treeViewer) {
         this.treeViewer = treeViewer;
     }
@@ -42,8 +48,11 @@ public class TreeViewerExpandStateStorage {
     public void storeExpandedStatus() {
         selection = treeViewer.getSelection();
         expandedItems = new ArrayList<String>();
-        TreeItem childs[] = treeViewer.getTree().getItems();
-        checkExpandedStatus(expandedItems, childs, ""); //$NON-NLS-1$
+        storeCheckedElements();
+        checkExpandedStatus(expandedItems, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
+        if (treeViewer instanceof CheckboxTreeViewer) {
+            checkedElements = ((CheckboxTreeViewer)treeViewer).getCheckedElements();
+        }
     }
 
     public void restoreExpandedStatus() {
@@ -53,10 +62,45 @@ public class TreeViewerExpandStateStorage {
             TreeItem childs[] = treeViewer.getTree().getItems();
             searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
         }
+
+        restoreCheckedStatus();
+
         if (selection.isEmpty()) {
             return;
         }
         treeViewer.setSelection(selection);
+    }
+
+    private void storeCheckedElements() {
+        if (!(treeViewer instanceof CheckboxTreeViewer)) {
+            return;
+        }
+        checkedElements = ((CheckboxTreeViewer)treeViewer).getCheckedElements();
+    }
+
+    private void restoreCheckedStatus() {
+        if (!(treeViewer instanceof CheckboxTreeViewer)) {
+            return;
+        }
+        CheckboxTreeViewer checkboxTreeViewer = (CheckboxTreeViewer)treeViewer;
+
+        // 1. get all element
+        checkboxTreeViewer.setAllChecked(true);
+        List<Object> elementsToUncheck = new ArrayList<Object>();
+        elementsToUncheck.addAll(Arrays.asList(checkboxTreeViewer.getCheckedElements()));
+        // 2. remove all previous checked elements
+        for (int i = 0; i < checkedElements.length; i++) {
+            elementsToUncheck.remove(checkedElements[i]);
+        }
+        // 3. the result contains all unchecked elements
+        for (Iterator<Object> iterator = elementsToUncheck.iterator(); iterator.hasNext();) {
+            Object object = iterator.next();
+            if (!(object instanceof TestCaseTypeAssociation)) {
+                // don't change check state of TestCaseTypeAssociation
+                // otherwise all child's are also unchecked
+                checkboxTreeViewer.setChecked(object, false);
+            }
+        }
     }
 
     private boolean searchAndExpandInTree(String itemPath, TreeItem childs[], String parent) {
