@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,12 +26,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A cell editor wich delegates to different row cell editors. This cell editor could be defined as cell editor in a column,
- * but depending on the value datatype in a row different cell editors will be used to edit the value in a row, e.g. in the first row
- * a drop down and in the second row a text cell editor could be used.<br>
- * Usage: 
+ * A cell editor wich delegates to different row cell editors. This cell editor could be defined as
+ * cell editor in a column, but depending on the value datatype in a row different cell editors will
+ * be used to edit the value in a row, e.g. in the first row a drop down and in the second row a
+ * text cell editor could be used.<br>
+ * Usage:
  * <ol>
- * <li>Create this cell editor with a corresponding table viewer which uses this cell editor and the column index this cell editor is adapt to.
+ * <li>Create this cell editor with a corresponding table viewer which uses this cell editor and the
+ * column index this cell editor is adapt to.
  * <li>Set the cell editors for all rows.
  * </ol>
  * 
@@ -40,41 +42,51 @@ import org.faktorips.util.ArgumentCheck;
 public class DelegateCellEditor extends CellEditor {
     // Dummy indicator for the delegate cell editor
     public static final ValueDatatype DELEGATE_VALUE_DATATYPE = new DelegateValueDatatype();
-    
+
+    // contains the last active cell editor
+    private TableCellEditor currentCellEditor;
+
     // Dummy value datatype to indicate that the delegate cell editor is used for this datatype
     private static class DelegateValueDatatype extends AbstractPrimitiveDatatype {
+        @Override
         public Object getValue(String value) {
             return null;
         }
+
         public String getDefaultValue() {
             return null;
         }
+
         public ValueDatatype getWrapperType() {
             return null;
         }
+
         public boolean supportsCompare() {
             return false;
         }
+
         public String getJavaClassName() {
             return null;
         }
+
         public String getName() {
             return null;
         }
+
         public String getQualifiedName() {
             return null;
         }
     }
-    
+
     // The table viewer this cell editor is used for
     private TableViewer tableViewer;
 
     // the column this cell editor is adapted
     private int column;
-    
+
     // The list of cell editors for each row one cell editor
-    private List cellEditors;
-    
+    private List<CellEditor> cellEditors;
+
     public DelegateCellEditor(TableViewer tableViewer, int column) {
         super();
         this.tableViewer = tableViewer;
@@ -98,28 +110,27 @@ public class DelegateCellEditor extends CellEditor {
     }
 
     /*
-     * Returns the current cell editor. First the current selected row will be determined and then the
-     * corresponding cell editor will be returned. If no cell editor is defined for the selected row index
-     * a runtime exception will be thrown.
+     * Returns the current cell editor.
      */
-    private TableCellEditor getCurrent(){
-        int currentCellEditorRow = tableViewer.getTable().getSelectionIndex();
-        if (currentCellEditorRow >= cellEditors.size()){
-            throw new RuntimeException("Undefined table cell editor! No table cell editor is specified for the selected row."); //$NON-NLS-1$
+    private TableCellEditor getCurrent() {
+        if (currentCellEditor == null) {
+            currentCellEditor = getCurrentBySelectedRow();
         }
-        return ((TableCellEditor)cellEditors.get(currentCellEditorRow));
+        return currentCellEditor;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return getCurrent().getControl();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeListener(ICellEditorListener listener) {
         getCurrent().removeListener(listener);
     }
@@ -127,6 +138,7 @@ public class DelegateCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createControl(Composite parent) {
         return getCurrent().createControl(parent);
     }
@@ -141,12 +153,13 @@ public class DelegateCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Object doGetValue() {
         TableCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor){
-            return ((TextCellEditor) current).doGetValue();
-        } else if (current instanceof ComboCellEditor){
-            return ((ComboCellEditor) current).doGetValue();
+        if (current instanceof TextCellEditor) {
+            return ((TextCellEditor)current).doGetValue();
+        } else if (current instanceof ComboCellEditor) {
+            return ((ComboCellEditor)current).doGetValue();
         }
         return null;
     }
@@ -154,34 +167,52 @@ public class DelegateCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doSetFocus() {
         TableCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor){
-            ((TextCellEditor) current).doSetFocus();
-        } else if (current instanceof ComboCellEditor){
-            ((ComboCellEditor) current).doSetFocus();
+        if (current instanceof TextCellEditor) {
+            ((TextCellEditor)current).doSetFocus();
+        } else if (current instanceof ComboCellEditor) {
+            ((ComboCellEditor)current).doSetFocus();
         }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void doSetValue(Object value) {
         TableCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor){
-            ((TextCellEditor) current).doSetValue(value);
-        } else if (current instanceof ComboCellEditor){
-            ((ComboCellEditor) current).doSetValue(value);
+        if (current instanceof TextCellEditor) {
+            ((TextCellEditor)current).doSetValue(value);
+        } else if (current instanceof ComboCellEditor) {
+            ((ComboCellEditor)current).doSetValue(value);
         }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deactivate() {
         super.deactivate();
         getControl().setVisible(false);
+        currentCellEditor = null;
     }
-    
-    
+
+    /*
+     * Returns the cell editor using the current selected row in the table. First the current
+     * selected row will be determined and then the corresponding cell editor will be returned. If
+     * no cell editor is defined for the selected row index a runtime exception will be thrown.
+     */
+    private TableCellEditor getCurrentBySelectedRow() {
+        super.activate();
+        int currentCellEditorRow = tableViewer.getTable().getSelectionIndex();
+        System.out.println(currentCellEditorRow);
+        if (currentCellEditorRow >= cellEditors.size()) {
+            throw new RuntimeException(
+                    "Undefined table cell editor! No table cell editor is specified for the selected row."); //$NON-NLS-1$
+        }
+        return ((TableCellEditor)cellEditors.get(currentCellEditorRow));
+    }
 }

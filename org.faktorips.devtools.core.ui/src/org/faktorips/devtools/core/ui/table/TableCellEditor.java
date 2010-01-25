@@ -362,7 +362,10 @@ public abstract class TableCellEditor extends CellEditor {
      */
     private void editCell(int rowIndex, int columnIndex) {
         if (columnIndex != this.columnIndex || rowIndex != getCurrentRow()) {
-            tableViewer.editElement(tableViewer.getElementAt(rowIndex), columnIndex);
+            Object elementAt = tableViewer.getElementAt(rowIndex);
+            if (elementAt != null) {
+                tableViewer.editElement(elementAt, columnIndex);
+            }
         }
     }
 
