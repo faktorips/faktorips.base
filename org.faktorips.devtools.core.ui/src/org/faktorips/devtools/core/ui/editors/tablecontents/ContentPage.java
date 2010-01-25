@@ -537,4 +537,7 @@ public class ContentPage extends IpsObjectEditorPage {
         tableViewer.refresh();
     }
 
+    IRow getRow(int rowIndex) {
+        return ((TableContentsGeneration)getActiveGeneration()).getRow(rowIndex);
+    }
 }
