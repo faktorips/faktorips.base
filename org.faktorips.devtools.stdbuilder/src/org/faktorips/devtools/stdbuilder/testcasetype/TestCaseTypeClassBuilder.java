@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -636,12 +637,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
-        body.appendln(MARKER_END_USER_CODE);
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO_0));
+        body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY,
                 body, null);
+    }
+
+    private void appendln(StringBuffer sb, String line) {
+        sb.append(line);
+        sb.append(SystemUtils.LINE_SEPARATOR);
     }
 
     /*
@@ -650,27 +656,30 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
             throws CoreException {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC);
+        StringBuffer javaDoc = new StringBuffer();
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC));
+        appendln(javaDoc, " ");
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_1));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_2));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_3));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_4));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_5));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_6));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_7));
+        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_8));
+
         JavaCodeFragment body = new JavaCodeFragment();
 
         // generate dummy assert with todo remark
         body.appendln(MARKER_BEGIN_USER_CODE);
-        body.appendln(MARKER_END_USER_CODE);
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO_0));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_1));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_2));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_3));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_4));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_5));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_6));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_7));
-        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_8));
+        body.appendln(MARKER_END_USER_CODE);
         body.appendln("throw new ");
         body.appendClassName(RuntimeException.class);
         body.append("(\"");
         body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
         body.append("\");");
-        codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
+        codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
                 new String[] { IpsTestResult.class.getName() }, body, null);
