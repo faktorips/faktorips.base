@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
@@ -75,7 +74,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
         if (!changedElements.isEmpty()) {
-            fireChanges((IResource[])changedElements.toArray(new IResource[changedElements.size()]), true);
+            fireChanges(changedElements.toArray(new IResource[changedElements.size()]), true);
         }
     }
 
@@ -83,8 +82,10 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
      * inform all registered ips problem change listener about the ips problem changes
      */
     private void fireChanges(IResource[] changes, boolean b) {
-        for (Iterator<IIpsProblemChangedListener> iter = listeners.iterator(); iter.hasNext();) {
-            ((IIpsProblemChangedListener)iter.next()).problemsChanged(changes);
+        // copy to avoid concurrent modifications!
+        List<IIpsProblemChangedListener> listenersCopy = new ArrayList<IIpsProblemChangedListener>(listeners);
+        for (IIpsProblemChangedListener listener : listenersCopy) {
+            listener.problemsChanged(changes);
         }
     }
 
