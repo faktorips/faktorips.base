@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -305,6 +306,9 @@ public class MessageCueController {
          */
         void updateHoverOnCue(MouseEvent e) {
             Image image = getCueImage();
+            if (image == null) {
+                return;
+            }
             Rectangle r = image.getBounds();
             Point global = fControl.toDisplay(fDx, fDy);
             Point local = ((Control)e.widget).toControl(global);
@@ -329,6 +333,9 @@ public class MessageCueController {
                 return;
             }
             Image image = getCueImage();
+            if (image == null) {
+                return;
+            }
             fDy = 8;
             fDx = -9; // image size is 8
 
@@ -355,8 +362,12 @@ public class MessageCueController {
          * Returns the cue image based on the message list's severity.
          */
         private Image getCueImage() {
-            return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(messageList.getSeverity()),
-                    false);
+            ImageDescriptor imageDescriptor = IpsProblemOverlayIcon.getOverlay(messageList.getSeverity());
+            if (imageDescriptor != null) {
+                return IpsUIPlugin.getImageHandling().getImage(imageDescriptor, true);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -521,7 +532,7 @@ public class MessageCueController {
 
         void setText(String t) {
             if (t == null) {
-                t = ""; //$NON-NLS-1$
+                t = "";
             }
             if (!t.equals(fText)) {
                 Point oldSize = getExtent();
