@@ -76,8 +76,9 @@
         	<echo message="Compile with source/target VM-Version: ${vmversion}" />
 			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
 				debug="on" target="${vmversion}" source="${vmversion}">
-        		<compilerarg value="-Xlint:unchecked" />
-        		<compilerarg value="-Xlint:deprecation" />
+        		<!--compilerarg value="-Xlint:unchecked" />
+        		<compilerarg value="-Xlint:deprecation" / -->
+        		<compilerarg value="-Xlint:none" />
         	</javac>
         	
         	<copy todir="${test_classes}">
@@ -96,7 +97,9 @@
         	    </fileset>
         	</copy>
         	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" 
-        		debug="on" target="${vmversion}" source="${vmversion}" />
+        		debug="on" target="${vmversion}" source="${vmversion}" >
+        		<compilerarg value="-Xlint:none" />
+			</javac>
         </target>
 	
 	   <!-- perform Junit Tests -->
