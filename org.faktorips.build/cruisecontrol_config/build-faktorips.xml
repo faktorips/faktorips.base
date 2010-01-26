@@ -893,7 +893,8 @@ ${faktoripsProductLinuxZipPath}
             <fileset dir="${buildDirectory}/plugins" includes="**/*dot.bin.log"/>
         </copy>
     </target>
-    <target name="-copy.javaoutput" unless="is.thisbuildsuccessful">
+    <target name="-copy.javaoutput" > 
+    	<!-- maybe use 'unless="is.thisbuildsuccessful"' to no copy javaoutput.txt on successful builds -->
         <copy file="${buildDirectory}/javaoutput.txt" 
                      todir="${ccProjectDir}/${cctimestamp}"
                      failonerror="false" verbose="true"/>
