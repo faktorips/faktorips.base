@@ -46,6 +46,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
@@ -503,8 +504,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             return null;
         }
 
-        @SuppressWarnings("unchecked")
-        public IIpsObjectPart newPart(Class partType) {
+        @Override
+        public IDependency[] dependsOn() throws CoreException {
+            return new IDependency[0];
+        }
+
+        public IIpsObjectPart newPart(Class<?> partType) {
             return null;
         }
 
