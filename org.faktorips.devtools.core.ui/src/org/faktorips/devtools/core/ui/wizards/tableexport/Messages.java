@@ -40,6 +40,5 @@ public class Messages extends NLS {
     public static String TableExportWizard_msgFileExistsTitle;
     public static String TableExportWizard_msgFileExists;
     public static String TableExportWizard_operationName;
-    public static String TableExportPage_msgContentsNotValid;
     public static String TableExportPage_msgStructureNotValid;
 }

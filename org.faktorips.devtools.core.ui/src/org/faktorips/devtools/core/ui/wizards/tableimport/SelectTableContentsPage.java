@@ -134,10 +134,6 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
                         .getText()));
                 return;
             }
-            if (tableContents.validate(tableContents.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.SelectTableContentsPage_msgContentsNotValid);
-                return;
-            }
             ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());
             if (structure.validate(structure.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
                 setErrorMessage(Messages.SelectTableContentsPage_msgStructureNotValid);

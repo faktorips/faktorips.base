@@ -76,6 +76,7 @@ public class TableExportPage extends IpsObjectExportPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
         toolkit.createFormLabel(parent, Messages.TableExportPage_labelContents);
         return toolkit.createTableContentsRefControl(null, parent);
@@ -84,6 +85,7 @@ public class TableExportPage extends IpsObjectExportPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setDefaults(IResource selectedResource) {
         try {
             if (selectedResource == null) {
@@ -127,6 +129,7 @@ public class TableExportPage extends IpsObjectExportPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateObjectToExport() {
         if (exportedIpsObjectControl.getText().length() == 0) {
             setErrorMessage(Messages.TableExportPage_msgContentsEmpty);
@@ -140,10 +143,6 @@ public class TableExportPage extends IpsObjectExportPage {
             }
             if (!contents.exists()) {
                 setErrorMessage(Messages.TableExportPage_msgNonExisitingContents);
-                return;
-            }
-            if (contents.validate(contents.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.TableExportPage_msgContentsNotValid);
                 return;
             }
             ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
