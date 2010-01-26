@@ -217,7 +217,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
             treeViewer.expandAll();
 
-            final LinksLabelProvider labelProvider = new LinksLabelProvider(generation);
+            final LinksMessageCueLabelProvider labelProvider = new LinksMessageCueLabelProvider(generation);
             treeViewer.setLabelProvider(labelProvider);
             new TreeMessageHoverService(treeViewer) {
                 @Override

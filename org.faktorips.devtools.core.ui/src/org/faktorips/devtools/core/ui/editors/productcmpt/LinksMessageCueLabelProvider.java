@@ -15,6 +15,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -34,12 +39,13 @@ import org.faktorips.util.message.MessageList;
  * generations instead of the product component type relation itself.
  * 
  * @author Thorsten Guenther
+ * @author Cornelius Dirmeier
  */
-public class LinksLabelProvider extends MessageCueLabelProvider {
+public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
     private final IProductCmptGeneration generation;
 
-    public LinksLabelProvider(IProductCmptGeneration generation) {
+    public LinksMessageCueLabelProvider(IProductCmptGeneration generation) {
         super(new InternalLabelProvider(), generation.getIpsProject());
         this.generation = generation;
     }
@@ -54,9 +60,8 @@ public class LinksLabelProvider extends MessageCueLabelProvider {
         }
         if (element instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)element;
-            IProductCmpt target = link.findTarget(link.getIpsProject());
-            if (target != null) {
-                return super.getMessages(target);
+            if (link != null) {
+                return super.getMessages(link);
             }
         }
         if (element instanceof IProductCmptTypeRelationReference) {
@@ -68,6 +73,18 @@ public class LinksLabelProvider extends MessageCueLabelProvider {
     }
 
     private static class InternalLabelProvider extends LabelProvider {
+
+        private ResourceManager resourceManager;
+
+        public InternalLabelProvider() {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+
+        @Override
+        public void dispose() {
+            resourceManager.dispose();
+            super.dispose();
+        }
 
         /**
          * {@inheritDoc}
@@ -93,11 +110,16 @@ public class LinksLabelProvider extends MessageCueLabelProvider {
                 IProductCmptLink link = (IProductCmptLink)element;
                 IProductCmpt product;
                 try {
+                    Image image;
                     product = link.findTarget(link.getIpsProject());
                     if (product == null) {
-                        return IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmpt.class);
+                        image = IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmpt.class);
+                    } else {
+                        image = IpsUIPlugin.getImageHandling().getImage(product);
                     }
-                    return IpsUIPlugin.getImageHandling().getImage(product);
+                    DecorationOverlayIcon overlayedImageDesc = new DecorationOverlayIcon(image, IpsUIPlugin
+                            .getImageHandling().createImageDescriptor("LinkOverlay.gif"), IDecoration.BOTTOM_RIGHT);
+                    return (Image)resourceManager.get(overlayedImageDesc);
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
