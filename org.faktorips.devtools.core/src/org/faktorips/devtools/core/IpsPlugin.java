@@ -104,6 +104,11 @@ public class IpsPlugin extends AbstractUIPlugin {
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
 
+    /**
+     * @see
+     */
+    private boolean suppressLoggingDuringTestExecution = false;
+
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
 
     /**
@@ -205,7 +210,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Logs the status.
      */
     public final static void log(IStatus status) {
-        plugin.getLog().log(status);
+        if (!plugin.suppressLoggingDuringTestExecution) {
+            plugin.getLog().log(status);
+        }
     }
 
     /**
@@ -280,6 +287,26 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public void setTestMode(boolean testMode) {
         this.testMode = testMode;
+    }
+
+    /**
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * 
+     * @supress <code>true</code> if logging should be disabled during test execution. The default
+     *          behaviour is not to supresse logging. However, in some test cases we use test data
+     *          with an invalid state which results in exceptions in the error log which is the
+     *          correct behaviour. However if looking at the error log after all tests have been
+     *          run, these "correct" exceptions make it difficult, to see the unexpected exceptions.
+     *          You see the exception, and think something has gone wrong. In this test cases it is
+     *          appropriate to turn off logging. In the setup of the
+     *          <cdoe>AbstractIpsPluginTest</code> logging is explicitly turned on, so there is no
+     *          need to reset this flag, after your test method.
+     * 
+     * @see #log(CoreException)
+     * @see #log(IpsStatus)
+     */
+    public void setSuppressLoggingDuringTest(boolean suppress) {
+        suppressLoggingDuringTestExecution = suppress;
     }
 
     /**

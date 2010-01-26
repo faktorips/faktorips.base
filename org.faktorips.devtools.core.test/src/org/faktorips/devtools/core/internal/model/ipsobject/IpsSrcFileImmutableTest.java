@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
+    private IIpsProject ipsProject;
     private IpsSrcFileImmutable srcFileImmutable;
     private IProductCmpt product;
     private IProductCmpt productImmutable;
@@ -44,8 +45,8 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         super.setUp();
 
         // create srcfile with contents
-        IIpsProject proj = newIpsProject("TestProject");
-        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
+        ipsProject = newIpsProject("TestProject");
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         generation.newConfigElement();
@@ -59,43 +60,24 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         productImmutable = (IProductCmpt)srcFileImmutable.getIpsObject();
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.getIpsObjectType()'
-     */
     public void testGetIpsObjectType() {
         assertEquals(IpsObjectType.getTypeForExtension("ipsproduct"), srcFileImmutable.getIpsObjectType());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.getCorrespondingResource()'
-     */
     public void testGetCorrespondingResource() {
         assertNull(srcFileImmutable.getCorrespondingResource());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.getCorrespondingFile()'
-     */
     public void testGetCorrespondingFile() throws CoreException {
         assertNull(srcFileImmutable.getCorrespondingFile());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.isDirty()'
-     */
     public void testIsDirty() {
         assertFalse(srcFileImmutable.isDirty());
         productImmutable.newGeneration();
         assertFalse(srcFileImmutable.isDirty());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.getIpsObject()'
-     */
     public void testGetIpsObject() throws CoreException {
         IpsSrcFileImmutable srcFileImm2 = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
         IProductCmpt prodImm2 = (IProductCmpt)srcFileImm2.getIpsObject();
@@ -143,9 +125,6 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         }
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.save()'
-     */
     public void testSave() throws CoreException {
         productImmutable.newGeneration();
         srcFileImmutable.save(true, null);
@@ -156,16 +135,10 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertEquals(1, prodImm2.getNumOfGenerations());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.isMutable()'
-     */
     public void testIsMutable() {
         assertFalse(srcFileImmutable.isMutable());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable.isHistoric()'
-     */
     public void testIsHistoric() throws CoreException {
         assertTrue(srcFileImmutable.isHistoric());
     }
@@ -174,13 +147,14 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
         assertTrue(srcFile.isContentParsable());
 
-        // redirekt System.error as the XML-Parser's error handling is messed up.
-        // It writes something like "[Fatal Error] :1:1: Content is not allowed in prolog" and on
-        // Linux it also writes the StackTrace
-        // when the XML isn't valid so that you assume that something has gone wrong, when it
-        // hasn't.
+        // redirekt System.error as the XML-Parser's error handling is messed up. It writes
+        // something like
+        // "[Fatal Error] :1:1: Content is not allowed in prolog" when the XML isn't valid so that
+        // you assume that something has gone wrong, when it hasn't.
         PrintStream errorStream = System.err;
         System.setErr(new PrintStream(new ByteArrayOutputStream()));
+        suppressLoggingDuringExecutionOfThisTestCase(); // invalid xml contents leads to "expected"
+        // exception
         try {
             srcFile = new IpsSrcFileImmutable("Test.ipsproduct", new ByteArrayInputStream(new byte[100]));
             assertFalse(srcFile.isContentParsable());
@@ -190,13 +164,12 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     }
 
     public void testGetQualifiedNameType() {
-        IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable("Test.ipsproduct",
-                new ByteArrayInputStream(new byte[100]));
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><PolicyCmptType/>";
+        String fileName = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Test");
+        IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(fileName, new ByteArrayInputStream(xml.getBytes()));
         QualifiedNameType qnt = srcFile.getQualifiedNameType();
-        assertEquals(IpsObjectType.PRODUCT_CMPT, qnt.getIpsObjectType());
+        assertEquals(IpsObjectType.POLICY_CMPT_TYPE, qnt.getIpsObjectType());
         assertEquals("Test", qnt.getUnqualifiedName());
         assertEquals("", qnt.getPackageName());
-        assertEquals(IpsObjectType.PRODUCT_CMPT, qnt.getIpsObjectType());
     }
-
 }

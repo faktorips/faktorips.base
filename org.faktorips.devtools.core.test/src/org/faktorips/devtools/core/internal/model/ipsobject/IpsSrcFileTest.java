@@ -69,6 +69,9 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
         parsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "ParsableFile", true, null);
         policyCmptType = (IPolicyCmptType)parsableFile.getIpsObject();
+        // must supress exception logging and redirect standard error, as we create an invalid ips
+        // src file!
+        suppressLoggingDuringExecutionOfThisTestCase();
         errorStream = System.err;
         System.setErr(new PrintStream(new ByteArrayOutputStream()));
         unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"),

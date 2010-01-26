@@ -453,6 +453,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IFile file = ipsProject.getIpsProjectPropertiesFile();
         InputStream unparsableContents = new ByteArrayInputStream("blabla".getBytes());
         file.setContents(unparsableContents, true, false, null);
+        suppressLoggingDuringExecutionOfThisTestCase();
         MessageList list = ipsProject.validate();
         assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE));
         assertEquals(1, list.getNoOfMessages());
@@ -1535,6 +1536,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         setMinRequiredVersion("0.0.3");
         IpsPlugin.getDefault().setFeatureVersionManagers(
                 new IIpsFeatureVersionManager[] { new InvalidMigrationMockManager() });
+        suppressLoggingDuringExecutionOfThisTestCase();
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
     }

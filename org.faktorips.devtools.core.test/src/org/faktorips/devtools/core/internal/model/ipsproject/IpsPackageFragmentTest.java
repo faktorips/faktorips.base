@@ -163,13 +163,16 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     /*
      * Class under test for IpsSrcFile createPdFile(String, String, boolean, IProgressMonitor)
      */
-    public void testCreateIpsFileStringStringbooleanIProgressMonitor() throws CoreException, IOException {
-        IIpsSrcFile file = pack.createIpsFile("file." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension(), "blabla",
-                true, null);
+    public void testCreateIpsFile() throws CoreException, IOException {
+        // need to supress the file's contents is not valid!
+        suppressLoggingDuringExecutionOfThisTestCase();
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("TestType");
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><PolicyCmptType/>";
+        IIpsSrcFile file = pack.createIpsFile(filename, xml, true, null);
         assertTrue(file.exists());
         InputStream is = file.getCorrespondingFile().getContents();
-        String contents = StringUtil.readFromInputStream(is, StringUtil.CHARSET_ISO_8859_1);
-        assertEquals("blabla", contents);
+        String contents = StringUtil.readFromInputStream(is, ipsProject.getXmlFileCharset());
+        assertEquals(xml, contents);
     }
 
     public void testCreateProductComponent() throws Exception {

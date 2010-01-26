@@ -112,6 +112,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     @Override
     protected void setUp() throws Exception {
+        IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(
                 new IIpsFeatureVersionManager[] { new TestIpsFeatureVersionManager() });
@@ -142,6 +143,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     @Override
     protected final void tearDown() throws Exception {
+        IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < projects.length; i++) {
             projects[i].close(null);
@@ -152,6 +154,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     protected void tearDownExtension() throws Exception {
 
+    }
+
+    protected void suppressLoggingDuringExecutionOfThisTestCase() {
+        IpsPlugin.getDefault().setSuppressLoggingDuringTest(true);
     }
 
     protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {

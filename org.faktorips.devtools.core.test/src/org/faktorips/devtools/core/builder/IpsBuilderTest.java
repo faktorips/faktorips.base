@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.builder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -604,11 +605,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
     }
 
-    public void testMarkerForNotParsableIpsSrcFiles() throws CoreException {
+    public void testMarkerForNotParsableIpsSrcFiles() throws CoreException, UnsupportedEncodingException {
         IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test."
                 + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
         String xml = "invalid xml";
-        file.create(new ByteArrayInputStream(xml.getBytes()), true, null);
+        suppressLoggingDuringExecutionOfThisTestCase();
+        file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, 0);
         boolean isMessageThere = false;

@@ -47,9 +47,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         int numOfMessages = list.getNoOfMessages();
         DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
         props.setDefinedDatatypes(new DynamicValueDatatype[] { dynDatatype });
+        // must supress as the dynamic datatype's class can't be loaded (and this is written to the
+        // error log.)
+        suppressLoggingDuringExecutionOfThisTestCase();
         list = props.validate(ipsProject);
-        assertTrue(list.getNoOfMessages() > numOfMessages); // there should be at least one or
-                                                            // message
+        // now there should be at least one more message
+        assertTrue(list.getNoOfMessages() > numOfMessages);
     }
 
     public void testValidate_PredefinedDatatypes() throws CoreException {
@@ -59,12 +62,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setPredefinedDatatypesUsed(ipsProject.getIpsModel().getPredefinedValueDatatypes());
         list = props.validate(ipsProject);
         assertEquals(numOfMessages, list.getNoOfMessages()); // there should be at least one or
-                                                             // message
+        // message
 
         props.setPredefinedDatatypesUsed(new String[] { "unknownDatatype" });
         list = props.validate(ipsProject);
         assertTrue(list.getNoOfMessages() > numOfMessages); // there should be at least one or
-                                                            // message
+        // message
         assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE) != null);
     }
 
