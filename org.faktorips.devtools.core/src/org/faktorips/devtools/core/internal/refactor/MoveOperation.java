@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.refactor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +30,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
@@ -648,36 +651,41 @@ public class MoveOperation implements IRunnableWithProgress {
         try {
             String runtimeId = source.getRuntimeId();
 
+            // create a tmpTargetFile to avoid case problems with windows file systems
+            String tmpFileName = "" + new Date().getTime() + "." + targetFile.getIpsObjectType().getFileExtension();
+            IIpsSrcFile tmpTargetFile = targetFile.getIpsPackageFragment().getIpsSrcFile(tmpFileName);
+            String qualifiedTargetName = targetFile.getQualifiedNameType().getName();
+
             // first, find all objects referring the source (which will be deleted later)
             IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(
                     source.getQualifiedNameType());
             ITestCase[] testCaseRefs = source.getIpsProject().findReferencingTestCases(source.getQualifiedName());
 
             // second, create the target
-            createCopy(source.getIpsSrcFile(), targetFile, monitor);
+            createCopy(source.getIpsSrcFile(), tmpTargetFile, monitor);
 
             // third a), update references to product cmpt generations
             for (int i = 0; i < refs.length; i++) {
-                fixRelations(refs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
+                fixRelations(refs[i], source.getQualifiedName(), qualifiedTargetName, monitor);
             }
 
             // third b), update references to test cases
             for (int i = 0; i < testCaseRefs.length; i++) {
-                fixRelations(testCaseRefs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(),
-                        monitor);
+                fixRelations(testCaseRefs[i], source.getQualifiedName(), qualifiedTargetName, monitor);
             }
 
             // fourth, delete the source
             source.getEnclosingResource().delete(true, monitor);
+            // move tmp file to correct file
+            tmpTargetFile.getCorrespondingFile().move(targetFile.getCorrespondingFile().getFullPath(), true, monitor);
 
             // at least, update the runtime id of the moved product cmpt to the original runtime id
             IProductCmpt productCmpt = (IProductCmpt)targetFile.getIpsObject();
             productCmpt.setRuntimeId(newRuntimeId != null ? newRuntimeId : runtimeId);
             productCmpt.getIpsSrcFile().save(true, null);
         } catch (CoreException e) {
-            Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-            MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
-            IpsPlugin.log(e);
+            IpsPlugin.logAndShowErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                    Messages.MoveOperation_msgAborted, e));
         }
     }
 

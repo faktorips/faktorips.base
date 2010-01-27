@@ -290,14 +290,6 @@ public class RenamePage extends WizardPage implements ModifyListener {
             if (newFile.exists()) {
                 setMessage(Messages.RenamePage_errorFileExists, ERROR);
                 return;
-            } else {
-                // fix for windows: can not rename to an object with a name only
-                // different in case.
-                if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(),
-                        ((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()))) {
-                    setMessage(Messages.RenamePage_errorFileExists, ERROR);
-                    return;
-                }
             }
         } else if (renameObject instanceof IIpsPackageFragment) {
             pack = (IIpsPackageFragment)renameObject;
