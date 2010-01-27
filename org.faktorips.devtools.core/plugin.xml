@@ -346,7 +346,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.faktorips.devtools.core.internal.model.adapter.IIpsElementWrapper"
-            class="org.faktorips.devtools.core.internal.model.adapter.IpsElementAdapterFactory">
+            class="org.faktorips.devtools.core.internal.model.adapter.IpsElementWrapperAdapterFactory">
          <adapter
                type="org.faktorips.devtools.core.model.IIpsElement">
          </adapter>

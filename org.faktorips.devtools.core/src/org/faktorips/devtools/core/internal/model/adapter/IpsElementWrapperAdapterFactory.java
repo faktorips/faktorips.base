@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
  * 
  * @author dirmeier
  */
-public class IpsElementAdapterFactory implements IAdapterFactory {
+public class IpsElementWrapperAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("unchecked")
     // can suppress warning as eclipse IAdapterFactory is not generic
