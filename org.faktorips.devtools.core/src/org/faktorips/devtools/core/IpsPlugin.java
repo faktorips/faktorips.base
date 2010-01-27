@@ -251,6 +251,21 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Does not log the status but show an error dialog with the status message
+     * 
+     * @param status
+     */
+    public final static void showErrorDialog(final IStatus status) {
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
+                        status);
+            }
+        });
+    }
+
+    /**
      * Returns a new document builder.
      * 
      * @throws RuntimeException if the factory throws a ParserConfigurationException. The

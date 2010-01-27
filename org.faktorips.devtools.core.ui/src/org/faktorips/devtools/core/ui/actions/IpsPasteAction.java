@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,12 +27,15 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
@@ -75,9 +78,12 @@ public class IpsPasteAction extends IpsAction {
      */
     private Shell shell;
 
-    /* Indicates that the new name will be used without a dialog question, if the file already exists */
+    /*
+     * Indicates that the new name will be used without a dialog question, if the file already
+     * exists
+     */
     private boolean forceUseNameSuggestionIfFileExists = false;
-    
+
     /**
      * Creates a new action to paste <code>IIpsElement</code>s or resources.
      * 
@@ -101,6 +107,7 @@ public class IpsPasteAction extends IpsAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
         if (selected instanceof IIpsObjectPartContainer) {
@@ -117,31 +124,31 @@ public class IpsPasteAction extends IpsAction {
     }
 
     /*
-     * Try to paste an <code>IIpsObject</code> to an <code>IIpsObjectPartContainer</code>. If
-     * it is not possible because the stored data does not support this (e.g. is a resource and not
-     * a string) paste(IIpsPackageFragement) is called.
+     * Try to paste an <code>IIpsObject</code> to an <code>IIpsObjectPartContainer</code>. If it is
+     * not possible because the stored data does not support this (e.g. is a resource and not a
+     * string) paste(IIpsPackageFragement) is called.
      * 
      * @param parent The parent to paste to.
      */
     private void paste(IIpsObjectPartContainer parent) {
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
-        
+
         // obtain the package fragment of the given part container
         IIpsPackageFragment parentPackageFrgmt = null;
         IIpsElement pack = parent.getParent();
         while (pack != null && !(pack instanceof IIpsPackageFragment)) {
             pack = pack.getParent();
         }
-        if (pack != null){
+        if (pack != null) {
             parentPackageFrgmt = (IIpsPackageFragment)pack;
         }
-        
+
         if (stored == null && parentPackageFrgmt != null) {
             // the clipboard contains no string, try to paste resources
             paste(parentPackageFrgmt);
-        } else {  
+        } else {
             // try to paste resource links
-            if (parentPackageFrgmt != null && pasteResourceLinks(parentPackageFrgmt, stored)){
+            if (parentPackageFrgmt != null && pasteResourceLinks(parentPackageFrgmt, stored)) {
                 // the copied text contains links, paste is finished
                 return;
             }
@@ -156,8 +163,8 @@ public class IpsPasteAction extends IpsAction {
     }
 
     /*
-     * Try to paste an <code>IFolder</code> or <code>IFile</code> stored in the clipboard into
-     * the given <code>IContainer</code>.
+     * Try to paste an <code>IFolder</code> or <code>IFile</code> stored in the clipboard into the
+     * given <code>IContainer</code>.
      */
     private void paste(IContainer parent) {
         Object stored = getTransgeredObject();
@@ -173,8 +180,8 @@ public class IpsPasteAction extends IpsAction {
         }
         // Paste objects by resource links (e.g. files inside an ips archive)
         String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
-        if (parent instanceof IFolder){
-            pasteResourceLinks((IFolder) parent, storedText);
+        if (parent instanceof IFolder) {
+            pasteResourceLinks((IFolder)parent, storedText);
         }
     }
 
@@ -185,25 +192,24 @@ public class IpsPasteAction extends IpsAction {
         Object stored = getTransgeredObject();
         if (stored instanceof IResource[]) {
             copyResources(parent, (IResource[])stored);
-        } else if (stored instanceof String[]){
+        } else if (stored instanceof String[]) {
             copyFiles(parent, (String[])stored);
         }
-        
+
         // Paste objects by resource links (e.g. files inside an ips archive)
         String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
         pasteResourceLinks(parent, storedText);
     }
-    
 
     private Object getTransgeredObject() {
         Object stored = clipboard.getContents(ResourceTransfer.getInstance());
-        if (stored == null){
+        if (stored == null) {
             stored = clipboard.getContents(FileTransfer.getInstance());
         }
         return stored;
     }
 
-    private void copyResources(IIpsPackageFragment parent, IResource[] resources){
+    private void copyResources(IIpsPackageFragment parent, IResource[] resources) {
         for (int i = 0; i < resources.length; i++) {
             try {
                 IResource resource = ((IIpsElement)parent).getCorrespondingResource();
@@ -217,10 +223,10 @@ public class IpsPasteAction extends IpsAction {
             }
         }
     }
-    
+
     private void copyFiles(IIpsPackageFragment parent, String[] fileNames) {
         IResource destinationResource = parent.getEnclosingResource();
-        if (destinationResource instanceof IContainer){
+        if (destinationResource instanceof IContainer) {
             copyFiles(shell, (IFolder)destinationResource, fileNames);
         }
     }
@@ -231,14 +237,14 @@ public class IpsPasteAction extends IpsAction {
     }
 
     /*
-     * Try to paste resource links, if the given text contains no such links do nothing.
-     * Rerurns true if the text contains resource links otherwise return false.
+     * Try to paste resource links, if the given text contains no such links do nothing. Rerurns
+     * true if the text contains resource links otherwise return false.
      */
     private boolean pasteResourceLinks(IIpsPackageFragment parent, String storedText) {
         boolean result = false;
         Object[] resourceLinks = getObjectsFromResourceLinks(storedText);
         try {
-            if (resourceLinks.length > 0){
+            if (resourceLinks.length > 0) {
                 result = true;
             }
             for (int i = 0; i < resourceLinks.length; i++) {
@@ -258,14 +264,14 @@ public class IpsPasteAction extends IpsAction {
     }
 
     /*
-     * Try to paste resource links, if the given text contains no such links do nothing.
-     * Rerurns true if the text contains resource links otherwise return false.
+     * Try to paste resource links, if the given text contains no such links do nothing. Rerurns
+     * true if the text contains resource links otherwise return false.
      */
     private boolean pasteResourceLinks(IFolder folder, String storedText) {
         boolean result = false;
         Object[] resourceLinks = getObjectsFromResourceLinks(storedText);
         try {
-            if (resourceLinks.length > 0){
+            if (resourceLinks.length > 0) {
                 result = true;
             }
             for (int i = 0; i < resourceLinks.length; i++) {
@@ -284,27 +290,27 @@ public class IpsPasteAction extends IpsAction {
         return result;
     }
 
-    private String getContentsOfIpsObject(IIpsObject ipsObject){
+    private String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()), encoding);
-        }
-        catch (TransformerException e) {
+            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()),
+                    encoding);
+        } catch (TransformerException e) {
             throw new RuntimeException(e);
             // This is a programing error, rethrow as runtime exception
         }
         return contents;
     }
-    
+
     /*
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
     private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
         String contents = getContentsOfIpsObject(ipsObject);
-        
+
         String ipsSrcFileName = getNewIpsSrcFileName((IFolder)parent.getCorrespondingResource(), ipsObject);
-        if (ipsSrcFileName == null){
+        if (ipsSrcFileName == null) {
             return;
         }
         parent.createIpsFile(ipsSrcFileName, contents, true, null);
@@ -321,26 +327,27 @@ public class IpsPasteAction extends IpsAction {
         } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus(e));
         }
-        
+
         String newIpsSrcFileName = getNewIpsSrcFileName(parent, ipsObject);
-        if (newIpsSrcFileName == null){
+        if (newIpsSrcFileName == null) {
             return;
         }
-        
+
         IFile file = parent.getFile(newIpsSrcFileName);
         file.create(is, true, null);
     }
-    
+
     /*
      * Creates a new package fragment and childs in the parent package fragment based on the given
      * source package fragment.
      */
-    private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment) throws CoreException {
+    private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment)
+            throws CoreException {
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
         IIpsElement[] children = sourcePackageFragment.getChildren();
         for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof IIpsSrcFile){
+            if (children[i] instanceof IIpsSrcFile) {
                 IIpsObject ipsObject = ((IIpsSrcFile)children[i]).getIpsObject();
                 createFile(destination, ipsObject);
             }
@@ -349,19 +356,19 @@ public class IpsPasteAction extends IpsAction {
         for (int i = 0; i < childPackages.length; i++) {
             createPackageFragmentAndChilds(destination, childPackages[i]);
         }
-    }    
+    }
 
     /*
      * Returns a new unique ips source file name, returns null if the user aborts the get new name
      * for duplicate souce file dialog.
      */
-    private String getNewIpsSrcFileName(IFolder parent, IIpsObject ipsObject){
+    private String getNewIpsSrcFileName(IFolder parent, IIpsObject ipsObject) {
         String nameWithoutExtension = ipsObject.getName();
         String extension = "." + StringUtil.getFileExtension(ipsObject.getIpsSrcFile().getName()); //$NON-NLS-1$
         IPath targetPath = parent.getFullPath();
         return getNewNameByDialogIfNecessary(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
     }
-    
+
     /*
      * Returns a new name for folder or files, returns null if the user aborts the get new name for
      * duplicate souce file dialog.
@@ -374,59 +381,61 @@ public class IpsPasteAction extends IpsAction {
         boolean dialogWasDisplayed = false;
         Validator validator = new Validator(targetPath, resourceType, extension);
         String suggestedName = nameWithOrWithoutExtension;
-        int doCopy = InputDialog.OK;
+        int doCopy = Window.OK;
         boolean nameChangeRequired = validator.isValid(nameWithOrWithoutExtension) != null;
         if (nameChangeRequired) {
             for (int count = 0; validator.isValid(suggestedName) != null; count++) {
                 if (count == 0) {
                     suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithOrWithoutExtension;
-                }
-                else {
+                } else {
                     suggestedName = NLS.bind(Messages.IpsPasteAction_suggestedNamePrefixComplex, new Integer(count),
                             nameWithOrWithoutExtension);
                 }
             }
             nameWithOrWithoutExtension = suggestedName;
 
-            // if force is true don't show dialog (for automated testing purposite force could be set to true)
+            // if force is true don't show dialog (for automated testing purposite force could be
+            // set to true)
             if (!forceUseNameSuggestionIfFileExists) {
                 dialogWasDisplayed = true;
-                suggestedName += showExtension?extension:""; //$NON-NLS-1$
+                suggestedName += showExtension ? extension : ""; //$NON-NLS-1$
                 InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(
-                        Messages.IpsPasteAction_msgNamingConflict, nameWithOrWithoutExtension), suggestedName, validator);
+                        Messages.IpsPasteAction_msgNamingConflict, nameWithOrWithoutExtension), suggestedName,
+                        validator);
                 dialog.setBlockOnOpen(true);
                 doCopy = dialog.open();
                 nameWithOrWithoutExtension = dialog.getValue();
-                if (doCopy != InputDialog.OK) {
+                if (doCopy != Window.OK) {
                     return null;
                 }
             }
         }
-        if (showExtension && dialogWasDisplayed){
+        if (showExtension && dialogWasDisplayed) {
             // the extension was already shown in the dialog
             return nameWithOrWithoutExtension;
         } else {
             return nameWithOrWithoutExtension + extension;
         }
     }
-    
+
     /*
-     * Create a new folder in the parent folder, based on the given source package fragment. Creates all childs 
-     * of the given source package fragment .
+     * Create a new folder in the parent folder, based on the given source package fragment. Creates
+     * all childs of the given source package fragment .
      */
-    private void createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment) throws CoreException {
+    private void createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment)
+            throws CoreException {
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
         packageName = getNewNameByDialogIfNecessary(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
-        if (packageName == null){
+        if (packageName == null) {
             return;
         }
-        
+
         IFolder subFolder = targetParentFolder.getFolder(packageName);
         subFolder.create(true, true, null);
         IIpsElement[] children = sourcePackageFragment.getChildren();
         for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof IIpsSrcFile){
+            if (children[i] instanceof IIpsSrcFile) {
                 IIpsObject ipsObject = ((IIpsSrcFile)children[i]).getIpsObject();
                 createFile(subFolder, ipsObject);
             }
@@ -436,7 +445,7 @@ public class IpsPasteAction extends IpsAction {
             createFolderAndFiles(subFolder, childPackages[i]);
         }
     }
-    
+
     private void showPasteNotSupportedError() {
         MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages.IpsPasteAction_errorTitle,
                 Messages.IpsPasteAction_Error_CannotPasteIntoSelectedElement);
@@ -452,28 +461,32 @@ public class IpsPasteAction extends IpsAction {
             return;
         }
         IPath targetPath = target.getFullPath();
-        
+
         String name = resource.getName();
         String extension = StringUtil.getFileExtension(name);
-        if (extension != null){
+        if (extension != null) {
             extension = "." + extension; //$NON-NLS-1$
         } else {
             extension = ""; //$NON-NLS-1$
         }
         String suggestedName = StringUtil.getFilenameWithoutExtension(name);
-        
+
         boolean showExtension = !isResourceIpsObject(resource);
-        
+
         if (isResourceProductCmpt(resource)) {
             IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
             copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), target);
-        }
-        else {
+        } else {
             // non product cmpt
             String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
                     showExtension);
             if (newName != null) {
-                resource.copy(targetPath.append(newName), true, null);
+                try {
+                    resource.copy(targetPath.append(newName), true, null);
+                } catch (Exception e) {
+                    IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, Messages.IpsPasteAction_cannot_copy,
+                            e));
+                }
             }
         }
     }
@@ -486,10 +499,10 @@ public class IpsPasteAction extends IpsAction {
     }
 
     private boolean isResourceProductCmpt(IResource resource) throws CoreException {
-        if (resource instanceof IFile){
-            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)resource);
-            if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()){
-                if (((IIpsSrcFile)ipsElement).getIpsObject() instanceof IProductCmpt){
+        if (resource instanceof IFile) {
+            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
+                if (((IIpsSrcFile)ipsElement).getIpsObject() instanceof IProductCmpt) {
                     return true;
                 }
             }
@@ -505,7 +518,7 @@ public class IpsPasteAction extends IpsAction {
         }
         return false;
     }
-    
+
     /*
      * Validator for new resource name.
      * 
@@ -515,7 +528,7 @@ public class IpsPasteAction extends IpsAction {
         IPath root;
         String extension;
         int resourceType;
-        
+
         public Validator(IPath root, int resourceType, String extension) {
             this.root = root;
             this.extension = extension;
@@ -544,11 +557,12 @@ public class IpsPasteAction extends IpsAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         // disable action if the selection contains at least one ips object part
-        Object[] objects= selection.toArray();
+        Object[] objects = selection.toArray();
         for (int i = 0; i < objects.length; i++) {
-            if(objects[i] instanceof IIpsObjectPart){
+            if (objects[i] instanceof IIpsObjectPart) {
                 return false;
             }
         }
