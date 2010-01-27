@@ -351,5 +351,19 @@
                type="org.faktorips.devtools.core.model.IIpsElement">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"
+            class="org.faktorips.devtools.core.internal.model.adapter.IpsObjectPartContainerAdapterFactory">
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="org.faktorips.devtools.core.internal.model.adapter.ResourceAdapterFactory">
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+         </adapter>
+      </factory>
    </extension>
 </plugin>
