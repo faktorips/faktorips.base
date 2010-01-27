@@ -12,15 +12,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.ipsobject.IpsSrcFileCollection;
 import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 
 /**
@@ -33,11 +28,7 @@ import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
  */
 public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
 
-    private String definingMetaClass;
-
-    private boolean duplicateName = false;
-
-    private boolean instanceOfSubtype = false;
+    private IpsSrcFileCollection collection;
 
     /**
      * Creates an item for each ips source file and marks the itens as duplicate, if two (or more)
@@ -48,50 +39,22 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      */
     public static final InstanceIpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass)
             throws CoreException {
-
+        IpsSrcFileCollection collection = new IpsSrcFileCollection(files, baseMetaClass);
         InstanceIpsSrcFileViewItem[] items = new InstanceIpsSrcFileViewItem[files.length];
-        Map<String, InstanceIpsSrcFileViewItem> itemsByName = new HashMap<String, InstanceIpsSrcFileViewItem>();
         for (int i = 0; i < files.length; i++) {
-            InstanceIpsSrcFileViewItem item = itemsByName.get(files[i].getName());
-            InstanceIpsSrcFileViewItem newItem = new InstanceIpsSrcFileViewItem(files[i]);
+            InstanceIpsSrcFileViewItem newItem = new InstanceIpsSrcFileViewItem(files[i], collection);
             items[i] = newItem;
-            newItem.setDefiningMetaClass(getMetaClassName(files[i]));
-            if (item == null) {
-                newItem.setDuplicateName(false);
-                itemsByName.put(files[i].getName(), newItem);
-            } else {
-                newItem.setDuplicateName(true);
-                item.setDuplicateName(true);
-            }
-            if (baseMetaClass != null) {
-                newItem.setInstanceOfSubtype(!baseMetaClass.getQualifiedName().equals(getMetaClassName(files[i])));
-            }
         }
         return items;
     }
 
     /**
-     * To get the name of the meta class defining the internal source file. At the moment this only
-     * is implemented for <code>ProductCmpt</code> and <code>EnumContent</code>.
-     * 
-     * @return the meta class name of the internal source file
-     * @throws CoreException
-     */
-    private static String getMetaClassName(IIpsSrcFile srcFile) throws CoreException {
-        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-            return srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_CONTENT)) {
-            return srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * @param ipsSrcFile The IpsSrcFile represented by this viewer item
+     * @param collection
      */
-    public InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
+    private InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile, IpsSrcFileCollection collection) {
         super(ipsSrcFile);
+        this.collection = collection;
     }
 
     /**
@@ -100,16 +63,11 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * @return the name of the meta class, defining the internal source file
      */
     public String getDefiningMetaClass() {
-        return definingMetaClass;
-    }
-
-    /**
-     * Set the name of the meta class defining the internal source file
-     * 
-     * @param definingMetaClass the name of the meta class
-     */
-    public void setDefiningMetaClass(String definingMetaClass) {
-        this.definingMetaClass = definingMetaClass;
+        try {
+            return collection.getDefiningMetaClass(getIpsSrcFile());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -117,16 +75,11 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * @return the true if duplicateName is set
      */
     public boolean isDuplicateName() {
-        return duplicateName;
-    }
-
-    /**
-     * Set whether this item represents a source file that's name is already present
-     * 
-     * @param duplicateName the duplicateName to set
-     */
-    public void setDuplicateName(boolean duplicateName) {
-        this.duplicateName = duplicateName;
+        try {
+            return collection.isDuplicateName(getIpsSrcFile());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -134,15 +87,12 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * identified by this item is an instance of a subtype of this type. Returns <code>false</code>
      * otherwise.
      */
-    public boolean isInstanceOfSubtype() {
-        return instanceOfSubtype;
-    }
-
-    /**
-     * @see #isInstanceOfSubtype()
-     */
-    public void setInstanceOfSubtype(boolean instanceOfSubtype) {
-        this.instanceOfSubtype = instanceOfSubtype;
+    public boolean isInstanceOfMetaClass() {
+        try {
+            return collection.isInstanceOfMetaClass(getIpsSrcFile());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
