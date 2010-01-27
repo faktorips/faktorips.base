@@ -336,7 +336,7 @@ public final class RenameTypeMoveTypeHelper {
                 for (IParameter parameter : method.getParameters()) {
                     if (parameter.getDatatype().equals(getOriginalQualifiedName())) {
                         parameter.setDatatype(getNewQualifiedName(targetIpsPackageFragment, newName));
-                        refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
+                        addModifiedSrcFile(ipsSrcFile);
                     }
                 }
             }
@@ -356,7 +356,7 @@ public final class RenameTypeMoveTypeHelper {
             for (IAssociation association : type.getAssociations()) {
                 if (association.getTarget().equals(getOriginalQualifiedName())) {
                     association.setTarget(getNewQualifiedName(targetIpsPackageFragment, newName));
-                    refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
+                    addModifiedSrcFile(ipsSrcFile);
                 }
             }
         }
@@ -374,9 +374,25 @@ public final class RenameTypeMoveTypeHelper {
             IType potentialSubtype = (IType)ipsSrcFile.getIpsObject();
             if (potentialSubtype.getSupertype().equals(getOriginalQualifiedName())) {
                 potentialSubtype.setSupertype(getNewQualifiedName(targetIpsPackageFragment, newName));
-                refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
+                addModifiedSrcFile(ipsSrcFile);
             }
         }
+    }
+
+    /**
+     * Adds the given <tt>IIpsSrcFile</tt> to the list of the modified source files managed by the
+     * <tt>IIpsRefactoringProcessor</tt>.
+     * <p>
+     * This operation assures that the given source file will not be added to the list of modified
+     * source files in case it is the source file of the <tt>IType</tt> to be refactored. This
+     * source file will be deleted after the refactoring and it would lead to an exception if it
+     * would be saved.
+     */
+    private void addModifiedSrcFile(IIpsSrcFile ipsSrcFile) {
+        if (type.getIpsSrcFile().equals(ipsSrcFile)) {
+            return;
+        }
+        refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
     }
 
     /**
