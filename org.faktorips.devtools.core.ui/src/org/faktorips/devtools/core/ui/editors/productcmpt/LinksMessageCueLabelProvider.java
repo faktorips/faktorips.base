@@ -15,11 +15,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -74,16 +69,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
     private static class InternalLabelProvider extends LabelProvider {
 
-        private ResourceManager resourceManager;
-
         public InternalLabelProvider() {
-            resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        }
-
-        @Override
-        public void dispose() {
-            resourceManager.dispose();
-            super.dispose();
         }
 
         /**
@@ -117,9 +103,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                     } else {
                         image = IpsUIPlugin.getImageHandling().getImage(product);
                     }
-                    DecorationOverlayIcon overlayedImageDesc = new DecorationOverlayIcon(image, IpsUIPlugin
-                            .getImageHandling().createImageDescriptor("LinkOverlay.gif"), IDecoration.BOTTOM_RIGHT);
-                    return (Image)resourceManager.get(overlayedImageDesc);
+                    return image;
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
