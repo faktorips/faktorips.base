@@ -658,12 +658,25 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
             throws CoreException;
 
     /**
-     * Returns all test cases that refer to the product component identified by the given qualified
-     * name. Returns an empty array if none is found.
+     * The search is perfomed only according to the {@link IIpsObjectPath}.
+     * 
+     * @return Returns all test cases that refer to the product component identified by the given
+     *         qualified name. Returns an empty array if none is found.
      * 
      * @throws CoreException if an exception occurs while searching.
      */
     public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException;
+
+    /**
+     * Searches for all test cases referring to the product component with the given name. This
+     * project and all projects referring to this one are searched.
+     * 
+     * @param qualifiedProductCmptName The name of the product component test cases have to refer
+     *            to.
+     * @return All test cases referring the product component with the given name.
+     * @throws CoreException if any excetions accurs during search.
+     */
+    public ITestCase[] searchReferencingTestCases(String qualifiedProductCmptName) throws CoreException;
 
     /**
      * Returns the supertype of the given policy component type, and all policy component types that

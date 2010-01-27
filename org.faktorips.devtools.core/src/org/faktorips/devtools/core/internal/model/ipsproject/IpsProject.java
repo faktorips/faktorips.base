@@ -1658,22 +1658,69 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
-        List<ITestCase> result = new ArrayList<ITestCase>();
-        IIpsObject[] allTestCases = findIpsObjects(IpsObjectType.TEST_CASE);
+        List<ITestCase> result = findReferencingTestCases(this, qualifiedProductCmptName);
 
-        for (int i = 0; i < allTestCases.length; i++) {
-            String[] productCmptQualifiedNames = ((ITestCase)allTestCases[i]).getReferencedProductCmpts();
-            for (int j = 0; j < productCmptQualifiedNames.length; j++) {
-                if (qualifiedProductCmptName.equals(productCmptQualifiedNames[j])) {
-                    result.add((ITestCase)allTestCases[i]);
-                    break;
-                }
-            }
-        }
         ITestCase[] resultArray = new ITestCase[result.size()];
         result.toArray(resultArray);
 
         return resultArray;
+    }
+
+    private List<ITestCase> findReferencingTestCases(IpsProject project, String objectName) throws CoreException {
+        List<ITestCase> result = new ArrayList<ITestCase>();
+        IIpsObject[] testCases = project.findIpsObjects(IpsObjectType.TEST_CASE);
+        for (IIpsObject object : testCases) {
+            String[] references = ((ITestCase)object).getReferencedProductCmpts();
+            for (String refName : references) {
+                if (refName.equals(objectName)) {
+                    result.add((ITestCase)object);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public ITestCase[] searchReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
+        IIpsProject[] projects = getIpsModel().getIpsProjects();
+        List<ITestCase> result = new ArrayList<ITestCase>();
+
+        result.addAll(getReferencingTestCases(this, qualifiedProductCmptName));
+
+        for (IIpsProject project : projects) {
+            if (project.isReferencing(this)) {
+                result.addAll(getReferencingTestCases((IpsProject)project, qualifiedProductCmptName));
+            }
+        }
+
+        return result.toArray(new ITestCase[result.size()]);
+    }
+
+    private List<ITestCase> getReferencingTestCases(IpsProject project, String objectName) throws CoreException {
+        List<ITestCase> result = new ArrayList<ITestCase>();
+        List<ITestCase> testCases = project.getAllTestCases();
+        for (ITestCase testCase : testCases) {
+            String[] references = testCase.getReferencedProductCmpts();
+            for (String refName : references) {
+                if (refName.equals(objectName)) {
+                    result.add(testCase);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<ITestCase> getAllTestCases() throws CoreException {
+        List<IIpsSrcFile> resultSrcFiles = new ArrayList<IIpsSrcFile>();
+
+        List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
+        getSourceIpsFragmentRoots(roots);
+        for (IIpsPackageFragmentRoot root : roots) {
+            ((IpsPackageFragmentRoot)root).findIpsSourceFiles(IpsObjectType.TEST_CASE, null, resultSrcFiles);
+        }
+
+        return filesToIpsObjects(resultSrcFiles, ITestCase.class);
     }
 
     public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException {
