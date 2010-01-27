@@ -79,7 +79,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.devtools.core.util.ProjectUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -1431,35 +1430,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITestCase[] testCases = ipsProject.findReferencingTestCases(productCmpt1.getQualifiedName());
         assertEquals(1, testCases.length);
         assertEquals(testCase, testCases[0]);
-    }
-
-    public void testSearchReferencingTestCases() throws CoreException {
-        ITestCase test1 = newTestCase(baseProject, "Test1");
-        ITestCase test2 = newTestCase(ipsProject, "Test2");
-        IProductCmpt cmpt = newProductCmpt(baseProject, "Cmpt");
-
-        test1.newTestPolicyCmpt().setProductCmpt(cmpt.getQualifiedName());
-        test2.newTestPolicyCmpt().setProductCmpt(cmpt.getQualifiedName());
-
-        ITestCase[] result = baseProject.searchReferencingTestCases(cmpt.getQualifiedName());
-        assertEquals(1, result.length);
-        assertEquals(test1, result[0]);
-
-        result = ipsProject.searchReferencingTestCases(cmpt.getQualifiedName());
-        assertEquals(1, result.length);
-        assertEquals(test2, result[0]);
-
-        ProjectUtil.addProjectReference(ipsProject, baseProject);
-
-        result = ipsProject.searchReferencingTestCases(cmpt.getQualifiedName());
-        assertEquals(1, result.length);
-        assertEquals(test2, result[0]);
-
-        result = baseProject.searchReferencingTestCases(cmpt.getQualifiedName());
-        assertEquals(2, result.length);
-        List<ITestCase> resultList = Arrays.asList(result);
-        assertTrue(resultList.contains(test1));
-        assertTrue(resultList.contains(test2));
     }
 
     public void testFindEnumDatatypes() throws Exception {

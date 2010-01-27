@@ -55,6 +55,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.util.ProjectUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -298,7 +301,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         property.setPropertyId("prop1");
         property.setExtendedType(extendedClass);
         model.addIpsObjectExtensionProperty(property);
-        List<IExtensionPropertyDefinition> props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
+        List<IExtensionPropertyDefinition> props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass,
+                false));
         assertEquals(1, props.size());
         assertSame(property, props.get(0));
         props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
@@ -608,6 +612,32 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
                 + " is in the IpsModel cache which is not expected since the resource changed listener "
                 + "should be triggered by know and have the cache cleared.", status);
+    }
+
+    public void testSearchReferencingTestCases() throws CoreException {
+        IIpsProject baseProject = newIpsProject("base");
+        IIpsProject ipsProject = newIpsProject("next");
+
+        ITestCase test1 = newTestCase(baseProject, "Test1");
+        ITestCase test2 = newTestCase(ipsProject, "Test2");
+        IProductCmpt cmpt = newProductCmpt(baseProject, "Cmpt");
+
+        test1.newTestPolicyCmpt().setProductCmpt(cmpt.getQualifiedName());
+        test2.newTestPolicyCmpt().setProductCmpt(cmpt.getQualifiedName());
+
+        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+
+        ITestCase[] result = model.searchReferencingTestCases(cmpt);
+        assertEquals(1, result.length);
+        assertEquals(test1, result[0]);
+
+        ProjectUtil.addProjectReference(ipsProject, baseProject);
+
+        result = model.searchReferencingTestCases(cmpt);
+        assertEquals(2, result.length);
+        List<ITestCase> resultList = Arrays.asList(result);
+        assertTrue(resultList.contains(test1));
+        assertTrue(resultList.contains(test2));
     }
 
 }

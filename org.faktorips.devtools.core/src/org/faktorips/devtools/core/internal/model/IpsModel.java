@@ -93,6 +93,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 
@@ -1667,6 +1669,37 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public boolean isContainedInArchive() {
         return false;
+    }
+
+    public ITestCase[] searchReferencingTestCases(IProductCmpt cmpt) throws CoreException {
+        IIpsProject baseProject = cmpt.getIpsProject();
+        IIpsProject[] projects = getIpsModel().getIpsProjects();
+        List<ITestCase> result = new ArrayList<ITestCase>();
+
+        result.addAll(getReferencingTestCases(baseProject, cmpt.getQualifiedName()));
+
+        for (IIpsProject project : projects) {
+            if (project.isReferencing(baseProject)) {
+                result.addAll(getReferencingTestCases(project, cmpt.getQualifiedName()));
+            }
+        }
+
+        return result.toArray(new ITestCase[result.size()]);
+    }
+
+    private List<ITestCase> getReferencingTestCases(IIpsProject project, String objectName) throws CoreException {
+        List<ITestCase> result = new ArrayList<ITestCase>();
+        List<ITestCase> testCases = project.getAllTestCases();
+        for (ITestCase testCase : testCases) {
+            String[] references = testCase.getReferencedProductCmpts();
+            for (String refName : references) {
+                if (refName.equals(objectName)) {
+                    result.add(testCase);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
 }

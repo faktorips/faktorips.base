@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConven
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 
 /**
  * The IPS model is the top of the IPS element hierarchy (like the Java model is the top of the Java
@@ -281,5 +283,16 @@ public interface IIpsModel extends IIpsElement {
      * <code>null</code> will be returned.
      */
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id);
+
+    /**
+     * Searches for all test cases referring to the given product component. The project of the
+     * given product component and all projects referring to this one are searched.
+     * 
+     * @param cmpt The product component test cases have to refer to.
+     * @return All test cases referring the product component with the given name or an empty array,
+     *         of none is found.
+     * @throws CoreException if any excetions accurs during search.
+     */
+    public ITestCase[] searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
 
 }
