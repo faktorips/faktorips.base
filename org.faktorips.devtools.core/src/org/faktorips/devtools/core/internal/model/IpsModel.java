@@ -1671,7 +1671,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return false;
     }
 
-    public ITestCase[] searchReferencingTestCases(IProductCmpt cmpt) throws CoreException {
+    public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException {
         IIpsProject baseProject = cmpt.getIpsProject();
         IIpsProject[] projects = getIpsModel().getIpsProjects();
         List<ITestCase> result = new ArrayList<ITestCase>();
@@ -1684,7 +1684,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
-        return result.toArray(new ITestCase[result.size()]);
+        return result;
     }
 
     private List<ITestCase> getReferencingTestCases(IIpsProject project, String objectName) throws CoreException {

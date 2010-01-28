@@ -627,17 +627,16 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
-        ITestCase[] result = model.searchReferencingTestCases(cmpt);
-        assertEquals(1, result.length);
-        assertEquals(test1, result[0]);
+        List<ITestCase> result = model.searchReferencingTestCases(cmpt);
+        assertEquals(1, result.size());
+        assertEquals(test1, result.get(0));
 
         ProjectUtil.addProjectReference(ipsProject, baseProject);
 
         result = model.searchReferencingTestCases(cmpt);
-        assertEquals(2, result.length);
-        List<ITestCase> resultList = Arrays.asList(result);
-        assertTrue(resultList.contains(test1));
-        assertTrue(resultList.contains(test2));
+        assertEquals(2, result.size());
+        assertTrue(result.contains(test1));
+        assertTrue(result.contains(test2));
     }
 
 }

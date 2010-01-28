@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -289,10 +291,10 @@ public interface IIpsModel extends IIpsElement {
      * given product component and all projects referring to this one are searched.
      * 
      * @param cmpt The product component test cases have to refer to.
-     * @return All test cases referring the product component with the given name or an empty array,
+     * @return All test cases referring the product component with the given name or an empty list,
      *         of none is found.
      * @throws CoreException if any excetions accurs during search.
      */
-    public ITestCase[] searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
+    public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
 
 }
