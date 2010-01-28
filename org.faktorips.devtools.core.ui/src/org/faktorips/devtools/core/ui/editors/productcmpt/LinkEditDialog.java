@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,27 +23,26 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
-
 /**
  * A dialog to edit a relation.
  */
 public class LinkEditDialog extends IpsPartEditDialog2 {
-    
+
     private IProductCmptLink link;
-    
+
     private ExtensionPropertyControlFactory extFactory;
-    
+
     // edit fields
     private TextButtonField targetField;
     private CardinalityField minCardinalityField;
@@ -51,16 +50,17 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
 
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
-    
+
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
         extFactory = new ExtensionPropertyControlFactory(link.getClass());
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
@@ -69,13 +69,13 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         createDescriptionTabItem(folder);
         return folder;
     }
-    
+
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
         targetControl = new ProductCmptRefControl(link.getIpsProject(), workArea, uiToolkit);
         try {
@@ -89,36 +89,45 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        
-        targetControl.setProductCmptsToExclude(this.toExclude);
-        
+
+        targetControl.setProductCmptsToExclude(toExclude);
+
+        boolean cardinalityEnabled;
+        try {
+            cardinalityEnabled = link.constrainsPolicyCmptTypeAssociation(link.getIpsProject());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            cardinalityEnabled = false;
+        }
+
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
         Text minCardinalityText = uiToolkit.createText(workArea);
-        
+        minCardinalityText.setEnabled(cardinalityEnabled);
+
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMax);
         Text maxCardinalityText = uiToolkit.createText(workArea);
-        
+        maxCardinalityText.setEnabled(cardinalityEnabled);
+
         // create fields
         targetField = new TextButtonField(targetControl);
         minCardinalityField = new CardinalityField(minCardinalityText);
         maxCardinalityField = new CardinalityField(maxCardinalityText);
 
-        bindingContext.bindContent(targetField, link, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
-        bindingContext.bindContent(minCardinalityField, link, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-        bindingContext.bindContent(maxCardinalityField, link, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-        
-        extFactory.createControls(workArea,uiToolkit,link);
+        bindingContext.bindContent(targetField, link, IAssociation.PROPERTY_TARGET);
+        bindingContext.bindContent(minCardinalityField, link, IAssociation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(maxCardinalityField, link, IAssociation.PROPERTY_MAX_CARDINALITY);
+
+        extFactory.createControls(workArea, uiToolkit, link);
         extFactory.bind(bindingContext);
 
         return c;
     }
-    
+
     public void setProductCmptsToExclude(IProductCmpt[] toExclude) {
-    	if (targetControl != null) {
-    		targetControl.setProductCmptsToExclude(toExclude);
-    	}
-    	else {
-    		this.toExclude = toExclude;
-    	}
+        if (targetControl != null) {
+            targetControl.setProductCmptsToExclude(toExclude);
+        } else {
+            this.toExclude = toExclude;
+        }
     }
 }

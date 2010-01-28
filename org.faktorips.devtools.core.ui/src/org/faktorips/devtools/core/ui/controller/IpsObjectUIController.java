@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,24 +35,25 @@ public class IpsObjectUIController extends DefaultUIController {
 
     private IIpsObjectPartContainer partContainer;
     private boolean enableWholeIpsObjectValidation = false;
-    
-	public IpsObjectUIController(IIpsObjectPartContainer partContainer) {
-		super();
+
+    public IpsObjectUIController(IIpsObjectPartContainer partContainer) {
+        super();
         this.partContainer = partContainer;
-	}
-    
-	/**
-	 * If set to true the validate method of the ips object of the ips object part container is called
-	 * instead of the one of the ips object part container. By default this is set to <code>false</code>. 
-	 */
-	public void setEnableWholeIpsObjectValidation(boolean enable){
-	    this.enableWholeIpsObjectValidation = enable;
-	}
-	
+    }
+
+    /**
+     * If set to true the validate method of the ips object of the ips object part container is
+     * called instead of the one of the ips object part container. By default this is set to
+     * <code>false</code>.
+     */
+    public void setEnableWholeIpsObjectValidation(boolean enable) {
+        enableWholeIpsObjectValidation = enable;
+    }
+
     public IIpsObject getIpsObject() {
         return partContainer.getIpsObject();
     }
-    
+
     /**
      * Returns the ips object part container this is a controller for.
      */
@@ -63,52 +64,55 @@ public class IpsObjectUIController extends DefaultUIController {
     /**
      * @see DefaultUIController#add(EditField, Object, String)
      */
-	public void add(EditField editField, String propertyName) {
-        IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(partContainer.getClass(), propertyName, true);
-        if (extProperty!=null) {
+    public void add(EditField editField, String propertyName) {
+        IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(
+                partContainer.getClass(), propertyName, true);
+        if (extProperty != null) {
             addMapping(new FieldExtensionPropertyMapping(editField, partContainer, propertyName));
         } else {
             super.add(editField, partContainer, propertyName);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void updateUI() {
         super.updateUI();
         validatePartContainerAndUpdateUI();
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         super.valueChanged(e);
         validatePartContainerAndUpdateUI();
     }
-    
+
     /**
-     * Validates the part container and updates the fields that are associated with attributes of the IpsPartContainer.
-     * It returns the MessageList which is the result of the validation. This return value 
-     * can be evaluated when overriding this method.
+     * Validates the part container and updates the fields that are associated with attributes of
+     * the IpsPartContainer. It returns the MessageList which is the result of the validation. This
+     * return value can be evaluated when overriding this method.
      * 
      * @return the validation message list. Never returns <code>null</code>.
      */
     protected MessageList validatePartContainerAndUpdateUI() {
-        if (mappings.size()==0) {
+        if (mappings.size() == 0) {
             return new MessageList();
         }
         try {
             IIpsObjectPartContainer validatee = partContainer;
-            if(enableWholeIpsObjectValidation){
+            if (enableWholeIpsObjectValidation) {
                 validatee = partContainer.getIpsObject();
             }
             MessageList list = validatee.validate(partContainer.getIpsProject());
-            for (Iterator it=mappings.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
+            for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
+                FieldPropertyMapping mapping = it.next();
                 Control c = mapping.getField().getControl();
-                if (c==null || c.isDisposed()) {
+                if (c == null || c.isDisposed()) {
                     continue;
                 }
                 MessageList fieldMessages;
@@ -127,5 +131,5 @@ public class IpsObjectUIController extends DefaultUIController {
             return new MessageList();
         }
     }
-    
+
 }

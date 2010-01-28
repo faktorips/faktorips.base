@@ -61,11 +61,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ReferenceDropListener;
@@ -388,20 +386,15 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
 
         void updateCardinalityPanel(IProductCmptLink link) {
-            if (link.isDeleted()) {
-                deactivateCardinalityPanel();
-                return;
-            }
-
+            boolean cardinalityPanelEnabled;
             try {
-                IIpsProject ipsProject = link.getIpsProject();
-                IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
-                if (association == null || !association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
-                    deactivateCardinalityPanel();
-                    return;
-                }
+                cardinalityPanelEnabled = link.constrainsPolicyCmptTypeAssociation(link.getIpsProject());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
+                cardinalityPanelEnabled = false;
+            }
+
+            if (!cardinalityPanelEnabled) {
                 deactivateCardinalityPanel();
                 return;
             }
@@ -766,4 +759,5 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
         return treeViewer.getTree().isFocusControl();
     }
+
 }

@@ -268,6 +268,18 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
     }
 
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+        if (isDeleted()) {
+            return false;
+        }
+        IProductCmptTypeAssociation association = findAssociation(ipsProject);
+        if (association == null || !association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+            return false;
+        }
+        return true;
+
+    }
+
     public boolean isMandatory() {
         return getMinCardinality() == 1 && getMaxCardinality() == 1;
     }

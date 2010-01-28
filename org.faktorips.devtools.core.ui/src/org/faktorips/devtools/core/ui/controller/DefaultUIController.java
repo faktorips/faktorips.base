@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
 	// list of mappings between edit fields and properties of model objects.
-	protected List mappings = new ArrayList();
+	protected List<FieldPropertyMapping> mappings = new ArrayList<FieldPropertyMapping>();
 
 	/**
 	 * 
@@ -103,9 +103,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 	}
 
 	public void updateModel() {
-        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
-		for (Iterator it = copy.iterator(); it.hasNext();) {
-			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
+        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
+			FieldPropertyMapping mapping = it.next();
 			try {
 				mapping.setPropertyValue();
 			} catch (Exception e) {
@@ -116,9 +116,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 	}
 
 	public void updateUI() {
-        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
-		for (Iterator it = copy.iterator(); it.hasNext();) {
-			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
+        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
+			FieldPropertyMapping mapping = it.next();
 			try {
 				mapping.setControlValue();
 			} catch (Exception e) {
@@ -132,9 +132,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
      * {@inheritDoc}
 	 */
 	public void valueChanged(FieldValueChangedEvent e) {
-        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
-		for (Iterator it = copy.iterator(); it.hasNext();) {
-			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
+        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
+			FieldPropertyMapping mapping = it.next();
 			if (e.field == mapping.getField()) {
 				try {
 					mapping.setPropertyValue();
@@ -155,10 +155,10 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 	 *            The field to remove.
 	 */
 	public void remove(EditField field) {
-		ArrayList secureCopy = new ArrayList(mappings);
+		ArrayList<FieldPropertyMapping> secureCopy = new ArrayList<FieldPropertyMapping>(mappings);
 
-		for (Iterator it = secureCopy.iterator(); it.hasNext();) {
-			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
+		for (Iterator<FieldPropertyMapping> it = secureCopy.iterator(); it.hasNext();) {
+			FieldPropertyMapping mapping = it.next();
 			if (mapping.getField().equals(field)) {
 				mappings.remove(mapping);
 				field.removeChangeListener(this);
