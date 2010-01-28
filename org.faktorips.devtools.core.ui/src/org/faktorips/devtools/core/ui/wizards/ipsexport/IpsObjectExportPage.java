@@ -179,7 +179,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      */
     protected class FileSelectionDialogWithDefault extends FileSelectionControl {
         public FileSelectionDialogWithDefault(Composite parent, UIToolkit toolkit) {
-            super(parent, toolkit);
+            super(parent, toolkit, SWT.SAVE);
         }
 
         /**

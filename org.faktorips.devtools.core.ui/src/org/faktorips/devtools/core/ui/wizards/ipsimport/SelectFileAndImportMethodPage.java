@@ -233,7 +233,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
         Composite filenameComposite = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(filenameComposite, Messages.SelectFileAndImportMethodPage_labelName);
-        filenameField = new TextButtonField(new FileSelectionControl(filenameComposite, toolkit));
+        filenameField = new TextButtonField(new FileSelectionControl(filenameComposite, toolkit, SWT.OPEN));
         filenameField.addChangeListener(this);
 
         toolkit.createFormLabel(filenameComposite, Messages.SelectFileAndImportMethodPage_labelFileFormat);
