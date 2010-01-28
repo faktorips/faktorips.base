@@ -121,14 +121,6 @@ public class ContentPage extends IpsObjectEditorPage {
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
 
-        /*
-         * Create a single row if an empty tablecontents is opened. Otherwise no editing is
-         * possible.
-         */
-        if (getActiveGeneration().getNumOfRows() == 0) {
-            getActiveGeneration().newRow();
-        }
-
         tableViewer.setInput(getTableContents());
 
         ScrolledForm form = getManagedForm().getForm();
@@ -269,7 +261,7 @@ public class ContentPage extends IpsObjectEditorPage {
                             getTableContents().getIpsProject());
                     ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                             dataType);
-                    IpsCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i,
+                    IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
                     TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
                             .getTraversalStrategy();
