@@ -39,6 +39,7 @@ public class FileSelectionControl extends TextButtonControl {
      */
     public FileSelectionControl(Composite parent, UIToolkit toolkit, int dialogStyle) {
         super(parent, toolkit, Messages.FileSelectionControl_titleBrowse);
+        this.dialogStyle = dialogStyle;
     }
 
     /**
