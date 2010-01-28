@@ -18,6 +18,7 @@ import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,11 +36,24 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
+    // using imageRegistry and not the resource manager because images have to be leaded by input
+    // stream to support all kinds of images in user projects, including images in archives.
+    // The image registry uses the UIPlugin's resource manager internally
+    private ImageRegistry imageRegistry;
+
     private ImageDescriptor prodCmptDefaultIcon;
 
     public ProductCmptWorkbenchAdapter() {
         super();
         prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif");
+    }
+
+    private ImageRegistry getImageRegistry() {
+        if (imageRegistry == null) {
+            imageRegistry = new ImageRegistry(IpsUIPlugin.getImageHandling().getResourceManager());
+        }
+        return imageRegistry;
+
     }
 
     private ImageDescriptor getProductCmptImageDescriptor(IProductCmptType type) {
@@ -122,15 +136,14 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
         @Override
         public ImageDescriptor getImageDescriptor() {
-            ImageDescriptor cachedImage = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(pathToImage);
+            ImageDescriptor cachedImage = getImageRegistry().getDescriptor(pathToImage);
             if (cachedImage == null) {
                 try {
                     InputStream inputStream = ipsProject.getResourceAsStream(pathToImage);
                     if (inputStream != null) {
                         Image loadedImage = new Image(Display.getDefault(), inputStream);
-                        IpsUIPlugin.getDefault().getImageRegistry().put(pathToImage, loadedImage);
-                        ImageDescriptor imageDesc = IpsUIPlugin.getDefault().getImageRegistry().getDescriptor(
-                                pathToImage);
+                        getImageRegistry().put(pathToImage, loadedImage);
+                        ImageDescriptor imageDesc = getImageRegistry().getDescriptor(pathToImage);
                         inputStream.close();
                         return imageDesc;
                     } else {

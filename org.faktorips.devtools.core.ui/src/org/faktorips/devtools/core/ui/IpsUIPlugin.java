@@ -396,7 +396,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IIpsElement ipsElement = model.getIpsElement(fileToEdit);
         if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
             try {
-                openWithDefaultIpsSrcTextEditor(fileToEdit);
+                return openWithDefaultIpsSrcTextEditor(fileToEdit);
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
@@ -954,8 +954,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @return
          */
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
-            IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(
-                    ipsElementClass, IWorkbenchAdapter.class);
+            IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
+                    .getAdapterByClass(ipsElementClass, IWorkbenchAdapter.class);
             if (adapter instanceof IpsElementWorkbenchAdapter) {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
                 return ipsWA.getDefaultImageDescriptor();
@@ -1035,7 +1035,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
-            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1, IWorkbenchAdapter.class);
+            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1,
+                    IWorkbenchAdapter.class);
         }
 
         public void dispose() {
