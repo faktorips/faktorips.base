@@ -5,7 +5,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
 
 public class HtmlPathUtilTest extends AbstractFipsDocTest {
@@ -17,7 +17,8 @@ public class HtmlPathUtilTest extends AbstractFipsDocTest {
 
     public void testFromPathProductCmp() throws Exception {
         PolicyCmptType cmpt = newPolicyCmptType(ipsProject, "base.sub.SubBVB");
-        assertEquals("base/sub/" + LinkedFileTypes.CLASS_CONTENT.getPrefix() + "PolicyCmptType_SubBVB" + LinkedFileTypes.CLASS_CONTENT.getSuffix(), HtmlUtil.getPathFromRoot(cmpt, LinkedFileTypes.CLASS_CONTENT));
+        LinkedFileType fileType = LinkedFileType.getLinkedFileTypeByIpsElement(cmpt);
+        assertEquals("base/sub/" + fileType.getPrefix() + "PolicyCmptType_SubBVB" + fileType.getSuffix(), HtmlUtil.getPathFromRoot(cmpt, fileType));
     }
 
     public void testUpPathProject() throws Exception {
@@ -53,7 +54,7 @@ public class HtmlPathUtilTest extends AbstractFipsDocTest {
     public void testFromPathRootPackage() throws Exception {
         PolicyCmptType cmpt = newPolicyCmptType(ipsProject, "BVB");
         IIpsPackageFragment packageFragment = cmpt.getIpsPackageFragment();
-        assertEquals("package_index.html", HtmlUtil.getPathFromRoot(packageFragment, LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW));
+        assertEquals("package_index.html", HtmlUtil.getPathFromRoot(packageFragment, LinkedFileType.getLinkedFileTypeByIpsElement(packageFragment)));
     }
 
     public void testNotImplementedUtilClass() throws Exception {

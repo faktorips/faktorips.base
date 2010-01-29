@@ -1,12 +1,10 @@
 package org.faktorips.devtools.htmlexport.test.documentor;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -251,5 +249,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 			file.delete();
 		}
 	}
+	
+	
 
 }
