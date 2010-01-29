@@ -66,9 +66,16 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public void dragEnter(DropTargetEvent event) {
-        System.out.println("Enter " + event.operations);
+        if (event.detail == DND.DROP_NONE) {
+            if (movedCmptLink == null) {
+                event.detail = DND.DROP_LINK;
+            } else {
+                event.detail = DND.DROP_MOVE;
+            }
+        }
+        System.out.println("Enter " + event.detail);
         super.dragEnter(event);
-        System.out.println("After Enter " + event.operations);
+        System.out.println("After Enter " + event.detail);
         // if (movedCmptLink != null) {
         // return;
         // }
@@ -82,24 +89,31 @@ public class LinkDropListener extends ViewerDropAdapter {
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
         System.out.println(target + "   -- " + operation);
-        if (movedCmptLink != null && target instanceof IProductCmptLink) {
-            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
-            boolean result;
-            if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
-                result = true;
-            } else {
-                List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
-                draggedCmpts.add(movedCmptLink.getProductCmpt());
-                try {
-                    result = getLinkCreator().canCreateLinks(target, draggedCmpts);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    result = false;
+        if (target == null) {
+            return false;
+        }
+        if (movedCmptLink != null) {
+            if (target instanceof IProductCmptLink) {
+                IProductCmptLink targetCmptLink = (IProductCmptLink)target;
+                boolean result;
+                if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
+                    result = true;
+                } else {
+                    List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
+                    draggedCmpts.add(movedCmptLink.getProductCmpt());
+                    try {
+                        result = getLinkCreator().canCreateLinks(target, draggedCmpts);
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                        result = false;
+                    }
                 }
+                setFeedbackEnabled(result);
+                System.out.println("move: " + result);
+                return result;
+            } else {
+                return false;
             }
-            setFeedbackEnabled(result);
-            System.out.println("move: " + result);
-            return result;
         } else {
             setFeedbackEnabled(false);
             List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
