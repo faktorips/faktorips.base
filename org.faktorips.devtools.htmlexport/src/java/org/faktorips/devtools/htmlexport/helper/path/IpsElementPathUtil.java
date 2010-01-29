@@ -22,7 +22,7 @@ public interface IpsElementPathUtil {
      * 
      * @return relativer Pfad vom Root-Verzeichnis
      */
-    public String getPathFromRoot(LinkedFileTypes linkedFileType);
+    public String getPathFromRoot(LinkedFileType linkedFileType);
 
     /**
      * Name des IIPSElement in einem Link

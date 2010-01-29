@@ -2,62 +2,67 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 public class LinkPageElement extends AbstractCompositePageElement {
-    private IIpsElement from;
-    private IIpsElement to;
-    private String target;
+	private String target;
+	private String path;
 
+	public LinkPageElement(IIpsElement to, String target, PageElement... pageElements) {
+		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), target);
+		addPageElements(pageElements);
+	}
 
-    private LinkPageElement(IIpsElement from, IIpsElement to, String target) {
-        super();
-        this.from = from;
-        this.to = to;
-        this.target = target;
-    }
-    
-    public LinkPageElement(IIpsElement from, IIpsElement to, String target, PageElement... pageElements) {
-    	this(from, to, target);
-    	addPageElements(pageElements);
-    }
-
-    public LinkPageElement(IIpsElement from, IIpsElement to, String target, String text, boolean useImage) {
-    	this(from, to, target);
+	public LinkPageElement(IIpsElement to, String target, String text, boolean useImage) {
+    	this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), target);
         
     	if (!useImage) {
             addPageElements(new TextPageElement(text));
             return;
-        }
+        }        
+
     	
     	addPageElements(new ImagePageElement(to));	
         addPageElements(new TextPageElement(" " + text));
     }
 
-    public LinkPageElement(IIpsElement from, IIpsElement to, PageElement...pageElements) {
-        this(from, to, null, pageElements);
-    }
+	public LinkPageElement(IIpsElement to, PageElement... pageElements) {
+		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), null, pageElements);
+	}
 
-    public String getTarget() {
-        return target;
-    }
+	public LinkPageElement(String path, String target, PageElement... pageElements) {
+		this(path, target);
+		addPageElements(pageElements);
+	}
 
-    public IIpsElement getFrom() {
-        return from;
-    }
+	public LinkPageElement(String path, String target, String text) {
+		this(path, target, new TextPageElement(text));
+	}
 
-    public IIpsElement getTo() {
-        return to;
-    }
+	private LinkPageElement(String path, String target) {
+		this.path = path;
+		this.target = target;
+	}
 
-    public void acceptLayouter(ILayouter layouter) {
-        layouter.layoutLinkPageElement(this);
-    }
+	public String getTarget() {
+		return target;
+	}
 
-    @Override
-    public void build() {
-    }
+	public String getPathFromRoot() {
+		return path;
 
-    public void setTarget(String target) {
-        this.target = target;
-    }
+	}
+
+	public void acceptLayouter(ILayouter layouter) {
+		layouter.layoutLinkPageElement(this);
+	}
+
+	@Override
+	public void build() {
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
 }

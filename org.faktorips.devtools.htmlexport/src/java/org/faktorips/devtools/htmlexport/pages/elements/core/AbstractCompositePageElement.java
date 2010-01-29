@@ -39,7 +39,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     }
 
     /**
-     * Fügt eine {@link PageElement} hinzu. Kann überschrieben werden, um Typ zu überprüfen, um Parent zu setzen und Styles durchzureichen etc. 
+     * Fügt ein {@link PageElement} hinzu. Kann überschrieben werden, um Typ zu überprüfen, um Parent zu setzen und Styles durchzureichen etc. 
      * @param pageElement
      */
 	protected void addSubElement(PageElement pageElement) {

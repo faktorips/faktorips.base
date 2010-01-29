@@ -47,7 +47,7 @@ abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implements IpsE
         return ipsElement;
     }
 
-    public String getPathFromRoot(LinkedFileTypes linkedFileType) {
+    public String getPathFromRoot(LinkedFileType linkedFileType) {
         StringBuilder builder = new StringBuilder();
         builder.append(getPackageFragmentPathFromRoot(getIpsPackageFragment()));
         builder.append(linkedFileType.getPrefix());

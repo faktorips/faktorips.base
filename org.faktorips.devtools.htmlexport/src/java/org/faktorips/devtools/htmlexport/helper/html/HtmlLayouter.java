@@ -12,13 +12,12 @@ import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.Util;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -38,8 +37,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	}
 
 	public void layoutLinkPageElement(LinkPageElement pageElement) {
-		String linkBase = HtmlUtil.createLinkBase(pageElement.getFrom(), pageElement.getTo(), LinkedFileTypes
-				.getLinkedFileTypeByIpsElement(pageElement.getTo()));
+		String linkBase = pathToRoot + pageElement.getPathFromRoot() + ".html";
 
 		append(HtmlUtil.createLinkOpenTag(linkBase, pageElement.getTarget(), getClasses(pageElement)));
 		visitSubElements(pageElement);

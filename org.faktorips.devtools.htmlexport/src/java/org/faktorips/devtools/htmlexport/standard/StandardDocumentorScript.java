@@ -15,7 +15,7 @@ import org.faktorips.devtools.htmlexport.generators.html.BaseFrameHtmlGenerator;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AllClassesPageElement;
@@ -62,7 +62,7 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
     private void writeClassContentPage(DocumentorConfiguration config, IIpsObject ipsObject) {
         AbstractRootPageElement objectContentPage = AbstractObjectContentPageElement.getInstance(ipsObject, config);
         objectContentPage.build();
-        FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileTypes.CLASS_CONTENT), getPageContent(config,
+        FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileType.getLinkedFileTypeByIpsElement(ipsObject)), getPageContent(config,
                 objectContentPage));
     }
 
@@ -82,7 +82,7 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
         AllClassesPageElement allClassesPage = new AllClassesPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
         allClassesPage.setLinkTarget("content");
         allClassesPage.build();
-        FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileTypes.PACKAGE_CLASSES_OVERVIEW), getPageContent(
+        FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(
                 config, allClassesPage));
     }
 

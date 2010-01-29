@@ -54,7 +54,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
 
 		try {
 			IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-			elements[1] = new LinkPageElement(type, target, "content", target.getName(), true);
+			elements[1] = new LinkPageElement(target, "content", target.getName(), true);
 		} catch (CoreException e) {
 			elements[1] = new TextPageElement("");
 		}

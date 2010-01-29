@@ -34,7 +34,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK,
 				new PageElement[] {
 						new TextPageElement("Vorlage: "),
-						new LinkPageElement(object, productCmptType, "content", productCmptType.getName(), true) }));
+						new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) }));
 	}
 
 	protected IProductCmptType getProductCmptType() {

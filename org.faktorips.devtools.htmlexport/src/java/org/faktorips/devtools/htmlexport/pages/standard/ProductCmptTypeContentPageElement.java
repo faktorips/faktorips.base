@@ -78,7 +78,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			}
 			addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
 					new TextPageElement("Vertragsklasse: "),
-					new LinkPageElement(object, to, "content", to.getName(), true) }));
+					new LinkPageElement(to, "content", to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

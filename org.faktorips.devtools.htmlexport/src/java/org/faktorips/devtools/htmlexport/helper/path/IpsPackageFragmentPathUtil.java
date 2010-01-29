@@ -10,7 +10,7 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
         super(ipsElement);
     }
 
-    public String getPathFromRoot(LinkedFileTypes linkedFileType) {
+    public String getPathFromRoot(LinkedFileType linkedFileType) {
         if (getIpsElement().isDefaultPackage()) {
             return PACKAGE_INDEX_FILE_NAME;
         }

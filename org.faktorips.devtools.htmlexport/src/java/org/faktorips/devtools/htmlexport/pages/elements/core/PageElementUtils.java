@@ -26,7 +26,7 @@ public class PageElementUtils {
 		List<LinkPageElement> liste = new ArrayList<LinkPageElement>();
 
 		for (IIpsObject object : objects) {
-			LinkPageElement linkPageElement = new LinkPageElement(srcObject, object, target, object.getName(), true);
+			LinkPageElement linkPageElement = new LinkPageElement(object, target, object.getName(), true);
 			linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
 			liste.add(linkPageElement);
 		}

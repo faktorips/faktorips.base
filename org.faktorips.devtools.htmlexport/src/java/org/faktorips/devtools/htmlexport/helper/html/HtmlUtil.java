@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileTypes;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 public class HtmlUtil {
@@ -44,7 +44,7 @@ public class HtmlUtil {
 		if (!StringUtils.isBlank(styles)) {
 			builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
 			builder.append(styles);
-			builder.append("\">");
+			builder.append("\" />");
 		}
 
 		builder.append("</head><body>");
@@ -171,9 +171,9 @@ public class HtmlUtil {
 	 * @param ipsElement
 	 * @return relativer Link vom Root-Verzeichnis
 	 */
-	public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileTypes linkedFileType) {
+	public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileType linkedFileType) {
 		IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
-		return pathUtil.getPathFromRoot(linkedFileType);
+		return pathUtil.getPathFromRoot(linkedFileType) + ".html";
 	}
 
 	public static String createImage(String src, String alt) {
@@ -195,10 +195,11 @@ public class HtmlUtil {
 		return pathUtil.getLinkText(withImage);
 	}
 
-	public static String createLinkBase(IIpsElement from, IIpsElement to, LinkedFileTypes linkedFileType) {
+	/*
+	public static String createLinkBase(IIpsElement from, IIpsElement to, LinkedFileType linkedFileType) {
 		return getPathToRoot(from) + getPathFromRoot(to, linkedFileType);
 	}
-
+*/
 	public static String createHtmlTable(String[][] cells, String tableClasses, String cellClasses) {
 		HtmlTable table = new HtmlTable(cells, tableClasses, cellClasses);
 

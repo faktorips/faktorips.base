@@ -3,17 +3,20 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -33,7 +36,13 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			return new ProductCmptTypeContentPageElement((IProductCmptType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT)
 			return new ProductCmptContentPageElement((IProductCmpt) object, config);
-		throw new NotImplementedException();
+		if (object.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE)
+			return new TestCaseTypeContentPageElement((ITestCaseType) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.ENUM_TYPE)
+			return new EnumTypeContentPageElement((IEnumType) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE)
+			return new TableStructureContentPageElement((ITableStructure) object, config);
+		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " " + object.getIpsObjectType());
 	}
 
 	protected AbstractObjectContentPageElement(T object, DocumentorConfiguration config) {
@@ -45,8 +54,11 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	@Override
 	public void build() {
 		super.build();
-		addPageElements(new LinkPageElement(object, object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object.getIpsPackageFragment()), true));
-		addPageElements(new TextPageElement(object.getName(), TextType.HEADING_1));
+		
+		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new LinkPageElement("index", "_top", "Start")));
+		
+		addPageElements(new LinkPageElement(object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object.getIpsPackageFragment()), true));
+		addPageElements(new TextPageElement(object.getIpsObjectType().getDisplayName() + " " + object.getName(), TextType.HEADING_1));
 
 		// Typhierarchie
 		addTypeHierarchie();

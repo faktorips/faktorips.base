@@ -8,7 +8,7 @@ class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> {
 
     private static final String INDEX_HTML = "indes.html";
 
-    public String getPathFromRoot(LinkedFileTypes linkedFileType) {
+    public String getPathFromRoot(LinkedFileType linkedFileType) {
         return INDEX_HTML;
     }
 
