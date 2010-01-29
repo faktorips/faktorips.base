@@ -512,6 +512,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {
+        // if toMove and target are the same we have to do nothing
+        if (toMove == target) {
+            return true;
+        }
         if (toMove == null || target == null) {
             return false;
         }

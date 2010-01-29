@@ -26,6 +26,9 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -33,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 public class LinkDropListener extends ViewerDropAdapter {
@@ -91,22 +95,9 @@ public class LinkDropListener extends ViewerDropAdapter {
             return false;
         }
         if (movedCmptLink != null) {
-            if (target instanceof IProductCmptLink
+            if ((target instanceof IProductCmptLink || target instanceof IProductCmptTypeRelationReference)
                     && (getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
-                IProductCmptLink targetCmptLink = (IProductCmptLink)target;
-                boolean result;
-                if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
-                    result = true;
-                } else {
-                    List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
-                    draggedCmpts.add(movedCmptLink.getProductCmpt());
-                    try {
-                        result = getLinkCreator().canCreateLinks(target, draggedCmpts);
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                        result = false;
-                    }
-                }
+                boolean result = canMove(target);
                 setFeedbackEnabled(result);
                 return result;
             } else {
@@ -146,15 +137,37 @@ public class LinkDropListener extends ViewerDropAdapter {
         }
     }
 
-    private boolean moveLink(Object target) {
+    private boolean canMove(Object target) {
         if (target instanceof IProductCmptLink) {
+            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
+            if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
+                return true;
+            }
+        }
+        try {
+            List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
+            draggedCmpts.add(movedCmptLink.findTarget(movedCmptLink.getIpsProject()));
+            return getLinkCreator().canCreateLinks(target, draggedCmpts);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+    private boolean moveLink(Object target) {
+        if (target instanceof IProductCmptTypeRelationReference) {
+            IProductCmptTypeRelationReference associationReference = (IProductCmptTypeRelationReference)target;
+            movedCmptLink.setAssociation(associationReference.getRelation().getName());
+            return true;
+        } else if (target instanceof IProductCmptLink) {
             IProductCmptLink targetLink = (IProductCmptLink)target;
             IProductCmptGeneration generation = targetLink.getProductCmptGeneration();
             boolean before = getCurrentLocation() == LOCATION_BEFORE;
             generation.moveLink(movedCmptLink, targetLink, before);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private IFile getFile(String filename) {
@@ -245,6 +258,44 @@ public class LinkDropListener extends ViewerDropAdapter {
      */
     public LinkCreatorUtil getLinkCreator() {
         return linkCreator;
+    }
+
+    /**
+     * Override the determineLocation method because we have only location after or location before
+     * when moving an element. When D&N is not in moving mode, we do not have location feedback, but
+     * we although return the normal determined location.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    protected int determineLocation(DropTargetEvent event) {
+        if (movedCmptLink == null) {
+            return super.determineLocation(event);
+        }
+        if (!(event.item instanceof Item)) {
+            return LOCATION_NONE;
+        }
+        // dropping on an associationReference means moving on first position of this node
+        if (getCurrentTarget() instanceof IProductCmptTypeRelationReference) {
+            return LOCATION_AFTER;
+        }
+        Item item = (Item)event.item;
+        Point coordinates = new Point(event.x, event.y);
+        coordinates = getViewer().getControl().toControl(coordinates);
+        if (item != null) {
+            Rectangle bounds = getBounds(item);
+            int offset = bounds.height / 2;
+            if (bounds == null) {
+                return LOCATION_NONE;
+            }
+            if ((coordinates.y - bounds.y) < offset) {
+                return LOCATION_BEFORE;
+            }
+            if ((bounds.y + bounds.height - coordinates.y) < offset) {
+                return LOCATION_AFTER;
+            }
+        }
+        return LOCATION_ON;
     }
 
     public void setToMove(IProductCmptLink selected) {
