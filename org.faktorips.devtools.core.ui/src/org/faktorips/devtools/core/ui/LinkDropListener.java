@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
@@ -93,7 +94,8 @@ public class LinkDropListener extends ViewerDropAdapter {
             return false;
         }
         if (movedCmptLink != null) {
-            if (target instanceof IProductCmptLink) {
+            if (target instanceof IProductCmptLink
+                    && (getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
                 IProductCmptLink targetCmptLink = (IProductCmptLink)target;
                 boolean result;
                 if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
@@ -139,15 +141,27 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean performDrop(Object data) {
-        if ((getCurrentOperation() & DND.DROP_LINK) != DND.DROP_LINK) {
+        if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLink != null) {
+            Object target = getCurrentTarget();
+            return moveLink(target);
+        } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
+            List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
+            Object target = getCurrentTarget();
+            return getLinkCreator().createLinks(droppedCmpts, target);
+        } else {
             return false;
         }
-        if (!(data instanceof String[])) {
-            return false;
+    }
+
+    private boolean moveLink(Object target) {
+        if (target instanceof IProductCmptLink) {
+            IProductCmptLink targetLink = (IProductCmptLink)target;
+            IProductCmptGeneration generation = targetLink.getProductCmptGeneration();
+            boolean before = getCurrentLocation() == LOCATION_BEFORE;
+            generation.moveLink(movedCmptLink, targetLink, before);
+            return true;
         }
-        List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
-        Object target = getCurrentTarget();
-        return getLinkCreator().createLinks(droppedCmpts, target);
+        return false;
     }
 
     private IFile getFile(String filename) {

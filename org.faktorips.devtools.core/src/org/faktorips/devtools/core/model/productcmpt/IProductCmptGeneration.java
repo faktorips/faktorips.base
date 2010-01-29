@@ -279,9 +279,23 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
             throws CoreException;
 
     /**
-     * Moves the first given relation in front of the second one.
+     * Moves the link given with parameter <code>toMove</code> before or after the specified target
+     * link. If the target belongs to another association, the association of the toMove link will
+     * change, too.
+     * <p/>
+     * With the boolean parameter before you could specify to move the link before or after the
+     * target link.
+     * <p/>
+     * 
+     * @param toMove the link you want to move
+     * @param the target link you want to move the <code>toMove</code>-Link
+     * @param before true for moving <code>toMove</code> in front of target, false to move it behind
+     *            target
+     * @return The method returns true if the link could be moved and returns false if toMove or
+     *         target is null one of the links was not part of this generation yet.
+     * 
      */
-    public void moveLink(IProductCmptLink toMove, IProductCmptLink moveBefore);
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before);
 
     /**
      * Returns a new table content usage.

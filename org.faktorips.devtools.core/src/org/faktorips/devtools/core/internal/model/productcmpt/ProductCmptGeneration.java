@@ -435,14 +435,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     public IProductCmptLink newLink(String associationName) {
         ProductCmptLink newRelation = newLinkInternal(getNextPartId());
-        newRelation.setProductCmptTypeRelation(associationName);
+        newRelation.setAssociation(associationName);
         objectHasChanged();
         return newRelation;
     }
 
     public IProductCmptLink newLink(String associationName, IProductCmptLink insertBefore) {
         ProductCmptLink newRelation = newRelationInternal(getNextPartId(), insertBefore);
-        newRelation.setProductCmptTypeRelation(associationName);
+        newRelation.setAssociation(associationName);
         objectHasChanged();
         return newRelation;
     }
@@ -511,18 +511,25 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newRelationInternal(id, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void moveLink(IProductCmptLink toMove, IProductCmptLink moveBefore) {
-        links.remove(toMove);
-        int index = links.indexOf(moveBefore);
-        if (index == -1) {
-            links.add(toMove);
-        } else {
-            links.add(index, toMove);
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {
+        if (toMove == null || target == null) {
+            return false;
         }
+        if (!links.contains(target)) {
+            return false;
+        }
+        boolean removed = links.remove(toMove);
+        if (!removed) {
+            return false;
+        }
+        int index = links.indexOf(target);
+        if (!before) {
+            index++;
+        }
+        links.add(index, toMove);
+        toMove.setAssociation(target.getAssociation());
         objectHasChanged();
+        return true;
     }
 
     /**

@@ -100,6 +100,13 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public String getAssociation();
 
     /**
+     * Setting the association this link is an instance of
+     * 
+     * @param association
+     */
+    public void setAssociation(String association);
+
+    /**
      * Finds the product component type association this link is an instance of. Note that the
      * method searches not only the direct product component type this product component is based
      * on, but also it's super type hierarchy.

@@ -107,8 +107,10 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return (IProductCmptTypeAssociation)productCmptType.findAssociation(association, ipsProject);
     }
 
-    void setProductCmptTypeRelation(String newRelation) {
-        association = newRelation;
+    public void setAssociation(String association) {
+        String oldAsso = this.association;
+        this.association = association;
+        valueChanged(oldAsso, association);
     }
 
     /**
