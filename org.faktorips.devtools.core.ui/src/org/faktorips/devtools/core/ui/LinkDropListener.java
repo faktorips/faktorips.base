@@ -78,6 +78,9 @@ public class LinkDropListener extends ViewerDropAdapter {
                 event.detail = DND.DROP_MOVE;
             }
         }
+        if (event.detail == DND.DROP_MOVE && movedCmptLink == null) {
+            event.detail = DND.DROP_LINK;
+        }
         super.dragEnter(event);
         // if (movedCmptLink != null) {
         // return;

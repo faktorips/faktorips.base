@@ -199,6 +199,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkDropListener(treeViewer);
+            dropListener.setAutoSave(false);
             // dropListener.addDropDoneListener(new IDropDoneListener() {
             //
             // public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean
