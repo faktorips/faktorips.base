@@ -82,14 +82,6 @@ public class LinkDropListener extends ViewerDropAdapter {
             event.detail = DND.DROP_LINK;
         }
         super.dragEnter(event);
-        // if (movedCmptLink != null) {
-        // return;
-        // }
-        // if ((event.detail & DND.DROP_DEFAULT) == DND.DROP_DEFAULT || event.detail ==
-        // DND.DROP_NONE) {
-        // event.detail = DND.DROP_LINK;
-        // }
-        // super.dragEnter(event);
     }
 
     @Override
@@ -218,8 +210,7 @@ public class LinkDropListener extends ViewerDropAdapter {
     }
 
     private List<IProductCmpt> getProductCmpts(String[] filenames) {
-        // TODO debug for linux!
-        // Under some platforms, the data is not available during dragOver.
+        // Under some platforms (linux), the data is not available during dragOver.
         if (filenames == null) {
             return new ArrayList<IProductCmpt>();
         }
