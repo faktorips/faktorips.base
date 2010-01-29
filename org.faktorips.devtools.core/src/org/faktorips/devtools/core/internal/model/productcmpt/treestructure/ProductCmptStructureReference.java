@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -86,12 +88,12 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     }
 
     /**
-     * @return The <code>IIpsElement</code> referenced by this object.
+     * @return The <code>IIpsObject</code> referenced by this object.
      */
-    abstract IIpsElement getWrapped();
+    protected abstract IIpsObjectPartContainer getWrapped();
 
-    public IIpsElement getWrappedIpsElement() {
-        return getWrapped();
+    public IIpsSrcFile getWrappedIpsSrcFile() {
+        return getWrapped().getIpsSrcFile();
     }
 
     @Override
@@ -103,13 +105,13 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        return getWrappedIpsElement() == other.getWrappedIpsElement() && getStructure() == other.getStructure();
+        return getWrappedIpsSrcFile() == other.getWrappedIpsSrcFile() && getStructure() == other.getStructure();
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + getWrappedIpsElement().hashCode();
+        hash = 31 * hash + getWrappedIpsSrcFile().hashCode();
         return 31 * hash + getStructure().hashCode();
     }
 }

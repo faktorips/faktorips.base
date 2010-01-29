@@ -229,6 +229,26 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Return true if this IpsSrcFile file is editable. This includes checking the ipsSrcFile
+     * mutable state and the state of the workbench
+     * 
+     * @param ipsSrcFile
+     * @return
+     */
+    public static boolean isEditable(IIpsSrcFile ipsSrcFile) {
+        if (ipsSrcFile == null) {
+            return false;
+        }
+        if (!ipsSrcFile.isMutable()) {
+            return false;
+        }
+        if (!IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
      * Returns a default factory if datatype is <code>null</code>.
      * 

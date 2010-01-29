@@ -13,7 +13,6 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.core.runtime.PlatformObject;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -53,7 +52,7 @@ public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsS
         return ipsSrcFile;
     }
 
-    public IIpsElement getWrappedIpsElement() {
+    public IIpsSrcFile getWrappedIpsSrcFile() {
         return getIpsSrcFile();
     }
 

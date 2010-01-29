@@ -34,7 +34,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -66,9 +65,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.ReferenceDropListener;
+import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.ReferenceDropListener.IDropDoneListener;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -141,7 +139,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
     private OpenReferencedProductCmptInEditorAction openAction;
 
-    private ReferenceDropListener dropListener;
+    private LinkDropListener dropListener;
 
     private DragListener dragListener;
 
@@ -200,14 +198,15 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setContentProvider(new LinksContentProvider());
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
-            dropListener = new ReferenceDropListener();
-            dropListener.addDropDoneListener(new IDropDoneListener() {
-
-                public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean srcFileWasDirty) {
-                    treeViewer.refresh();
-                    treeViewer.expandAll();
-                }
-            });
+            dropListener = new LinkDropListener(treeViewer);
+            // dropListener.addDropDoneListener(new IDropDoneListener() {
+            //
+            // public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean
+            // srcFileWasDirty) {
+            // treeViewer.refresh();
+            // treeViewer.expandAll();
+            // }
+            // });
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                     TextTransfer.getInstance() }, dropListener);
             dragListener = new DragListener(treeViewer);
@@ -519,9 +518,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if (dropListener != null) {
-            dropListener.setEnabled(enabled);
-        }
+
+        // XXX have to set listener enable/disable?
+        // if (dropListener != null) {
+        // dropListener.setEnabled(enabled);
+        // }
 
         if (treeViewer == null) {
             // no relations defined, so no tree to disable.

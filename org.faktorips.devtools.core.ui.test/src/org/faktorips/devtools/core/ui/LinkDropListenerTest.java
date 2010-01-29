@@ -25,6 +25,8 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -120,12 +122,19 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         TransferData transfer = getTransfer(cmptB1);
         TransferData multiTransfer = getTransfer(cmptB1, cmptB2);
 
-        // check operation - only DROP_LINK is accepted
+        // check if srcfile editable state is recognized
         assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
-        assertFalse(dropListener.validateDrop(target, DND.DROP_MOVE, transfer));
-        assertFalse(dropListener.validateDrop(target, DND.DROP_COPY, transfer));
-        assertFalse(dropListener.validateDrop(target, DND.DROP_DEFAULT, transfer));
-        assertFalse(dropListener.validateDrop(target, DND.DROP_NONE, transfer));
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_BROWSE);
+        assertFalse(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
+        assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+
+        // check operation - only DROP_LINK is accepted
+        // assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+        // assertFalse(dropListener.validateDrop(target, DND.DROP_MOVE, transfer));
+        // assertFalse(dropListener.validateDrop(target, DND.DROP_COPY, transfer));
+        // assertFalse(dropListener.validateDrop(target, DND.DROP_DEFAULT, transfer));
+        // assertFalse(dropListener.validateDrop(target, DND.DROP_NONE, transfer));
 
         // check transfer
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1)));

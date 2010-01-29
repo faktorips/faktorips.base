@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,16 +15,16 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
- *  A reference to a <code>ITableContentUsage</code>. Used by <code>ProductCmptStructure</code>.
- *  
+ * A reference to a <code>ITableContentUsage</code>. Used by <code>ProductCmptStructure</code>.
+ * 
  * @author Joerg Ortmann
  */
 public class ProductCmptStructureTblUsageReference extends ProductCmptStructureReference implements
@@ -32,16 +32,18 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
 
     private ITableContentUsage tableContentUsage;
 
-    public ProductCmptStructureTblUsageReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
-            ITableContentUsage tableContentUsage) throws CycleInProductStructureException {
+    public ProductCmptStructureTblUsageReference(IProductCmptTreeStructure structure,
+            ProductCmptStructureReference parent, ITableContentUsage tableContentUsage)
+            throws CycleInProductStructureException {
         super(structure, parent);
         this.tableContentUsage = tableContentUsage;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    IIpsElement getWrapped() {
+    @Override
+    protected IIpsObjectPartContainer getWrapped() {
         return tableContentUsage;
     }
 
@@ -51,7 +53,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     public ITableContentUsage getTableContentUsage() {
         return tableContentUsage;
     }
-    
+
     /**
      * {@inheritDoc}
      */

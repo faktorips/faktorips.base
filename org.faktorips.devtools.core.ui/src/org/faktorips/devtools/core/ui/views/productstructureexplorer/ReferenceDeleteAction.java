@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ReferenceDeleteAction extends Action {
 
@@ -79,10 +80,12 @@ public class ReferenceDeleteAction extends Action {
         for (Object o : selectedObject) {
             // first check all objects if it has a link.
             // Only delete if only links are selected
+            // and every src file is editable
+            // --> all or nothing!
             if (o instanceof IProductCmptReference) {
                 IProductCmptReference cmptReference = (IProductCmptReference)o;
                 IProductCmptLink link = cmptReference.getLink();
-                if (link != null) {
+                if (link != null && IpsUIPlugin.getDefault().isEditable(link.getIpsSrcFile())) {
                     links[i] = link;
                     IIpsSrcFile srcFile = link.getIpsSrcFile();
                     if (!srcFile.isDirty()) {

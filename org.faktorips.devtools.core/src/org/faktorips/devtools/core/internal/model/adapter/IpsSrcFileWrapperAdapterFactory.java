@@ -19,24 +19,24 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * This adapter factory could handle {@link IIpsElementWrapper} and returns the wrapped
+ * This adapter factory could handle {@link IIpsSrcFileWrapper} and returns the wrapped
  * {@link IIpsElement} as an adapter.
  * <p>
- * To make an object an adaptable {@link IIpsElementWrapper} you only have to implement the
- * interface {@link IIpsElementWrapper} and extend from {@link PlatformObject}. Alternatively you
+ * To make an object an adaptable {@link IIpsSrcFileWrapper} you only have to implement the
+ * interface {@link IIpsSrcFileWrapper} and extend from {@link PlatformObject}. Alternatively you
  * could implement the {@link IAdaptable#getAdapter(Class)} method for your own and calling the
  * workbench adapter manager @see{@link PlatformObject#getAdapter(Class)}
  * 
  * @author dirmeier
  */
-public class IpsElementWrapperAdapterFactory implements IAdapterFactory {
+public class IpsSrcFileWrapperAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("unchecked")
     // can suppress warning as eclipse IAdapterFactory is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (adaptableObject instanceof IIpsElementWrapper) {
-            IIpsElementWrapper wrapper = (IIpsElementWrapper)adaptableObject;
-            return wrapper.getWrappedIpsElement();
+        if (adaptableObject instanceof IIpsSrcFileWrapper) {
+            IIpsSrcFileWrapper wrapper = (IIpsSrcFileWrapper)adaptableObject;
+            return wrapper.getWrappedIpsSrcFile();
         }
         return null;
     }

@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -93,7 +94,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
-import org.faktorips.devtools.core.ui.ReferenceDropListener;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
@@ -101,7 +101,6 @@ import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDateViewer;
-import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
@@ -178,8 +177,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     /**
-     * This drop listener is only responsible to view ne objects not to drag into the structure. For
-     * making new associations {@link ReferenceDropListener} is used
+     * This drop listener is only responsible to view new objects not to drag into the structure.
+     * For creating new links {@link LinkDropListener} is used.
      * 
      * @author dirmeier
      */
@@ -518,26 +517,18 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
-        // XXX tree.expandAll();
 
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
-                tree));
+        // XXX Dragging is not allowed yet
+        // tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new
+        // IpsElementDragListener(
+        // tree));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
-        // menumanager.addMenuListener(new IMenuListener() {
-        //
-        // public void menuAboutToShow(IMenuManager manager) {
-        // if (isReferenceAndOpenActionSupportedForSelection()) {
-        // TODO add-action
-        // manager.add(new Action("Add",
-        // IpsUIPlugin.getImageHandling().createImageDescriptor(
-        // "add_correction.gif")) {
-        // });
         final IAction openAction = new OpenEditorAction(tree);
         menumanager.add(openAction);
         menumanager.add(new Separator());
-        final IAction addAction = new AddCmptAction(tree);
+        final IAction addAction = new AddLinkAction(tree);
         // TODO enable/disable
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
@@ -550,7 +541,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                boolean enabled = isReferenceAndOpenActionSupportedForSelection();
+                Object selectedRef = getSelectedObjectFromSelection(tree.getSelection());
+                if (selectedRef instanceof IAdaptable) {
+                    IAdaptable adaptableSelectedObject = (IAdaptable)selectedRef;
+                    IIpsSrcFile selectedSrcFile = (IIpsSrcFile)adaptableSelectedObject.getAdapter(IIpsSrcFile.class);
+                    addAction.setEnabled(IpsUIPlugin.isEditable(selectedSrcFile));
+                }
+                boolean enabled = isReferenceAndOpenActionSupportedForSelection(selectedRef);
                 openAction.setEnabled(enabled);
                 findReferenceAction.setEnabled(enabled);
                 showInstancesAction.setEnabled(enabled);
@@ -574,8 +571,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), new ReferenceDeleteAction(tree));
     }
 
-    private boolean isReferenceAndOpenActionSupportedForSelection() {
-        Object selectedRef = getSelectedObjectFromSelection(tree.getSelection());
+    private boolean isReferenceAndOpenActionSupportedForSelection(Object selectedRef) {
         if (selectedRef == null) {
             return false;
         }

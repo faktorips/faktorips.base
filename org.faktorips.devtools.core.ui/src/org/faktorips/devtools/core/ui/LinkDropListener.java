@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 public class LinkDropListener extends ViewerDropAdapter {
@@ -40,6 +41,8 @@ public class LinkDropListener extends ViewerDropAdapter {
     private List<IProductCmpt> actualTransferElements;
 
     private LinkCreatorUtil linkCreator;
+
+    private IProductCmptLink movedCmptLink;
 
     public LinkDropListener(Viewer viewer) {
         super(viewer);
@@ -63,30 +66,60 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public void dragEnter(DropTargetEvent event) {
-        if ((event.detail & DND.DROP_DEFAULT) == DND.DROP_DEFAULT || event.detail == DND.DROP_NONE) {
-            event.detail = DND.DROP_LINK;
-        }
+        System.out.println("Enter " + event.operations);
         super.dragEnter(event);
+        System.out.println("After Enter " + event.operations);
+        // if (movedCmptLink != null) {
+        // return;
+        // }
+        // if ((event.detail & DND.DROP_DEFAULT) == DND.DROP_DEFAULT || event.detail ==
+        // DND.DROP_NONE) {
+        // event.detail = DND.DROP_LINK;
+        // }
+        // super.dragEnter(event);
     }
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        if ((operation & DND.DROP_LINK) != DND.DROP_LINK) {
-            return false;
-        }
-        List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
-        if (draggedCmpts == null) {
-            return false;
-        }
-        // Linux bug - @see comment of getTransferElements(..)
-        if (draggedCmpts.isEmpty()) {
-            return true;
-        }
-        try {
-            return getLinkCreator().canCreateLinks(target, draggedCmpts);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
+        System.out.println(target + "   -- " + operation);
+        if (movedCmptLink != null && target instanceof IProductCmptLink) {
+            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
+            boolean result;
+            if (targetCmptLink.getAssociation().equals(movedCmptLink.getAssociation())) {
+                result = true;
+            } else {
+                List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
+                draggedCmpts.add(movedCmptLink.getProductCmpt());
+                try {
+                    result = getLinkCreator().canCreateLinks(target, draggedCmpts);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    result = false;
+                }
+            }
+            setFeedbackEnabled(result);
+            System.out.println("move: " + result);
+            return result;
+        } else {
+            setFeedbackEnabled(false);
+            List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
+            if (draggedCmpts == null) {
+                System.out.println("draggedCmpt == null");
+                return false;
+            }
+            // Linux bug - @see comment of getTransferElements(..)
+            if (draggedCmpts.isEmpty()) {
+                System.out.println("draggedCmpt.isEmpty (linux true)");
+                return true;
+            }
+            try {
+                boolean result = getLinkCreator().canCreateLinks(target, draggedCmpts);
+                System.out.println("canCreateLink: " + result);
+                return result;
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return false;
+            }
         }
     }
 
@@ -191,6 +224,10 @@ public class LinkDropListener extends ViewerDropAdapter {
      */
     public LinkCreatorUtil getLinkCreator() {
         return linkCreator;
+    }
+
+    public void setToMove(IProductCmptLink selected) {
+        movedCmptLink = selected;
     }
 
 }

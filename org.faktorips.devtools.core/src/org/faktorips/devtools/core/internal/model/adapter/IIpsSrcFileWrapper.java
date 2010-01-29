@@ -14,21 +14,22 @@
 package org.faktorips.devtools.core.internal.model.adapter;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
- * Objects wrapping an {@link IIpsElement} should implement this interface to enable eclipse getting
- * the wrapped {@link IIpsElement}
+ * Objects wrapping an {@link IIpsSrcFile} should implement this interface to enable eclipse getting
+ * the wrapped {@link IIpsSrcFile}. e.g. this is the case for structural model elements as well as
+ * viewer items providing additional information for an ips src file
  * 
  * @author dirmeier
  */
-public interface IIpsElementWrapper extends IAdaptable {
+public interface IIpsSrcFileWrapper extends IAdaptable {
 
     /**
-     * Return the wrapped {@link IIpsElement}
+     * Return the wrapped {@link IIpsSrcFile}
      * 
-     * @return the wrapped {@link IIpsElement}
+     * @return the wrapped {@link IIpsSrcFile}
      */
-    public IIpsElement getWrappedIpsElement();
+    public IIpsSrcFile getWrappedIpsSrcFile();
 
 }

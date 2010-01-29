@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.core.internal.model.adapter.IIpsElementWrapper;
+import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptStructureReference extends IAdaptable, IIpsElementWrapper {
+public interface IProductCmptStructureReference extends IAdaptable, IIpsSrcFileWrapper {
 
     /**
      * @return The <code>IProductCmptStructure</code> this reference belongs to.

@@ -37,13 +37,18 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
-public class AddCmptAction extends Action {
+/**
+ * Add a new link in the product structure explorer
+ * 
+ * @author dirmeier
+ */
+public class AddLinkAction extends Action {
 
     private final TreeViewer treeViewer;
 
     private static LinkCreatorUtil linkCreator;
 
-    public AddCmptAction(TreeViewer tree) {
+    public AddLinkAction(TreeViewer tree) {
         super("Add", IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif"));
         treeViewer = tree;
         linkCreator = new LinkCreatorUtil(true);

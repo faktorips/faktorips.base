@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.AssociationSelectionDialog;
 
@@ -98,13 +99,17 @@ public class LinkCreatorUtil {
     }
 
     protected boolean processProductCmptReference(List<IProductCmpt> draggedCmpts,
-            IProductCmptReference reference,
+            IProductCmptReference target,
             boolean createLinks) throws CoreException {
+        IpsUIPlugin.getDefault();
+        if (!IpsUIPlugin.isEditable(target.getProductCmpt().getIpsSrcFile())) {
+            return false;
+        }
 
-        IIpsProject ipsProject = reference.getProductCmpt().getIpsProject();
-        IProductCmptGeneration generation = (IProductCmptGeneration)reference.getProductCmpt()
-                .findGenerationEffectiveOn(reference.getStructure().getValidAt());
-        IProductCmptType cmptType = reference.getProductCmpt().findProductCmptType(ipsProject);
+        IIpsProject ipsProject = target.getProductCmpt().getIpsProject();
+        IProductCmptGeneration generation = (IProductCmptGeneration)target.getProductCmpt().findGenerationEffectiveOn(
+                target.getStructure().getValidAt());
+        IProductCmptType cmptType = target.getProductCmpt().findProductCmptType(ipsProject);
         if (generation == null || cmptType == null) {
             return false;
         }
@@ -168,14 +173,17 @@ public class LinkCreatorUtil {
     }
 
     protected boolean processAssociationReference(List<IProductCmpt> draggedCmpts,
-            IProductCmptTypeRelationReference reference,
+            IProductCmptTypeRelationReference target,
             boolean createLink) throws CoreException {
         IAssociation association;
         IProductCmptGeneration generation;
-        IProductCmpt parentCmpt = ((IProductCmptReference)reference.getParent()).getProductCmpt();
-        generation = (IProductCmptGeneration)parentCmpt
-                .findGenerationEffectiveOn(reference.getStructure().getValidAt());
-        association = reference.getRelation();
+        IProductCmpt parentCmpt = ((IProductCmptReference)target.getParent()).getProductCmpt();
+        IpsUIPlugin.getDefault();
+        if (!IpsUIPlugin.isEditable(parentCmpt.getIpsSrcFile())) {
+            return false;
+        }
+        generation = (IProductCmptGeneration)parentCmpt.findGenerationEffectiveOn(target.getStructure().getValidAt());
+        association = target.getRelation();
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
@@ -192,11 +200,17 @@ public class LinkCreatorUtil {
         return result;
     }
 
-    protected boolean processProductCmptLink(List<IProductCmpt> draggedCmpts, IProductCmptLink link, boolean createLink)
-            throws CoreException {
+    protected boolean processProductCmptLink(List<IProductCmpt> draggedCmpts,
+            IProductCmptLink target,
+            boolean createLink) throws CoreException {
+        IpsUIPlugin.getDefault();
+        if (!IpsUIPlugin.isEditable(target.getIpsSrcFile())) {
+            return false;
+        }
+
         IAssociation association;
-        IProductCmptGeneration generation = link.getProductCmptGeneration();
-        association = link.findAssociation(generation.getIpsProject());
+        IProductCmptGeneration generation = target.getProductCmptGeneration();
+        association = target.findAssociation(generation.getIpsProject());
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {

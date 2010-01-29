@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.faktorips.devtools.core.internal.model.adapter.IIpsElementWrapper;
+import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * 
  * @author Faktor Zehn AG
  */
-public interface IIpsSrcFileViewItem extends IIpsElementWrapper {
+public interface IIpsSrcFileViewItem extends IIpsSrcFileWrapper {
 
     /**
      * Provide the <code>IpsSrcFile</code> of this object.

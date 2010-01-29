@@ -345,10 +345,10 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.faktorips.devtools.core.internal.model.adapter.IIpsElementWrapper"
-            class="org.faktorips.devtools.core.internal.model.adapter.IpsElementWrapperAdapterFactory">
+            adaptableType="org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper"
+            class="org.faktorips.devtools.core.internal.model.adapter.IpsSrcFileWrapperAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.IIpsElement">
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
          </adapter>
       </factory>
       <factory
