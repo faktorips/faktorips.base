@@ -74,9 +74,7 @@ public class LinkDropListener extends ViewerDropAdapter {
                 event.detail = DND.DROP_MOVE;
             }
         }
-        System.out.println("Enter " + event.detail);
         super.dragEnter(event);
-        System.out.println("After Enter " + event.detail);
         // if (movedCmptLink != null) {
         // return;
         // }
@@ -89,7 +87,6 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        System.out.println(target + "   -- " + operation);
         if (target == null) {
             return false;
         }
@@ -111,7 +108,6 @@ public class LinkDropListener extends ViewerDropAdapter {
                     }
                 }
                 setFeedbackEnabled(result);
-                System.out.println("move: " + result);
                 return result;
             } else {
                 return false;
@@ -120,17 +116,14 @@ public class LinkDropListener extends ViewerDropAdapter {
             setFeedbackEnabled(false);
             List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
             if (draggedCmpts == null) {
-                System.out.println("draggedCmpt == null");
                 return false;
             }
             // Linux bug - @see comment of getTransferElements(..)
             if (draggedCmpts.isEmpty()) {
-                System.out.println("draggedCmpt.isEmpty (linux true)");
                 return true;
             }
             try {
                 boolean result = getLinkCreator().canCreateLinks(target, draggedCmpts);
-                System.out.println("canCreateLink: " + result);
                 return result;
             } catch (CoreException e) {
                 IpsPlugin.log(e);
