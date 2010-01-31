@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -35,18 +35,39 @@ public class TreeViewerExpandStateStorage {
     // Tree viewer which will be analyzed and restored
     private TreeViewer treeViewer;
 
-    // Contains the currently selected tree item
-    private ISelection selection;
-
     // contains all checked elements
     private Object[] checkedElements;
+
+    private String selectedItemPath;
+
+    private TreeItem selectedTreeItem;
+
+    private interface TreeItemActionStrategy {
+        public void execute(TreeItem treeItem);
+    }
+
+    private class SelectStrategy implements TreeItemActionStrategy {
+        public void execute(TreeItem treeItem) {
+            treeViewer.setSelection(new StructuredSelection(treeItem.getData()));
+        }
+    }
+
+    private class ExpandStrategy implements TreeItemActionStrategy {
+        public void execute(TreeItem treeItem) {
+            treeViewer.setExpandedState(treeItem.getData(), true);
+        }
+    }
 
     public TreeViewerExpandStateStorage(TreeViewer treeViewer) {
         this.treeViewer = treeViewer;
     }
 
     public void storeExpandedStatus() {
-        selection = treeViewer.getSelection();
+        selectedItemPath = null;
+        TreeItem[] selectedTreeItems = treeViewer.getTree().getSelection();
+        if (selectedTreeItems.length > 0) {
+            selectedTreeItem = selectedTreeItems[0];
+        }
         expandedItems = new ArrayList<String>();
         storeCheckedElements();
         checkExpandedStatus(expandedItems, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
@@ -59,16 +80,22 @@ public class TreeViewerExpandStateStorage {
         treeViewer.collapseAll();
         for (Iterator<String> iter = expandedItems.iterator(); iter.hasNext();) {
             String itemPath = iter.next();
-            TreeItem childs[] = treeViewer.getTree().getItems();
-            searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
+            searchAndExpandInTree(itemPath, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
         }
 
         restoreCheckedStatus();
 
-        if (selection.isEmpty()) {
-            return;
+        if (selectedItemPath != null) {
+            searchAndSelectInTree(selectedItemPath, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
         }
-        treeViewer.setSelection(selection);
+    }
+
+    private void searchAndSelectInTree(String itemPath, TreeItem[] items, String parent) {
+        searchAndProcessInTree(itemPath, items, parent, new SelectStrategy());
+    }
+
+    private void searchAndExpandInTree(String itemPath, TreeItem[] items, String parent) {
+        searchAndProcessInTree(itemPath, items, parent, new ExpandStrategy());
     }
 
     private void storeCheckedElements() {
@@ -103,7 +130,10 @@ public class TreeViewerExpandStateStorage {
         }
     }
 
-    private boolean searchAndExpandInTree(String itemPath, TreeItem childs[], String parent) {
+    private boolean searchAndProcessInTree(String itemPath,
+            TreeItem childs[],
+            String parent,
+            TreeItemActionStrategy strategy) {
         for (int i = 0; i < childs.length; i++) {
             if (childs[i].isDisposed()) {
                 continue;
@@ -114,11 +144,11 @@ public class TreeViewerExpandStateStorage {
             }
 
             if (itemPath.equals(pathOfChild)) {
-                treeViewer.setExpandedState(childs[i].getData(), true);
+                strategy.execute(childs[i]);
                 return true;
             }
             TreeItem subChilds[] = childs[i].getItems();
-            if (searchAndExpandInTree(itemPath, subChilds, pathOfChild)) {
+            if (searchAndProcessInTree(itemPath, subChilds, pathOfChild, strategy)) {
                 return true;
             }
         }
@@ -135,6 +165,9 @@ public class TreeViewerExpandStateStorage {
             if (item.getExpanded()) {
                 expandedItems.add(itemPath);
                 checkExpandedStatus(expandedItems, item.getItems(), itemPath);
+            }
+            if (item == selectedTreeItem) {
+                selectedItemPath = itemPath;
             }
         }
     }
