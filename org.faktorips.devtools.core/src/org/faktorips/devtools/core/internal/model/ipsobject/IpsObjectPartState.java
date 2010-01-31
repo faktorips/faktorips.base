@@ -60,15 +60,6 @@ public class IpsObjectPartState {
      */
     public IpsObjectPartState(IIpsObjectPart part) {
         type = part.getClass();
-        /*
-         * TODO AW: Not sure if this is code is vital for this to function, delete later if all is
-         * well.
-         */
-        /*
-         * if (!type.isInterface()) { Class[] interfaces = type.getInterfaces(); for (int i = 0; i <
-         * interfaces.length; i ++) { if (IIpsObjectPart.class.isAssignableFrom(interfaces[i])) {
-         * type = interfaces[i]; break; } } }
-         */
         state = XmlUtil.getDefaultDocumentBuilder().newDocument();
         Element root = state.createElement("root"); //$NON-NLS-1$
         state.appendChild(root);
