@@ -50,6 +50,11 @@ public final class MoveTypeProcessor extends IpsMoveProcessor {
     }
 
     @Override
+    protected void addIpsSrcFiles() throws CoreException {
+        renameMoveHelper.addIpsSrcFiles();
+    }
+
+    @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         renameMoveHelper.validateUserInputThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status, pm);
     }

@@ -50,6 +50,11 @@ public final class RenameTypeProcessor extends IpsRenameProcessor {
     }
 
     @Override
+    protected void addIpsSrcFiles() throws CoreException {
+        renameMoveHelper.addIpsSrcFiles();
+    }
+
+    @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         renameMoveHelper.validateUserInputThis(getType().getIpsPackageFragment(), getNewName(), status, pm);
     }

@@ -29,6 +29,7 @@ public class Messages extends NLS {
     }
 
     public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
+    public static String IpsRefactoringProcessor_errorIpsSrcFileOutOfSync;
 
     public static String IpsRenameProcessor_msgNewNameEmpty;
     public static String IpsRenameProcessor_msgNewNameEqualsElementName;

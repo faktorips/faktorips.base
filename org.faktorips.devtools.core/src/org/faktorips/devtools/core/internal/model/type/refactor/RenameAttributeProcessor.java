@@ -45,6 +45,12 @@ import org.faktorips.util.message.MessageList;
  */
 public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
+    /** Set containing all potentially referencing product components. */
+    private Set<IIpsSrcFile> productCmptSrcFiles;
+
+    /** Set containing all potentially referencing test case types. */
+    private Set<IIpsSrcFile> testCaseTypeCmptSrcFiles;
+
     /**
      * Creates a <tt>RenameAttributeProcessor</tt>.
      * 
@@ -64,6 +70,19 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgTypeNotValid, getAttribute()
                         .getType().getName()));
             }
+        }
+    }
+
+    @Override
+    protected void addIpsSrcFiles() throws CoreException {
+        addIpsSrcFile(getAttribute().getIpsSrcFile());
+        productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+            addIpsSrcFile(ipsSrcFile);
+        }
+        testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+        for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
+            addIpsSrcFile(ipsSrcFile);
         }
     }
 
@@ -105,7 +124,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Only applicable to <tt>IProductCmptTypeAttribute</tt>s.
      */
     private void updateProductCmptAttributeValueReferences() throws CoreException {
-        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
@@ -122,7 +140,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 IAttributeValue attributeValue = generation.getAttributeValue(getOriginalName());
                 if (attributeValue != null) {
                     attributeValue.setAttribute(getNewName());
-                    addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
         }
@@ -139,7 +156,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             return;
         }
 
-        Set<IIpsSrcFile> productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
@@ -159,7 +175,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 IConfigElement configElement = generation.getConfigElement(getOriginalName());
                 if (configElement != null) {
                     configElement.setPolicyCmptTypeAttribute(getNewName());
-                    addModifiedSrcFile(productCmpt.getIpsSrcFile());
                 }
             }
         }
@@ -171,7 +186,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
      */
     private void updateTestCaseTypeReferences() throws CoreException {
-        Set<IIpsSrcFile> testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
@@ -185,7 +199,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 }
                 for (ITestAttribute testAttribute : parameter.getTestAttributes(getOriginalName())) {
                     testAttribute.setAttribute(getNewName());
-                    addModifiedSrcFile(testCaseType.getIpsSrcFile());
                 }
             }
         }
@@ -197,7 +210,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      */
     private void updateAttributeName() {
         getAttribute().setName(getNewName());
-        addModifiedSrcFile(getAttribute().getIpsSrcFile());
     }
 
     /** Returns the <tt>IAttribute</tt> to be refactored. */

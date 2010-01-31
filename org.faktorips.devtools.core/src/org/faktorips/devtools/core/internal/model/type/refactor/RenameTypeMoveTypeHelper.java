@@ -58,6 +58,18 @@ public final class RenameTypeMoveTypeHelper {
     private final IpsRefactoringProcessor refactoringProcessor;
 
     /**
+     * Set containing all <tt>IIpsSrcFile</tt>s that potentially reference the <tt>IType</tt> to be
+     * refactored and that have the same <tt>IpsObjectType</tt>.
+     */
+    private Set<IIpsSrcFile> typeSrcFiles;
+
+    /** Set containing all potentially referencing product components. */
+    private Set<IIpsSrcFile> productCmptSrcFiles;
+
+    /** Set containing all potentially referencing test case types. */
+    private Set<IIpsSrcFile> testCaseTypeSrcFiles;
+
+    /**
      * Creates a <tt>RenameTypeMoveTypeHelper</tt>.
      * 
      * @param refactoringProcessor The <tt>IpsRefactoringProcessor</tt> that uses this helper.
@@ -92,6 +104,37 @@ public final class RenameTypeMoveTypeHelper {
     public void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (!(type.isValid())) {
             status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgTypeNotValid, type.getName()));
+        }
+    }
+
+    /**
+     * @see IpsRefactoringProcessor#addIpsSrcFiles()
+     */
+    public void addIpsSrcFiles() throws CoreException {
+        typeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(type.getIpsObjectType());
+        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+            addIpsSrcFile(ipsSrcFile);
+        }
+        if (type instanceof IProductCmptType) {
+            if (!(type.isAbstract())) {
+                productCmptSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+                for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+                    addIpsSrcFile(ipsSrcFile);
+                }
+            }
+            if (((IProductCmptType)type).isConfigurationForPolicyCmptType()) {
+                IPolicyCmptType policyCmptType = ((IProductCmptType)type).findPolicyCmptType(type.getIpsProject());
+                addIpsSrcFile(policyCmptType.getIpsSrcFile());
+            }
+        } else {
+            testCaseTypeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+            for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
+                addIpsSrcFile(ipsSrcFile);
+            }
+            if (((IPolicyCmptType)type).isConfigurableByProductCmptType()) {
+                IProductCmptType productCmptType = ((IPolicyCmptType)type).findProductCmptType(type.getIpsProject());
+                addIpsSrcFile(productCmptType.getIpsSrcFile());
+            }
         }
     }
 
@@ -177,22 +220,16 @@ public final class RenameTypeMoveTypeHelper {
             copyToNewSourceFile(targetIpsPackageFragment, newName, pm);
         }
 
-        // Initialized here because these source files are needed in multiple helper methods.
-        Set<IIpsSrcFile> typeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(type.getIpsObjectType());
-
-        // The policy component type to be renamed could reference itself.
-        typeSrcFiles.add(type.getIpsSrcFile());
-
         if (type instanceof IPolicyCmptType) {
             updateConfiguringProductCmptTypeReference(targetIpsPackageFragment, newName);
             updateTestCaseTypeParameterReferences(targetIpsPackageFragment, newName);
         } else {
             updateConfiguredPolicyCmptTypeReference(targetIpsPackageFragment, newName);
-            updateProductReferences(targetIpsPackageFragment, newName);
+            updateProductCmptReferences(targetIpsPackageFragment, newName);
         }
-        updateMethodParameterReferences(targetIpsPackageFragment, newName, typeSrcFiles);
-        updateAssociationReferences(targetIpsPackageFragment, newName, typeSrcFiles);
-        updateSubtypeReferences(targetIpsPackageFragment, newName, typeSrcFiles);
+        updateMethodParameterReferences(targetIpsPackageFragment, newName);
+        updateAssociationReferences(targetIpsPackageFragment, newName);
+        updateSubtypeReferences(targetIpsPackageFragment, newName);
 
         return deleteSourceFile();
     }
@@ -211,7 +248,6 @@ public final class RenameTypeMoveTypeHelper {
         }
         IProductCmptType productCmptType = ((IPolicyCmptType)type).findProductCmptType(type.getIpsProject());
         productCmptType.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-        refactoringProcessor.addModifiedSrcFile(productCmptType.getIpsSrcFile());
     }
 
     /**
@@ -222,8 +258,6 @@ public final class RenameTypeMoveTypeHelper {
     private void updateTestCaseTypeParameterReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
             throws CoreException {
 
-        Set<IIpsSrcFile> testCaseTypeSrcFiles = refactoringProcessor
-                .findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
         for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
 
@@ -263,7 +297,6 @@ public final class RenameTypeMoveTypeHelper {
             // subclass that is referenced.
             if (testParameter.getPolicyCmptType().equals(getOriginalQualifiedName())) {
                 testParameter.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-                refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
             }
 
             // Update the test attributes where necessary.
@@ -289,7 +322,6 @@ public final class RenameTypeMoveTypeHelper {
         }
         IPolicyCmptType policyCmptType = ((IProductCmptType)type).findPolicyCmptType(type.getIpsProject());
         policyCmptType.setProductCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-        refactoringProcessor.addModifiedSrcFile(policyCmptType.getIpsSrcFile());
     }
 
     /**
@@ -298,19 +330,17 @@ public final class RenameTypeMoveTypeHelper {
      * <p>
      * Only applicable to <tt>IProductCmptType</tt>s.
      */
-    private void updateProductReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
+    private void updateProductCmptReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
             throws CoreException {
 
         if (type.isAbstract()) {
             return;
         }
 
-        Set<IIpsSrcFile> productSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        for (IIpsSrcFile ipsSrcFile : productSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
             if (productCmpt.getProductCmptType().equals(getOriginalQualifiedName())) {
                 productCmpt.setProductCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-                refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
             }
         }
     }
@@ -319,9 +349,8 @@ public final class RenameTypeMoveTypeHelper {
      * Updates all references in parameter data types of <tt>IMethod</tt>s to the <tt>IType</tt> to
      * be refactored.
      */
-    private void updateMethodParameterReferences(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
+    private void updateMethodParameterReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws CoreException {
 
         // We need all type source files.
         IpsObjectType otherObjectType = type.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE) ? IpsObjectType.POLICY_CMPT_TYPE
@@ -335,7 +364,6 @@ public final class RenameTypeMoveTypeHelper {
                 for (IParameter parameter : method.getParameters()) {
                     if (parameter.getDatatype().equals(getOriginalQualifiedName())) {
                         parameter.setDatatype(getNewQualifiedName(targetIpsPackageFragment, newName));
-                        addModifiedSrcFile(ipsSrcFile);
                     }
                 }
             }
@@ -346,16 +374,14 @@ public final class RenameTypeMoveTypeHelper {
      * Updates all references in associations of <tt>IType</tt>s that target the <tt>IType</tt> to
      * be refactored.
      */
-    private void updateAssociationReferences(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
+    private void updateAssociationReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws CoreException {
 
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType type = (IType)ipsSrcFile.getIpsObject();
             for (IAssociation association : type.getAssociations()) {
                 if (association.getTarget().equals(getOriginalQualifiedName())) {
                     association.setTarget(getNewQualifiedName(targetIpsPackageFragment, newName));
-                    addModifiedSrcFile(ipsSrcFile);
                 }
             }
         }
@@ -365,33 +391,30 @@ public final class RenameTypeMoveTypeHelper {
      * Updates the supertype property of all sub types that inherit from the <tt>IType</tt> to be
      * refactored.
      */
-    private void updateSubtypeReferences(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            Set<IIpsSrcFile> typeSrcFiles) throws CoreException {
+    private void updateSubtypeReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws CoreException {
 
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType potentialSubtype = (IType)ipsSrcFile.getIpsObject();
             if (potentialSubtype.getSupertype().equals(getOriginalQualifiedName())) {
                 potentialSubtype.setSupertype(getNewQualifiedName(targetIpsPackageFragment, newName));
-                addModifiedSrcFile(ipsSrcFile);
             }
         }
     }
 
     /**
-     * Adds the given <tt>IIpsSrcFile</tt> to the list of the modified source files managed by the
+     * Adds the given <tt>IIpsSrcFile</tt> to the list of source files managed by the
      * <tt>IIpsRefactoringProcessor</tt>.
      * <p>
-     * This operation assures that the given source file will not be added to the list of modified
-     * source files in case it is the source file of the <tt>IType</tt> to be refactored. This
-     * source file will be deleted after the refactoring and it would lead to an exception if it
-     * would be saved.
+     * This operation assures that the given source file will not be added in case it is the source
+     * file of the <tt>IType</tt> to be refactored. This source file will be deleted after the
+     * refactoring and it would lead to an exception if it would be saved.
      */
-    private void addModifiedSrcFile(IIpsSrcFile ipsSrcFile) {
+    private void addIpsSrcFile(IIpsSrcFile ipsSrcFile) {
         if (type.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
         }
-        refactoringProcessor.addModifiedSrcFile(ipsSrcFile);
+        refactoringProcessor.addIpsSrcFile(ipsSrcFile);
     }
 
     /**

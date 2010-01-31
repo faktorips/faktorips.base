@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -38,15 +39,6 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * This is the abstract base class for all Faktor-IPS refactorings.
- * <p>
- * Subclasses must use the method <tt>addModifiedSrcFile(IIpsSrcFile)</tt> in order to register all
- * modified <tt>IIpsSrcFile</tt>s. All registered modified <tt>IIpsSrcFile</tt>s will be saved at
- * the end of the refactoring.
- * <p>
- * The method <tt>addValidationMessagesToStatus(MessageList, RefactoringStatus)</tt> can be used to
- * transfer the common Faktor-IPS validation messages to a <tt>RefactoringStatus</tt> used by the
- * refactoring API. If certain validation message codes shall be ignored during this process
- * subclasses may access a set containing ignored message codes.
  * 
  * @see ProcessorBasedRefactoring
  * 
@@ -57,8 +49,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Set containing all <tt>IIpsSrcFile</tt>s that have been modified by the refactoring. */
-    private final Set<IIpsSrcFile> modifiedSrcFiles;
+    /** Set containing all <tt>IIpsSrcFile</tt>s that are modified by the refactoring. */
+    private final Set<IIpsSrcFile> ipsSrcFiles;
 
     /** A set containing all message codes that will be ignored during final condition checking. */
     private final Set<String> ignoredValidationMessageCodes;
@@ -73,7 +65,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     protected IpsRefactoringProcessor(IIpsElement ipsElement) {
         super();
         this.ipsElement = ipsElement;
-        modifiedSrcFiles = new HashSet<IIpsSrcFile>();
+        ipsSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();
     }
 
@@ -119,7 +111,21 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws CoreException, OperationCanceledException {
 
-        RefactoringStatus status = validateUserInput(pm);
+        RefactoringStatus status = new RefactoringStatus();
+        status.merge(validateUserInput(pm));
+
+        addIpsSrcFiles();
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            if (!(ipsSrcFile.getCorrespondingResource().isSynchronized(IResource.DEPTH_ZERO))) {
+                status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
+                        .getCorrespondingResource().getFullPath()));
+            }
+        }
+
+        if (!(status.isOK())) {
+            return status;
+        }
+
         checkFinalConditionsThis(status, pm, context);
         return status;
     }
@@ -234,25 +240,35 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
 
     /** Saves all modified <tt>IIpsSrcFile</tt>s. */
     private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
-        for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             ipsSrcFile.save(true, pm);
         }
     }
 
     /**
-     * Registers the given <tt>IIpsSrcFile</tt> as modified source file so it saved at the end of
-     * the refactoring.
+     * Subclass implementation responsible for adding all <tt>IIpsSrcFile</tt>s touched by this
+     * refactoring.
+     * 
+     * @see #addIpsSrcFile(IIpsSrcFile)
+     * 
+     * @throws CoreException May be thrown at any time by this method.
+     */
+    protected abstract void addIpsSrcFiles() throws CoreException;
+
+    /**
+     * Adds the given <tt>IIpsSrcFile</tt> to this refactoring. Added source files will be processed
+     * and saved.
      * <p>
      * If the provided <tt>IIpsSrcFile</tt> is already registered as modified source file, nothing
      * will happen.
      * 
-     * @param ipsSrcFile The <tt>IIpsSrcFile</tt> to register as modified.
+     * @param ipsSrcFile The <tt>IIpsSrcFile</tt> to register.
      * 
      * @throws NullPointerException If <tt>ipsSrcFile</tt> is <tt>null</tt>.
      */
-    protected final void addModifiedSrcFile(IIpsSrcFile ipsSrcFile) {
+    protected final void addIpsSrcFile(IIpsSrcFile ipsSrcFile) {
         ArgumentCheck.notNull(ipsSrcFile);
-        modifiedSrcFiles.add(ipsSrcFile);
+        ipsSrcFiles.add(ipsSrcFile);
     }
 
     /** Returns the <tt>IIpsProject</tt> the <tt>IIpsElement</tt> to be refactored belongs to. */
