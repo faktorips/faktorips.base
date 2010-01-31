@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -75,25 +76,12 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
     private final class RenameParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected void createChangeThis(IJavaElement originalJavaElement,
-                IJavaElement newJavaElement,
-                IProgressMonitor pm) throws OperationCanceledException, CoreException {
-
-            renameJavaElement(originalJavaElement, newJavaElement.getElementName(), getArguments()
-                    .getUpdateReferences(), pm);
-        }
-
-        /**
-         * Renames the given <tt>IJavaElement</tt> to the given new name by calling the appropriate
-         * JDT refactoring.
-         */
-        private void renameJavaElement(IJavaElement javaElement,
-                String newName,
-                boolean updateReferences,
-                final IProgressMonitor pm) throws OperationCanceledException, CoreException {
+        protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+                IJavaElement targetJavaElement,
+                RefactoringStatus status) throws CoreException {
 
             String javaRefactoringContributionId;
-            switch (javaElement.getElementType()) {
+            switch (originalJavaElement.getElementType()) {
                 case IJavaElement.FIELD:
                     javaRefactoringContributionId = IJavaRefactorings.RENAME_FIELD;
                     break;
@@ -110,26 +98,25 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
             RefactoringContribution contribution = RefactoringCore
                     .getRefactoringContribution(javaRefactoringContributionId);
             RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
-            descriptor.setJavaElement(javaElement);
-            descriptor.setNewName(newName);
-            descriptor.setUpdateReferences(updateReferences);
-
-            performRefactoring(descriptor, pm);
+            descriptor.setJavaElement(originalJavaElement);
+            descriptor.setNewName(targetJavaElement.getElementName());
+            descriptor.setUpdateReferences(getArguments().getUpdateReferences());
+            return descriptor.createRefactoring(status);
         }
 
         @Override
-        protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             if (ipsElement instanceof IAttribute) {
                 initNewJavaElements((IAttribute)ipsElement, builderSet);
 
             } else if (ipsElement instanceof IPolicyCmptType) {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initNewJavaElements(policyCmptType, policyCmptType.getIpsPackageFragment(),
-                        getArguments().getNewName(), builderSet);
+                initTargetJavaElements(policyCmptType, policyCmptType.getIpsPackageFragment(), getArguments()
+                        .getNewName(), builderSet);
 
             } else if (ipsElement instanceof IProductCmptType) {
                 IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initNewJavaElements(productCmptType, productCmptType.getIpsPackageFragment(), getArguments()
+                initTargetJavaElements(productCmptType, productCmptType.getIpsPackageFragment(), getArguments()
                         .getNewName(), builderSet);
 
             } else {
@@ -146,7 +133,7 @@ public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactori
         private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
             String oldName = attribute.getName();
             attribute.setName(getArguments().getNewName());
-            setNewJavaElements(builderSet.getGeneratedJavaElements(attribute));
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(attribute));
             attribute.setName(oldName);
         }
 

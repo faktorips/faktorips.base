@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.MoveDescriptor;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -80,46 +80,38 @@ public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring
     private final class MoveParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected void createChangeThis(IJavaElement originalJavaElement,
-                IJavaElement newJavaElement,
-                IProgressMonitor pm) throws CoreException, OperationCanceledException {
+        protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+                IJavaElement targetJavaElement,
+                RefactoringStatus status) throws CoreException {
 
-            if (originalJavaElement.getElementType() == IJavaElement.TYPE
-                    && newJavaElement.getElementType() == IJavaElement.TYPE) {
-
-                moveJavaElement((IType)originalJavaElement, ((IType)newJavaElement).getPackageFragment(), pm);
+            if (!(originalJavaElement instanceof IType && targetJavaElement instanceof IType)) {
+                return null;
             }
-        }
 
-        /**
-         * Moves the given Java <tt>IType</tt> to the given destination Java
-         * <tt>IPackageFragment</tt>.
-         */
-        private void moveJavaElement(IType javaType, IPackageFragment targetPackageFragment, final IProgressMonitor pm)
-                throws CoreException {
+            IType originalJavaType = (IType)originalJavaElement;
+            IType targetJavaType = (IType)targetJavaElement;
 
             RefactoringContribution moveContribution = RefactoringCore
                     .getRefactoringContribution(IJavaRefactorings.MOVE);
-            MoveDescriptor moveDescriptor = (MoveDescriptor)moveContribution.createDescriptor();
-            moveDescriptor.setMoveResources(new IFile[0], new IFolder[0], new ICompilationUnit[] { javaType
+            MoveDescriptor descriptor = (MoveDescriptor)moveContribution.createDescriptor();
+            descriptor.setMoveResources(new IFile[0], new IFolder[0], new ICompilationUnit[] { originalJavaType
                     .getCompilationUnit() });
-            moveDescriptor.setDestination(targetPackageFragment);
-            moveDescriptor.setProject(targetPackageFragment.getJavaProject().getElementName());
-            moveDescriptor.setUpdateReferences(getArguments().getUpdateReferences());
-
-            performRefactoring(moveDescriptor, pm);
+            descriptor.setDestination(targetJavaType.getPackageFragment());
+            descriptor.setProject(targetJavaType.getJavaProject().getElementName());
+            descriptor.setUpdateReferences(getArguments().getUpdateReferences());
+            return descriptor.createRefactoring(status);
         }
 
         @Override
-        protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             if (ipsElement instanceof IPolicyCmptType) {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initNewJavaElements(policyCmptType, (IIpsPackageFragment)getArguments().getDestination(),
+                initTargetJavaElements(policyCmptType, (IIpsPackageFragment)getArguments().getDestination(),
                         policyCmptType.getName(), builderSet);
 
             } else if (ipsElement instanceof IProductCmptType) {
                 IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initNewJavaElements(productCmptType, (IIpsPackageFragment)getArguments().getDestination(),
+                initTargetJavaElements(productCmptType, (IIpsPackageFragment)getArguments().getDestination(),
                         productCmptType.getName(), builderSet);
 
             } else {

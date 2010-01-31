@@ -14,16 +14,14 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.text.edits.InsertEdit;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
@@ -44,20 +42,12 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
     public void testInitializeNonIpsElement() {
         assertFalse(refactoringHelper.initialize(new Object()));
-        assertFalse(refactoringHelper.initializeNewJavaElementsCalled);
+        assertFalse(refactoringHelper.initializeTargetJavaElementsCalled);
     }
 
     public void testInitializeIpsElement() {
-        assertNull(refactoringHelper.getGeneratedJavaElementsTest());
         assertTrue(refactoringHelper.initialize(policyCmptType));
-        assertNotNull(refactoringHelper.getGeneratedJavaElementsTest());
-        assertTrue(refactoringHelper.initializeNewJavaElementsCalled);
-    }
-
-    public void testGetNewJavaElements() {
-        assertNull(refactoringHelper.getNewJavaElementsTest());
-        refactoringHelper.initialize(policyCmptType);
-        assertNotNull(refactoringHelper.getNewJavaElementsTest());
+        assertTrue(refactoringHelper.initializeTargetJavaElementsCalled);
     }
 
     public void testCheckConditions() throws CoreException, IOException {
@@ -68,54 +58,35 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
         assertFalse(status.hasFatalError());
         assertEquals(0, status.getEntries().length);
-
-        // Cause compile errors.
-        policyClass.getCompilationUnit().applyTextEdit(new InsertEdit(0, "Hello"), null);
-        policyClass.getCompilationUnit().makeConsistent(null);
-
-        status = refactoringHelper.checkConditions(new NullProgressMonitor(), new CheckConditionsContext());
-        assertTrue(status.hasFatalError());
     }
 
     public void testCreateChange() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
         performFullBuild();
         assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
-        assertTrue(refactoringHelper.createChangeThisCalled);
     }
 
     public void testCreateChangeJavaElementsNotExisting() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
         assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
-        assertFalse(refactoringHelper.createChangeThisCalled);
     }
 
     private static class MockParticipantHelper extends RefactoringParticipantHelper {
 
-        private boolean initializeNewJavaElementsCalled;
-
-        private boolean createChangeThisCalled;
+        private boolean initializeTargetJavaElementsCalled;
 
         @Override
-        protected void createChangeThis(IJavaElement originalJavaElement,
-                IJavaElement newJavaElement,
-                IProgressMonitor pm) throws CoreException, OperationCanceledException {
-            createChangeThisCalled = true;
+        protected Refactoring createJdtRefactoring(IJavaElement generatedJavaElement,
+                IJavaElement targetJavaElement,
+                RefactoringStatus status) {
+            return null;
         }
 
         @Override
-        protected boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            initializeNewJavaElementsCalled = true;
-            setNewJavaElements(builderSet.getGeneratedJavaElements(ipsElement));
+        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            initializeTargetJavaElementsCalled = true;
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(ipsElement));
             return true;
-        }
-
-        private List<IJavaElement> getGeneratedJavaElementsTest() {
-            return getGeneratedJavaElements();
-        }
-
-        private List<IJavaElement> getNewJavaElementsTest() {
-            return getNewJavaElements();
         }
 
     }

@@ -147,10 +147,9 @@ public final class RenameTypeMoveTypeHelper {
         MessageList validationMessageList = copiedType.validate(copiedType.getIpsProject());
         refactoringProcessor.addValidationMessagesToStatus(validationMessageList, status);
 
-        if (status.getEntries().length > 0) {
-            copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
-            copiedIpsSrcFile = null;
-        }
+        // Delete the copy again in every case because participants condition checking may fail.
+        copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
+        copiedIpsSrcFile = null;
     }
 
     /**

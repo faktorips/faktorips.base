@@ -13,28 +13,20 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -59,57 +51,43 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class RefactoringParticipantHelper {
 
     /**
-     * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be
-     * refactored.
+     * List containing the <tt>IJavaElement</tt>s generated originally for the <tt>IIpsElement</tt>
+     * to be refactored.
      */
-    private List<IJavaElement> generatedJavaElements;
+    private List<IJavaElement> originalJavaElements;
 
     /**
      * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be
      * refactored as they will be after the refactoring. This information is needed to be able to
      * provide the JDT refactorings with the correct new names for the <tt>IJavaElement</tt>s.
      */
-    private List<IJavaElement> newJavaElements;
+    private List<IJavaElement> targetJavaElements;
 
     /**
-     * Checks for errors in <tt>ICompilationUnit</tt>s of the generated <tt>IJavaElement</tt>s.
+     * Checks the conditions of the JDT refactorings to be performed.
      * 
      * @see RefactoringParticipant#checkConditions(IProgressMonitor, CheckConditionsContext)
      */
     public final RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        // List to remember broken compilation units.
-        List<ICompilationUnit> invalidCompilationUnits = new LinkedList<ICompilationUnit>();
-
         RefactoringStatus status = new RefactoringStatus();
-        for (IJavaElement javaElement : generatedJavaElements) {
-            IType type = null;
-            if (javaElement instanceof IType) {
-                type = (IType)javaElement;
-            } else if (javaElement instanceof IField) {
-                IField field = (IField)javaElement;
-                type = (IType)field.getParent();
-            } else if (javaElement instanceof IMethod) {
-                IMethod method = (IMethod)javaElement;
-                type = (IType)method.getParent();
-            }
 
-            // Only report each broken compilation unit once.
-            if (invalidCompilationUnits.contains(type.getCompilationUnit())) {
+        for (int i = 0; i < originalJavaElements.size(); i++) {
+            IJavaElement javaElement = originalJavaElements.get(i);
+            if (!(javaElement.exists())) {
                 continue;
             }
 
             try {
-                if (type.getCompilationUnit().exists()) {
-                    if (!(type.getCompilationUnit().isStructureKnown())) {
-                        invalidCompilationUnits.add(type.getCompilationUnit());
-                        status.addFatalError(NLS.bind(Messages.RefactoringParticipantHelper_errorSyntaxErrors, type
-                                .getCompilationUnit().getElementName()));
-                    }
+                Refactoring jdtRefactoring = createJdtRefactoring(javaElement, targetJavaElements.get(i), status);
+                if (jdtRefactoring != null) {
+                    status.merge(jdtRefactoring.checkAllConditions(pm));
                 }
-            } catch (JavaModelException e) {
-                throw new RuntimeException(e);
+            } catch (CoreException e) {
+                RefactoringStatus errorStatus = new RefactoringStatus();
+                errorStatus.addFatalError(e.getLocalizedMessage());
+                return errorStatus;
             }
         }
 
@@ -123,8 +101,8 @@ public abstract class RefactoringParticipantHelper {
      * @see RefactoringParticipant#createChange(IProgressMonitor)
      */
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        for (int i = 0; i < generatedJavaElements.size(); i++) {
-            IJavaElement javaElement = generatedJavaElements.get(i);
+        for (int i = 0; i < originalJavaElements.size(); i++) {
+            IJavaElement javaElement = originalJavaElements.get(i);
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -139,44 +117,26 @@ public abstract class RefactoringParticipantHelper {
                 continue;
             }
 
-            createChangeThis(javaElement, newJavaElements.get(i), pm);
+            /*
+             * We can't use the refactoring instances created during condition checking because the
+             * Java references are build upon creation of the refactoring instance. These might
+             * become invalid when refactorings are performed.
+             */
+            Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElements.get(i), targetJavaElements.get(i),
+                    new RefactoringStatus());
+            if (jdtRefactoring != null) {
+                performRefactoring(jdtRefactoring, pm);
+            }
         }
 
         return null;
     }
 
-    /**
-     * Subclass implementation responsible for change processing the given <tt>IJavaElement</tt>.
-     * 
-     * @param originalJavaElement The <tt>IJavaElement</tt> to be refactored.
-     * @param newJavaElement The <tt>IJavaElement</tt> as it should be after the refactoring.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     */
-    protected abstract void createChangeThis(IJavaElement originalJavaElement,
-            IJavaElement newJavaElement,
-            IProgressMonitor pm) throws CoreException, OperationCanceledException;
-
-    /**
-     * Executes the refactoring described by the provided <tt>RefactoringDescriptor</tt>.
-     * 
-     * @param refactoringDescriptor The <tt>RefactoringDescriptor</tt> describing the refactoring to
-     *            be performed.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
-     */
-    protected final void performRefactoring(RefactoringDescriptor refactoringDescriptor, final IProgressMonitor pm)
-            throws CoreException {
-
-        ArgumentCheck.notNull(refactoringDescriptor, pm);
-
-        RefactoringStatus status = new RefactoringStatus();
-        Refactoring refactoring = refactoringDescriptor.createRefactoring(status);
-        if (status.isOK()) {
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
-                    CheckConditionsOperation.ALL_CONDITIONS);
-            ResourcesPlugin.getWorkspace().run(operation, pm);
-        }
+    /** Executes the refactoring described by the provided <tt>RefactoringDescriptor</tt>. */
+    private void performRefactoring(Refactoring refactoring, final IProgressMonitor pm) throws CoreException {
+        PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
+                CheckConditionsOperation.ALL_CONDITIONS);
+        ResourcesPlugin.getWorkspace().run(operation, pm);
     }
 
     /**
@@ -197,9 +157,9 @@ public abstract class RefactoringParticipantHelper {
 
         IIpsElement ipsElement = (IIpsElement)element;
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
-        generatedJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
 
-        return initializeNewJavaElements(ipsElement, builderSet);
+        originalJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
+        return initializeTargetJavaElements(ipsElement, builderSet);
     }
 
     /**
@@ -210,7 +170,7 @@ public abstract class RefactoringParticipantHelper {
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
      *            elements.
      */
-    protected abstract boolean initializeNewJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
+    protected abstract boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
 
     /**
      * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IPolicyCmptType</tt>
@@ -225,7 +185,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void initNewJavaElements(IPolicyCmptType policyCmptType,
+    protected final void initTargetJavaElements(IPolicyCmptType policyCmptType,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             StandardBuilderSet builderSet) {
@@ -251,7 +211,7 @@ public abstract class RefactoringParticipantHelper {
         copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
         copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
 
-        newJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
+        targetJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
     }
 
     /**
@@ -267,7 +227,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void initNewJavaElements(IProductCmptType productCmptType,
+    protected final void initTargetJavaElements(IProductCmptType productCmptType,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             StandardBuilderSet builderSet) {
@@ -293,36 +253,36 @@ public abstract class RefactoringParticipantHelper {
         copiedProductCmptType.setPolicyCmptType(productCmptType.getPolicyCmptType());
         copiedProductCmptType.setSupertype(productCmptType.getSupertype());
 
-        newJavaElements = builderSet.getGeneratedJavaElements(copiedProductCmptType);
-    }
-
-    /**
-     * Provides access to the list of <tt>IJavaElement</tt>s that will be generated for the
-     * <tt>IIpsElement</tt> after the refactoring has finished.
-     */
-    protected final List<IJavaElement> getNewJavaElements() {
-        return newJavaElements;
+        targetJavaElements = builderSet.getGeneratedJavaElements(copiedProductCmptType);
     }
 
     /**
      * Allows subclasses to set the list of <tt>IJavaElement</tt>s that will be generated for the
      * <tt>IIpsElement</tt> after the refactoring has finished.
      * 
-     * @param newJavaElements The list of <tt>IJavaElement</tt>s.
+     * @param targetJavaElements The list of <tt>IJavaElement</tt>s.
      * 
-     * @throws NullPointerException If <tt>newJavaElements</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <tt>targetJavaElements</tt> is <tt>null</tt>.
      */
-    protected final void setNewJavaElements(List<IJavaElement> newJavaElements) {
+    protected final void setTargetJavaElements(List<IJavaElement> newJavaElements) {
         ArgumentCheck.notNull(newJavaElements);
-        this.newJavaElements = newJavaElements;
+        targetJavaElements = newJavaElements;
     }
 
     /**
-     * Provides access to the list <tt>IJavaElement</tt> generated for the provided
-     * <tt>IIpsElement</tt>.
+     * Subclass implementation that is responsible for returning an appropriate JDT refactoring for
+     * the given Java element. May return <tt>null</tt> if no refactoring has to be performed.
+     * 
+     * @param originalJavaElement The original Java element as it is before the refactoring is
+     *            performed.
+     * @param targetJavaElement The target Java element as it shall be after the refactoring was
+     *            performed.
+     * @param status A <tt>RefactoringStatus</tt> to report any problems to.
+     * 
+     * @throws CoreException If an error occurs during creation of the refactoring instance.
      */
-    protected final List<IJavaElement> getGeneratedJavaElements() {
-        return generatedJavaElements;
-    }
+    protected abstract Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+            IJavaElement targetJavaElement,
+            RefactoringStatus status) throws CoreException;
 
 }
