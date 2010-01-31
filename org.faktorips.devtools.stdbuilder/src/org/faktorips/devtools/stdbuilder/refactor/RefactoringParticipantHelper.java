@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -25,6 +26,7 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
@@ -91,7 +93,18 @@ public abstract class RefactoringParticipantHelper {
             }
         }
 
-        return status;
+        // Assure that every message is only contained and thus shown once.
+        RefactoringStatus finalStatus = new RefactoringStatus();
+        List<String> messages = new ArrayList<String>(status.getEntries().length);
+        for (RefactoringStatusEntry entry : status.getEntries()) {
+            if (messages.contains(entry.getMessage())) {
+                continue;
+            }
+            messages.add(entry.getMessage());
+            finalStatus.addEntry(entry);
+        }
+
+        return finalStatus;
     }
 
     /**
