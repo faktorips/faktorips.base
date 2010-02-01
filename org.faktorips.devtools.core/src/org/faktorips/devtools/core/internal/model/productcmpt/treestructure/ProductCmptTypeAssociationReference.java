@@ -21,12 +21,12 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
- * A reference to a <code>IProductCmptTypeRelation</code>. Used by <code>ProductCmptStructure</code>
+ * A reference to a {@link IProductCmptTypeAssociation}. Used by <code>ProductCmptStructure</code>
  * .
  * 
  * @author Thorsten Guenther
  */
-public class ProductCmptTypeRelationReference extends ProductCmptStructureReference implements
+public class ProductCmptTypeAssociationReference extends ProductCmptStructureReference implements
         IProductCmptTypeRelationReference {
 
     private IProductCmptTypeAssociation association;
@@ -36,7 +36,7 @@ public class ProductCmptTypeRelationReference extends ProductCmptStructureRefere
      * @param parent
      * @throws CycleInProductStructureException
      */
-    public ProductCmptTypeRelationReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
+    public ProductCmptTypeAssociationReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
             IProductCmptTypeAssociation association) throws CycleInProductStructureException {
         super(structure, parent);
         this.association = association;

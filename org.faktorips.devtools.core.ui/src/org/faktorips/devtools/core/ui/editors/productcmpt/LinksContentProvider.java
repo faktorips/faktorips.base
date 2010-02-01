@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -77,7 +77,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         ProductCmptReference parent = new ProductCmptReference(structure, null, productCmpGen.getProductCmpt(), null);
         for (IAssociation association : type.findAllNotDerivedAssociations()) {
             result
-                    .add(new ProductCmptTypeRelationReference(structure, parent,
+                    .add(new ProductCmptTypeAssociationReference(structure, parent,
                             (IProductCmptTypeAssociation)association));
         }
         return result.toArray(new IProductCmptTypeRelationReference[result.size()]);

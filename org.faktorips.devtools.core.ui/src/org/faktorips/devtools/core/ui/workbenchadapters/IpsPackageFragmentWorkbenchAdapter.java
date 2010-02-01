@@ -13,12 +13,14 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.Messages;
 
 public class IpsPackageFragmentWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
@@ -43,6 +45,17 @@ public class IpsPackageFragmentWorkbenchAdapter extends IpsElementWorkbenchAdapt
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
         return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsPackageFragment.gif", true); //$NON-NLS-1$
+    }
+
+    @Override
+    protected String getLabel(IIpsElement ipsElement) {
+        if (ipsElement instanceof IIpsPackageFragment) {
+            IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+            if (StringUtils.isEmpty(packageFragment.getName())) {
+                return Messages.DefaultLabelProvider_labelDefaultPackage;
+            }
+        }
+        return super.getLabel(ipsElement);
     }
 
 }

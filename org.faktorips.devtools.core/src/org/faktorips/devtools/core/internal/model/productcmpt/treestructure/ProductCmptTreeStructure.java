@@ -263,7 +263,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 }
                 for (Iterator<IAssociation> iter = associations.iterator(); iter.hasNext();) {
                     IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iter.next();
-                    ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, association);
+                    ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent, association);
                     List<IProductCmptLink> linksList = mapping.get(association.getName());
                     if (linksList == null) {
                         linksList = new ArrayList<IProductCmptLink>();
@@ -321,7 +321,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      */
     public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
         if (parent instanceof IProductCmptTypeRelationReference) {
-            IProductCmptStructureReference[] children = ((ProductCmptTypeRelationReference)parent).getChildren();
+            IProductCmptStructureReference[] children = ((ProductCmptTypeAssociationReference)parent).getChildren();
             IProductCmptReference[] result = new IProductCmptReference[children.length];
             System.arraycopy(children, 0, result, 0, children.length);
             return result;

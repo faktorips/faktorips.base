@@ -105,13 +105,13 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        return getWrappedIpsSrcFile() == other.getWrappedIpsSrcFile() && getStructure() == other.getStructure();
+        return getWrapped() == other.getWrapped() && getStructure() == other.getStructure();
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + getWrappedIpsSrcFile().hashCode();
+        hash = 31 * hash + getWrapped().hashCode();
         return 31 * hash + getStructure().hashCode();
     }
 }

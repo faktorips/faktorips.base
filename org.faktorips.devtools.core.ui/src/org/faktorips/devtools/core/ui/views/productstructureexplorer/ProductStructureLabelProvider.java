@@ -133,7 +133,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
      */
     private String getRolenameLabel(IProductCmptReference productCmptReference) {
         IProductCmptStructureReference parent = productCmptReference.getParent();
-        // get the parent of the reference, should be a ProductCmptTypeRelationReference
+        // get the parent of the reference, should be a ProductCmptTypeAssociationReference
         if (parent instanceof IProductCmptTypeRelationReference) {
             IProductCmptTypeRelationReference associationReference = (IProductCmptTypeRelationReference)parent;
             // for associations always show the rolename
@@ -141,7 +141,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 return getRolenameLabel(associationReference.getRelation());
             }
             parent = associationReference.getParent();
-            // The parent of the ProductCmptTypeRelationReference should be a ProductCmptReference
+            // The parent of the ProductCmptTypeAssociationReference should be a ProductCmptReference
             if (parent instanceof IProductCmptReference) {
                 IProductCmptReference parentCmptReference = (IProductCmptReference)parent;
                 // getting all associations of the parent ProductCmptReference

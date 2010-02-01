@@ -94,6 +94,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             List<IProductCmptReference> list = new ArrayList<IProductCmptReference>(Arrays.asList(structure
                     .getChildProductCmptReferences((IProductCmptReference)parentElement)));
             if (!showAssociatedCmpts) {
+                // filter association nodes
                 for (Iterator<IProductCmptReference> iterator = list.iterator(); iterator.hasNext();) {
                     IProductCmptReference aProductCmptReference = iterator.next();
                     if (aProductCmptReference.getParent() instanceof IProductCmptTypeRelationReference) {
@@ -111,6 +112,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             List<IProductCmptTypeRelationReference> list = new ArrayList<IProductCmptTypeRelationReference>(Arrays
                     .asList(structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement)));
             if (!showAssociatedCmpts) {
+                // filter association nodes
                 for (Iterator<IProductCmptTypeRelationReference> iterator = list.iterator(); iterator.hasNext();) {
                     IProductCmptTypeRelationReference aRelationReference = iterator.next();
                     if (aRelationReference.getRelation().isAssoziation()) {

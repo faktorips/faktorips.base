@@ -76,7 +76,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -133,7 +133,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private static final int OPTION_ASSOCIATIONED_CMPTS = 1 << 3;
 
-    private TreeViewer tree;
+    private TreeViewer treeViewer;
     private IIpsSrcFile file;
     private IProductCmpt productComponent;
     // TODO use LinkLabelProvider to get correct message cue
@@ -156,7 +156,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private ProductStructureContentProvider contentProvider;
 
     /*
-     * Class to handle double clicks. Doubleclicks of ProductCmptTypeRelationReference will be
+     * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
      * ignored.
      */
     private class ProdStructExplTreeDoubleClickListener extends TreeViewerDoubleclickListener {
@@ -169,7 +169,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
          */
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeRelationReference) {
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeAssociationReference) {
                 return;
             }
             super.doubleClick(event);
@@ -312,10 +312,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private Action createShowAssociatedCmptsAction() {
         return new Action(Messages.ProductStructureExplorer_menuShowAssociatedCmpts_name, IAction.AS_CHECK_BOX) {
-            // @Override
-            // public ImageDescriptor getImageDescriptor() {
-            //                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
-            // }
+
+            // XXX image for showAssociation-Action
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
+            }
 
             @Override
             public void run() {
@@ -358,7 +360,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("CollapseAll.gif")) {//$NON-NLS-1$
                     @Override
                     public void run() {
-                        tree.collapseAll();
+                        treeViewer.collapseAll();
                     }
 
                     @Override
@@ -371,7 +373,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("ExpandAll.gif")) {//$NON-NLS-1$
                     @Override
                     public void run() {
-                        tree.expandAll();
+                        treeViewer.expandAll();
                     }
 
                     @Override
@@ -385,8 +387,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     @Override
                     public void run() {
                         productComponent = null;
-                        tree.setInput(null);
-                        tree.refresh();
+                        treeViewer.setInput(null);
+                        treeViewer.refresh();
                         showEmptyMessage();
                     }
 
@@ -492,12 +494,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
         });
 
-        tree = new TreeViewer(viewerPanel);
-        tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        treeViewer = new TreeViewer(viewerPanel);
+        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final LinkDropListener dropListener = new LinkDropListener(tree);
+        final LinkDropListener dropListener = new LinkDropListener(treeViewer);
         dropListener.setAutoSave(true);
-        tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
+        treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
                 dropListener);
 
         contentProvider = new ProductStructureContentProvider(false);
@@ -505,7 +507,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         contentProvider.setShowAssociatedCmpts(showAssociatedCmpts);
         contentProvider.setShowTableContents(showReferencedTable);
 
-        tree.setContentProvider(contentProvider);
+        treeViewer.setContentProvider(contentProvider);
 
         labelProvider = new ProductStructureLabelProvider();
         labelProvider.setShowAssociationNodes(showAssociationNode);
@@ -513,35 +515,35 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(labelProvider,
                 decoManager.getLabelDecorator(), new DecorationContext());
-        tree.setLabelProvider(decoratedLabelProvider);
+        treeViewer.setLabelProvider(decoratedLabelProvider);
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
-        tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
+        treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
 
         // XXX Dragging is not allowed yet
-        // tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new
+        // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new
         // IpsElementDragListener(
-        // tree));
+        // treeViewer));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
-        final IAction openAction = new OpenEditorAction(tree);
+        final IAction openAction = new OpenEditorAction(treeViewer);
         menumanager.add(openAction);
         menumanager.add(new Separator());
-        final IAction addAction = new AddLinkAction(tree);
+        final IAction addAction = new AddLinkAction(treeViewer);
         // TODO enable/disable
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
         menumanager.add(new Separator());
-        final IAction findReferenceAction = new FindProductReferencesAction(tree);
+        final IAction findReferenceAction = new FindProductReferencesAction(treeViewer);
         menumanager.add(findReferenceAction);
-        final IAction showInstancesAction = new ShowInstanceAction(tree);
+        final IAction showInstancesAction = new ShowInstanceAction(treeViewer);
         menumanager.add(showInstancesAction);
 
-        tree.addSelectionChangedListener(new ISelectionChangedListener() {
+        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                Object selectedRef = getSelectedObjectFromSelection(tree.getSelection());
+                Object selectedRef = getSelectedObjectFromSelection(treeViewer.getSelection());
                 if (selectedRef instanceof IAdaptable) {
                     IAdaptable adaptableSelectedObject = (IAdaptable)selectedRef;
                     IIpsSrcFile selectedSrcFile = (IIpsSrcFile)adaptableSelectedObject.getAdapter(IIpsSrcFile.class);
@@ -554,9 +556,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
         });
 
-        Menu menu = menumanager.createContextMenu(tree.getControl());
-        tree.getControl().setMenu(menu);
-        getSite().setSelectionProvider(tree);
+        Menu menu = menumanager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(menu);
+        getSite().setSelectionProvider(treeViewer);
 
         showEmptyMessage();
 
@@ -568,7 +570,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private void hookGlobalActions() {
         IActionBars bars = getViewSite().getActionBars();
-        bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), new ReferenceDeleteAction(tree));
+        bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), new ReferenceDeleteAction(treeViewer));
     }
 
     private boolean isReferenceAndOpenActionSupportedForSelection(Object selectedRef) {
@@ -582,7 +584,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         if (!(selection instanceof IStructuredSelection)) {
             return null;
         }
-        Object selectedRef = ((IStructuredSelection)tree.getSelection()).getFirstElement();
+        Object selectedRef = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
         return selectedRef;
     }
 
@@ -629,7 +631,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         file = product.getIpsSrcFile();
         adjustmentDateViewer.setInput(product);
         adjustmentDateViewer.setSelection(0);
-        // setting the adjustment date to null updates the tree content with latest adjustment
+        // setting the adjustment date to null updates the treeViewer content with latest adjustment
         // until the valid adjustment dates are collected
         setAdjustmentDate(null);
     }
@@ -657,7 +659,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void refresh() {
-        final Control ctrl = tree.getControl();
+        final Control ctrl = treeViewer.getControl();
 
         if (ctrl == null || ctrl.isDisposed()) {
             return;
@@ -666,8 +668,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         try {
             Runnable runnable = new Runnable() {
                 public void run() {
-                    if (!tree.getControl().isDisposed()) {
-                        Object input = tree.getInput();
+                    if (!treeViewer.getControl().isDisposed()) {
+                        Object input = treeViewer.getInput();
                         if (input instanceof IProductCmptTreeStructure) {
                             IProductCmptTreeStructure structure = (IProductCmptTreeStructure)input;
                             try {
@@ -677,7 +679,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                                 return;
                             }
                             // showTreeInput(structure);
-                            tree.refresh();
+                            treeViewer.refresh();
                         } else {
                             showEmptyMessage();
                         }
@@ -696,13 +698,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * {@inheritDoc}
      */
     public ShowInContext getShowInContext() {
-        ShowInContext context = new ShowInContext(null, tree.getSelection());
+        ShowInContext context = new ShowInContext(null, treeViewer.getSelection());
         return context;
     }
 
     private void handleCircle(CycleInProductStructureException e) {
         IpsPlugin.log(e);
-        ((GridData)tree.getTree().getLayoutData()).exclude = true;
+        ((GridData)treeViewer.getTree().getLayoutData()).exclude = true;
         String msg = Messages.ProductStructureExplorer_labelCircleRelation;
         IIpsElement[] cyclePath = e.getCyclePath();
         StringBuffer path = new StringBuffer();
@@ -795,8 +797,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         ((GridData)viewerPanel.getLayoutData()).exclude = false;
         viewerPanel.getParent().layout();
 
-        tree.setInput(input);
-        tree.expandToLevel(2);
+        treeViewer.setInput(input);
+        treeViewer.expandToLevel(2);
     }
 
     private void showEmptyMessage() {
