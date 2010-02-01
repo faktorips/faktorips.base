@@ -25,6 +25,10 @@ import java.util.GregorianCalendar;
  * subclasses which are references to product components or product component type associations. One
  * reference wraps one product component, but it is possible that more than one reference wraps the
  * same product component.
+ * <p/>
+ * It is also not possible to setup the structure for a special generation but for a concrete date.
+ * This is because the structure is built for a set of product components which may have different
+ * adjustment dates.
  * 
  * @author Thorsten Guenther
  */
