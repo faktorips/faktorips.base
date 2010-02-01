@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -69,9 +69,9 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
     }
 
-    private static IProductCmptTypeRelationReference[] getAssociationNodes(IProductCmptType type,
+    private static IProductCmptTypeAssociationReference[] getAssociationNodes(IProductCmptType type,
             IProductCmptGeneration productCmpGen) throws CoreException, CycleInProductStructureException {
-        List<IProductCmptTypeRelationReference> result = new ArrayList<IProductCmptTypeRelationReference>();
+        List<IProductCmptTypeAssociationReference> result = new ArrayList<IProductCmptTypeAssociationReference>();
         IProductCmptTreeStructure structure = new ProductCmptTreeStructure(productCmpGen.getProductCmpt(),
                 productCmpGen.getValidFrom(), productCmpGen.getIpsProject());
         ProductCmptReference parent = new ProductCmptReference(structure, null, productCmpGen.getProductCmpt(), null);
@@ -80,7 +80,7 @@ public class LinksContentProvider implements ITreeContentProvider {
                     .add(new ProductCmptTypeAssociationReference(structure, parent,
                             (IProductCmptTypeAssociation)association));
         }
-        return result.toArray(new IProductCmptTypeRelationReference[result.size()]);
+        return result.toArray(new IProductCmptTypeAssociationReference[result.size()]);
     }
 
     private String[] getAssociationNames(IProductCmptGeneration gen) {
@@ -113,18 +113,18 @@ public class LinksContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        if (!(parentElement instanceof IProductCmptTypeRelationReference) || generation == null) {
+        if (!(parentElement instanceof IProductCmptTypeAssociationReference) || generation == null) {
             return new Object[0];
         }
-        IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)parentElement;
-        return generation.getLinks(reference.getRelation().getName());
+        IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)parentElement;
+        return generation.getLinks(reference.getAssociation().getName());
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getParent(Object element) {
-        if (element instanceof IProductCmptTypeRelationReference || element instanceof String) {
+        if (element instanceof IProductCmptTypeAssociationReference || element instanceof String) {
             return generation;
         }
         if (element instanceof IProductCmptLink) {

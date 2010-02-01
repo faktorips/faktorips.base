@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * @author Thorsten Guenther
  */
 public class ProductCmptTypeAssociationReference extends ProductCmptStructureReference implements
-        IProductCmptTypeRelationReference {
+        IProductCmptTypeAssociationReference {
 
     private IProductCmptTypeAssociation association;
 
@@ -45,7 +45,7 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation getRelation() {
+    public IProductCmptTypeAssociation getAssociation() {
         return association;
     }
 

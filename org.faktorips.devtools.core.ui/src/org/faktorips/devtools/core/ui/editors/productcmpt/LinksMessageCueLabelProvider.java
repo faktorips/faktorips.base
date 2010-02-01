@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.util.StringUtil;
@@ -59,10 +59,10 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                 return super.getMessages(link);
             }
         }
-        if (element instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)element;
+        if (element instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)element;
             return generation.validate(generation.getIpsProject()).getMessagesFor(
-                    relationReference.getRelation().getName());
+                    relationReference.getAssociation().getName());
         }
         return super.getMessages(element);
     }
@@ -80,9 +80,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             if (element instanceof IProductCmptLink) {
                 IProductCmptLink rel = ((IProductCmptLink)element);
                 return StringUtil.unqualifiedName(rel.getTarget());
-            } else if (element instanceof IProductCmptTypeRelationReference) {
-                IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)element;
-                return reference.getRelation().getName();
+            } else if (element instanceof IProductCmptTypeAssociationReference) {
+                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)element;
+                return reference.getAssociation().getName();
             }
             return element.toString();
         }
@@ -108,9 +108,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                     IpsPlugin.log(e);
                 }
             }
-            if (element instanceof IProductCmptTypeRelationReference) {
-                IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)element;
-                return IpsUIPlugin.getImageHandling().getImage(reference.getRelation());
+            if (element instanceof IProductCmptTypeAssociationReference) {
+                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)element;
+                return IpsUIPlugin.getImageHandling().getImage(reference.getAssociation());
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
         }

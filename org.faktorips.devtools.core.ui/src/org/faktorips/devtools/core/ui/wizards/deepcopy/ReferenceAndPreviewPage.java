@@ -57,7 +57,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -306,8 +306,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
         private IIpsElement getWrapped(IProductCmptStructureReference in) {
             if (in instanceof IProductCmptReference) {
                 return ((IProductCmptReference)in).getProductCmpt();
-            } else if (in instanceof IProductCmptTypeRelationReference) {
-                return ((IProductCmptTypeRelationReference)in).getRelation();
+            } else if (in instanceof IProductCmptTypeAssociationReference) {
+                return ((IProductCmptTypeAssociationReference)in).getAssociation();
             } else if (in instanceof IProductCmptStructureTblUsageReference) {
                 return ((IProductCmptStructureTblUsageReference)in).getTableContentUsage();
             }
@@ -478,7 +478,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     if (isChecked(children[i])) {
                         return false;
                     }
-                } else if (children[i] instanceof IProductCmptTypeRelationReference) {
+                } else if (children[i] instanceof IProductCmptTypeAssociationReference) {
                     unchecked = unchecked && isUncheckedSubtree(structure.getChildProductCmptReferences(children[i]));
                 }
             }

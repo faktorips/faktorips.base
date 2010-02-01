@@ -21,11 +21,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptTypeRelationReference extends IProductCmptStructureReference {
+public interface IProductCmptTypeAssociationReference extends IProductCmptStructureReference {
 
     /**
      * Returns the <code>IProductCmptTypeAssociation</code> this reference refers to.
      */
-    public IProductCmptTypeAssociation getRelation();
+    public IProductCmptTypeAssociation getAssociation();
 
 }

@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
@@ -182,7 +182,7 @@ public abstract class IpsAction extends Action {
      * <code>null</code> is returned if this convention is violated.
      * <p>
      * If the given object is an <code>IProductCmptReference</code> the contained
-     * <code>IProductCmpt</code>, if it is an <code>IProductCmptTypeRelationReference</code> the
+     * <code>IProductCmpt</code>, if it is an <code>IProductCmptTypeAssociationReference</code> the
      * contained <code>IRelation</code>'s <code>IIpsObject</code> is returned.
      * <p>
      * If the given object is an <code>IProductCmptRelation</code> the action searches for the
@@ -215,8 +215,8 @@ public abstract class IpsAction extends Action {
         if (selected instanceof IProductCmptReference) {
             return ((IProductCmptReference)selected).getProductCmpt();
         }
-        if (selected instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)selected).getRelation().getIpsObject();
+        if (selected instanceof IProductCmptTypeAssociationReference) {
+            return ((IProductCmptTypeAssociationReference)selected).getAssociation().getIpsObject();
         }
         if (selected instanceof IProductCmptLink) {
             try {

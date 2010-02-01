@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 public class LinkDropListener extends ViewerDropAdapter {
@@ -90,7 +90,7 @@ public class LinkDropListener extends ViewerDropAdapter {
             return false;
         }
         if (movedCmptLink != null) {
-            if ((target instanceof IProductCmptLink || target instanceof IProductCmptTypeRelationReference)
+            if ((target instanceof IProductCmptLink || target instanceof IProductCmptTypeAssociationReference)
                     && (getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
                 boolean result = canMove(target);
                 setFeedbackEnabled(result);
@@ -150,9 +150,9 @@ public class LinkDropListener extends ViewerDropAdapter {
     }
 
     private boolean moveLink(Object target) {
-        if (target instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeRelationReference associationReference = (IProductCmptTypeRelationReference)target;
-            movedCmptLink.setAssociation(associationReference.getRelation().getName());
+        if (target instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)target;
+            movedCmptLink.setAssociation(associationReference.getAssociation().getName());
             return true;
         } else if (target instanceof IProductCmptLink) {
             IProductCmptLink targetLink = (IProductCmptLink)target;
@@ -270,7 +270,7 @@ public class LinkDropListener extends ViewerDropAdapter {
             return LOCATION_NONE;
         }
         // dropping on an associationReference means moving on first position of this node
-        if (getCurrentTarget() instanceof IProductCmptTypeRelationReference) {
+        if (getCurrentTarget() instanceof IProductCmptTypeAssociationReference) {
             return LOCATION_AFTER;
         }
         Item item = (Item)event.item;

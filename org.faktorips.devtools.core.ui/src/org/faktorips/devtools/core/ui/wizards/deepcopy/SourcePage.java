@@ -81,7 +81,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -423,9 +423,9 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             @Override
             protected void setValue(Object element, Object value) {
                 Integer index = (Integer)value;
-                if (element instanceof IProductCmptTypeRelationReference) {
+                if (element instanceof IProductCmptTypeAssociationReference) {
                     List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
-                    getAllChildElements((IProductCmptTypeRelationReference)element, childs);
+                    getAllChildElements((IProductCmptTypeAssociationReference)element, childs);
                     if (childs.size() == 0) {
                         return;
                     }
@@ -786,9 +786,9 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
      */
     public void checkStateChanged(CheckStateChangedEvent event) {
         Object element = event.getElement();
-        if (element instanceof IProductCmptTypeRelationReference) {
+        if (element instanceof IProductCmptTypeAssociationReference) {
             List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
-            getAllChildElements((IProductCmptTypeRelationReference)element, childs);
+            getAllChildElements((IProductCmptTypeAssociationReference)element, childs);
             for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
                 linkedElements.remove(iterator.next());
             }
@@ -801,11 +801,11 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         getContainer().updateButtons();
     }
 
-    private void getAllChildElements(IProductCmptTypeRelationReference element,
+    private void getAllChildElements(IProductCmptTypeAssociationReference element,
             List<IProductCmptStructureReference> childs) {
         childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
         childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
-        IProductCmptTypeRelationReference[] childRefs = structure.getChildProductCmptTypeRelationReferences(element,
+        IProductCmptTypeAssociationReference[] childRefs = structure.getChildProductCmptTypeAssociationReferences(element,
                 false);
         for (int i = 0; i < childRefs.length; i++) {
             getAllChildElements(childRefs[i], childs);

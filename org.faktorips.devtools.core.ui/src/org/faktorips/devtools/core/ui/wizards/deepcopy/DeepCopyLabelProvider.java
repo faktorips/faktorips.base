@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
@@ -63,8 +63,8 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
-        } else if (element instanceof IProductCmptTypeRelationReference) {
-            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeRelationReference)element).getRelation());
+        } else if (element instanceof IProductCmptTypeAssociationReference) {
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
@@ -79,8 +79,8 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         if (element instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
             return productCmptReference.getProductCmpt().getName();
-        } else if (element instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)element).getRelation().getName();
+        } else if (element instanceof IProductCmptTypeAssociationReference) {
+            return ((IProductCmptTypeAssociationReference)element).getAssociation().getName();
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage()
                     .getTableContentName());

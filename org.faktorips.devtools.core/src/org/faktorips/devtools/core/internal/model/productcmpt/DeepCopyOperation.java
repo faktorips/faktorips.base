@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
@@ -217,10 +217,10 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             HashMap<LinkData, String> linkData2newProductCmptQName) {
         IProductCmptStructureReference parent = productCmptStructureReference.getParent();
         IProductCmpt productCmpt = (productCmptStructureReference).getProductCmpt();
-        if (parent instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeRelationReference)parent)
-                    .getRelation();
-            IProductCmpt parentProductCmpt = ((IProductCmptReference)((IProductCmptTypeRelationReference)parent)
+        if (parent instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeAssociationReference)parent)
+                    .getAssociation();
+            IProductCmpt parentProductCmpt = ((IProductCmptReference)((IProductCmptTypeAssociationReference)parent)
                     .getParent()).getProductCmpt();
             linkData2newProductCmptQName.put(
                     new LinkData(parentProductCmpt, productCmpt, productCmptTypeAssociationOld), newProductCmptQName);
@@ -248,13 +248,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 // and the getParent of the type association returns the parent product cmpt of
                 // the to be linked object
                 IProductCmptStructureReference productCmptStructureReference = toRefer[i];
-                IProductCmptTypeRelationReference parentTypeRel = (IProductCmptTypeRelationReference)productCmptStructureReference
+                IProductCmptTypeAssociationReference parentTypeRel = (IProductCmptTypeAssociationReference)productCmptStructureReference
                         .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
                 tblContentUsageAndLinkDataRefer
                         .add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
                                 (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
-                                        .getRelation()));
+                                        .getAssociation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;

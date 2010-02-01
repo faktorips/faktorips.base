@@ -71,7 +71,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] getRefChildrenFor(IProductCmptReference parentElement) {
-        return addTblUsages(parentElement, structure.getChildProductCmptTypeRelationReferences(parentElement));
+        return addTblUsages(parentElement, structure.getChildProductCmptTypeAssociationReferences(parentElement));
     }
 
     private Object[] getChildrenFor(IProductCmptStructureReference parentElement) {

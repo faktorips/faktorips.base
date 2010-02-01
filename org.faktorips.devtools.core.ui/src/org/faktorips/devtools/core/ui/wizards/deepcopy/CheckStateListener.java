@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
@@ -93,8 +93,8 @@ public class CheckStateListener implements ICheckStateListener {
     private Object getTreeItemContent(TreeItem in) {
         if (in.getData() instanceof IProductCmptReference) {
             return ((IProductCmptReference)in.getData()).getProductCmpt();
-        } else if (in.getData() instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)in.getData()).getRelation();
+        } else if (in.getData() instanceof IProductCmptTypeAssociationReference) {
+            return ((IProductCmptTypeAssociationReference)in.getData()).getAssociation();
         }
 
         return null;

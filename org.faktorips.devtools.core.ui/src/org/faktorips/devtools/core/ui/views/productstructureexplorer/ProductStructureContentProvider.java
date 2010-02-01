@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 
 /**
  * Provides the elements of product structure
@@ -67,7 +67,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // TODO Entwicklungsstand SMART-MODE
         // // add product cmpt associations and product cmpts
         // if (parentElement instanceof IProductCmptReference) {
-        // IProductCmptTypeRelationReference[] ralationReferences = structure
+        // IProductCmptTypeAssociationReference[] ralationReferences = structure
         // .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement, false);
         // if (ralationReferences.length > 1) {
         // children.addAll(Arrays.asList(ralationReferences));
@@ -97,10 +97,10 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
                 // filter association nodes
                 for (Iterator<IProductCmptReference> iterator = list.iterator(); iterator.hasNext();) {
                     IProductCmptReference aProductCmptReference = iterator.next();
-                    if (aProductCmptReference.getParent() instanceof IProductCmptTypeRelationReference) {
-                        IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)aProductCmptReference
+                    if (aProductCmptReference.getParent() instanceof IProductCmptTypeAssociationReference) {
+                        IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)aProductCmptReference
                                 .getParent();
-                        if (relationReference.getRelation().isAssoziation()) {
+                        if (relationReference.getAssociation().isAssoziation()) {
                             iterator.remove();
                         }
                     }
@@ -109,22 +109,22 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             children.addAll(list);
         } else if (parentElement instanceof IProductCmptReference) {
             // Arrays.asLists returns an AbstractList that could not be modified
-            List<IProductCmptTypeRelationReference> list = new ArrayList<IProductCmptTypeRelationReference>(Arrays
-                    .asList(structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement)));
+            List<IProductCmptTypeAssociationReference> list = new ArrayList<IProductCmptTypeAssociationReference>(Arrays
+                    .asList(structure.getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)));
             if (!showAssociatedCmpts) {
                 // filter association nodes
-                for (Iterator<IProductCmptTypeRelationReference> iterator = list.iterator(); iterator.hasNext();) {
-                    IProductCmptTypeRelationReference aRelationReference = iterator.next();
-                    if (aRelationReference.getRelation().isAssoziation()) {
+                for (Iterator<IProductCmptTypeAssociationReference> iterator = list.iterator(); iterator.hasNext();) {
+                    IProductCmptTypeAssociationReference aRelationReference = iterator.next();
+                    if (aRelationReference.getAssociation().isAssoziation()) {
                         iterator.remove();
                     }
 
                 }
             }
             children.addAll(list);
-        } else if (parentElement instanceof IProductCmptTypeRelationReference) {
+        } else if (parentElement instanceof IProductCmptTypeAssociationReference) {
             List<IProductCmptReference> list = Arrays.asList(structure
-                    .getChildProductCmptReferences((IProductCmptTypeRelationReference)parentElement));
+                    .getChildProductCmptReferences((IProductCmptTypeAssociationReference)parentElement));
             children.addAll(list);
         }
 

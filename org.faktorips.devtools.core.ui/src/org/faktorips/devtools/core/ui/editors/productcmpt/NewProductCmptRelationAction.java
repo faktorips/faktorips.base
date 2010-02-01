@@ -19,7 +19,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.util.memento.Memento;
@@ -54,7 +54,7 @@ public class NewProductCmptRelationAction extends IpsAction {
             return false;
         }
         Object selected = selection.getFirstElement();
-        return (selected instanceof IProductCmptTypeRelationReference);
+        return (selected instanceof IProductCmptTypeAssociationReference);
     }
 
     /**
@@ -63,14 +63,14 @@ public class NewProductCmptRelationAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
-        if (selected instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)selected;
+        if (selected instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selected;
             setSyncpoint();
-            IProductCmptLink relation = parent.newLink(reference.getRelation().getName());
+            IProductCmptLink relation = parent.newLink(reference.getAssociation().getName());
             relation.setMaxCardinality(1);
             relation.setMinCardinality(0); // todo get min from modell
             LinkEditDialog dialog = new LinkEditDialog(relation, shell);
-            dialog.setProductCmptsToExclude(parent.getRelationTargetsFor(reference.getRelation().getName()));
+            dialog.setProductCmptsToExclude(parent.getRelationTargetsFor(reference.getAssociation().getName()));
             int rc = dialog.open();
             if (rc == Window.CANCEL) {
                 reset();

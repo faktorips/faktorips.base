@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
@@ -136,7 +136,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
 
         // check (reference) targets
         assertTrue(linkCreator.canCreateLinks(structure.getRoot(), singleCmpt));
-        IProductCmptTypeRelationReference[] references = structure.getChildProductCmptTypeRelationReferences(structure
+        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
         assertTrue(linkCreator.canCreateLinks(references[0], singleCmpt));
         assertTrue(linkCreator.canCreateLinks(references[0], multiCmpts));
@@ -169,7 +169,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkDropWithSinglePossibility(structure.getRoot(), 0);
 
         // AssociationReference target
-        IProductCmptTypeRelationReference[] references = structure.getChildProductCmptTypeRelationReferences(structure
+        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
         checkDropWithSinglePossibility(references[2], 0);
 
@@ -266,7 +266,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile, structure.getRoot());
 
         // test with association reference target
-        IProductCmptTypeRelationReference[] references = structure.getChildProductCmptTypeRelationReferences(structure
+        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
         checkSaveFile(ipsSrcFile, references[2]);
 

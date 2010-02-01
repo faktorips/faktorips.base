@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -155,7 +155,7 @@ public class SameOperationValidator {
                         .getChildProductCmptStructureTblUsageReference(productCmptStructureReferences[i]),
                         objectOperations, result);
 
-                IProductCmptTypeRelationReference parent = (IProductCmptTypeRelationReference)((IProductCmptReference)productCmptStructureReferences[i])
+                IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)((IProductCmptReference)productCmptStructureReferences[i])
                         .getParent();
                 if (parent == null) {
                     continue;
@@ -167,7 +167,7 @@ public class SameOperationValidator {
                 }
 
                 childOperation = new ParentProductCmptChildOperation(parentProductCmptReference.getProductCmpt(),
-                        operation, parent.getRelation(), ((IProductCmptReference)productCmptStructureReferences[i])
+                        operation, parent.getAssociation(), ((IProductCmptReference)productCmptStructureReferences[i])
                                 .getProductCmpt());
                 errorMsg = NLS.bind(Messages.SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt,
                         ((IProductCmptReference)productCmptStructureReferences[i]).getProductCmpt().getName(),

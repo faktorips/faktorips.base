@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -48,8 +48,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
-        } else if (element instanceof IProductCmptTypeRelationReference) {
-            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeRelationReference)element).getRelation());
+        } else if (element instanceof IProductCmptTypeAssociationReference) {
+            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
@@ -63,8 +63,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
             return getProductCmptLabel(((IProductCmptReference)element).getProductCmpt());
-        } else if (element instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeAssociation association = ((IProductCmptTypeRelationReference)element).getRelation();
+        } else if (element instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
             // if the cardinality of the association is "toMany" then show the name (target role
             // name) in plural
             // otherwise show the default name, which normally is the singular target role name
@@ -134,25 +134,25 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     private String getRolenameLabel(IProductCmptReference productCmptReference) {
         IProductCmptStructureReference parent = productCmptReference.getParent();
         // get the parent of the reference, should be a ProductCmptTypeAssociationReference
-        if (parent instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeRelationReference associationReference = (IProductCmptTypeRelationReference)parent;
+        if (parent instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)parent;
             // for associations always show the rolename
-            if (associationReference.getRelation().isAssoziation()) {
-                return getRolenameLabel(associationReference.getRelation());
+            if (associationReference.getAssociation().isAssoziation()) {
+                return getRolenameLabel(associationReference.getAssociation());
             }
             parent = associationReference.getParent();
             // The parent of the ProductCmptTypeAssociationReference should be a ProductCmptReference
             if (parent instanceof IProductCmptReference) {
                 IProductCmptReference parentCmptReference = (IProductCmptReference)parent;
                 // getting all associations of the parent ProductCmptReference
-                IProductCmptTypeRelationReference[] associationReferences = parentCmptReference.getStructure()
-                        .getChildProductCmptTypeRelationReferences(parentCmptReference, true);
-                for (IProductCmptTypeRelationReference aReference : associationReferences) {
+                IProductCmptTypeAssociationReference[] associationReferences = parentCmptReference.getStructure()
+                        .getChildProductCmptTypeAssociationReferences(parentCmptReference, true);
+                for (IProductCmptTypeAssociationReference aReference : associationReferences) {
                     // if the assicuation is anotherone but have the same target... show role name
                     if (aReference != associationReference
-                            && aReference.getRelation().getTarget().equals(
-                                    associationReference.getRelation().getTarget())) {
-                        return getRolenameLabel(associationReference.getRelation());
+                            && aReference.getAssociation().getTarget().equals(
+                                    associationReference.getAssociation().getTarget())) {
+                        return getRolenameLabel(associationReference.getAssociation());
                     }
                 }
             }

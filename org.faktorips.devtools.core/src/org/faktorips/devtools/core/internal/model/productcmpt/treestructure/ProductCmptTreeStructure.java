@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -129,7 +129,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             List<IProductCmptStructureReference> list,
             boolean productCmptOnly) {
         if (!productCmptOnly) {
-            addChildrenToList(getChildProductCmptTypeRelationReferences(parent), list, productCmptOnly);
+            addChildrenToList(getChildProductCmptTypeAssociationReferences(parent), list, productCmptOnly);
         }
         addChildrenToList(getChildProductCmptReferences(parent), list, productCmptOnly);
         addChildrenToList(getChildProductCmptStructureTblUsageReference(parent), list, productCmptOnly);
@@ -305,13 +305,13 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
+    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
         IProductCmptStructureReference result = ref.getParent();
-        if (result instanceof IProductCmptTypeRelationReference) {
-            return (IProductCmptTypeRelationReference)result;
+        if (result instanceof IProductCmptTypeAssociationReference) {
+            return (IProductCmptTypeAssociationReference)result;
         } else if (result != null) {
-            return (IProductCmptTypeRelationReference)result.getParent();
+            return (IProductCmptTypeAssociationReference)result.getParent();
         }
         return null;
     }
@@ -320,7 +320,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * {@inheritDoc}
      */
     public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
-        if (parent instanceof IProductCmptTypeRelationReference) {
+        if (parent instanceof IProductCmptTypeAssociationReference) {
             IProductCmptStructureReference[] children = ((ProductCmptTypeAssociationReference)parent).getChildren();
             IProductCmptReference[] result = new IProductCmptReference[children.length];
             System.arraycopy(children, 0, result, 0, children.length);
@@ -344,35 +344,35 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent) {
-        return getChildProductCmptTypeRelationReferences(parent, true);
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent) {
+        return getChildProductCmptTypeAssociationReferences(parent, true);
     }
 
-    public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent,
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent,
             boolean includeEmptyAssociations) {
         if (parent instanceof IProductCmptReference) {
-            List<IProductCmptTypeRelationReference> relationReferences = new ArrayList<IProductCmptTypeRelationReference>();
+            List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<IProductCmptTypeAssociationReference>();
             IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
             for (int i = 0; i < children.length; i++) {
-                if (children[i] instanceof IProductCmptTypeRelationReference) {
-                    IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)children[i];
+                if (children[i] instanceof IProductCmptTypeAssociationReference) {
+                    IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)children[i];
                     if (includeEmptyAssociations || getChildProductCmptReferences(relationReference).length > 0) {
-                        relationReferences.add(relationReference);
+                        associationReferences.add(relationReference);
                     }
                 }
             }
-            return relationReferences.toArray(new IProductCmptTypeRelationReference[relationReferences.size()]);
+            return associationReferences.toArray(new IProductCmptTypeAssociationReference[associationReferences.size()]);
         } else if (parent instanceof ProductCmptStructureReference) {
             ProductCmptStructureReference children[] = ((ProductCmptStructureReference)parent).getChildren();
-            List<IProductCmptTypeRelationReference> result = new ArrayList<IProductCmptTypeRelationReference>();
+            List<IProductCmptTypeAssociationReference> result = new ArrayList<IProductCmptTypeAssociationReference>();
             for (int i = 0; i < children.length; i++) {
-                if (children[i] instanceof IProductCmptTypeRelationReference) {
-                    result.add((IProductCmptTypeRelationReference)children[i]);
+                if (children[i] instanceof IProductCmptTypeAssociationReference) {
+                    result.add((IProductCmptTypeAssociationReference)children[i]);
                 }
             }
-            return result.toArray(new IProductCmptTypeRelationReference[result.size()]);
+            return result.toArray(new IProductCmptTypeAssociationReference[result.size()]);
         } else {
-            return new IProductCmptTypeRelationReference[0];
+            return new IProductCmptTypeAssociationReference[0];
         }
     }
 

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -54,8 +54,8 @@ public class LinkCreatorUtil {
             // product cmpt reference in product structure view
             IProductCmptReference reference = (IProductCmptReference)target;
             return processProductCmptReference(draggedCmpts, reference, false);
-        } else if (target instanceof IProductCmptTypeRelationReference) {
-            IProductCmptTypeRelationReference reference = (IProductCmptTypeRelationReference)target;
+        } else if (target instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)target;
             return processAssociationReference(draggedCmpts, reference, false);
         } else if (target instanceof IProductCmptLink) {
             IProductCmptLink link = ((IProductCmptLink)target);
@@ -75,8 +75,8 @@ public class LinkCreatorUtil {
                 ipsSrcFile = cmptReference.getWrappedIpsObject().getIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processProductCmptReference(droppedCmpts, cmptReference, true);
-            } else if (target instanceof IProductCmptTypeRelationReference) {
-                IProductCmptTypeRelationReference relationReference = (IProductCmptTypeRelationReference)target;
+            } else if (target instanceof IProductCmptTypeAssociationReference) {
+                IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)target;
                 ipsSrcFile = relationReference.getParent().getWrappedIpsObject().getIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processAssociationReference(droppedCmpts, relationReference, true);
@@ -173,7 +173,7 @@ public class LinkCreatorUtil {
     }
 
     protected boolean processAssociationReference(List<IProductCmpt> draggedCmpts,
-            IProductCmptTypeRelationReference target,
+            IProductCmptTypeAssociationReference target,
             boolean createLink) throws CoreException {
         IAssociation association;
         IProductCmptGeneration generation;
@@ -183,7 +183,7 @@ public class LinkCreatorUtil {
             return false;
         }
         generation = (IProductCmptGeneration)parentCmpt.findGenerationEffectiveOn(target.getStructure().getValidAt());
-        association = target.getRelation();
+        association = target.getAssociation();
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
