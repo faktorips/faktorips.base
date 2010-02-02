@@ -546,7 +546,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
 
     private void validate() {
-        if (getShell().isDisposed()) {
+        if (getShell() == null || getShell().isDisposed()) {
             return;
         }
         String message = null;
