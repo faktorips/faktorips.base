@@ -101,6 +101,9 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (this == obj) {
             return true;
         }
+        if (obj == null) {
+            return false;
+        }
         if (!this.getClass().equals(obj.getClass())) {
             return false;
         }
