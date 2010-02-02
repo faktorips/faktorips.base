@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -79,19 +80,20 @@ public class IpsDeepCopyAction extends IpsAction {
      */
     @Override
     public void run(IStructuredSelection selection) {
-        Object selected = selection.getFirstElement();
-
-        IProductCmpt root = null;
-        GregorianCalendar validFrom = null;
+        IIpsObject selected = getIpsObjectForSelection(selection);
         if (selected instanceof IProductCmpt) {
-            root = (IProductCmpt)selected;
-            validFrom = root.getGeneration(root.getGenerations().size() - 1).getValidFrom();
+            IProductCmpt root = (IProductCmpt)selected;
+            GregorianCalendar validFrom = root.getGeneration(root.getGenerations().size() - 1).getValidFrom();
+            runCopyWizard(root, validFrom);
         } else if (selected instanceof IProductCmptGeneration) {
             IProductCmptGeneration selGeneration = (IProductCmptGeneration)selected;
-            root = selGeneration.getProductCmpt();
-            validFrom = selGeneration.getValidFrom();
+            IProductCmpt root = selGeneration.getProductCmpt();
+            GregorianCalendar validFrom = selGeneration.getValidFrom();
+            runCopyWizard(root, validFrom);
         }
+    }
 
+    protected void runCopyWizard(IProductCmpt root, GregorianCalendar validFrom) {
         IProductCmptNamingStrategy ns = null;
         try {
             ns = root.getIpsProject().getProductCmptNamingStrategy();
