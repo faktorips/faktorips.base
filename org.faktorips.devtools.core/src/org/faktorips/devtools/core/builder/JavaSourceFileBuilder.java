@@ -87,7 +87,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
@@ -877,11 +877,26 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private String merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
-
+        JMerger merger;
         try {
-            JMerger merger = new JMerger(getJControlModel());
+            merger = new JMerger(getJControlModel());
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
+        }
+        try {
             merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(
+                    "Can't create JDT Compilation Unit for the new generated Java source: " + javaFile, e)); //$NON-NLS-1$
+        }
+        try {
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
+        } catch (Exception e) {
+            throw new CoreException(
+                    new IpsStatus(
+                            "Can't create JDT Compilation Unit for the Java source existing Java Source. Probably the code does not compile. " + javaFile, e)); //$NON-NLS-1$
+        }
+        try {
             merger.merge();
             return merger.getTargetCompilationUnitContents();
         } catch (Exception e) {
