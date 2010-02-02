@@ -385,7 +385,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         }
-        // to force a check is a product component type exists with the same qualified name
+        // to force a check if a product component type exists with the same qualified name (hack)
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies);
