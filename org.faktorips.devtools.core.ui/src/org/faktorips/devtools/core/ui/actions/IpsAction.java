@@ -21,6 +21,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,13 +40,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
@@ -192,64 +186,38 @@ public abstract class IpsAction extends Action {
      */
     private IIpsObject getIpsObjectForSelection(Object selected) {
         if (selected == null) {
-            // empty selection
             return null;
         }
-
-        if (selected instanceof IIpsObject) {
-            return (IIpsObject)selected;
-        }
-        if (selected instanceof IIpsSrcFile) {
-            try {
-                return ((IIpsSrcFile)selected).getIpsObject();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-        if (selected instanceof IIpsObjectPart) {
-            return ((IIpsObjectPart)selected).getIpsObject();
-        }
-
-        // for use with StructureExplorer: open ProductComponents (in Editor) contained in
-        // StructureNodes
-        if (selected instanceof IProductCmptReference) {
-            return ((IProductCmptReference)selected).getProductCmpt();
-        }
-        if (selected instanceof IProductCmptTypeAssociationReference) {
-            return ((IProductCmptTypeAssociationReference)selected).getAssociation().getIpsObject();
-        }
-        if (selected instanceof IProductCmptLink) {
-            try {
-                IProductCmptLink rel = (IProductCmptLink)selected;
-                return rel.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, rel.getTarget());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-
-        // for use with StructureExplorer: open TableContent (in Editor) contained in
-        // StructureNodes
-        if (selected instanceof IProductCmptStructureTblUsageReference) {
-            try {
-                return ((IProductCmptStructureTblUsageReference)selected).getTableContentUsage().findTableContents(
-                        ((IProductCmptStructureTblUsageReference)selected).getTableContentUsage().getIpsProject());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-
-        // for use with reference search, where elements are stored in arrays
+        Object selectedObject;
         if (selected instanceof Object[]) {
-            Object[] array = (Object[])selected;
-            if (array.length > 1 && array[0] instanceof IProductCmpt) {
-                return (IIpsObject)array[0];
-            } else if (array.length >= 1 && array[0] instanceof IPolicyCmptType) {
-                return (IIpsObject)array[0];
-            } else if (array.length >= 1 && array[0] instanceof ITestCase) {
-                return (IIpsObject)array[0];
+            selectedObject = ((Object[])selected)[0];
+        } else {
+            selectedObject = selected;
+        }
+        if (selectedObject instanceof IIpsObject) {
+            return (IIpsObject)selectedObject;
+        }
+        if (selectedObject instanceof IIpsSrcFile) {
+            try {
+                return ((IIpsSrcFile)selectedObject).getIpsObject();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
             }
         }
-
+        if (selectedObject instanceof IIpsObjectPart) {
+            return ((IIpsObjectPart)selectedObject).getIpsObject();
+        }
+        if (selectedObject instanceof IAdaptable) {
+            IAdaptable adaptable = (IAdaptable)selectedObject;
+            IIpsSrcFile adaptedSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+            if (adaptedSrcFile != null) {
+                try {
+                    return adaptedSrcFile.getIpsObject();
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
         return null;
     }
 
