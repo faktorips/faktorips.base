@@ -251,7 +251,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
             } else {
                 if (!valueSet.isDetailedSpecificationOf(superAttr.getValueSet())) {
-                    String text = "The value set defined in this attribute must be a more detailed specification of the value set in the overridden attribute (but its not).";
+                    String text = "The value set defined in this attribute must be a more detailed specification of the value set in the overridden attribute (but it is not).";
                     result.add(new Message("", text, Message.ERROR, this));
                 }
                 if (!attributeType.equals(superAttr.getAttributeType())) {
