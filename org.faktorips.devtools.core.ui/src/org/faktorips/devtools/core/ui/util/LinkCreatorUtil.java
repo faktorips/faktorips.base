@@ -230,7 +230,7 @@ public class LinkCreatorUtil {
     private IProductCmptLink createLink(String droppedCmptQName,
             IProductCmptGeneration generation,
             IAssociation association) {
-        if (generation != null && association != null && generation.getIpsSrcFile().isMutable()) {
+        if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
             IProductCmptLink newLink = null;
 
             // TODO handle location

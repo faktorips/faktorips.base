@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
@@ -246,7 +247,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             }
             return;
         }
-        if (!getIpsSrcFile().isMutable()) {
+        if (!IpsUIPlugin.isEditable(getIpsSrcFile())) {
             // no check of working date mismatch
             // because product component is read only
             return;
@@ -331,7 +332,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
             return false;
         }
-        if (!gen.getIpsSrcFile().isMutable()) {
+        if (!IpsUIPlugin.isEditable(gen.getIpsSrcFile())) {
             return false;
         }
         if (gen.isValidFromInPast() != null && gen.isValidFromInPast().booleanValue()) {

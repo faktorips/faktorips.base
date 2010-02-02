@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -370,7 +371,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             }
         }
 
-        if (!cmpt.getIpsSrcFile().isMutable()) {
+        if (!IpsUIPlugin.isEditable(cmpt.getIpsSrcFile())) {
             return;
         }
         if (!canEditRecentGenerations && workingDate.before(now)) {

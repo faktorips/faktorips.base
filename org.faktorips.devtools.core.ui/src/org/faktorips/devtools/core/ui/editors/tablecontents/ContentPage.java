@@ -340,7 +340,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
-        if (!getIpsObject().getIpsSrcFile().isMutable()) {
+        if (!IpsUIPlugin.isEditable(getIpsObject().getIpsSrcFile())) {
             // no set table structure dialog and fix differences supported
             // because table contents is read only
             return;

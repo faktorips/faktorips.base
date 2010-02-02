@@ -412,8 +412,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Refreshes the controls on the active page with the data from the model.<br /> Calls to this
-     * refresh method are ignored if the activate attribute is set to <code>false</code>.
+     * Refreshes the controls on the active page with the data from the model.<br />
+     * Calls to this refresh method are ignored if the activate attribute is set to
+     * <code>false</code>.
      */
     protected void refresh() {
         if (updatingPageStructure) {
@@ -497,7 +498,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Subclasses may override this method.
      */
     protected boolean computeDataChangeableState() {
-        return ipsSrcFile.isMutable() && IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+        return IpsUIPlugin.isEditable(ipsSrcFile);
     }
 
     /**

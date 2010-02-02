@@ -226,7 +226,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         protected void updateButtonEnabledStates() {
             super.updateButtonEnabledStates();
-            deleteButton.setEnabled(page.getProductCmpt().getGenerationsOrderedByValidDate().length > 1);
+            boolean moreThenOneGeneration = page.getProductCmpt().getGenerationsOrderedByValidDate().length > 1;
+            boolean editable = IpsUIPlugin.isEditable(page.getProductCmpt().getIpsSrcFile());
+            deleteButton.setEnabled(moreThenOneGeneration && editable);
         }
 
         private class ContentProvider implements IStructuredContentProvider {
