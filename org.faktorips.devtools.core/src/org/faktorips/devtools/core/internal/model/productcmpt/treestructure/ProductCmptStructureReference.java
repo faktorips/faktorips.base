@@ -93,7 +93,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     protected abstract IIpsObjectPartContainer getWrapped();
 
     public IIpsSrcFile getWrappedIpsSrcFile() {
-        return getWrapped().getIpsSrcFile();
+        return getWrappedIpsObject().getIpsSrcFile();
     }
 
     @Override

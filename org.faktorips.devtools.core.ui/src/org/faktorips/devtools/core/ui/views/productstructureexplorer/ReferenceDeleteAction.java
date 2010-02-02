@@ -85,7 +85,7 @@ public class ReferenceDeleteAction extends Action {
             if (o instanceof IProductCmptReference) {
                 IProductCmptReference cmptReference = (IProductCmptReference)o;
                 IProductCmptLink link = cmptReference.getLink();
-                if (link != null && IpsUIPlugin.getDefault().isEditable(link.getIpsSrcFile())) {
+                if (link != null && IpsUIPlugin.isEditable(link.getIpsSrcFile())) {
                     links[i] = link;
                     IIpsSrcFile srcFile = link.getIpsSrcFile();
                     if (!srcFile.isDirty()) {

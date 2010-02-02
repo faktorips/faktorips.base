@@ -25,6 +25,8 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+    public static String AddLinkAction_add;
+    public static String AddLinkAction_selectDialogTitle;
     public static String ProductStructureExplorer_collectingAdjustmentDates;
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
     public static String ProductStructureExplorer_infoMessageEmptyView_2;

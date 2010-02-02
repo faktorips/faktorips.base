@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -91,10 +90,12 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
+import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
@@ -103,6 +104,7 @@ import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
  * Navigate all Products defined in the active Project.
@@ -499,8 +501,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         final LinkDropListener dropListener = new LinkDropListener(treeViewer);
         dropListener.setAutoSave(true);
-        treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
-                dropListener);
+        treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(),
+                TextTransfer.getInstance() }, dropListener);
 
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setShowAssociationNodes(showAssociationNode);
@@ -521,20 +523,31 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
 
         // XXX Dragging is not allowed yet
-        // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new
+        // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
+        // new
         // IpsElementDragListener(
         // treeViewer));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
+        menumanager.add(new Separator("open"));
         final IAction openAction = new OpenEditorAction(treeViewer);
         menumanager.add(openAction);
-        menumanager.add(new Separator());
+
+        menumanager.add(new Separator("edit"));
         final IAction addAction = new AddLinkAction(treeViewer);
-        // TODO enable/disable
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
-        menumanager.add(new Separator());
+
+        menumanager.add(new Separator("copy"));
+        final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                DeepCopyWizard.TYPE_NEW_VERSION);
+        menumanager.add(copyNewVersionAction);
+        final IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                DeepCopyWizard.TYPE_COPY_PRODUCT);
+        menumanager.add(copyProductAction);
+
+        menumanager.add(new Separator("otherviews"));
         final IAction findReferenceAction = new FindProductReferencesAction(treeViewer);
         menumanager.add(findReferenceAction);
         final IAction showInstancesAction = new ShowInstanceAction(treeViewer);
@@ -544,12 +557,23 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selectedRef = getSelectedObjectFromSelection(treeViewer.getSelection());
-                if (selectedRef instanceof IAdaptable) {
-                    IAdaptable adaptableSelectedObject = (IAdaptable)selectedRef;
-                    IIpsSrcFile selectedSrcFile = (IIpsSrcFile)adaptableSelectedObject.getAdapter(IIpsSrcFile.class);
-                    addAction.setEnabled(IpsUIPlugin.isEditable(selectedSrcFile));
-                }
+                boolean copyEnabled = false;
+                boolean addActionEnabled = false;
                 boolean enabled = isReferenceAndOpenActionSupportedForSelection(selectedRef);
+                if (selectedRef instanceof IProductCmptReference) {
+                    IProductCmptReference reference = (IProductCmptReference)selectedRef;
+                    IIpsSrcFile srcFileToChange = reference.getWrappedIpsSrcFile();
+                    addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
+                    copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+                }
+                if (selectedRef instanceof IProductCmptTypeAssociationReference) {
+                    IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selectedRef;
+                    IIpsSrcFile srcFileToChange = reference.getParent().getWrappedIpsSrcFile();
+                    addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
+                }
+                addAction.setEnabled(addActionEnabled);
+                copyNewVersionAction.setEnabled(copyEnabled);
+                copyProductAction.setEnabled(copyEnabled);
                 openAction.setEnabled(enabled);
                 findReferenceAction.setEnabled(enabled);
                 showInstancesAction.setEnabled(enabled);

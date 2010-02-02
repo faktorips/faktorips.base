@@ -49,7 +49,7 @@ public class AddLinkAction extends Action {
     private static LinkCreatorUtil linkCreator;
 
     public AddLinkAction(TreeViewer tree) {
-        super("Add", IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif"));
+        super(Messages.AddLinkAction_add, IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif")); //$NON-NLS-2$
         treeViewer = tree;
         linkCreator = new LinkCreatorUtil(true);
     }
@@ -106,7 +106,7 @@ public class AddLinkAction extends Action {
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(ipsProject,
                 IpsObjectType.PRODUCT_CMPT, new LinkViewerFilter(linkTarget));
         OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(treeViewer.getControl().getShell(),
-                "Select Product Component", context);
+                Messages.AddLinkAction_selectDialogTitle, context);
         return dialog;
     }
 
