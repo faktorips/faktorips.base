@@ -897,14 +897,14 @@
             lightweight="true"
             location="BOTTOM_LEFT"
             state="true">
-         <enablement>
-               <objectClass
-                     name="org.faktorips.devtools.core.model.IIpsElement">
-               </objectClass>
-         </enablement>
          <description>
             Decorator to indicate Problems in Faktor-IPS elements
          </description>
+         <enablement>
+            <objectClass
+                  name="org.faktorips.devtools.core.model.IIpsElement">
+            </objectClass>
+         </enablement>
       </decorator>
       <decorator
             adaptable="false"

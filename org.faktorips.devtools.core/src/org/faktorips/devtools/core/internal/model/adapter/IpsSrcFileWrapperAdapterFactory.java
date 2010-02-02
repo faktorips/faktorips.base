@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * This adapter factory could handle {@link IIpsSrcFileWrapper} and returns the wrapped
@@ -34,7 +35,10 @@ public class IpsSrcFileWrapperAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     // can suppress warning as eclipse IAdapterFactory is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (adaptableObject instanceof IIpsSrcFileWrapper) {
+        if (adapterType == null) {
+            return null;
+        }
+        if (adapterType.isAssignableFrom(IIpsSrcFile.class) && adaptableObject instanceof IIpsSrcFileWrapper) {
             IIpsSrcFileWrapper wrapper = (IIpsSrcFileWrapper)adaptableObject;
             return wrapper.getWrappedIpsSrcFile();
         }

@@ -20,9 +20,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -36,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
@@ -294,6 +299,46 @@ public class LinkDropListener extends ViewerDropAdapter {
 
     public void setToMove(IProductCmptLink selected) {
         movedCmptLink = selected;
+    }
+
+    /**
+     * Listener to handle the move of relations.
+     * 
+     * @author Thorsten Guenther
+     * @author Cornelius Dirmeier
+     */
+    public class MoveLinkDragListener implements DragSourceListener {
+
+        ISelectionProvider selectionProvider;
+
+        public MoveLinkDragListener(ISelectionProvider selectionProvider) {
+            this.selectionProvider = selectionProvider;
+        }
+
+        public void dragStart(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+            event.doit = (selected instanceof IProductCmptLink || selected instanceof IProductCmptReference);
+
+            // we provide the event data yet so we can decide if we will
+            // accept a drop at drag-over time.
+            if (selected instanceof IProductCmptLink) {
+                setToMove((IProductCmptLink)selected);
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
+
+        public void dragSetData(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+            if (selected instanceof IProductCmptLink) {
+                setToMove((IProductCmptLink)selected);
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
+
+        public void dragFinished(DragSourceEvent event) {
+            setToMove(null);
+        }
+
     }
 
 }

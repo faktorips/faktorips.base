@@ -32,8 +32,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -67,6 +65,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.LinkDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -110,12 +109,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     private boolean generationDirty;
 
-    // XXX
-    // /**
-    // * Field to store the product component relation that should be moved using drag and drop.
-    // */
-    // private IProductCmptLink toMove;
-
     /**
      * <code>true</code> if this section is enabled, <code>false</code> otherwise. This flag is used
      * to control the enablement-state of the contained controlls.
@@ -140,8 +133,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private OpenReferencedProductCmptInEditorAction openAction;
 
     private LinkDropListener dropListener;
-
-    private DragListener dragListener;
 
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
@@ -200,19 +191,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkDropListener(treeViewer);
             dropListener.setAutoSave(false);
-            // XXX
-            // dropListener.addDropDoneListener(new IDropDoneListener() {
-            //
-            // public void dropDone(DropTargetEvent event, List<IProductCmptLink> result, boolean
-            // srcFileWasDirty) {
-            // treeViewer.refresh();
-            // treeViewer.expandAll();
-            // }
-            // });
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                     TextTransfer.getInstance() }, dropListener);
-            dragListener = new DragListener(treeViewer);
+            MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);
             treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, dragListener);
+
             treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
             treeViewer.expandAll();
 
@@ -434,45 +417,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
 
     /**
-     * Listener to handle the move of relations.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class DragListener implements DragSourceListener {
-
-        ISelectionProvider selectionProvider;
-
-        public DragListener(ISelectionProvider selectionProvider) {
-            this.selectionProvider = selectionProvider;
-        }
-
-        public void dragStart(DragSourceEvent event) {
-            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
-            event.doit = (selected instanceof IProductCmptLink) && isDataChangeable();
-
-            // we provide the event data yet so we can decide if we will
-            // accept a drop at drag-over time.
-            if (selected instanceof IProductCmptLink) {
-                dropListener.setToMove((IProductCmptLink)selected);
-                event.data = "local"; //$NON-NLS-1$
-            }
-        }
-
-        public void dragSetData(DragSourceEvent event) {
-            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
-            if (selected instanceof IProductCmptLink) {
-                dropListener.setToMove((IProductCmptLink)selected);
-                event.data = "local"; //$NON-NLS-1$
-            }
-        }
-
-        public void dragFinished(DragSourceEvent event) {
-            dropListener.setToMove(null);
-        }
-
-    }
-
-    /**
      * Returns all targets for all relations defined with the given product component relation type.
      * 
      * @param relationType The type of the relations to find.
@@ -520,11 +464,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-
-        // XXX have to set listener enable/disable?
-        // if (dropListener != null) {
-        // dropListener.setEnabled(enabled);
-        // }
 
         if (treeViewer == null) {
             // no relations defined, so no tree to disable.

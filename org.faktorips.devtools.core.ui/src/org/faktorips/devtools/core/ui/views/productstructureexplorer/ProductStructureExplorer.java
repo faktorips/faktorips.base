@@ -138,7 +138,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private TreeViewer treeViewer;
     private IIpsSrcFile file;
     private IProductCmpt productComponent;
-    // TODO use LinkLabelProvider to get correct message cue
+
     private ProductStructureLabelProvider labelProvider;
     private Label errormsg;
 
@@ -315,7 +315,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private Action createShowAssociatedCmptsAction() {
         return new Action(Messages.ProductStructureExplorer_menuShowAssociatedCmpts_name, IAction.AS_CHECK_BOX) {
 
-            // XXX image for showAssociation-Action
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
@@ -503,6 +502,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         dropListener.setAutoSave(true);
         treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(),
                 TextTransfer.getInstance() }, dropListener);
+        // XXX Dragging is disabled because moving components within this view may be confusing
+        // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
+        // new IpsElementDragListener(treeViewer));
 
         contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setShowAssociationNodes(showAssociationNode);
@@ -521,12 +523,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
-
-        // XXX Dragging is not allowed yet
-        // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
-        // new
-        // IpsElementDragListener(
-        // treeViewer));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);

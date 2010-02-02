@@ -350,6 +350,9 @@
          <adapter
                type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.IIpsElement">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"
