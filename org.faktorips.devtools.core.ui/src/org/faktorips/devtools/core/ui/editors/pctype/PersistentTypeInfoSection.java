@@ -44,7 +44,7 @@ public class PersistentTypeInfoSection extends IpsSection {
         this.ipsObject = ipsObject;
 
         initControls();
-        setText("Entity Information");
+        setText("JPA Entity Information");
         setExpanded(false);
     }
 
@@ -52,6 +52,13 @@ public class PersistentTypeInfoSection extends IpsSection {
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
+
+        toolkit.createLabel(composite, "Inheritance Strategy");
+        Combo inheritanceStrategyCombo = toolkit.createCombo(composite);
+        setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
+        ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
+        bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
 
         toolkit.createLabel(composite, "Table Name");
         Text tableNameText = toolkit.createText(composite);
@@ -63,17 +70,10 @@ public class PersistentTypeInfoSection extends IpsSection {
         bindingContext.bindContent(secondaryTableNameText, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME);
 
-        toolkit.createLabel(composite, "Inheritance Strategy");
-        Combo inheritanceStrategyCombo = toolkit.createCombo(composite);
-        setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
-        ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
-        bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
-
         toolkit.createLabel(composite, "Descriminator Column Name");
         Text descriminatorColumnNameText = toolkit.createText(composite);
         bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_COLUMN_NAME);
+                IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
         // disable this control if the inheritance strategy JoinedSubclass is used
         bindingContext.bindEnabled(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
@@ -83,14 +83,14 @@ public class PersistentTypeInfoSection extends IpsSection {
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_DATATYPE);
+                IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
         bindingContext.bindEnabled(descriminatorDatatypeCombo, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
 
         toolkit.createLabel(composite, "Descriminator Column Value");
         Text descriminatorColumnValueText = toolkit.createText(composite);
         bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_VALUE);
+                IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
         bindingContext.bindEnabled(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                 IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
     }

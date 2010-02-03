@@ -13,13 +13,21 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.PersistenceUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -35,9 +43,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private String tableName = "";
     private String secondaryTableName = "";
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
-    private String descriminatorValue;
-    private DiscriminatorDatatype descriminatorDatatype = DiscriminatorDatatype.STRING;
-    private String descriminatorColumnName = "DTYPE";
+    private String discriminatorValue;
+    private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
+    private String discriminatorColumnName = "DTYPE";
 
     private boolean notJoinedSubclass = true;
 
@@ -57,20 +65,22 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
 
+        // TODO: use sane default values based on the inheritance strategy in use (top level
+        // ipsObject´s name)
         tableName = tableNamingStrategy.getTableName(ipsObject.getName());
-        descriminatorValue = ipsObject.getName();
+        discriminatorValue = ipsObject.getName();
     }
 
     public String getDiscriminatorColumnName() {
-        return descriminatorColumnName;
+        return discriminatorColumnName;
     }
 
     public DiscriminatorDatatype getDiscriminatorDatatype() {
-        return descriminatorDatatype;
+        return discriminatorDatatype;
     }
 
-    public String getDescriminatorValue() {
-        return descriminatorValue;
+    public String getDiscriminatorValue() {
+        return discriminatorValue;
     }
 
     public InheritanceStrategy getInheritanceStrategy() {
@@ -85,23 +95,25 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return tableName;
     }
 
-    public void setDescriminatorColumnName(String newDescriminatorColumnName) {
-        String oldValue = descriminatorColumnName;
-        descriminatorColumnName = newDescriminatorColumnName;
+    public void setDiscriminatorColumnName(String newDiscriminatorColumnName) {
+        ArgumentCheck.notNull(newDiscriminatorColumnName);
+        String oldValue = discriminatorColumnName;
+        discriminatorColumnName = newDiscriminatorColumnName;
 
-        valueChanged(oldValue, newDescriminatorColumnName);
+        valueChanged(oldValue, newDiscriminatorColumnName);
     }
 
-    public void setDescriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype) {
-        DiscriminatorDatatype oldValue = descriminatorDatatype;
-        descriminatorDatatype = newDescriminatorDatatype;
+    public void setDiscriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype) {
+        DiscriminatorDatatype oldValue = discriminatorDatatype;
+        discriminatorDatatype = newDescriminatorDatatype;
 
         valueChanged(oldValue, newDescriminatorDatatype);
     }
 
-    public void setDescriminatorValue(String newDescriminatorValue) {
-        String oldValue = descriminatorValue;
-        descriminatorValue = newDescriminatorValue;
+    public void setDiscriminatorValue(String newDescriminatorValue) {
+        ArgumentCheck.notNull(newDescriminatorValue);
+        String oldValue = discriminatorValue;
+        discriminatorValue = newDescriminatorValue;
 
         valueChanged(oldValue, newDescriminatorValue);
     }
@@ -115,6 +127,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     public void setSecondaryTableName(String newSecondaryTableName) {
+        ArgumentCheck.notNull(newSecondaryTableName);
         String oldValue = secondaryTableName;
         secondaryTableName = newSecondaryTableName;
 
@@ -122,10 +135,23 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     public void setTableName(String newTableName) {
+        ArgumentCheck.notNull(newTableName);
         String oldValue = tableName;
         tableName = newTableName;
 
         valueChanged(oldValue, newTableName);
+    }
+
+    public boolean isDiscriminatorRequired() {
+        return inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE;
+    }
+
+    public boolean isSecondaryTableNameRequired() {
+        return inheritanceStrategy == InheritanceStrategy.MIXED;
+    }
+
+    public boolean isPrimaryTableNameRequired() {
+        return false;
     }
 
     /**
@@ -133,41 +159,78 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
      */
     @Override
     public void validateThis(MessageList msgList, IIpsProject ipsProject) {
-        if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
-            String text = "The table name is invalid.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+        try {
+            validateInheritanceStrategy(msgList);
+            validateTableNames(msgList);
+            validateDisriminator(msgList);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
         }
-        if (!PersistenceUtil.isValidDatabaseIdentifier(secondaryTableName)) {
+    }
+
+    private void validateInheritanceStrategy(final MessageList msgList) throws CoreException {
+        IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
+        if (!pcType.hasSupertype()) {
+            if (inheritanceStrategy == InheritanceStrategy.MIXED) {
+                // MIXED strategy only makes sense with at least 2 hierarchy (inheritance) levels
+                String text = "Use of MIXED inheritance strategy is discouraged for types denoting a hierarchy root.";
+                msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.WARNING, this,
+                        IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
+            }
+            return;
+        }
+        new InheritanceStrategyMismatchVisitor(this, msgList).start(pcType);
+    }
+
+    private void validateTableNames(MessageList msgList) throws CoreException {
+        IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
+
+        TableNameValidator tableNameValidator = new TableNameValidator(this, tableName);
+        tableNameValidator.start(pcType);
+        if (tableNameValidator.conflictingTypeInfo != null) {
+            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, tableNameValidator.errorMessage,
+                    Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+        }
+
+        if (isSecondaryTableNameRequired() && !PersistenceUtil.isValidDatabaseIdentifier(secondaryTableName)) {
             String text = "The secondary table name is invalid.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME));
         }
-        if (!PersistenceUtil.isValidDatabaseIdentifier(descriminatorColumnName)) {
-            String text = "The descriminator column name is invalid.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DESCRIMINATOR_COLUMN_NAME_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_COLUMN_NAME));
+
+        if (isSecondaryTableNameRequired() && tableName.equals(secondaryTableName)) {
+            String text = "Primary and secondary table names must not be equal.";
+            msgList.add(new Message(MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME));
         }
-        if (descriminatorDatatype == null || !descriminatorDatatype.isParsableToDatatype(descriminatorValue)) {
-            String text = "The descriminator value does not conform to the specified descriminator datatype.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DESCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DESCRIMINATOR_VALUE));
+    }
+
+    private void validateDisriminator(MessageList msgList) throws CoreException {
+        if (!isDiscriminatorRequired()) {
+            return;
         }
 
-        // Descriminator columns are used only for the strategy SINGLE_TABLE
-        boolean invalidInheritanceStrategy = (inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
-                && descriminatorDatatype != DiscriminatorDatatype.VOID;
-        invalidInheritanceStrategy = (invalidInheritanceStrategy || inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE)
-                && descriminatorDatatype == DiscriminatorDatatype.VOID;
-        if (invalidInheritanceStrategy) {
-            String text = "Descriminator columns are used only for the inheritance strategy SINGLE_TABLE. Either use this strategy or set the descriminator datatype to VOID.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
+        IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
+        DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
+        dValidator.start(pcType);
+        if (dValidator.conflictingTypeInfo != null) {
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, dValidator.errorMessage, Message.ERROR,
+                    this, dValidator.errorProperty));
         }
 
-        // FIXME: add additional validation rules to check the type hierarchy for consistence, e.g:
-        // - A subtype cannot have an InheritanceStrategy of JOINED_SUBCLASS if secondary tables are
-        // used
+        // TODO: obsolete, now in visitor
+        if (discriminatorDatatype == null
+                || !discriminatorDatatype.isParsableToDiscriminatorDatatype(discriminatorValue)) {
+            String text = "The discriminator value does not conform to the specified descriminator datatype.";
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+        }
+
+        if (isDiscriminatorRequired() && !PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
+            String text = "The discriminator column name is invalid.";
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
+        }
     }
 
     /**
@@ -184,9 +247,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName);//$NON-NLS-1$
         element.setAttribute(PROPERTY_SECONDARY_TABLE_NAME, "" + secondaryTableName);
         element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy);
-        element.setAttribute(PROPERTY_DESCRIMINATOR_COLUMN_NAME, "" + descriminatorColumnName);
-        element.setAttribute(PROPERTY_DESCRIMINATOR_DATATYPE, "" + descriminatorDatatype);
-        element.setAttribute(PROPERTY_DESCRIMINATOR_VALUE, "" + descriminatorValue);
+        element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName);
+        element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype);
+        element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue);
     }
 
     @Override
@@ -195,9 +258,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         tableName = element.getAttribute(PROPERTY_TABLE_NAME);
         secondaryTableName = element.getAttribute(PROPERTY_SECONDARY_TABLE_NAME);
         inheritanceStrategy = InheritanceStrategy.valueOf(element.getAttribute(PROPERTY_INHERITANCE_STRATEGY));
-        descriminatorColumnName = element.getAttribute(PROPERTY_DESCRIMINATOR_COLUMN_NAME);
-        descriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DESCRIMINATOR_DATATYPE));
-        descriminatorValue = element.getAttribute(PROPERTY_DESCRIMINATOR_VALUE);
+        discriminatorColumnName = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME);
+        discriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DISCRIMINATOR_DATATYPE));
+        discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
     }
 
     /**
@@ -205,5 +268,163 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
      */
     public Image getImage() {
         return getParent().getImage();
+    }
+
+    /**
+     * Adds error messages to MessageList if the type hierarchy is inconsistent relating to the
+     * inheritance strategy.
+     */
+    private final class InheritanceStrategyMismatchVisitor extends PolicyCmptTypeHierarchyVisitor {
+        private final MessageList msgList;
+        private final PersistentTypeInfo persistentTypeInfo;
+
+        private InheritanceStrategyMismatchVisitor(PersistentTypeInfo persistentTypeInfo, MessageList msgList) {
+            this.persistentTypeInfo = persistentTypeInfo;
+            this.msgList = msgList;
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
+            if (supertypeStrategy == inheritanceStrategy) {
+                return true;
+            }
+            // the only case where one can combine different inheritance strategies:
+            // subclass is MIXED, superclass is SINGLE_TABLE
+            if (supertypeStrategy == InheritanceStrategy.SINGLE_TABLE
+                    && inheritanceStrategy == InheritanceStrategy.MIXED) {
+                return true;
+            }
+
+            String text = "Invalid combination of inheritance strategies. Resolve by changing strategy for either "
+                    + currentType.getUnqualifiedName() + "(" + supertypeStrategy + ") or "
+                    + persistentTypeInfo.getIpsObject().getUnqualifiedName() + "(" + inheritanceStrategy + ")";
+            msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR,
+                    persistentTypeInfo, IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
+            return false;
+        }
+    }
+
+    private final static class TableNameValidator extends PolicyCmptTypeHierarchyVisitor {
+
+        private final InheritanceStrategy inheritanceStrategy;
+        private final String primaryTableName;
+        private final List<String> tableNames = new ArrayList<String>();
+
+        // If these fields are not null errors exist in the naming of the tables
+        private IPersistentTypeInfo conflictingTypeInfo;
+        private String errorMessage;
+
+        public TableNameValidator(IPersistentTypeInfo typeInfo, String tableName) {
+            inheritanceStrategy = typeInfo.getInheritanceStrategy();
+            primaryTableName = typeInfo.getTableName();
+            if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
+                conflictingTypeInfo = typeInfo;
+            }
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            if (conflictingTypeInfo != null) {
+                errorMessage = "The table name is invalid.";
+                return false;
+            }
+
+            String currentTableName = currentType.getPersistenceTypeInfo().getTableName();
+            if (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE
+                    || inheritanceStrategy == InheritanceStrategy.MIXED) {
+                // table names must be equal in whole supertype hierarchy
+                if (!primaryTableName.equals(currentType.getPersistenceTypeInfo().getTableName())) {
+                    conflictingTypeInfo = currentType.getPersistenceTypeInfo();
+                    errorMessage = "The table name does not match the table name in the supertype "
+                            + currentType.getUnqualifiedName() + "(" + currentTableName + ")";
+                    return false;
+                }
+            }
+
+            if (inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
+                // each table name must be unique in whole supertype hierarchy
+                if (tableNames.contains(currentTableName)) {
+                    conflictingTypeInfo = currentType.getPersistenceTypeInfo();
+                    errorMessage = "The table name is already defined in the supertype "
+                            + currentType.getUnqualifiedName();
+                    return false;
+                }
+                tableNames.add(currentTableName);
+            }
+
+            return true;
+        }
+    }
+
+    private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
+
+        private final InheritanceStrategy inheritanceStrategy;
+        private final String discriminatorValue;
+        private final String discriminatorColumnName;
+        private final DiscriminatorDatatype discriminatorDatatype;
+        private final List<String> discriminatorValues = new ArrayList<String>();
+
+        // If these fields are not null errors exist in the naming of the tables
+        private IPersistentTypeInfo conflictingTypeInfo;
+        private String errorMessage;
+        public String errorProperty;
+
+        public DiscriminatorValidator(IPersistentTypeInfo typeInfo) {
+            inheritanceStrategy = typeInfo.getInheritanceStrategy();
+            discriminatorValue = typeInfo.getDiscriminatorValue();
+            discriminatorDatatype = typeInfo.getDiscriminatorDatatype();
+            discriminatorColumnName = typeInfo.getDiscriminatorColumnName();
+
+            if (!PersistenceUtil.isValidDatabaseIdentifier(discriminatorValue)) {
+                conflictingTypeInfo = typeInfo;
+            }
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            if (conflictingTypeInfo != null) {
+                errorMessage = "The discriminator value is invalid.";
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
+                return false;
+            }
+
+            IPersistentTypeInfo currentTypeInfo = currentType.getPersistenceTypeInfo();
+
+            if (inheritanceStrategy != InheritanceStrategy.SINGLE_TABLE) {
+                return false;
+            }
+
+            // Invariants:
+            // - discriminator columns and datatypes must be equal in whole hierarchy
+            // - discriminator values must be unique
+            if (!discriminatorColumnName.equals(currentTypeInfo.getDiscriminatorColumnName())) {
+                conflictingTypeInfo = currentTypeInfo;
+                errorMessage = "The discriminator column name does not match the discriminator column name in the supertype "
+                        + currentType.getUnqualifiedName() + "(" + currentTypeInfo.getDiscriminatorColumnName() + ")";
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME;
+                return false;
+            }
+
+            if (discriminatorDatatype != currentTypeInfo.getDiscriminatorDatatype()) {
+                conflictingTypeInfo = currentTypeInfo;
+                errorMessage = "The discriminator datatype does not match the datataype in the supertype "
+                        + currentType.getUnqualifiedName() + "(" + currentTypeInfo.getDiscriminatorDatatype() + ")";
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE;
+                return false;
+            }
+
+            if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
+                conflictingTypeInfo = currentTypeInfo;
+                errorMessage = "The discriminator value is already defined in the supertype "
+                        + currentType.getUnqualifiedName();
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
+                return false;
+            } else {
+                discriminatorValues.add(currentTypeInfo.getDiscriminatorValue());
+            }
+
+            return true;
+        }
     }
 }

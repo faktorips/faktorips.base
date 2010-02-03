@@ -29,8 +29,8 @@ public class PersistenceUtil {
     /**
      * Checks if given String is a valid table or column name.
      * <p/>
-     * The name musst start with an ASCII character , thus starting with a character and then
-     * containing only ASCII-characters, numbers and the underscore character.
+     * The name must start with an ASCII character followed by more optional ASCII-characters,
+     * numbers or the underscore character.
      * 
      * @param name The String to check
      * @return <code>true</code> if name is valid, <code>false</code> otherwise

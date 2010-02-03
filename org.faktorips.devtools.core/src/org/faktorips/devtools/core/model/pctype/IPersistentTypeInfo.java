@@ -29,18 +29,40 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "Persistence"; //$NON-NLS-1$
 
+    /**
+     * The name of the (primary) table name property.
+     */
     public final static String PROPERTY_TABLE_NAME = "tableName";
 
+    /**
+     * The name of the secondary table name property.
+     */
     public final static String PROPERTY_SECONDARY_TABLE_NAME = "secondaryTableName";
 
+    /**
+     * The name of the inheritance strategy property.
+     */
     public final static String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy";
 
-    public final static String PROPERTY_DESCRIMINATOR_COLUMN_NAME = "descriminatorColumnName";
+    /**
+     * The name of the discriminator column name property.
+     */
+    public final static String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName";
 
-    public final static String PROPERTY_DESCRIMINATOR_VALUE = "descriminatorValue";
+    /**
+     * The name of the discriminator value property.
+     */
+    public final static String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue";
 
-    public final static String PROPERTY_DESCRIMINATOR_DATATYPE = "descriminatorDatatype";
+    /**
+     * The name of the discriminator datatype property.
+     */
+    public final static String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype";
 
+    /**
+     * The name of a property that indicates that the joines sublass inheritance strategy is not
+     * used.
+     */
     public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass";
 
     /**
@@ -64,51 +86,127 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that this persistence info type has an invalid
-     * descriminator column name set.
+     * discriminator set.
      */
-    public final static String MSGCODE_PERSISTENCE_DESCRIMINATOR_COLUMN_NAME_INVALID = MSGCODE_PREFIX
-            + "PersistenceTypeDescriminatorColumnNameInvalid"; //$NON-NLS-1$
+    public final static String MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID = MSGCODE_PREFIX
+            + "PersistenceTypeDiscriminatorInvalid"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this persistence info type cannot be parsed to
-     * currently set descriminator datatype.
-     */
-    public final static String MSGCODE_PERSISTENCE_DESCRIMINATOR_VALUE_INVALID = MSGCODE_PREFIX
-            + "PersistenceTypeDescriminatorValueInvalid"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that this persistence info type cannot be parsed to
-     * currently set descriminator datatype.
+     * Validation message code to indicate that this persistence info type has an invalid
+     * inheritance strategy set.
      */
     public final static String MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeInheritanceStrategyInvalid"; //$NON-NLS-1$
 
+    /**
+     * Returns the name of database table. Returns an empty string if the table name has not been
+     * set yet.
+     */
     public String getTableName();
 
+    /**
+     * Sets the database table name to use for the {@link IPolicyCmptType} this object is part of.
+     * <p/>
+     * The table name be must unique for each entity in a {@link IPolicyCmptType} inheritance
+     * hierarchy if the JOINED_SUBCLASS inheritance strategy is used. In contrast when using MIXED
+     * or SINGLE_TABLE inheritance strategies each part of the hierarchy must use the same primary
+     * table name.
+     * 
+     * @see {@link InheritanceStrategy}
+     */
     public void setTableName(String newTableName);
 
+    /**
+     * Returns the name of the secondary table name. This is only required if the MIXED inheritance
+     * strategy is used for the entity this object belongs to.
+     * 
+     * @return Returns an empty string if the secondary table name has not been set yet.
+     * @see {@link InheritanceStrategy}
+     */
     public String getSecondaryTableName();
 
+    /**
+     * Sets the secondary table name to use for the {@link IPolicyCmptType} this object is part of.
+     * <p/>
+     * Since there can only exist only one unique secondary table for a {@link IPolicyCmptType}
+     * sub-hierarchy one must ensure that the entities making up the sub-hierarchy use the same
+     * secondary table name.
+     */
     public void setSecondaryTableName(String newSecondaryTableName);
 
+    /**
+     * Returns the inheritance strategy to use for the {@link IPolicyCmptType} this object is part
+     * of.
+     */
     public InheritanceStrategy getInheritanceStrategy();
 
+    /**
+     * Sets the inheritance strategy to use for the {@link IPolicyCmptType} this object is part of.
+     */
     public void setInheritanceStrategy(InheritanceStrategy newStrategy);
 
+    /**
+     * Returns the discriminator column name. Returns an empty string if the discriminator column
+     * name has not been set yet.
+     */
     public String getDiscriminatorColumnName();
 
-    public void setDescriminatorColumnName(String newDescriminatorColumnName);
-
-    public String getDescriminatorValue();
-
-    public void setDescriminatorValue(String newDescriminatorValue);
-
-    public DiscriminatorDatatype getDiscriminatorDatatype();
-
-    public void setDescriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype);
+    /**
+     * Sets the discriminator column name. This only makes sense if the SINGLE_TABLE inheritance
+     * strategy is used.
+     * 
+     * @see InheritanceStrategy
+     */
+    public void setDiscriminatorColumnName(String newDiscriminatorColumnName);
 
     /**
-     * For now only the strategies SINGLE_TABLE and JOINED_SUBCLASS are supported.
+     * Returns the discriminator value. When using the SINGLE_TABLE inheritance strategy the
+     * concrete policy component type of a tuple (row) in the database table is determined by this
+     * value.
+     * 
+     * @see InheritanceStrategy
+     */
+    public String getDiscriminatorValue();
+
+    /**
+     * Sets the discriminator value of the {@link IPolicyCmptType} this object is part of. This only
+     * makes sense in conjunction with SINGLE_TABLE inheritance strategy where the concrete type of
+     * an entity is determines by storing this value in a the discriminator column of the table.
+     */
+    public void setDiscriminatorValue(String newDiscriminatorValue);
+
+    /**
+     * Returns the discriminator datatype. Discriminator datatypes/values/columns are used only in
+     * conjunction with the SINGLE_TABLE inheritance strategy.
+     * 
+     * @see DiscriminatorDatatype
+     * @see InheritanceStrategy
+     */
+    public DiscriminatorDatatype getDiscriminatorDatatype();
+
+    /**
+     * Sets the discriminator datatype. Discriminator datatypes/values/columns are used only in
+     * conjunction with the SINGLE_TABLE inheritance strategy.
+     * 
+     * @see DiscriminatorDatatype
+     * @see InheritanceStrategy
+     */
+    public void setDiscriminatorDatatype(DiscriminatorDatatype newDiscriminatorDatatype);
+
+    /**
+     * An inheritance strategy for mapping a class hierarchy to database tables as defined in the
+     * JPA 2 standard.
+     * <p/>
+     * Note:
+     * <ul>
+     * <li>The strategy TABLE_PER_CONCRETE_CLASS is not supported as it is an optional part of the
+     * standard.</li>
+     * <li>A new strategy named MIXED is introduced to map a subset of a class hierarchy to a
+     * dedicated table (meaning that there must also exist a superentity using the strategy
+     * SINGLE_TABLE)</li>
+     * </ul>
+     * The use of the strategy MIXED enables support for a dedicated (secondary) table which can be
+     * used in practice to map a line of business to its own table.
      */
     public enum InheritanceStrategy {
         SINGLE_TABLE,
@@ -117,15 +215,24 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     }
 
     /**
-     * Constrains the possible Descriminator Value.
+     * Constrains the possible discriminator value.
      */
     public enum DiscriminatorDatatype {
-        VOID, // no type in case of JOINED_SUBCLASS
+
+        /**
+         * Use this in conjunction with inheritance strategies JOINED_SUBCLASS and MIXED.
+         */
+        VOID,
         STRING,
         CHAR,
         INTEGER;
 
-        public boolean isParsableToDatatype(String value) {
+        /**
+         * @return <code>true</code> if the given value can be parsed into an instance of a
+         *         {@link DiscriminatorDatatype} denoted by this object, <code>false</code>
+         *         otherwise.
+         */
+        public boolean isParsableToDiscriminatorDatatype(String value) {
             switch (this) {
                 case STRING:
                     return (!StringUtils.isEmpty(value));
