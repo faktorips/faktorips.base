@@ -19,7 +19,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.util.memento.Memento;
@@ -54,7 +53,7 @@ public class NewProductCmptRelationAction extends IpsAction {
             return false;
         }
         Object selected = selection.getFirstElement();
-        return (selected instanceof IProductCmptTypeAssociationReference);
+        return (selected instanceof String);
     }
 
     /**
@@ -63,14 +62,14 @@ public class NewProductCmptRelationAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
-        if (selected instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selected;
+        if (selected instanceof String) {
+            String associationName = (String)selected;
             setSyncpoint();
-            IProductCmptLink relation = parent.newLink(reference.getAssociation().getName());
+            IProductCmptLink relation = parent.newLink(associationName);
             relation.setMaxCardinality(1);
             relation.setMinCardinality(0); // todo get min from modell
             LinkEditDialog dialog = new LinkEditDialog(relation, shell);
-            dialog.setProductCmptsToExclude(parent.getRelationTargetsFor(reference.getAssociation().getName()));
+            dialog.setProductCmptsToExclude(parent.getRelationTargetsFor(associationName));
             int rc = dialog.open();
             if (rc == Window.CANCEL) {
                 reset();

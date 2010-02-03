@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
@@ -49,7 +48,7 @@ public class AddLinkAction extends Action {
     private static LinkCreatorUtil linkCreator;
 
     public AddLinkAction(TreeViewer tree) {
-        super(Messages.AddLinkAction_add, IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif")); //$NON-NLS-2$
+        super(Messages.AddLinkAction_add, IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif"));
         treeViewer = tree;
         linkCreator = new LinkCreatorUtil(true);
     }
@@ -65,13 +64,10 @@ public class AddLinkAction extends Action {
             if (targetObject instanceof IProductCmptStructureReference) {
                 IProductCmptStructureReference structureReference = (IProductCmptStructureReference)targetObject;
                 ipsProject = structureReference.getWrappedIpsObject().getIpsProject();
-            } else if (targetObject instanceof IProductCmptLink) {
-                IProductCmptLink link = (IProductCmptLink)targetObject;
-                ipsProject = link.getIpsProject();
-            }
-            if (ipsProject != null) {
-                List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, targetObject);
-                linkCreator.createLinks(selectedResults, targetObject);
+                if (ipsProject != null) {
+                    List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference);
+                    linkCreator.createLinks(selectedResults, structureReference);
+                }
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -85,7 +81,8 @@ public class AddLinkAction extends Action {
      * @return
      * @throws CoreException
      */
-    private List<IProductCmpt> selectProductCmpt(IIpsProject ipsProject, Object linkTarget) throws CoreException {
+    private List<IProductCmpt> selectProductCmpt(IIpsProject ipsProject, IProductCmptStructureReference linkTarget)
+            throws CoreException {
         List<IProductCmpt> selectedResults = new ArrayList<IProductCmpt>();
         OpenIpsObjectSelectionDialog dialog = getSelectDialog(ipsProject, linkTarget);
         // TODO set multi select in dialog
@@ -102,7 +99,8 @@ public class AddLinkAction extends Action {
         return selectedResults;
     }
 
-    private OpenIpsObjectSelectionDialog getSelectDialog(IIpsProject ipsProject, Object linkTarget) {
+    private OpenIpsObjectSelectionDialog getSelectDialog(IIpsProject ipsProject,
+            IProductCmptStructureReference linkTarget) {
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(ipsProject,
                 IpsObjectType.PRODUCT_CMPT, new LinkViewerFilter(linkTarget));
         OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(treeViewer.getControl().getShell(),
@@ -120,9 +118,9 @@ public class AddLinkAction extends Action {
 
     private static class LinkViewerFilter extends ViewerFilter {
 
-        private final Object linkTarget;
+        private final IProductCmptStructureReference linkTarget;
 
-        public LinkViewerFilter(Object linkTarget) {
+        public LinkViewerFilter(IProductCmptStructureReference linkTarget) {
             this.linkTarget = linkTarget;
         }
 

@@ -441,7 +441,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     public IProductCmptLink newLink(String associationName, IProductCmptLink insertBefore) {
-        ProductCmptLink newRelation = newRelationInternal(getNextPartId(), insertBefore);
+        ProductCmptLink newRelation = newLinkInternal(getNextPartId(), insertBefore);
         newRelation.setAssociation(associationName);
         objectHasChanged();
         return newRelation;
@@ -492,7 +492,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return true;
     }
 
-    private ProductCmptLink newRelationInternal(int id, IProductCmptLink insertBefore) {
+    private ProductCmptLink newLinkInternal(int id, IProductCmptLink insertBefore) {
         ProductCmptLink newRelation = new ProductCmptLink(this, id);
         if (insertBefore == null) {
             links.add(newRelation);
@@ -508,7 +508,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     private ProductCmptLink newLinkInternal(int id) {
-        return newRelationInternal(id, null);
+        return newLinkInternal(id, null);
     }
 
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {

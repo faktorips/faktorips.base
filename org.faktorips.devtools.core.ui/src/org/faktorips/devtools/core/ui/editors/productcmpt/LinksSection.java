@@ -63,15 +63,14 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.LinkDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
+import org.faktorips.devtools.core.ui.editors.productcmpt.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -132,7 +131,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
     private OpenReferencedProductCmptInEditorAction openAction;
 
-    private LinkDropListener dropListener;
+    private LinkSectionDropListener dropListener;
 
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
@@ -160,9 +159,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         Composite relationRootPane = toolkit.createComposite(client);
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-        LinksContentProvider rcp = new LinksContentProvider();
-
-        if (rcp.getElements(generation).length == 0) {
+        if (generation.getLinks().length == 0) {
             GridLayout layout = (GridLayout)client.getLayout();
             layout.marginHeight = 2;
             layout.marginWidth = 1;
@@ -189,8 +186,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setContentProvider(new LinksContentProvider());
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
-            dropListener = new LinkDropListener(treeViewer);
-            dropListener.setAutoSave(false);
+            dropListener = new LinkSectionDropListener(treeViewer, generation);
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                     TextTransfer.getInstance() }, dropListener);
             MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);

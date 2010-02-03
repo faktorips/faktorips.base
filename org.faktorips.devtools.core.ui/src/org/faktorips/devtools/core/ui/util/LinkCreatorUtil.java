@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -49,7 +50,8 @@ public class LinkCreatorUtil {
         this.autoSave = autoSave;
     }
 
-    public boolean canCreateLinks(Object target, List<IProductCmpt> draggedCmpts) throws CoreException {
+    public boolean canCreateLinks(IProductCmptStructureReference target, List<IProductCmpt> draggedCmpts)
+            throws CoreException {
         if (target instanceof IProductCmptReference) {
             // product cmpt reference in product structure view
             IProductCmptReference reference = (IProductCmptReference)target;
@@ -57,15 +59,12 @@ public class LinkCreatorUtil {
         } else if (target instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)target;
             return processAssociationReference(draggedCmpts, reference, false);
-        } else if (target instanceof IProductCmptLink) {
-            IProductCmptLink link = ((IProductCmptLink)target);
-            return processProductCmptLink(draggedCmpts, link, false);
         } else {
             return false;
         }
     }
 
-    public boolean createLinks(List<IProductCmpt> droppedCmpts, Object target) {
+    public boolean createLinks(List<IProductCmpt> droppedCmpts, IProductCmptStructureReference target) {
         boolean haveToSave = autoSave;
         try {
             boolean result;
@@ -80,11 +79,6 @@ public class LinkCreatorUtil {
                 ipsSrcFile = relationReference.getParent().getWrappedIpsObject().getIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processAssociationReference(droppedCmpts, relationReference, true);
-            } else if (target instanceof IProductCmptLink) {
-                IProductCmptLink cmptLink = (IProductCmptLink)target;
-                ipsSrcFile = cmptLink.getIpsObject().getIpsSrcFile();
-                haveToSave &= !ipsSrcFile.isDirty();
-                result = processProductCmptLink(droppedCmpts, cmptLink, true);
             } else {
                 return false;
             }
@@ -200,67 +194,13 @@ public class LinkCreatorUtil {
         return result;
     }
 
-    protected boolean processProductCmptLink(List<IProductCmpt> draggedCmpts,
-            IProductCmptLink target,
-            boolean createLink) throws CoreException {
-        IpsUIPlugin.getDefault();
-        if (!IpsUIPlugin.isEditable(target.getIpsSrcFile())) {
-            return false;
-        }
-
-        IAssociation association;
-        IProductCmptGeneration generation = target.getProductCmptGeneration();
-        association = target.findAssociation(generation.getIpsProject());
-        // should only return true if all dragged cmpts are valid
-        boolean result = false;
-        for (IProductCmpt draggedCmpt : draggedCmpts) {
-            if (generation != null
-                    && generation.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
-                result = true;
-                if (createLink) {
-                    createLink(draggedCmpt.getQualifiedName(), generation, association);
-                }
-            } else {
-                return false;
-            }
-        }
-        return result;
-    }
-
-    private IProductCmptLink createLink(String droppedCmptQName,
-            IProductCmptGeneration generation,
-            IAssociation association) {
+    private void createLink(String droppedCmptQName, IProductCmptGeneration generation, IAssociation association) {
         if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
-            IProductCmptLink newLink = null;
-
-            // TODO handle location
-
-            // if (insertBefore != null) {
-            // newLink = generation.newLink(association.getName(), insertBefore);
-            // } else {
-            newLink = generation.newLink(association.getName());
-            // }
+            IProductCmptLink newLink = generation.newLink(association.getName());
             newLink.setTarget(droppedCmptQName);
             newLink.setMaxCardinality(1);
             newLink.setMinCardinality(0);
-            return newLink;
-        } else {
-            return null;
         }
-    }
-
-    /**
-     * @param autoSave The autoSave to set.
-     */
-    public void setAutoSave(boolean autoSave) {
-        this.autoSave = autoSave;
-    }
-
-    /**
-     * @return Returns the autoSave.
-     */
-    public boolean isAutoSave() {
-        return autoSave;
     }
 
 }

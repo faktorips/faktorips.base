@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -37,9 +38,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
 
 /**
- * Testing LinkDropListener
- * 
- * Also testing LinkCreatorUtil
+ * Tests for LinkCreatorUtil
  * 
  * @author Cornelius Dirmeier
  * 
@@ -136,8 +135,8 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
 
         // check (reference) targets
         assertTrue(linkCreator.canCreateLinks(structure.getRoot(), singleCmpt));
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         assertTrue(linkCreator.canCreateLinks(references[0], singleCmpt));
         assertTrue(linkCreator.canCreateLinks(references[0], multiCmpts));
         assertTrue(linkCreator.canCreateLinks(references[1], singleCmpt));
@@ -145,17 +144,19 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         assertFalse(linkCreator.canCreateLinks(references[2], singleCmpt));
         assertFalse(linkCreator.canCreateLinks(references[2], multiCmpts));
 
+        // TODO move link testing to new test
         // check (link) targets
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
-        link.setTarget(cmptB1.getQualifiedName());
-        assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1)));
-        assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1, cmptB2)));
-        assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2)));
-        assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2, cmptB3)));
-        assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1)));
-        assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB1)));
-        assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB2)));
-        link.delete();
+        // IProductCmptLink link =
+        // ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
+        // link.setTarget(cmptB1.getQualifiedName());
+        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1)));
+        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1, cmptB2)));
+        // assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2)));
+        // assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2, cmptB3)));
+        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1)));
+        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB1)));
+        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB2)));
+        // link.delete();
     }
 
     /**
@@ -169,15 +170,17 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkDropWithSinglePossibility(structure.getRoot(), 0);
 
         // AssociationReference target
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         checkDropWithSinglePossibility(references[2], 0);
 
         // Link target
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
-        link.setTarget(cmptC3.getQualifiedName());
-        checkDropWithSinglePossibility(link, 1);
-        link.delete();
+        // TODO maybe move to new testclass
+        // IProductCmptLink link =
+        // ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
+        // link.setTarget(cmptC3.getQualifiedName());
+        // checkDropWithSinglePossibility(link, 1);
+        // link.delete();
 
         // drop single component on CmptReference with multiple possibility to add
 
@@ -266,8 +269,8 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile, structure.getRoot());
 
         // test with association reference target
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         checkSaveFile(ipsSrcFile, references[2]);
 
         // test with link target
@@ -277,8 +280,8 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile, structure.getRoot());
     }
 
-    private void checkSaveFile(IIpsSrcFile ipsSrcFile, Object target) throws CoreException {
-        linkCreator.setAutoSave(false);
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile, IProductCmptStructureReference target) throws CoreException {
+        linkCreator = new MyLinkCreator(false);
         assertFalse(ipsSrcFile.isDirty());
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));
         assertTrue(ipsSrcFile.isDirty());
@@ -286,7 +289,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
         ipsSrcFile.discardChanges();
 
-        linkCreator.setAutoSave(true);
+        linkCreator = new MyLinkCreator(true);
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));
         assertFalse(ipsSrcFile.isDirty());
 
@@ -310,7 +313,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
      * @param the number of links that already exists in the product cmpt
      * 
      */
-    private void checkDropWithSinglePossibility(Object target, int alreadyExistingLinks) {
+    private void checkDropWithSinglePossibility(IProductCmptStructureReference target, int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add
         assertFalse(linkCreator.createLinks(getList(cmptA), target));
         IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();

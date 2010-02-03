@@ -22,9 +22,11 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -41,7 +43,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     private final IProductCmptGeneration generation;
 
     public LinksMessageCueLabelProvider(IProductCmptGeneration generation) {
-        super(new InternalLabelProvider(), generation.getIpsProject());
+        super(new InternalLabelProvider(generation), generation.getIpsProject());
         this.generation = generation;
     }
 
@@ -59,17 +61,19 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                 return super.getMessages(link);
             }
         }
-        if (element instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)element;
-            return generation.validate(generation.getIpsProject()).getMessagesFor(
-                    relationReference.getAssociation().getName());
+        if (element instanceof String) {
+            String elementName = (String)element;
+            return generation.validate(generation.getIpsProject()).getMessagesFor(elementName);
         }
         return super.getMessages(element);
     }
 
     private static class InternalLabelProvider extends LabelProvider {
 
-        public InternalLabelProvider() {
+        private final IProductCmptGeneration generation;
+
+        public InternalLabelProvider(IProductCmptGeneration generation) {
+            this.generation = generation;
         }
 
         /**
@@ -80,9 +84,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             if (element instanceof IProductCmptLink) {
                 IProductCmptLink rel = ((IProductCmptLink)element);
                 return StringUtil.unqualifiedName(rel.getTarget());
-            } else if (element instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)element;
-                return reference.getAssociation().getName();
             }
             return element.toString();
         }
@@ -108,12 +109,20 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                     IpsPlugin.log(e);
                 }
             }
-            if (element instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)element;
-                return IpsUIPlugin.getImageHandling().getImage(reference.getAssociation());
+            if (element instanceof String) {
+                try {
+                    IProductCmptType type = generation.getProductCmpt().findProductCmptType(generation.getIpsProject());
+                    if (type != null) {
+                        IAssociation association = type.findAssociation((String)element, generation.getIpsProject());
+                        return IpsUIPlugin.getImageHandling().getImage(association);
+                    }
+                } catch (Exception e) {
+                    IpsPlugin.log(e);
+                }
+                return IpsUIPlugin.getImageHandling().getImage(
+                        new AssociationWorkbenchAdapter().getDefaultImageDescriptor());
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
         }
-
     }
 }

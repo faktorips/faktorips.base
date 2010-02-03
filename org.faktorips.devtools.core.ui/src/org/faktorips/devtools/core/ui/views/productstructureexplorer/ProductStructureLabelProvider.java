@@ -38,6 +38,7 @@ import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
+    /** need to know for decorations */
     private boolean showAssociationNodes = false;
 
     private AdjustmentDate adjustmentDate;
@@ -49,7 +50,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeAssociationReference) {
-            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
+            return IpsUIPlugin.getImageHandling().getImage(
+                    ((IProductCmptTypeAssociationReference)element).getAssociation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
@@ -141,7 +143,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 return getRolenameLabel(associationReference.getAssociation());
             }
             parent = associationReference.getParent();
-            // The parent of the ProductCmptTypeAssociationReference should be a ProductCmptReference
+            // The parent of the ProductCmptTypeAssociationReference should be a
+            // ProductCmptReference
             if (parent instanceof IProductCmptReference) {
                 IProductCmptReference parentCmptReference = (IProductCmptReference)parent;
                 // getting all associations of the parent ProductCmptReference

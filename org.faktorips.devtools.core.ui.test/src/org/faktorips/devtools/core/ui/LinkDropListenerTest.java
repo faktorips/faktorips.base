@@ -62,12 +62,10 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private TestDropListener dropListener;
     private ProductStructureContentProvider contentProvider;
     private IProductCmptTreeStructure structure;
-    private ProductCmpt cmptB3;
     private ProductCmpt cmptC2;
     private IProductCmptTypeAssociation associationToB1;
     private IProductCmptTypeAssociation associationToB2;
     private IProductCmptTypeAssociation associationToC;
-    private ProductCmpt cmptC3;
 
     /**
      * {@inheritDoc}
@@ -96,10 +94,8 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         cmptA = newProductCmpt(typeA, "CmptA");
         cmptB1 = newProductCmpt(typeB, "testPackX.CmptB1");
         cmptB2 = newProductCmpt(typeB, "CmptB2");
-        cmptB3 = newProductCmpt(typeB, "testPackY.CmptB3");
         cmptC1 = newProductCmpt(typeC, "CmptC1");
         cmptC2 = newProductCmpt(typeC, "testPackZ.CmptC2");
-        cmptC3 = newProductCmpt(typeC, "CmptC3");
 
         contentProvider = new ProductStructureContentProvider(true);
         structure = cmptA.getStructure(new GregorianCalendar(), ipsProject);
@@ -116,7 +112,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.ui.LinkDropListener#validateDrop(java.lang.Object, int, org.eclipse.swt.dnd.TransferData)}
      * .
      */
-    public void testValidateDropObjectIntTransferData() {
+    public void testValidateDrop() {
         IProductCmptReference target = structure.getRoot();
         int operation = DND.DROP_LINK;
         TransferData transfer = getTransfer(cmptB1);
@@ -129,13 +125,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
         assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
 
-        // check operation - only DROP_LINK is accepted
-        // assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
-        // assertFalse(dropListener.validateDrop(target, DND.DROP_MOVE, transfer));
-        // assertFalse(dropListener.validateDrop(target, DND.DROP_COPY, transfer));
-        // assertFalse(dropListener.validateDrop(target, DND.DROP_DEFAULT, transfer));
-        // assertFalse(dropListener.validateDrop(target, DND.DROP_NONE, transfer));
-
         // check transfer
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1)));
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB2)));
@@ -147,8 +136,8 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // check (reference) targets
         assertTrue(dropListener.validateDrop(structure.getRoot(), operation, transfer));
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         assertTrue(dropListener.validateDrop(references[0], operation, transfer));
         assertTrue(dropListener.validateDrop(references[0], operation, multiTransfer));
         assertTrue(dropListener.validateDrop(references[1], operation, transfer));
@@ -156,17 +145,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertFalse(dropListener.validateDrop(references[2], operation, transfer));
         assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
 
-        // check (link) targets
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
-        link.setTarget(cmptB1.getQualifiedName());
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1, cmptB2)));
-        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
-        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2, cmptB3)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB2)));
-        link.delete();
     }
 
     /**
@@ -181,17 +159,10 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         checkDropWithSinglePossibility(0);
 
         // AssociationReference targe
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         dropListener.setTarget(references[2]);
         checkDropWithSinglePossibility(0);
-
-        // Link target
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
-        link.setTarget(cmptC3.getQualifiedName());
-        dropListener.setTarget(link);
-        checkDropWithSinglePossibility(1);
-        link.delete();
 
         // drop single component on CmptReference with multiple possibility to add
         dropListener.setTarget(structure.getRoot());
@@ -282,16 +253,9 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile);
 
         // test with association reference target
-        IProductCmptTypeAssociationReference[] references = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         dropListener.setTarget(references[2]);
-        checkSaveFile(ipsSrcFile);
-
-        // test with link target
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
-        link.setTarget(cmptC3.getQualifiedName());
-        dropListener.setTarget(link);
-        ipsSrcFile.save(false, null);
         checkSaveFile(ipsSrcFile);
     }
 
@@ -373,7 +337,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
      * Override the LinkDropListener to inject the current target without constructing drop events
      * and to select possible associations without clicking dialogs
      * 
-     * @author INSERT YOUR NAME
+     * @author Cornelius Dirmeier
      */
     private static class TestDropListener extends LinkDropListener {
 
@@ -385,7 +349,11 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         public TestDropListener(Viewer viewer) {
             super(viewer);
-            setLinkCreator(myLinkCreator);
+            super.setLinkCreator(myLinkCreator);
+        }
+
+        public void setAutoSave(boolean b) {
+            myLinkCreator = new MyLinkCreator(b);
         }
 
         @Override

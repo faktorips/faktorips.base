@@ -92,6 +92,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
@@ -498,8 +499,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         treeViewer = new TreeViewer(viewerPanel);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final LinkDropListener dropListener = new LinkDropListener(treeViewer);
-        dropListener.setAutoSave(true);
+        final IpsFileTransferViewerDropAdapter dropListener = new LinkDropListener(treeViewer);
         treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(),
                 TextTransfer.getInstance() }, dropListener);
         // XXX Dragging is disabled because moving components within this view may be confusing
