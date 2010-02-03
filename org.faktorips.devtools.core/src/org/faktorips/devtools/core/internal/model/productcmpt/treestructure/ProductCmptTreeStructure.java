@@ -263,7 +263,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 }
                 for (Iterator<IAssociation> iter = associations.iterator(); iter.hasNext();) {
                     IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iter.next();
-                    ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent, association);
+                    ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent,
+                            association);
                     List<IProductCmptLink> linksList = mapping.get(association.getName());
                     if (linksList == null) {
                         linksList = new ArrayList<IProductCmptLink>();
@@ -273,8 +274,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                     children.add(node);
                 }
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                IpsPlugin.log(e);
             }
 
             ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();
@@ -361,7 +361,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                     }
                 }
             }
-            return associationReferences.toArray(new IProductCmptTypeAssociationReference[associationReferences.size()]);
+            return associationReferences
+                    .toArray(new IProductCmptTypeAssociationReference[associationReferences.size()]);
         } else if (parent instanceof ProductCmptStructureReference) {
             ProductCmptStructureReference children[] = ((ProductCmptStructureReference)parent).getChildren();
             List<IProductCmptTypeAssociationReference> result = new ArrayList<IProductCmptTypeAssociationReference>();
