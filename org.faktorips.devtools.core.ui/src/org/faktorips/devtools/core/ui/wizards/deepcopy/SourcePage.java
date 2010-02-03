@@ -286,13 +286,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     private void addListenerToAllControls() {
         // add listener perform validate etc. if focus lost and value change
         // don't use value change event because of validation on every key pressed
-        Text[] textCtrls = new Text[] { workingDateField.getTextControl(), versionId, searchInput, replaceInput };
+        Text[] textCtrls;
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            textCtrls = new Text[] { workingDateField.getTextControl(), versionId, searchInput, replaceInput };
+        } else {
+            textCtrls = new Text[] { workingDateField.getTextControl(), versionId };
+        }
         FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
         for (int i = 0; i < textCtrls.length; i++) {
             // control may be null in case of copy type = TYPE_NEW_VERSION
-            if (textCtrls[i] != null) {
-                textCtrls[i].addFocusListener(focusListener);
-            }
+            textCtrls[i].addFocusListener(focusListener);
         }
 
         // special listener for text button controls perform validate etc. if value changed
@@ -705,6 +708,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private void validateSearchPattern() {
+        if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+            return;
+        }
         String searchPattern = getSearchPattern();
         String replacePattern = getReplaceText();
         if (searchPattern.length() == 0 && replacePattern.length() == 0) {
