@@ -202,7 +202,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         final Text workingDate = toolkit.createText(inputRoot);
         String workingDateAsText = dateFormat.format(getDeepCopyWizard().getStructureDate().getTime());
         workingDate.setText(workingDateAsText);
-        hasValueChanged(workingDate);
         workingDateField = new TextField(workingDate);
 
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
@@ -290,7 +289,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         Text[] textCtrls = new Text[] { workingDateField.getTextControl(), versionId, searchInput, replaceInput };
         FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
         for (int i = 0; i < textCtrls.length; i++) {
-            textCtrls[i].addFocusListener(focusListener);
+            // control may be null in case of copy type = TYPE_NEW_VERSION
+            if (textCtrls[i] != null) {
+                textCtrls[i].addFocusListener(focusListener);
+            }
         }
 
         // special listener for text button controls perform validate etc. if value changed
@@ -342,9 +344,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         public FocusListenerRefreshTreeOnValueChange(Text[] textControls) {
             this.textControls = textControls;
-            for (int i = 0; i < textControls.length; i++) {
-                hasValueChanged(textControls[i]);
-            }
         }
 
         public void focusGained(FocusEvent e) {
@@ -597,6 +596,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         for (int i = 1; i < toCopy.length; i++) {
             ipsObject = getCorrespondingIpsObject(toCopy[i]);
             int tmpIgnore;
+            if (ipsObject == null) {
+                continue;
+            }
             IPath nextPath = ipsObject.getIpsPackageFragment().getRelativePath();
             tmpIgnore = nextPath.matchingFirstSegments(refPath);
             if (tmpIgnore < ignore) {
