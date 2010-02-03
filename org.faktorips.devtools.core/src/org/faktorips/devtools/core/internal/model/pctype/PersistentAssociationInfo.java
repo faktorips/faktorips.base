@@ -25,6 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
+ * Default implementation of {@link IPersistentAssociationInfo}.
  * 
  * @author Roman Grutza
  */
@@ -45,7 +46,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         ITableColumnNamingStrategy tableColumnNamingStrategy = getIpsProject().getTableColumnNamingStrategy();
 
-        sourceColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
+        sourceColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation()
+                .getName());
         targetColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
     }
 

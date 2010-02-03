@@ -82,6 +82,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
         private class PersistentAttributeContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
+                // TODO: return only persistable attributes (-> changeable, explicit)
                 return ((IPolicyCmptType)getIpsObject()).getPolicyCmptTypeAttributes();
             }
 
@@ -102,12 +103,36 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
-                IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
+                IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String result = "";
                 switch (columnIndex) {
                     case 0:
-                        result = jpaAttributeInfo.getTableColumnName();
+                        result = attribute.getName();
+                        break;
+                    case 1:
+                        String rawTableColumnName = attributeInfo.getTableColumnName();
+                        result = attributeInfo.getIpsProject().getTableNamingStrategy()
+                                .getTableName(rawTableColumnName);
+                        break;
+                    case 2:
+                        // TODO: converter
+                        result = "";
+                        break;
+                    case 3:
+                        result = String.valueOf(attributeInfo.getTableColumnUnique());
+                        break;
+                    case 4:
+                        result = String.valueOf(attributeInfo.getTableColumnNullable());
+                        break;
+                    case 5:
+                        result = String.valueOf(attributeInfo.getTableColumnSize());
+                        break;
+                    case 6:
+                        result = String.valueOf(attributeInfo.getTableColumnPrecision());
+                        break;
+                    case 7:
+                        result = String.valueOf(attributeInfo.getTableColumnScale());
                         break;
 
                     default:

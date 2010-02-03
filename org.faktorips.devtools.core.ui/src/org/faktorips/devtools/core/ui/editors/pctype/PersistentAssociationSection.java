@@ -28,9 +28,10 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -68,17 +69,17 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new PersistentAttributeContentProvider();
+            return new PersistentAssociationContentProvider();
         }
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
-            return new PersistentAssociationEditDialog((IPolicyCmptTypeAttribute)part, shell);
+            return new PersistentAssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
         }
 
         @Override
         protected IIpsObjectPart newIpsPart() throws CoreException {
-            return ((IPolicyCmptType)getIpsObject()).newPolicyCmptTypeAttribute();
+            return ((IPolicyCmptType)getIpsObject()).newPolicyCmptTypeAssociation();
         }
 
         @Override
@@ -87,9 +88,9 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
             return new String[] { "Join Table Name", "Source Column Name", "Target Column Name", "Fetch Type" };
         }
 
-        private class PersistentAttributeContentProvider implements IStructuredContentProvider {
+        private class PersistentAssociationContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
-                return ((IPolicyCmptType)getIpsObject()).getPolicyCmptTypeAttributes();
+                return ((IPolicyCmptType)getIpsObject()).getPolicyCmptTypeAssociations();
             }
 
             public void dispose() {
@@ -108,13 +109,23 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
             }
 
             public String getColumnText(Object element, int columnIndex) {
-                IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
-                IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
+                IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)element;
+                IPersistentAssociationInfo jpaAssociationInfo = association.getPersistenceAssociatonInfo();
 
                 String result = "";
+                ITableNamingStrategy tableNamingStrategy = jpaAssociationInfo.getIpsProject().getTableNamingStrategy();
                 switch (columnIndex) {
                     case 0:
-                        result = jpaAttributeInfo.getTableColumnName();
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getJoinTableName());
+                        break;
+                    case 1:
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getSourceColumnName());
+                        break;
+                    case 2:
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getTargetColumnName());
+                        break;
+                    case 3:
+                        result = jpaAssociationInfo.getFetchType().toString();
                         break;
 
                     default:
@@ -133,7 +144,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
     public class PersistentAssociationEditDialog extends EditDialog {
 
-        public PersistentAssociationEditDialog(IPolicyCmptTypeAttribute part, Shell shell) {
+        public PersistentAssociationEditDialog(IPolicyCmptTypeAssociation part, Shell shell) {
             super(shell, "Edit Association", true);
         }
 

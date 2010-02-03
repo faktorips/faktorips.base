@@ -33,8 +33,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -43,6 +47,8 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
@@ -83,6 +89,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         firstPage.setText(Messages.AssociationEditDialog_textFirstPage);
         firstPage.setControl(createFirstPage(folder));
 
+        createPersistenceTabItemIfNecessary(folder);
         createDescriptionTabItem(folder);
         return folder;
     }
@@ -227,6 +234,51 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
     }
 
+    private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
+        if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            return;
+        }
+        final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
+        persistencePage.setText("Persistence");
+
+        Composite c = createTabItemComposite(tabFolder, 1, false);
+        persistencePage.setControl(c);
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+
+        uiToolkit.createFormLabel(workArea, "Join Table Name:");
+        Text joinTableNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(joinTableNameText, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME);
+
+        uiToolkit.createFormLabel(workArea, "Source Column Name:");
+        Text sourceColumnNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
+
+        uiToolkit.createFormLabel(workArea, "Target Column Name:");
+        Text targetColumnNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME);
+
+        uiToolkit.createFormLabel(workArea, "Fetch Type:");
+        Combo fetchTypeCombo = uiToolkit.createCombo(workArea);
+        setComboItems(fetchTypeCombo, FetchType.class);
+        ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
+        bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
+    }
+
+    // TODO: code duplication in PersistentTypeInfoSection
+    private void setComboItems(Combo combo, Class<? extends Enum> class1) {
+        Enum[] allEnumConstants = class1.getEnumConstants();
+        String[] allEnumValues = new String[allEnumConstants.length];
+        for (int i = 0; i < allEnumConstants.length; i++) {
+            allEnumValues[i] = allEnumConstants[i].toString();
+        }
+        combo.setItems(allEnumValues);
+    }
+
     public class PmoAssociation extends IpsObjectPartPmo {
 
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
@@ -337,6 +389,5 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 subset = false;
             }
         }
-
     }
 }

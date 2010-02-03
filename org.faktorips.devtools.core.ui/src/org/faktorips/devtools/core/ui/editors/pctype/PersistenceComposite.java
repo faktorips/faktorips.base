@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -29,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 /**
  * Extends the supertype with the ability to view tabular data.
  * 
- * @author grutza
+ * @author Roman Grutza
  */
 public abstract class PersistenceComposite extends IpsPartsComposite {
 
@@ -45,15 +46,20 @@ public abstract class PersistenceComposite extends IpsPartsComposite {
     /**
      * {@inheritDoc}
      * 
-     * The class redefines
+     * This class redefines the creation of the viewer to apply its own column headers and
+     * content/label providers.
      */
     @Override
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
         Viewer viewer = super.createViewer(parent, toolkit);
         if (viewer instanceof TableViewer) {
             TableViewer tableViewer = (TableViewer)viewer;
-            ILabelProvider attributeLabelProvider = createLabelProvider();
-            tableViewer.setLabelProvider(attributeLabelProvider);
+            ILabelProvider labelProvider = createLabelProvider();
+            tableViewer.setLabelProvider(labelProvider);
+            IContentProvider contentProvider = createContentProvider();
+            tableViewer.setContentProvider(contentProvider);
+            tableViewer.setInput(getIpsObject());
+
             Table table = tableViewer.getTable();
             table.setHeaderVisible(true);
             table.setLinesVisible(true);

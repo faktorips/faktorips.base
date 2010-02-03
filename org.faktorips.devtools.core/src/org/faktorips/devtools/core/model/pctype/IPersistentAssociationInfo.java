@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * A class that holds information of a policy component type association which is relevant for
@@ -24,15 +25,15 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentAssociationInfo {
+public interface IPersistentAssociationInfo extends IIpsObjectPart {
 
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
 
-    public final static String PROPERTY_JOIN_TABLE_NAME = "jpaJoinTableName";
-    public final static String PROPERTY_SOURCE_COLUMN_NAME = "jpaSourceColumnName";
-    public final static String PROPERTY_TARGET_COLUMN_NAME = "jpaTargetColumnName";
-    public final static String PROPERTY_FETCH_TYPE = "jpaFetchType";
+    public final static String PROPERTY_JOIN_TABLE_NAME = "joinTableName"; //$NON-NLS-1$
+    public final static String PROPERTY_SOURCE_COLUMN_NAME = "sourceColumnName"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET_COLUMN_NAME = "targetColumnName"; //$NON-NLS-1$
+    public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
 
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation();
 
