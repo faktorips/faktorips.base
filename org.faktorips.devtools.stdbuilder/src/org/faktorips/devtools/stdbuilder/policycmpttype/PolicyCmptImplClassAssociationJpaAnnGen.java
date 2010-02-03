@@ -21,17 +21,37 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 
-// TODO: javadoc
+/**
+ * This class generates JPA annotations for associations of policy component types.
+ * 
+ * @author Roman Grutza
+ */
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationGenerator {
 
+    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
+    private static final String IMPORT_ONE_TO_MANY = "javax.persistence.OneToMany";
+    private static final String IMPORT_JOIN_TABLE = "javax.persistence.JoinTable";
+    private static final String IMPORT_MANY_TO_MANY = "javax.persistence.ManyToMany";
+    private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
+    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
+    private static final String IMPORT_CASCADE_TYPE = "javax.persistence.CascadeType";
+
     private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
 
     public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
+    }
+
+    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
+        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
@@ -43,9 +63,15 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             if (pcTypeAssociation.isAssoziation()) {
                 createAnnotationForAssociation(fragment, pcTypeAssociation, associatonInfo);
             }
-            if (pcTypeAssociation.isComposition()) {
-                createAnnotationForComposition(fragment, pcTypeAssociation, associatonInfo);
+            if (pcTypeAssociation.isComposition() && pcTypeAssociation.is1To1()) {
+                createAnnotationForCompositionOneToOne(fragment, pcTypeAssociation, associatonInfo);
             }
+            // TODO: code for 1:n compositions breaks the generated code because
+            // "parentModelObject" field can only currently only be annotated @Transient
+            if (pcTypeAssociation.isComposition() && pcTypeAssociation.is1ToMany()) {
+                createAnnotationForCompositionOneToMany(fragment, pcTypeAssociation, associatonInfo);
+            }
+
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -55,33 +81,112 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
     private void createAnnotationForAssociation(JavaCodeFragment fragment,
             IPolicyCmptTypeAssociation pcTypeAssociation,
-            IPersistentAssociationInfo associatonInfo) {
+            IPersistentAssociationInfo associatonInfo) throws CoreException {
 
+        IIpsProject ipsProject = pcTypeAssociation.getIpsProject();
+        IPolicyCmptType targetPcType = pcTypeAssociation.findTargetPolicyCmptType(ipsProject);
+        String targetQName = getQualifiedImplClassName(targetPcType);
+
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcTypeAssociation.getPersistenceAssociatonInfo();
+        fragment.addImport(IMPORT_CASCADE_TYPE);
+        if (persistenceAssociatonInfo.isJoinTableRequired()) {
+            fragment.addImport(IMPORT_MANY_TO_MANY);
+            fragment.addImport(IMPORT_JOIN_TABLE);
+
+            fragment.append(ANNOTATION_MANY_TO_MANY).append("(");
+            fragment.append("targetEntity = " + targetQName).append(".class");
+            fragment.append(", cascade = CascadeType.ALL").appendln(")");
+        } else if (persistenceAssociatonInfo.isUnidirectional() && pcTypeAssociation.is1ToMany()) {
+            fragment.addImport(IMPORT_ONE_TO_MANY);
+            fragment.append(ANNOTATION_ONE_TO_MANY).append("(");
+            fragment.append("targetEntity = " + targetQName).append(".class");
+            fragment.append(", cascade = CascadeType.ALL").appendln(")");
+        }
+
+        // TODO: add association edit dialog for the join table name
+        // fragment.append(ANNOTATION_JOIN_TABLE).append("(");
+        // fragment.append("name = " + persistenceAssociatonInfo.getJoinTableName());
+        // fragment.appendln(")");
     }
 
-    private void createAnnotationForComposition(JavaCodeFragment fragment,
+    private void createAnnotationForCompositionOneToOne(JavaCodeFragment fragment,
             IPolicyCmptTypeAssociation pcTypeAssociation,
             IPersistentAssociationInfo associatonInfo) throws CoreException {
 
-        if (pcTypeAssociation.is1To1()) {
-            // TODO: root class in hierarchy of target?
+        // detail to master compositions are realized using a "parentModelObject" field and thus
+        // need to be annotated in a FieldGenerator class and not an AssociationGenerator
+        if (pcTypeAssociation.isCompositionMasterToDetail()) {
             IIpsProject ipsProject = pcTypeAssociation.getIpsProject();
             IPolicyCmptType targetPcType = pcTypeAssociation.findTargetPolicyCmptType(ipsProject);
 
             String targetQName = getQualifiedImplClassName(targetPcType);
+            String rootOfTargetQName = getRootOfTargetQName(targetPcType);
 
             fragment.addImport(IMPORT_ONE_TO_ONE);
-            fragment.addImport(targetQName);
+
+            fragment.addImport(IMPORT_CASCADE_TYPE);
+
+            fragment.addImport(rootOfTargetQName);
 
             fragment.append(ANNOTATION_ONE_TO_ONE);
             fragment.append('(').append("targetEntity = ");
 
-            fragment.appendClassName(targetQName).append(".class").appendln(')');
+            fragment.appendClassName(rootOfTargetQName).append(".class");
+
+            fragment.append(", cascade = ").appendClassName(IMPORT_CASCADE_TYPE).append(".ALL");
+
+            fragment.appendln(", orphanRemoval = true)");
         }
     }
 
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
+    private void createAnnotationForCompositionOneToMany(JavaCodeFragment fragment,
+            IPolicyCmptTypeAssociation pcTypeAssociation,
+            IPersistentAssociationInfo associatonInfo) {
+
+        fragment.addImport("javax.persistence.Transient");
+        fragment.append("@Transient");
+
+        // TODO: merge with createAnnotationForCompositionOneToOne() when the code generation
+        // for the "parentModelObject" field is fixed
+
+        // change @OneToOne -> @OneToMany
+
+        // additional to the annotations generated for the 1:1 case also add:
+        // mappedBy="parentModelObject", ...
+    }
+
+    private String getRootOfTargetQName(IPolicyCmptType targetPcType) throws CoreException {
+        FindRootTypeVisitor rootVisitor = new FindRootTypeVisitor(targetPcType.getIpsProject());
+        rootVisitor.start(targetPcType);
+        IPolicyCmptType rootType = rootVisitor.getRootType();
+
+        return getQualifiedImplClassName(rootType);
+    }
+
+    private String getQualifiedImplClassName(IPolicyCmptType targetPcType) {
+        return GenType.getQualifiedName(targetPcType, getStandardBuilderSet(), false);
+    }
+
+    private final class FindRootTypeVisitor extends TypeHierarchyVisitor {
+        IPolicyCmptType rootType = null;
+
+        private FindRootTypeVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            IPolicyCmptType pcType = (IPolicyCmptType)currentType;
+            if (pcType.hasSupertype()) {
+                return true;
+            }
+            rootType = pcType;
+            return false;
+        }
+
+        public IPolicyCmptType getRootType() {
+            return rootType;
+        }
     }
 
 }

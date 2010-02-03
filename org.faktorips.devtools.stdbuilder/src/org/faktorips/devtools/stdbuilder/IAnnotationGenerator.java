@@ -18,6 +18,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
 
 public interface IAnnotationGenerator {
 
+    public StandardBuilderSet getStandardBuilderSet();
+
     public AnnotatedJavaElementType getAnnotatedJavaElementType();
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement);

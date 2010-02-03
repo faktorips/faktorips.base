@@ -14,14 +14,25 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+/**
+ * This class generates JPA annotations for policy component types.
+ * <p/>
+ * Each persistent policy component type needs at least an <code>@Entity</code> annotation. The
+ * information which annotations to generate is pulled from the class {@link PersistentTypeInfo}
+ * which is part of persistent {@link IPolicyCmptType}s.
+ * 
+ * @author Roman Grutza
+ */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
     public PolicyCmptImplClassJpaAnnGen(StandardBuilderSet builderSet) {
@@ -91,7 +102,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         DiscriminatorDatatype discriminatorDatatype = persistenceTypeInfo.getDiscriminatorDatatype();
         String discriminatorColumnName = persistenceTypeInfo.getDiscriminatorColumnName();
-        String discriminatorValue = persistenceTypeInfo.getDescriminatorValue();
+        String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
 
         fragment.appendln(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
                 + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype + ")");

@@ -11,13 +11,15 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.codegen.JavaCodeFragment;
 
+/**
+ * Abstract base class for annotation builders.
+ * 
+ * @author Roman Grutza
+ */
 public abstract class AbstractAnnotationGenerator implements IAnnotationGenerator {
 
     private final StandardBuilderSet builderSet;
@@ -26,7 +28,15 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
         this.builderSet = builderSet;
     }
 
-    protected String getQualifiedImplClassName(IPolicyCmptType targetPcType) {
-        return GenType.getQualifiedName(targetPcType, builderSet, false);
+    /**
+     * {@inheritDoc}
+     */
+    public StandardBuilderSet getStandardBuilderSet() {
+        return builderSet;
+    }
+
+    protected JavaCodeFragment newJavaCodeFragment() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        return fragment;
     }
 }

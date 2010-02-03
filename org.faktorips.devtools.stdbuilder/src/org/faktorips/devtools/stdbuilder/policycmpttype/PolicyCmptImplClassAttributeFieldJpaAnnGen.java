@@ -17,9 +17,15 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+/**
+ * This class generates JPA annotations for fields of policy component types.
+ * 
+ * @author Roman Grutza
+ */
 public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotationGenerator {
 
     private static final String ANNOTATION_COLUMN = "@Column";

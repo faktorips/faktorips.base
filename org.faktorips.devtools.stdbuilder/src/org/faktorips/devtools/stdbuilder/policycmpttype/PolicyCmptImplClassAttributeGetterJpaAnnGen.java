@@ -15,9 +15,15 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+/**
+ * This class generates JPA annotations for attribute getter methods on policy component types.
+ * 
+ * @author Roman Grutza
+ */
 public class PolicyCmptImplClassAttributeGetterJpaAnnGen extends AbstractAnnotationGenerator {
 
     public PolicyCmptImplClassAttributeGetterJpaAnnGen(StandardBuilderSet builderSet) {
@@ -25,10 +31,7 @@ public class PolicyCmptImplClassAttributeGetterJpaAnnGen extends AbstractAnnotat
     }
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-
-        // TODO: flesh
-        return fragment;
+        return newJavaCodeFragment();
     }
 
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {

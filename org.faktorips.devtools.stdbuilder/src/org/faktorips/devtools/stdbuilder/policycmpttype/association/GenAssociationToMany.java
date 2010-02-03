@@ -201,9 +201,8 @@ public class GenAssociationToMany extends GenAssociation {
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-            // TODO: for now transient as assoc. codegen incomplete
-            getGenType().getBuilderSet().addAnnotations(
-                    AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, association, builder);
+            getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
+                    association, builder);
 
             // TODO: introduce Generator for JAXB
             if (isGenerateJaxbSupport()) {

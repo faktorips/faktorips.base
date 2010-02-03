@@ -15,17 +15,23 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+/**
+ * This class generates the @Transient JPA annotation for fields of policy component types.
+ * 
+ * @author Roman Grutza
+ */
 public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotationGenerator {
+
+    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
+    private static final String ANNOTATION_TRANSIENT = "@Transient";
 
     public PolicyCmptImplClassTransientFieldJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
     }
-
-    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
-    private static final String ANNOTATION_TRANSIENT = "@Transient";
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();

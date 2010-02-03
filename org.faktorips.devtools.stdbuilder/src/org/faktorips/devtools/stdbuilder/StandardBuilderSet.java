@@ -600,6 +600,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         for (IAnnotationGenerator generator : generators) {
             builder.append(generator.createAnnotation(ipsElement));
+            builder.appendln();
         }
         return;
     }
