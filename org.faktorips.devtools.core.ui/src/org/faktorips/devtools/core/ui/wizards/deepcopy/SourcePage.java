@@ -344,6 +344,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         public FocusListenerRefreshTreeOnValueChange(Text[] textControls) {
             this.textControls = textControls;
+            // store first values, to decide the value change later one
+            for (int i = 0; i < textControls.length; i++) {
+                hasValueChanged(textControls[i]);
+            }
         }
 
         public void focusGained(FocusEvent e) {
