@@ -20,6 +20,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -218,6 +219,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * Provides the new names (for selected nodes) and icons showing if a reference is created (for
      * deselected nodes).
      * 
+     * TODO Joerg better use DefaultLabelProvider
+     * 
      * @author Thorsten Guenther
      */
     private class LabelProvider extends StyledCellLabelProvider {
@@ -267,6 +270,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(productCmptReference);
                 } else {
                     packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
+                }
+                if (StringUtils.isEmpty(packageName)) {
+                    packageName = org.faktorips.devtools.core.ui.Messages.DefaultLabelProvider_labelDefaultPackage;
                 }
                 return " - " + packageName; //$NON-NLS-1$
             } else if (item instanceof IProductCmptStructureTblUsageReference) {
