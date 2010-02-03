@@ -13,12 +13,16 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 
 /**
  * Provides the elements of the FaktorIps-Model for the department.
@@ -26,17 +30,21 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
  * @author Thorsten Guenther
  */
 public class DeepCopyContentProvider implements ITreeContentProvider {
-
     /**
      * The root-node this content provider starts to evaluate the content.
      */
     private IProductCmptTreeStructure structure;
 
-    /**
+    /*
      * Flag to tell the content provider to show (<code>true</code>) or not to show the
      * Relation-Type as Node.
      */
-    private boolean fShowRelationType = true;
+    private boolean showRelationType = true;
+
+    /*
+     * Flag to show or hide association targets
+     */
+    private boolean showAssociationTargets = true;
 
     private IProductCmptReference root;
 
@@ -45,15 +53,16 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
      * 
      * @param showRelationType <code>true</code> to show the relation types as nodes.
      */
-    public DeepCopyContentProvider(boolean showRelationType) {
-        fShowRelationType = showRelationType;
+    public DeepCopyContentProvider(boolean showRelationType, boolean showAssociationTargets) {
+        this.showRelationType = showRelationType;
+        this.showAssociationTargets = showAssociationTargets;
     }
 
     /**
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
+        if (!showRelationType && parentElement instanceof IProductCmptReference) {
             // returns the product cmpt references without the type
             return getChildrenFor((IProductCmptReference)parentElement);
         } else if (parentElement instanceof IProductCmptReference) {
@@ -71,7 +80,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] getRefChildrenFor(IProductCmptReference parentElement) {
-        return addTblUsages(parentElement, structure.getChildProductCmptTypeAssociationReferences(parentElement));
+        return addTblUsages(parentElement, structure.getChildProductCmptTypeAssociationReferences(parentElement, false));
     }
 
     private Object[] getChildrenFor(IProductCmptStructureReference parentElement) {
@@ -79,13 +88,33 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] addTblUsages(IProductCmptStructureReference parentElement, Object[] productCmptReferencesOrTypes) {
+        Object[] filteredElemens = filterAssociationTargets(productCmptReferencesOrTypes, showAssociationTargets);
         IProductCmptStructureTblUsageReference[] tblUsageReference = structure
                 .getChildProductCmptStructureTblUsageReference(parentElement);
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[tblUsageReference.length
-                + productCmptReferencesOrTypes.length];
-        System.arraycopy(productCmptReferencesOrTypes, 0, result, 0, productCmptReferencesOrTypes.length);
-        System.arraycopy(tblUsageReference, 0, result, productCmptReferencesOrTypes.length, tblUsageReference.length);
+                + filteredElemens.length];
+        System.arraycopy(filteredElemens, 0, result, 0, filteredElemens.length);
+        System.arraycopy(tblUsageReference, 0, result, filteredElemens.length, tblUsageReference.length);
         return result;
+    }
+
+    private Object[] filterAssociationTargets(Object[] productCmptReferencesOrTypes, boolean showAssociationTargets) {
+        if (showAssociationTargets) {
+            // return un-filtered list
+            return productCmptReferencesOrTypes;
+        }
+        // filter association targets from the list
+        List<Object> result = new ArrayList<Object>();
+        for (int i = 0; i < productCmptReferencesOrTypes.length; i++) {
+            if (productCmptReferencesOrTypes[i] instanceof IProductCmptTypeAssociationReference) {
+                IProductCmptTypeAssociationReference productCmptTypeRelationReference = (IProductCmptTypeAssociationReference)productCmptReferencesOrTypes[i];
+                if (productCmptTypeRelationReference.getAssociation().isAssoziation()) {
+                    continue;
+                }
+            }
+            result.add(productCmptReferencesOrTypes[i]);
+        }
+        return result.toArray(new Object[result.size()]);
     }
 
     /**
@@ -96,7 +125,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (!fShowRelationType && element instanceof IProductCmptReference) {
+        if (!showRelationType && element instanceof IProductCmptReference) {
             return structure.getParentProductCmptReference((IProductCmptReference)element);
         } else if (element instanceof IProductCmptReference) {
             return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
@@ -146,10 +175,20 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     public boolean isRelationTypeShowing() {
-        return fShowRelationType;
+        return showRelationType;
     }
 
-    public void setRelationTypeShowing(boolean showRelationType) {
-        fShowRelationType = showRelationType;
+    /**
+     * Returns the element in the structure which is the root
+     */
+    protected IProductCmptReference getRoot() {
+        return root;
+    }
+
+    /**
+     * Returns <code>true</code> id association targets are visible or not
+     */
+    public boolean isShowAssociationTargets() {
+        return showAssociationTargets;
     }
 }

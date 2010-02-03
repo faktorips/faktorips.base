@@ -113,6 +113,9 @@ public class DeepCopyPreview {
     }
 
     private void validateTarget(IProductCmptStructureReference modified, int segmentsToIgnore, IIpsPackageFragment base) {
+        if (base == null || !base.getRoot().exists()) {
+            return;
+        }
         IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(modified);
 
         StringBuffer message = new StringBuffer();
@@ -213,6 +216,9 @@ public class DeepCopyPreview {
      * Constructs the name of the target package
      */
     private String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
+        if (targetBase == null || !targetBase.getRoot().exists()) {
+            return "";
+        }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', '.');
 
@@ -229,7 +235,7 @@ public class DeepCopyPreview {
      * Constructs the new name. If at least one of search pattern and replace text is empty, the new
      * name is the old name.
      */
-    private String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
+    public String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
         return getNewName(targetPackage, correspondingIpsObject, 0);
     }
 

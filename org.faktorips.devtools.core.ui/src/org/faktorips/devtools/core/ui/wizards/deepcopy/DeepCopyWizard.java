@@ -51,7 +51,7 @@ public class DeepCopyWizard extends ResizableWizard {
     public static final int TYPE_COPY_PRODUCT = 10;
     public static final int TYPE_NEW_VERSION = 100;
 
-    private static final String SECTION_NAME = "DeepCopyWizard";
+    private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
 
     private ProductCmptTreeStructure structure;
     private SourcePage sourcePage;
@@ -214,21 +214,14 @@ public class DeepCopyWizard extends ResizableWizard {
         calendar.setTime(newDate);
         ipsPreferences.setWorkingDate(calendar);
 
-        getShell().getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    // apply working date in wizard pages
-                    structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(calendar,
-                            structure.getRoot().getProductCmpt().getIpsProject());
-                    sourcePage.refreshVersionId(structure);
-                    sourcePage.refreshTree();
-                } catch (CycleInProductStructureException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-        });
-
-        getContainer().updateButtons();
+        // apply working date in wizard pages
+        try {
+            structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(calendar,
+                    structure.getRoot().getProductCmpt().getIpsProject());
+            sourcePage.refreshVersionId(structure);
+        } catch (CycleInProductStructureException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     /**

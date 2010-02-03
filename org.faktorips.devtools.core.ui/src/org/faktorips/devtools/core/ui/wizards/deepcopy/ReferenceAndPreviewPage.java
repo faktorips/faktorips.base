@@ -34,7 +34,6 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
@@ -48,10 +47,9 @@ import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.Prod
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -62,7 +60,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
@@ -84,10 +81,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
     // The viewer to display the products to copy
     private TreeViewer tree;
 
-    // The type of the wizard displaying this page. Used to show different titles for different
-    // types.
-    private int type;
-
     // Label shows the current working date
     private Label workingDateLabel;
 
@@ -97,12 +90,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * @return The title for this page - which depends on the given type.
      */
     private static String getTitle(int type) {
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            return Messages.ReferenceAndPreviewPage_title;
-        } else {
-            return NLS.bind(Messages.ReferenceAndPreviewPage_titleNewVersion, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-        }
+        return Messages.ReferenceAndPreviewPage_title;
     }
 
     /**
@@ -126,12 +114,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
             throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
         }
 
-        this.type = type;
-
         this.sourcePage = sourcePage;
         this.structure = structure;
         setTitle(getTitle(type));
-        setDescription(Messages.ReferenceAndPreviewPage_description);
         setPageComplete(true);
     }
 
@@ -165,7 +150,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
         tree = new TreeViewer(root);
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new LabelProvider());
-        tree.setContentProvider(new ContentProvider());
+        tree.setContentProvider(new ContentProvider(getDeepCopyWizard().getIpsProject()));
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
@@ -192,8 +177,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
                             monitor = new NullProgressMonitor();
                         }
 
+                        ContentProvider contentProvider = (ContentProvider)tree.getContentProvider();
                         monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
-                        ((ContentProvider)tree.getContentProvider()).setCheckedNodes(sourcePage.getCheckedNodes());
+                        contentProvider.setCheckedNodes(sourcePage.getCheckedNodes());
                         monitor.worked(1);
                         tree.setInput(structure);
                         monitor.worked(1);
@@ -201,8 +187,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
                         monitor.worked(1);
                         monitor.worked(1);
                         monitor.worked(1);
-                        setDescription(Messages.ReferenceAndPreviewPage_labelTargetPackage + ": "
-                                + getDeepCopyWizard().getDeepCopyPreview().getTargetPackage().getName());
                         monitor.worked(1);
                     }
                 });
@@ -212,65 +196,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
-    }
-
-    /**
-     * Constructs the new name. If at least one of search pattern and replace text is empty, the new
-     * name is the old name.
-     */
-    public String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
-        return getNewName(targetPackage, correspondingIpsObject, 0);
-    }
-
-    private String getNewName(IIpsPackageFragment targetPackage,
-            IIpsObject correspondingIpsObject,
-            int uniqueCopyOfCounter) {
-        String oldName = correspondingIpsObject.getName();
-        String newName = oldName;
-        IProductCmptNamingStrategy namingStrategy = sourcePage.getNamingStrategy();
-        String kindId = null;
-
-        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-            MessageList list = namingStrategy.validate(newName);
-            if (!list.containsErrorMsg()) {
-                kindId = namingStrategy.getKindId(newName);
-                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
-            } else {
-                // could't determine kind id, thus add copy of in front of the name
-                // to get an unique new name
-                if (targetPackage != null) {
-                    newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
-                            newName);
-                }
-            }
-        }
-
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            // the copy product feature supports pattern replace
-            String searchPattern = sourcePage.getSearchPattern();
-            String replaceText = sourcePage.getReplaceText();
-            if (!replaceText.equals("") && !searchPattern.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
-                newName = newName.replaceAll(searchPattern, replaceText);
-            }
-        }
-
-        if (namingStrategy == null && oldName.equals(newName)) {
-            // programming error, should be assert before this page will be displayed
-            throw new RuntimeException(
-                    "No naming strategy exists, therefore the new product components couldn't be copied with the same name in the same directory!"); //$NON-NLS-1$
-        }
-
-        // if no kind is was found check and avoid duplicate names
-        // because a copyOf was added in front of the new name
-        if (kindId == null && targetPackage != null) {
-            IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(
-                    newName));
-            if (ipsSrcFile.exists()) {
-                return getNewName(targetPackage, correspondingIpsObject, ++uniqueCopyOfCounter);
-            }
-        }
-
-        return newName;
     }
 
     /**
@@ -336,15 +261,20 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         private String getSuffixFor(Object item) {
             if (item instanceof IProductCmptReference) {
-                String packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(
-                        (IProductCmptReference)item);
-                return " - " + packageName;
+                IProductCmptReference productCmptReference = (IProductCmptReference)item;
+                String packageName = ""; //$NON-NLS-1$
+                if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(productCmptReference)) {
+                    packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(productCmptReference);
+                } else {
+                    packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
+                }
+                return " - " + packageName; //$NON-NLS-1$
             } else if (item instanceof IProductCmptStructureTblUsageReference) {
                 String packageName = getDeepCopyWizard().getDeepCopyPreview().getPackageName(
                         (IProductCmptStructureTblUsageReference)item);
-                return " - " + packageName;
+                return " - " + packageName; //$NON-NLS-1$
             }
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         private Display getCurrentDisplay() {
@@ -355,19 +285,19 @@ public class ReferenceAndPreviewPage extends WizardPage {
             if (element instanceof IProductCmptStructureReference) {
                 IProductCmptStructureReference structureReference = (IProductCmptStructureReference)element;
                 if (isInError(structureReference)) {
-                    return IpsUIPlugin.getImageHandling().getSharedImage("structureReference", true);
+                    return IpsUIPlugin.getImageHandling().getSharedImage("structureReference", true); //$NON-NLS-1$
                 }
                 IIpsElement wrapped = getWrapped(structureReference);
                 if (wrapped instanceof IProductCmpt) {
                     if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "LinkProductCmpt.gif");
+                                "LinkProductCmpt.gif"); //$NON-NLS-1$
                         return (Image)resourceManager.get(imageDescriptor);
                     }
                 } else if (wrapped instanceof ITableContentUsage) {
                     if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "LinkTableContents.gif");
+                                "LinkTableContents.gif"); //$NON-NLS-1$
                         return (Image)resourceManager.get(imageDescriptor);
                     }
                 }
@@ -444,6 +374,13 @@ public class ReferenceAndPreviewPage extends WizardPage {
     }
 
     /**
+     * Returns the new name
+     */
+    public String getNewName(IIpsPackageFragment targetPackage, IIpsObject ipsObject) {
+        return getDeepCopyWizard().getDeepCopyPreview().getNewName(targetPackage, ipsObject);
+    }
+
+    /**
      * Does only show the nodes which where selected on the source page. As input, an array of all
      * the selected nodes of the source page is expected.
      * 
@@ -453,8 +390,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         private Set<IProductCmptStructureReference> checkedNodes;
 
-        public ContentProvider() {
-            super(true);
+        public ContentProvider(IIpsProject ipsProject) {
+            super(true, true);
         }
 
         @Override

@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
     public static String SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt;
+    public static String SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch;
     public static String SourcePage_columnNameNewName;
     public static String SourcePage_columnNameOperation;
     public static String SourcePage_columnNameSourceStructure;
@@ -42,18 +43,17 @@ public class Messages extends NLS {
     public static String SourcePage_msgCopyNotPossible;
     public static String SourcePage_msgMissingSourceFolder;
     public static String SourcePage_msgNothingSelected;
+    public static String SourcePage_msgSearchPatternNotFound;
     public static String SourcePage_msgSelectSourceFolder;
     public static String SourcePage_msgWarningTargetWillBeCreated;
     public static String SourcePage_title;
     public static String SourcePage_description;
-    public static String SourcePage_msgSelect;
+    public static String SourcePage_description_copy;
     public static String ReferenceAndPreviewPage_title;
-    public static String ReferenceAndPreviewPage_description;
     public static String ReferenceAndPreviewPage_labelValidFrom;
     public static String ReferenceAndPreviewPage_labelTargetPackage;
     public static String ReferenceAndPreviewPage_labelSearchPattern;
     public static String ReferenceAndPreviewPage_labelReplacePattern;
-    public static String ReferenceAndPreviewPage_msgCopyNotPossible;
     public static String ReferenceAndPreviewPage_msgCanNotCreateFile;
     public static String ReferenceAndPreviewPage_msgFileAllreadyExists;
     public static String ReferenceAndPreviewPage_msgNameCollision;
@@ -61,12 +61,13 @@ public class Messages extends NLS {
     public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
     public static String SourcePage_msgCircleRelation;
     public static String SourcePage_msgCircleRelationShort;
+    public static String SourcePage_msgPatternNotFound;
+    public static String SourcePage_msgReplaceTextNotFound;
     public static String SourcePage_operationCopy;
     public static String SourcePage_operationLink;
     public static String ReferenceAndPreviewPage_msgCircleDetected;
     public static String DeepCopyWizard_titleNewVersion;
     public static String SourcePage_titleNewVersion;
-    public static String ReferenceAndPreviewPage_titleNewVersion;
     public static String ReferenceAndPreviewPage_labelVersionId;
     public static String ReferenceAndPreviewPage_msgValidateCopy;
 }

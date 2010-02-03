@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -129,14 +133,26 @@ public class SameOperationValidator {
         Map<ParentProductCmptChildOperation, Object> objectOperations = new HashMap<ParentProductCmptChildOperation, Object>();
 
         IProductCmptReference root = structure.getRoot();
-        storeOperations(root.getStructure().getChildProductCmptReferences(root), objectOperations, messageList);
+        ArrayList<IIpsObject> validParentChildOperation = new ArrayList<IIpsObject>();
+        ArrayList<IProductCmptStructureReference> invalidParentChildOperation = new ArrayList<IProductCmptStructureReference>();
+        storeOperations(root.getStructure().getChildProductCmptReferences(root), objectOperations, messageList,
+                OPERATION_CHECKED, validParentChildOperation, invalidParentChildOperation);
         storeOperations(root.getStructure().getChildProductCmptStructureTblUsageReference(root), objectOperations,
-                messageList);
+                messageList, OPERATION_CHECKED, validParentChildOperation, invalidParentChildOperation);
+        for (Iterator<IProductCmptStructureReference> iterator = invalidParentChildOperation.iterator(); iterator
+                .hasNext();) {
+            IProductCmptStructureReference elem = iterator.next();
+            messageList.add(new Message(
+                    "", Messages.SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch, Message.ERROR, elem)); //$NON-NLS-1$
+        }
     }
 
     private boolean storeOperations(IProductCmptStructureReference[] productCmptStructureReferences,
             Map<ParentProductCmptChildOperation, Object> objectOperations,
-            MessageList result) {
+            MessageList result,
+            String parentOperation,
+            List<IIpsObject> validParentChildOperation,
+            List<IProductCmptStructureReference> invalidParentChildOperation) {
         for (int i = 0; i < productCmptStructureReferences.length; i++) {
             ParentProductCmptChildOperation childOperation = null;
             String errorMsg = ""; //$NON-NLS-1$
@@ -148,12 +164,22 @@ public class SameOperationValidator {
                 operation = OPERATION_CHECKED;
             }
 
+            if (parentOperation == OPERATION_UNCHECKED && operation == OPERATION_CHECKED) {
+                // parent is link but child is copy
+                if (!validParentChildOperation.contains(productCmptStructureReferences[i].getWrappedIpsObject())) {
+                    invalidParentChildOperation.add(productCmptStructureReferences[i]);
+                }
+            } else if (parentOperation == OPERATION_CHECKED && operation == OPERATION_CHECKED) {
+                validParentChildOperation.add(productCmptStructureReferences[i].getWrappedIpsObject());
+                invalidParentChildOperation.remove(productCmptStructureReferences[i]);
+            }
+
             if (productCmptStructureReferences[i] instanceof IProductCmptReference) {
                 storeOperations(structure.getChildProductCmptReferences(productCmptStructureReferences[i]),
-                        objectOperations, result);
+                        objectOperations, result, operation, validParentChildOperation, invalidParentChildOperation);
                 storeOperations(structure
                         .getChildProductCmptStructureTblUsageReference(productCmptStructureReferences[i]),
-                        objectOperations, result);
+                        objectOperations, result, operation, validParentChildOperation, invalidParentChildOperation);
 
                 IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)((IProductCmptReference)productCmptStructureReferences[i])
                         .getParent();
@@ -161,11 +187,6 @@ public class SameOperationValidator {
                     continue;
                 }
                 IProductCmptReference parentProductCmptReference = (IProductCmptReference)parent.getParent();
-                if (deepCopyPreview.isLinked(parentProductCmptReference)) {
-                    // if the parent isn't checked, we don't need to validate its child
-                    continue;
-                }
-
                 childOperation = new ParentProductCmptChildOperation(parentProductCmptReference.getProductCmpt(),
                         operation, parent.getAssociation(), ((IProductCmptReference)productCmptStructureReferences[i])
                                 .getProductCmpt());

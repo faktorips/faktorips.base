@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -61,8 +60,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -76,12 +73,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -100,7 +99,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class SourcePage extends WizardPage implements ValueChangeListener, ICheckStateListener {
+public class SourcePage extends WizardPage implements ICheckStateListener {
     static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private IProductCmptTreeStructure structure;
@@ -120,7 +119,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
     // Controls
     private TextField workingDateField;
-    private TextButtonField targetPackRootField;
     private IpsPckFragmentRootRefControl targetPackRootControl;
     private IpsPckFragmentRefControl targetPackageControl;
 
@@ -140,6 +138,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
     private Set<Object> linkedElements = new HashSet<Object>();
 
+    private DeepCopyContentProvider contentProvider;
+
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             return Messages.SourcePage_title;
@@ -157,9 +157,15 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         this.structure = structure;
         this.type = type;
 
-        setDescription(Messages.SourcePage_msgSelect);
-
-        super.setDescription(Messages.SourcePage_description);
+        String descr = null;
+        if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+            String versionConcept = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getVersionConceptNameSingular();
+            descr = NLS.bind(Messages.SourcePage_description, versionConcept);
+        } else {
+            descr = Messages.SourcePage_description_copy;
+        }
+        super.setDescription(descr);
 
         try {
             namingStrategy = structure.getRoot().getProductCmpt().getIpsProject().getProductCmptNamingStrategy();
@@ -198,29 +204,9 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         workingDate.setText(workingDateAsText);
         hasValueChanged(workingDate);
         workingDateField = new TextField(workingDate);
-        workingDateField.getControl().addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                // ignored
-            }
-
-            public void focusLost(FocusEvent e) {
-                if (!hasValueChanged(workingDate)) {
-                    // nothing changed
-                    return;
-                }
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        getDeepCopyWizard().applyWorkingDate();
-                    }
-                };
-                getShell().getDisplay().asyncExec(runnable);
-            }
-        });
 
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
         targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
-        targetPackRootField = new TextButtonField(targetPackRootControl);
-        targetPackRootField.addChangeListener(this);
 
         // set target default
         IIpsPackageFragment defaultPackage = getDefaultPackage();
@@ -248,8 +234,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         // folder in other cases reset the default package (because maybe the target package is
         // inside an ips archive)
         targetPackageControl.setIpsPackageFragment(defaultPackageRoot == packRoot ? defaultPackage : null);
-        targetPackageControl.getTextControl().addFocusListener(
-                new FocusListenerRefreshTreeOnValueChange(new Text[] { targetPackageControl.getTextControl() }));
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -257,20 +241,12 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
             replaceInput = toolkit.createText(inputRoot);
-
-            FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(new Text[] {
-                    searchInput, replaceInput });
-            searchInput.addFocusListener(focusListener);
-            replaceInput.addFocusListener(focusListener);
         }
 
         String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
         toolkit.createFormLabel(inputRoot, label);
         versionId = toolkit.createText(inputRoot);
-        versionId.addFocusListener(new FocusListenerRefreshTreeOnValueChange(new Text[] { versionId }));
-        TextField versionIdField = new TextField(versionId);
-        versionIdField.addChangeListener(this);
 
         // radio button: copy table contents, create empty table contents
         RadiobuttonGroup group = toolkit.createRadiobuttonGroup(root, SWT.SHADOW_IN,
@@ -282,7 +258,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
         tree = new CheckboxTreeViewer(root, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         tree.setUseHashlookup(true);
-        tree.setContentProvider(new DeepCopyContentProvider(true));
+        contentProvider = new DeepCopyContentProvider(true, false);
+        tree.setContentProvider(contentProvider);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         createColumns();
 
@@ -293,15 +270,71 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         refreshStructure(structure);
         refreshVersionId(structure);
 
-        // add Listener to the target text control (must be done here after the default is set)
-        targetPackageControl.getTextControl().addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                getWizard().getContainer().updateButtons();
+        initLinkElements();
+
+        getShell().getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                // run async to ensure that the buttons state (enabled/disabled)
+                // can be updated
+                refreshPageAferValueChange();
+                updateColumnWidth();
             }
         });
 
+        addListenerToAllControls();
+    }
+
+    private void addListenerToAllControls() {
+        // add listener perform validate etc. if focus lost and value change
+        // don't use value change event because of validation on every key pressed
+        Text[] textCtrls = new Text[] { workingDateField.getTextControl(), versionId, searchInput, replaceInput };
+        FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
+        for (int i = 0; i < textCtrls.length; i++) {
+            textCtrls[i].addFocusListener(focusListener);
+        }
+
+        // special listener for text button controls perform validate etc. if value changed
+        TextButtonField[] textButtonFields = new TextButtonField[] { new TextButtonField(targetPackRootControl),
+                new TextButtonField(targetPackageControl) };
+        for (int i = 0; i < textButtonFields.length; i++) {
+            textButtonFields[i].addChangeListener(new ValueChangeListener() {
+                public void valueChanged(FieldValueChangedEvent e) {
+                    refreshPageAferValueChange();
+                }
+            });
+        }
+    }
+
+    boolean refeshing;
+
+    protected void refreshPageAferValueChange() {
+        refeshing = true;
         refreshTree();
-        updateColumnWidth();
+        validate();
+        updatePageComplete();
+    }
+
+    /**
+     * Initialize the default linked elements, all associations targets will be linked
+     */
+    private void initLinkElements() {
+        IProductCmptReference[] productCmptReferences = structure.getChildProductCmptReferences(structure.getRoot());
+        for (int i = 0; i < productCmptReferences.length; i++) {
+            IProductCmptTypeAssociation association;
+            try {
+                IProductCmptLink link = productCmptReferences[i].getLink();
+                if (link == null) {
+                    continue;
+                }
+                association = link.findAssociation(getDeepCopyWizard().getIpsProject());
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                return;
+            }
+            if (association != null && association.isAssoziation()) {
+                linkedElements.add(productCmptReferences[i]);
+            }
+        }
     }
 
     private class FocusListenerRefreshTreeOnValueChange implements FocusListener {
@@ -321,13 +354,20 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         public void focusLost(FocusEvent e) {
             for (int i = 0; i < textControls.length; i++) {
                 if (hasValueChanged(textControls[i])) {
-                    refreshTreeAsync();
+                    if (textControls[i] == workingDateField.getTextControl()) {
+                        getDeepCopyWizard().applyWorkingDate();
+                    }
+                    refreshPageAferValueChange();
                     return;
                 }
             }
         }
     }
 
+    /*
+     * Re-set the column width, the new name will be displayed completely the other columns width
+     * will be resized depending on the windows size
+     */
     private void updateColumnWidth() {
         TableLayout layout = new TableLayout();
 
@@ -341,7 +381,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             String newName = iterator.next();
             int columnSizeNewNameCandidate = gc.stringExtent(newName).x + 40;
             columnSizeNewName = Math.max(columnSizeNewName, columnSizeNewNameCandidate);
-
         }
         gc.dispose();
 
@@ -385,7 +424,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                 } else if (getDeepCopyWizard().getDeepCopyPreview().isCopy(element)) {
                     cell.setText(Messages.SourcePage_operationCopy);
                 } else {
-                    cell.setText(""); //$NON-NLS-1$
+                    cell.setText("");
                 }
             }
         });
@@ -403,8 +442,11 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         copyOrLink.setEditingSupport(new EditingSupport(tree) {
             @Override
             protected boolean canEdit(Object element) {
-                if (!(element instanceof IProductCmptReference)) {
-                    return true;
+                if (!(element instanceof IProductCmptStructureReference)) {
+                    return false;
+                }
+                if (structure.getRoot() == element) {
+                    return false;
                 }
                 return getDeepCopyWizard().getDeepCopyPreview().isCopy(element)
                         || getDeepCopyWizard().getDeepCopyPreview().isLinked(element);
@@ -423,33 +465,14 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             @Override
             protected void setValue(Object element, Object value) {
                 Integer index = (Integer)value;
-                if (element instanceof IProductCmptTypeAssociationReference) {
-                    List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
-                    getAllChildElements((IProductCmptTypeAssociationReference)element, childs);
-                    if (childs.size() == 0) {
-                        return;
-                    }
-                    boolean confirmation = MessageDialog.openConfirm(getShell(), "Operation ändern",
-                            "wollen sie die Operation für alle Kind Elemente übernehmen?");
-                    if (!confirmation) {
-                        return;
-                    }
-                    for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
-                        IProductCmptStructureReference childElem = iterator.next();
-                        if (index == 1) {
-                            linkedElements.add(childElem);
-                        } else {
-                            linkedElements.remove(childElem);
-                        }
-                    }
-                } else {
+                if (!(element instanceof IProductCmptTypeAssociationReference)) {
                     if (index == 1) {
                         linkedElements.add(element);
                     } else {
                         linkedElements.remove(element);
                     }
                 }
-                refreshTree();
+                refreshPageAferValueChange();
             }
         });
 
@@ -487,7 +510,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                 if (element instanceof IProductCmptReference) {
                     if (linkedElements.contains(element)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "LinkProductCmpt.gif");
+                                "LinkProductCmpt.gif"); //$NON-NLS-1$
                         cell.setImage((Image)resourceManager.get(imageDescriptor));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
@@ -495,7 +518,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
                 } else if (element instanceof IProductCmptStructureTblUsageReference) {
                     if (linkedElements.contains(element)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "LinkTableContents.gif");
+                                "LinkTableContents.gif"); //$NON-NLS-1$
                         cell.setImage((Image)resourceManager.get(imageDescriptor));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
@@ -533,8 +556,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         tree.setInput(this.structure);
         tree.expandAll();
         setCheckedAll(tree.getTree().getItems(), true);
-        tree.refresh();
-
     }
 
     /**
@@ -544,7 +565,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
             versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
         }
-        updatePageComplete();
     }
 
     private void setCheckedAll(TreeItem[] items, boolean checked) {
@@ -615,7 +635,6 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
     }
 
     private void validate() {
-        setPageComplete(false);
         setMessage(null);
         setErrorMessage(null);
 
@@ -666,12 +685,61 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
+            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " "
                     + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
             return;
         }
 
+        validateSearchPattern();
+        if (getErrorMessage() != null) {
+            return;
+        }
+
         setPageComplete(true);
+    }
+
+    private void validateSearchPattern() {
+        String searchPattern = getSearchPattern();
+        String replacePattern = getReplaceText();
+        if (searchPattern.length() == 0 && replacePattern.length() == 0) {
+            return;
+        }
+
+        if (searchPattern.length() == 0) {
+            setErrorMessage(Messages.SourcePage_msgSearchPatternNotFound);
+            return;
+        }
+
+        if (replacePattern.length() == 0) {
+            setErrorMessage(Messages.SourcePage_msgReplaceTextNotFound);
+            return;
+        }
+
+        if (!isSearchPatternFound(searchPattern)) {
+            setErrorMessage(NLS.bind(Messages.SourcePage_msgPatternNotFound, searchPattern));
+            return;
+        }
+    }
+
+    private boolean isSearchPatternFound(String searchPattern) {
+        List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
+        IProductCmptTypeAssociationReference[] child = structure.getChildProductCmptTypeAssociationReferences(structure
+                .getRoot());
+        for (int i = 0; i < child.length; i++) {
+            getAllChildElements(child[i], childs);
+        }
+        for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
+            IProductCmptStructureReference reference = iterator.next();
+            if (!getDeepCopyWizard().getDeepCopyPreview().isCopy(reference)) {
+                continue;
+            }
+            String name = reference.getWrappedIpsObject().getName();
+            String newName = name.replaceAll(searchPattern, getReplaceText());
+            if (!newName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void validateWorkingDate() {
@@ -691,8 +759,15 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
     }
 
     public IProductCmptStructureReference[] getCheckedNodes() {
-        return Arrays.asList(tree.getCheckedElements()).toArray(
-                new IProductCmptStructureReference[tree.getCheckedElements().length]);
+        List<Object> result = new ArrayList<Object>();
+        List<Object> checkedElements = Arrays.asList(tree.getCheckedElements());
+        result.addAll(checkedElements);
+        if (!contentProvider.isShowAssociationTargets()) {
+            // associations are hidden, thus these elements are checked per default
+            // association targets to the result list
+            result.addAll(linkedElements);
+        }
+        return result.toArray(new IProductCmptStructureReference[result.size()]);
     }
 
     /**
@@ -704,7 +779,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         try {
             Pattern.compile(result);
         } catch (PatternSyntaxException e) {
-            result = ""; //$NON-NLS-1$
+            result = "";
         }
         return result;
     }
@@ -737,30 +812,12 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         return targetPackageControl.getIpsPackageFragment();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == targetPackRootField) {
-            sourceFolderChanged();
-        }
-        updatePageComplete();
-    }
-
-    private void sourceFolderChanged() {
-        if (targetPackageControl != null) {
-            targetPackageControl.setIpsPckFragmentRoot(targetPackRootControl.getIpsPckFragmentRoot());
-            targetPackageControl.setIpsPackageFragment(null);
-        }
-    }
-
     protected void updatePageComplete() {
-        validate();
         if (getErrorMessage() != null) {
             setPageComplete(false);
             return;
         }
-        setPageComplete(!"".equals(targetPackRootControl.getText())); //$NON-NLS-1$
+        setPageComplete(!"".equals(targetPackRootControl.getText()));
     }
 
     /**
@@ -796,17 +853,15 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             linkedElements.remove(element);
         }
 
-        refreshTree();
-        validate();
-        getContainer().updateButtons();
+        refreshPageAferValueChange();
     }
 
     private void getAllChildElements(IProductCmptTypeAssociationReference element,
             List<IProductCmptStructureReference> childs) {
         childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
         childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
-        IProductCmptTypeAssociationReference[] childRefs = structure.getChildProductCmptTypeAssociationReferences(element,
-                false);
+        IProductCmptTypeAssociationReference[] childRefs = structure.getChildProductCmptTypeAssociationReferences(
+                element, false);
         for (int i = 0; i < childRefs.length; i++) {
             getAllChildElements(childRefs[i], childs);
         }
@@ -824,27 +879,21 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         return linkedElements;
     }
 
-    public void refreshTreeAsync() {
-        getShell().getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                refreshTree();
-                validate();
-                getContainer().updateButtons();
-            }
-        });
-    }
+    private boolean isRefreshing = false;
 
     public void refreshTree() {
+        if (isRefreshing) {
+            return;
+        }
         ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
         pmd.setOpenOnRun(true);
         try {
+            isRefreshing = true;
             getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-
                     if (monitor == null) {
                         monitor = new NullProgressMonitor();
                     }
-
                     monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
                     getDeepCopyWizard().getDeepCopyPreview().checkForInvalidTargets();
                     monitor.worked(1);
@@ -860,6 +909,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            isRefreshing = false;
         }
         // otherwise buttons are disabled after run and save ui state?
         copyTableContentsBtn.setEnabled(true);
