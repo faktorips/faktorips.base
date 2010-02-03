@@ -725,6 +725,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
         IProductCmptTypeAssociationReference[] child = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
+
         for (int i = 0; i < child.length; i++) {
             getAllChildElements(child[i], childs);
         }
@@ -860,11 +861,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             List<IProductCmptStructureReference> childs) {
         childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
         childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
-        IProductCmptTypeAssociationReference[] childRefs = structure.getChildProductCmptTypeAssociationReferences(
-                element, false);
-        for (int i = 0; i < childRefs.length; i++) {
-            getAllChildElements(childRefs[i], childs);
+        IProductCmptReference[] childProductCmptRefs = structure.getChildProductCmptReferences(element);
+        for (int i = 0; i < childProductCmptRefs.length; i++) {
+            // get all children from all association references of all child ProductCmptReferences
+            IProductCmptTypeAssociationReference[] childRefs2 = structure
+                    .getChildProductCmptTypeAssociationReferences(childProductCmptRefs[i]);
+            for (int j = 0; j < childRefs2.length; j++) {
+                getAllChildElements(childRefs2[j], childs);
+            }
         }
+
     }
 
     public IProductCmptTreeStructure getStructure() {
