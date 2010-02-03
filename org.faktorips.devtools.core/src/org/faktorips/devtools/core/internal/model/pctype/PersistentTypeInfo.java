@@ -154,9 +154,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void validateThis(MessageList msgList, IIpsProject ipsProject) {
         try {
@@ -210,6 +207,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
 
+        if (!discriminatorDatatype.isParsableToDiscriminatorDatatype(discriminatorValue)) {
+            String text = "The discriminator value does not conform to the specified descriminator datatype.";
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+        }
+
         IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
         DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
         dValidator.start(pcType);
@@ -217,25 +220,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, dValidator.errorMessage, Message.ERROR,
                     this, dValidator.errorProperty));
         }
-
-        // TODO: obsolete, now in visitor
-        if (discriminatorDatatype == null
-                || !discriminatorDatatype.isParsableToDiscriminatorDatatype(discriminatorValue)) {
-            String text = "The discriminator value does not conform to the specified descriminator datatype.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-        }
-
-        if (isDiscriminatorRequired() && !PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
-            String text = "The discriminator column name is invalid.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
-        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
@@ -263,9 +249,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
         return getParent().getImage();
     }

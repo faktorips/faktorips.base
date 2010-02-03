@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -71,6 +70,7 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -767,38 +767,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
         uiToolkit.createFormLabel(workArea, "Column size:");
-        Spinner sizeSpinner = createSpinner(workArea);
-        // FIXME: bind spinner
-        // bindingContext.bindContent(sizeSpinner, attribute.getJpaAttributeInfo(),
-        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
+        IntegerField sizeField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
 
         uiToolkit.createFormLabel(workArea, "Column precision:");
-        Spinner precisionSpinner = createSpinner(workArea);
-        // FIXME: bind spinner
-        // bindingContext.bindContent(precisionSpinner, attribute.getJpaAttributeInfo(),
-        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
+        IntegerField precisionField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
 
         uiToolkit.createFormLabel(workArea, "Column scale:");
-        Spinner scaleSpinner = createSpinner(workArea);
-        // FIXME: bind spinner
-        // bindingContext.bindContent(scaleSpinner, attribute.getJpaAttributeInfo(),
-        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
+        IntegerField scaleField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
 
         uiToolkit.createFormLabel(workArea, "Datatype converter:");
         Combo converter = uiToolkit.createCombo(workArea);
-        // FIXME: bind a converter
-        // DefaultEnumType converterEnum = new DefaultEnumType("Date and Time converter",
-        // ValueSetType.class);
-        // bindingContext.bindContent(converter, attribute.getJpaAttributeInfo(),
-        // IJpaAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER, converterEnum);
-    }
-
-    // TODO: move to UIToolkit
-    private Spinner createSpinner(Composite workArea) {
-        Spinner spinner = new Spinner(workArea, SWT.BORDER);
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END);
-        spinner.setLayoutData(gridData);
-        return spinner;
+        // TODO: implement converter
+        converter.setEnabled(false);
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {
