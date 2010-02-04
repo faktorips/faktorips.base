@@ -30,7 +30,11 @@ public class ResourceAdapterFactory implements IAdapterFactory {
 
         if (adaptableObject instanceof IResource) {
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)adaptableObject);
-            return element.getAdapter(adapterType);
+            if (element != null) {
+                return element.getAdapter(adapterType);
+            } else {
+                return null;
+            }
         }
 
         return null;
