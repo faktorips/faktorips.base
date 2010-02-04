@@ -34,13 +34,17 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -109,7 +113,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     /*
      * Indicates that the formula will be executed and the result will be displayed in the
-     * corresponding control. If <code>false</code> the formula will not be executed by this control.
+     * corresponding control. If <code>false</code> the formula will not be executed by this
+     * control.
      */
     private boolean canCalculateResult = false;
 
@@ -423,6 +428,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         }
         column.setText(Messages.FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Value + extension);
 
+        increaseHeightOfTableRow(table, 2);
+
         // Create the viewer and connect it to the view
         formulaInputTableViewer = new TableViewer(table);
         formulaInputTableViewer.setContentProvider(new ArrayContentProvider());
@@ -434,6 +441,39 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
         setTableInput(null);
         repackAndResfreshParamInputTable();
+    }
+
+    private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
+        // add paint lister to increase the height of the table row,
+        // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
+        // text is hidden
+        Listener paintListener = new Listener() {
+            public void handleEvent(Event event) {
+                switch (event.type) {
+                    case SWT.MeasureItem: {
+                        if (numOfColumns == 0) {
+                            return;
+                        }
+                        TableItem item = (TableItem)event.item;
+                        // column 0 will be used to determine the height,
+                        // <code>event.index<code> couldn't be used because it is only available
+                        // @since 3.2, that's ok because the height is always the same, even if the
+                        // column contains no text, the height only depends on the font
+                        String text = getText(item, 0);
+                        Point size = event.gc.textExtent(text);
+                        // the height will be increased by 10 pixel
+                        event.height = Math.max(event.height, size.y + 10);
+                        break;
+                    }
+                }
+            }
+
+            String getText(TableItem item, int column) {
+                String text = item.getText(column);
+                return text;
+            }
+        };
+        table.addListener(SWT.MeasureItem, paintListener);
     }
 
     private void createTableCellModifier() {

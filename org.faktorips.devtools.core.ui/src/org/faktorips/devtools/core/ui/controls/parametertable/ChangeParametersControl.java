@@ -181,7 +181,9 @@ public abstract class ChangeParametersControl extends Composite implements IData
                 parameterInfo.setNewTypeName((String)value);
             } else {
             }
-            fListener.parameterChanged(parameterInfo);
+            if (fListener != null) {
+                fListener.parameterChanged(parameterInfo);
+            }
             fTableViewer.update(parameterInfo, new String[] { property });
         }
     }
