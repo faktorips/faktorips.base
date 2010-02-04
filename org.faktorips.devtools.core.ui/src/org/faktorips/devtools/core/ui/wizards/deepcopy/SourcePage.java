@@ -278,6 +278,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
                 refreshPageAferValueChange();
+                // update column width only the first time
+                // otherwise the resize effect is to strange for the user
+                updateColumnWidth();
             }
         });
 
@@ -324,7 +327,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         refreshTree();
         validate();
         updatePageComplete();
-        updateColumnWidth();
     }
 
     /**
@@ -492,13 +494,35 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             protected void setValue(Object element, Object value) {
                 Integer index = (Integer)value;
                 if (!(element instanceof IProductCmptTypeAssociationReference)) {
-                    if (index == 1) {
+                    boolean linkElement = index == 1;
+                    if (linkElement) {
                         linkedElements.add(element);
                     } else {
                         linkedElements.remove(element);
                     }
+                    if (element instanceof IProductCmptReference) {
+                        setSameOperationForAllChilds((IProductCmptReference)element, linkElement);
+                    }
                 }
                 refreshPageAferValueChange();
+            }
+
+            private void setSameOperationForAllChilds(IProductCmptReference element, boolean asLink) {
+                List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
+                childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
+                childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
+                if (childs.size() == 0) {
+                    return;
+                }
+                for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
+                    IProductCmptStructureReference childElem = iterator.next();
+                    if (asLink) {
+                        linkedElements.add(childElem);
+                    } else {
+                        linkedElements.remove(childElem);
+                    }
+                }
+
             }
         });
 
