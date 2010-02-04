@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,62 +23,55 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-
 /**
  * Implementation of the CompilationResult interface.
  */
 public class CompilationResultImpl implements CompilationResult {
 
     /**
-     * Creates a new result, that contains a message that the given identifier
-     * is undefined. This method is intended to be used by implementations of
-     * <code>IdentifierResolver</code>
+     * Creates a new result, that contains a message that the given identifier is undefined. This
+     * method is intended to be used by implementations of <code>IdentifierResolver</code>
      */
     public final static CompilationResult newResultUndefinedIdentifier(Locale locale, String identifier) {
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
-    
+
     /**
      * Extracts the datatypes from an array of compilation results.
      */
     public final static Datatype[] getDatatypes(CompilationResult[] results) {
         Datatype[] types = new Datatype[results.length];
-        for (int i=0; i<types.length; i++) {
+        for (int i = 0; i < types.length; i++) {
             types[i] = results[i].getDatatype();
         }
         return types;
     }
-    
+
     private JavaCodeFragment codeFragment;
     private MessageList messages;
     private Datatype datatype;
     private Set identifiersUsed;
-    
+
     /**
      * Creates a CompilationResult with the given parameters.
      */
-    public CompilationResultImpl(
-            JavaCodeFragment sourcecode, 
-            Datatype datatype,
-            MessageList messages,
-            Set identifiers) {
-        this.codeFragment = sourcecode;
+    public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype, MessageList messages, Set identifiers) {
+        codeFragment = sourcecode;
         this.datatype = datatype;
         this.messages = messages;
-        this.identifiersUsed = identifiers;
+        identifiersUsed = identifiers;
     }
-    
+
     /**
-     * Creates a CompilationResult that contains the given sourcecode fragment
-     * and datatype.
+     * Creates a CompilationResult that contains the given sourcecode fragment and datatype.
      */
     public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype) {
-        this.codeFragment = sourcecode;
+        codeFragment = sourcecode;
         this.datatype = datatype;
         messages = new MessageList();
     }
-    
+
     /**
      * Creates a CompilationResult that contains the given sourcecode and datatype.
      * 
@@ -87,7 +80,7 @@ public class CompilationResultImpl implements CompilationResult {
     public CompilationResultImpl(String sourcecode, Datatype datatype) {
         this(new JavaCodeFragment(sourcecode), datatype);
     }
-    
+
     /**
      * Creates a CompilationResult that contains the given message.
      * 
@@ -97,58 +90,58 @@ public class CompilationResultImpl implements CompilationResult {
         messages = new MessageList(message);
         codeFragment = new JavaCodeFragment();
     }
-    
+
     /**
      * Creates a new CompilationResult.
      */
     public CompilationResultImpl() {
-        this.codeFragment = new JavaCodeFragment();
+        codeFragment = new JavaCodeFragment();
         messages = new MessageList();
     }
-    
+
     /**
-     * Appends the given compilation result's sourcecode fragment and messages to this 
-     * result's sourcecode fragment. This result's datatype remains unchanged.
+     * Appends the given compilation result's sourcecode fragment and messages to this result's
+     * sourcecode fragment. This result's datatype remains unchanged.
      */
     public void add(CompilationResult result) {
         codeFragment.append(result.getCodeFragment());
         messages.add(result.getMessages());
         Set otherIdenifiers = ((CompilationResultImpl)result).identifiersUsed;
-        if (otherIdenifiers==null) {
+        if (otherIdenifiers == null) {
             return;
         }
-        if (identifiersUsed==null) {
+        if (identifiersUsed == null) {
             identifiersUsed = new LinkedHashSet(2);
         }
         identifiersUsed.addAll(otherIdenifiers);
     }
-    
+
     /**
      * Returns the generated Java sourcecode.
      */
     public JavaCodeFragment getCodeFragment() {
-       return codeFragment; 
+        return codeFragment;
     }
-    
+
     /**
      * Sets the code fragment.
      */
     public void setJavaCodeFragment(JavaCodeFragment code) {
-        this.codeFragment = code;
+        codeFragment = code;
     }
-    
+
     /**
      * Adds the code fragment to the result ones.
      */
     public void addCodeFragment(JavaCodeFragment code) {
-       codeFragment.append(code); 
+        codeFragment.append(code);
     }
-    
+
     /**
      * Adds the code fragment to the result ones.
      */
     public void addCodeFragment(String code) {
-       codeFragment.append(code); 
+        codeFragment.append(code);
     }
 
     /**
@@ -164,14 +157,14 @@ public class CompilationResultImpl implements CompilationResult {
     public Datatype getDatatype() {
         return datatype;
     }
-    
+
     /**
-     * Returns the messages generated during compilation. 
+     * Returns the messages generated during compilation.
      */
     public MessageList getMessages() {
         return messages;
     }
-    
+
     /**
      * Adds the message to the result.
      * 
@@ -189,96 +182,97 @@ public class CompilationResultImpl implements CompilationResult {
     public void addMessages(MessageList list) {
         messages.add(list);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String[] getResolvedIdentifiers() {
-        if (identifiersUsed==null) {
+        if (identifiersUsed == null) {
             return new String[0];
         }
         return (String[])identifiersUsed.toArray(new String[identifiersUsed.size()]);
     }
-    
+
     /**
-     * Adds the identifier to the ones being used in the formula. If the result already
-     * contains such an identifier, the identifier is not added a second time.
+     * Adds the identifier to the ones being used in the formula. If the result already contains
+     * such an identifier, the identifier is not added a second time.
      */
     public void addIdentifierUsed(String identifier) {
-        if (identifiersUsed==null) {
+        if (identifiersUsed == null) {
             identifiersUsed = new LinkedHashSet(2);
         }
         identifiersUsed.add(identifier);
     }
-    
+
     public Set getIdentifiersUsedAsSet() {
         return identifiersUsed;
     }
-    
+
     public void addIdentifiersUsed(Set identifiers) {
-        if (identifiersUsed==null) {
-            if (identifiers!=null) {
+        if (identifiersUsed == null) {
+            if (identifiers != null) {
                 identifiersUsed = new LinkedHashSet(identifiers);
             }
             return;
-        } 
-        if (identifiers!=null) {
+        }
+        if (identifiers != null) {
             identifiersUsed.addAll(identifiers);
         }
     }
-    
+
     public void addAllIdentifierUsed(CompilationResult[] argResults) {
         for (int i = 0; i < argResults.length; i++) {
             addIdentifier(argResults[i].getResolvedIdentifiers());
         }
     }
-    
-    private void addIdentifier(String[] identifiers){
+
+    private void addIdentifier(String[] identifiers) {
         for (int i = 0; i < identifiers.length; i++) {
             addIdentifierUsed(identifiers[i]);
         }
     }
-    
+
     public boolean isUsedAsIdentifier(String candidate) {
-        if (identifiersUsed==null) {
+        if (identifiersUsed == null) {
             return false;
         }
         return identifiersUsed.contains(candidate);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public boolean successfull() {
         return !messages.containsErrorMsg();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public boolean failed() {
         return messages.containsErrorMsg();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof CompilationResult)) {
             return false;
         }
         CompilationResult other = (CompilationResult)o;
-        return datatype.equals(other.getDatatype())
-        	&& this.codeFragment.equals(other.getCodeFragment())
-        	&& this.messages.equals(other.getMessages());
+        return datatype.equals(other.getDatatype()) && codeFragment.equals(other.getCodeFragment())
+                && messages.equals(other.getMessages());
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return "Datatype: " + (datatype==null?"null":datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR + messages.toString() + codeFragment.toString();  
+        return "Datatype: " + (datatype == null ? "null" : datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$
+                + SystemUtils.LINE_SEPARATOR + messages.toString() + codeFragment.toString();
     }
-    
+
 }
