@@ -49,8 +49,10 @@ import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.TreeViewerEditor;
@@ -430,7 +432,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 } else if (getDeepCopyWizard().getDeepCopyPreview().isCopy(element)) {
                     cell.setText(Messages.SourcePage_operationCopy);
                 } else {
-                    cell.setText("");
+                    cell.setText(""); //$NON-NLS-1$
                 }
             }
         });
@@ -489,9 +491,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private class SourceTreeCellLabelProvider extends CellLabelProvider {
-
         private ResourceManager resourceManager;
-
+        private ImageDescriptor overlay = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
+                "LinkOverlay.gif", true); //$NON-NLS-1$
         private DeepCopyLabelProvider labelProvider;
 
         public SourceTreeCellLabelProvider(DeepCopyLabelProvider labelProvider) {
@@ -504,6 +506,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             if (replaceInput != null) {
                 replaceInput.dispose();
             }
+            resourceManager.dispose();
             super.dispose();
         }
 
@@ -515,9 +518,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 cell.setText(labelProvider.getText(element));
                 if (element instanceof IProductCmptReference) {
                     if (linkedElements.contains(element)) {
-                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "LinkProductCmpt.gif"); //$NON-NLS-1$
-                        cell.setImage((Image)resourceManager.get(imageDescriptor));
+                        Image image = labelProvider.getImage(element);
+                        cell.setImage((Image)resourceManager.get(new DecorationOverlayIcon(image, overlay,
+                                IDecoration.BOTTOM_RIGHT)));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
                     }
@@ -694,7 +697,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " "
+            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
                     + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
             return;
         }
@@ -792,7 +795,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         try {
             Pattern.compile(result);
         } catch (PatternSyntaxException e) {
-            result = "";
+            result = ""; //$NON-NLS-1$
         }
         return result;
     }
@@ -830,7 +833,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             setPageComplete(false);
             return;
         }
-        setPageComplete(!"".equals(targetPackRootControl.getText()));
+        setPageComplete(!"".equals(targetPackRootControl.getText())); //$NON-NLS-1$
     }
 
     /**

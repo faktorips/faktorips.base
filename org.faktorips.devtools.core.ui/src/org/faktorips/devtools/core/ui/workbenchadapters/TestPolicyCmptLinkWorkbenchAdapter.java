@@ -24,9 +24,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class TestPolicyCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
-
-    public static final String linkOverlayName = "LinkOverlay.gif";
-
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof ITestPolicyCmptLink) {
