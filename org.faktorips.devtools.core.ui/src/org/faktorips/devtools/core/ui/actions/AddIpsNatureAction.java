@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -53,6 +52,7 @@ import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -110,16 +110,29 @@ public class AddIpsNatureAction extends ActionDelegate {
                     Messages.AddIpsNatureAction_mustSelectAJavaProject);
             return;
         }
-        IProjectDescription description;
         try {
-            description = javaProject.getProject().getDescription();
-            String[] natures = description.getNatureIds();
-            for (int i = 0; i < natures.length; i++) {
-                if (natures[i].equals(IIpsProject.NATURE_ID)) {
-                    MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
-                            Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
-                    return;
+            if (ProjectUtil.hasIpsNature(javaProject)) {
+                MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
+                        Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
+                return;
+            }
+            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            IIpsProject ipsProject = ipsModel.getIpsProject(javaProject.getProject());
+            if (ipsProject.getIpsProjectPropertiesFile().exists()) {
+                // readd the IPS Nature. For example when using SAP-NWDS, the project file is
+                // created by NWDS when checking out the Development Component from the Design Time
+                // Repository (DTR).
+                // The .project file is not stored in the DTR. With this action, the user can re-add
+                // the IPS Nature after the check out.
+                boolean answer = MessageDialog
+                        .openConfirm(
+                                getShell(),
+                                Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
+                                "The project contains an .ipsproject file, but the Faktor-IPS nature was not found. Do you want to re-add the Faktor-IPS Nature to the project?");
+                if (answer) {
+                    ProjectUtil.addIpsNature(ipsProject.getProject());
                 }
+                return;
             }
         } catch (CoreException e1) {
             IpsPlugin.log(e1);
