@@ -814,9 +814,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // init method
             javaDoc = "{@inheritDoc}";
             method = new JavaCodeFragmentBuilder();
+
             method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",
-                    "modelObject", "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
-                    Map.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+                    "modelObject", "propMap" }, new String[] {
+                    String.class.getName(),
+                    IModelObject.class.getName(),
+                    Map.class.getName()
+                            + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
+                                    + String.class.getName() + ">" : "") }, body, javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }
@@ -934,5 +939,4 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         // TODO AW: Not implemented yet.
         throw new RuntimeException("Not implemented yet.");
     }
-
 }
