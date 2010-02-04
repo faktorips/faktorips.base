@@ -267,8 +267,54 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener.setTarget(b2Link3);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
         checkMove(b1Link2, b1Link1, b2Link3, cLink1, cLink2, cLink3);
+        assertEquals(associationToB2.getName(), b1Link1.getAssociation());
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkMove(b1Link2, b2Link3, b1Link1, cLink1, cLink2, cLink3);
+        assertEquals(associationToB2.getName(), b1Link1.getAssociation());
+
+        // test move to association (String target)
+        dropListener.setTarget(associationToB1.getName());
+        checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
+
+        // multi move
+        dropListener.setToMove(b1Link1, b1Link2);
+
+        dropListener.setTarget(b1Link1);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        checkMove(b1Link2, b1Link1, b2Link3, cLink1, cLink2, cLink3);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
+
+        assertEquals(associationToB1.getName(), b1Link1.getAssociation());
+        assertEquals(associationToB1.getName(), b1Link2.getAssociation());
+
+        dropListener.setTarget(b1Link2);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        checkMove(b1Link2, b1Link1, b2Link3, cLink1, cLink2, cLink3);
+
+        dropListener.setTarget(b2Link3);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
+        assertEquals(associationToB2.getName(), b1Link1.getAssociation());
+        assertEquals(associationToB2.getName(), b1Link2.getAssociation());
+
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        checkMove(b2Link3, b1Link1, b1Link2, cLink1, cLink2, cLink3);
+        assertEquals(associationToB2.getName(), b1Link1.getAssociation());
+        assertEquals(associationToB2.getName(), b1Link2.getAssociation());
+
+        dropListener.setTarget(associationToB1.getName());
+        checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
+        assertEquals(associationToB1.getName(), b1Link1.getAssociation());
+        assertEquals(associationToB1.getName(), b1Link2.getAssociation());
+
+        dropListener.setTarget(cLink3);
+        assertFalse(dropListener.performDrop(null));
+
+        dropListener.setTarget(associationToC.getName());
+        assertFalse(dropListener.performDrop(null));
     }
 
     private void checkMove(IProductCmptLink... expected) {

@@ -110,9 +110,21 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     public boolean performDrop(Object data) {
         if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
             Object target = getCurrentTarget();
-            return moveLinks(movedCmptLinks, target);
+            List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
+            // if you drop a set of components you aspect them in the same order as the selection
+            // to get this, we need to inverse the list, if insertion is after a component
+            if (getCurrentLocation() == LOCATION_AFTER) {
+                Collections.reverse(listCopy);
+            }
+            return moveLinks(listCopy, target);
         } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
             List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
+            // if you drop a set of components you aspect them in the same order as the selection
+            // to get this, we need to inverse the list, if insertion is after a component
+            if (getCurrentLocation() == LOCATION_AFTER) {
+                Collections.reverse(droppedCmpts);
+            }
+
             try {
                 return createLinks(droppedCmpts, getCurrentTarget());
             } catch (CoreException e) {
@@ -134,27 +146,25 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             associationName = (String)target;
         }
         boolean result = false;
-        for (IProductCmptLink movedCmptLink : movedCmptLinks) {
-            if (associationName != null && associationName.equals(movedCmptLink.getAssociation())) {
-                result = true;
-                continue;
-            }
-
-            try {
-                List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
-                draggedCmpts.add(movedCmptLink.findTarget(movedCmptLink.getIpsProject()));
-                result = canCreateLinks(draggedCmpts, target);
-                if (!result) {
-                    return false;
+        List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
+        try {
+            for (IProductCmptLink movedCmptLink : movedCmptLinks) {
+                // move is valid if cmpt is moved within the same association or if a link in the
+                // new association could be created
+                if (associationName != null && associationName.equals(movedCmptLink.getAssociation())) {
+                    result = true;
                 } else {
-                    continue;
+                    draggedCmpts.add(movedCmptLink.findTarget(movedCmptLink.getIpsProject()));
                 }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return false;
             }
+            if (!draggedCmpts.isEmpty()) {
+                result = canCreateLinks(draggedCmpts, target);
+            }
+            return result;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
         }
-        return result;
     }
 
     private boolean moveLinks(List<IProductCmptLink> links, Object target) {
@@ -223,11 +233,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     private boolean createLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
         if (!canCreateLinks(draggedCmpts, target)) {
             return false;
-        }
-        // if you drop a set of components you aspect them in the same order as the selection
-        // to get this, we need to inverse the list, if insertion is after a component
-        if (getCurrentLocation() == LOCATION_AFTER) {
-            Collections.reverse(draggedCmpts);
         }
 
         for (IProductCmpt draggedCmpt : draggedCmpts) {

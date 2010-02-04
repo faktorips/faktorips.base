@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.Association
  */
 public class LinkCreatorUtil {
 
-    private boolean autoSave;
+    private final boolean autoSave;
 
     public LinkCreatorUtil(boolean autoSave) {
         this.autoSave = autoSave;

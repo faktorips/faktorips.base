@@ -250,13 +250,13 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // test with cmpt reference target
         dropListener.setTarget(structure.getRoot());
-//        checkSaveFile(ipsSrcFile);
+        checkSaveFile(ipsSrcFile);
 
         // test with association reference target
         IProductCmptTypeAssociationReference[] references = structure
                 .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         dropListener.setTarget(references[2]);
-  //      checkSaveFile(ipsSrcFile);
+        checkSaveFile(ipsSrcFile);
     }
 
     private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -345,15 +345,13 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         private Object target;
 
-        private LinkCreatorUtil myLinkCreator = new MyLinkCreator(true);
-
         public TestDropListener(Viewer viewer) {
             super(viewer);
-            super.setLinkCreator(myLinkCreator);
+            super.setLinkCreator(new MyLinkCreator(true));
         }
 
         public void setAutoSave(boolean b) {
-            myLinkCreator = new MyLinkCreator(b);
+            setLinkCreator(new MyLinkCreator(b));
         }
 
         @Override

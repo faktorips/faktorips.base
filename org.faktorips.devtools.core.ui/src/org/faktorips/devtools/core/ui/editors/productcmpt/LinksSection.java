@@ -278,11 +278,15 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         MenuManager menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(false);
 
-        menuManager.add(new NewProductCmptRelationAction(site.getShell(), treeViewer, this));
-
+        menuManager.add(new Separator("open"));
         openAction = new OpenReferencedProductCmptInEditorAction();
         menuManager.add(openAction);
+
+        menuManager.add(new Separator("edit"));
+        menuManager.add(new NewProductCmptRelationAction(site.getShell(), treeViewer, this));
+
         menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
+
         menuManager.add(new OpenProductCmptRelationDialogAction());
 
         menuManager.add(new Separator());
