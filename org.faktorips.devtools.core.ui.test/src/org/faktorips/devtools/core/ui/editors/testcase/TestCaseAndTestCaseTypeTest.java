@@ -106,7 +106,6 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptLink pcr = (ITestPolicyCmptLink)pc.getParent();
         MessageList ml = pcr.validate(project);
-        System.out.println(ml);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         ITestPolicyCmptTypeParameter param = pcr.findTestPolicyCmptTypeParameter(project);
