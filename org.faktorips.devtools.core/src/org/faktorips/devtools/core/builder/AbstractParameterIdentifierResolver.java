@@ -110,7 +110,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IParameter[] params = getParameters();
         for (int i = 0; i < params.length; i++) {
             if (params[i].getName().equals(paramName)) {
-                return compile(params[i], attributeName, locale);
+                CompilationResult result = compile(params[i], attributeName, locale);
+                addCurrentIdentifer(result, identifier);
+                return result;
             }
         }
 
@@ -118,13 +120,25 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         // where the formula method is defined.
         CompilationResult result = compileThis(identifier);
         if (result != null) {
+            addCurrentIdentifer(result, identifier);
             return result;
         }
         result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
         if (result != null) {
+            // the identifier is an enum datatype, thus it must not be added to the result as know
+            // parameter identifier
             return result;
         }
         return CompilationResultImpl.newResultUndefinedIdentifier(locale, identifier);
+    }
+
+    /*
+     * Adds the given identifier candidate to the compilation result
+     */
+    private void addCurrentIdentifer(CompilationResult result, String identifierCandidate) {
+        if (result instanceof CompilationResultImpl) {
+            ((CompilationResultImpl)result).addIdentifierUsed(identifierCandidate);
+        }
     }
 
     private CompilationResult compileThis(String identifier) {
