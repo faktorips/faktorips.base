@@ -29,12 +29,15 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -157,40 +160,35 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
     }
 
-    protected final GenPolicyCmptType getGenPolicyCmptType(IPolicyCmptType policyCmptType) {
+    private GenType getGenType(IType type) {
         try {
-            return ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType);
+            return ((StandardBuilderSet)getBuilderSet()).getGenerator(type);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // TODO AW: This code could be on a higher abstraction level but the hierarchy doesn't allow it.
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        IPolicyCmptType policyCmptType = null;
-        if (ipsElement instanceof IPolicyCmptType) {
-            policyCmptType = (IPolicyCmptType)ipsElement;
-
-        } else if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            policyCmptType = ((IPolicyCmptTypeAttribute)ipsElement).getPolicyCmptType();
-
+        IType type = null;
+        if (ipsElement instanceof IType) {
+            type = (IType)ipsElement;
+        } else if (ipsElement instanceof IAttribute) {
+            type = ((IAttribute)ipsElement).getType();
         } else if (ipsElement instanceof IMethod) {
-            policyCmptType = (IPolicyCmptType)((IMethod)ipsElement).getIpsObject();
-
+            type = ((IMethod)ipsElement).getType();
         } else {
             return;
         }
 
+        GenType genType = getGenType(type);
+        org.eclipse.jdt.core.IType javaType = getGeneratedJavaType(type.getQualifiedName(), type
+                .getIpsPackageFragment().getRoot());
         if (isBuildingPublishedSourceFile()) {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForPublishedInterface(
-                    javaElements,
-                    getGeneratedJavaType(policyCmptType.getQualifiedName(), policyCmptType.getIpsPackageFragment()
-                            .getRoot()), ipsElement);
+            genType.getGeneratedJavaElementsForPublishedInterface(javaElements, javaType, ipsElement);
         } else {
-            getGenPolicyCmptType(policyCmptType).getGeneratedJavaElementsForImplementation(
-                    javaElements,
-                    getGeneratedJavaType(policyCmptType.getQualifiedName(), policyCmptType.getIpsPackageFragment()
-                            .getRoot()), ipsElement);
+            genType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsElement);
         }
     }
 
