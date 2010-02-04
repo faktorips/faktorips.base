@@ -15,14 +15,18 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
- * This class generates JPA annotations for fields of policy component types.
+ * This class generates JPA annotations for fields derived from policy component type attributes.
  * 
  * @author Roman Grutza
  */
@@ -41,11 +45,37 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         IPersistentAttributeInfo jpaAttributeInfo = ((IPolicyCmptTypeAttribute)ipsElement)
                 .getPersistenceAttributeInfo();
 
+        String tableColumnName = jpaAttributeInfo.getTableColumnName();
+        ITableColumnNamingStrategy tableColumnNamingStrategy = ipsElement.getIpsProject()
+                .getTableColumnNamingStrategy();
+        tableColumnName = tableColumnNamingStrategy.getTableColumnName(tableColumnName);
+
+        boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
+
         fragment.addImport(IMPORT_COLUMN);
-        fragment.appendln(ANNOTATION_COLUMN + "(name = \"" + jpaAttributeInfo.getTableColumnName() + "\", nullable = "
-                + jpaAttributeInfo.getTableColumnNullable() + ")");
+        fragment.append(ANNOTATION_COLUMN);
+        fragment.append("(name = \"").append(tableColumnName).append('"');
+        fragment.append(", nullable = ").append(isNullable);
+        createSecondaryTableAttributeIfMixedInheritance(fragment, jpaAttributeInfo);
+        fragment.append(')').appendln();
 
         return fragment;
+    }
+
+    private void createSecondaryTableAttributeIfMixedInheritance(JavaCodeFragment fragment,
+            IPersistentAttributeInfo jpaAttributeInfo) {
+        IPolicyCmptType pcType = jpaAttributeInfo.getPolicyComponentTypeAttribute().getPolicyCmptType();
+        IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
+        InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
+
+        if (inhStrategy == InheritanceStrategy.MIXED) {
+            String secondaryTableName = persistenceTypeInfo.getSecondaryTableName();
+            ITableColumnNamingStrategy tableColumnNamingStrategy = pcType.getIpsProject()
+                    .getTableColumnNamingStrategy();
+            secondaryTableName = tableColumnNamingStrategy.getTableColumnName(secondaryTableName);
+
+            fragment.append(", table = \"").append(secondaryTableName).append('"');
+        }
     }
 
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {

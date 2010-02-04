@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -28,6 +31,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -82,8 +86,17 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
         private class PersistentAttributeContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
-                // TODO: return only persistable attributes (-> changeable, explicit)
-                return ((IPolicyCmptType)getIpsObject()).getPolicyCmptTypeAttributes();
+                IPolicyCmptTypeAttribute[] pcAttributes = ((IPolicyCmptType)getIpsObject())
+                        .getPolicyCmptTypeAttributes();
+                List<IPolicyCmptTypeAttribute> persistableAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+                for (IPolicyCmptTypeAttribute pcAttribute : pcAttributes) {
+                    AttributeType attributeType = pcAttribute.getAttributeType();
+                    if (attributeType == AttributeType.CHANGEABLE
+                            || attributeType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
+                        persistableAttributes.add(pcAttribute);
+                    }
+                }
+                return persistableAttributes.toArray();
             }
 
             public void dispose() {

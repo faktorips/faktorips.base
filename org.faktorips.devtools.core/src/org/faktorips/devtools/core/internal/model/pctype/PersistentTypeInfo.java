@@ -139,7 +139,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         String oldValue = tableName;
         tableName = newTableName;
 
-        valueChanged(oldValue, newTableName);
+        valueChanged(oldValue, tableName);
     }
 
     public boolean isDiscriminatorRequired() {
@@ -148,10 +148,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     public boolean isSecondaryTableNameRequired() {
         return inheritanceStrategy == InheritanceStrategy.MIXED;
-    }
-
-    public boolean isPrimaryTableNameRequired() {
-        return false;
     }
 
     @Override

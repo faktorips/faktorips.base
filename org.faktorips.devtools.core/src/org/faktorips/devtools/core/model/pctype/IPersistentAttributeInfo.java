@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 
 /**
  * A class that holds information of a policy component type attribute which is relevant for
@@ -73,6 +74,33 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter";
 
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this persistence attribute info has invalid column
+     * size/precision/scale values set.
+     */
+    public final static String MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS = MSGCODE_PREFIX
+            + "PersistenceAttrColumnOutOfBounds"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this persistence attribute info has invalid column
+     * name set.
+     */
+    public final static String MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME = MSGCODE_PREFIX
+            + "PersistenceAttrColumnNameEmpty"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this persistence attribute info has a column name
+     * set which is already defined. The conflicting attribute can be in the same type this
+     * attribute info belongs to or in a supertype if SINGLE_TABLE inheritance is used.
+     */
+    public final static String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
+            + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAttribute} this info object belongs to.
      */
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute();
@@ -85,6 +113,12 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
 
     /**
      * Sets the table column name for this attribute.
+     * <p/>
+     * Note that the final column name in the database can differ from the given
+     * <code>newTableColumnName</code> by means of an ITableColumnNamingStrategy which is set on a
+     * per IpsProject basis.
+     * 
+     * @see ITableColumnNamingStrategy
      */
     public void setTableColumnName(String newTableColumnName);
 
@@ -150,4 +184,13 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * Sets a converter for this column;
      */
     public void setTableColumnConverter(IPersistableTypeConverter newConverter);
+
+    /**
+     * Returns true if the underlying attribute is persisted. Constants and fields which are
+     * computed on the fly need not be persisted and <code>false</code> is returned for these types
+     * of attributes.
+     * 
+     * @see AttributeType
+     */
+    public boolean isPersistentAttribute();
 }

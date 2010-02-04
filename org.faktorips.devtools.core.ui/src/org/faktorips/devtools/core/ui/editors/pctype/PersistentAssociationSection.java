@@ -85,7 +85,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         @Override
         public String[] getColumnHeaders() {
             // return columnHeaders;
-            return new String[] { "Join Table Name", "Source Column Name", "Target Column Name", "Fetch Type" };
+            return new String[] { "Association Target", "Join Table Name", "Source Column Name", "Target Column Name",
+                    "Fetch Type" };
         }
 
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
@@ -116,15 +117,18 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 ITableNamingStrategy tableNamingStrategy = jpaAssociationInfo.getIpsProject().getTableNamingStrategy();
                 switch (columnIndex) {
                     case 0:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getJoinTableName());
+                        result = association.getTarget();
                         break;
                     case 1:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getSourceColumnName());
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getJoinTableName());
                         break;
                     case 2:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getTargetColumnName());
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getSourceColumnName());
                         break;
                     case 3:
+                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getTargetColumnName());
+                        break;
+                    case 4:
                         result = jpaAssociationInfo.getFetchType().toString();
                         break;
 

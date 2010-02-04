@@ -16,7 +16,7 @@ package org.faktorips.devtools.stdbuilder;
 import org.faktorips.codegen.JavaCodeFragment;
 
 /**
- * Abstract base class for annotation builders.
+ * Abstract base class for annotation generators.
  * 
  * @author Roman Grutza
  */
@@ -28,9 +28,6 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
         this.builderSet = builderSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public StandardBuilderSet getStandardBuilderSet() {
         return builderSet;
     }

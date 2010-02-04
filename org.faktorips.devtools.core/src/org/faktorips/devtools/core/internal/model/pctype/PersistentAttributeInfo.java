@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
@@ -46,10 +45,12 @@ import org.w3c.dom.Element;
  */
 public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPersistentAttributeInfo {
 
-    private String tableColumnName;
-    private int tableColumnSize = 255;
+    private String tableColumnName = "";
+
+    private boolean tableColumnNullable = true;
     private boolean tableColumnUnique;
-    private boolean tableColumnNullable;
+
+    private int tableColumnSize = 255;
     private int tableColumnScale = 16;
     private int tableColumnPrecision = 2;
 
@@ -62,15 +63,12 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public PersistentAttributeInfo(IIpsObjectPart ipsObject, int id) {
         super(ipsObject, id);
         policyComponentTypeAttribute = ipsObject;
-
-        ITableColumnNamingStrategy tableColumnNamingStrategy = getIpsProject().getTableColumnNamingStrategy();
-        tableColumnName = tableColumnNamingStrategy.getTableColumnName(ipsObject.getName());
     }
 
     /**
      * {@inheritDoc}
      */
-    // FIXME RG: implement
+    // TODO implement
     public IPersistableTypeConverter getTableColumnConverter() {
         throw new NotImplementedException();
     }
@@ -108,7 +106,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         String oldValue = tableColumnName;
         tableColumnName = newTableColumnName;
 
-        valueChanged(oldValue, newTableColumnName);
+        valueChanged(oldValue, tableColumnName);
     }
 
     public void setTableColumnNullable(boolean nullable) {
@@ -146,11 +144,13 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, unique);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
         return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
+    }
+
+    public boolean isPersistentAttribute() {
+        AttributeType attrType = getPolicyComponentTypeAttribute().getAttributeType();
+        return (attrType == AttributeType.CHANGEABLE || attrType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     }
 
     @Override
@@ -177,34 +177,38 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, "" + tableColumnScale);
         element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, "" + tableColumnPrecision);
         element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, "" + tableColumnUnique);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnUnique);
+        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnNullable);
     }
 
-    // TODO: replace "NOCODE" with MSG_CODE_... constants
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+        if (!isPersistentAttribute()) {
+            return;
+        }
+
         validateUniqueColumnNameInHierarchy(msgList);
 
         if (tableColumnSize < MIN_TABLE_COLUMN_SIZE || tableColumnSize > MAX_TABLE_COLUMN_SIZE) {
-            msgList.add(new Message("NOCODE", "The column size exceeds the limit [" + MIN_TABLE_COLUMN_SIZE + ".."
-                    + MAX_TABLE_COLUMN_SIZE + "]", Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, "The column size exceeds the limit ["
+                    + MIN_TABLE_COLUMN_SIZE + ".." + MAX_TABLE_COLUMN_SIZE + "]", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         }
         if (tableColumnPrecision < MIN_TABLE_COLUMN_PRECISION || tableColumnPrecision > MAX_TABLE_COLUMN_PRECISION) {
-            msgList.add(new Message("NOCODE", "The column precision exceeds the limit [" + MIN_TABLE_COLUMN_PRECISION
-                    + ".." + MAX_TABLE_COLUMN_PRECISION + "]", Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS,
+                    "The column precision exceeds the limit [" + MIN_TABLE_COLUMN_PRECISION + ".."
+                            + MAX_TABLE_COLUMN_PRECISION + "]", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
         }
         if (tableColumnScale < MIN_TABLE_COLUMN_SCALE || tableColumnScale > MAX_TABLE_COLUMN_SCALE) {
-            msgList.add(new Message("NOCODE", "The column scale exceeds the limit [" + MIN_TABLE_COLUMN_SCALE + ".."
-                    + MAX_TABLE_COLUMN_SCALE + "]", Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, "The column scale exceeds the limit ["
+                    + MIN_TABLE_COLUMN_SCALE + ".." + MAX_TABLE_COLUMN_SCALE + "]", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
     }
 
     private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
         if (tableColumnName.equals("")) {
-            msgList.add(new Message("NOCODE", "Empty column name.", Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
             return;
         }
@@ -213,7 +217,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         ColumnNameCollector columnNameCollector = new ColumnNameCollector(pcTypeAttribute);
         columnNameCollector.start(pcTypeAttribute.getPolicyCmptType());
         if (columnNameCollector.columnNames.contains(tableColumnName)) {
-            msgList.add(new Message("NOCODE", "Duplicate column name "
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, "Duplicate column name "
                     + pcTypeAttribute.getPersistenceAttributeInfo().getTableColumnName(), Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
@@ -236,8 +240,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         }
 
         private boolean isPersistentAttribute(IPolicyCmptTypeAttribute attribute) {
-            AttributeType attrType = attribute.getAttributeType();
-            return (attrType == AttributeType.CHANGEABLE || attrType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+            return attribute.getPersistenceAttributeInfo().isPersistentAttribute();
         }
 
         @Override
@@ -259,7 +262,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
             if (currentInheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
                 // do not collect supertype attributes, since each table of a JOINED_SUBCLASS
-                // hierarchy can have the same columns
+                // hierarchy can have the same column names
                 return false;
             }
 

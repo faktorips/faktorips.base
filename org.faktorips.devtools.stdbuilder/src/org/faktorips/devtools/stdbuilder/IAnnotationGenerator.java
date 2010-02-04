@@ -16,12 +16,27 @@ package org.faktorips.devtools.stdbuilder;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 
+/**
+ * Defines an interface for generators which create annotations for IpsElements.
+ * 
+ * @author Roman Grutza
+ */
 public interface IAnnotationGenerator {
 
+    /**
+     * Returns the standard builder set.
+     */
     public StandardBuilderSet getStandardBuilderSet();
 
+    /**
+     * Returns the type of the Java Element that is being annotated. See
+     * {@link AnnotatedJavaElementType} for an enumeration of possible constructs that can be
+     * annotated.
+     */
     public AnnotatedJavaElementType getAnnotatedJavaElementType();
 
+    /**
+     * Creates the annotations for the given ipsElement.
+     */
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement);
-
 }

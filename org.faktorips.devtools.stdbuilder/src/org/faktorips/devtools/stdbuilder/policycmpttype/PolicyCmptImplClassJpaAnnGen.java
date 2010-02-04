@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
@@ -56,6 +57,14 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Note that any attributes regarding table or column names are based on a naming strategy. This
+     * strategy is set on a per IpsProject basis.
+     * 
+     * @see ITableNamingStrategy, ITableColumnNamingStrategy
+     */
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         IPolicyCmptType pcType = (IPolicyCmptType)ipsElement;
@@ -72,27 +81,22 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
+        InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
+        String tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getTableName());
 
-        InheritanceStrategy inheritanceStrategy = persistenceTypeInfo.getInheritanceStrategy();
+        fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
+        fragment.addImport(IMPORT_TABLE);
 
-        switch (inheritanceStrategy) {
-            case SINGLE_TABLE:
-                fragment.appendln(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
-                fragment.addImport(IMPORT_TABLE);
-
-                break;
-            case JOINED_SUBCLASS:
-                fragment.appendln(ANNOTATION_TABLE + "(name = \"" + persistenceTypeInfo.getTableName() + "\")");
-                fragment.addImport(IMPORT_TABLE);
-
-                break;
-
-            case MIXED:
-                fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \""
-                        + persistenceTypeInfo.getSecondaryTableName() + "\")");
-                fragment.addImport(IMPORT_SECONDARY_TABLE);
-                break;
+        if (inhStrategy == InheritanceStrategy.MIXED) {
+            tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getSecondaryTableName());
+            fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \"" + tableName + "\")");
+            fragment.addImport(IMPORT_SECONDARY_TABLE);
         }
+    }
+
+    private String getTableNameObeyingNamingStrategy(String tableName) {
+        ITableNamingStrategy tableNamingStrategy = getStandardBuilderSet().getIpsProject().getTableNamingStrategy();
+        return tableNamingStrategy.getTableName(tableName);
     }
 
     private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {

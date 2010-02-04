@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 
 /**
  * A class that holds information of a policy component type which is relevant for persistence.
@@ -111,8 +112,13 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * hierarchy if the JOINED_SUBCLASS inheritance strategy is used. In contrast when using MIXED
      * or SINGLE_TABLE inheritance strategies each part of the hierarchy must use the same primary
      * table name.
+     * <p/>
+     * Note that the final table name in the database can differ from the given
+     * <code>newTableName</code> by means of an ITableNamingStrategy which is set on a per
+     * IpsProject basis.
      * 
-     * @see {@link InheritanceStrategy}
+     * @see InheritanceStrategy
+     * @see ITableNamingStrategy
      */
     public void setTableName(String newTableName);
 
@@ -131,6 +137,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * Since there can only exist only one unique secondary table for a {@link IPolicyCmptType}
      * sub-hierarchy one must ensure that the entities making up the sub-hierarchy use the same
      * secondary table name.
+     * <p/>
+     * Note that the final table name in the database can differ from the given
+     * <code>newSecondaryTableName</code> by means of an ITableNamingStrategy which is set on a per
+     * IpsProject basis.
+     * 
+     * @see ITableNamingStrategy
      */
     public void setSecondaryTableName(String newSecondaryTableName);
 

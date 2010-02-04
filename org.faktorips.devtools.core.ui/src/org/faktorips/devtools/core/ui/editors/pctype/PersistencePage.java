@@ -20,7 +20,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 /**
- * 
+ * Overview page for persistence properties of an {@link IPolicyCmptType}. The page consists of
+ * three section showing the type´s persistence properties and the properties of its attributes and
+ * associations.
  * 
  * @author Roman Grutza
  */
