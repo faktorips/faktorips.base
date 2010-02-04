@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -79,6 +80,8 @@ public class TestCaseStructurePage extends WizardPage {
     private IIpsProject ipsProject;
     private IIpsSrcFile checkedProductCmpt = null;
     private TestCaseContentProvider testCaseContentProvider;
+
+    final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
 
     public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
@@ -116,7 +119,6 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         TestCaseLabelProvider labelProvider = new TestCaseLabelProvider(ipsProject);
-        // TODO Joerg Erweiterung nur wenn checked dann validation fehler sichtbar
         treeViewer.setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
@@ -204,15 +206,20 @@ public class TestCaseStructurePage extends WizardPage {
                     storage.storeExpandedStatus();
                     pageChanged();
                     treeViewer.refresh();
-                    // TODO Joerg check state get lost? Workaround: check all again
-                    treeViewer.setAllChecked(true);
                     storage.restoreExpandedStatus();
+                    // we must refresh the candidates, because the selectionChangedListener
+                    // will not be triggered under windows using TreeView#setSelection
+                    TreeItem[] selectedTreeItem = treeViewer.getTree().getSelection();
+                    if (selectedTreeItem.length > 0) {
+                        refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
                 } finally {
                     treeViewer.getTree().setRedraw(true);
                 }
             }
         });
-        final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
 
         tableViewer.setContentProvider(new IStructuredContentProvider() {
             public Object[] getElements(Object inputElement) {
@@ -271,15 +278,20 @@ public class TestCaseStructurePage extends WizardPage {
                         clearCandidatesInTable();
                         return;
                     }
-                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
-                    changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
-                            testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
-                                    : parentPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()));
+                    refreshCanditatesInTable(testPolicyCmpt);
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
+
         });
+    }
+
+    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+        ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
+        changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()), testPolicyCmpt
+                .findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null : parentPolicyCmpt
+                .findProductCmpt(testPolicyCmpt.getIpsProject()));
     }
 
     /**
@@ -456,5 +468,4 @@ public class TestCaseStructurePage extends WizardPage {
             }
         }
     }
-
 }
