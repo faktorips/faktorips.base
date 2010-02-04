@@ -474,10 +474,34 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     return false;
                 }
                 if (structure.getRoot() == element) {
+                    // operation change on root not allowed,
+                    // because reference make no sense
                     return false;
                 }
+
+                // operation change is not allowed if parent and child is linked
+                // note: if parent is linked and child not linked the operation change is
+                // allowed, but this state is normally not possible see
+                // setSameOperationForAllChilds(...)
+                if (isParentAndCurrentReference(element)) {
+                    return false;
+                }
+
                 return getDeepCopyWizard().getDeepCopyPreview().isCopy(element)
                         || getDeepCopyWizard().getDeepCopyPreview().isLinked(element);
+            }
+
+            private boolean isParentAndCurrentReference(Object element) {
+                if (element instanceof IProductCmptStructureReference) {
+                    IProductCmptStructureReference parent = ((IProductCmptStructureReference)element).getParent();
+                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(parent)
+                            && getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                        return true;
+                    }
+                } else {
+                    throw new RuntimeException("Unsupported class found: " + element.getClass().getName());
+                }
+                return false;
             }
 
             @Override
