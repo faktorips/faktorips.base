@@ -278,7 +278,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
                 refreshPageAferValueChange();
-                updateColumnWidth();
             }
         });
 
@@ -306,19 +305,26 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         for (int i = 0; i < textButtonFields.length; i++) {
             textButtonFields[i].addChangeListener(new ValueChangeListener() {
                 public void valueChanged(FieldValueChangedEvent e) {
-                    refreshPageAferValueChange();
+                    getShell().getDisplay().asyncExec(new Runnable() {
+                        public void run() {
+                            // run asyn otherwise there may be problem with the focus change
+                            // running in the same thread
+                            // e.g. if using key tab then focus jumps two instead of one control
+                            // forward or if using the mouse, to go into another control, then the
+                            // focus doesn't change
+                            refreshPageAferValueChange();
+                        }
+                    });
                 }
             });
         }
     }
 
-    boolean refeshing;
-
     protected void refreshPageAferValueChange() {
-        refeshing = true;
         refreshTree();
         validate();
         updatePageComplete();
+        updateColumnWidth();
     }
 
     /**
@@ -362,11 +368,20 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         public void focusLost(FocusEvent e) {
             for (int i = 0; i < textControls.length; i++) {
                 if (hasValueChanged(textControls[i])) {
-                    if (textControls[i] == workingDateField.getTextControl()) {
-                        getDeepCopyWizard().applyWorkingDate();
-                    }
-                    refreshPageAferValueChange();
-                    return;
+                    final int idx = i;
+                    getShell().getDisplay().asyncExec(new Runnable() {
+                        public void run() {
+                            // run asyn otherwise there may be problem with the focus change
+                            // running in the same thread
+                            // e.g. if using key tab then focus jumps two instead of one control
+                            // forward or if using the mouse, to go into another control, then the
+                            // focus doesn't change
+                            if (textControls[idx] == workingDateField.getTextControl()) {
+                                getDeepCopyWizard().applyWorkingDate();
+                            }
+                            refreshPageAferValueChange();
+                        }
+                    });
                 }
             }
         }
@@ -382,7 +397,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         Point wizardSize = getDeepCopyWizard().getSize();
         GC gc = new GC(tree.getTree());
         gc.setFont(tree.getTree().getFont());
-        int columnSizeOperation = gc.stringExtent(Messages.SourcePage_columnNameOperation).x + 20;
+        // Note: we must extend the operation column size to display the full text of all elements
+        // in the drop down, otherwise the drop down will not be activated after clicking the
+        // column!
+        int columnSizeOperation = gc.stringExtent(Messages.SourcePage_columnNameOperation).x + 30;
         int columnSizeNewName = gc.stringExtent(Messages.SourcePage_columnNameNewName).x + 20;
         Map<Object, String> oldObject2newNameMap = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap();
         for (Iterator<String> iterator = oldObject2newNameMap.values().iterator(); iterator.hasNext();) {
@@ -572,7 +590,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      */
     void refreshVersionId(IProductCmptTreeStructure structure) {
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-            versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
+            String newVersionId = namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt());
+            if (!newVersionId.equals(versionId.getText())) {
+                versionId.setText(newVersionId);
+            }
         }
     }
 
