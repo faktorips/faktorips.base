@@ -46,7 +46,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             public void run(IProgressMonitor monitor) throws CoreException {
                 IIpsProject project = newIpsProject("TestProject");
                 IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
-                IFile file = folder.getFile("A.ipspct");
+                folder.getFile("A.ipspct");
                 type = newPolicyCmptType(project, "A");
                 type.newPolicyCmptTypeAssociation();
                 type.getIpsSrcFile().save(true, null);

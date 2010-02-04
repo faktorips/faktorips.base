@@ -241,7 +241,6 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setToColumn(c1.getName());
 
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
-        System.out.println(ml);
         assertTrue(ml.isEmpty());
 
         c1.setDatatype(Datatype.DECIMAL.getName());

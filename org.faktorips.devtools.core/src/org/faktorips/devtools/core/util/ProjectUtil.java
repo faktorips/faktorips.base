@@ -46,6 +46,42 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 public class ProjectUtil {
 
     /**
+     * Adds the Faktor-IPS nature to the project.
+     * 
+     * @param project A platform project.
+     * 
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreException
+     */
+    public final static void addIpsNature(IProject project) throws CoreException {
+        Util.addNature(project, IIpsProject.NATURE_ID);
+    }
+
+    /**
+     * Returns <code>true</code> if the project has the Faktor-IPS Nature, otherwise
+     * <code>false</code>.
+     * 
+     * @param project A platform project.
+     * 
+     * @throws CoreException
+     */
+    public final static boolean hasIpsNature(IJavaProject project) throws CoreException {
+        return hasIpsNature(project.getProject());
+    }
+
+    /**
+     * Returns <code>true</code> if the project has the Faktor-IPS Nature, otherwise
+     * <code>false</code>.
+     * 
+     * @param project A platform project.
+     * 
+     * @throws CoreException
+     */
+    public final static boolean hasIpsNature(IProject project) throws CoreException {
+        return project.getDescription().hasNature(IIpsProject.NATURE_ID);
+    }
+
+    /**
      * Disable a feature of the default IPS builder.
      * 
      * @param ipsProject The project to disable the feature at.

@@ -128,7 +128,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                         .openConfirm(
                                 getShell(),
                                 Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
-                                "The project contains an .ipsproject file, but the Faktor-IPS nature was not found. Do you want to re-add the Faktor-IPS Nature to the project?");
+                                Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
                     ProjectUtil.addIpsNature(ipsProject.getProject());
                 }
