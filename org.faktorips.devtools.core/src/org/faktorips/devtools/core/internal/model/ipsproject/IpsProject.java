@@ -1657,30 +1657,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
-        List<ITestCase> result = findReferencingTestCases(this, qualifiedProductCmptName);
-
-        ITestCase[] resultArray = new ITestCase[result.size()];
-        result.toArray(resultArray);
-
-        return resultArray;
-    }
-
-    private List<ITestCase> findReferencingTestCases(IpsProject project, String objectName) throws CoreException {
-        List<ITestCase> result = new ArrayList<ITestCase>();
-        IIpsObject[] testCases = project.findIpsObjects(IpsObjectType.TEST_CASE);
-        for (IIpsObject object : testCases) {
-            String[] references = ((ITestCase)object).getReferencedProductCmpts();
-            for (String refName : references) {
-                if (refName.equals(objectName)) {
-                    result.add((ITestCase)object);
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
     public List<ITestCase> getAllTestCases() throws CoreException {
         List<IIpsSrcFile> resultSrcFiles = new ArrayList<IIpsSrcFile>();
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,45 +36,45 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
  * @author Stefan Widmaier
  */
 public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
-    
+
     public ReferencesToProductSearchQuery(IProductCmpt referenced) {
         super(referenced);
     }
-    
+
     /**
      * @inheritDoc
      */
+    @Override
     protected IIpsElement[] findReferences() throws CoreException {
         IIpsElement[] refProductCmptGenerations = referenced.getIpsProject().findReferencingProductCmptGenerations(
                 referenced.getQualifiedNameType());
-        IIpsElement[] refTestCases = referenced.getIpsProject().findReferencingTestCases(referenced.getQualifiedName());
-        
-        List generations = Arrays.asList(refProductCmptGenerations);
-        List testCases = Arrays.asList(refTestCases);
+        List<ITestCase> refTestCases = referenced.getIpsModel().searchReferencingTestCases((IProductCmpt)referenced);
 
-        List result = new ArrayList(refProductCmptGenerations.length + refTestCases.length);
-        result.addAll(generations);
-        result.addAll(testCases);
-        return (IIpsElement[]) result.toArray(new IIpsElement[result.size()]);
+        List<IIpsElement> result = new ArrayList<IIpsElement>(refProductCmptGenerations.length + refTestCases.size());
+        result.addAll(Arrays.asList(refProductCmptGenerations));
+        result.addAll(refTestCases);
+        return result.toArray(new IIpsElement[result.size()]);
     }
-    
+
     /**
      * @inheritDoc
      */
+    @Override
     protected Object[] getDataForResult(IIpsElement object) {
-        if (object instanceof IProductCmptGeneration){
-            return new Object[]{((IProductCmptGeneration)object).getProductCmpt(), object};
+        if (object instanceof IProductCmptGeneration) {
+            return new Object[] { ((IProductCmptGeneration)object).getProductCmpt(), object };
         } else if (object instanceof ITestCase) {
-            return new Object[]{object};
+            return new Object[] { object };
         }
         return null;
-	}
-    
+    }
+
     /**
      * {@inheritDoc}
      * 
-     *  Combines all generations of the same product cmpt to one match.
+     * Combines all generations of the same product cmpt to one match.
      */
+    @Override
     protected void addFoundMatches(IIpsElement[] found) throws CoreException {
         List combinedResult = combineResult(found);
         Match[] resultMatches = new Match[combinedResult.size()];
@@ -82,31 +82,33 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         for (Iterator iter = combinedResult.iterator(); iter.hasNext();) {
             Object foundElem = iter.next();
             Object[] combined = null;
-            if (foundElem instanceof IIpsElement){
+            if (foundElem instanceof IIpsElement) {
                 combined = getDataForResult((IIpsElement)foundElem);
-            } else if (foundElem instanceof List){
-                List foundElemList = (List) foundElem;
-                if (foundElemList.size() == 0){
-                    throw new CoreException(new IpsStatus("Expected at least one product cmpt generation in the combined references list!"));
+            } else if (foundElem instanceof List) {
+                List foundElemList = (List)foundElem;
+                if (foundElemList.size() == 0) {
+                    throw new CoreException(new IpsStatus(
+                            "Expected at least one product cmpt generation in the combined references list!"));
                 }
                 sortGenerationsInList(foundElemList);
                 Object currentGeneration = foundElemList.get(0);
-                if (!(currentGeneration instanceof IProductCmptGeneration)){
-                    throw new CoreException(new IpsStatus("Expected only product cmpt generation in the combined references list!"));
+                if (!(currentGeneration instanceof IProductCmptGeneration)) {
+                    throw new CoreException(new IpsStatus(
+                            "Expected only product cmpt generation in the combined references list!"));
                 }
-                
+
                 IProductCmpt productCmpt = ((IProductCmptGeneration)currentGeneration).getProductCmpt();
                 combined = new IIpsElement[foundElemList.size() + 1];
                 combined[0] = productCmpt;
                 for (int i = 0; i < foundElemList.size(); i++) {
-                    combined[i+1] = foundElemList.get(i);
+                    combined[i + 1] = foundElemList.get(i);
                 }
             } else {
                 throw new CoreException(new IpsStatus("Unknown reference type: " + foundElem.getClass().getName()));
             }
             resultMatches[idx++] = new Match(combined, 0, 0);
         }
-        result.addMatches(resultMatches);        
+        result.addMatches(resultMatches);
     }
 
     private void sortGenerationsInList(List foundElemList) {
@@ -142,10 +144,10 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
             if (element instanceof IProductCmptGeneration) {
                 IProductCmptGeneration currGeneration = (IProductCmptGeneration)element;
                 IProductCmpt currProductCmpt = currGeneration.getProductCmpt();
-                if (currProductCmpt == prevProductCmpt){
+                if (currProductCmpt == prevProductCmpt) {
                     combinedGenerations.add(currGeneration);
                 } else {
-                    if (combinedGenerations.size() > 0){
+                    if (combinedGenerations.size() > 0) {
                         combinedResult.add(combinedGenerations);
                         combinedGenerations = new ArrayList();
                     }
@@ -158,15 +160,15 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
             }
         }
 
-        if (combinedGenerations.size() > 0){
+        if (combinedGenerations.size() > 0) {
             combinedResult.add(combinedGenerations);
         }
-        
+
         return combinedResult;
     }
 
-    private class ProductCmptGenerationComparator implements Comparator {
-        public int compare(Object o1, Object o2) {
+    private class ProductCmptGenerationComparator implements Comparator<IProductCmptGeneration> {
+        public int compare(IProductCmptGeneration o1, IProductCmptGeneration o2) {
             if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
                 return ((IProductCmptGeneration)o1).getProductCmpt().getQualifiedName().compareTo(
                         ((IProductCmptGeneration)o2).getProductCmpt().getQualifiedName());
@@ -174,5 +176,5 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
             return 0;
         }
     }
-    
+
 }

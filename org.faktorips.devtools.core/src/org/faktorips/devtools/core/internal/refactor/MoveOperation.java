@@ -659,7 +659,7 @@ public class MoveOperation implements IRunnableWithProgress {
             // first, find all objects referring the source (which will be deleted later)
             IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(
                     source.getQualifiedNameType());
-            ITestCase[] testCaseRefs = source.getIpsProject().findReferencingTestCases(source.getQualifiedName());
+            List<ITestCase> testCaseRefs = source.getIpsModel().searchReferencingTestCases(source);
 
             // second, create the target
             createCopy(source.getIpsSrcFile(), tmpTargetFile, monitor);
@@ -670,8 +670,8 @@ public class MoveOperation implements IRunnableWithProgress {
             }
 
             // third b), update references to test cases
-            for (int i = 0; i < testCaseRefs.length; i++) {
-                fixRelations(testCaseRefs[i], source.getQualifiedName(), qualifiedTargetName, monitor);
+            for (ITestCase iTestCase : testCaseRefs) {
+                fixRelations(iTestCase, source.getQualifiedName(), qualifiedTargetName, monitor);
             }
 
             // fourth, delete the source

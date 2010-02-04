@@ -1421,17 +1421,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(resultSet.contains(null));
     }
 
-    public void testFindReferencingTestCases() throws CoreException {
-        ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "TestCase1");
-        IProductCmpt productCmpt1 = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "ProductCmpt1");
-        newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "ProductCmpt2");
-
-        testCase.newTestPolicyCmpt().setProductCmpt(productCmpt1.getQualifiedName());
-        ITestCase[] testCases = ipsProject.findReferencingTestCases(productCmpt1.getQualifiedName());
-        assertEquals(1, testCases.length);
-        assertEquals(testCase, testCases[0]);
-    }
-
     public void testFindEnumDatatypes() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype[] dataTypes = ipsProject.findEnumDatatypes();
