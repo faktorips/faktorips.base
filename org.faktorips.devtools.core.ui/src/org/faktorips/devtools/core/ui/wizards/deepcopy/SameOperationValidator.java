@@ -142,8 +142,9 @@ public class SameOperationValidator {
         for (Iterator<IProductCmptStructureReference> iterator = invalidParentChildOperation.iterator(); iterator
                 .hasNext();) {
             IProductCmptStructureReference elem = iterator.next();
-            messageList.add(new Message(
-                    "", Messages.SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch, Message.ERROR, elem)); //$NON-NLS-1$
+            messageList
+                    .add(new Message(
+                            "", Messages.SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch, Message.ERROR, elem)); //$NON-NLS-1$
         }
     }
 
@@ -158,6 +159,10 @@ public class SameOperationValidator {
             String errorMsg = ""; //$NON-NLS-1$
 
             String operation = null;
+            if (!deepCopyPreview.isChecked(productCmptStructureReferences[i])) {
+                continue;
+            }
+
             if (deepCopyPreview.isLinked(productCmptStructureReferences[i])) {
                 operation = OPERATION_UNCHECKED;
             } else {

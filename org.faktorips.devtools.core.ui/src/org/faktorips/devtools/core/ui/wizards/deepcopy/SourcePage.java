@@ -540,6 +540,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 }
                 for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
                     IProductCmptStructureReference childElem = iterator.next();
+                    if (!isChecked(childElem)) {
+                        continue;
+                    }
                     if (asLink) {
                         linkedElements.add(childElem);
                     } else {
@@ -841,6 +844,11 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             }
             setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
         }
+    }
+
+    public boolean isChecked(Object element) {
+        List<Object> checkedElements = Arrays.asList(tree.getCheckedElements());
+        return checkedElements.contains(element);
     }
 
     public IProductCmptStructureReference[] getCheckedNodes() {

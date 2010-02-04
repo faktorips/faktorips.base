@@ -392,6 +392,10 @@ public class DeepCopyPreview {
         return getProductCmptStructRefToCopyInternal().contains(element);
     }
 
+    public boolean isChecked(Object element) {
+        return sourcePage.isChecked(element);
+    }
+
     public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
