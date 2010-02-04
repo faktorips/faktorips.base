@@ -31,10 +31,10 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * @author Thorsten Guenther
@@ -62,7 +62,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
      */
     public void run(IAction action) {
         // save dirty editors
-        if (!PlatformUI.getWorkbench().saveAllEditors(true)) {
+        if (!IpsUIPlugin.getDefault().saveAllEditors()) {
             return;
         }
 

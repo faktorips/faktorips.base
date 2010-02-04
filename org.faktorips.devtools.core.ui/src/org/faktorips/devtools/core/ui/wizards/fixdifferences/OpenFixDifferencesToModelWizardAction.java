@@ -34,7 +34,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * 
@@ -75,7 +75,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
     @Override
     public void run(IAction action) {
         // save dirty editors
-        if (!PlatformUI.getWorkbench().saveAllEditors(true)) {
+        if (!IpsUIPlugin.getDefault().saveAllEditors()) {
             return;
         }
 

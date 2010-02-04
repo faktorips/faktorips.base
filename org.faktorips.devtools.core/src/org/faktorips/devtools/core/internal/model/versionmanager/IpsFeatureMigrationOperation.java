@@ -25,10 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -90,23 +86,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
         try {
-            // check for unsaved changes - is there a more elegant way???
-            if (PlatformUI.isWorkbenchRunning()) {
-                IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
-                for (int i = 0; i < windows.length; i++) {
-                    IWorkbenchPage[] pages = windows[i].getPages();
-                    for (int j = 0; j < pages.length; j++) {
-                        IEditorReference[] editors = pages[j].getEditorReferences();
-                        for (int k = 0; k < editors.length; k++) {
-                            if (editors[k].isDirty()) {
-                                throw new CoreException(new IpsStatus("Can not migrate if unsaved changes exist.")); //$NON-NLS-1$
-                            }
-                        }
-                    }
-                }
-            }
             monitor.worked(10);
-
             result = new MessageList();
             for (int i = 0; i < operations.size(); i++) {
                 if (monitor.isCanceled()) {

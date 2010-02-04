@@ -35,12 +35,15 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
@@ -50,21 +53,28 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
+import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
@@ -125,7 +135,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Class property in extension point config elements
      */
-    public final static String CONFIG_PROPERTY_CLASS = "class";
+    public final static String CONFIG_PROPERTY_CLASS = "class"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history
@@ -133,7 +143,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private static final String OPEN_IPS_OBJECT_HISTORY_SETTINGS = PLUGIN_ID + "OpenTypeHistory"; //$NON-NLS-1$
 
     /** key for the history setting entry in the open ips object history settings */
-    private static final String HISTORY_SETTING = "History";
+    private static final String HISTORY_SETTING = "History"; //$NON-NLS-1$
 
     /** The shared instance. */
     private static IpsUIPlugin plugin;
@@ -215,7 +225,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     @Override
     public ImageRegistry getImageRegistry() {
         IpsPlugin.log(new CoreException(new Status(IStatus.WARNING, PLUGIN_ID,
-                "Image Registry is used - please use resource manager")));
+                "Image Registry is used - please use resource manager"))); //$NON-NLS-1$
         return super.getImageRegistry();
     }
 
@@ -621,7 +631,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         } catch (WorkbenchException e) {
             StatusManager.getManager().handle(
                     new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "Could not load OpenIpsObjecHistory", e));
+                            "Could not load OpenIpsObjecHistory", e)); //$NON-NLS-1$
         }
     }
 
@@ -637,7 +647,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             // Simply don't store the settings
             StatusManager.getManager().handle(
                     new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "Could not write OpenIpsObjecHistory", e));
+                            "Could not write OpenIpsObjecHistory", e)); //$NON-NLS-1$
         }
     }
 
@@ -662,10 +672,98 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public final static String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         } else {
             return adapter.getLabel(ipsElement);
         }
+    }
+
+    /**
+     * Save all dirty editors in the workbench. Opens a dialog to prompt the user. Return true if
+     * successful. Return false if the user has canceled the command.
+     * 
+     * @return <code>true</code> if the command succeeded, and <code>false</code> if the operation
+     *         was canceled by the user or an error occurred while saving
+     */
+    public boolean saveAllEditors() {
+        // based on the EditorManager.saveAll Method
+        // but allow only save all editor or cancel the current operation
+        Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        List<IEditorPart> dirtyEditorParts = collectDirtyEditorParts();
+
+        if (dirtyEditorParts.size() == 1) {
+            // use a simpler dialog if there's only one
+            boolean okPressed = MessageDialog
+                    .openConfirm(activeShell, Messages.IpsPlugin_dialogSaveDirtyEditorTitle, NLS.bind(
+                            Messages.IpsPlugin_dialogSaveDirtyEditorMessageSimple, dirtyEditorParts.get(0).getTitle()));
+            if (!okPressed) {
+                return false;
+            }
+        } else {
+            // used same behavior like RefactoringSaveHelper#askSaveAllDirtyEditors
+            // but disable double click event in list
+            ListDialog dlg = new ListDialog(activeShell) {
+                @Override
+                protected int getShellStyle() {
+                    return super.getShellStyle() | SWT.SHEET;
+                }
+
+                @Override
+                protected Control createDialogArea(Composite container) {
+                    Control area = super.createDialogArea(container);
+                    return area;
+                }
+
+                @Override
+                protected void createButtonsForButtonBar(Composite parent) {
+                    setAddCancelButton(true);
+                    super.createButtonsForButtonBar(parent);
+                    // if no cancel button is there then the double click event will be disabled
+                    // see super class implementation ...
+                    setAddCancelButton(false);
+                }
+            };
+            dlg.setInput(dirtyEditorParts);
+            dlg.setLabelProvider(new WorkbenchPartLabelProvider());
+            dlg.setContentProvider(new ArrayContentProvider());
+            dlg.setInitialSelections(dirtyEditorParts.toArray());
+            dlg.setTitle(Messages.IpsPlugin_dialogSaveDirtyEditorTitle);
+            dlg.setMessage(Messages.IpsPlugin_dialogSaveDirtyEditorMessageMany);
+            dlg.setInitialSelections(new Object[0]);
+            int result = dlg.open();
+            if (result == IDialogConstants.CANCEL_ID) {
+                return false;
+            }
+        }
+        // use Method without confirm because we already ask the user
+        return PlatformUI.getWorkbench().saveAllEditors(false);
+    }
+
+    /*
+     * Collect dirtyParts. Note this code is based on the "collect dirtyParts" part of the eclipse
+     * method PlatformUI.getWorkbench().saveAllEditors(), because there is no API method we can use
+     * instead.
+     */
+    private List<IEditorPart> collectDirtyEditorParts() {
+        ArrayList<IEditorPart> dirtyParts = new ArrayList<IEditorPart>();
+        ArrayList<IEditorInput> dirtyEditorsInput = new ArrayList<IEditorInput>();
+        IWorkbenchWindow windows[] = PlatformUI.getWorkbench().getWorkbenchWindows();
+        for (int i = 0; i < windows.length; i++) {
+            IWorkbenchPage pages[] = windows[i].getPages();
+            for (int j = 0; j < pages.length; j++) {
+                IWorkbenchPage page = pages[j];
+                IEditorPart[] dirtyEditors = page.getDirtyEditors();
+                for (int k = 0; k < dirtyEditors.length; k++) {
+                    if (dirtyEditors[k].isSaveOnCloseNeeded()) {
+                        if (!dirtyEditorsInput.contains(dirtyEditors[k].getEditorInput())) {
+                            dirtyParts.add(dirtyEditors[k]);
+                            dirtyEditorsInput.add(dirtyEditors[k].getEditorInput());
+                        }
+                    }
+                }
+            }
+        }
+        return dirtyParts;
     }
 
     // ************************************************
@@ -920,7 +1018,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
             if (ipsElement == null) {
-                return getSharedImageDescriptor("IpsElement_broken.gif", true);
+                return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
             }
             IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
             if (adapter == null) {
