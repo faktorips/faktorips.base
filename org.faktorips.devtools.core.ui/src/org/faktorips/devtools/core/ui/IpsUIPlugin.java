@@ -691,6 +691,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         List<IEditorPart> dirtyEditorParts = collectDirtyEditorParts();
 
+        if (dirtyEditorParts.size() == 0) {
+            return true;
+        }
+
         if (dirtyEditorParts.size() == 1) {
             // use a simpler dialog if there's only one
             boolean okPressed = MessageDialog
