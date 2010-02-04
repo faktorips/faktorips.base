@@ -703,9 +703,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             // used same behavior like RefactoringSaveHelper#askSaveAllDirtyEditors
             // but disable double click event in list
             ListDialog dlg = new ListDialog(activeShell) {
-                @Override
-                protected int getShellStyle() {
-                    return super.getShellStyle() | SWT.SHEET;
+                {
+                    setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
                 }
 
                 @Override
