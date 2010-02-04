@@ -25,7 +25,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     public void testAddIpsNature_And_hasIpsNature() throws CoreException {
-        IProject project = newPlatformProject("PlatformProject/abc");
+        IProject project = newPlatformProject("PlatformProject");
         assertFalse(ProjectUtil.hasIpsNature(project.getProject()));
         ProjectUtil.addIpsNature(project);
         assertTrue(ProjectUtil.hasIpsNature(project));
