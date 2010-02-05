@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,8 +46,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         ITableColumnNamingStrategy tableColumnNamingStrategy = getIpsProject().getTableColumnNamingStrategy();
 
-        sourceColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation()
-                .getName());
+        sourceColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
         targetColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
     }
 
@@ -104,28 +103,35 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public void setFetchType(FetchType fetchType) {
+        ArgumentCheck.notNull(fetchType);
+        FetchType oldValue = this.fetchType;
         this.fetchType = fetchType;
+
+        valueChanged(oldValue, fetchType);
     }
 
     public void setJoinTableName(String newJoinTableName) {
-        if (StringUtils.isEmpty(newJoinTableName)) {
-            throw new RuntimeException("Join table name must not be null or empty.");
-        }
+        ArgumentCheck.notNull(newJoinTableName);
+        String oldValue = joinTableName;
         joinTableName = newJoinTableName;
+
+        valueChanged(oldValue, joinTableName);
     }
 
     public void setSourceColumnName(String newSourceColumnName) {
-        if (StringUtils.isEmpty(newSourceColumnName)) {
-            throw new RuntimeException("Source column name must not be null or empty.");
-        }
+        ArgumentCheck.notNull(newSourceColumnName);
+        String oldValue = sourceColumnName;
         sourceColumnName = newSourceColumnName;
+
+        valueChanged(oldValue, sourceColumnName);
     }
 
     public void setTargetColumnName(String newTargetColumnName) {
-        if (StringUtils.isEmpty(newTargetColumnName)) {
-            throw new RuntimeException("Target column name must not be null or empty.");
-        }
+        ArgumentCheck.notNull(newTargetColumnName);
+        String oldValue = targetColumnName;
         targetColumnName = newTargetColumnName;
+
+        valueChanged(oldValue, targetColumnName);
     }
 
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {

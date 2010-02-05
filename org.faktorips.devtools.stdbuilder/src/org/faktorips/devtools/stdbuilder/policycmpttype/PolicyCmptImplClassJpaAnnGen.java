@@ -26,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
- * This class generates JPA annotations for policy component types.
+ * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
  * <p/>
  * Each persistent policy component type needs at least an <code>@Entity</code> annotation. The
  * information which annotations to generate is pulled from the class {@link PersistentTypeInfo}

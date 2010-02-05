@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,16 +36,18 @@ import org.faktorips.devtools.stdbuilder.type.GenType;
  */
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationGenerator {
 
-    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
     private static final String IMPORT_ONE_TO_MANY = "javax.persistence.OneToMany";
     private static final String IMPORT_JOIN_TABLE = "javax.persistence.JoinTable";
     private static final String IMPORT_MANY_TO_MANY = "javax.persistence.ManyToMany";
-    private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
-    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
     private static final String IMPORT_CASCADE_TYPE = "javax.persistence.CascadeType";
+    private static final String IMPORT_JOIN_COLUMN = "javax.persistence.JoinColumn";
 
     private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
+    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
+    private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
+    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
+    private static final String ANNOTATION_JOIN_COLUMN = "@JoinColumn";
 
     public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -90,23 +93,56 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         IPersistentAssociationInfo persistenceAssociatonInfo = pcTypeAssociation.getPersistenceAssociatonInfo();
         fragment.addImport(IMPORT_CASCADE_TYPE);
         if (persistenceAssociatonInfo.isJoinTableRequired()) {
-            fragment.addImport(IMPORT_MANY_TO_MANY);
-            fragment.addImport(IMPORT_JOIN_TABLE);
+            createAnnotationsForAssociationManyToMany(fragment, targetQName, persistenceAssociatonInfo);
 
-            fragment.append(ANNOTATION_MANY_TO_MANY).append("(");
-            fragment.append("targetEntity = " + targetQName).append(".class");
-            fragment.append(", cascade = CascadeType.ALL").appendln(")");
         } else if (persistenceAssociatonInfo.isUnidirectional() && pcTypeAssociation.is1ToMany()) {
             fragment.addImport(IMPORT_ONE_TO_MANY);
             fragment.append(ANNOTATION_ONE_TO_MANY).append("(");
             fragment.append("targetEntity = " + targetQName).append(".class");
             fragment.append(", cascade = CascadeType.ALL").appendln(")");
         }
+    }
 
-        // TODO: add association edit dialog for the join table name
-        // fragment.append(ANNOTATION_JOIN_TABLE).append("(");
-        // fragment.append("name = " + persistenceAssociatonInfo.getJoinTableName());
-        // fragment.appendln(")");
+    private void createAnnotationsForAssociationManyToMany(JavaCodeFragment fragment,
+            String targetQName,
+            IPersistentAssociationInfo persistenceAssociatonInfo) {
+        fragment.addImport(IMPORT_MANY_TO_MANY);
+        fragment.addImport(IMPORT_JOIN_TABLE);
+        fragment.addImport(IMPORT_JOIN_COLUMN);
+
+        fragment.append(ANNOTATION_MANY_TO_MANY).append('(');
+        fragment.append("targetEntity = " + targetQName).append(".class");
+        fragment.append(", cascade = CascadeType.ALL").appendln(')');
+
+        fragment.append(ANNOTATION_JOIN_TABLE).append('(');
+        appendName(fragment, persistenceAssociatonInfo.getJoinTableName());
+
+        String sourceColumnName = persistenceAssociatonInfo.getSourceColumnName();
+        if (StringUtils.isNotBlank(sourceColumnName)) {
+            fragment.append(", ");
+            appendJoinColumns(fragment, sourceColumnName, false);
+        }
+
+        String targetColumnName = persistenceAssociatonInfo.getTargetColumnName();
+        if (StringUtils.isNotBlank(targetColumnName)) {
+            fragment.append(", ");
+            appendJoinColumns(fragment, targetColumnName, true);
+        }
+
+        fragment.appendln(')');
+    }
+
+    /**
+     * Appends a String with the following structure to the given fragment:
+     * <p/>
+     * XX=@JoinColumn(name = "columnName") <br/>
+     * with XX=(joinColumns|inverseJoinColumns) depending on inverse parameter
+     */
+    private void appendJoinColumns(JavaCodeFragment fragment, String columnName, boolean inverse) {
+        String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
+
+        fragment.append(lhs).append(ANNOTATION_JOIN_COLUMN).append('(');
+        appendName(fragment, columnName).append(")");
     }
 
     private void createAnnotationForCompositionOneToOne(JavaCodeFragment fragment,
