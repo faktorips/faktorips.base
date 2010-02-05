@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile org.faktorips.feature" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../org.faktorips.util" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.valuetypes.java5" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.valuetypes" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.runtime" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.dtflcommon" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.fl" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.runtime.java5" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.nebula" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.core" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.stdbuilder" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.ant" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.core.ui" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.tableconversion" target="build.jars"/>
+	</target>
+</project>
