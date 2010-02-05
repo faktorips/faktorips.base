@@ -305,7 +305,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     private void generateMethodGetSetOfAllowedValuesPolicyCmptTypeImpl(JavaCodeFragmentBuilder methodBuilder,
             IIpsProject ipsProject) throws CoreException {
 
-        methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         GenChangeableAttribute genOverwritten = getGeneratorForOverwrittenChangeableAttribute();
         if (genOverwritten != null) {
             if (genOverwritten.shouldGetAllowedSetOfValuesBeGenerated()) {
@@ -341,7 +341,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     private void generateMethodGetSetOfAllowedValuesForProductCmptType(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getAttribute().isOverwrite()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
         } else if (getAttribute().getModifier().isPublished()) {

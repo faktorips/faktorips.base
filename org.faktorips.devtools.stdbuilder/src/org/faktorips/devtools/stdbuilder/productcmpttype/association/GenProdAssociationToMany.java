@@ -211,7 +211,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
 
     private void generateMethodGetCardinalityFor1ToManyAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        methodsBuilder.javaDoc("@inheritDoc", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
         JavaCodeFragment frag = new JavaCodeFragment();

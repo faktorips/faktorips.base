@@ -812,7 +812,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             builder.append(method.getFragment());
 
             // init method
-            javaDoc = "{@inheritDoc}";
+            javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
 
             method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",

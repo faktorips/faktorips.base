@@ -1051,7 +1051,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.appendCloseBracket();
         body.appendln("return false;"); //$NON-NLS-1$
 
-        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED); //$NON-NLS-1$
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE.getName(), "equals", new String[] { "obj" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new String[] { Object.class.getName() });
@@ -1072,7 +1072,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
         body.appendln("().hashCode();"); //$NON-NLS-1$
 
-        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED); //$NON-NLS-1$
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "hashCode", new String[0], new String[0]); //$NON-NLS-1$
         methodBuilder.append(body);
@@ -1117,7 +1117,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(getJavaNamingConvention().getMemberVarName(displayName.getName()));
             methodBody.append(" + ')';"); //$NON-NLS-1$
         }
-        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED); //$NON-NLS-1$
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null); //$NON-NLS-1$
     }
