@@ -49,7 +49,8 @@ public class Messages extends NLS {
     public static String SourcePage_title;
     public static String SourcePage_description;
     public static String SourcePage_description_copy;
-    public static String ReferenceAndPreviewPage_descritionPreview;
+    public static String ReferenceAndPreviewPage_descritionPreviewNewCopy;
+    public static String ReferenceAndPreviewPage_descritionPreviewNewGeneration;
     public static String ReferenceAndPreviewPage_title;
     public static String ReferenceAndPreviewPage_labelValidFrom;
     public static String ReferenceAndPreviewPage_labelTargetPackage;
