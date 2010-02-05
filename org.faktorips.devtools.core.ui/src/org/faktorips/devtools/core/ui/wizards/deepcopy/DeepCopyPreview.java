@@ -80,7 +80,18 @@ public class DeepCopyPreview {
 
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
         IIpsPackageFragment base = sourcePage.getTargetPackage();
-        validateTarget(modified, segmentsToIgnore, base);
+        validateTarget(modified, segmentsToIgnore, base, errorElements);
+    }
+
+    public boolean newTargetHasError(IProductCmptStructureReference ref) {
+        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
+        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
+        IIpsPackageFragment base = sourcePage.getTargetPackage();
+
+        Hashtable<IProductCmptStructureReference, String> errors = new Hashtable<IProductCmptStructureReference, String>(
+                1);
+        validateTarget(ref, segmentsToIgnore, base, errors);
+        return errors.size() == 1;
     }
 
     /**
@@ -98,7 +109,7 @@ public class DeepCopyPreview {
         IIpsPackageFragment base = sourcePage.getTargetPackage();
 
         for (int i = 0; i < toCopy.length; i++) {
-            validateTarget(toCopy[i], segmentsToIgnore, base);
+            validateTarget(toCopy[i], segmentsToIgnore, base, errorElements);
         }
 
         MessageList validationResult = new MessageList();
@@ -108,11 +119,14 @@ public class DeepCopyPreview {
             Message currMessage = validationResult.getMessage(i);
             final IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage
                     .getInvalidObjectProperties()[0].getObject();
-            addMessage(object, currMessage.getText());
+            addMessage(object, currMessage.getText(), errorElements);
         }
     }
 
-    private void validateTarget(IProductCmptStructureReference modified, int segmentsToIgnore, IIpsPackageFragment base) {
+    private void validateTarget(IProductCmptStructureReference modified,
+            int segmentsToIgnore,
+            IIpsPackageFragment base,
+            Hashtable<IProductCmptStructureReference, String> errorElements) {
         if (base == null || !base.getRoot().exists()) {
             return;
         }
@@ -140,14 +154,15 @@ public class DeepCopyPreview {
                     message.append("."); //$NON-NLS-1$
                 }
                 message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
-                addMessage(modified, message.toString());
+                addMessage(modified, message.toString(), errorElements);
             }
             String name = file.getEnclosingResource().getFullPath().toString();
             IProductCmptStructureReference node = filename2productMap.get(name);
             if (node instanceof IProductCmptReference) {
                 if (node != null && ((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
-                    addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
-                    addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
+                    addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
+                    addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
+                            errorElements);
                 }
             } else if (node instanceof IProductCmptStructureTblUsageReference) {
                 ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)node)
@@ -156,8 +171,9 @@ public class DeepCopyPreview {
                 try {
                     tableContents = tableContentUsage.findTableContents(deepCopyWizard.getIpsProject());
                     if (node != null && (tableContents != correspondingIpsObject)) {
-                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
-                        addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
+                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
+                        addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
+                                errorElements);
                     }
                 } catch (CoreException e) {
                     // should be displayed as validation error before
@@ -293,7 +309,9 @@ public class DeepCopyPreview {
      * Adds an error message for the given product. If a message allready exists, the new message is
      * appended.
      */
-    private void addMessage(IProductCmptStructureReference product, String msg) {
+    private void addMessage(IProductCmptStructureReference product,
+            String msg,
+            Hashtable<IProductCmptStructureReference, String> errorElements) {
         if (msg == null || msg.length() == 0) {
             return;
         }

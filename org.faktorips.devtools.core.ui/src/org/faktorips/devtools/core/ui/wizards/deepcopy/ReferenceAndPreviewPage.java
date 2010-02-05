@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
@@ -118,6 +119,15 @@ public class ReferenceAndPreviewPage extends WizardPage {
         this.sourcePage = sourcePage;
         this.structure = structure;
         setTitle(getTitle(type));
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            setDescription(Messages.ReferenceAndPreviewPage_descritionPreviewProductCopy);
+        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+            String generationConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
+            setDescription(NLS.bind(
+                    Messages.ReferenceAndPreviewPage_descritionPreviewNewGeneration,
+                    generationConceptNameSingular));
+        }
         setPageComplete(true);
     }
 
@@ -272,7 +282,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
                 }
                 if (StringUtils.isEmpty(packageName)) {
-                    packageName = org.faktorips.devtools.core.ui.Messages.DefaultLabelProvider_labelDefaultPackage;
+                    packageName = "";
                 }
                 return " - " + packageName; //$NON-NLS-1$
             } else if (item instanceof IProductCmptStructureTblUsageReference) {

@@ -275,16 +275,37 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
+                workingDate.setFocus();
+
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
-                refreshPageAferValueChange();
+
+                if (isRootExists()) {
+                    setPageComplete(false);
+                    setMessage(Messages.SourcePage_msgInitialRootTargetExists);
+                    // clear version id because is user mus first change the working date
+                    versionId.setText(""); //$NON-NLS-1$
+                    prevValues.put(versionId, null);
+                    // trigger a new validate after focus lost on workingDate test field
+                    prevValues.put(workingDate, null);
+                } else {
+                    refreshPageAferValueChange();
+                }
+
                 // update column width only the first time
                 // otherwise the resize effect is to strange for the user
                 updateColumnWidth();
+
             }
+
         });
 
         addListenerToAllControls();
+    }
+
+    private boolean isRootExists() {
+        // just check if the root contains errors or not
+        return getDeepCopyWizard().getDeepCopyPreview().newTargetHasError(structure.getRoot());
     }
 
     private void addListenerToAllControls() {
@@ -373,15 +394,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     final int idx = i;
                     getShell().getDisplay().asyncExec(new Runnable() {
                         public void run() {
-                            // run asyn otherwise there may be problem with the focus change
+                            // run async otherwise there may be problem with the focus change
                             // running in the same thread
                             // e.g. if using key tab then focus jumps two instead of one control
                             // forward or if using the mouse, to go into another control, then the
                             // focus doesn't change
                             if (textControls[idx] == workingDateField.getTextControl()) {
                                 getDeepCopyWizard().applyWorkingDate();
+                                refreshPageAferValueChange();
+                                updateColumnWidth();
+                            } else {
+                                refreshPageAferValueChange();
                             }
-                            refreshPageAferValueChange();
                         }
                     });
                 }
@@ -499,7 +523,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                         return true;
                     }
                 } else {
-                    throw new RuntimeException("Unsupported class found: " + element.getClass().getName());
+                    throw new RuntimeException("Unsupported class found: " + element.getClass().getName()); //$NON-NLS-1$
                 }
                 return false;
             }
