@@ -103,10 +103,10 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         specialPane.setLayout(new GridLayout(2, false));
         minKardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_minimum);
         minKard = toolkit.createText(specialPane);
-        minKard.setLayoutData(new GridData(20, SWT.DEFAULT));
+        minKard.setLayoutData(new GridData(30, SWT.DEFAULT));
         maxKardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_maximum);
         maxKard = toolkit.createText(specialPane);
-        maxKard.setLayoutData(new GridData(20, SWT.DEFAULT));
+        maxKard.setLayoutData(new GridData(30, SWT.DEFAULT));
         toolkit.createVerticalSpacer(specialPane, 3).setBackground(kardinalityPane.getBackground());
 
         kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
