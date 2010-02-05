@@ -61,6 +61,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 
@@ -78,6 +79,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     private String runtimeIdPrefix = Messages.AddIpsNatureAction_defaultRuntimeIdPrefix;
     private boolean isModelProject = true;
     private boolean isProductDefinitionProject = false;
+    private boolean isPersistentProject = false;
 
     /**
      * {@inheritDoc}
@@ -154,6 +156,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             props.setRuntimeIdPrefix(runtimeIdPrefix);
             props.setProductDefinitionProject(isProductDefinitionProject);
             props.setModelProject(isModelProject);
+            props.setPersistenceSupport(isPersistentProject);
 
             // use the first registered builder set info as default
             IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
@@ -263,6 +266,8 @@ public class AddIpsNatureAction extends ActionDelegate {
         private Radiobutton productDefinitionProjectButton;
         private Radiobutton fullProjectButton;
 
+        private Checkbox enablePersistenceCheckbox;
+
         /**
          * Image for title area
          */
@@ -331,6 +336,9 @@ public class AddIpsNatureAction extends ActionDelegate {
 
             fullProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_fullProject);
             fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
+
+            enablePersistenceCheckbox = kit.createCheckbox(radiobuttonGroup.getGroup());
+            enablePersistenceCheckbox.setText(Messages.AddIpsNatureAction_PersistenceSupport);
 
             kit.createVerticalSpacer(composite, 5);
             Composite textComposite = kit.createLabelEditColumnComposite(composite);
@@ -499,6 +507,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 isModelProject = modelProjectButton.isChecked() || fullProjectButton.isChecked();
                 isProductDefinitionProject = productDefinitionProjectButton.isChecked()
                         || fullProjectButton.isChecked();
+                isPersistentProject = enablePersistenceCheckbox.isChecked();
             }
             super.buttonPressed(buttonId);
         }
