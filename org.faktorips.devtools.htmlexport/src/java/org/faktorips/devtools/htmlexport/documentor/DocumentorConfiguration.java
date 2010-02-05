@@ -47,9 +47,13 @@ public class DocumentorConfiguration {
     }
 
     public List<IIpsObject> getLinkedObjects() {
-        List<IIpsObject> objects = new ArrayList<IIpsObject>();
+    	return getLinkedObjects(getLinkedIpsObjectTypes());
+    }
 
-        List<IIpsSrcFile> srcFiles = getLinkedSources();
+	public List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
+		List<IIpsObject> objects = new ArrayList<IIpsObject>();
+
+		List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes);
         for (IIpsSrcFile ipsSrcFile : srcFiles) {
             try {
                 objects.add(ipsSrcFile.getIpsObject());
@@ -58,17 +62,21 @@ public class DocumentorConfiguration {
             }
         }
         return objects;
-    }
+	}
 
     public List<IIpsSrcFile> getLinkedSources() {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        return getLinkedSource(getLinkedIpsObjectTypes());
+    }
+
+	public List<IIpsSrcFile> getLinkedSource(IpsObjectType... ipsObjectTypes) {
+		List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
-            ipsProject.findAllIpsSrcFiles(result, getLinkedIpsObjectTypes());
+			ipsProject.findAllIpsSrcFiles(result, ipsObjectTypes);
         } catch (CoreException e) {
             e.printStackTrace();
         }
         return result;
-    }
+	}
 
     public void addDocumentorScript(IDocumentorScript script) {
         scripts.add(script);

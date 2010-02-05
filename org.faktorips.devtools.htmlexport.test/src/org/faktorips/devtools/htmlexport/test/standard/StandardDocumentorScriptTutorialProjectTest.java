@@ -39,7 +39,7 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
         
-		IProject project = workspace.getRoot().getProject("org.faktorips.tutorial.de.Hausratmodell");
+		IProject project = workspace.getRoot().getProject("org.faktorips.tutorial.de.Hausratprodukte");
 
 		IpsModel model = new IpsModel();
 		ipsProject = model.getIpsProject(project);

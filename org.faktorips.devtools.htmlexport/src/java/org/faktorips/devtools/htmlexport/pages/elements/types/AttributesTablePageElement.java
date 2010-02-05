@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -56,4 +57,9 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
 
 		return headline;
 	}
+	
+	public boolean isEmpty() {
+		return ArrayUtils.isEmpty(type.getAttributes());
+	}
+
 }

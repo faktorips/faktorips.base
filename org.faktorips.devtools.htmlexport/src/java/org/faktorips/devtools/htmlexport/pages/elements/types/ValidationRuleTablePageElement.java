@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -11,12 +12,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 
 /**
  * Tabelle zur Darstellung von Validierungsregeln
+ * 
  * @author dicker
- *
+ * 
  */
 public class ValidationRuleTablePageElement extends AbstractSpecificTablePageElement {
 	protected IPolicyCmptType policyCmptType;
-	
+
 	public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType) {
 		super();
 		this.policyCmptType = policyCmptType;
@@ -41,21 +43,25 @@ public class ValidationRuleTablePageElement extends AbstractSpecificTablePageEle
 		ruleData.add(rule.getDescription());
 
 		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(ruleData)));
-		
+
 	}
 
 	@Override
 	protected List<String> getHeadline() {
 		List<String> headline = new ArrayList<String>();
-		
+
 		headline.add(IValidationRule.PROPERTY_NAME);
 		headline.add(IValidationRule.PROPERTY_MESSAGE_CODE);
 		headline.add(IValidationRule.PROPERTY_MESSAGE_SEVERITY);
 		headline.add(IValidationRule.PROPERTY_MESSAGE_TEXT);
 		headline.add(IValidationRule.PROPERTY_VALIDATED_ATTRIBUTES);
 		headline.add(IValidationRule.PROPERTY_DESCRIPTION);
-		
+
 		return headline;
+	}
+
+	public boolean isEmpty() {
+		return ArrayUtils.isEmpty(policyCmptType.getRules());
 	}
 
 }

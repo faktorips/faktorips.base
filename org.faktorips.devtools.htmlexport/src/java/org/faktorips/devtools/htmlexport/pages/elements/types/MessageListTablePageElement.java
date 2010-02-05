@@ -47,5 +47,10 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
 		
 		return headline;
 	}
+	
+
+	public boolean isEmpty() {
+		return messageList.isEmpty();
+	}
 
 }

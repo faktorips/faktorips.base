@@ -40,9 +40,9 @@ body {
 }
 
 table.BORDER tr td {
-	border-width: 1px;
+	border-width: 2px;
 	border-style: solid;
-	border-color: black;
+	border-color: white;
 }
 
 table.BORDER {
@@ -50,18 +50,32 @@ table.BORDER {
 	border-spacing: 3pt;
 }
 
+td ul {
+	margin: 0px;
+}
+
 .TABLE_HEADLINE {
 	color: white;
-	background-color: #333333;
-	font-size: 110%;
+	background-color: #444444;
+	font-weight: bold;
+	padding: 1px;
+	text-align: center;
 }
 
 .TABLE_ROW_EVEN {
-	background-color: #CCCCCC;
+	background-color: #DDDDDD;
 }
 
 .TABLE_ROW_UNEVEN {
 	background-color: #EEEEEE;
+}
+
+h2 {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: black;
+	padding-top: .4em;
+	margin-top: .5em;
 }
 
 img {

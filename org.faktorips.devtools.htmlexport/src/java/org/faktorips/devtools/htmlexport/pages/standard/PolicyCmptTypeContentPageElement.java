@@ -36,21 +36,11 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 	}
 
 	private PageElement createValidationRuleTable() {
-		IValidationRule[] validationRules;
-		validationRules = getPolicyCmptType().getRules();
-
 		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Regeln", TextType.HEADING_2));
 
-		if (validationRules.length == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Regeln"));
-			return wrapper;
-		}
-
-		TablePageElement table = new ValidationRuleTablePageElement(getPolicyCmptType());
-
-		wrapper.addPageElements(table);
-
+		wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getPolicyCmptType()), "keine Regeln vorhanden"));
+		
 		return wrapper;
 	}
 

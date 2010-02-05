@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -31,10 +30,9 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	protected void addStructureData() {
 		IProductCmptType productCmptType = getProductCmptType();
 
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK,
-				new PageElement[] {
-						new TextPageElement("Vorlage: "),
-						new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) }));
+		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+				new TextPageElement("Vorlage: "),
+				new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) }));
 	}
 
 	protected IProductCmptType getProductCmptType() {
@@ -60,25 +58,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
-		if (object.getNumOfGenerations() == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Anpassungsstufen"));
-			return wrapper;
-		}
-
-		IAttribute[] attributes;
-		try {
-			attributes = getProductCmptType().findAllAttributes(object.getIpsProject());
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
-		}
-
-
-		if (attributes.length == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Attribute"));
-			return wrapper;
-		}
-
-		wrapper.addPageElements(new ProductGenerationAttributeTable(object, attributes, config));
+		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(object, getProductCmptType(), config), "keine Anpassungsstufen oder Attribute"));
 
 		return wrapper;
 	}

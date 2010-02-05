@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
@@ -17,10 +18,12 @@ import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
@@ -42,6 +45,8 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			return new EnumTypeContentPageElement((IEnumType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE)
 			return new TableStructureContentPageElement((ITableStructure) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS)
+			return new TableContentsContentPageElement((ITableContents) object, config);
 		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " " + object.getIpsObjectType());
 	}
 
@@ -116,5 +121,10 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 		return PathUtilFactory.createPathUtil(object).getPathToRoot();
 	}
 	
-	
+	protected PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement, String alternativeText) {
+		if (tablePageElement.isEmpty()) {
+			return new TextPageElement(alternativeText);
+		}
+		return tablePageElement;
+	}
 }

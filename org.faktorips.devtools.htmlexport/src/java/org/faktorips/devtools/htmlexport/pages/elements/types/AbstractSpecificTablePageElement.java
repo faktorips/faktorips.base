@@ -2,6 +2,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
+import org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -12,8 +13,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.LineTablePage
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
-public abstract class AbstractSpecificTablePageElement extends TablePageElement {
-
+public abstract class AbstractSpecificTablePageElement extends TablePageElement implements DataPageElement {
 	public AbstractSpecificTablePageElement() {
 		super();
 		addLayouts(new LineTablePageElementLayout(0, Style.TABLE_HEADLINE));

@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -52,8 +53,12 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
 		headline.add(IMethod.PROPERTY_DATATYPE);
 		headline.add("signature");
 		headline.add(IMethod.PROPERTY_DESCRIPTION);
-		
+
 		return headline;
+	}
+
+	public boolean isEmpty() {
+		return ArrayUtils.isEmpty(type.getMethods());
 	}
 
 }

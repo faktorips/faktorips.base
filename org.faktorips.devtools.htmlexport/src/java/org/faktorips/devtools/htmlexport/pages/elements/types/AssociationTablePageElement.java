@@ -3,8 +3,8 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -86,4 +86,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
 		return headline;
 	}
 
+	public boolean isEmpty() {
+		return ArrayUtils.isEmpty(type.getAssociations());
+	}
 }
