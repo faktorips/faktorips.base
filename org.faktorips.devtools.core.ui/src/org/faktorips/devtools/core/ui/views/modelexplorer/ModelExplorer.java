@@ -566,11 +566,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
          * resets the activation flag.
          */
         private boolean wasActivatedByModelExplorer() {
-            if (activatedByModelExplorer) {
-                activatedByModelExplorer = false;
-                return true;
-            }
             return false;
+            // if (activatedByModelExplorer) {
+            // activatedByModelExplorer = false;
+            // return true;
+            // }
+            // return false;
         }
 
         public void partBroughtToTop(IWorkbenchPart part) {

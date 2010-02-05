@@ -13,22 +13,13 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -73,17 +64,14 @@ import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -91,7 +79,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
@@ -99,7 +86,6 @@ import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
-import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
 import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDateViewer;
@@ -897,105 +883,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public boolean isShowAssociatedCmpts() {
         return showAssociatedCmpts;
-    }
-
-    private static class AdjustmentDateContentProvider extends DeferredStructuredContentProvider {
-
-        @Override
-        protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
-            if (inputElement instanceof IProductCmpt) {
-                IProductCmpt productCmpt = (IProductCmpt)inputElement;
-                try {
-                    TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt, null, productCmpt
-                            .getIpsProject(), monitor);
-                    List<AdjustmentDate> result = new ArrayList<AdjustmentDate>();
-                    GregorianCalendar lastDate = null;
-                    AdjustmentDate lastAdjDate = null;
-                    for (Iterator<GregorianCalendar> validFromIterator = validFromDates.iterator(); validFromIterator
-                            .hasNext();) {
-                        GregorianCalendar nextDate = validFromIterator.next();
-                        lastAdjDate = new AdjustmentDate(nextDate, lastDate);
-                        lastDate = (GregorianCalendar)nextDate.clone();
-                        lastDate.setTimeInMillis(lastDate.getTimeInMillis() - 1);// add(Calendar.DATE,
-                        // -1);
-                        result.add(lastAdjDate);
-                    }
-                    return result.toArray();
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-            return new Object[0];
-        }
-
-        @Override
-        protected String getWaitingLabel() {
-            return NLS.bind(Messages.ProductStructureExplorer_collectingAdjustmentDates, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
-        }
-
-        private TreeSet<GregorianCalendar> collectValidFromDates(IProductCmpt productCmpt,
-                Set<IProductCmpt> alreadyPassed,
-                IIpsProject ipsProject,
-                IProgressMonitor monitor) throws CoreException {
-            if (alreadyPassed == null) {
-                alreadyPassed = new HashSet<IProductCmpt>();
-            }
-            TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
-
-                public int compare(GregorianCalendar o1, GregorianCalendar o2) {
-                    // descending order
-                    return o2.getTime().compareTo(o1.getTime());
-                }
-
-            });
-            if (productCmpt == null) {
-                return result;
-            }
-
-            List<IIpsObjectGeneration> generations = productCmpt.getGenerations();
-            try {
-                monitor.beginTask(productCmpt.getName(), generations.size());
-                for (IIpsObjectGeneration generation : generations) {
-                    if (monitor.isCanceled()) {
-                        return result;
-                    }
-                    result.add(generation.getValidFrom());
-                    if (generation instanceof ProductCmptGeneration) {
-                        ProductCmptGeneration prodCmptGeneration = (ProductCmptGeneration)generation;
-                        IProductCmptLink[] links = prodCmptGeneration.getLinks();
-                        IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-                        try {
-                            subMonitor.beginTask(null, links.length);
-                            for (IProductCmptLink link : links) {
-                                if (monitor.isCanceled()) {
-                                    return result;
-                                }
-                                IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
-                                if (linkAssociation != null && !linkAssociation.isAssoziation()) {
-                                    IProductCmpt target = link.findTarget(ipsProject);
-                                    if (alreadyPassed.add(target)) {
-                                        IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
-                                        result.addAll(collectValidFromDates(target, alreadyPassed, ipsProject,
-                                                recMonitor));
-                                    }
-                                }
-                            }
-                        } finally {
-                            subMonitor.done();
-                        }
-                    }
-                }
-            } finally {
-                monitor.done();
-            }
-            return result;
-        }
-
-        @Override
-        public void dispose() {
-
-        }
     }
 
 }

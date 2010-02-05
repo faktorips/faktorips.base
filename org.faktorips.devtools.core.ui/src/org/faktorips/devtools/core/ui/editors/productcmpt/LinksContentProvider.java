@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -60,7 +61,8 @@ public class LinksContentProvider implements ITreeContentProvider {
                 return getAssociationNames(pcType, pc.getIpsProject());
             }
         } catch (CoreException e) {
-            throw new RuntimeException("Error getting element ", e); //$NON-NLS-1$
+            IpsPlugin.log(e);
+            return new Object[0];
         }
     }
 
