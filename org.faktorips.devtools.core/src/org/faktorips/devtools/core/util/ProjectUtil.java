@@ -237,6 +237,7 @@ public class ProjectUtil {
         IFolder srcFolder = createFolder(ipsProject.getProject(), folderName);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.setOutputDefinedPerSrcFolder(true);
 
         if (path.containsSrcFolderEntry(srcFolder)) {
             path.removeSrcFolderEntry(srcFolder);
