@@ -22,13 +22,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -62,7 +58,6 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         public String[] getColumnHeaders() {
             return new String[] { "Attribute Name", "Column Name", "Converter", "Unique", "Nullable", "Size",
                     "Precision", "Scale" };
-
         }
 
         public PersistenceAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
@@ -76,7 +71,9 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
-            return new PersistentAttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
+            AttributeEditDialog attributeEditDialog = new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
+
+            return attributeEditDialog;
         }
 
         @Override
@@ -159,27 +156,5 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         public ILabelProvider createLabelProvider() {
             return new PersistentAttributeLabelProvider();
         }
-
     }
-
-    public class PersistentAttributeEditDialog extends EditDialog {
-
-        public PersistentAttributeEditDialog(IPolicyCmptTypeAttribute part, Shell shell) {
-            super(shell, "Edit Attribute", true);
-        }
-
-        @Override
-        protected Composite createWorkArea(Composite parent) throws CoreException {
-            TabFolder folder = (TabFolder)parent;
-
-            TabItem page = new TabItem(folder, SWT.NONE);
-            page.setText("Persistence");
-            Label control = new Label(parent, SWT.NONE);
-            control.setText("Sample Content");
-            page.setControl(control);
-
-            return folder;
-        }
-    }
-
 }

@@ -19,13 +19,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
@@ -74,7 +70,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
-            return new PersistentAssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
+            return new AssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
         }
 
         @Override
@@ -84,7 +80,6 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         @Override
         public String[] getColumnHeaders() {
-            // return columnHeaders;
             return new String[] { "Association Target", "Join Table Name", "Source Column Name", "Target Column Name",
                     "Fetch Type" };
         }
@@ -145,25 +140,4 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         }
 
     }
-
-    public class PersistentAssociationEditDialog extends EditDialog {
-
-        public PersistentAssociationEditDialog(IPolicyCmptTypeAssociation part, Shell shell) {
-            super(shell, "Edit Association", true);
-        }
-
-        @Override
-        protected Composite createWorkArea(Composite parent) throws CoreException {
-            TabFolder folder = (TabFolder)parent;
-
-            TabItem page = new TabItem(folder, SWT.NONE);
-            page.setText("Persistence");
-            Label control = new Label(parent, SWT.NONE);
-            control.setText("Sample Content");
-            page.setControl(control);
-
-            return folder;
-        }
-    }
-
 }
