@@ -447,18 +447,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this,
                 BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
-        //
-        // wire up the builders
-        //
-
-        // policy component type builders
-
         // New enum type builder
         enumTypeBuilder = new EnumTypeBuilder(this);
         EnumXmlAdapterBuilder enumXmlAdapterBuilder = new EnumXmlAdapterBuilder(this, enumTypeBuilder);
-
         IIpsArtefactBuilder enumContentBuilder = new XmlContentFileCopyBuilder(IpsObjectType.ENUM_CONTENT, this,
                 KIND_ENUM_CONTENT);
+
+        //
+        // wire up the builders
+        //
+        productCmptGenImplClassBuilder.setEnumTypeBuilder(enumTypeBuilder);
 
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);

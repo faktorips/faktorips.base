@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -47,6 +49,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
@@ -74,9 +77,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
 
+    private EnumTypeBuilder enumTypeBuilder;
+
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
+    }
+
+    public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {
+        this.enumTypeBuilder = enumTypeBuilder;
     }
 
     /**
@@ -306,8 +315,39 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             DatatypeHelper helper,
             JavaCodeFragment frag) throws CoreException {
 
+        generateInitValueSetVariable(attribute, helper, frag);
+        generateExtractEnumSetFromXml(attribute, helper, frag);
+        if (getIpsProject().isValueSetTypeApplicable(attribute.getDatatype(), ValueSetType.RANGE)) {
+            generateExtractRangeFromXml(attribute, helper, frag);
+        }
+    }
+
+    /**
+     * Helper method for {@link #generateExtractAnyValueSetFromXml}.
+     */
+    private void generateInitValueSetVariable(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragment frag) throws CoreException {
+
         frag.append(attribute.getFieldNameSetOfAllowedValues());
-        frag.append(" = new ");
+        frag.append(" = ");
+        if (helper.getDatatype().isEnum()) {
+            if (helper.getDatatype() instanceof EnumTypeDatatypeAdapter) {
+                EnumTypeDatatypeAdapter enumAdapter = (EnumTypeDatatypeAdapter)helper.getDatatype();
+                generateCreateValueSetContainingAllEnumValueForFipsEnumDatatype(attribute, helper, enumAdapter, frag);
+            } else {
+                generateCreateValueSetContainingAllEnumValueForRegisteredEnumClass(attribute, helper, frag);
+            }
+        } else {
+            generateCreateUnrestrictedValueSet(helper, frag);
+        }
+    }
+
+    /**
+     * Helper method for {@link #generateExtractAnyValueSetFromXml}.
+     */
+    private void generateCreateUnrestrictedValueSet(DatatypeHelper helper, JavaCodeFragment frag) {
+        frag.append("new ");
         frag.appendClassName(UnrestrictedValueSet.class);
         if (isUseTypesafeCollections()) {
             frag.append("<");
@@ -315,10 +355,47 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.append(">");
         }
         frag.append("();");
-        generateExtractEnumSetFromXml(attribute, helper, frag);
-        if (getIpsProject().isValueSetTypeApplicable(attribute.getDatatype(), ValueSetType.RANGE)) {
-            generateExtractRangeFromXml(attribute, helper, frag);
+    }
+
+    /**
+     * Helper method for {@link #generateExtractAnyValueSetFromXml}.
+     */
+    private void generateCreateValueSetContainingAllEnumValueForFipsEnumDatatype(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            EnumTypeDatatypeAdapter enumAdapter,
+            JavaCodeFragment frag) throws CoreException {
+
+        String javaEnumName = enumTypeBuilder.getQualifiedClassName(enumAdapter.getEnumType());
+        JavaCodeFragment code = new JavaCodeFragment();
+        if (enumAdapter.hasEnumContent()) {
+            code.append("getRepository().getEnumValues(");
+            code.appendClassName(javaEnumName);
+            code.append(".class)");
+        } else {
+            code.appendClassName(Arrays.class);
+            code.append(".asList(");
+            code.appendClassName(javaEnumName);
+            code.append(".values())");
         }
+        frag.append(helper.newEnumValueSetInstance(code, new JavaCodeFragment("true"), isUseTypesafeCollections()));
+        frag.append(";");
+    }
+
+    /**
+     * Helper method for {@link #generateExtractAnyValueSetFromXml}.
+     */
+    private void generateCreateValueSetContainingAllEnumValueForRegisteredEnumClass(GenPolicyCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragment frag) throws CoreException {
+        // TODO
+        frag.append("new ");
+        frag.appendClassName(UnrestrictedValueSet.class);
+        if (isUseTypesafeCollections()) {
+            frag.append("<");
+            frag.appendClassName(helper.getJavaClassName());
+            frag.append(">");
+        }
+        frag.append("();");
     }
 
     private void generateExtractEnumSetFromXml(GenPolicyCmptTypeAttribute attribute,
