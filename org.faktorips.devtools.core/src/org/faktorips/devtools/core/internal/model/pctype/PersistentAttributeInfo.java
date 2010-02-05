@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -207,7 +208,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
-        if (tableColumnName.equals("")) {
+        if (StringUtils.isBlank(tableColumnName)) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
             return;

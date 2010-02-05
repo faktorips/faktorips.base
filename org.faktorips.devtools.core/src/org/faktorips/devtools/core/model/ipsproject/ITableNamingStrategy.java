@@ -20,9 +20,6 @@ import org.w3c.dom.Element;
  * The table naming strategy defines how a table name is constructed from a given String. Possible
  * uses include a conversion from from a CamelCase naming to an uppercased naming (e.g. TableName ->
  * TABLE_NAME).
- * <p/>
- * Also a default policy of prepending a vendor specific String to the table name is realizable
- * (e.g. TableName -> COMPANY_TABLE_NAME).
  * 
  * @author Roman Grutza
  */
@@ -31,7 +28,8 @@ public interface ITableNamingStrategy {
     /**
      * Name of xml tags representing a table naming strategy.
      */
-    public final static String XML_TAG_NAME = "TableNamingStrategy";
+    public static final String XML_TAG_NAME = "TableNamingStrategy";
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ITable";
 
     /**
      * Applies this naming strategy to the given name and returns the possibly altered table name.

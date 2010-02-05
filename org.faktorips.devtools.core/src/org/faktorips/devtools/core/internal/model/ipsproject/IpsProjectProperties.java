@@ -374,7 +374,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute(
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
-        projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$
+        projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -446,6 +446,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
                 rulesWithoutReferencesAllowed));
 
+        // persistence options
+        createPersistenceOptionsDescriptionComment(projectEl);
+        Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
+        persistenceOptionsEl.setAttribute("maxTableNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
+                .getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute("maxColumnNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
+                .getMaxColumnNameLenght()));
+        projectEl.appendChild(persistenceOptionsEl);
+
+        //        Element tableNamingEl = doc.createElement("TableNamingStrategy"); //$NON-NLS-1$
+        //        Element tableColumnNamingEl = doc.createElement("TableColumnNamingStrategy"); //$NON-NLS-1$
+
+        ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
+        ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
+
+        //        tableNamingEl.setAttribute("id", tableNamingStrategy.toString()); //$NON-NLS-1$
+        //        tableColumnNamingEl.setAttribute("id", tableColumnNamingStrategy.toString()); //$NON-NLS-1$
+
+        persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
+        persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+
         return projectEl;
     }
 
@@ -459,7 +480,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue();
+        persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -917,6 +938,25 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "		    of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "</OptionalConstraints>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        createDescriptionComment(s, parentEl);
+    }
+
+    private void createPersistenceOptionsDescriptionComment(Node parentEl) {
+        String s = "PersistenceOptions" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "In this section you can adjust parameters relating the persistance of IPolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "</PersistenceOptions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "Currently Faktor-IPS includes the strategies CamelCaseToUpperUnderscoreTableNamingStrategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, examples:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    IdentifierName1 -> IDENTIFIER_NAME1" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
 

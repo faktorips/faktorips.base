@@ -20,9 +20,6 @@ import org.w3c.dom.Element;
  * The table columnn naming strategy defines how a table column name is constructed from a given
  * String. Possible uses include a conversion from from a CamelCase naming to an uppercased naming
  * (e.g. ColumnName -> COLUMN_NAME).
- * <p/>
- * Also a default policy of prepending a vendor specific String to the table column name is
- * realizable (e.g. ColumnName -> COMPANY_COLUMN_NAME).
  * 
  * @author Roman Grutza
  */

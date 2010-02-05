@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.model.ipsproject;
 /**
  * Persistence specific properties that can be configured for an IPS project (more specifically its
  * IpsProjectProperties).
+ * <p/>
+ * These include maximum and minimum table name lengths (as well as column name lengths), and the
+ * strategies used for deriving table/column names from arbitrary strings.
  * 
  * @author Roman Grutza
  */

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
@@ -21,6 +23,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
+ * Default implementation of {@link IPersistenceOptions}.
+ * 
  * @author Roman Grutza
  */
 public class PersistenceOptions implements IPersistenceOptions {
@@ -28,13 +32,11 @@ public class PersistenceOptions implements IPersistenceOptions {
     private static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength";
     private static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength";
 
-    private final static int DEFAULT_COLUMN_NAME_LENGTH = 255;
-    private final static int DEFAULT_TABLE_NAME_LENGTH = 255;
+    private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
+    private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
 
-    private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
-    private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
-    private int maxColumnNameLength;
-    private int maxTableNameLength;
+    private int maxColumnNameLength = 255;
+    private int maxTableNameLength = 255;
 
     public PersistenceOptions() {
         this(null);
@@ -47,37 +49,31 @@ public class PersistenceOptions implements IPersistenceOptions {
      * 
      * <pre>
      *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot;&gt;
-     *         &lt;TableNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreNamingStrategy&quot; /&gt;
-     *         &lt;TableColumnNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreNamingStrategy&quot; /&gt;
+     *         &lt;TableNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy&quot; /&gt;
+     *         &lt;TableColumnNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy&quot; /&gt;
      *       &lt;/PersistenceOptions&gt;
      * </pre>
      */
     public PersistenceOptions(Element element) {
         if (element == null || !element.getTagName().equals("PersistenceOptions")) {
-            setMaxColumnNameLength(DEFAULT_COLUMN_NAME_LENGTH);
-            setMaxTableNameLength(DEFAULT_TABLE_NAME_LENGTH);
-            tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
-            tableNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
             return;
         }
         maxColumnNameLength = Integer.valueOf(element.getAttribute(MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME));
         maxTableNameLength = Integer.valueOf(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
 
-        tableNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
         NodeList elementsByTagName = element.getElementsByTagName(ITableNamingStrategy.XML_TAG_NAME);
         if (elementsByTagName.getLength() > 0) {
-            String id = ((Element)elementsByTagName.item(elementsByTagName.getLength())).getAttribute("id");
-            if (id.equals(CamelCaseToUpperUnderscoreNamingStrategy.EXTENSION_ID)) {
-                tableNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
+            String id = ((Element)elementsByTagName.item(0)).getAttribute("id");
+            if (id.equals(CamelCaseToUpperUnderscoreTableNamingStrategy.EXTENSION_ID)) {
+                tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
             }
         }
 
-        tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
         elementsByTagName = element.getElementsByTagName(ITableColumnNamingStrategy.XML_TAG_NAME);
-        if (element != null) {
-            String id = element.getAttribute("id");
-            if (id.equals(CamelCaseToUpperUnderscoreNamingStrategy.EXTENSION_ID)) {
-                tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreNamingStrategy();
+        if (elementsByTagName.getLength() > 0) {
+            String id = ((Element)elementsByTagName.item(0)).getAttribute("id");
+            if (id.equals(CamelCaseToUpperUnderscoreColumnNamingStrategy.EXTENSION_ID)) {
+                tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
             }
         }
     }
@@ -109,10 +105,12 @@ public class PersistenceOptions implements IPersistenceOptions {
     }
 
     public void setMaxColumnNameLength(int length) {
+        ArgumentCheck.isTrue(length > 0);
         maxColumnNameLength = length;
     }
 
     public void setMaxTableNameLength(int length) {
+        ArgumentCheck.isTrue(length > 0);
         maxTableNameLength = length;
     }
 
