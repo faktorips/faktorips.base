@@ -159,7 +159,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         Composite relationRootPane = toolkit.createComposite(client);
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-        if (generation.getLinks().length == 0) {
+        LinksContentProvider contentProvider = new LinksContentProvider();
+        if (contentProvider.getElements(generation).length == 0) {
             GridLayout layout = (GridLayout)client.getLayout();
             layout.marginHeight = 2;
             layout.marginWidth = 1;
@@ -183,7 +184,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             selectionChangedListener = new SelectionChangedListener();
 
             treeViewer = new TreeViewer(tree);
-            treeViewer.setContentProvider(new LinksContentProvider());
+            treeViewer.setContentProvider(contentProvider);
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkSectionDropListener(treeViewer, generation);
