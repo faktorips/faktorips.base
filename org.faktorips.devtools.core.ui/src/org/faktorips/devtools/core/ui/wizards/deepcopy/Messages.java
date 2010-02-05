@@ -49,8 +49,7 @@ public class Messages extends NLS {
     public static String SourcePage_title;
     public static String SourcePage_description;
     public static String SourcePage_description_copy;
-    public static String ReferenceAndPreviewPage_descritionPreviewNewGeneration;
-    public static String ReferenceAndPreviewPage_descritionPreviewProductCopy;
+    public static String ReferenceAndPreviewPage_descritionPreview;
     public static String ReferenceAndPreviewPage_title;
     public static String ReferenceAndPreviewPage_labelValidFrom;
     public static String ReferenceAndPreviewPage_labelTargetPackage;
@@ -63,8 +62,9 @@ public class Messages extends NLS {
     public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
     public static String SourcePage_msgCircleRelation;
     public static String SourcePage_msgCircleRelationShort;
-    public static String SourcePage_msgInitialRootTargetExists;
     public static String SourcePage_msgPatternNotFound;
+    public static String SourcePage_msgPleaseEnterNewWorkingDateNewCopy;
+    public static String SourcePage_msgPleaseEnterNewWorkingDateNewGeneration;
     public static String SourcePage_msgReplaceTextNotFound;
     public static String SourcePage_operationCopy;
     public static String SourcePage_operationLink;

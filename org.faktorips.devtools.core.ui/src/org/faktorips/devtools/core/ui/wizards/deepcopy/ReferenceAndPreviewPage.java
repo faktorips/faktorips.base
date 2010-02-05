@@ -119,15 +119,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
         this.sourcePage = sourcePage;
         this.structure = structure;
         setTitle(getTitle(type));
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            setDescription(Messages.ReferenceAndPreviewPage_descritionPreviewProductCopy);
-        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
-            String generationConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
-                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
-            setDescription(NLS.bind(
-                    Messages.ReferenceAndPreviewPage_descritionPreviewNewGeneration,
-                    generationConceptNameSingular));
-        }
+
+        String productCmptTypeName = StringUtil.unqualifiedName(structure.getRoot().getProductCmpt()
+                .getProductCmptType());
+        setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreview, productCmptTypeName));
         setPageComplete(true);
     }
 

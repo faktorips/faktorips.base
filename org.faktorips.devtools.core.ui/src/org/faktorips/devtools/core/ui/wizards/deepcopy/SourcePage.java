@@ -94,6 +94,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -279,10 +280,11 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
-
                 if (isRootExists()) {
                     setPageComplete(false);
-                    setMessage(Messages.SourcePage_msgInitialRootTargetExists);
+
+                    setMessagePleaseEnterWorkingDate();
+
                     // clear version id because is user mus first change the working date
                     versionId.setText(""); //$NON-NLS-1$
                     prevValues.put(versionId, null);
@@ -297,10 +299,22 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 updateColumnWidth();
 
             }
-
         });
 
         addListenerToAllControls();
+    }
+
+    private void setMessagePleaseEnterWorkingDate() {
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            String productCmptTypeName = StringUtil.unqualifiedName(structure.getRoot().getProductCmpt()
+                    .getProductCmptType());
+            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
+        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+            String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
+            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewGeneration,
+                    versionConceptNameSingular));
+        }
     }
 
     private boolean isRootExists() {
