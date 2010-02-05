@@ -152,7 +152,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
-        version = "2.4.0";
+        version = "2.5.0";
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
         // time
@@ -461,6 +461,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
+        productCmptGenInterfaceBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
+        productCmptGenImplClassBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
+        productCmptGenImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
 
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);

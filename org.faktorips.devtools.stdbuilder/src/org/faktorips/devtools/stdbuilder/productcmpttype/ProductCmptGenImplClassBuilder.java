@@ -58,6 +58,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTy
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.EnumValues;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -77,6 +78,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
 
+    private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
+    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumTypeBuilder enumTypeBuilder;
 
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
@@ -86,6 +89,22 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {
         this.enumTypeBuilder = enumTypeBuilder;
+    }
+
+    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return productCmptInterfaceBuilder;
+    }
+
+    public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
+        this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
+    }
+
+    public ProductCmptGenInterfaceBuilder getProductCmptGenInterfaceBuilder() {
+        return productCmptGenInterfaceBuilder;
+    }
+
+    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
+        this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
     }
 
     /**
@@ -158,6 +177,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
+        generateMethodTypeSafeGetProductCmpt(methodsBuilder);
         generateMethodDoInitPropertiesFromXml(methodsBuilder);
         generateMethodDoInitReferencesFromXml(methodsBuilder);
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
@@ -165,6 +185,27 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             generateMethodGetLink(methodsBuilder);
             generateMethodGetLinks(methodsBuilder);
         }
+    }
+
+    /**
+     * Code sample.
+     * 
+     * <pre>
+     * public IHtMotorPolicyType getHtMotorPolicyType() {
+     *     return (IHtMotorPolicyType)getProductComponent();
+     * }
+     * </pre>
+     */
+    protected void generateMethodTypeSafeGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, true);
+        productCmptGenInterfaceBuilder.generateSignatureTypeSafeGetProductCmpt(getProductCmptType(), methodsBuilder);
+        methodsBuilder.openBracket();
+        String productCmptType = productCmptInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
+        methodsBuilder.append("return (");
+        methodsBuilder.appendClassName(productCmptType);
+        methodsBuilder.appendln(")" + MethodNames.GET_PRODUCT_COMPONENT + "();");
+        methodsBuilder.closeBracket();
     }
 
     /**

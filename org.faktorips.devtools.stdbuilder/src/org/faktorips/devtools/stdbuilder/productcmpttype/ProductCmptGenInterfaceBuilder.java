@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
@@ -46,9 +47,19 @@ import org.faktorips.util.StringUtil;
  */
 public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
+    private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
+
     public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
+    }
+
+    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return productCmptInterfaceBuilder;
+    }
+
+    public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
+        this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
     }
 
     @Override
@@ -90,7 +101,40 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // nothing to do
+
+        generateMethodTypeSafeGetProductCmpt(methodsBuilder);
+    }
+
+    /**
+     * Code sample.
+     * 
+     * <pre>
+     * public IHtMotorPolicyType getHtMotorPolicyType();
+     * </pre>
+     */
+    protected void generateMethodTypeSafeGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject())
+                .getGenerationConceptNameSingular(true);
+        appendLocalizedJavaDoc("METHOD_TYPESAFE_GET_PRODUCT_CMPT", new String[] { getProductCmptType().getName(),
+                generationConceptName }, getIpsObject(), methodsBuilder);
+        generateSignatureTypeSafeGetProductCmpt(getProductCmptType(), methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample.
+     * 
+     * <pre>
+     * public IHtMotorPolicyType getHtMotorPolicyType()
+     * </pre>
+     */
+    protected void generateSignatureTypeSafeGetProductCmpt(IProductCmptType productCmptType,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String productCmptInterface = productCmptInterfaceBuilder
+                .getQualifiedClassName(productCmptType.getIpsSrcFile());
+        String methodName = "get" + StringUtils.capitalize(productCmptType.getName());
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, productCmptInterface, methodName, new String[] {},
+                new String[] {});
     }
 
     @Override
