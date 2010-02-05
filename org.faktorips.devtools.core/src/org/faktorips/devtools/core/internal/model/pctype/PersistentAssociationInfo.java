@@ -13,14 +13,18 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -159,6 +163,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
+    }
+
+    @Override
+    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+        if (isJoinTableRequired() && getPolicyComponentTypeAssociation().isInverseAssociationApplicable()) {
+            if (StringUtils.isBlank(joinTableName)) {
+                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_EMPTY, "The join table name is empty.", Message.ERROR,
+                        this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+            }
+        }
     }
 
     public Image getImage() {

@@ -42,12 +42,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
     private static final String IMPORT_CASCADE_TYPE = "javax.persistence.CascadeType";
     private static final String IMPORT_JOIN_COLUMN = "javax.persistence.JoinColumn";
+    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
 
     private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
     private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
     private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
     private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String ANNOTATION_JOIN_COLUMN = "@JoinColumn";
+    private static final String ANNOTATION_TRANSIENT = "@Transient";
 
     public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -179,8 +181,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             IPolicyCmptTypeAssociation pcTypeAssociation,
             IPersistentAssociationInfo associatonInfo) {
 
-        fragment.addImport("javax.persistence.Transient");
-        fragment.append("@Transient");
+        fragment.addImport(IMPORT_TRANSIENT);
+        fragment.append(ANNOTATION_TRANSIENT);
 
         // TODO: merge with createAnnotationForCompositionOneToOne() when the code generation
         // for the "parentModelObject" field is fixed
