@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -29,6 +28,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -145,11 +145,19 @@ public abstract class RefactoringParticipantHelper {
         return null;
     }
 
-    /** Executes the refactoring described by the provided <tt>RefactoringDescriptor</tt>. */
-    private void performRefactoring(Refactoring refactoring, final IProgressMonitor pm) throws CoreException {
-        PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
-                CheckConditionsOperation.ALL_CONDITIONS);
-        ResourcesPlugin.getWorkspace().run(operation, pm);
+    /** Executes the given <tt>Refactoring</tt>. */
+    private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) throws CoreException {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
+                        CheckConditionsOperation.ALL_CONDITIONS);
+                try {
+                    operation.run(pm);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     /**
