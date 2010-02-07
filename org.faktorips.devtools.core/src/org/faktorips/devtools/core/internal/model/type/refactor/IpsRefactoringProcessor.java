@@ -104,8 +104,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /**
      * {@inheritDoc}
      * <p>
-     * This implementation triggers the user input validation and a subclass implementation that may
-     * extend the final condition checking.
+     * This implementation triggers the user input validation, checks if all registered source files
+     * are synchronized and calls a subclass implementation that may extend the final condition
+     * checking.
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
@@ -122,11 +123,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
             }
         }
 
-        if (!(status.isOK())) {
-            return status;
+        if (status.isOK()) {
+            checkFinalConditionsThis(status, pm, context);
         }
 
-        checkFinalConditionsThis(status, pm, context);
         return status;
     }
 
