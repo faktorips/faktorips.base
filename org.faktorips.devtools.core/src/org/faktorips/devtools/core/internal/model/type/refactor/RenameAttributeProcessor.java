@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -106,7 +105,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         if (getAttribute() instanceof IProductCmptTypeAttribute) {
             updateProductCmptAttributeValueReferences();
         } else {
@@ -114,7 +113,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateTestCaseTypeReferences();
         }
         updateAttributeName();
-        return null;
     }
 
     /**

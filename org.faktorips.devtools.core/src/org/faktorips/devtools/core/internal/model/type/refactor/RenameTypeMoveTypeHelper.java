@@ -18,10 +18,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -216,7 +214,7 @@ public final class RenameTypeMoveTypeHelper {
         copiedIpsSrcFile = targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
     }
 
-    public Change refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
+    public void refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
             throws CoreException {
 
         // Copy the source file to the target location again if it was deleted during final
@@ -236,7 +234,7 @@ public final class RenameTypeMoveTypeHelper {
         updateAssociationReferences(targetIpsPackageFragment, newName);
         updateSubtypeReferences(targetIpsPackageFragment, newName);
 
-        return deleteSourceFile();
+        deleteOldIpsSourceFile(pm);
     }
 
     /**
@@ -416,12 +414,9 @@ public final class RenameTypeMoveTypeHelper {
         refactoringProcessor.addIpsSrcFile(ipsSrcFile);
     }
 
-    /**
-     * Creates and returns a <tt>Change</tt> that describes the deletion of the resource
-     * corresponding to the <tt>IIpsSrcFile</tt> of the <tt>IType</tt> to be refactored.
-     */
-    private Change deleteSourceFile() throws CoreException {
-        return new DeleteResourceChange(type.getIpsSrcFile().getCorrespondingResource().getFullPath(), true);
+    /** Deletes the original IPS source file that is now no longer needed. */
+    private void deleteOldIpsSourceFile(IProgressMonitor pm) throws CoreException {
+        type.getIpsSrcFile().getCorrespondingResource().delete(true, pm);
     }
 
     /** Returns the <tt>IType</tt>'s original qualified name. */

@@ -19,10 +19,9 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
+import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
@@ -195,40 +194,26 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      * {@inheritDoc}
      * <p>
      * This implementation triggers the refactoring of the Faktor-IPS model. The registered IPS
-     * source files will be saved after all modifications are complete. Always returns <tt>null</tt>.
+     * source files will be saved after all modifications are complete. Always returns a
+     * <tt>NullChange</tt>.
      */
     @Override
-    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        Change change = refactorIpsModel(pm);
-        if (change != null) {
-            PerformChangeOperation op = new PerformChangeOperation(change);
-            op.run(new NullProgressMonitor());
-        }
-
+    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+        refactorIpsModel(pm);
         saveIpsSourceFiles(pm);
-        return null;
+        return new NullChange();
     }
 
     /**
      * Subclass implementation that is responsible for performing the necessary changes in the
      * Faktor-IPS model.
-     * <p>
-     * This method may return a <tt>Change</tt> object that will be executed right before all
-     * modified source files will be saved. May also return <tt>null</tt>.
-     * <p>
-     * Note that anything implemented in this operation will be performed after processing all
-     * refactoring participants, e.g. source code refactoring. If any changes must be performed
-     * before refactoring participants are called it must be done by overwriting
-     * <tt>createChange(IProgressMonitor)</tt>.
      * 
-     * @see #createChange(IProgressMonitor)
-     * 
-     * @param pm Progress monitor to report progress to if necessary.
+     * @param pm A progress monitor to report progress to if necessary.
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time.
      */
     // TODO AW: Subclasses need the ability to search for references, we need a reference search.
-    protected abstract Change refactorIpsModel(IProgressMonitor pm) throws CoreException;
+    protected abstract void refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
     /** Saves all registered <tt>IIpsSrcFile</tt>s. */
     private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.type.IType;
@@ -69,8 +68,8 @@ public final class MoveTypeProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    protected Change refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        return renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), pm);
+    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), pm);
     }
 
     @Override
