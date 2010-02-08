@@ -182,7 +182,7 @@ public final class RenameTypeMoveTypeHelper {
             CheckConditionsContext context) throws CoreException {
 
         try {
-            copyToNewSourceFile(targetIpsPackageFragment, newName, pm);
+            copySourceFileToTargetLocation(targetIpsPackageFragment, newName, pm);
         } catch (CoreException e) {
             status.addFatalError(e.getLocalizedMessage());
             return;
@@ -202,7 +202,7 @@ public final class RenameTypeMoveTypeHelper {
      * Copies the <tt>IType</tt> to be refactored into a new source file with the desired new name
      * inside the desired destination package.
      */
-    private void copyToNewSourceFile(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
+    private void copySourceFileToTargetLocation(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
             throws CoreException {
 
         IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
@@ -218,7 +218,7 @@ public final class RenameTypeMoveTypeHelper {
             throws CoreException {
 
         // Copy the source file to the target location
-        copyToNewSourceFile(targetIpsPackageFragment, newName, pm);
+        copySourceFileToTargetLocation(targetIpsPackageFragment, newName, pm);
 
         if (type instanceof IPolicyCmptType) {
             updateConfiguringProductCmptTypeReference(targetIpsPackageFragment, newName);
