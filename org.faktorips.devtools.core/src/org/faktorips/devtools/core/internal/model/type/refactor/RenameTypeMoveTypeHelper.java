@@ -217,11 +217,8 @@ public final class RenameTypeMoveTypeHelper {
     public void refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
             throws CoreException {
 
-        // Copy the source file to the target location again if it was deleted during final
-        // condition checking because of warnings.
-        if (copiedIpsSrcFile == null) {
-            copyToNewSourceFile(targetIpsPackageFragment, newName, pm);
-        }
+        // Copy the source file to the target location
+        copyToNewSourceFile(targetIpsPackageFragment, newName, pm);
 
         if (type instanceof IPolicyCmptType) {
             updateConfiguringProductCmptTypeReference(targetIpsPackageFragment, newName);
