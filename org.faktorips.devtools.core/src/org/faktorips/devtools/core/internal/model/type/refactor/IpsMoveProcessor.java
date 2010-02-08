@@ -19,6 +19,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.MoveArguments;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -82,8 +83,12 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     public RefactoringParticipant[] loadParticipants(RefactoringStatus status, SharableParticipants sharedParticipants)
             throws CoreException {
 
-        return ParticipantManager.loadMoveParticipants(status, this, getIpsElement(), new MoveArguments(
-                targetIpsPackageFragment, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
+        RefactoringProcessor processor = this;
+        Object elementToMove = getIpsElement();
+        MoveArguments arguments = new MoveArguments(targetIpsPackageFragment, true);
+        String[] affectedNatures = new String[] { IIpsProject.NATURE_ID };
+        return ParticipantManager.loadMoveParticipants(status, processor, elementToMove, arguments, affectedNatures,
+                sharedParticipants);
     }
 
     public final void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment) {
