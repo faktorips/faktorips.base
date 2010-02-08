@@ -112,6 +112,11 @@ public final class RenameTypeMoveTypeHelper {
      */
     public void addIpsSrcFiles() throws CoreException {
         typeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(type.getIpsObjectType());
+        IpsObjectType otherObjectType = type.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE) ? IpsObjectType.POLICY_CMPT_TYPE
+                : IpsObjectType.PRODUCT_CMPT_TYPE;
+        Set<IIpsSrcFile> otherTypeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(otherObjectType);
+        typeSrcFiles.addAll(otherTypeSrcFiles);
+
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             addIpsSrcFile(ipsSrcFile);
         }
@@ -352,13 +357,7 @@ public final class RenameTypeMoveTypeHelper {
     private void updateMethodParameterReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
             throws CoreException {
 
-        // We need all type source files.
-        IpsObjectType otherObjectType = type.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE) ? IpsObjectType.POLICY_CMPT_TYPE
-                : IpsObjectType.PRODUCT_CMPT_TYPE;
-        Set<IIpsSrcFile> allTypeSrcFiles = refactoringProcessor.findReferencingIpsSrcFiles(otherObjectType);
-        allTypeSrcFiles.addAll(typeSrcFiles);
-
-        for (IIpsSrcFile ipsSrcFile : allTypeSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType type = (IType)ipsSrcFile.getIpsObject();
             for (IMethod method : type.getMethods()) {
                 for (IParameter parameter : method.getParameters()) {

@@ -194,26 +194,18 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /**
      * {@inheritDoc}
      * <p>
-     * This implementation does nothing and returns <tt>null</tt>, may be overwritten by subclasses
-     * if any changes need to be done explicitly before any refactoring participants are called.
+     * This implementation triggers the refactoring of the Faktor-IPS model. The registered IPS
+     * source files will be saved after all modifications are complete. Always returns <tt>null</tt>.
      */
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        return null;
-    }
-
-    @Override
-    public final Change postCreateChange(Change[] participantChanges, IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
-
         Change change = refactorIpsModel(pm);
         if (change != null) {
             PerformChangeOperation op = new PerformChangeOperation(change);
             op.run(new NullProgressMonitor());
         }
 
-        saveModifiedSourceFiles(pm);
-
+        saveIpsSourceFiles(pm);
         return null;
     }
 
@@ -238,8 +230,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     // TODO AW: Subclasses need the ability to search for references, we need a reference search.
     protected abstract Change refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
-    /** Saves all modified <tt>IIpsSrcFile</tt>s. */
-    private void saveModifiedSourceFiles(IProgressMonitor pm) throws CoreException {
+    /** Saves all registered <tt>IIpsSrcFile</tt>s. */
+    private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             ipsSrcFile.save(true, pm);
         }
