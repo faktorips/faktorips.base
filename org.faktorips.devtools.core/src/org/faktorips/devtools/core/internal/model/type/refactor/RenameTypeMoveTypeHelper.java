@@ -202,8 +202,9 @@ public final class RenameTypeMoveTypeHelper {
      * Copies the <tt>IType</tt> to be refactored into a new source file with the desired new name
      * inside the desired destination package.
      */
-    private void copySourceFileToTargetLocation(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
-            throws CoreException {
+    private void copySourceFileToTargetLocation(IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
+            IProgressMonitor pm) throws CoreException {
 
         IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
 
@@ -217,7 +218,6 @@ public final class RenameTypeMoveTypeHelper {
     public void refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
             throws CoreException {
 
-        // Copy the source file to the target location
         copySourceFileToTargetLocation(targetIpsPackageFragment, newName, pm);
 
         if (type instanceof IPolicyCmptType) {
