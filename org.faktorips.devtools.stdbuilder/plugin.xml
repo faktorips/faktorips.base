@@ -92,9 +92,6 @@
                      value="org.faktorips.devtools.core.model.type.IAttribute">
                </instanceof>
                <instanceof
-                     value="org.faktorips.devtools.core.model.type.IMethod">
-               </instanceof>
-               <instanceof
                      value="org.faktorips.devtools.core.model.type.IType">
                </instanceof>
             </or></enablement>
