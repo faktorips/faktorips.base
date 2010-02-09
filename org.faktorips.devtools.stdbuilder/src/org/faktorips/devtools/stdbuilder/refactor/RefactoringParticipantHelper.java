@@ -110,8 +110,8 @@ public abstract class RefactoringParticipantHelper {
     }
 
     /**
-     * Iterates over all generated <tt>IJavaElement</tt>s and calls the subclass implementation that
-     * processes it if it exists.
+     * Iterates over all generated <tt>IJavaElement</tt>s and performs the appropriate JDT
+     * refactorings.
      * 
      * @see RefactoringParticipant#createChange(IProgressMonitor)
      */

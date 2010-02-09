@@ -63,12 +63,12 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     public void testCreateChange() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
         performFullBuild();
-        assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
+        refactoringHelper.createChange(new NullProgressMonitor());
     }
 
     public void testCreateChangeJavaElementsNotExisting() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
-        assertNull(refactoringHelper.createChange(new NullProgressMonitor()));
+        refactoringHelper.createChange(new NullProgressMonitor());
     }
 
     private static class MockParticipantHelper extends RefactoringParticipantHelper {
