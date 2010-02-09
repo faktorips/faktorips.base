@@ -77,6 +77,8 @@ public abstract class RefactoringParticipantHelper {
 
         for (int i = 0; i < originalJavaElements.size(); i++) {
             IJavaElement javaElement = originalJavaElements.get(i);
+
+            // The refactoring may be executed without present Java code.
             if (!(javaElement.exists())) {
                 continue;
             }
