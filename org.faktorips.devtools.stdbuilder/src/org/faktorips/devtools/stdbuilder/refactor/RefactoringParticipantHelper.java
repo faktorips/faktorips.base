@@ -153,7 +153,7 @@ public abstract class RefactoringParticipantHelper {
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
-                        CheckConditionsOperation.ALL_CONDITIONS);
+                        CheckConditionsOperation.FINAL_CONDITIONS);
                 try {
                     operation.run(pm);
                 } catch (CoreException e) {
