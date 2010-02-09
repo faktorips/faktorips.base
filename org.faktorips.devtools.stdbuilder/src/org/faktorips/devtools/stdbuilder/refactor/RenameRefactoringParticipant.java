@@ -109,7 +109,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
         protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             boolean success = false;
             if (ipsElement instanceof IAttribute) {
-                success = initNewJavaElements((IAttribute)ipsElement, builderSet);
+                success = initializeTargetJavaElementsForAttribute((IAttribute)ipsElement, builderSet);
 
             } else if (ipsElement instanceof IType) {
                 IType type = (IType)ipsElement;
@@ -128,7 +128,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
          * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IAttribute</tt>
          * after it has been refactored.
          */
-        private boolean initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
+        private boolean initializeTargetJavaElementsForAttribute(IAttribute attribute, StandardBuilderSet builderSet) {
             String oldName = attribute.getName();
             attribute.setName(getArguments().getNewName());
             setTargetJavaElements(builderSet.getGeneratedJavaElements(attribute));
