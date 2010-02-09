@@ -196,7 +196,7 @@ public abstract class RefactoringParticipantHelper {
     protected abstract boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
 
     /**
-     * Initializes the target <tt>IJavaElement</tt>s the given <tt>IType</tt>.
+     * Initializes the target <tt>IJavaElement</tt>s for the given <tt>IType</tt>.
      * 
      * @param type The <tt>IType</tt> to be refactored.
      * @param targetIpsPackageFragment The new <tt>IIpsPackageFragment</tt> of the <tt>IType</tt>.

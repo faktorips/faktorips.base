@@ -27,9 +27,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -44,7 +44,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 public class RenameRefactoringParticipant extends RenameParticipant {
 
     /** A helper providing shared standard builder refactoring functionality. */
-    private RefactoringParticipantHelper refactoringHelper;
+    private RenameParticipantHelper refactoringHelper;
 
     /** Creates a <tt>RenameRefactoringParticipant</tt>. */
     public RenameRefactoringParticipant() {
@@ -107,35 +107,33 @@ public class RenameRefactoringParticipant extends RenameParticipant {
 
         @Override
         protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            boolean success = false;
             if (ipsElement instanceof IAttribute) {
-                initNewJavaElements((IAttribute)ipsElement, builderSet);
+                success = initNewJavaElements((IAttribute)ipsElement, builderSet);
 
-            } else if (ipsElement instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initTargetJavaElements(policyCmptType, policyCmptType.getIpsPackageFragment(), getArguments()
-                        .getNewName(), builderSet);
-
-            } else if (ipsElement instanceof IProductCmptType) {
-                IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initTargetJavaElements(productCmptType, productCmptType.getIpsPackageFragment(), getArguments()
-                        .getNewName(), builderSet);
+            } else if (ipsElement instanceof IType) {
+                IType type = (IType)ipsElement;
+                IIpsPackageFragment targetIpsPackageFragment = type.getIpsPackageFragment();
+                String newName = getArguments().getNewName();
+                success = initTargetJavaElements(type, targetIpsPackageFragment, newName, builderSet);
 
             } else {
-                return false;
+                success = false;
             }
 
-            return true;
+            return success;
         }
 
         /**
          * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IAttribute</tt>
          * after it has been refactored.
          */
-        private void initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
+        private boolean initNewJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
             String oldName = attribute.getName();
             attribute.setName(getArguments().getNewName());
             setTargetJavaElements(builderSet.getGeneratedJavaElements(attribute));
             attribute.setName(oldName);
+            return true;
         }
 
     }
