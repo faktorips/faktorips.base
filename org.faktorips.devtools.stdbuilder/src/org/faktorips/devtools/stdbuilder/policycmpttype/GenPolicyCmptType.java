@@ -321,7 +321,6 @@ public class GenPolicyCmptType extends GenType {
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
 

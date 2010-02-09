@@ -32,8 +32,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -48,7 +46,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 public class MoveRefactoringParticipant extends MoveParticipant {
 
     /** A helper providing shared standard builder refactoring functionality. */
-    private RefactoringParticipantHelper refactoringHelper;
+    private MoveParticipantHelper refactoringHelper;
 
     /** Creates a <tt>MoveRefactoringParticipant</tt>. */
     public MoveRefactoringParticipant() {
@@ -105,21 +103,15 @@ public class MoveRefactoringParticipant extends MoveParticipant {
 
         @Override
         protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            if (ipsElement instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsElement;
-                initTargetJavaElements(policyCmptType, (IIpsPackageFragment)getArguments().getDestination(),
-                        policyCmptType.getName(), builderSet);
-
-            } else if (ipsElement instanceof IProductCmptType) {
-                IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-                initTargetJavaElements(productCmptType, (IIpsPackageFragment)getArguments().getDestination(),
-                        productCmptType.getName(), builderSet);
-
-            } else {
+            if (!(ipsElement instanceof org.faktorips.devtools.core.model.type.IType)) {
                 return false;
             }
 
-            return true;
+            org.faktorips.devtools.core.model.type.IType type = (org.faktorips.devtools.core.model.type.IType)ipsElement;
+            IIpsPackageFragment targetIpsPackageFragment = (IIpsPackageFragment)getArguments().getDestination();
+            String newName = type.getName();
+            boolean success = initTargetJavaElements(type, targetIpsPackageFragment, newName, builderSet);
+            return success;
         }
 
     }

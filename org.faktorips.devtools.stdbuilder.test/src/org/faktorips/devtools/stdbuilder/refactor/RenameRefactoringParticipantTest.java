@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -22,6 +23,15 @@ import org.faktorips.runtime.IValidationContext;
  * @author Alexander Weickmann
  */
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // Source files need to be saved before the refactoring is done.
+        policyCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
+        productCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
+    }
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         performFullBuild();

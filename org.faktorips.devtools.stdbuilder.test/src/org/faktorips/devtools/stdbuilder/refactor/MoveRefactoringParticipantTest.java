@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -34,6 +35,10 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
         targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
+
+        // Source files need to be saved before the refactoring is done.
+        policyCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
+        productCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
     }
 
     public void testMovePolicyCmptType() throws CoreException {

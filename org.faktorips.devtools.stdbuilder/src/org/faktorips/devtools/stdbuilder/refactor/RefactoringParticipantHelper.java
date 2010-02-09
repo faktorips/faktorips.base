@@ -16,8 +16,11 @@ package org.faktorips.devtools.stdbuilder.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -29,15 +32,12 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -167,7 +167,7 @@ public abstract class RefactoringParticipantHelper {
      * Returns <tt>false</tt> in case the element passed to this operation is not an
      * <tt>IIpsElement</tt>. Else the subclass implementation is called to initialize the
      * <tt>IJavaElement</tt>s that will be generated for the <tt>IIpsElement</tt> after the
-     * refactoring has finished and the result is returned.
+     * refactoring has finished and <tt>true</tt> is returned.
      * 
      * @see RefactoringParticipant#initialize(Object)
      */
@@ -180,7 +180,9 @@ public abstract class RefactoringParticipantHelper {
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
 
         originalJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
-        return initializeTargetJavaElements(ipsElement, builderSet);
+        boolean success = initializeTargetJavaElements(ipsElement, builderSet);
+
+        return success;
     }
 
     /**
@@ -194,87 +196,52 @@ public abstract class RefactoringParticipantHelper {
     protected abstract boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
 
     /**
-     * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IPolicyCmptType</tt>
-     * after it has been refactored.
+     * Initializes the target <tt>IJavaElement</tt>s the given <tt>IType</tt>.
      * 
-     * @param policyCmptType The <tt>IPolicyCmptType</tt> to be refactored.
-     * @param targetIpsPackageFragment The <tt>IIpsPackageFragment</tt> of the
-     *            <tt>IPolicyCmptType</tt> after it has been refactored.
-     * @param newName The new name of the <tt>IPolicyCmptType</tt> after it has been refactored.
+     * @param type The <tt>IType</tt> to be refactored.
+     * @param targetIpsPackageFragment The new <tt>IIpsPackageFragment</tt> of the <tt>IType</tt>.
+     * @param newName The new name of the <tt>IType</tt>.
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
      *            elements.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void initTargetJavaElements(IPolicyCmptType policyCmptType,
+    protected final boolean initTargetJavaElements(IType type,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             StandardBuilderSet builderSet) {
 
-        ArgumentCheck.notNull(new Object[] { policyCmptType, targetIpsPackageFragment, newName, builderSet });
+        ArgumentCheck.notNull(new Object[] { type, targetIpsPackageFragment, newName, builderSet });
 
-        /*
-         * Creating an in-memory-only source file for an in-memory-only policy component type that
-         * can be passed to the builder to obtain the generated Java elements for.
-         */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetIpsPackageFragment, newName + "."
-                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
-        IPolicyCmptType copiedPolicyCmptType = new PolicyCmptType(temporarySrcFile);
+        // Create a copy of the type's source file.
+        IResource sourceFileResource = type.getIpsSrcFile().getCorrespondingResource();
+        IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
+        String targetSrcFileName = newName + "." + type.getIpsObjectType().getFileExtension();
+        IPath destinationPath = destinationFolder.append(targetSrcFileName);
+        try {
+            sourceFileResource.copy(destinationPath, true, new NullProgressMonitor());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
 
-        /*
-         * TODO AW: I think this could lead to bugs in the future easily. If other properties are
-         * added to policy component type's this code must be updated, too. It is very likely that
-         * this won't be done, so this code should be moved. Actually I don't really know where and
-         * to put that code.
-         */
-        copiedPolicyCmptType.setAbstract(policyCmptType.isAbstract());
-        copiedPolicyCmptType.setConfigurableByProductCmptType(policyCmptType.isConfigurableByProductCmptType());
-        copiedPolicyCmptType.setProductCmptType(policyCmptType.getProductCmptType());
-        copiedPolicyCmptType.setSupertype(policyCmptType.getSupertype());
+        IIpsSrcFile copiedSrcFile = targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
+        try {
+            IIpsObject ipsObject = copiedSrcFile.getIpsObject();
+            targetJavaElements = builderSet.getGeneratedJavaElements(ipsObject);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        } finally {
+            try {
+                copiedSrcFile.getCorrespondingResource().delete(true, new NullProgressMonitor());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return false;
+            }
+        }
 
-        targetJavaElements = builderSet.getGeneratedJavaElements(copiedPolicyCmptType);
-    }
-
-    /**
-     * Initializes the list of the <tt>IJavaElement</tt>s generated for the
-     * <tt>IProductCmptType</tt> after it has been refactored.
-     * 
-     * @param productCmptType The <tt>IProductCmptType</tt> to be refactored.
-     * @param targetIpsPackageFragment The <tt>IIpsPackageFragment</tt> of the
-     *            <tt>IProductCmptType</tt> after it has been refactored.
-     * @param newName The new name of the <tt>IProductCmptType</tt> after it has been refactored.
-     * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
-     *            elements.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
-     */
-    protected final void initTargetJavaElements(IProductCmptType productCmptType,
-            IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            StandardBuilderSet builderSet) {
-
-        ArgumentCheck.notNull(new Object[] { productCmptType, targetIpsPackageFragment, newName, builderSet });
-
-        /*
-         * Creating an in-memory-only source file for an in-memory-only product component type that
-         * can be passed to the builder to obtain the generated Java elements for.
-         */
-        IIpsSrcFile temporarySrcFile = new IpsSrcFile(targetIpsPackageFragment, newName + "."
-                + IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension());
-        IProductCmptType copiedProductCmptType = new ProductCmptType(temporarySrcFile);
-
-        /*
-         * TODO AW: I think this could lead to bugs in the future easily. If other properties are
-         * added to product component type's this code must be updated, too. It is very likely that
-         * this won't be done, so this code should be moved. Actually I don't really know where and
-         * to put that code.
-         */
-        copiedProductCmptType.setAbstract(productCmptType.isAbstract());
-        copiedProductCmptType.setConfigurationForPolicyCmptType(productCmptType.isConfigurationForPolicyCmptType());
-        copiedProductCmptType.setPolicyCmptType(productCmptType.getPolicyCmptType());
-        copiedProductCmptType.setSupertype(productCmptType.getSupertype());
-
-        targetJavaElements = builderSet.getGeneratedJavaElements(copiedProductCmptType);
+        return true;
     }
 
     /**
