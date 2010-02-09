@@ -48,8 +48,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /** The <tt>IIpsElement</tt> to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Set containing all <tt>IIpsSrcFile</tt>s that are modified by the refactoring. */
-    private final Set<IIpsSrcFile> ipsSrcFiles;
+    /** Set containing all <tt>IIpsSrcFile</tt>s that are affected by the refactoring. */
+    private final Set<IIpsSrcFile> affectedIpsSrcFiles;
 
     /** A set containing all message codes that will be ignored during final condition checking. */
     private final Set<String> ignoredValidationMessageCodes;
@@ -64,7 +64,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     protected IpsRefactoringProcessor(IIpsElement ipsElement) {
         super();
         this.ipsElement = ipsElement;
-        ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        affectedIpsSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();
     }
 
@@ -115,7 +115,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
         status.merge(validateUserInput(pm));
 
         addIpsSrcFiles();
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
             if (!(ipsSrcFile.getCorrespondingResource().isSynchronized(IResource.DEPTH_ZERO))) {
                 status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
                         .getCorrespondingResource().getFullPath()));
@@ -217,7 +217,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
 
     /** Saves all registered <tt>IIpsSrcFile</tt>s. */
     private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
             ipsSrcFile.save(true, pm);
         }
     }
@@ -245,7 +245,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      */
     protected final void addIpsSrcFile(IIpsSrcFile ipsSrcFile) {
         ArgumentCheck.notNull(ipsSrcFile);
-        ipsSrcFiles.add(ipsSrcFile);
+        affectedIpsSrcFiles.add(ipsSrcFile);
     }
 
     /** Returns the <tt>IIpsProject</tt> the <tt>IIpsElement</tt> to be refactored belongs to. */
