@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from version 2.4.3.rfinal to version 2.4.4.rfinal
+ * Migration from version 2.4.0.rfinal to version 2.4.1.
  * 
  * @author Peter Kuntz
  */

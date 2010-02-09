@@ -131,7 +131,7 @@ public class BeanTableCellModifier implements ICellModifier {
      */
     private CellEditor createCellEditor(UIToolkit uiToolkit, ValueDatatype valueDatatype, int columnIndex) {
         if (valueDatatype == DelegateCellEditor.DELEGATE_VALUE_DATATYPE) {
-            // the value datatype is the dummy delegate indicator
+            // the value datatype is the dummy delagate indicator
             // create a delegate cell editor which delegates to the corresponding editor depending
             // on the value datatype for each the row, the row cell editors will be created if the
             // content of the table is updated
