@@ -212,12 +212,19 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
      */
     private boolean evaluateIfTreeEmpty(Object input) {
         Object[] elements = contentProvider.getElements(input);
-        if (elements.length > 0) {
-            if (filter != null) {
-                elements = filter.filter(treeViewer, input, elements);
+        if (elements.length == 0) {
+            return true;
+        }
+        if (filter != null) {
+            elements = filter.filter(treeViewer, input, elements);
+        }
+        for (int i = 0; i < elements.length; i++) {
+            Object[] childs = filter.filter(treeViewer, input, contentProvider.getChildren(elements[i]));
+            if (childs.length != 0) {
+                return false;
             }
         }
-        return elements.length == 0;
+        return true;
     }
 
     /**
@@ -274,6 +281,9 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
                 } else if (element instanceof TestCaseTypeAssociation) {
                     TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
                     ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
+                    if (testPolicyCmpt == null) {
+                        return true;
+                    }
                     ITestPolicyCmptLink childs[] = testPolicyCmpt.getTestPolicyCmptLinks();
                     boolean found = false;
                     for (int i = 0; i < childs.length; i++) {

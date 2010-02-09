@@ -1857,6 +1857,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Returns the next possible tree item after deleting of the given object
      */
     private TreeItem getNextSelectionInTreeAfterDelete(Object objectDeletedInTree) {
+        if (objectDeletedInTree == null){
+            return null;
+        }
         Widget item = treeViewer.testFindItem(objectDeletedInTree);
         if (item instanceof TreeItem) {
             TreeItem currTreeItem = (TreeItem)item;
@@ -1897,29 +1900,31 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     if (selection instanceof IStructuredSelection) {
                         Object nextItemToSelect = null;
                         for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
-                            ITestObject domainObject = (ITestObject)iterator.next();
-                            nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject).getData();
-                            if (domainObject instanceof ITestPolicyCmpt && ((ITestPolicyCmpt)domainObject).isRoot()) {
+                            Object currElement = iterator.next();
+                            nextItemToSelect = getNextSelectionInTreeAfterDelete(currElement).getData();                                
+                            if (currElement instanceof ITestObject) {
+                                ((ITestObject)currElement).delete();
+                            } else if (currElement instanceof ITestPolicyCmptLink) {
+                                ((ITestPolicyCmptLink)currElement).delete();
+                            } else if (currElement instanceof ITestPolicyCmpt
+                                    && ((ITestPolicyCmpt)currElement).isRoot()) {
                                 // is the root object will be deleted then the cache of all dummy
                                 // gui objects must be
                                 // cleared, otherwise if the object are added again then all old /
                                 // invalid objects
                                 // are visible again
                                 ((TestCaseContentProvider)treeViewer.getContentProvider())
-                                        .clearChildDummyObjectsInCache((ITestPolicyCmpt)domainObject);
-                            }
-                            if (domainObject instanceof ITestPolicyCmptLink) {
-                                ((ITestPolicyCmptLink)domainObject).delete();
-                            } else if (domainObject instanceof ITestObject) {
-                                (domainObject).delete();
+                                        .clearChildDummyObjectsInCache((ITestPolicyCmpt)currElement);
                             } else {
                                 throw new RuntimeException(
-                                        "Remove object with type " + domainObject.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
+                                        "Remove object with type " + currElement.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                         refreshTreeAndDetailArea();
                         treeViewer.getControl().setFocus();
-                        treeViewer.setSelection(new StructuredSelection(nextItemToSelect));
+                        if (nextItemToSelect != null) {
+                            treeViewer.setSelection(new StructuredSelection(nextItemToSelect));
+                        }
                     }
                 }
             };
@@ -2203,7 +2208,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     if (showAll) {
                         createDetailsSectionsForAll();
                     } else {
-                        testCaseDetailArea.createTestObjectSections(prevTestObjects);
+                        if (prevTestObjects != null) {
+                            testCaseDetailArea.createTestObjectSections(prevTestObjects);
+                        }
                     }
                     redrawForm();
                 }
