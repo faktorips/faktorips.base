@@ -29,6 +29,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -44,7 +45,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * 
  * @author Alexander Weickmann
  */
-public class MoveRefactoringParticipant extends org.eclipse.ltk.core.refactoring.participants.MoveParticipant {
+public class MoveRefactoringParticipant extends MoveParticipant {
 
     /** A helper providing shared standard builder refactoring functionality. */
     private RefactoringParticipantHelper refactoringHelper;

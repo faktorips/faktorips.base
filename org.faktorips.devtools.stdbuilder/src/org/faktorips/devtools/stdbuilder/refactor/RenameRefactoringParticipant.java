@@ -25,6 +25,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringContribution;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
+import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,7 +41,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * 
  * @author Alexander Weickmann
  */
-public class RenameRefactoringParticipant extends org.eclipse.ltk.core.refactoring.participants.RenameParticipant {
+public class RenameRefactoringParticipant extends RenameParticipant {
 
     /** A helper providing shared standard builder refactoring functionality. */
     private RefactoringParticipantHelper refactoringHelper;
