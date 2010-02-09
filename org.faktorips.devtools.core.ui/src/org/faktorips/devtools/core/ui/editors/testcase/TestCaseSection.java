@@ -1857,7 +1857,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Returns the next possible tree item after deleting of the given object
      */
     private TreeItem getNextSelectionInTreeAfterDelete(Object objectDeletedInTree) {
-        if (objectDeletedInTree == null){
+        if (objectDeletedInTree == null) {
             return null;
         }
         Widget item = treeViewer.testFindItem(objectDeletedInTree);
@@ -1901,7 +1901,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         Object nextItemToSelect = null;
                         for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
                             Object currElement = iterator.next();
-                            nextItemToSelect = getNextSelectionInTreeAfterDelete(currElement).getData();                                
+                            TreeItem nextTreeItem = getNextSelectionInTreeAfterDelete(currElement);
+                            if (nextTreeItem == null) {
+                                nextItemToSelect = nextTreeItem.getData();
+                            }
                             if (currElement instanceof ITestObject) {
                                 ((ITestObject)currElement).delete();
                             } else if (currElement instanceof ITestPolicyCmptLink) {
