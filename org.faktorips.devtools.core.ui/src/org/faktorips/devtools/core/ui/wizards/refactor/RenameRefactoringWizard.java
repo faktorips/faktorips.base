@@ -50,7 +50,7 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
 
     @Override
     protected void addUserInputPages() {
-        addPage(new RenamePage(getIpsElement()));
+        addPage(new RenameUserInputPage(getIpsElement()));
     }
 
     @Override
@@ -59,10 +59,10 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>RenamePage</tt> provides a text field that allows the user to type a new name for
+     * The <tt>RenameUserInputPage</tt> provides a text field that allows the user to type a new name for
      * <tt>IIpsElement</tt> to rename.
      */
-    private final static class RenamePage extends IpsRefactoringUserInputPage {
+    private final static class RenameUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
          * Text field that enables the user to provide a new name for the <tt>IIpsElement</tt> to be
@@ -71,12 +71,12 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
         private Text newNameTextField;
 
         /**
-         * Creates the <tt>RenamePage</tt>.
+         * Creates the <tt>RenameUserInputPage</tt>.
          * 
          * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
          */
-        RenamePage(IIpsElement ipsElement) {
-            super(ipsElement, "RenamePage");
+        RenameUserInputPage(IIpsElement ipsElement) {
+            super(ipsElement, "RenameUserInputPage");
         }
 
         @Override

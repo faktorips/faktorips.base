@@ -62,7 +62,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
 
     @Override
     protected void addUserInputPages() {
-        addPage(new MovePage(getIpsElement()));
+        addPage(new MoveUserInputPage(getIpsElement()));
     }
 
     @Override
@@ -71,10 +71,10 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>MovePage</tt> provides a tree viewer that enables the user to choose a target
+     * The <tt>MoveUserInputPage</tt> provides a tree viewer that enables the user to choose a target
      * destination for the <tt>IIpsElement</tt> to move.
      */
-    private final static class MovePage extends IpsRefactoringUserInputPage {
+    private final static class MoveUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
          * The <tt>TreeViewer</tt> that allows the user to select the target
@@ -83,12 +83,12 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
         private TreeViewer treeViewer;
 
         /**
-         * Creates the <tt>MovePage</tt>.
+         * Creates the <tt>MoveUserInputPage</tt>.
          * 
          * @param ipsElement The <tt>IIpsElement</tt> to be moved.
          */
-        MovePage(IIpsElement ipsElement) {
-            super(ipsElement, "MovePage");
+        MoveUserInputPage(IIpsElement ipsElement) {
+            super(ipsElement, "MoveUserInputPage");
         }
 
         @Override
