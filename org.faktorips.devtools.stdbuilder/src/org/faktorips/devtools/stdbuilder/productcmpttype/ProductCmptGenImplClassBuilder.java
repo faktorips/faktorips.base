@@ -408,15 +408,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         String javaEnumName = enumTypeBuilder.getQualifiedClassName(enumAdapter.getEnumType());
         JavaCodeFragment code = new JavaCodeFragment();
-        if (enumAdapter.hasEnumContent()) {
-            code.append("getRepository().getEnumValues(");
-            code.appendClassName(javaEnumName);
-            code.append(".class)");
-        } else {
+        if (enumAdapter.getEnumType().isContainingValues()) {
             code.appendClassName(Arrays.class);
             code.append(".asList(");
             code.appendClassName(javaEnumName);
             code.append(".values())");
+        } else {
+            code.append("getRepository().getEnumValues(");
+            code.appendClassName(javaEnumName);
+            code.append(".class)");
         }
         frag.append(helper.newEnumValueSetInstance(code, new JavaCodeFragment("true"), isUseTypesafeCollections()));
         frag.append(";");
