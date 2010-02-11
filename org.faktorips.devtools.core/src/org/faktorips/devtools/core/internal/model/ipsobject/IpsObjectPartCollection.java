@@ -83,7 +83,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             if (params.length != 2) {
                 continue;
             }
-            if (params[1].equals(Integer.TYPE)) {
+            if (params[1].equals(String.class)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
                     @SuppressWarnings("unchecked")
                     // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
@@ -162,9 +162,9 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * Returns the part with the given id contained in this collection. Returns <code>null</code> if
      * no part with the given id exists.
      */
-    public T getPartById(int id) {
+    public T getPartById(String id) {
         for (T part : parts) {
-            if (id == part.getId()) {
+            if (id.equals(part.getId())) {
                 return part;
             }
         }
@@ -194,7 +194,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return newPart;
     }
 
-    public T newPart(Element el, int id) {
+    public T newPart(Element el, String id) {
         if (xmlTag.equals(el.getNodeName())) {
             return newPartInternal(id, getConstructor(partsBaseClass));
         }
@@ -249,9 +249,9 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * Creates a new part without updating the src file. Subclasses have to instantiate a new object
      * of the concrete subclass of IpsObjectPart.
      */
-    private T newPartInternal(int id, Constructor<T> constructor) {
+    private T newPartInternal(String id, Constructor<T> constructor) {
         try {
-            T newPart = constructor.newInstance(new Object[] { parent, new Integer(id) });
+            T newPart = constructor.newInstance(new Object[] { parent, id });
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
