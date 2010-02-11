@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class CompositeUIController implements UIController {
     
-    private List controllers = new ArrayList();
+    private List<UIController> controllers = new ArrayList<UIController>();
 
     public CompositeUIController() {
         super();
@@ -41,8 +41,8 @@ public class CompositeUIController implements UIController {
      * {@inheritDoc}
      */
     public void updateModel() {
-        for (Iterator it=controllers.iterator(); it.hasNext(); ) {
-            UIController c = (UIController)it.next();
+        for (Iterator<UIController> it=controllers.iterator(); it.hasNext(); ) {
+            UIController c = it.next();
             c.updateModel();
         }
     }
@@ -51,8 +51,8 @@ public class CompositeUIController implements UIController {
      * {@inheritDoc}
      */
     public void updateUI() {
-        for (Iterator it=controllers.iterator(); it.hasNext(); ) {
-            UIController c = (UIController)it.next();
+        for (Iterator<UIController> it=controllers.iterator(); it.hasNext(); ) {
+            UIController c = it.next();
             c.updateUI();
         }
     }

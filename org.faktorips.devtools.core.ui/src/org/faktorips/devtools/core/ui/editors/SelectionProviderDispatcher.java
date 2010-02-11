@@ -37,8 +37,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
  */
 public class SelectionProviderDispatcher implements ISelectionProvider, ISelectionChangedListener {
 
-    private List activiations = new ArrayList();
-    private List changeListeners = new ArrayList();
+    private List<ISelectionProviderActivation> activiations = new ArrayList<ISelectionProviderActivation>();
+    private List<ISelectionChangedListener> changeListeners = new ArrayList<ISelectionChangedListener>();
     private ISelectionProviderActivation currentActivation;
     
     /**
@@ -67,7 +67,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
         }
         currentActivation = null;
         for (int i = 0; i < activiations.size(); i++) {
-            ISelectionProviderActivation activation = (ISelectionProviderActivation)activiations.get(i);
+            ISelectionProviderActivation activation = activiations.get(i);
             if(activation.isDisposed()){
                 activiations.remove(i);
                 i--;
@@ -115,8 +115,8 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * Disposes this dispatcher and hence unregisters this dispatcher in the role of ISelectionChangeListener.
      */
     public void dispose(){
-        for (Iterator it = activiations.iterator(); it.hasNext();) {
-            ISelectionProviderActivation activation = (ISelectionProviderActivation)it.next();
+        for (Iterator<ISelectionProviderActivation> it = activiations.iterator(); it.hasNext();) {
+            ISelectionProviderActivation activation = it.next();
             activation.getSelectionProvider().removeSelectionChangedListener(this);
         }
     }
@@ -126,8 +126,8 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * ISelectionProvider occurs.
      */
     public final void selectionChanged(SelectionChangedEvent event) {
-        for (Iterator it = changeListeners.iterator(); it.hasNext();) {
-            ISelectionChangedListener listener = (ISelectionChangedListener)it.next();
+        for (Iterator<ISelectionChangedListener> it = changeListeners.iterator(); it.hasNext();) {
+            ISelectionChangedListener listener = it.next();
             listener.selectionChanged(event);
         }
     }

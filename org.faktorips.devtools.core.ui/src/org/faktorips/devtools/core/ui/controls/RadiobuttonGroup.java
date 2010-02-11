@@ -32,7 +32,7 @@ public class RadiobuttonGroup implements ValueChangeListener {
 
     private Group group;
     private UIToolkit toolkit;
-    private List checkboxFields = new ArrayList();
+    private List<CheckboxField> checkboxFields = new ArrayList<CheckboxField>();
 
     /**
      * Creates a <code>org.eclipse.swt.widgets.Group</code> and controls
@@ -59,8 +59,8 @@ public class RadiobuttonGroup implements ValueChangeListener {
         if (e.field instanceof CheckboxField) {
             CheckboxField changedField = (CheckboxField)e.field;
             if (changedField.getCheckbox().isChecked()) {
-                for (Iterator it = checkboxFields.iterator(); it.hasNext();) {
-                    CheckboxField checkboxField = (CheckboxField)it.next();
+                for (Iterator<CheckboxField> it = checkboxFields.iterator(); it.hasNext();) {
+                    CheckboxField checkboxField = it.next();
                     if (!checkboxField.equals(changedField)) {
                         checkboxField.getCheckbox().setChecked(false);
                     }
