@@ -31,11 +31,11 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     // hides field in supertype. Done to avoid update-events fired on description changes.
     private String description;
 
-    public TableAccessFunction(IIpsObject parent, int id) {
+    public TableAccessFunction(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    public TableAccessFunction(IIpsObjectPart parent, int id) {
+    public TableAccessFunction(IIpsObjectPart parent, String id) {
         super(parent, id);
     }
 

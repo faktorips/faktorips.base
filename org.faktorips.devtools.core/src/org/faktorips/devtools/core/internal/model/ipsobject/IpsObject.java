@@ -166,7 +166,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         description = DescriptionHelper.getDescription(element);
     }
 

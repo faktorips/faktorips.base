@@ -49,7 +49,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     private Modifier modifier = Modifier.PUBLISHED;
     private String defaultValue = null;
 
-    public Attribute(IIpsObject parent, int id) {
+    public Attribute(IIpsObject parent, String id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
     }
@@ -110,7 +110,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
