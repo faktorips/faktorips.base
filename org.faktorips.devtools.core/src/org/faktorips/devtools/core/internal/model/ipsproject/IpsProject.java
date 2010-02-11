@@ -1298,7 +1298,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (arrayDimension == 0) {
             return type;
         }
-        if (type instanceof ValueDatatype) {
+        if (type != null) {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
