@@ -962,8 +962,8 @@ public class MoveOperation implements IRunnableWithProgress {
     public static boolean isTargetIncludedInSources(Object[] sources, IIpsPackageFragment target) throws CoreException {
         for (int i = 0; i < sources.length; i++) {
             if (sources[i] instanceof IIpsPackageFragmentRoot) {
-                if (isTargetInPackageFragment(target, ((IIpsPackageFragmentRoot)target).getDefaultIpsPackageFragment()
-                        .getChildIpsPackageFragments())) {
+                if (isTargetInPackageFragment(target, ((IIpsPackageFragmentRoot)sources[i])
+                        .getDefaultIpsPackageFragment().getChildIpsPackageFragments())) {
                     return true;
                 }
             } else if (sources[i] instanceof IIpsPackageFragment) {
