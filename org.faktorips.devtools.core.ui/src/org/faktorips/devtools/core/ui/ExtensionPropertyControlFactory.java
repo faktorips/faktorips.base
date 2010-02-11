@@ -34,7 +34,7 @@ public class ExtensionPropertyControlFactory {
 
     private ExtPropControlData[] extPropData;
 
-    public ExtensionPropertyControlFactory(Class extensionClass) {
+    public ExtensionPropertyControlFactory(Class<?> extensionClass) {
         IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
                 .getExtensionPropertyDefinitions(extensionClass, true);
 
@@ -78,7 +78,7 @@ public class ExtensionPropertyControlFactory {
      */
     public void createControls(Composite workArea, UIToolkit uiToolkit, IIpsObjectPartContainer ipsObjectPart) {
         // find all extension property definitions for the given position
-        ArrayList extPropertiesForPosition = new ArrayList();
+        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<ExtPropControlData>();
         for (int i = 0; i < extPropData.length; i++) {
             if (!"false".equals(extPropData[i].extProperty.getPosition())) { //$NON-NLS-1$
                 extPropertiesForPosition.add(extPropData[i]);
@@ -159,7 +159,7 @@ public class ExtensionPropertyControlFactory {
         }
     }
 
-    private class ExtPropControlData implements Comparable {
+    private class ExtPropControlData implements Comparable<ExtPropControlData> {
         IExtensionPropertyDefinition extProperty;
         EditField editField;
         IIpsObjectPartContainer partContainer;
@@ -168,11 +168,8 @@ public class ExtensionPropertyControlFactory {
             this.extProperty = extProperty;
         }
 
-        public int compareTo(Object o) {
-            if (!(o instanceof ExtPropControlData)) {
-                return 0;
-            }
-            return extProperty.compareTo(((ExtPropControlData)o).extProperty);
+        public int compareTo(ExtPropControlData o) {
+            return extProperty.compareTo(o.extProperty);
         }
 
     }

@@ -185,15 +185,15 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
         // one
         // element
         ITestPolicyCmptLink[] associations = parentTestPolicyCmpt.getTestPolicyCmptLinks();
-        HashMap messages = new HashMap();
+        HashMap<String, Message> messages = new HashMap<String, Message>();
         for (int i = 0; i < associations.length; i++) {
             ITestPolicyCmptLink testPolicyCmptAssociation = null;
             if (associations[i].getTestPolicyCmptTypeParameter().equals(getName())) {
                 testPolicyCmptAssociation = associations[i];
                 MessageList msgList = testPolicyCmptAssociation.validate(ipsProject);
                 // add only unique messages
-                for (Iterator iter = msgList.iterator(); iter.hasNext();) {
-                    Message msg = (Message)iter.next();
+                for (Iterator<Message> iter = msgList.iterator(); iter.hasNext();) {
+                    Message msg = iter.next();
                     messages.put(msg.getCode(), msg);
                 }
             }
@@ -205,24 +205,24 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
 
         MessageList mlMin = ml
                 .getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-        for (Iterator iter = mlMin.iterator(); iter.hasNext();) {
-            Message msg = (Message)iter.next();
+        for (Iterator<Message> iter = mlMin.iterator(); iter.hasNext();) {
+            Message msg = iter.next();
             if (ifMessageRelevant(msg)) {
                 messages.put(msg.getCode(), msg);
             }
         }
         MessageList mlMax = ml
                 .getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
-        for (Iterator iter = mlMax.iterator(); iter.hasNext();) {
-            Message msg = (Message)iter.next();
+        for (Iterator<Message> iter = mlMax.iterator(); iter.hasNext();) {
+            Message msg = iter.next();
             if (ifMessageRelevant(msg)) {
                 messages.put(msg.getCode(), msg);
             }
         }
 
         // add the unique test association messages to the list of messages
-        for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
-            list.add((Message)iter.next());
+        for (Iterator<Message> iter = messages.values().iterator(); iter.hasNext();) {
+            list.add(iter.next());
         }
     }
 
