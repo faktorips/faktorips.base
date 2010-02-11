@@ -49,10 +49,10 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /* Contains the delta which will be displayed. */
     private ITestCaseTestCaseTypeDelta in;
     // Contains the list from the delta from the test case side for faster search
-    private List missingTestPolicyCmptLinks = new ArrayList();
-    private List missingTestObjects = new ArrayList();
-    private List missingTestAttributes = new ArrayList();
-    private List missingTestAttributeValues = new ArrayList();
+    private List<ITestPolicyCmptLink> missingTestPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
+    private List<ITestObject> missingTestObjects = new ArrayList<ITestObject>();
+    private List<ITestAttribute> missingTestAttributes = new ArrayList<ITestAttribute>();
+    private List<ITestAttributeValue> missingTestAttributeValues = new ArrayList<ITestAttributeValue>();
 
     public TestCaseDeltaContentProvider(ITestCase testCase) {
         testCaseContentProvider = new TestCaseContentProvider(TestCaseContentProvider.COMBINED, testCase);
@@ -102,7 +102,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
 
         inputChanged(null, in, inputElement);
 
-        ArrayList result = new ArrayList();
+        ArrayList<TestCaseDeltaType> result = new ArrayList<TestCaseDeltaType>();
         boolean doNotShowDifferentSortOrder = false;
 
         if (in.getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt().length > 0
@@ -161,7 +161,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        ArrayList result = new ArrayList();
+        ArrayList<Object> result = new ArrayList<Object>();
 
         if (parentElement == TestCaseDeltaType.MISSING_ROOT_TEST_OBJECT) {
             result.addAll(Arrays.asList(in.getTestValueParametersWithMissingTestValue()));
@@ -192,10 +192,10 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
      * Adds test attributes or test attribute values to the given result list.
      */
     private void addMissingTestAttributesOrTestAttributesValue(TestCaseDeltaWrapperObject wrapperObject,
-            ArrayList result) {
+            ArrayList<Object> result) {
         if (wrapperObject.isHasToBeDeletedTestAttributes()) {
-            for (Iterator iter = missingTestAttributes.iterator(); iter.hasNext();) {
-                ITestAttribute testAttr = (ITestAttribute)iter.next();
+            for (Iterator<ITestAttribute> iter = missingTestAttributes.iterator(); iter.hasNext();) {
+                ITestAttribute testAttr = iter.next();
                 ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
                         .getTestPolicyCmptForMissingTestAttribute(testAttr);
                 if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(wrapperObject.getBaseObject())) {
@@ -203,8 +203,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 }
             }
         } else if (wrapperObject.isHasNewTestAttributes()) {
-            for (Iterator iter = missingTestAttributeValues.iterator(); iter.hasNext();) {
-                ITestAttributeValue testAttrValue = (ITestAttributeValue)iter.next();
+            for (Iterator<ITestAttributeValue> iter = missingTestAttributeValues.iterator(); iter.hasNext();) {
+                ITestAttributeValue testAttrValue = iter.next();
                 if (testAttrValue.getParent().equals(wrapperObject.getBaseObject())) {
                     result.add(testAttrValue);
                 }
@@ -223,7 +223,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
             int size = elements.length;
-            ArrayList out = new ArrayList(size);
+            ArrayList<Object> out = new ArrayList<Object>(size);
             for (int i = 0; i < size; ++i) {
                 Object element = elements[i];
                 if (select(viewer, parent, element)) {
@@ -401,9 +401,9 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Check if the given test policy cmpt has missing test attributes (to be added)
          */
         private boolean isTestAttributeInList(ITestPolicyCmpt cmpt) {
-            for (Iterator iter = missingTestAttributes.iterator(); iter.hasNext();) {
+            for (Iterator<ITestAttribute> iter = missingTestAttributes.iterator(); iter.hasNext();) {
                 ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
-                        .getTestPolicyCmptForMissingTestAttribute((ITestAttribute)iter.next());
+                        .getTestPolicyCmptForMissingTestAttribute(iter.next());
                 if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(cmpt)) {
                     return true;
                 }
