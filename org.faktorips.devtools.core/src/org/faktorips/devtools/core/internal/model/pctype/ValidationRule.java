@@ -73,7 +73,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      * @param pcType The type the rule belongs to.
      * @param id The rule's unique id within the type.
      */
-    public ValidationRule(IPolicyCmptType pcType, int id) {
+    public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
     }
 
@@ -282,7 +282,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         appliedForAllBusinessFunction = Boolean.valueOf(
@@ -302,10 +302,10 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
                 if (subElement.getNodeName().equals("BusinessFunction")) { //$NON-NLS-1$
-                    functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
+                    functions.add(subElement.getAttribute("name"));
                 }
                 if (subElement.getNodeName().equals("ValidatedAttribute")) { //$NON-NLS-1$
-                    validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
+                    validatedAttributes.add(subElement.getAttribute("name"));
                 }
             }
         }
@@ -326,7 +326,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         Document doc = newElement.getOwnerDocument();
         for (int i = 0; i < functions.size(); i++) {
             Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
-            fctElement.setAttribute("name", functions.get(i)); //$NON-NLS-1$
+            fctElement.setAttribute("name", functions.get(i));
             newElement.appendChild(fctElement);
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
