@@ -181,13 +181,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCXmlFile += ".xml";
         IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
         InputStream is = null;
+        BufferedReader br = null;
         try {
             is = file.getContents();
             if (is == null) {
                 fail("Can't find resource " + productCXmlFile);
             }
             StringBuffer generatedXml = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while ((line = br.readLine()) != null) {
                 generatedXml.append(line);
@@ -200,6 +201,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         } finally {
             if (is != null) {
                 is.close();
+            }
+            if (br != null) {
+                br.close();
             }
         }
     }
@@ -336,13 +340,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // IpsObjectType.TABLE_CONTENTS, "table1");
         // ITableContents tableContents2 = (ITableContents)newIpsObject(root,
         // IpsObjectType.TABLE_CONTENTS, "table2");
-        //generation1.newTableContentUsage().setTableContentName(tableContents1.getQualifiedName());
+        // generation1.newTableContentUsage().setTableContentName(tableContents1.getQualifiedName());
         //        
         // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
         // assertEquals(6, dependsOnAsList.size());
         // assertTrue(dependsOnAsList.contains(tableContents1.getQualifiedNameType()));
         //        
-        //generation2.newTableContentUsage().setTableContentName(tableContents2.getQualifiedName());
+        // generation2.newTableContentUsage().setTableContentName(tableContents2.getQualifiedName());
         //        
         // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
         // assertEquals(7, dependsOnAsList.size());
