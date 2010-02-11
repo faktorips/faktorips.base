@@ -80,7 +80,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         // old format
         Element element = XmlUtil.getFirstElement(root);
-        IRangeValueSet range = new RangeValueSet(ce, 1);
+        IRangeValueSet range = new RangeValueSet(ce, "1");
         range.initFromXml(element);
         assertEquals("42", range.getLowerBound());
         assertEquals("trulala", range.getUpperBound());
@@ -89,7 +89,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         // new format
         element = XmlUtil.getElement(root, 1);
-        range = new RangeValueSet(ce, 1);
+        range = new RangeValueSet(ce, "1");
         range.initFromXml(element);
         assertEquals("1", range.getLowerBound());
         assertEquals("10", range.getUpperBound());
@@ -99,12 +99,12 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testToXml() {
-        IRangeValueSet range = new RangeValueSet(ce, 1);
+        IRangeValueSet range = new RangeValueSet(ce, "1");
         range.setLowerBound("10");
         range.setUpperBound("100");
         range.setStep("10");
         Element element = range.toXml(newDocument());
-        IRangeValueSet r2 = new RangeValueSet(ce, 1);
+        IRangeValueSet r2 = new RangeValueSet(ce, "1");
         r2.initFromXml(element);
         assertEquals(range.getLowerBound(), r2.getLowerBound());
         assertEquals(range.getUpperBound(), r2.getUpperBound());
@@ -113,7 +113,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValue() {
-        RangeValueSet range = new RangeValueSet(intEl, 50);
+        RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("20");
         range.setUpperBound("25");
         assertTrue(range.containsValue("20"));
@@ -142,12 +142,12 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValueSet_BothSetsAreRanges() {
-        RangeValueSet range = new RangeValueSet(intEl, 50);
+        RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");
         range.setUpperBound("20");
         range.setStep("2");
 
-        IRangeValueSet abstractRange = new RangeValueSet(intEl, 200);
+        IRangeValueSet abstractRange = new RangeValueSet(intEl, "200");
         abstractRange.setLowerBound("10");
         abstractRange.setUpperBound("14");
         abstractRange.setStep("2");
@@ -155,7 +155,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertTrue(abstractRange.containsValueSet(range));
         assertFalse(range.containsValueSet(abstractRange));
 
-        RangeValueSet subRange = new RangeValueSet(intEl, 100);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
         subRange.setLowerBound("10");
         subRange.setUpperBound("20");
         subRange.setStep("2");
@@ -217,16 +217,16 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IConfigElement el = generation.newConfigElement();
         el.setPolicyCmptTypeAttribute("attrX");
 
-        RangeValueSet range = new RangeValueSet(el, 10);
+        RangeValueSet range = new RangeValueSet(el, "10");
         range.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
-        RangeValueSet subset = new RangeValueSet(el, 20);
+        RangeValueSet subset = new RangeValueSet(el, "20");
         subset.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
 
         assertTrue(range.containsValueSet(subset));
     }
 
     public void testValidate() throws Exception {
-        RangeValueSet range = new RangeValueSet(intEl, 50);
+        RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("20");
         range.setUpperBound("25");
         MessageList list = range.validate(ipsProject);
@@ -273,12 +273,12 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValueSetStep() {
-        RangeValueSet range = new RangeValueSet(intEl, 50);
+        RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");
         range.setUpperBound("20");
         range.setStep("2");
 
-        RangeValueSet subRange = new RangeValueSet(intEl, 100);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
         subRange.setLowerBound("12");
         subRange.setUpperBound("20");
         subRange.setStep("2");
