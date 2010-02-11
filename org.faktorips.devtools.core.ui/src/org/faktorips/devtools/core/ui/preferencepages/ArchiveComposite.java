@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -52,7 +52,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Composite for modifying IPS archive references  
+ * Composite for modifying IPS archive references
+ * 
  * @author Roman Grutza
  */
 public class ArchiveComposite extends Composite {
@@ -65,10 +66,10 @@ public class ArchiveComposite extends Composite {
     private Table table;
     private IIpsObjectPath ipsObjectPath;
     private boolean dataChanged = false;
-    
-    
+
     /**
      * Referenced IPS archives for the current IPS projects have been modified
+     * 
      * @return true if current project's archives have been modified, false otherwise
      */
     public final boolean isDataChanged() {
@@ -81,16 +82,16 @@ public class ArchiveComposite extends Composite {
      */
     public ArchiveComposite(Composite parent) {
         super(parent, SWT.NONE);
-        
-        this.toolkit = new UIToolkit(null);
 
-        this.setLayout(new GridLayout(1, true));
+        toolkit = new UIToolkit(null);
+
+        setLayout(new GridLayout(1, true));
 
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         IpsArchiveAdapter archiveAdapter = new IpsArchiveAdapter();
-        
+
         Label tableViewerLabel = new Label(tableWithButtons, SWT.NONE);
         tableViewerLabel.setText(Messages.ArchiveComposite_viewer_label);
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
@@ -109,37 +110,39 @@ public class ArchiveComposite extends Composite {
         buttons.setLayout(buttonLayout);
         createButtons(buttons, archiveAdapter);
     }
-        
+
     private void createButtons(Composite buttons, IpsArchiveAdapter archiveAdapter) {
         addIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_archive);
-        addIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        addIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_BEGINNING));
         addIpsArchivesButton.addSelectionListener(archiveAdapter);
 
-        addExternalIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_external_archive);
-        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        addExternalIpsArchivesButton = toolkit.createButton(buttons,
+                Messages.ArchiveComposite_button_add_external_archive);
+        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_BEGINNING));
         addExternalIpsArchivesButton.addSelectionListener(archiveAdapter);
 
         removeIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_remove_archive);
-        removeIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        removeIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_BEGINNING));
         removeIpsArchivesButton.addSelectionListener(archiveAdapter);
         removeIpsArchivesButton.setEnabled(false);
-        
+
     }
 
     private TableViewer createViewer(Composite parent, IpsArchiveAdapter archiveAdapter) {
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(archiveAdapter);
-        
+
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
-        contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsArchiveEntry.class}));
+        contentProvider.setIncludedClasses(Arrays.asList(new Class[] { IIpsArchiveEntry.class }));
         tableViewer.setContentProvider(contentProvider);
-        
-        tableViewer.setLabelProvider(new DecoratingLabelProvider(
-                new IpsObjectPathLabelProvider(), 
-                IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
-        ));
-        
+
+        tableViewer.setLabelProvider(new DecoratingLabelProvider(new IpsObjectPathLabelProvider(), IpsPlugin
+                .getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()));
+
         tableViewer.setInput(ipsObjectPath);
 
         return tableViewer;
@@ -147,13 +150,14 @@ public class ArchiveComposite extends Composite {
 
     /**
      * Initializes the composite using the given IPS object path
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
     public void init(final IIpsObjectPath ipsObjectPath) {
-        
+
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
-        
+
         tableViewer.setInput(ipsObjectPath);
 
         if (Display.getCurrent() != null) {
@@ -165,52 +169,55 @@ public class ArchiveComposite extends Composite {
                 }
             });
         }
-    }    
-    
+    }
+
     private void addIpsArchives() {
-                
-        ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(null, new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+
+        ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(null, new WorkbenchLabelProvider(),
+                new WorkbenchContentProvider());
         dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
         dialog.setMessage(Messages.ArchiveComposite_dialog_message_add);
         dialog.setTitle(Messages.ArchiveComposite_dialog_title_add);
-        
-        List alreadyRefArchives = new ArrayList();
+
+        List<Object> alreadyRefArchives = new ArrayList<Object>();
         IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
         for (int i = 0; i < entries.length; i++) {
             alreadyRefArchives.add(entries[i].getArchivePath());
         }
-        
+
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
 
         ISelectionStatusValidator validator = new ISelectionStatusValidator() {
             public IStatus validate(Object[] selection) {
                 for (int i = 0; i < selection.length; i++) {
-                    if (selection[i] == null || ! (selection[i] instanceof IFile))
-                        return new IpsStatus(IpsStatus.ERROR, Messages.ArchiveComposite_dialog_warning_select_archive);
+                    if (selection[i] == null || !(selection[i] instanceof IFile)) {
+                        return new IpsStatus(IStatus.ERROR, Messages.ArchiveComposite_dialog_warning_select_archive);
+                    }
                 }
-                return new IpsStatus(IpsStatus.OK, " "); //$NON-NLS-1$
+                return new IpsStatus(IStatus.OK, " "); //$NON-NLS-1$
             }
         };
         // prevent user to click OK when a folder is selected, only IPS archives are commitable
         dialog.setValidator(validator);
 
-        try {    
+        try {
             if (dialog.open() == Window.OK) {
                 Object[] selectedArchives = dialog.getResult();
-                if (selectedArchives.length < 1)
+                if (selectedArchives.length < 1) {
                     return;
+                }
 
                 for (int i = 0; i < selectedArchives.length; i++) {
-                    IFile archiveFile = (IFile) selectedArchives[i];
+                    IFile archiveFile = (IFile)selectedArchives[i];
                     IPath archivePath = null;
                     if (ipsObjectPath.getIpsProject().getProject().equals(archiveFile.getProject())) {
                         archivePath = archiveFile.getProjectRelativePath();
                     } else {
-                        archivePath = archiveFile.getFullPath();                        
+                        archivePath = archiveFile.getFullPath();
                     }
                     IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archivePath);
                     alreadyRefArchives.add(newEntry);
-                    
+
                     tableViewer.refresh(false);
                 }
                 dataChanged = true;
@@ -223,36 +230,35 @@ public class ArchiveComposite extends Composite {
 
     private void addExternalIpsArchives() {
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-        fileDialog.setFilterExtensions(new String[] {"*.ipsar", "*.jar", "*.zip", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        String fileName = fileDialog.open(); 
+        fileDialog.setFilterExtensions(new String[] { "*.ipsar", "*.jar", "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String fileName = fileDialog.open();
         if (fileName != null) {
-        	IPath path = new Path(fileName);
-        	try {
-        		ipsObjectPath.newArchiveEntry(path);
-        		tableViewer.refresh(false);
-        		dataChanged = true;
+            IPath path = new Path(fileName);
+            try {
+                ipsObjectPath.newArchiveEntry(path);
+                tableViewer.refresh(false);
+                dataChanged = true;
 
-        	} catch (CoreException e) {
-        		IpsPlugin.logAndShowErrorDialog(e);
-        		return;
-        	}
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                return;
+            }
         }
     }
 
     private void removeIpsArchives() {
         IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
         if (selection.size() > 0) {
-            dataChanged  = true;
-            for (Iterator it = selection.iterator(); it.hasNext(); ) {
-                IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry) it.next();
-                
+            dataChanged = true;
+            for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+                IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry)it.next();
+
                 ipsObjectPath.removeArchiveEntry(archiveEntry.getIpsArchive());
             }
             tableViewer.refresh(false);
-        }    
+        }
     }
-    
-    
+
     private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {
 
         public void selectionChanged(SelectionChangedEvent event) {
@@ -275,7 +281,8 @@ public class ArchiveComposite extends Composite {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
+        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        }
     }
 
     /**
