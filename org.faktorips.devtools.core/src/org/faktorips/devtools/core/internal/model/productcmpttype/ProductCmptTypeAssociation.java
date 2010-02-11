@@ -40,7 +40,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    public ProductCmptTypeAssociation(IIpsObject parent, int id) {
+    public ProductCmptTypeAssociation(IIpsObject parent, String id) {
         super(parent, id);
         type = AssociationType.AGGREGATION;
     }
