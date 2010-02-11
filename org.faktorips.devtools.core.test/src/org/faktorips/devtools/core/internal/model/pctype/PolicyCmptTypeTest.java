@@ -265,12 +265,18 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         assertEquals(a, lastEvent.getPart());
         assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastEvent.getEventType());
-        assertEquals(0, a.getId());
+        String aId = a.getId();
+        assertNotNull(aId);
 
         IMethod m = policyCmptType.newMethod();
-        assertEquals(1, m.getId());
+        String mId = m.getId();
+        assertNotNull(mId);
+        assertFalse(mId.equals(aId));
         IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
-        assertEquals(2, a2.getId());
+        String a2Id = a2.getId();
+        assertNotNull(a2Id);
+        assertFalse(a2Id.equals(aId));
+        assertFalse(mId.equals(a2Id));
     }
 
     public void testGetAttributes() {
@@ -302,14 +308,17 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testNewMethod() {
         sourceFile.getIpsModel().addChangeListener(this);
         IMethod m = policyCmptType.newMethod();
-        assertEquals(0, m.getId());
+        String mId = m.getId();
+        assertNotNull(mId);
         assertSame(policyCmptType, m.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfMethods());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
 
         IMethod m2 = policyCmptType.newMethod();
-        assertEquals(1, m2.getId());
+        String m2Id = m2.getId();
+        assertNotNull(m2Id);
+        assertFalse(m2Id.equals(mId));
     }
 
     public void testGetMethods() {
@@ -327,14 +336,17 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testNewRule() {
         sourceFile.getIpsModel().addChangeListener(this);
         IValidationRule r = policyCmptType.newRule();
-        assertEquals(0, r.getId());
+        String rId = r.getId();
+        assertNotNull(rId);
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
 
         IValidationRule r2 = policyCmptType.newRule();
-        assertEquals(1, r2.getId());
+        String r2Id = r2.getId();
+        assertNotNull(r2Id);
+        assertFalse(r2Id.equals(rId));
     }
 
     public void testGetRules() {
@@ -352,14 +364,17 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testNewRelation() {
         sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAssociation r = policyCmptType.newPolicyCmptTypeAssociation();
-        assertEquals(0, r.getId());
+        String rId = r.getId();
+        assertNotNull(rId);
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfAssociations());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
 
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
-        assertEquals(1, r2.getId());
+        String r2Id = r2.getId();
+        assertNotNull(r2Id);
+        assertFalse(r2Id.equals(rId));
     }
 
     public void testGetRelations() {

@@ -43,7 +43,7 @@ public class OverrideMethodDialog extends OverrideDialog {
     private void selectAbstractMethods(IType type) {
         try {
             // select abstract mehods
-            List selected = new ArrayList();
+            List<IMethod> selected = new ArrayList<IMethod>();
             IMethod[] method = type.findOverrideMethodCandidates(false, type.getIpsProject());
             for (int i=0; i<method.length; i++) {
                 if (method[i].isAbstract()) {
@@ -60,14 +60,14 @@ public class OverrideMethodDialog extends OverrideDialog {
 	 * Returns the methods the user has selected to override. 
 	 */
 	public IMethod[] getSelectedMethods() {
-	    List methods = new ArrayList();
+	    List<Object> methods = new ArrayList<Object>();
 	    Object[] checked = getResult();
 	    for (int i=0; i<checked.length; i++) {
 	        if (checked[i] instanceof IMethod) {
 	            methods.add(checked[i]);
 	        }
 	    }
-	    return (IMethod[])methods.toArray(new IMethod[methods.size()]);
+	    return methods.toArray(new IMethod[methods.size()]);
 	}
 
     private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {

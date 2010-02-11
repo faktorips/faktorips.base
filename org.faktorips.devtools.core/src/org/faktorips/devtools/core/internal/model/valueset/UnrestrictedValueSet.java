@@ -44,7 +44,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
-    public UnrestrictedValueSet(IIpsObjectPart parent, int partId) {
+    public UnrestrictedValueSet(IIpsObjectPart parent, String partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
@@ -117,7 +117,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         // Nothing more to do...
     }
@@ -130,7 +130,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         element.appendChild(tagElement);
     }
 
-    public IValueSet copy(IIpsObjectPart parent, int id) {
+    public IValueSet copy(IIpsObjectPart parent, String id) {
         return new UnrestrictedValueSet(parent, id);
     }
 

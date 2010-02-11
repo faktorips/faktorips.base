@@ -38,7 +38,7 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
 
     private String datatype = ""; //$NON-NLS-1$
 
-    public Parameter(IParameterContainer container, int id) {
+    public Parameter(IParameterContainer container, String id) {
         super(container, id);
     }
 
@@ -69,7 +69,7 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);

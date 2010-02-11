@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.type;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -41,7 +42,8 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
      * {@inheritDoc}
      */
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
         IAssociation[] derivedUnionCandidates = association.findDerivedUnionCandidates(association.getIpsProject());
         for (int i = 0; i < derivedUnionCandidates.length; i++) {
             if (derivedUnionCandidates[i].getName().toLowerCase().startsWith(prefix.toLowerCase())) {
@@ -50,10 +52,10 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
         }
     }
 
-    private void addToResult(List result, IAssociation relation, int documentOffset) {
+    private void addToResult(List<ICompletionProposal> result, IAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
+        ICompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
                 .getImageHandling().getImage(relation), displayText, null, relation.getDescription());
         result.add(proposal);
     }

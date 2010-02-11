@@ -45,7 +45,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    public ProductCmptTypeAttribute(IIpsObject parent, int id) {
+    public ProductCmptTypeAttribute(IIpsObject parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
@@ -140,7 +140,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;

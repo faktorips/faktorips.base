@@ -484,7 +484,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
 
         @Override
-        protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        protected IIpsObjectPart newPart(Element xmlTag, String id) {
             return null;
         }
 

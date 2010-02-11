@@ -43,12 +43,12 @@ public class Sorter extends ViewerSorter
 	private SpreadsheetControl control = null;
 	
 	// the active comparator.
-	private Comparator comparator = null;
+	private Comparator<Object> comparator = null;
 
 	/**
 	 * Constructor 
 	 */
-	public Sorter(SpreadsheetControl control, int externalColumnIndex, Comparator comparator) {
+	public Sorter(SpreadsheetControl control, int externalColumnIndex, Comparator<Object> comparator) {
 		super();
 		ArgumentCheck.notNull(control);
 		this.control = control;

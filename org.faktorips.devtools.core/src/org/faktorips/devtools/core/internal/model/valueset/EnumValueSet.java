@@ -62,7 +62,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     // occurrences.
     private Map<String, Object> valuesToIndexMap = new HashMap<String, Object>();
 
-    public EnumValueSet(IIpsObjectPart parent, int partId) {
+    public EnumValueSet(IIpsObjectPart parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
     }
 
@@ -424,7 +424,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         values.clear();
         valuesToIndexMap.clear();
@@ -451,7 +451,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         element.appendChild(tagElement);
     }
 
-    public IValueSet copy(IIpsObjectPart parent, int id) {
+    public IValueSet copy(IIpsObjectPart parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
         copy.refillValuesToIndexMap();

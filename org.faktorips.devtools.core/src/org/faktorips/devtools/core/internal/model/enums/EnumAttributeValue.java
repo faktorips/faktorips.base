@@ -61,7 +61,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * 
      * @throws CoreException If an error occurs while initializing the object.
      */
-    public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
+    public EnumAttributeValue(IEnumValue parent, String id) throws CoreException {
         super(parent, id);
         descriptionChangable = false;
         value = null;
@@ -93,7 +93,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         Boolean isNull = Boolean.valueOf(element.getAttribute("isNull"));
         if (isNull.booleanValue()) {

@@ -48,11 +48,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
      */
     private String structureUsage = ""; //$NON-NLS-1$
 
-    public TableContentUsage(IProductCmptGeneration generation, int id) {
+    public TableContentUsage(IProductCmptGeneration generation, String id) {
         super(generation, id);
     }
 
-    public TableContentUsage(IProductCmptGeneration generation, int id, String structureUsage) {
+    public TableContentUsage(IProductCmptGeneration generation, String id, String structureUsage) {
         super(generation, id);
         this.structureUsage = structureUsage;
     }
@@ -148,7 +148,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         structureUsage = element.getAttribute(PROPERTY_STRUCTURE_USAGE);
         tableContentName = ValueToXmlHelper.getValueFromElement(element, "TableContentName"); //$NON-NLS-1$

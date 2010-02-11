@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -51,7 +52,8 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
      *      int, java.util.List)
      */
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
 
         prefix = prefix.toLowerCase();
         if (tableStructure == null) {
@@ -63,7 +65,7 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
 
-    private void addToResult(List<CompletionProposal> result, IUniqueKey key, int documentOffset) {
+    private void addToResult(List<ICompletionProposal> result, IUniqueKey key, int documentOffset) {
         String name = key.getName();
         String displayText = name;
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin

@@ -37,7 +37,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
     private UniqueKeyValidator uniqueKeyValidator;
 
-    public TableContentsGeneration(TableContents parent, int id) {
+    public TableContentsGeneration(TableContents parent, String id) {
         super(parent, id);
     }
 
@@ -96,7 +96,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      * 
      * @param id
      */
-    private Row newRowInternal(int id) {
+    private Row newRowInternal(String id) {
         int nextRowNumber = getNumOfRows();
         Row newRow = new Row(this, id);
         rows.add(newRow);
@@ -121,7 +121,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         // nothing else to do
     }
@@ -133,7 +133,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);

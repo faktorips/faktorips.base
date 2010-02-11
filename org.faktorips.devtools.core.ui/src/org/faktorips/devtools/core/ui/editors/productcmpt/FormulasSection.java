@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
+import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -69,7 +70,7 @@ public class FormulasSection extends IpsSection {
 	private UIToolkit toolkit;
 
 	// List of controls displaying data (needed to enable/disable).
-	private List editControls = new ArrayList();
+	private List<TextButtonControl> editControls = new ArrayList<TextButtonControl>();
 
 	// Controller to handle update of ui and model automatically.
 	private CompositeUIController uiMasterController;
@@ -216,8 +217,8 @@ public class FormulasSection extends IpsSection {
 	public void setEnabled(boolean enabled) {
 		// to get the disabled look, we have to disable all the input-fields
 		// manually :-(
-		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Control element = (Control) iter.next();
+		for (Iterator<TextButtonControl> iter = editControls.iterator(); iter.hasNext();) {
+			Control element = iter.next();
 			element.setEnabled(enabled);
 
 		}

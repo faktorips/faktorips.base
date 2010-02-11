@@ -38,7 +38,7 @@ public class ForeignKey extends Key implements IForeignKey {
     // the unique key referenced by this fk.
     private String refUniqueKey = ""; //$NON-NLS-1$
 
-    public ForeignKey(TableStructure tableStructure, int id) {
+    public ForeignKey(TableStructure tableStructure, String id) {
         super(tableStructure, id);
     }
 
@@ -201,7 +201,7 @@ public class ForeignKey extends Key implements IForeignKey {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         refTableStructure = element.getAttribute(PROPERTY_REF_TABLE_STRUCTURE);
         refUniqueKey = element.getAttribute(PROPERTY_REF_UNIQUE_KEY);

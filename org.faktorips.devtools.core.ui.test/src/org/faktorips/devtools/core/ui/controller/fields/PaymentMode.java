@@ -112,7 +112,7 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
      * {@inheritDoc}
      */
     public String getValueName(String id) {
-        if (id.equals(null)) {
+        if (id == null) {
             return null;
         }
         if (id.equals(ANNUAL_ID)) {

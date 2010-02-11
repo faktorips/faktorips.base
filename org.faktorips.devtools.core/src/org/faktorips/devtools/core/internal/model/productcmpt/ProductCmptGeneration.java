@@ -75,7 +75,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private List<IFormula> formulas = new ArrayList<IFormula>(0);
 
-    public ProductCmptGeneration(ITimedIpsObject ipsObject, int id) {
+    public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
     }
 
@@ -311,7 +311,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /*
      * Creates a new attribute value without updating the src file.
      */
-    private AttributeValue newAttributeValueInternal(int id) {
+    private AttributeValue newAttributeValueInternal(String id) {
         AttributeValue av = new AttributeValue(this, id);
         attributeValues.add(av);
         return av;
@@ -320,7 +320,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /*
      * Creates a new attribute value without updating the src file.
      */
-    private AttributeValue newAttributeValueInternal(int id, IProductCmptTypeAttribute attr, String value) {
+    private AttributeValue newAttributeValueInternal(String id, IProductCmptTypeAttribute attr, String value) {
         AttributeValue av = new AttributeValue(this, id, attr == null ? "" : attr.getName(), value); //$NON-NLS-1$
         attributeValues.add(av);
         return av;
@@ -379,7 +379,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /*
      * Creates a new attribute without updating the src file.
      */
-    private ConfigElement newConfigElementInternal(int id, IPolicyCmptTypeAttribute attribute) {
+    private ConfigElement newConfigElementInternal(String id, IPolicyCmptTypeAttribute attribute) {
         ConfigElement e = new ConfigElement(this, id);
         if (attribute != null) {
             try {
@@ -492,7 +492,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return true;
     }
 
-    private ProductCmptLink newLinkInternal(int id, IProductCmptLink insertBefore) {
+    private ProductCmptLink newLinkInternal(String id, IProductCmptLink insertBefore) {
         ProductCmptLink newRelation = new ProductCmptLink(this, id);
         if (insertBefore == null) {
             links.add(newRelation);
@@ -507,7 +507,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newRelation;
     }
 
-    private ProductCmptLink newLinkInternal(int id) {
+    private ProductCmptLink newLinkInternal(String id) {
         return newLinkInternal(id, null);
     }
 
@@ -566,7 +566,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return tableContentUsages.toArray(new ITableContentUsage[tableContentUsages.size()]);
     }
 
-    private ITableContentUsage newTableContentUsageInternal(int id, ITableStructureUsage structureUsage) {
+    private ITableContentUsage newTableContentUsageInternal(String id, ITableStructureUsage structureUsage) {
         ITableContentUsage retValue = new TableContentUsage(this, id,
                 structureUsage == null ? "" : structureUsage.getRoleName()); //$NON-NLS-1$
         tableContentUsages.add(retValue);
@@ -626,7 +626,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newFormula;
     }
 
-    private IFormula newFormulaInternal(int id, IProductCmptTypeMethod signature) {
+    private IFormula newFormulaInternal(String id, IProductCmptTypeMethod signature) {
         IFormula newFormula = new Formula(this, id, signature == null ? "" : signature.getFormulaName()); //$NON-NLS-1$
         formulas.add(newFormula);
         return newFormula;
@@ -655,7 +655,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
             return newAttributeValueInternal(id);

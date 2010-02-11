@@ -49,7 +49,7 @@ public class CreateMissingEnumContentsAction extends IpsAction {
         }
 
         IIpsElement preselectedIpsElement = null;
-        if (selection instanceof IStructuredSelection) {
+        if (selection != null) {
             IStructuredSelection sel = selection;
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();

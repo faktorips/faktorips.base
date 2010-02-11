@@ -38,7 +38,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * @param parent
      */
-    public Key(TableStructure tableStructure, int id) {
+    public Key(TableStructure tableStructure, String id) {
         super(tableStructure, id);
     }
 
@@ -150,7 +150,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         NodeList nl = element.getElementsByTagName(KEY_ITEM_TAG_NAME);
         items = new ArrayList<String>(nl.getLength());

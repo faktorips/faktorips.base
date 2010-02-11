@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public abstract class ControlComposite extends Composite {
 
-    private List listeningInfo = null;
+    private List<ControlTypeStruct> listeningInfo = null;
     private BroadcastListener broadcastListener = null;
 
     
@@ -42,11 +42,11 @@ public abstract class ControlComposite extends Composite {
 
     protected void listenToControl(Control control, int eventType) {
         if (listeningInfo==null) {
-            listeningInfo = new ArrayList();
+            listeningInfo = new ArrayList<ControlTypeStruct>();
             broadcastListener = new BroadcastListener();
         }
-        for (Iterator it=listeningInfo.iterator(); it.hasNext();) {
-            ControlTypeStruct each = (ControlTypeStruct)it.next();
+        for (Iterator<ControlTypeStruct> it=listeningInfo.iterator(); it.hasNext();) {
+            ControlTypeStruct each = it.next();
             if (each.control==control && each.eventType==eventType) {
                 return;
             }

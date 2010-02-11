@@ -21,9 +21,9 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.w3c.dom.Element;
 
@@ -119,7 +119,7 @@ public class ValueSetType extends DefaultEnumValue {
     /**
      * Creates a new value set of the type this method is invoked on.
      */
-    public IValueSet newValueSet(IIpsObjectPart parent, int id) {
+    public IValueSet newValueSet(IIpsObjectPart parent, String id) {
         if (this == UNRESTRICTED) {
             return new UnrestrictedValueSet(parent, id);
         } else if (this == ENUM) {
@@ -137,7 +137,7 @@ public class ValueSetType extends DefaultEnumValue {
      * @param parent The parent for the new value set.
      * @param id The IpsObjectPart-ID for the new value set.
      */
-    public static IValueSet newValueSet(Element valueSetNode, IIpsObjectPart parent, int id) {
+    public static IValueSet newValueSet(Element valueSetNode, IIpsObjectPart parent, String id) {
         Element element = DescriptionHelper.getFirstNoneDescriptionElement(valueSetNode);
         if (element == null) {
             return null;

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 
@@ -35,11 +36,11 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     private List<Datatype> excludedDatatypes;
 
     public DatatypeCompletionProcessor() {
-        this.includeVoid = false;
-        this.valuetypesOnly = false;
-        this.includePrimitives = true;
-        this.includeAbstract = false;
-        this.excludedDatatypes = null;
+        includeVoid = false;
+        valuetypesOnly = false;
+        includePrimitives = true;
+        includeAbstract = false;
+        excludedDatatypes = null;
 
         setComputeProposalForEmptyPrefix(true);
     }
@@ -90,7 +91,9 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     /**
      * {@inheritDoc}
      */
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    @Override
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
         prefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List<Datatype> foundTypes = new ArrayList<Datatype>();
@@ -102,18 +105,18 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
             }
         }
 
-        Collections.sort(foundTypes, new Comparator() {
+        Collections.sort(foundTypes, new Comparator<Datatype>() {
 
-            public int compare(Object o1, Object o2) {
-                Datatype d1 = (Datatype)o1;
-                Datatype d2 = (Datatype)o2;
+            public int compare(Datatype o1, Datatype o2) {
+                Datatype d1 = o1;
+                Datatype d2 = o2;
                 return d1.getName().toLowerCase().compareTo(d2.getName().toLowerCase());
             }
 
         });
 
         for (Iterator<Datatype> it = foundTypes.iterator(); it.hasNext();) {
-            Datatype datatype = (Datatype)it.next();
+            Datatype datatype = it.next();
             String qName = datatype.getQualifiedName();
             String displayText = datatype.getName();
             Image image = labelProvider.getImage(datatype);

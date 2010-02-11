@@ -43,11 +43,11 @@ import org.w3c.dom.NodeList;
 public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
     private String conditionValue = ""; //$NON-NLS-1$
-    private Integer targetId;
-    private Integer sourceId;
+    private String targetId;
+    private String sourceId;
     private List<Bendpoint> bendpoints = new ArrayList<Bendpoint>();
 
-    public ControlFlow(IIpsObject parent, int id) {
+    public ControlFlow(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -135,13 +135,13 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         String sourceValue = element.getAttribute(PROPERTY_SOURCE);
-        sourceId = StringUtils.isEmpty(sourceValue) ? null : Integer.parseInt(sourceValue);
+        sourceId = StringUtils.isEmpty(sourceValue) ? null : sourceValue;
         String targetValue = element.getAttribute(PROPERTY_TARGET);
-        targetId = StringUtils.isEmpty(targetValue) ? null : Integer.parseInt(targetValue);
+        targetId = StringUtils.isEmpty(targetValue) ? null : targetValue;
         // TODO test
         conditionValue = element.getAttribute(PROPERTY_CONDITION_VALUE);
         NodeList nl = element.getElementsByTagName("Bendpoint"); //$NON-NLS-1$
@@ -158,8 +158,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_SOURCE, sourceId == null ? "" : String.valueOf(sourceId)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TARGET, targetId == null ? "" : String.valueOf(targetId)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_SOURCE, sourceId == null ? "" : sourceId); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TARGET, targetId == null ? "" : targetId); //$NON-NLS-1$
         // TODO test
         element.setAttribute(PROPERTY_CONDITION_VALUE, conditionValue);
         Document doc = element.getOwnerDocument();
@@ -183,7 +183,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

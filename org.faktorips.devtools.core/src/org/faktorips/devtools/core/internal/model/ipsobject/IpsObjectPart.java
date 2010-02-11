@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Element;
@@ -31,16 +32,11 @@ import org.w3c.dom.Element;
 public abstract class IpsObjectPart extends IpsObjectPartContainer implements IIpsObjectPart {
 
     private String description = ""; //$NON-NLS-1$
-    private int id;
+    private String id;
     private boolean deleted = false;
     protected boolean descriptionChangable = true;
 
-    protected IpsObjectPart(IIpsObject parent, int id) {
-        super(parent, ""); //$NON-NLS-1$
-        this.id = id;
-    }
-
-    protected IpsObjectPart(IIpsObjectPart parent, int id) {
+    protected IpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, ""); //$NON-NLS-1$
         this.id = id;
     }
@@ -55,7 +51,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -162,13 +158,13 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         if (id != null) {
-            this.id = id.intValue();
+            this.id = id;
         } else {
             String s = element.getAttribute(PROPERTY_ID);
             if (!StringUtils.isEmpty(s)) {
-                this.id = Integer.parseInt(s);
+                this.id = s;
             } // else keep the id set in the constructor. migration for old files without id!
         }
 
@@ -188,26 +184,49 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         }
     }
 
-    /**
-     * {@inheritDoc} Two parts are equal if the have the same parent and the same id.
-     */
-    // TODO XXX CD missing hashCode override
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof IIpsObjectPart)) {
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc} Two parts are equal if they have the same parent and the same id.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-
-        IIpsObjectPart other = (IIpsObjectPart)o;
-
-        return other.getId() == getId()
-                && ((parent == null && other.getParent() == null) || (parent != null && parent
-                        .equals(other.getParent())));
-
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        IpsObjectPart other = (IpsObjectPart)obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (parent == null) {
+            if (other.parent != null) {
+                return false;
+            }
+        } else if (!parent.equals(other.parent)) {
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings("unchecked")
-    // ok, to suppress unchecked warnings, as the method signature is defined by Eclipse
+    // ok, to suppress unchecked warnings, because the method signature is defined by Eclipse
     @Override
     public Object getAdapter(Class adapterType) {
         if (IResource.class.isAssignableFrom(adapterType) | ResourceMapping.class.isAssignableFrom(adapterType)) {

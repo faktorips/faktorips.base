@@ -83,7 +83,7 @@ public class AssociationRefControl extends TextButtonControl {
      * @throws CoreException in case of an error
      */
     protected IPolicyCmptTypeAssociation[] getAssociations() throws CoreException {
-        List associationsToSelect = new ArrayList();
+        List<IPolicyCmptTypeAssociation> associationsToSelect = new ArrayList<IPolicyCmptTypeAssociation>();
         IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
         while (currPolicyCmptType != null){
             IPolicyCmptTypeAssociation[] associations = currPolicyCmptType.getPolicyCmptTypeAssociations();
@@ -94,7 +94,7 @@ public class AssociationRefControl extends TextButtonControl {
             }
             currPolicyCmptType = (IPolicyCmptType)currPolicyCmptType.findSupertype(currPolicyCmptType.getIpsProject());
         }
-        return (IPolicyCmptTypeAssociation[]) associationsToSelect.toArray(new IPolicyCmptTypeAssociation[0]);
+        return associationsToSelect.toArray(new IPolicyCmptTypeAssociation[0]);
     }
 
     public IPolicyCmptTypeAssociation findAssociation() throws CoreException{

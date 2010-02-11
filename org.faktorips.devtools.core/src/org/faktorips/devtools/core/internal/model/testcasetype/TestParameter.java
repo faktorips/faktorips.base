@@ -22,8 +22,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -42,11 +42,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 
     protected TestParameterType type = TestParameterType.COMBINED;
 
-    public TestParameter(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TestParameter(IIpsObjectPart parent, int id) {
+    public TestParameter(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -77,7 +73,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_PARAMETER_TYPE));

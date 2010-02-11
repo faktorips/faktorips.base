@@ -75,16 +75,17 @@ public class OpenEditorAction extends IpsAction {
 
         // ignores IFiles even if the underlying object is an IpsSrcFile
         IIpsSrcFile[] srcFiles = getIpsSrcFilesForSelection(relevantSelection);
-        for (int i = 0; i < srcFiles.length; i++) {
-            return IpsUIPlugin.getDefault().openEditor(srcFiles[i]);
+        IEditorPart result = null;
+        for (IIpsSrcFile srcFile : srcFiles) {
+            result = IpsUIPlugin.getDefault().openEditor(srcFile);
         }
         for (Iterator<Object> iter = getSelectionIterator(relevantSelection); iter.hasNext();) {
             Object selected = iter.next();
             if (selected instanceof IFile) {
-                return IpsUIPlugin.getDefault().openEditor((IFile)selected);
+                result = IpsUIPlugin.getDefault().openEditor((IFile)selected);
             }
         }
-        return null;
+        return result;
     }
 
     /*

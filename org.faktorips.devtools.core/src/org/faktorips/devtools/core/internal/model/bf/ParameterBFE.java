@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,10 +33,11 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
 
     private String datatype = ""; //$NON-NLS-1$
 
-    public ParameterBFE(IIpsObject parent, int id) {
+    public ParameterBFE(IIpsObject parent, String id) {
         super(parent, id);
     }
 
+    @Override
     public String getDisplayString() {
         return getDatatype() + ":" + getName(); //$NON-NLS-1$
     }
@@ -59,7 +60,8 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
     /**
      * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         setType(BFElementType.getType(element.getAttribute(PROPERTY_TYPE)));
         datatype = element.getAttribute(PROPERTY_DATATYPE);
@@ -68,6 +70,7 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_TYPE, getType().getId());

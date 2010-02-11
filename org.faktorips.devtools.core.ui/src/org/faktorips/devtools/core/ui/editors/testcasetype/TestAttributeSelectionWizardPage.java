@@ -140,7 +140,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
     private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
-        List attributesInDialog = new ArrayList();
+        List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<IPolicyCmptTypeAttribute>();
         for (int i = 0; i < attributes.length; i++) {
             if (isAllowedAttribute(attributes[i])) {
                 attributesInDialog.add(attributes[i]);
@@ -160,7 +160,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 }
             }
         }
-        return (IPolicyCmptTypeAttribute[])attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog
+        return attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog
                 .size()]);
     }
 

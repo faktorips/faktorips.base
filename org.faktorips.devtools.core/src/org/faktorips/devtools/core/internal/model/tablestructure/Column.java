@@ -33,7 +33,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     private String datatype = ""; //$NON-NLS-1$
 
-    Column(TableStructure table, int id) {
+    Column(TableStructure table, String id) {
         super(table, id);
     }
 
@@ -90,7 +90,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute("name"); //$NON-NLS-1$
         datatype = element.getAttribute("datatype"); //$NON-NLS-1$

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
@@ -29,7 +28,8 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private ForeignKey key;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -38,25 +38,25 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         key = (ForeignKey)table.newForeignKey();
         ipsSrcFile.save(true, null);
     }
-    
+
     public void testRemove() {
         key.delete();
         assertEquals(0, table.getNumOfForeignKeys());
         assertTrue(ipsSrcFile.isDirty());
     }
-    
+
     public void testGetName() {
         assertEquals("()", key.getName());
         key.setReferencedTableStructure("RefTable");
         assertEquals("RefTable()", key.getName());
-        
+
         key.setReferencedUniqueKey("age");
         assertEquals("RefTable(age)", key.getName());
     }
 
     public void testGetKeyItems() {
         assertEquals(0, key.getKeyItemNames().length);
-        String[] items = new String[] {"age", "gender"};
+        String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
         assertNotSame(items, key.getKeyItemNames()); // defensive copy should be made
         assertEquals(2, key.getKeyItemNames().length);
@@ -65,7 +65,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
     }
 
     public void testSetKeyItems() {
-        String[] items = new String[] {"age", "gender"};
+        String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
         assertTrue(ipsSrcFile.isDirty());
     }
@@ -74,13 +74,13 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         key = (ForeignKey)table.newForeignKey();
         key.setReferencedTableStructure("RefTable");
         key.setReferencedUniqueKey("key");
-        String[] items = new String[] {"age", "gender"};
+        String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
         Element element = key.toXml(newDocument());
-        
+
         ForeignKey copy = new ForeignKey();
         copy.initFromXml(element);
-        assertEquals(1, copy.getId());
+        assertEquals(key.getId(), copy.getId());
         assertEquals("RefTable", copy.getReferencedTableStructure());
         assertEquals("key", copy.getReferencedUniqueKey());
         assertEquals(2, copy.getNumOfKeyItems());
@@ -90,7 +90,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         key.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(42, key.getId());
+        assertEquals("42", key.getId());
         assertEquals("RefTable", key.getReferencedTableStructure());
         assertEquals("key", key.getReferencedUniqueKey());
         assertEquals(2, key.getNumOfKeyItems());
@@ -99,14 +99,15 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			key.newPart(IPolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            key.newPart(IPolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
 }

@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class PresentationModelObject  {
 
-    private Set propertyChangeListeners = new HashSet(1); 
+    private Set<PropertyChangeListener> propertyChangeListeners = new HashSet<PropertyChangeListener>(1); 
     
     public PresentationModelObject() {
     }
@@ -69,9 +69,9 @@ public class PresentationModelObject  {
      * is logged, but NOT re-thrown. Instead the method continues to notify the remaining listeners.
      */
     protected void notifyListeners(PropertyChangeEvent event) {
-        List listeners = new ArrayList(propertyChangeListeners); // copy to be thread-safe
-        for (Iterator it = listeners.iterator(); it.hasNext();) {
-            PropertyChangeListener listener = (PropertyChangeListener)it.next();
+        List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>(propertyChangeListeners); // copy to be thread-safe
+        for (Iterator<PropertyChangeListener> it = listeners.iterator(); it.hasNext();) {
+            PropertyChangeListener listener = it.next();
             try {
                 listener.propertyChange(event);
             } catch (Exception e) {

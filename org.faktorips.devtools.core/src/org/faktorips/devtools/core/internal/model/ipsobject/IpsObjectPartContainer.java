@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -121,16 +122,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Returns the id that can be used for a new part, so that its id is unique.
      */
-    protected int getNextPartId() {
-        int maxId = -1;
-        IIpsElement[] parts = getChildren();
-        for (int i = 0; i < parts.length; i++) {
-            IIpsObjectPart part = (IIpsObjectPart)parts[i];
-            if (part.getId() > maxId) {
-                maxId = part.getId();
-            }
-        }
-        return ++maxId;
+    protected String getNextPartId() {
+        return UUID.randomUUID().toString();
     }
 
     /**
@@ -368,7 +361,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param element
      * @param id
      */
-    protected void initFromXml(Element element, Integer id) {
+    protected void initFromXml(Element element, String id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
         initExtPropertiesFromXml(element);
@@ -402,7 +395,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param id The value for the id-property of the ips object part or null, if the id should be
      *            generated automatically (preferred).
      */
-    protected abstract void initPropertiesFromXml(Element element, Integer id);
+    protected abstract void initPropertiesFromXml(Element element, String id);
 
     /*
      * The method is called by the initFromXml() method to retrieve the values of the extension
@@ -479,10 +472,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
-        Set<Integer> idSet = new HashSet<Integer>();
+        Set<String> idSet = new HashSet<String>();
         reinitPartCollections();
         NodeList nl = element.getChildNodes();
-        int nextId = getMaxIdUsedInXml(element) + 1;
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
             if (item.getNodeType() != Node.ELEMENT_NODE
@@ -496,7 +488,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             String id = partEl.getAttribute("id").trim(); //$NON-NLS-1$
             IIpsObjectPart part = idPartMap.get(id);
             if (part == null) {
-                part = newPart(partEl, nextId++);
+                part = newPart(partEl, getNextPartId());
             } else {
                 addPart(part);
             }
@@ -517,27 +509,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         IIpsElement[] parts = getChildren();
         for (int i = 0; i < parts.length; i++) {
             IIpsObjectPart part = (IIpsObjectPart)parts[i];
-            map.put("" + part.getId(), part); //$NON-NLS-1$
+            map.put(part.getId(), part);
         }
         return map;
-    }
-
-    private int getMaxIdUsedInXml(Element element) {
-        int maxId = 0;
-        NodeList nl = element.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element partEl = (Element)nl.item(i);
-                String id = partEl.getAttribute("id"); //$NON-NLS-1$
-                if (!StringUtils.isEmpty(id)) {
-                    int partId = Integer.parseInt(id);
-                    if (partId > maxId) {
-                        maxId = partId;
-                    }
-                }
-            }
-        }
-        return maxId;
     }
 
     /**
@@ -576,7 +550,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.
      */
-    protected abstract IIpsObjectPart newPart(Element xmlTag, int id);
+    protected abstract IIpsObjectPart newPart(Element xmlTag, String id);
 
     /**
      * {@inheritDoc}

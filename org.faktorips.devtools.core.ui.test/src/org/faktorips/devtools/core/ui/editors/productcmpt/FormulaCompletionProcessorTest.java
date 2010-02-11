@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -79,7 +80,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
      * int, List)'
      */
     public void testDoComputeCompletionProposals() throws Exception {
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("Test", 0, results);
         assertEquals(0, results.size());
 
@@ -87,7 +88,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         processor.doComputeCompletionProposals("Test", 0, results);
         CompletionProposal proposal = (CompletionProposal)results.get(0);
         assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getDisplayString());
-        results = new ArrayList<Object>();
+        results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("TestEnumType.", 0, results);
         assertEquals(3, results.size());
         ArrayList<String> expectedValues = new ArrayList<String>();
@@ -125,7 +126,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         tableContentUsage.setTableContentName(tableContents.getQualifiedName());
         tableContentUsage.setStructureUsage("ratePlan");
 
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("TestTable_", 0, results);
         assertEquals(0, results.size());
 
@@ -160,7 +161,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
         // there needs to be a table content available for the structure otherwise no completion is
         // proposed
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("TestT", 0, results);
         assertEquals(0, results.size());
 
@@ -172,7 +173,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
     public void testDoComputeCompletionProposalsForParam() throws Exception {
         formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
 
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("a", 1, results);
         CompletionProposal proposal = (CompletionProposal)results.get(0);
@@ -190,7 +191,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         secondAttr.setName("secondAttr");
         secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
 
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("f", 1, results);
         CompletionProposal proposal = (CompletionProposal)results.get(0);
@@ -198,7 +199,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         proposal.apply(document);
         assertEquals("firstAttr", document.get());
 
-        results = new ArrayList<Object>();
+        results = new ArrayList<ICompletionProposal>();
         processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("s", 1, results);
         proposal = (CompletionProposal)results.get(0);
@@ -206,7 +207,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         proposal.apply(document);
         assertEquals("secondAttr", document.get());
 
-        results = new ArrayList<Object>();
+        results = new ArrayList<ICompletionProposal>();
         processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("k", 1, results);
         assertEquals(0, results.size());
@@ -218,7 +219,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         formulaSignature.newParameter(a.getQualifiedName(), "aParam");
         formulaSignature.newParameter(aConfig.getQualifiedName(), "aConfigParam");
 
-        ArrayList<?> results = new ArrayList<Object>();
+        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("", 1, results);
         CompletionProposal proposal = (CompletionProposal)results.get(0);

@@ -45,7 +45,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int rowNumber = 0;
 
-    Row(TableContentsGeneration parent, int rowNum) {
+    Row(TableContentsGeneration parent, String rowNum) {
         super(parent, rowNum);
         descriptionChangable = false;
         initValues();
@@ -325,7 +325,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         NodeList nl = element.getElementsByTagName(VALUE_TAG_NAME);
         initValues();

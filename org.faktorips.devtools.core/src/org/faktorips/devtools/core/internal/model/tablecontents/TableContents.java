@@ -64,7 +64,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
-    protected IpsObjectGeneration createNewGeneration(int id) {
+    protected IpsObjectGeneration createNewGeneration(String id) {
         TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
         initUniqueKeyValidator(tableContentsGeneration);
         return tableContentsGeneration;
@@ -170,7 +170,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
         numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS));

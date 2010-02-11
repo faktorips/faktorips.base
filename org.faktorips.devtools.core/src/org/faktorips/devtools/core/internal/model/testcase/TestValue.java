@@ -48,11 +48,11 @@ public class TestValue extends TestObject implements ITestValue {
 
     private String value = ""; //$NON-NLS-1$
 
-    public TestValue(IIpsObject parent, int id) {
+    public TestValue(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    public TestValue(IIpsObjectPart parent, int id) {
+    public TestValue(IIpsObjectPart parent, String id) {
         super(parent, id);
     }
 
@@ -62,7 +62,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testValueParameter = element.getAttribute(PROPERTY_VALUE_PARAMETER);
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
@@ -200,7 +200,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

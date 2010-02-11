@@ -48,7 +48,7 @@ public class TestRule extends TestObject implements ITestRule {
 
     private TestRuleViolationType violationType = TestRuleViolationType.VIOLATED;
 
-    public TestRule(IIpsObject parent, int id) {
+    public TestRule(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -58,7 +58,7 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testRuleParameter = element.getAttribute(PROPERTY_TEST_RULE_PARAMETER);
         validationRule = element.getAttribute(PROPERTY_VALIDATIONRULE);
@@ -201,7 +201,7 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

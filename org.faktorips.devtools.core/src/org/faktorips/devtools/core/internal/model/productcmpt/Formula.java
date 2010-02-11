@@ -70,12 +70,12 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     private IpsObjectPartCollection<IFormulaTestCase> testcases = new IpsObjectPartCollection<IFormulaTestCase>(this,
             FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
 
-    public Formula(IIpsObjectPart parent, int id) {
+    public Formula(IIpsObjectPart parent, String id) {
         super(parent, id);
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
     }
 
-    public Formula(IIpsObjectPart parent, int id, String formulaSignature) {
+    public Formula(IIpsObjectPart parent, String id, String formulaSignature) {
         super(parent, id);
         this.formulaSignature = formulaSignature;
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
@@ -400,7 +400,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         formulaSignature = element.getAttribute(PROPERTY_FORMULA_SIGNATURE_NAME);
         expression = ValueToXmlHelper.getValueFromElement(element, TAG_NAME_FOR_EXPRESSION);

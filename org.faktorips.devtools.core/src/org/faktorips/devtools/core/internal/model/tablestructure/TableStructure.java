@@ -156,7 +156,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
-    private IColumn newColumnInternal(int id) {
+    private IColumn newColumnInternal(String id) {
         IColumn newColumn = new Column(this, id);
         columns.add(newColumn);
         return newColumn;
@@ -225,7 +225,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
-    private IColumnRange newColumnRangeInternal(int id) {
+    private IColumnRange newColumnRangeInternal(String id) {
         IColumnRange newRange = new ColumnRange(this, id);
         ranges.add(newRange);
         return newRange;
@@ -282,7 +282,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
-    private IUniqueKey newUniqueKeyInternal(int id) {
+    private IUniqueKey newUniqueKeyInternal(String id) {
         IUniqueKey newUniqueKey = new UniqueKey(this, id);
         uniqueKeys.add(newUniqueKey);
         return newUniqueKey;
@@ -339,7 +339,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
-    private IForeignKey newForeignKeyInternal(int id) {
+    private IForeignKey newForeignKeyInternal(String id) {
         IForeignKey newForeignKey = new ForeignKey(this, id);
         foreignKeys.add(newForeignKey);
         return newForeignKey;
@@ -385,13 +385,13 @@ public class TableStructure extends IpsObject implements ITableStructure {
             IColumn[] columns = getColumnsNotInKey(key);
             for (int j = 0; j < columns.length; j++) {
                 // add function for each column which is not included in the key
-                functions.add(createFunction(j, key, columns[j]));
+                functions.add(createFunction("" + j, key, columns[j]));
             }
         }
         return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
-    private ITableAccessFunction createFunction(int id, IUniqueKey key, IColumn column) {
+    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column) {
         TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
         fct.setType(column.getDatatype());
@@ -440,7 +440,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
         String typeId = element.getAttribute(PROPERTY_TYPE);
@@ -512,7 +512,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      * {@inheritDoc}
      */
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
 
         if (xmlTagName.equals(Column.TAG_NAME)) {

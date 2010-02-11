@@ -271,7 +271,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected void initFromXml(Element element, Integer id) {
+    protected void initFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
@@ -843,7 +843,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         ArgumentCheck.notNull(xmlTag);
         if (xmlTag.getTagName().equals(IEnumLiteralNameAttribute.XML_TAG)) {
             return newPart(EnumLiteralNameAttribute.class);

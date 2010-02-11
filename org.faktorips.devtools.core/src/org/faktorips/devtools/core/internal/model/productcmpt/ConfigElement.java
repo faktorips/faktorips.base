@@ -56,12 +56,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private String value = ""; //$NON-NLS-1$
 
-    public ConfigElement(ProductCmptGeneration parent, int id) {
+    public ConfigElement(ProductCmptGeneration parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
-    public ConfigElement(ProductCmptGeneration parent, int id, String pcTypeAttribute) {
+    public ConfigElement(ProductCmptGeneration parent, String id, String pcTypeAttribute) {
         super(parent, id);
         this.pcTypeAttribute = pcTypeAttribute;
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
@@ -408,7 +408,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
@@ -448,7 +448,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element partEl, int id) {
+    protected IIpsObjectPart newPart(Element partEl, String id) {
         String xmlTagName = partEl.getNodeName();
         if (ValueSet.XML_TAG.equals(xmlTagName)) {
             valueSet = ValueSetType.newValueSet(partEl, this, id);

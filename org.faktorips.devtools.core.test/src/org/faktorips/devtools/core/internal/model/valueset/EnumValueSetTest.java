@@ -83,12 +83,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testCopy() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10");
         set.addValue("5");
         set.addValue("1");
 
-        EnumValueSet copy = (EnumValueSet)set.copy(generation.newConfigElement(), 1);
+        EnumValueSet copy = (EnumValueSet)set.copy(generation.newConfigElement(), "1");
         assertEquals(3, copy.size());
         assertEquals(0, copy.getPositions("10").get(0).intValue());
         assertEquals(1, copy.getPositions("5").get(0).intValue());
@@ -96,12 +96,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testCopyPropertiesFrom() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10");
         set.addValue("5");
         set.addValue("1");
 
-        EnumValueSet set2 = new EnumValueSet(generation.newConfigElement(), 1);
+        EnumValueSet set2 = new EnumValueSet(generation.newConfigElement(), "1");
         set2.copyPropertiesFrom(set);
 
         assertEquals(3, set2.size());
@@ -111,7 +111,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testGetPositions() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         List<Integer> positions = set.getPositions("1");
         assertEquals(0, positions.size());
 
@@ -143,7 +143,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValue() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
@@ -166,7 +166,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValueInvalidSet() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("1");
         MessageList list = new MessageList();
         set.containsValue("10 EUR", list, null, null);
@@ -179,12 +179,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testContainsValueSet() throws Exception {
-        EnumValueSet superset = new EnumValueSet(ce, 50);
+        EnumValueSet superset = new EnumValueSet(ce, "50");
         superset.addValue("1EUR");
         superset.addValue("2EUR");
         superset.addValue("3EUR");
 
-        EnumValueSet subset = new EnumValueSet(ce, 100);
+        EnumValueSet subset = new EnumValueSet(ce, "100");
         assertTrue(superset.containsValueSet(subset));
 
         subset.addValue("1EUR");
@@ -201,7 +201,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         subset.addValue("4EUR");
         assertFalse(superset.containsValueSet(subset));
 
-        EnumValueSet abstractSet = new EnumValueSet(ce, 60);
+        EnumValueSet abstractSet = new EnumValueSet(ce, "60");
         abstractSet.setAbstract(true);
         assertTrue(abstractSet.containsValueSet(subset));
         assertFalse(subset.containsValueSet(abstractSet));
@@ -225,7 +225,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPolicyCmptTypeAttribute("attr2");
 
-        subset = new EnumValueSet(ce2, 50);
+        subset = new EnumValueSet(ce2, "50");
         subset.addValue("2EUR");
 
         list.clear();
@@ -234,7 +234,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testAddValue() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("one");
@@ -245,7 +245,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testRemoveValue_byValue() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -303,7 +303,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testRemoveValue_byIndex() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("one");
@@ -350,7 +350,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testGetValue() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -362,7 +362,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -377,7 +377,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -393,7 +393,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -411,7 +411,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -427,7 +427,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -444,7 +444,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -463,7 +463,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -481,7 +481,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -500,7 +500,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -524,7 +524,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
         Element element = XmlUtil.getFirstElement(root);
-        IEnumValueSet set = new EnumValueSet(ce, 1);
+        IEnumValueSet set = new EnumValueSet(ce, "1");
         set.initFromXml(element);
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
@@ -533,12 +533,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testToXml() {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
         Element element = set.toXml(newDocument());
-        IEnumValueSet set2 = new EnumValueSet(ce, 1);
+        IEnumValueSet set2 = new EnumValueSet(ce, "1");
         set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
         assertEquals("two", set2.getValue(1));
@@ -547,7 +547,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate() throws Exception {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
 
@@ -584,7 +584,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
 
         // test with unkonwn datatype
-        EnumValueSet set2 = new EnumValueSet(ce, 2);
+        EnumValueSet set2 = new EnumValueSet(ce, "2");
         set2.addValue("1");
         set2.addValue("2");
         list = set2.validate(ipsProject);
@@ -601,7 +601,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_CheckDuplicates() throws CoreException {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
 
@@ -639,7 +639,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateValue() throws CoreException {
-        EnumValueSet set = new EnumValueSet(ce, 1);
+        EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("2EUR");
         set.addValue("3EUR");
         set.addValue("2EUR");
@@ -665,7 +665,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testGetValues() {
-        EnumValueSet set = new EnumValueSet(ce, 50);
+        EnumValueSet set = new EnumValueSet(ce, "50");
         String[] values = set.getValues();
 
         assertEquals(0, values.length);
@@ -680,7 +680,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testGetContainsNull() {
-        EnumValueSet set = new EnumValueSet(ce, 50);
+        EnumValueSet set = new EnumValueSet(ce, "50");
 
         assertFalse(set.getContainsNull());
 
@@ -695,7 +695,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     public void testSetContainsNull() {
-        EnumValueSet set = new EnumValueSet(ce, 50);
+        EnumValueSet set = new EnumValueSet(ce, "50");
 
         assertFalse(set.getContainsNull());
 

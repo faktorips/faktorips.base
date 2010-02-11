@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 
 public class ActionBFE extends MethodCallBFE implements IActionBFE {
 
-    public ActionBFE(IIpsObject parent, int id) {
+    public ActionBFE(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -99,6 +99,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         }
     }
 
+    @Override
     public RenameRefactoring getRenameRefactoring() {
         return null;
     }

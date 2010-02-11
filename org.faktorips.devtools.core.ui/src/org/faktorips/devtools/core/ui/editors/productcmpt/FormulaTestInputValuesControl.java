@@ -112,7 +112,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     /*
      * Indicates that the formula will be executed and the result will be displayed in the
-     * corresponding control. If <code>false</code> the formula will not be executed by this control.
+     * corresponding control. If <code>false</code> the formula will not be executed by this
+     * control.
      */
     private boolean canCalculateResult = false;
 
@@ -506,7 +507,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         if (formulaTestCase != null) {
             formulaInputTableViewer.setInput(formulaTestCase.getFormulaTestInputValues());
         } else {
-            formulaInputTableViewer.setInput(new ArrayList());
+            formulaInputTableViewer.setInput(new ArrayList<Object>());
             if (formulaResult != null) {
                 clearResult();
             }

@@ -70,7 +70,6 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
 public class CustomIconSection extends IpsSection {
 
     private IType type;
-    private Label iconTextLabel;
     private Text iconPathText;
     private Button iconBrowseButton;
 
@@ -119,7 +118,7 @@ public class CustomIconSection extends IpsSection {
         gd.horizontalSpan = 2;
         iconPreview.setLayoutData(gd);
 
-        iconTextLabel = toolkit.createLabel(parent, Messages.CustomIconSection_CustomPathText);
+        toolkit.createLabel(parent, Messages.CustomIconSection_CustomPathText);
         iconPathText = toolkit.createText(parent);
 
         iconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);

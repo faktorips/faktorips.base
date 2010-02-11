@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -48,11 +48,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     private ITestPolicyCmpt targetChild;
 
-    public TestPolicyCmptLink(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TestPolicyCmptLink(IIpsObjectPart parent, int id) {
+    public TestPolicyCmptLink(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -101,7 +97,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testPolicyCmptTypeParameter = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
         target = element.getAttribute(PROPERTY_TARGET);
@@ -129,7 +125,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     /**
      * Creates a new test policy component as target for this link without updating the src file.
      */
-    private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(int id) {
+    private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(String id) {
         TestPolicyCmpt testPc = new TestPolicyCmpt(this, id);
         targetChild = testPc;
         return testPc;
@@ -183,7 +179,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TestPolicyCmpt.TAG_NAME)) {
             return newTargetTestPolicyCmptChildInternal(id);

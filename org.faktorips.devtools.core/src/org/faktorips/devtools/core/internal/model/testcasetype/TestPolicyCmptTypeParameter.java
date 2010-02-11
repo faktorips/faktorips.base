@@ -69,11 +69,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     private int maxInstances = 1;
 
-    public TestPolicyCmptTypeParameter(IIpsObject parent, int id) {
+    public TestPolicyCmptTypeParameter(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    public TestPolicyCmptTypeParameter(IIpsObjectPart parent, int id) {
+    public TestPolicyCmptTypeParameter(IIpsObjectPart parent, String id) {
         super(parent, id);
     }
 
@@ -119,7 +119,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TestAttribute.TAG_NAME)) {
             return newTestAttributeInternal(id);
@@ -206,7 +206,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
         association = element.getAttribute(PROPERTY_ASSOCIATION);
@@ -255,7 +255,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     /** Creates a new test attribute without updating the source file. */
-    private TestAttribute newTestAttributeInternal(int id) {
+    private TestAttribute newTestAttributeInternal(String id) {
         TestAttribute a = new TestAttribute(this, id);
         testAttributes.add(a);
         return a;
@@ -329,7 +329,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * Creates a new test policy component type parameter child without updating the source file.
      */
-    private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChildInternal(int id) {
+    private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChildInternal(String id) {
         TestPolicyCmptTypeParameter p = new TestPolicyCmptTypeParameter(this, id);
         testPolicyCmptTypeChilds.add(p);
         return p;

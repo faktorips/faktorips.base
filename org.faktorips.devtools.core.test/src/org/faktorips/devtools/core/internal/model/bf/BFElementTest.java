@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,13 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.bf;
 
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.bf.ActionBFE;
-import org.faktorips.devtools.core.internal.model.bf.BFElement;
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -37,6 +33,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private TestContentsChangeListener listener;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -49,10 +46,10 @@ public class BFElementTest extends AbstractIpsPluginTest {
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
 
-        IBFElement bfe = new BFElement(bf, 1);
+        IBFElement bfe = new BFElement(bf, "1");
         NodeList nl = doc.getDocumentElement().getElementsByTagName(IBFElement.XML_TAG);
         bfe.initFromXml((Element)nl.item(0));
-        assertEquals(10, bfe.getId());
+        assertEquals("10", bfe.getId());
         assertEquals(BFElementType.START, bfe.getType());
         assertEquals(new Dimension(30, 30), bfe.getSize());
         assertEquals(new Point(245, 51), bfe.getLocation());
@@ -68,9 +65,9 @@ public class BFElementTest extends AbstractIpsPluginTest {
         doc.appendChild(doc.createElement(IBusinessFunction.XML_TAG));
         Element domEl = bfe.toXml(doc);
 
-        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-                "bf2");
-        IActionBFE action = new ActionBFE(bf2, 1);
+        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf2");
+        IActionBFE action = new ActionBFE(bf2, "1");
         action.initFromXml(domEl);
         assertEquals(bfe.getLocation(), action.getLocation());
         assertEquals(bfe.getSize(), action.getSize());
@@ -88,7 +85,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(listener.getEventTypes().contains(ContentChangeEvent.TYPE_PROPERTY_CHANGED));
         assertEquals(in.getTarget(), bfe);
         assertNull(in.getSource());
-        
+
         IControlFlow cf = bf.newControlFlow();
         assertFalse(bfe.getIncomingControlFlow().contains(cf));
     }
@@ -104,7 +101,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(listener.getEventTypes().contains(ContentChangeEvent.TYPE_PROPERTY_CHANGED));
         assertEquals(bfe, out.getSource());
         assertNull(out.getTarget());
-        
+
         IControlFlow cf = bf.newControlFlow();
         assertFalse(bfe.getOutgoingControlFlow().contains(cf));
     }
@@ -122,7 +119,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertFalse(bfe.removeIncomingControlFlow(cf));
         assertEquals(in, bfe.getIncomingControlFlow().get(0));
         assertFalse(listener.getIpsObjectParts().contains(bfe));
-        
+
         listener.clear();
         assertTrue(bfe.removeIncomingControlFlow(in));
         assertTrue(bfe.getIncomingControlFlow().isEmpty());
@@ -184,7 +181,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(bfe));
         assertTrue(listener.getEventTypes().contains(ContentChangeEvent.TYPE_PROPERTY_CHANGED));
         assertEquals(new Point(20, 20), bfe.getLocation());
-        
+
         listener.clear();
         bfe.setLocation(null);
         assertTrue(listener.getIpsObjectParts().contains(bfe));

@@ -61,7 +61,7 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
      *      int)
      */
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$
     }
 

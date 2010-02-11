@@ -43,7 +43,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     private String identifier = ""; //$NON-NLS-1$
     private String value = ""; //$NON-NLS-1$
 
-    public FormulaTestInputValue(IFormulaTestCase parent, int id) {
+    public FormulaTestInputValue(IFormulaTestCase parent, String id) {
         super(parent, id);
     }
 
@@ -59,7 +59,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         identifier = element.getAttribute(PROPERTY_IDENTIFIER);
         value = ValueToXmlHelper.getValueFromElement(element, StringUtils.capitalize(PROPERTY_VALUE));
@@ -225,16 +225,11 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                             param.getDatatype());
                     list.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_IDENTIFIER));
                 }
-            } else if (!(datatype instanceof ValueDatatype)) {
-                String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_UnsupportedDatatype, datatype,
-                        identifier);
-                list.add(new Message(MSGCODE_FORMULA_PARAMETER_HAS_UNSUPPORTED_DATATYPE, text, Message.ERROR, this,
-                        PROPERTY_IDENTIFIER));
             } else {
                 // the datatype was found, check if the value is valid for the datatype
                 ValidationUtils.checkValue(datatype.getQualifiedName(), value, this, PROPERTY_VALUE, list);
             }
         }
     }
-    
+
 }

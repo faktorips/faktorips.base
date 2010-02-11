@@ -66,7 +66,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
-    protected ValueSet(ValueSetType type, IIpsObjectPart parent, int partId) {
+    protected ValueSet(ValueSetType type, IIpsObjectPart parent, String partId) {
         super(parent, partId);
         if (!(parent instanceof IValueSetOwner)) {
             super.parent = null;
@@ -92,7 +92,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
         if (StringUtils.isNotEmpty(abstractString)) {

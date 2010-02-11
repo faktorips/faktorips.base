@@ -63,7 +63,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
         Element element = range.toXml(newDocument());
-        assertEquals("1", element.getAttribute(IIpsObjectPart.PROPERTY_ID));
+        assertEquals(range.getId(), element.getAttribute(IIpsObjectPart.PROPERTY_ID));
         assertEquals(ColumnRange.TAG_NAME, element.getNodeName());
         assertEquals("twoColumn", element.getAttribute(IColumnRange.PROPERTY_RANGE_TYPE));
         assertEquals("ageFrom", element.getAttribute(IColumnRange.PROPERTY_FROM_COLUMN));
@@ -72,7 +72,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         range.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(42, range.getId());
+        assertEquals("42", range.getId());
         assertEquals(ColumnRangeType.TWO_COLUMN_RANGE, range.getColumnRangeType());
         assertEquals("ageFrom", range.getFromColumn());
         assertEquals("ageTo", range.getToColumn());

@@ -40,11 +40,11 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
     private String datatype = ""; //$NON-NLS-1$
 
-    public TestValueParameter(IIpsObject parent, int id) {
+    public TestValueParameter(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    public TestValueParameter(IIpsObjectPart parent, int id) {
+    public TestValueParameter(IIpsObjectPart parent, String id) {
         super(parent, id);
     }
 
@@ -86,7 +86,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         datatype = element.getAttribute(PROPERTY_VALUEDATATYPE);
     }
@@ -149,7 +149,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

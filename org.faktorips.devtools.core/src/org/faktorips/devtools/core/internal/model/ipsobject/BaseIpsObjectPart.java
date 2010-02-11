@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.w3c.dom.Element;
 
 /**
@@ -40,15 +40,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      * @param parent
      * @param id
      */
-    public BaseIpsObjectPart(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    /**
-     * @param parent
-     * @param id
-     */
-    public BaseIpsObjectPart(IIpsObjectPart parent, int id) {
+    public BaseIpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -79,7 +71,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
      * {@inheritDoc}
      */
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
