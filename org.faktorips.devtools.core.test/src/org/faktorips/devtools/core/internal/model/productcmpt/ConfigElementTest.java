@@ -425,7 +425,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = getTestDocument();
         configElement.initFromXml(doc.getDocumentElement());
-        assertEquals(42, configElement.getId());
+        assertEquals("42", configElement.getId());
         assertEquals("sumInsured", configElement.getPolicyCmptTypeAttribute());
         assertEquals("10", configElement.getValue());
         IRangeValueSet range = (IRangeValueSet)configElement.getValueSet();
