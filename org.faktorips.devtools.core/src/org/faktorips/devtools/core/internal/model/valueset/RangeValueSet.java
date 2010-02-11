@@ -56,14 +56,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Creates an unbounded range with no step.
      */
-    public RangeValueSet(IIpsObjectPart parent, int partId) {
+    public RangeValueSet(IIpsObjectPart parent, String partId) {
         this(parent, partId, null, null, null);
     }
 
     /**
      * Creates a range with the given bounds and and step.
      */
-    public RangeValueSet(IIpsObjectPart parent, int partId, String lower, String upper, String step) {
+    public RangeValueSet(IIpsObjectPart parent, String partId, String lower, String upper, String step) {
         super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
@@ -492,7 +492,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
         if (el.hasAttribute(PROPERTY_LOWERBOUND)) {
@@ -531,7 +531,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         element.appendChild(tagElement);
     }
 
-    public IValueSet copy(IIpsObjectPart parent, int id) {
+    public IValueSet copy(IIpsObjectPart parent, String id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
 
         retValue.lowerBound = lowerBound;
