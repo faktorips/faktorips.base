@@ -34,7 +34,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     private GregorianCalendar validFrom;
 
-    public IpsObjectGeneration(ITimedIpsObject ipsObject, int id) {
+    public IpsObjectGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
     }
 
@@ -111,7 +111,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         validFrom = XmlUtil.parseXmlDateStringToGregorianCalendar(element.getAttribute(PROPERTY_VALID_FROM));
     }
@@ -123,9 +123,9 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     public void initFromGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
-        int id = getId();
+        String id = getId();
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-        this.initFromXml(source.toXml(doc), new Integer(id));
+        this.initFromXml(source.toXml(doc), id);
         this.validFrom = validFrom;
         // note: do not call event triggering methods here (e.g. partWasEdited, objectHasChanged)
     }
