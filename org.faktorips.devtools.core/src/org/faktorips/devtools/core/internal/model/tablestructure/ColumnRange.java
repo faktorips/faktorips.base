@@ -43,7 +43,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     private ColumnRangeType rangeType = ColumnRangeType.TWO_COLUMN_RANGE;
     private String parameterName = ""; //$NON-NLS-1$
 
-    public ColumnRange(TableStructure parent, int id) {
+    public ColumnRange(TableStructure parent, String id) {
         super(parent, id);
     }
 
@@ -193,7 +193,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         rangeType = ColumnRangeType.getValueById(element.getAttribute(PROPERTY_RANGE_TYPE));
         from = element.getAttribute(PROPERTY_FROM_COLUMN);
