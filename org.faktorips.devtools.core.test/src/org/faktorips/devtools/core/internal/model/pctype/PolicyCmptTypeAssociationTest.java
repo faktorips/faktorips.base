@@ -322,7 +322,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = getTestDocument();
         association.initFromXml(doc.getDocumentElement());
-        assertEquals(42, association.getId());
+        assertEquals("42", association.getId());
         assertEquals(AssociationType.ASSOCIATION, association.getAssociationType());
         assertTrue(association.isDerivedUnion());
         assertTrue(association.isQualified());
