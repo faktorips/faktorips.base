@@ -182,7 +182,7 @@ public interface IValueSet extends IIpsObjectPart {
      * Creates a copy of this value set (type and values, parent and id are set to the given
      * values).
      */
-    public IValueSet copy(IIpsObjectPart newParent, int id);
+    public IValueSet copy(IIpsObjectPart newParent, String id);
 
     /**
      * Copies all values including the abstract-flag -if applicable- (but not the parent or the id)
