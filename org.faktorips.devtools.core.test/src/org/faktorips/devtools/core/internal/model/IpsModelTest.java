@@ -607,6 +607,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         counter = 0;
         while (!status || counter > 200) {
             status = !model.isCached(pcType.getIpsSrcFile());
+            counter++;
         }
 
         assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
