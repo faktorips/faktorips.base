@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.List;
-
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -331,8 +329,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             return new Object[0];
         }
 
-        List selected = ((IStructuredSelection)selection).toList();
-        return selected.toArray();
+        return ((IStructuredSelection)selection).toArray();
     }
 
     // ---- Button bar
