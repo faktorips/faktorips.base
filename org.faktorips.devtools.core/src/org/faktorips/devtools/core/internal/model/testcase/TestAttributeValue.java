@@ -62,12 +62,12 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
     private String value = ""; //$NON-NLS-1$
 
-    public TestAttributeValue(IIpsObject parent, int id) {
+    public TestAttributeValue(IIpsObject parent, String id) {
         super(parent, id);
         descriptionChangable = false;
     }
 
-    public TestAttributeValue(IIpsObjectPart parent, int id) {
+    public TestAttributeValue(IIpsObjectPart parent, String id) {
         super(parent, id);
         descriptionChangable = false;
     }
@@ -152,7 +152,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testAttribute = element.getAttribute(PROPERTY_ATTRIBUTE);
         // PROPERTY_VALUE is not used because the first character must be upper case
