@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,7 +31,7 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
 
     private String datatype = Datatype.BOOLEAN.getQualifiedName();
 
-    public DecisionBFE(IIpsObject parent, int id) {
+    public DecisionBFE(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -47,7 +47,7 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
 
     @Override
     public String getDisplayString() {
-        if(getType().equals(BFElementType.DECISION)){
+        if (getType().equals(BFElementType.DECISION)) {
             return getName();
         }
         return super.getDisplayString();
@@ -57,13 +57,13 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
      * {@inheritDoc}
      */
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
-        if(getType().equals(BFElementType.DECISION_METHODCALL)){
+        if (getType().equals(BFElementType.DECISION_METHODCALL)) {
             IMethod method = findMethod(ipsProject);
-            if(method == null){
+            if (method == null) {
                 return null;
             }
             Datatype datatype = method.findDatatype(ipsProject);
-            if(datatype.isValueDatatype()){
+            if (datatype.isValueDatatype()) {
                 return (ValueDatatype)datatype;
             }
             return null;
@@ -74,7 +74,8 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
     /**
      * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
     }
@@ -82,6 +83,7 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
@@ -94,28 +96,30 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        if(getType().equals(BFElementType.DECISION_METHODCALL)){
+        if (getType().equals(BFElementType.DECISION_METHODCALL)) {
             validateMethodCall(list, ipsProject);
             return;
         }
         super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
-            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.getString("DecisionBFE.datatypeNotSpecified"), Message.ERROR, //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED,
+                    Messages.getString("DecisionBFE.datatypeNotSpecified"), Message.ERROR, //$NON-NLS-1$
                     this));
             return;
         }
         // datatype exists
         Datatype datatype = findDatatype(ipsProject);
         if (datatype == null) {
-            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages.getString("DecisionBFE.datatypeDoesNotExist"), //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages
+                    .getString("DecisionBFE.datatypeDoesNotExist"), //$NON-NLS-1$
                     Message.ERROR, this));
             return;
         }
         // datatype only none primitive valuedatatype
         if (!datatype.isValueDatatype() || datatype.isPrimitive()) {
-            list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE,
-                    Messages.getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE, Messages
+                    .getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
         }
     }
 }
