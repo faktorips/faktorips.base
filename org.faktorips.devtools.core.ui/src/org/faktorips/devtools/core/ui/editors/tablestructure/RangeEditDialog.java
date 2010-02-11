@@ -261,7 +261,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             public Object[] getElements(Object inputElement) {
                 IColumn[] columns = range.getTableStructure().getColumns();
-                ArrayList result = new ArrayList();
+                ArrayList<IColumn> result = new ArrayList<IColumn>();
                 for (int i = 0; i < columns.length; i++) {
                     if (!columns[i].getDatatype().equals(Datatype.BOOLEAN.getName())) {
                         result.add(columns[i]);
