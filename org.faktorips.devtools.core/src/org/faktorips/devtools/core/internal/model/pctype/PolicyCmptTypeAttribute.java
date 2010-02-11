@@ -66,7 +66,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * @param pcType The type the attribute belongs to.
      * @param id The attribute's unique id within the type.
      */
-    public PolicyCmptTypeAttribute(PolicyCmptType pcType, int id) {
+    public PolicyCmptTypeAttribute(PolicyCmptType pcType, String id) {
         super(pcType, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
@@ -269,7 +269,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
@@ -296,7 +296,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
@@ -317,7 +317,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         try {
             // TODO v2 - signature getValueDatatype() is wrong
             Datatype type = findDatatype(getIpsProject());
-            if (type instanceof ValueDatatype) {
+            if (type != null) {
                 return (ValueDatatype)type;
             }
         } catch (CoreException e) {
