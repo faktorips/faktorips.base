@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,21 +26,21 @@ import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
- * NOTE: This class is a copy of the corresponding internal Eclipse class.
- * It is copied as the class' package has changed from Eclipse version 3.2 to 3.3.
+ * NOTE: This class is a copy of the corresponding internal Eclipse class. It is copied as the
+ * class' package has changed from Eclipse version 3.2 to 3.3.
  */
-public class HTMLTextPresenter implements DefaultInformationControl.IInformationPresenter, DefaultInformationControl.IInformationPresenterExtension {
+public class HTMLTextPresenter implements DefaultInformationControl.IInformationPresenter,
+        DefaultInformationControl.IInformationPresenterExtension {
 
-    private static final String LINE_DELIM= System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String LINE_DELIM = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private int fCounter;
     private boolean fEnforceUpperLineLimit;
 
     public HTMLTextPresenter(boolean enforceUpperLineLimit) {
         super();
-        fEnforceUpperLineLimit= enforceUpperLineLimit;
+        fEnforceUpperLineLimit = enforceUpperLineLimit;
     }
 
     public HTMLTextPresenter() {
@@ -53,107 +53,127 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
     protected void adaptTextPresentation(TextPresentation presentation, int offset, int insertLength) {
 
-        int yoursStart= offset;
-        int yoursEnd=   offset + insertLength -1;
-        yoursEnd= Math.max(yoursStart, yoursEnd);
+        int yoursStart = offset;
+        int yoursEnd = offset + insertLength - 1;
+        yoursEnd = Math.max(yoursStart, yoursEnd);
 
-        Iterator e= presentation.getAllStyleRangeIterator();
+        Iterator<?> e = presentation.getAllStyleRangeIterator();
         while (e.hasNext()) {
 
-            StyleRange range= (StyleRange) e.next();
+            StyleRange range = (StyleRange)e.next();
 
-            int myStart= range.start;
-            int myEnd=   range.start + range.length -1;
-            myEnd= Math.max(myStart, myEnd);
+            int myStart = range.start;
+            int myEnd = range.start + range.length - 1;
+            myEnd = Math.max(myStart, myEnd);
 
-            if (myEnd < yoursStart)
+            if (myEnd < yoursStart) {
                 continue;
+            }
 
-            if (myStart < yoursStart)
+            if (myStart < yoursStart) {
                 range.length += insertLength;
-            else
+            } else {
                 range.start += insertLength;
+            }
         }
     }
 
     private void append(StringBuffer buffer, String string, TextPresentation presentation) {
 
-        int length= string.length();
+        int length = string.length();
         buffer.append(string);
 
-        if (presentation != null)
+        if (presentation != null) {
             adaptTextPresentation(presentation, fCounter, length);
+        }
 
         fCounter += length;
     }
 
     private String getIndent(String line) {
-        int length= line.length();
+        int length = line.length();
 
-        int i= 0;
-        while (i < length && Character.isWhitespace(line.charAt(i))) ++i;
+        int i = 0;
+        while (i < length && Character.isWhitespace(line.charAt(i))) {
+            ++i;
+        }
 
         return (i == length ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
     }
 
     /*
-     * @see IHoverInformationPresenter#updatePresentation(Display display, String, TextPresentation, int, int)
+     * @see IHoverInformationPresenter#updatePresentation(Display display, String, TextPresentation,
+     * int, int)
      */
-    public String updatePresentation(Display display, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
+    public String updatePresentation(Display display,
+            String hoverInfo,
+            TextPresentation presentation,
+            int maxWidth,
+            int maxHeight) {
         return updatePresentation((Drawable)display, hoverInfo, presentation, maxWidth, maxHeight);
     }
 
     /*
-     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable, String, TextPresentation, int, int)
+     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable, String,
+     * TextPresentation, int, int)
+     * 
      * @since 3.2
      */
-    public String updatePresentation(Drawable drawable, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
+    public String updatePresentation(Drawable drawable,
+            String hoverInfo,
+            TextPresentation presentation,
+            int maxWidth,
+            int maxHeight) {
 
-        if (hoverInfo == null)
+        if (hoverInfo == null) {
             return null;
+        }
 
-        GC gc= new GC(drawable);
+        GC gc = new GC(drawable);
         try {
 
-            StringBuffer buffer= new StringBuffer();
-            int maxNumberOfLines= Math.round(maxHeight / gc.getFontMetrics().getHeight());
+            StringBuffer buffer = new StringBuffer();
+            int maxNumberOfLines = Math.round(maxHeight / gc.getFontMetrics().getHeight());
 
-            fCounter= 0;
-            LineBreakingReader reader= new LineBreakingReader(createReader(hoverInfo, presentation), gc, maxWidth);
+            fCounter = 0;
+            LineBreakingReader reader = new LineBreakingReader(createReader(hoverInfo, presentation), gc, maxWidth);
 
-            boolean lastLineFormatted= false;
-            String lastLineIndent= null;
+            boolean lastLineFormatted = false;
+            String lastLineIndent = null;
 
-            String line=reader.readLine();
-            boolean lineFormatted= reader.isFormattedLine();
-            boolean firstLineProcessed= false;
+            String line = reader.readLine();
+            boolean lineFormatted = reader.isFormattedLine();
+            boolean firstLineProcessed = false;
 
             while (line != null) {
 
-                if (fEnforceUpperLineLimit && maxNumberOfLines <= 0)
+                if (fEnforceUpperLineLimit && maxNumberOfLines <= 0) {
                     break;
+                }
 
                 if (firstLineProcessed) {
-                    if (!lastLineFormatted)
+                    if (!lastLineFormatted) {
                         append(buffer, LINE_DELIM, null);
-                    else {
+                    } else {
                         append(buffer, LINE_DELIM, presentation);
-                        if (lastLineIndent != null)
+                        if (lastLineIndent != null) {
                             append(buffer, lastLineIndent, presentation);
+                        }
                     }
                 }
 
                 append(buffer, line, null);
-                firstLineProcessed= true;
+                firstLineProcessed = true;
 
-                lastLineFormatted= lineFormatted;
-                if (!lineFormatted)
-                    lastLineIndent= null;
-                else if (lastLineIndent == null)
-                    lastLineIndent= getIndent(line);
+                lastLineFormatted = lineFormatted;
+                if (!lineFormatted) {
+                    lastLineIndent = null;
+                } else if (lastLineIndent == null) {
+                    lastLineIndent = getIndent(line);
+                }
 
-                line= reader.readLine();
-                lineFormatted= reader.isFormattedLine();
+                line = reader.readLine();
+                lineFormatted = reader.isFormattedLine();
 
                 maxNumberOfLines--;
             }
@@ -175,27 +195,30 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
     private String trim(StringBuffer buffer, TextPresentation presentation) {
 
-        int length= buffer.length();
+        int length = buffer.length();
 
-        int end= length -1;
-        while (end >= 0 && Character.isWhitespace(buffer.charAt(end)))
-            -- end;
+        int end = length - 1;
+        while (end >= 0 && Character.isWhitespace(buffer.charAt(end))) {
+            --end;
+        }
 
-        if (end == -1)
+        if (end == -1) {
             return ""; //$NON-NLS-1$
+        }
 
-        if (end < length -1)
+        if (end < length - 1) {
             buffer.delete(end + 1, length);
-        else
-            end= length;
+        } else {
+            end = length;
+        }
 
-        int start= 0;
-        while (start < end && Character.isWhitespace(buffer.charAt(start)))
-            ++ start;
+        int start = 0;
+        while (start < end && Character.isWhitespace(buffer.charAt(start))) {
+            ++start;
+        }
 
         buffer.delete(0, start);
         presentation.setResultWindow(new Region(start, buffer.length()));
         return buffer.toString();
     }
 }
-

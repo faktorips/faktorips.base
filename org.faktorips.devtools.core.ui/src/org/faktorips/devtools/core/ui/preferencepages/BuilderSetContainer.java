@@ -80,7 +80,7 @@ public class BuilderSetContainer {
     private IIpsArtefactBuilderSetConfigModel builderSetConfigModel;
 
     // mapping of builderSetId -> builderSetConfigModel
-    private HashMap builderSetModels;
+    private HashMap<String, IIpsArtefactBuilderSetConfigModel> builderSetModels;
 
     // to detect changes made in dialog or outside of eclipse
     private long ipsprojectFileTimeStamp;
@@ -105,7 +105,7 @@ public class BuilderSetContainer {
         this.builderSetId = ipsProject.getProperties().getBuilderSetId();
         this.ipsProjectProperties = ipsProject.getProperties();
         this.builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
-        this.builderSetModels = new HashMap();
+        this.builderSetModels = new HashMap<String, IIpsArtefactBuilderSetConfigModel>();
         initializeTimeStamps();
     }
 
@@ -153,13 +153,13 @@ public class BuilderSetContainer {
         builderSetComboField = new ComboField(builderSetCombo);
         builderSetComboField.addChangeListener(adapter);
 
-        List builderSetInfos = getBuilderSetInfos(ipsProject);
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos(ipsProject);
         String[] builderSetLabels = new String[builderSetInfos.size()];
 
         // indices out of bounds are ignored in Combo.select()
         int currentBuilderSetIndex = -1;
         for (int i = 0; i < builderSetInfos.size(); i++) {
-            IIpsArtefactBuilderSetInfo info = (IIpsArtefactBuilderSetInfo)builderSetInfos.get(i);
+            IIpsArtefactBuilderSetInfo info = builderSetInfos.get(i);
             String builderSetId = info.getBuilderSetId();
             if (ipsProjectProperties.getBuilderSetId().equals(builderSetId)) {
                 currentBuilderSetIndex = i;
@@ -268,8 +268,8 @@ public class BuilderSetContainer {
     }
 
     private IpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
-        List builderSetInfos = getBuilderSetInfos(ipsProject);
-        for (Iterator iterator = builderSetInfos.iterator(); iterator.hasNext();) {
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos(ipsProject);
+        for (Iterator<IIpsArtefactBuilderSetInfo> iterator = builderSetInfos.iterator(); iterator.hasNext();) {
             IpsArtefactBuilderSetInfo info = (IpsArtefactBuilderSetInfo)iterator.next();
             if (builderSetId.equals(info.getBuilderSetId())) {
                 return info;
@@ -341,8 +341,8 @@ public class BuilderSetContainer {
         return buf.toString();
     }
 
-    private List getBuilderSetInfos(IIpsProject project) {
-        List builderSetInfos = new ArrayList();
+    private List<IIpsArtefactBuilderSetInfo> getBuilderSetInfos(IIpsProject project) {
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>();
 
         IIpsModel ipsModel = ipsProject.getIpsModel();
         IpsArtefactBuilderSetInfo.loadExtensions(Platform.getExtensionRegistry(), IpsPlugin.getDefault().getLog(),
@@ -435,7 +435,7 @@ public class BuilderSetContainer {
         }
 
         // restore old model if available, else create a new one
-        builderSetConfigModel = (IIpsArtefactBuilderSetConfigModel)builderSetModels.get(newBuilderSetId);
+        builderSetConfigModel = builderSetModels.get(newBuilderSetId);
         if (builderSetConfigModel == null) {
             IpsArtefactBuilderSetInfo info = getBuilderSetInfo(newBuilderSetId);
             builderSetConfigModel = info.createDefaultConfiguration(ipsProject);
