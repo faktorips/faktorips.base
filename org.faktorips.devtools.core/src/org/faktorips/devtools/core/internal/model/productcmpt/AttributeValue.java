@@ -44,12 +44,12 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     private String attribute = ""; //$NON-NLS-1$
     private String value = ""; //$NON-NLS-1$
 
-    public AttributeValue(IIpsObjectPart parent, int id) {
+    public AttributeValue(IIpsObjectPart parent, String id) {
         super(parent, id);
         descriptionChangable = false;
     }
 
-    public AttributeValue(IIpsObjectPart parent, int id, String attribute, String value) {
+    public AttributeValue(IIpsObjectPart parent, String id, String attribute, String value) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         descriptionChangable = false;
@@ -148,7 +148,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$

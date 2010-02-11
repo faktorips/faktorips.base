@@ -42,10 +42,10 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     private Dimension size = new Dimension(100, 60);
     BFElementType type;
 
-    private List<Integer> incommingControlFlows = new ArrayList<Integer>();
-    private List<Integer> outgoingControlFlows = new ArrayList<Integer>();
+    private List<String> incommingControlFlows = new ArrayList<String>();
+    private List<String> outgoingControlFlows = new ArrayList<String>();
 
-    public BFElement(IIpsObject parent, int id) {
+    public BFElement(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -80,7 +80,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         ArrayList<IControlFlow> inList = new ArrayList<IControlFlow>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
-            for (Integer id : incommingControlFlows) {
+            for (String id : incommingControlFlows) {
                 if (id.equals(controlFlow.getId())) {
                     inList.add(controlFlow);
                 }
@@ -97,7 +97,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     public boolean removeIncomingControlFlow(IControlFlow controlFlow) {
-        if (incommingControlFlows.remove((Integer)controlFlow.getId())) {
+        if (incommingControlFlows.remove(controlFlow.getId())) {
             objectHasChanged();
             controlFlow.setTarget(null);
             return true;
@@ -126,7 +126,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         ArrayList<IControlFlow> outList = new ArrayList<IControlFlow>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
-            for (Integer id : outgoingControlFlows) {
+            for (String id : outgoingControlFlows) {
                 if (id.equals(controlFlow.getId())) {
                     outList.add(controlFlow);
                 }
@@ -136,7 +136,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     public boolean removeOutgoingControlFlow(IControlFlow controlFlow) {
-        if (outgoingControlFlows.remove((Integer)controlFlow.getId())) {
+        if (outgoingControlFlows.remove(controlFlow.getId())) {
             objectHasChanged();
             controlFlow.setSource(null);
             return true;
@@ -181,7 +181,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         type = BFElementType.getType(element.getAttribute(PROPERTY_TYPE));
@@ -207,10 +207,10 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             String type = posElement.getAttribute("type"); //$NON-NLS-1$
             String controlFlowId = posElement.getAttribute("id"); //$NON-NLS-1$
             if (type.equals("in")) { //$NON-NLS-1$
-                incommingControlFlows.add(Integer.valueOf(controlFlowId));
+                incommingControlFlows.add(controlFlowId);
             }
             if (type.equals("out")) { //$NON-NLS-1$
-                outgoingControlFlows.add(Integer.valueOf(controlFlowId));
+                outgoingControlFlows.add(controlFlowId);
             }
         }
     }
@@ -232,14 +232,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         sizeEl.setAttribute("height", String.valueOf(getSize().height)); //$NON-NLS-1$
         element.appendChild(sizeEl);
 
-        for (Integer controlFlowId : outgoingControlFlows) {
+        for (String controlFlowId : outgoingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "out"); //$NON-NLS-1$ //$NON-NLS-2$
             controlFlowEl.setAttribute("id", String.valueOf(controlFlowId)); //$NON-NLS-1$
         }
 
-        for (Integer controlFlowId : incommingControlFlows) {
+        for (String controlFlowId : incommingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "in"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -253,7 +253,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 
