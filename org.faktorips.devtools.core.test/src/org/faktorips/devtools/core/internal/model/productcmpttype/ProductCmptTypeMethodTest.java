@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,91 +26,96 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
 public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
-    
+
     private IProductCmptType pcType;
     private IProductCmptTypeMethod method;
     private IIpsProject ipsProject;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         pcType = newProductCmptType(ipsProject, "Type");
         method = pcType.newProductCmptTypeMethod();
     }
-    
+
     public void testValidate_FormulaMustntBeAbstract() throws CoreException {
         method.setFormulaSignatureDefinition(true);
         method.setAbstract(true);
         MessageList result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
-        
+
         method.setAbstract(false);
         result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
-        
+
         method.setFormulaSignatureDefinition(false);
         method.setAbstract(true);
         result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
-        
+
         method.setAbstract(false);
         result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
     }
-    
+
     public void testValidate_FormulaNameIsMissing() throws CoreException {
         method.setFormulaSignatureDefinition(false);
         method.setFormulaName("someName");
         MessageList result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
-        
+
         method.setFormulaSignatureDefinition(true);
         result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
-        
+
         method.setFormulaName("");
         result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
-        
+
         method.setFormulaSignatureDefinition(false);
         result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
     }
-    
+
     public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreException {
         method.setDatatype("void");
         method.setFormulaSignatureDefinition(false);
         MessageList result = method.validate(method.getIpsProject());
-        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        assertNull(result
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
         result = method.validate(method.getIpsProject());
-        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
-        
+        assertNotNull(result
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+
         method.setFormulaSignatureDefinition(false);
         method.setDatatype(pcType.getQualifiedName());
         result = method.validate(method.getIpsProject());
-        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        assertNull(result
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
         result = method.validate(method.getIpsProject());
-        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
-        
+        assertNotNull(result
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+
         method.setDatatype("Integer");
         result = method.validate(method.getIpsProject());
-        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        assertNull(result
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
     }
-    
+
     public void testInitFromXml() {
-        Element docElement = this.getTestDocument().getDocumentElement();
+        Element docElement = getTestDocument().getDocumentElement();
         method.setFormulaSignatureDefinition(false);
         method.initFromXml(XmlUtil.getElement(docElement, "Method", 0));
         assertTrue(method.isFormulaSignatureDefinition());
         assertEquals("Premium", method.getFormulaName());
-        assertEquals(42, method.getId());
+        assertEquals("42", method.getId());
         assertEquals("calcPremium", method.getName());
         assertEquals("Money", method.getDatatype());
         assertEquals(Modifier.PUBLIC, method.getModifier());
@@ -136,15 +141,15 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         param1.setName("p1");
         param1.setDatatype("Money");
         method.setOverloadsFormula(true);
-        
-        Element element = method.toXml(this.newDocument());
-        
+
+        Element element = method.toXml(newDocument());
+
         IProductCmptTypeMethod copy = pcType.newProductCmptTypeMethod();
         copy.initFromXml(element);
         assertTrue(copy.isFormulaSignatureDefinition());
         assertEquals("Premium", copy.getFormulaName());
-        IParameter[] copyParams = copy.getParameters();  
-        assertEquals(1, copy.getId());
+        IParameter[] copyParams = copy.getParameters();
+        assertEquals(method.getId(), copy.getId());
         assertEquals("getAge", copy.getName());
         assertEquals("Decimal", copy.getDatatype());
         assertEquals(Modifier.PUBLIC, copy.getModifier());
@@ -156,8 +161,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("Money", copyParams[1].getDatatype());
         assertTrue(copy.isOverloadsFormula());
     }
-    
-    public void testFindOverloadedFormulaMethod() throws CoreException{
+
+    public void testFindOverloadedFormulaMethod() throws CoreException {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -167,7 +172,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         aMethod.setModifier(Modifier.PUBLIC);
         aMethod.newParameter(Datatype.STRING.toString(), "param1");
         aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
-        
+
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         bType.setSupertype(aType.getQualifiedName());
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
@@ -178,7 +183,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.setModifier(Modifier.PUBLIC);
         bMethod.newParameter(Datatype.STRING.toString(), "param1");
         bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
-        
+
         IProductCmptTypeMethod overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
         assertNull(overloadedFormulaMethod);
 
@@ -194,8 +199,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.setFormulaSignatureDefinition(false);
         assertNull(overloadedFormulaMethod);
     }
-    
-    public void testOverloadsFormula() throws CoreException{
+
+    public void testOverloadsFormula() throws CoreException {
 
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
@@ -212,8 +217,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.setOverloadsFormula(true);
         assertTrue(bMethod.isOverloadsFormula());
     }
-    
-    public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() throws CoreException{
+
+    public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() throws CoreException {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -223,7 +228,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         aMethod.setModifier(Modifier.PUBLIC);
         aMethod.newParameter(Datatype.STRING.toString(), "param1");
         aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
-        
+
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         bType.setSupertype(aType.getQualifiedName());
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
@@ -235,15 +240,16 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.newParameter(Datatype.STRING.toString(), "param1");
         bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
         bMethod.setOverloadsFormula(true);
-        
+
         MessageList msgList = bMethod.validate(ipsProject);
-        Message msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
+        Message msg = msgList
+                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
         assertNull(msg);
 
         aMethod.setFormulaName("formula2");
         msgList = bMethod.validate(ipsProject);
         msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
         assertNotNull(msg);
-        
+
     }
 }
