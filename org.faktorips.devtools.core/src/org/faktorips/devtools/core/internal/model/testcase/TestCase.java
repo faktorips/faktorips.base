@@ -112,7 +112,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (TestPolicyCmpt.TAG_NAME.equals(xmlTagName)) {
             return newTestPolicyCmptInternal(id);
@@ -133,7 +133,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testCaseType = element.getAttribute(PROPERTY_TEST_CASE_TYPE);
     }
@@ -836,7 +836,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Creates a new test policy component without updating the src file.
      */
-    private ITestPolicyCmpt newTestPolicyCmptInternal(int id) {
+    private ITestPolicyCmpt newTestPolicyCmptInternal(String id) {
         ITestPolicyCmpt p = new TestPolicyCmpt(this, id);
         testObjects.add(p);
         return p;
@@ -845,7 +845,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Creates a new test value without updating the src file.
      */
-    private ITestValue newTestValueInternal(int id) {
+    private ITestValue newTestValueInternal(String id) {
         ITestValue v = new TestValue(this, id);
         testObjects.add(v);
         return v;
@@ -854,7 +854,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Creates a new test rule without updating the src file.
      */
-    private ITestRule newTestRuleInternal(int id) {
+    private ITestRule newTestRuleInternal(String id) {
         ITestRule v = new TestRule(this, id);
         testObjects.add(v);
         return v;
