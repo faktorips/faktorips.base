@@ -76,16 +76,16 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
      */
     @Override
     protected void addFoundMatches(IIpsElement[] found) throws CoreException {
-        List combinedResult = combineResult(found);
+        List<Object> combinedResult = combineResult(found);
         Match[] resultMatches = new Match[combinedResult.size()];
         int idx = 0;
-        for (Iterator iter = combinedResult.iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = combinedResult.iterator(); iter.hasNext();) {
             Object foundElem = iter.next();
             Object[] combined = null;
             if (foundElem instanceof IIpsElement) {
                 combined = getDataForResult((IIpsElement)foundElem);
-            } else if (foundElem instanceof List) {
-                List foundElemList = (List)foundElem;
+            } else if (foundElem instanceof List<?>) {
+                List<?> foundElemList = (List<?>)foundElem;
                 if (foundElemList.size() == 0) {
                     throw new CoreException(new IpsStatus(
                             "Expected at least one product cmpt generation in the combined references list!"));
@@ -111,8 +111,8 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         result.addMatches(resultMatches);
     }
 
-    private void sortGenerationsInList(List foundElemList) {
-        Collections.sort(foundElemList, new Comparator() {
+    private void sortGenerationsInList(List<?> foundElemList) {
+        Collections.sort(foundElemList, new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof IIpsObjectGeneration && o2 instanceof IIpsObjectGeneration) {
                     IIpsObjectGeneration gen1 = (IIpsObjectGeneration)o1;
@@ -133,13 +133,13 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
      * list which will be returned. All other found elements will be added unchanged to the returned
      * list.
      */
-    private List combineResult(IIpsElement[] found) {
-        List combinedResult = new ArrayList();
-        List foundResult = Arrays.asList(found);
+    private List<Object> combineResult(IIpsElement[] found) {
+        List<Object> combinedResult = new ArrayList<Object>();
+        List<IIpsElement> foundResult = Arrays.asList(found);
         Collections.sort(foundResult, new ProductCmptGenerationComparator());
         IProductCmpt prevProductCmpt = null;
-        List combinedGenerations = new ArrayList();
-        for (Iterator iter = foundResult.iterator(); iter.hasNext();) {
+        List<Object> combinedGenerations = new ArrayList<Object>();
+        for (Iterator<IIpsElement> iter = foundResult.iterator(); iter.hasNext();) {
             Object element = iter.next();
             if (element instanceof IProductCmptGeneration) {
                 IProductCmptGeneration currGeneration = (IProductCmptGeneration)element;
@@ -149,7 +149,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
                 } else {
                     if (combinedGenerations.size() > 0) {
                         combinedResult.add(combinedGenerations);
-                        combinedGenerations = new ArrayList();
+                        combinedGenerations = new ArrayList<Object>();
                     }
                     combinedGenerations.add(element);
                     prevProductCmpt = currProductCmpt;
@@ -167,8 +167,8 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         return combinedResult;
     }
 
-    private class ProductCmptGenerationComparator implements Comparator<IProductCmptGeneration> {
-        public int compare(IProductCmptGeneration o1, IProductCmptGeneration o2) {
+    private class ProductCmptGenerationComparator implements Comparator<IIpsElement> {
+        public int compare(IIpsElement o1, IIpsElement o2) {
             if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
                 return ((IProductCmptGeneration)o1).getProductCmpt().getQualifiedName().compareTo(
                         ((IProductCmptGeneration)o2).getProductCmpt().getQualifiedName());

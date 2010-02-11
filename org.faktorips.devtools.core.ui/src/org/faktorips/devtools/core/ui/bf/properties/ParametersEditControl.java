@@ -497,7 +497,7 @@ public class ParametersEditControl extends Composite {
         DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
         SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
-        ContentAssistHandler handler = ContentAssistHandler.createHandlerForText(text, contentAssistant);
+        ContentAssistHandler.createHandlerForText(text, contentAssistant);
         return contentAssistant;
     }
 

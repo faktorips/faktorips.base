@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,44 +27,47 @@ import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * Viewer filter for IPS archives
+ * 
  * @author Roman Grutza
  */
 public class IpsarViewerFilter extends ViewerFilter {
 
-    private List excluded;
+    private List<IPath> excluded;
     private boolean recursive;
 
-    
     /**
      * @param alreadyRefArchives
      * @param recursive
      */
-    public IpsarViewerFilter(List excluded, boolean recursive) {
-        this.excluded  = excluded;
+    public IpsarViewerFilter(List<IPath> excluded, boolean recursive) {
+        this.excluded = excluded;
         this.recursive = recursive;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        
+
         if (element instanceof IFile) {
-            if (excluded != null && excluded.contains(element))
+            if (excluded != null && excluded.contains(element)) {
                 return false;
-            return isArchiveFile(((IFile) element).getFullPath());
+            }
+            return isArchiveFile(((IFile)element).getFullPath());
         } else if (element instanceof IContainer) { // IProject, IFolder
             if (!recursive) {
                 return true;
             }
             // Ignore closed projects
-            if (element instanceof IProject && !((IProject)element).isOpen())
+            if (element instanceof IProject && !((IProject)element).isOpen()) {
                 return false;
+            }
 
             try {
-                IResource[]resources = ((IContainer)element).members();
+                IResource[] resources = ((IContainer)element).members();
                 // recursive! Only show containers that contain an archive
-                for (int i= 0; i < resources.length; i++) {
+                for (int i = 0; i < resources.length; i++) {
                     if (select(viewer, parentElement, resources[i])) {
                         return true;
                     }
@@ -76,14 +79,13 @@ public class IpsarViewerFilter extends ViewerFilter {
         return false;
     }
 
-
     private boolean isArchiveFile(IPath fullPath) {
         boolean isArchive;
-        
+
         String fileExtension = fullPath.getFileExtension();
         isArchive = (fileExtension != null)
-            && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+                && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         return isArchive;
     }
 
