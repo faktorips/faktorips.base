@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.w3c.dom.Element;
 
 /**
@@ -25,11 +25,7 @@ import org.w3c.dom.Element;
  */
 public abstract class AtomicIpsObjectPart extends IpsObjectPart {
 
-    public AtomicIpsObjectPart(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public AtomicIpsObjectPart(IIpsObjectPart parent, int id) {
+    public AtomicIpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -58,7 +54,7 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
      * {@inheritDoc}
      */
     @Override
-    protected final IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         // Contract is to return null, not to throw an Exception!
         return null;
     }
