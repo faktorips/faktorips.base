@@ -62,7 +62,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     private int maxCardinality = 1;
 
-    public ProductCmptLink(IProductCmptGeneration generation, int id) {
+    public ProductCmptLink(IProductCmptGeneration generation, String id) {
         super(generation, id);
     }
 
@@ -235,7 +235,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         association = element.getAttribute(PROPERTY_ASSOCIATION);
         target = element.getAttribute(PROPERTY_TARGET);
