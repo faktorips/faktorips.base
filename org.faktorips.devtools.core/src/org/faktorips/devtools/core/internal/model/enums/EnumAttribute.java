@@ -70,7 +70,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * @param parent The <tt>IEnumType</tt> this <tt>IEnumAttribute</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttribute</tt>.
      */
-    public EnumAttribute(IEnumType parent, int id) {
+    public EnumAttribute(IEnumType parent, String id) {
         super(parent, id);
 
         datatype = ""; //$NON-NLS-1$
@@ -103,7 +103,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    protected void initFromXml(Element element, Integer id) {
+    protected void initFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         unique = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE));

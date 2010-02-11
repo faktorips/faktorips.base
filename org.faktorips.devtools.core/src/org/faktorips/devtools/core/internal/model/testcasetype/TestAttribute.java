@@ -56,11 +56,11 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     private TestParameterType type = TestParameterType.COMBINED;
 
-    public TestAttribute(IIpsObject parent, int id) {
+    public TestAttribute(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    public TestAttribute(IIpsObjectPart parent, int id) {
+    public TestAttribute(IIpsObjectPart parent, String id) {
         super(parent, id);
     }
 
@@ -187,7 +187,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
