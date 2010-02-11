@@ -50,7 +50,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
-    private ArrayList visibleProperties = new ArrayList(10);
+    private ArrayList<String> visibleProperties = new ArrayList<String>(10);
 
     protected IPolicyCmptTypeAssociation association;
 
@@ -301,7 +301,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     /**
      * {@inheritDoc}
      */
-    public List getProperties() {
+    public List<String> getProperties() {
         return visibleProperties;
     }
 
