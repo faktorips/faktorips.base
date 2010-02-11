@@ -90,7 +90,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (TestPolicyCmptTypeParameter.TAG_NAME.equals(xmlTagName)) {
             return newTestPolicyCmptTypeParameterInternal(id);
@@ -383,7 +383,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Creates a new test policy component type parameter without updating the src file.
      */
-    private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParameterInternal(int id) {
+    private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParameterInternal(String id) {
         TestPolicyCmptTypeParameter p = new TestPolicyCmptTypeParameter(this, id);
         testParameters.add(p);
         return p;
@@ -392,7 +392,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Creates a new test value parameter without updating the src file.
      */
-    private TestValueParameter newTestValueParameterInternal(int id) {
+    private TestValueParameter newTestValueParameterInternal(String id) {
         TestValueParameter p = new TestValueParameter(this, id);
         testParameters.add(p);
         return p;
@@ -401,7 +401,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Creates a new test rule parameter without updating the src file.
      */
-    private TestRuleParameter newTestRuleParameterInternal(int id) {
+    private TestRuleParameter newTestRuleParameterInternal(String id) {
         TestRuleParameter p = new TestRuleParameter(this, id);
         testParameters.add(p);
         return p;
