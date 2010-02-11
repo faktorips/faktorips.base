@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
@@ -41,11 +41,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
 
     public abstract boolean isRoot();
 
-    public TestObject(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TestObject(IIpsObjectPart parent, int id) {
+    public TestObject(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
