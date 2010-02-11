@@ -38,7 +38,7 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
      * @param parent The <tt>IEnumContent</tt> this <tt>IEnumAttributeReference</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumAttributeReference</tt>.
      */
-    public EnumAttributeReference(IEnumContent parent, int id) {
+    public EnumAttributeReference(IEnumContent parent, String id) {
         super(parent, id);
     }
 

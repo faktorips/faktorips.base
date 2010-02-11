@@ -318,6 +318,12 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
      */
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
         return obj.getClass().isAssignableFrom(this.getClass());
     }
 
