@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
@@ -234,7 +235,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
                 }
             }
 
-            if (part.getDescription() != null && part.getDescription().trim() != "") {
+            if (part.getDescription() != null && !StringUtils.isEmpty(part.getDescription().trim())) {
                 setMessage(part.getDescription(), IMessageProvider.INFORMATION);
             } else {
                 setMessage(null);

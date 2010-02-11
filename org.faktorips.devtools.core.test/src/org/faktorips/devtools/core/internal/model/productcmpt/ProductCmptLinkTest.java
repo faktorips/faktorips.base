@@ -45,6 +45,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -91,7 +92,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
         IProductCmptLink copy = new ProductCmptLink();
         copy.initFromXml(element);
-        assertEquals(1, copy.getId());
+        assertEquals(link.getId(), copy.getId());
         assertEquals("newTarget", copy.getTarget());
         assertEquals("coverage", copy.getAssociation());
         assertEquals(2, copy.getMinCardinality());
@@ -106,7 +107,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         link.initFromXml((Element)getTestDocument().getDocumentElement()
                 .getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
-        assertEquals(42, link.getId());
+        assertEquals("42", link.getId());
         assertEquals("FullCoverage", link.getAssociation());
         assertEquals("FullCoveragePlus", link.getTarget());
         assertEquals(2, link.getMinCardinality());
@@ -114,7 +115,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
         link.initFromXml((Element)getTestDocument().getDocumentElement()
                 .getElementsByTagName(IProductCmptLink.TAG_NAME).item(1));
-        assertEquals(43, link.getId());
+        assertEquals("43", link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
     }
