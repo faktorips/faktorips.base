@@ -19,8 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -62,12 +61,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
     private String value = ""; //$NON-NLS-1$
 
-    public TestAttributeValue(IIpsObject parent, String id) {
-        super(parent, id);
-        descriptionChangable = false;
-    }
-
-    public TestAttributeValue(IIpsObjectPart parent, String id) {
+    public TestAttributeValue(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
         descriptionChangable = false;
     }

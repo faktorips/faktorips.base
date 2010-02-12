@@ -21,9 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -69,11 +69,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     private int maxInstances = 1;
 
-    public TestPolicyCmptTypeParameter(IIpsObject parent, String id) {
-        super(parent, id);
-    }
-
-    public TestPolicyCmptTypeParameter(IIpsObjectPart parent, String id) {
+    public TestPolicyCmptTypeParameter(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 

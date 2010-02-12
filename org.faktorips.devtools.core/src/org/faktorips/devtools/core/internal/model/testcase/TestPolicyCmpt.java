@@ -26,8 +26,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -72,11 +72,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     private List<ITestPolicyCmptLink> testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>(0);
 
-    public TestPolicyCmpt(IIpsObject parent, String id) {
-        super(parent, id);
-    }
-
-    public TestPolicyCmpt(IIpsObjectPart parent, String id) {
+    public TestPolicyCmpt(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
