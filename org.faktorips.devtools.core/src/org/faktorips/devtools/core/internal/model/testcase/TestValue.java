@@ -19,8 +19,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -48,11 +48,7 @@ public class TestValue extends TestObject implements ITestValue {
 
     private String value = ""; //$NON-NLS-1$
 
-    public TestValue(IIpsObject parent, String id) {
-        super(parent, id);
-    }
-
-    public TestValue(IIpsObjectPart parent, String id) {
+    public TestValue(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
