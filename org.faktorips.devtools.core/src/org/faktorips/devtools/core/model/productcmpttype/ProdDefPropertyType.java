@@ -13,11 +13,6 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
-
 /**
  * Enumeration that specifies the different (sub)types of product definition properties.
  * 
@@ -25,64 +20,39 @@ import org.faktorips.devtools.core.enums.EnumType;
  * 
  * @author Jan Ortmann
  */
-public class ProdDefPropertyType extends DefaultEnumValue {
+public enum ProdDefPropertyType {
 
     /**
      * The product definition property is an attribute of a product component type.
      */
-    public final static ProdDefPropertyType VALUE;
+    VALUE("attribute", Messages.ProdDefPropertyType_productAttribute),
 
-    public final static ProdDefPropertyType FORMULA;
+    TABLE_CONTENT_USAGE("tableContentUsage", Messages.ProdDefPropertyType_tableUsage),
 
-    public final static ProdDefPropertyType TABLE_CONTENT_USAGE;
+    FORMULA("formula", Messages.ProdDefPropertyType_fomula),
 
-    public final static ProdDefPropertyType DEFAULT_VALUE_AND_VALUESET;
+    DEFAULT_VALUE_AND_VALUESET("config", Messages.ProdDefPropertyType_defaultValueAndValueSet);
 
-    public final static int MAX_SORT_ORDER = 40;
+    private final String name;
+    private final String id;
 
-    public final static DefaultEnumType enumType;
-
-    public final static ProdDefPropertyType[] ALL_TYPES;
-
-    static {
-        enumType = new DefaultEnumType("ProdDefPropertyType", ProdDefPropertyType.class); //$NON-NLS-1$
-        VALUE = new ProdDefPropertyType(enumType, "attribute", Messages.ProdDefPropertyType_productAttribute, 10); //$NON-NLS-1$ 
-        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType,
-                "tableContentUsage", Messages.ProdDefPropertyType_tableUsage, 20); //$NON-NLS-1$ 
-        FORMULA = new ProdDefPropertyType(enumType, "formula", Messages.ProdDefPropertyType_fomula, 30); //$NON-NLS-1$ 
-        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType,
-                "config", Messages.ProdDefPropertyType_defaultValueAndValueSet, MAX_SORT_ORDER); //$NON-NLS-1$ 
-
-        ALL_TYPES = new ProdDefPropertyType[] { VALUE, TABLE_CONTENT_USAGE, FORMULA, DEFAULT_VALUE_AND_VALUESET };
-    }
-
-    public final static EnumType getEnumType() {
-        return enumType;
-    }
-
-    private int sortOrder;
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    private ProdDefPropertyType(DefaultEnumType type, String id, String name, int sortOrder) {
-        super(type, id, name);
-        this.sortOrder = sortOrder;
+    private ProdDefPropertyType(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     /**
-     * {@inheritDoc}
+     * @return Returns the name.
      */
-    @Override
-    public int compareTo(Object o) {
-        ProdDefPropertyType otherType = (ProdDefPropertyType)o;
-        return sortOrder - otherType.sortOrder;
+    public String getName() {
+        return name;
     }
 
-    public Image getImage() {
-        return null;
-
+    /**
+     * @return Returns the id.
+     */
+    public String getId() {
+        return id;
     }
 
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,21 +35,23 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescrip
 import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 
 /**
- * A page for presenting the properties of a {@link IProductCmptType}. This page is
- * connected to a {@link ProductCmptEditor} similiar to the outline view.
- *
+ * A page for presenting the properties of a {@link IProductCmptType}. This page is connected to a
+ * {@link ProductCmptEditor} similiar to the outline view.
+ * 
  * @author Markus Blum
  */
 
-public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage implements IActiveGenerationChangedListener, ContentsChangeListener {
+public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage implements
+        IActiveGenerationChangedListener, ContentsChangeListener {
 
     private ProductCmptEditor editor;
     private PropertyValueComparator valueComparator;
 
     public ProductCmptModelDescriptionPage(ProductCmptEditor editor) throws CoreException {
-    	super();
+        super();
         this.editor = editor;
-        valueComparator = new PropertyValueComparator(editor.getProductCmpt().getProductCmptType(), editor.getIpsProject());
+        valueComparator = new PropertyValueComparator(editor.getProductCmpt().getProductCmptType(), editor
+                .getIpsProject());
         editor.addListener(this);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData(editor.getActiveGeneration());
@@ -68,14 +70,13 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
 
     /**
      * Set the current data in DefaultModelDescriptionPage.
-     *
+     * 
      * Set the page title to {@link IProductCmpt name}.
-     *
-     * Create the {@link DescriptionItem}s from attributes of the {@link ProductCmptGeneration} and sort the List in this order:
-     * - const. attributes
-     * - tables and derived attributes
-     * - attributes with range values
-     *
+     * 
+     * Create the {@link DescriptionItem}s from attributes of the {@link ProductCmptGeneration} and
+     * sort the List in this order: - const. attributes - tables and derived attributes - attributes
+     * with range values
+     * 
      * @param generation the active {@link ProductCmptGeneration}
      * @throws CoreException
      */
@@ -84,29 +85,32 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         super.setTitle(prodCmptGen.getProductCmpt().getName());
 
         List<DescriptionItem> items = new ArrayList<DescriptionItem>();
-        for (int i=0; i<ProdDefPropertyType.ALL_TYPES.length; i++) {
-            createPropertyDescription(items, prodCmptGen, ProdDefPropertyType.ALL_TYPES[i]);
+        for (ProdDefPropertyType type : ProdDefPropertyType.values()) {
+            DescriptionItem descItem = new DescriptionItem(type.getName(), null);
+            createPropertyDescription(items, prodCmptGen, type);
         }
-        
+
         DescriptionItem[] itemDescs = items.toArray(new DescriptionItem[items.size()]);
         super.setDescriptionItems(itemDescs);
     }
 
     /**
      * Add description of used tables.
-     *
+     * 
      * @param descriptionsList List with the collected descriptions.
      * @param productCmptGen Get valid tables from {@link IProductCmptGeneration}.
      * 
      * @throws CoreException
      */
-    private void createPropertyDescription(List<DescriptionItem> descriptions, IProductCmptGeneration productCmptGen, ProdDefPropertyType propertyType) throws CoreException {
-        IPropertyValue[] values  = productCmptGen.getPropertyValues(propertyType);
+    private void createPropertyDescription(List<DescriptionItem> descriptions,
+            IProductCmptGeneration productCmptGen,
+            ProdDefPropertyType propertyType) throws CoreException {
+        IPropertyValue[] values = productCmptGen.getPropertyValues(propertyType);
         Arrays.sort(values, valueComparator);
         for (int i = 0; i < values.length; i++) {
             IProdDefProperty property = values[i].findProperty(productCmptGen.getIpsProject());
-            if (property != null ) {
-                DescriptionItem item = new DescriptionItem(values[i].getPropertyName() , property.getDescription());
+            if (property != null) {
+                DescriptionItem item = new DescriptionItem(values[i].getPropertyName(), property.getDescription());
                 descriptions.add(item);
             }
         }
@@ -115,6 +119,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         editor.removeListener(this);
@@ -129,4 +134,3 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     }
 
 }
-

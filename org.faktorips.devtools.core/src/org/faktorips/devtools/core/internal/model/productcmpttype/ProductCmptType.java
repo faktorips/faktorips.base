@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
@@ -217,9 +216,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
-        EnumValue[] types = ProdDefPropertyType.enumType.getValues();
+        ProdDefPropertyType[] types = ProdDefPropertyType.values();
         for (int i = 0; i < types.length; i++) {
-            IProdDefProperty prop = findProdDefProperty((ProdDefPropertyType)types[i], propName, ipsProject);
+            IProdDefProperty prop = findProdDefProperty(types[i], propName, ipsProject);
             if (prop != null) {
                 return prop;
             }

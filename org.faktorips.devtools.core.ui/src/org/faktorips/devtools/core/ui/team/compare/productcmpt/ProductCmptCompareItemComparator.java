@@ -50,9 +50,7 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
                     - ((IProductCmptGeneration)element2).getGenerationNo();
         }
         if ((element1 instanceof IPropertyValue) && (element2 instanceof IPropertyValue)) {
-            int first = ((IPropertyValue)element1).getPropertyType().getSortOrder();
-            int second = ((IPropertyValue)element2).getPropertyType().getSortOrder();
-            return first - second;
+            return ((IPropertyValue)element1).getPropertyType().compareTo(((IPropertyValue)element2).getPropertyType());
         }
         return 0;
     }
