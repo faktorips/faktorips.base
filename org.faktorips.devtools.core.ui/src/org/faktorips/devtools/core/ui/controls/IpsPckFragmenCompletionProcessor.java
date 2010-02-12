@@ -47,7 +47,7 @@ public class IpsPckFragmenCompletionProcessor extends AbstractCompletionProcesso
     /**
      * {@inheritDoc}
      */
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) throws Exception {
         IIpsPackageFragmentRoot ipsPckFragmentRoot = control.getIpsPckFragmentRoot();
 
         if (ipsPckFragmentRoot == null) {

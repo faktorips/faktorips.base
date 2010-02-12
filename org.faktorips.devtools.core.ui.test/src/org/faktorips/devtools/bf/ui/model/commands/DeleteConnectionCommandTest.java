@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,16 +26,17 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IBusinessFunction bf;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
-    
+
     public void testCanExecute() {
         IControlFlow cf = bf.newControlFlow();
-        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);
         assertTrue(command.canExecute());
     }
 
@@ -47,7 +48,7 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
         cf.setTarget(target);
         assertEquals(source, cf.getSource());
         assertEquals(target, cf.getTarget());
-        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);
         command.execute();
         assertNull(cf.getSource());
         assertNull(cf.getTarget());
@@ -58,22 +59,21 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
         IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
         IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
         IControlFlow cf = bf.newControlFlow();
-        int cfId = cf.getId();
+        String cfId = cf.getId();
         cf.setSource(source);
         cf.setTarget(target);
-        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);
         command.execute();
         assertNull(cf.getSource());
         assertNull(cf.getTarget());
         assertTrue(cf.isDeleted());
-        
+
         command.undo();
         cf = bf.getControlFlow(cfId);
         assertEquals(source, cf.getSource());
         assertEquals(target, cf.getTarget());
         assertFalse(cf.isDeleted());
-        
+
     }
-    
 
 }

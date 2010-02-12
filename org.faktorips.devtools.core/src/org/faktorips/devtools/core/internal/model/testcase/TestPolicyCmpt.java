@@ -26,8 +26,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -72,11 +72,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     private List<ITestPolicyCmptLink> testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>(0);
 
-    public TestPolicyCmpt(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TestPolicyCmpt(IIpsObjectPart parent, int id) {
+    public TestPolicyCmpt(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -122,7 +118,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TestAttributeValue.TAG_NAME)) {
             return newTestAttributeValueInternal(id);
@@ -199,7 +195,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         testPolicyCmptType = element.getAttribute(PROPERTY_TESTPOLICYCMPTTYPE);
@@ -225,7 +221,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * Creates a new test attribute without updating the src file.
      */
-    private TestAttributeValue newTestAttributeValueInternal(int id) {
+    private TestAttributeValue newTestAttributeValueInternal(String id) {
         TestAttributeValue a = new TestAttributeValue(this, id);
         testAttributeValues.add(a);
         return a;
@@ -291,7 +287,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * Creates a new test link without updating the src file.
      */
-    private TestPolicyCmptLink newTestPcTypeLinkInternal(int id) {
+    private TestPolicyCmptLink newTestPcTypeLinkInternal(String id) {
         TestPolicyCmptLink r = new TestPolicyCmptLink(this, id);
         testPolicyCmptLinks.add(r);
         return r;

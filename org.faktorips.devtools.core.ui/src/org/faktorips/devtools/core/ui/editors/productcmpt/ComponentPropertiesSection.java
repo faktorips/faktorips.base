@@ -70,7 +70,7 @@ public class ComponentPropertiesSection extends IpsSection {
     /**
      * List of controls displaying data (needed to enable/disable).
      */
-    private final List editControls = new ArrayList();
+    private final List<Text> editControls = new ArrayList<Text>();
 
     /**
      * Controller to handle update of ui and model automatically.

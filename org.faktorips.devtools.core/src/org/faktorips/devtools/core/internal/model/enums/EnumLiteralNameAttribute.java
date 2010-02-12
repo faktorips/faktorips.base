@@ -51,7 +51,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      * @param parent The <tt>IEnumType</tt> this <tt>IEnumLiteralNameAttribute</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumLiteralNameAttribute</tt>.
      */
-    public EnumLiteralNameAttribute(IEnumType parent, int id) {
+    public EnumLiteralNameAttribute(IEnumType parent, String id) {
         super(parent, id);
         defaultValueProviderAttribute = "";
     }

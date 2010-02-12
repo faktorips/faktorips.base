@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -333,8 +331,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             return new IParameter[0];
         }
 
-        List selected = ((IStructuredSelection)selection).toList();
-        return (IParameter[])selected.toArray(new IParameter[selected.size()]);
+        return (IParameter[])((IStructuredSelection)selection).toArray();
     }
 
     // ---- Button bar

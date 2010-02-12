@@ -58,10 +58,10 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
      * @throws RuntimeException if the method is called.
      * 
      * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(java.lang.String,
-     *      int)
+     *      String)
      */
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$
     }
 

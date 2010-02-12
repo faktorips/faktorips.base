@@ -81,7 +81,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) throws Exception {
         if (control == null && ipsProject == null) {
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgNoProject);
             return;

@@ -169,7 +169,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         aInSupertype.delete();
         assertNull(attribute.findOverwrittenAttribute(ipsProject)); // this should not return a
-                                                                    // itself!
+        // itself!
     }
 
     public void testRemove() {
@@ -195,7 +195,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         Element root = doc.getDocumentElement();
         NodeList nl = root.getElementsByTagName("Attribute");
         attribute.initFromXml((Element)nl.item(0));
-        assertEquals(42, attribute.getId());
+        assertEquals("42", attribute.getId());
         assertEquals("premium", attribute.getName());
         assertEquals("computePremium", attribute.getComputationMethodSignature());
         assertEquals("money", attribute.getDatatype());
@@ -206,7 +206,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertFalse(attribute.isOverwrite());
 
         attribute.initFromXml((Element)nl.item(1));
-        assertEquals(2, attribute.getId());
+        assertEquals("2", attribute.getId());
         assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertEquals(EnumValueSet.class, attribute.getValueSet().getClass());
@@ -220,7 +220,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
      */
     public void testToXml() {
         attribute = pcType.newPolicyCmptTypeAttribute(); // => id=1 as this is the type's 2
-                                                         // attribute
+        // attribute
         attribute.setName("age");
         attribute.setDatatype("decimal");
         attribute.setComputationMethodSignature("computePremium");
@@ -237,7 +237,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
-        assertEquals(1, copy.getId());
+        assertEquals(attribute.getId(), copy.getId());
         assertEquals("age", copy.getName());
         assertEquals("decimal", copy.getDatatype());
         assertEquals("computePremium", copy.getComputationMethodSignature());

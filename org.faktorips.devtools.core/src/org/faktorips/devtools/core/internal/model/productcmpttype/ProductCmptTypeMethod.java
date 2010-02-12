@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,9 +37,8 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     private boolean formulaSignatureDefinition = true;
     private String formulaName = ""; //$NON-NLS-1$
     private boolean overloadsFormula = false;
-    
-    
-    public ProductCmptTypeMethod(IProductCmptType parent, int id) {
+
+    public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
     }
 
@@ -65,7 +64,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaName = newName;
         valueChanged(oldName, newName);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -81,7 +80,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
             formulaName = ""; //$NON-NLS-1$
-            overloadsFormula = false; //$NON-NLS-1$
+            overloadsFormula = false;
         } else {
             setAbstract(false);
         }
@@ -92,30 +91,30 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      * {@inheritDoc}
      */
     public void setOverloadsFormula(boolean enabled) {
-        boolean oldValue = this.overloadsFormula;
-        this.overloadsFormula = enabled;
+        boolean oldValue = overloadsFormula;
+        overloadsFormula = enabled;
         valueChanged(oldValue, enabled);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isOverloadsFormula(){
-        return overloadsFormula; 
+    public boolean isOverloadsFormula() {
+        return overloadsFormula;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException{
-        if(!isOverloadsFormula()){
+    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException {
+        if (!isOverloadsFormula()) {
             return null;
         }
         FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
         finder.start(getProductCmptType().findSupertype(ipsProject));
         return finder.method;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -125,14 +124,17 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
         return ""; //$NON-NLS-1$
     }
-    
-    protected void initPropertiesFromXml(Element element, Integer id) {
+
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)).booleanValue();
+        formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
+                .booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA)).booleanValue();
     }
 
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
@@ -141,8 +143,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyName() {
         if (formulaSignatureDefinition) {
@@ -152,16 +153,14 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.FORMULA;
     }
 
     /**
-     * {@inheritDoc}
-     * Implementation of IProdDefProperty.
+     * {@inheritDoc} Implementation of IProdDefProperty.
      */
     public String getPropertyDatatype() {
         return getDatatype();
@@ -170,6 +169,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
         if (!isFormulaSignatureDefinition()) {
@@ -177,18 +177,22 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
         if (StringUtils.isEmpty(formulaName)) {
             String text = Messages.ProductCmptTypeMethod_FormulaNameIsMissing;
-            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this,
+                    IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
         }
         Datatype datatype = findDatatype(ipsProject);
-        if (datatype!=null) {
+        if (datatype != null) {
             if (datatype.isVoid() || !datatype.isValueDatatype()) {
                 String text = Messages.ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
-                result.add(new Message(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text, Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
+                result.add(new Message(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text,
+                        Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
             }
         }
         if (isAbstract()) {
             String text = Messages.ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
-            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR, this, IMethod.PROPERTY_ABSTRACT));
+            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR,
+                    this, IMethod.PROPERTY_ABSTRACT));
         }
         if (isFormulaSignatureDefinition() && isOverloadsFormula()) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
@@ -200,8 +204,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             }
         }
     }
-    
-    
+
     /*
      * Looks for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. It stops looking when the first formula method is found that meets this
@@ -210,20 +213,21 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     private class FormulaNameFinder extends ProductCmptTypeHierarchyVisitor {
 
         private IProductCmptTypeMethod method;
-        
+
         public FormulaNameFinder(IIpsProject ipsProject) {
             super(ipsProject);
         }
 
-        private boolean formulaNameFound(){
+        private boolean formulaNameFound() {
             return method != null;
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            if(StringUtils.isEmpty(formulaName) || currentType == null){
+            if (StringUtils.isEmpty(formulaName) || currentType == null) {
                 return false;
             }
             method = currentType.getFormulaSignature(formulaName);

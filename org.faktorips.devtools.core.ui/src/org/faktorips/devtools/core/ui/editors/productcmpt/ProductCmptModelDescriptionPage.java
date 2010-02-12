@@ -83,12 +83,12 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         IProductCmptGeneration prodCmptGen = (IProductCmptGeneration)generation;
         super.setTitle(prodCmptGen.getProductCmpt().getName());
 
-        List items = new ArrayList();
+        List<DescriptionItem> items = new ArrayList<DescriptionItem>();
         for (int i=0; i<ProdDefPropertyType.ALL_TYPES.length; i++) {
             createPropertyDescription(items, prodCmptGen, ProdDefPropertyType.ALL_TYPES[i]);
         }
         
-        DescriptionItem[] itemDescs = (DescriptionItem[]) items.toArray(new DescriptionItem[items.size()]);
+        DescriptionItem[] itemDescs = items.toArray(new DescriptionItem[items.size()]);
         super.setDescriptionItems(itemDescs);
     }
 
@@ -100,7 +100,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * 
      * @throws CoreException
      */
-    private void createPropertyDescription(List descriptions, IProductCmptGeneration productCmptGen, ProdDefPropertyType propertyType) throws CoreException {
+    private void createPropertyDescription(List<DescriptionItem> descriptions, IProductCmptGeneration productCmptGen, ProdDefPropertyType propertyType) throws CoreException {
         IPropertyValue[] values  = productCmptGen.getPropertyValues(propertyType);
         Arrays.sort(values, valueComparator);
         for (int i = 0; i < values.length; i++) {

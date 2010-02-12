@@ -56,7 +56,7 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
             return allTableContents;
         }
         String[] structures = structureUsage.getTableStructures();
-        List result = new ArrayList();
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         // search in all found table contents if the table structure is
         // a configurated table structures in the table structure usage
         for (int i = 0; i < structures.length; i++) {
@@ -68,6 +68,6 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
             }
         }
         
-        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 }

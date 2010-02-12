@@ -176,7 +176,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private TestCaseDetailArea testCaseDetailArea;
 
     // Previous selected entries in the tree to
-    private List<Object> prevTestObjects;
+    private List<ITestObject> prevTestObjects;
 
     // The form which contains this section
     private ScrolledForm form;
@@ -416,14 +416,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         public String getAttributeName() {
             return failureDetails[2];
-        }
-
-        public String getExpectedValue() {
-            return failureDetails[3];
-        }
-
-        public String getMessage() {
-            return failureDetails[5];
         }
 
         public String getObjectName() {
@@ -1049,7 +1041,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         createDetailAreaSectionToolbar(detailAreaSection);
 
         // Initialize the previous selected objects as empty list
-        prevTestObjects = new ArrayList<Object>();
+        prevTestObjects = new ArrayList<ITestObject>();
 
         // Set the state of the buttons
         updateButtonEnableState(null);
@@ -1253,12 +1245,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // elements
             // inside
             // the hierarchy of the root test policy cmpt
-            List objectsToDisplay = new ArrayList();
-            for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
+            List<ITestObject> objectsToDisplay = new ArrayList<ITestObject>();
+            for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
                 Object domainObject = iterator.next();
 
                 if (domainObject instanceof ITestValue) {
-                    objectsToDisplay.add(domainObject);
+                    objectsToDisplay.add((ITestValue)domainObject);
                 } else if (domainObject instanceof TestCaseTypeRule) {
                     // show all test rule objects if the corresponding parameter is chosen
                     ITestRule[] testRules = testCase.getTestRule(((TestCaseTypeRule)domainObject).getName());
@@ -1274,7 +1266,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         objectsToDisplay = prevTestObjects;
                         continue;
                     } else {
-                        objectsToDisplay.add(domainObject);
+                        objectsToDisplay.add((ITestRule)domainObject);
                     }
                 } else {
                     ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
@@ -1899,10 +1891,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     if (selection instanceof IStructuredSelection) {
                         Object nextItemToSelect = null;
-                        for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
+                        for (Iterator<?> iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
                             Object currElement = iterator.next();
                             TreeItem nextTreeItem = getNextSelectionInTreeAfterDelete(currElement);
-                            if (nextTreeItem == null) {
+                            if (nextTreeItem != null) {
                                 nextItemToSelect = nextTreeItem.getData();
                             }
                             if (currElement instanceof ITestObject) {
@@ -2033,7 +2025,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (selection instanceof IStructuredSelection) {
                 Object domainObject = ((IStructuredSelection)selection).getFirstElement();
                 testCaseDetailArea.clearDetailArea();
-                List list = new ArrayList();
+                List<ITestObject> list = new ArrayList<ITestObject>();
                 if (domainObject instanceof ITestValue) {
                     list.addAll(Arrays.asList(new ITestValue[] { (ITestValue)domainObject }));
                     testCaseDetailArea.createTestObjectSections(list);
@@ -2060,7 +2052,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private void createDetailsSectionsForAll() {
         testCaseDetailArea.clearDetailArea();
-        List list = new ArrayList();
+        List<ITestObject> list = new ArrayList<ITestObject>();
         list.addAll(Arrays.asList(contentProvider.getTestObjects()));
         testCaseDetailArea.createTestObjectSections(list);
         prevTestObjects = list;
@@ -2291,10 +2283,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.setSelection(new StructuredSelection(testRule));
     }
 
-    private void selectInTreeByObject(ITestRuleParameter testRuleParameter, boolean b) {
-        treeViewer.setSelection(new StructuredSelection(testRuleParameter));
-    }
-
     /**
      * Select the given test policy component in the tree.
      */
@@ -2513,7 +2501,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (failureDetailsToFormat.length > 5) {
             failureFormat = failureFormat + (!"<null>".equals(failureDetailsToFormat[5]) ? failureFormatMessage : ""); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return MessageFormat.format(failureFormat, failureDetailsToFormat);
+        return MessageFormat.format(failureFormat, (Object[])failureDetailsToFormat);
     }
 
     private String getLastObjectIdentifier(String objectPath) {
@@ -2589,7 +2577,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj
                         .getObjectName(), failureDetailsObj.getAttributeName()));
                 if (editField != null) {
-                    ArrayList list = new ArrayList(1);
+                    ArrayList<FailureDetails> list = new ArrayList<FailureDetails>(1);
                     list.add(failureDetailsObj);
 
                     TestCaseSection.this.addExpectedResultContextMenu(editField.getControl(), list, false);
@@ -2629,13 +2617,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void postAddExpectedResultContextMenu(Control control,
             FailureDetails failureDetails,
             boolean isSectionTitleMenu) {
-        ArrayList list = new ArrayList(1);
+        ArrayList<FailureDetails> list = new ArrayList<FailureDetails>(1);
         list.add(failureDetails);
         postAddExpectedResultContextMenu(control, list, isSectionTitleMenu);
     }
 
     private void postAddExpectedResultContextMenu(final Control control,
-            final List failureDetails,
+            final List<FailureDetails> failureDetails,
             final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
             public void run() {
@@ -2649,7 +2637,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void addExpectedResultContextMenu(final Control control,
-            final List failureDetails,
+            final List<FailureDetails> failureDetails,
             final boolean isSectionTitleMenu) {
         if (control == null || failureDetails.size() == 0 || control.isDisposed()) {
             return;
@@ -2681,7 +2669,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         // create context menu to store actual value as expected value
-        List allFailuresCopy = new ArrayList();
+        List<FailureDetails> allFailuresCopy = new ArrayList<FailureDetails>();
         allFailuresCopy.addAll(allFailureDetails);
         postAddExpectedResultContextMenu(form.getContent(), allFailuresCopy, true);
 

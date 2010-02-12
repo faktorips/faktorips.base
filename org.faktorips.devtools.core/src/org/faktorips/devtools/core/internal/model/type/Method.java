@@ -59,7 +59,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<IParameter>(this,
             Parameter.class, IParameter.class, Parameter.TAG_NAME);
 
-    public Method(IType parent, int id) {
+    public Method(IType parent, String id) {
         super(parent, id);
     }
 
@@ -209,7 +209,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);

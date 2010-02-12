@@ -14,8 +14,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -31,11 +30,7 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     // hides field in supertype. Done to avoid update-events fired on description changes.
     private String description;
 
-    public TableAccessFunction(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TableAccessFunction(IIpsObjectPart parent, int id) {
+    public TableAccessFunction(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 

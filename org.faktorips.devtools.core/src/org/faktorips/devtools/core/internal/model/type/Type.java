@@ -492,7 +492,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         supertype = element.getAttribute(PROPERTY_SUPERTYPE);
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();

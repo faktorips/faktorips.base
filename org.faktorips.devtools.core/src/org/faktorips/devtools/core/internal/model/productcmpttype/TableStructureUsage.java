@@ -51,7 +51,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     // Contains the related table structures identified by the full qualified name
     private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
 
-    public TableStructureUsage(IProductCmptType pcType, int id) {
+    public TableStructureUsage(IProductCmptType pcType, String id) {
         super(pcType, id);
     }
 
@@ -92,7 +92,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TAG_NAME_TABLE_STRUCTURE)) {
             return newTableStructureReferenceInternal(id);
@@ -115,7 +115,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
@@ -191,7 +191,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * Creates a new table structure usage without updating the src file.
      */
-    private TableStructureReference newTableStructureReferenceInternal(int id) {
+    private TableStructureReference newTableStructureReferenceInternal(String id) {
         TableStructureReference tsr = new TableStructureReference(this, id);
         tableStructures.add(tsr);
         return tsr;
@@ -259,7 +259,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     private void validateDuplicateRoleName(MessageList msgList) {
         ITableStructureUsage[] tabeStructureUsages = getProductCmptType().getTableStructureUsages();
         for (int i = 0; i < tabeStructureUsages.length; i++) {
-            if (!(tabeStructureUsages[i].getId() == getId())
+            if (!(tabeStructureUsages[i].getId().equals(getId()))
                     && tabeStructureUsages[i].getRoleName().equals(getRoleName())) {
                 String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, getRoleName());
                 msgList.add(new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR));
@@ -295,7 +295,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
         private String tableStructure = ""; //$NON-NLS-1$
 
-        public TableStructureReference(ITableStructureUsage tableStructureUsage, int id) {
+        public TableStructureReference(ITableStructureUsage tableStructureUsage, String id) {
             super(tableStructureUsage, id);
         }
 
@@ -305,7 +305,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         }
 
         @Override
-        protected void initPropertiesFromXml(Element element, Integer id) {
+        protected void initPropertiesFromXml(Element element, String id) {
             super.initPropertiesFromXml(element, id);
             tableStructure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
         }

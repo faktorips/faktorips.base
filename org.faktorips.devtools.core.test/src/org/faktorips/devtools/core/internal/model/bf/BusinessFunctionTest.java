@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,6 +41,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -63,36 +64,36 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        
+
         bf.initFromXml(doc.getDocumentElement());
 
         assertEquals(new Dimension(100, 150), bf.getParameterRectangleSize());
         assertEquals(new Point(10, 20), bf.getParameterRectangleLocation());
-        
+
         List<IBFElement> elements = bf.getBFElements();
         assertEquals(9, elements.size());
         List<IControlFlow> controlFlows = bf.getControlFlows();
         assertEquals(7, controlFlows.size());
 
-        IBFElement bfe = bf.getBFElement(10);
+        IBFElement bfe = bf.getBFElement("10");
         List<IControlFlow> out = bfe.getOutgoingControlFlow();
-        IControlFlow cf = bf.getControlFlow(17);
+        IControlFlow cf = bf.getControlFlow("17");
         assertTrue(out.contains(cf));
 
-        bfe = bf.getBFElement(15);
+        bfe = bf.getBFElement("15");
         out = bfe.getOutgoingControlFlow();
-        cf = bf.getControlFlow(19);
+        cf = bf.getControlFlow("19");
         assertTrue(out.contains(cf));
         List<IControlFlow> in = bfe.getIncomingControlFlow();
-        cf = bf.getControlFlow(18);
+        cf = bf.getControlFlow("18");
         assertTrue(in.contains(cf));
-        cf = bf.getControlFlow(23);
+        cf = bf.getControlFlow("23");
         assertTrue(in.contains(cf));
-        
-        cf = bf.getControlFlow(17);
-        IBFElement source = bf.getBFElement(10);
+
+        cf = bf.getControlFlow("17");
+        IBFElement source = bf.getBFElement("10");
         assertEquals(source, cf.getSource());
-        IBFElement target = bf.getBFElement(12);
+        IBFElement target = bf.getBFElement("12");
         assertEquals(target, cf.getTarget());
 
     }
@@ -153,7 +154,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     public void testGetControlFlows() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IControlFlow cf1 = bf.newControlFlow();
         IControlFlow cf2 = bf.newControlFlow();
         IControlFlow cf3 = bf.newControlFlow();
@@ -164,7 +165,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     public void testGetControlFlowById() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IControlFlow cf1 = bf.newControlFlow();
         IControlFlow cf2 = bf.newControlFlow();
         IControlFlow cf3 = bf.newControlFlow();
@@ -173,9 +174,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(cf3, bf.getControlFlow(cf3.getId()));
     }
 
-    public void testGetParameterBFEs() throws Exception{
+    public void testGetParameterBFEs() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IParameterBFE p1 = bf.newParameter();
         IParameterBFE p2 = bf.newParameter();
         IParameterBFE p3 = bf.newParameter();
@@ -185,10 +186,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertTrue(pList.contains(p2));
         assertTrue(pList.contains(p3));
     }
-    
-    public void testgetParameterBFE() throws Exception{
+
+    public void testgetParameterBFE() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IParameterBFE p1 = bf.newParameter();
         p1.setName("p1");
         IParameterBFE p2 = bf.newParameter();
@@ -199,10 +200,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(p2, bf.getParameterBFE("p2"));
         assertEquals(p3, bf.getParameterBFE("p3"));
     }
-    
-    public void testValidateStartOnlyOnce() throws Exception{
+
+    public void testValidateStartOnlyOnce() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IBFElement start1 = bf.newStart(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
@@ -214,44 +215,44 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         MessageList list2 = msgList.getMessagesFor(start2);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
-        
+
     }
 
-    public void testValidateEndOnlyOnce() throws Exception{
+    public void testValidateEndOnlyOnce() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IBFElement end1 = bf.newEnd(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
         IBFElement end2 = bf.newEnd(new Point(10, 10));
         msgList = bf.validate(ipsProject);
-        
+
         MessageList list1 = msgList.getMessagesFor(end1);
         assertNotNull(list1.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
-        
+
         MessageList list2 = msgList.getMessagesFor(end2);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
-        
+
     }
-    
-    public void testValidateBFElementNameCollision() throws Exception{
+
+    public void testValidateBFElementNameCollision() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IActionBFE action1 = bf.newOpaqueAction(new Point(10, 10));
         action1.setName("action1");
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
+
         IActionBFE action2 = bf.newOpaqueAction(new Point(10, 10));
         action2.setName("action1");
         msgList = bf.validate(ipsProject);
-        
+
         MessageList list1 = msgList.getMessagesFor(action1);
         assertNotNull(list1.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
+
         MessageList list2 = msgList.getMessagesFor(action2);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
+
         IPolicyCmptType policy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IMethod method = policy.newMethod();
         method.setName("action1");
@@ -261,7 +262,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         IParameterBFE parameter = bf.newParameter();
         parameter.setDatatype(policy.getQualifiedName());
         parameter.setName("policy");
-        
+
         IActionBFE action3 = bf.newMethodCallAction(new Point(10, 10));
         action3.setTarget("policy");
         action3.setExecutableMethodName("action1");
@@ -269,18 +270,19 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         msgList = bf.validate(ipsProject);
         MessageList list3 = msgList.getMessagesFor(action3);
         assertNotNull(list3.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
-        BusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "action1");
-        
+
+        BusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType
+                .getInstance(), "action1");
+
         IActionBFE action4 = bf.newBusinessFunctionCallAction(new Point(10, 10));
         action4.setTarget(bfAction1.getQualifiedName());
-        
+
         msgList = bf.validate(ipsProject);
         MessageList list4 = msgList.getMessagesFor(action4);
         assertNotNull(list4.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
-        //deleting the inline action should still result in a name conflict of the two remaining actions
+
+        // deleting the inline action should still result in a name conflict of the two remaining
+        // actions
         action1.delete();
         action2.delete();
 
@@ -290,70 +292,70 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         list4 = msgList.getMessagesFor(action4);
         assertNotNull(list4.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
-        
-        //only one action remains the error needs to disappear
+
+        // only one action remains the error needs to disappear
         action3.delete();
         msgList = bf.validate(ipsProject);
         list4 = msgList.getMessagesFor(action4);
         assertNull(list4.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
     }
-    
-    public void testValidateStartNodeMissing() throws Exception{
+
+    public void testValidateStartNodeMissing() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
-        
+
         bf.newStart(new Point(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
     }
-    
-    public void testValidateEndNodeMissing() throws Exception{
+
+    public void testValidateEndNodeMissing() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
-        
+
         bf.newEnd(new Point(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
     }
-    
-    public void testValidateNotConnected1() throws Exception{
+
+    public void testValidateNotConnected1() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IBFElement start = bf.newStart(new Point(10, 10));
         IBFElement end = bf.newEnd(new Point(10, 10));
-        
+
         MessageList msgList = bf.validate(ipsProject);
 
         MessageList list1 = msgList.getMessagesFor(start);
         assertNotNull(list1.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-        
+
         MessageList list2 = msgList.getMessagesFor(end);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
-        
+
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(start);
         cf.setTarget(end);
-        
+
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
     }
 
-    public void testValidateNotConnected2() throws Exception{
+    public void testValidateNotConnected2() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
+                "bf");
         IBFElement start = bf.newStart(new Point(10, 10));
         IBFElement end = bf.newEnd(new Point(10, 10));
         IBFElement action1 = bf.newOpaqueAction(new Point(10, 10));
         IBFElement action2 = bf.newOpaqueAction(new Point(10, 10));
         IBFElement decision = bf.newDecision(new Point(10, 10));
         IBFElement merge = bf.newMerge(new Point(10, 10));
-        
-        //check unconnected elements
+
+        // check unconnected elements
         MessageList msgList = bf.validate(ipsProject);
         MessageList msgAction1 = msgList.getMessagesFor(action1);
         assertNotNull(msgAction1.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
@@ -370,9 +372,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList msgMerge = msgList.getMessagesFor(merge);
         assertNotNull(msgMerge.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNotNull(msgMerge.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-        
 
-        //build graph uncompleted
+        // build graph uncompleted
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(start);
         cf.setTarget(merge);
@@ -388,20 +389,20 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         cf = bf.newControlFlow();
         cf.setSource(decision);
         cf.setTarget(end);
-        
+
         msgList = bf.validate(ipsProject);
-        
+
         assertTrue(msgList.getMessagesFor(start).isEmpty());
         assertTrue(msgList.getMessagesFor(end).isEmpty());
-        
+
         msgAction1 = msgList.getMessagesFor(action1);
         assertNull(msgAction1.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgAction1.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-        
+
         msgMerge = msgList.getMessagesFor(merge);
         assertNull(msgMerge.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgMerge.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-     
+
         msgDecision = msgList.getMessagesFor(decision);
         assertNull(msgDecision.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgDecision.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
@@ -409,7 +410,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         msgAction2 = msgList.getMessagesFor(action2);
         assertNotNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNotNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-        
+
         cf = bf.newControlFlow();
         cf.setSource(decision);
         cf.setTarget(action2);
@@ -429,23 +430,24 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
 
     }
-    
-    public void testDependsOn() throws Exception{
+
+    public void testDependsOn() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf");
-     
+                "bf");
+
         IDependency[] dependencies = bf.dependsOn();
         assertEquals(0, dependencies.length);
-        
+
         BusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
-        "bf2");
-       
+                "bf2");
+
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
         action.setTarget(bf2.getQualifiedName());
-        
+
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2.getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2
+                .getQualifiedNameType()), dependencies[0]);
 
         action.delete();
         dependencies = bf.dependsOn();
@@ -456,11 +458,11 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
         method.setModifier(Modifier.PUBLIC);
         method.setName("calculate");
-        
+
         IParameterBFE param = bf.newParameter();
         param.setDatatype(pcType.getQualifiedName());
         param.setName("policy");
-        
+
         action = bf.newMethodCallAction(new Point(10, 10));
         dependencies = bf.dependsOn();
         assertEquals(0, dependencies.length);
@@ -469,6 +471,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         action.setExecutableMethodName(method.getName());
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType.getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType
+                .getQualifiedNameType()), dependencies[0]);
     }
 }

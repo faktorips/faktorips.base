@@ -47,7 +47,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
-    private ArrayList visibleProperties = new ArrayList(10);
+    private ArrayList<String> visibleProperties = new ArrayList<String>(10);
 
     private Text targetRoleSingularTextProdCmptType;
     private Text targetRolePluralTextProdCmptType;
@@ -279,7 +279,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     /**
      * {@inheritDoc}
      */
-    public List getProperties() {
+    public List<String> getProperties() {
         return visibleProperties;
     }
 

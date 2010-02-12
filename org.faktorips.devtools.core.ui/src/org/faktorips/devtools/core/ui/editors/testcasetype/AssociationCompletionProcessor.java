@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -52,7 +53,8 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
      * {@inheritDoc}
      */
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
         prefix = prefix.toLowerCase();
 
         IPolicyCmptType currentPcType = pcType;
@@ -72,7 +74,9 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
         }
     }
 
-    private void addToResult(List result, IPolicyCmptTypeAssociation association, int documentOffset) {
+    private void addToResult(List<ICompletionProposal> result,
+            IPolicyCmptTypeAssociation association,
+            int documentOffset) {
         String name = association.getName();
         String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin

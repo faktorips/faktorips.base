@@ -55,7 +55,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
     private List<IFormulaTestInputValue> formulaTestInputValues = new ArrayList<IFormulaTestInputValue>(0);
 
-    public FormulaTestCase(Formula parent, int id) {
+    public FormulaTestCase(Formula parent, String id) {
         super(parent, id);
     }
 
@@ -93,7 +93,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     @Override
-    protected IIpsObjectPart newPart(Element partEl, int id) {
+    protected IIpsObjectPart newPart(Element partEl, String id) {
         String xmlTagName = partEl.getNodeName();
         if (FormulaTestInputValue.TAG_NAME.equals(xmlTagName)) {
             return newFormulaTestInputValueInternal(id);
@@ -140,7 +140,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         expectedResult = ValueToXmlHelper
@@ -278,7 +278,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /*
      * Creates a new formula test input value without updating the source file.
      */
-    private IFormulaTestInputValue newFormulaTestInputValueInternal(int nextPartId) {
+    private IFormulaTestInputValue newFormulaTestInputValueInternal(String nextPartId) {
         IFormulaTestInputValue v = new FormulaTestInputValue(this, nextPartId);
         formulaTestInputValues.add(v);
         return v;
@@ -364,7 +364,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                     // try to set the default value depending on the corresponding value datatype
                     try {
                         Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
-                        if (datatype instanceof ValueDatatype) {
+                        if (datatype != null) {
                             inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
                         }
                         // ignore if the datatype is not value datatype

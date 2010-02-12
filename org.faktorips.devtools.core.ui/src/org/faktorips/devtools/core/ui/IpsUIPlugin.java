@@ -1077,7 +1077,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
             IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
                     .getAdapterByClass(ipsElementClass, IWorkbenchAdapter.class);
-            if (adapter instanceof IpsElementWorkbenchAdapter) {
+            if (adapter != null) {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
                 return ipsWA.getDefaultImageDescriptor();
             } else {

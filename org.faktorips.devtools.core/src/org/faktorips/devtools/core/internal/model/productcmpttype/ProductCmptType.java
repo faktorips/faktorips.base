@@ -297,7 +297,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
         configurationForPolicyCmptType = Boolean.valueOf(

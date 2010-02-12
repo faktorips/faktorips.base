@@ -365,8 +365,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
         }
         List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator<IKeyItem> it = structuredSelection.iterator(); it.hasNext();) {
-            IKeyItem item = it.next();
+        for (Iterator<?> it = structuredSelection.iterator(); it.hasNext();) {
+            IKeyItem item = (IKeyItem)it.next();
             items.add(item.getName());
         }
         key.setKeyItems(items.toArray(new String[items.size()]));
@@ -383,8 +383,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
         }
         List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator<String> it = structuredSelection.iterator(); it.hasNext();) {
-            String item = it.next();
+        for (Iterator<?> it = structuredSelection.iterator(); it.hasNext();) {
+            String item = (String)it.next();
             items.remove(item);
         }
         key.setKeyItems(items.toArray(new String[items.size()]));

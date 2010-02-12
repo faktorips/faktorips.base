@@ -57,7 +57,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * @param parent The <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumValue</tt>.
      */
-    public EnumValue(IEnumValueContainer parent, int id) {
+    public EnumValue(IEnumValueContainer parent, String id) {
         super(parent, id);
         descriptionChangable = false;
         enumAttributeValues = new IpsObjectPartCollection<IEnumAttributeValue>(this, EnumAttributeValue.class,

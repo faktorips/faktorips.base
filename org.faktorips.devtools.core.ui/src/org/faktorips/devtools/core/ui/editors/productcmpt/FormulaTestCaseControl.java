@@ -374,7 +374,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /**
      * Sets and updates the to be displaying formula test cases.
      */
-    public void storeFormulaTestCases(List<ExtDataForFormulaTestCase> newFormulaTestCases) {
+    public void storeFormulaTestCases(List<IFormulaTestCase> newFormulaTestCases) {
         boolean changed = true;
         if (newFormulaTestCases.size() == formulaTestCases.size()) {
             changed = false;
@@ -388,8 +388,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (changed) {
             formulaTestCases.clear();
 
-            for (Iterator<ExtDataForFormulaTestCase> iter = newFormulaTestCases.iterator(); iter.hasNext();) {
-                formulaTestCases.add(new ExtDataForFormulaTestCase((IFormulaTestCase)iter.next()));
+            for (Iterator<IFormulaTestCase> iter = newFormulaTestCases.iterator(); iter.hasNext();) {
+                formulaTestCases.add(new ExtDataForFormulaTestCase(iter.next()));
             }
         } else {
             formulaTestCaseTableViewer.refresh();

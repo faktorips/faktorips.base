@@ -77,25 +77,25 @@ public class TestCaseDetailArea {
     private IIpsProject ipsProject;
 
     // Contains all edit sections the key is the name of the correspondin test parameter
-    private HashMap sectionControls = new HashMap();
+    private HashMap<String, Section> sectionControls = new HashMap<String, Section>();
 
     // Container holds all edit fields for test values and test attribute values
-    private HashMap allEditFieldsCache = new HashMap();
+    private HashMap<String, EditField> allEditFieldsCache = new HashMap<String, EditField>();
 
     // Contains the first edit field of each test policy component in the edit area
-    private HashMap firstAttributeEditFields = new HashMap();
+    private HashMap<String, EditField> firstAttributeEditFields = new HashMap<String, EditField>();
 
     // Contains the failures of the last test run
-    private HashMap failureMessageCache = new HashMap();
-    private HashMap failureDetailCache = new HashMap();
+    private HashMap<String, String> failureMessageCache = new HashMap<String, String>();
+    private HashMap<String, String[]> failureDetailCache = new HashMap<String, String[]>();
     // Contains all fixed fields (actual value stored as expected value)
-    private List fixedFieldsCache = new ArrayList();
+    private List<String> fixedFieldsCache = new ArrayList<String>();
 
     // Contains the mapping between the edit field and model objects
-    private HashMap editField2ModelObject = new HashMap();
+    private HashMap<EditField, IIpsObjectPart> editField2ModelObject = new HashMap<EditField, IIpsObjectPart>();
 
     // Contains all ui controller
-    private List allBindedControls = new ArrayList();
+    private List<Control> allBindedControls = new ArrayList<Control>();
 
     // The section this details belongs to
     private TestCaseSection testCaseSection;
@@ -106,7 +106,8 @@ public class TestCaseDetailArea {
     // area which contains alls detail controls
     private Composite dynamicArea;
 
-    private List testCaseDetailAreaRedrawListener = new ArrayList(1);
+    private List<ITestCaseDetailAreaRedrawListener> testCaseDetailAreaRedrawListener = new ArrayList<ITestCaseDetailAreaRedrawListener>(
+            1);
 
     private BindingContext bindingContext;
 
@@ -167,9 +168,9 @@ public class TestCaseDetailArea {
      * Resets the color of all detail sections.
      */
     public void resetSectionColors(ScrolledForm form) {
-        Iterator iter = sectionControls.values().iterator();
+        Iterator<Section> iter = sectionControls.values().iterator();
         while (iter.hasNext()) {
-            Section section = (Section)iter.next();
+            Section section = iter.next();
             section.setBackground(form.getBackground());
         }
     }
@@ -178,7 +179,7 @@ public class TestCaseDetailArea {
      * Returns the attribute edit fields given by the unique key.
      */
     public EditField getFirstAttributeEditField(String uniqueKey) {
-        return (EditField)firstAttributeEditFields.get(uniqueKey);
+        return firstAttributeEditFields.get(uniqueKey);
     }
 
     /**
@@ -192,7 +193,7 @@ public class TestCaseDetailArea {
      * Returns the section given by the unique key.
      */
     public Section getSection(String uniqueKey) {
-        return (Section)sectionControls.get(uniqueKey);
+        return sectionControls.get(uniqueKey);
     }
 
     /**
@@ -221,10 +222,11 @@ public class TestCaseDetailArea {
         testCaseDetailAreaRedrawListener.remove(listener);
     }
 
-    private void notifyListener(List testObjects) {
+    private void notifyListener(List<ITestObject> testObjects) {
         try {
-            for (Iterator iter = testCaseDetailAreaRedrawListener.iterator(); iter.hasNext();) {
-                ITestCaseDetailAreaRedrawListener listener = (ITestCaseDetailAreaRedrawListener)iter.next();
+            for (Iterator<ITestCaseDetailAreaRedrawListener> iter = testCaseDetailAreaRedrawListener.iterator(); iter
+                    .hasNext();) {
+                ITestCaseDetailAreaRedrawListener listener = iter.next();
                 listener.visibleTestObjectsChanges(testObjects);
             }
         } catch (CoreException e) {
@@ -235,12 +237,12 @@ public class TestCaseDetailArea {
     /**
      * Creates the details for the given test objects.
      */
-    public void createTestObjectSections(List testObjects) {
+    public void createTestObjectSections(List<ITestObject> testObjects) {
         try {
             notifyListener(testObjects);
 
-            for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
-                ITestObject testObject = (ITestObject)iter.next();
+            for (Iterator<ITestObject> iter = testObjects.iterator(); iter.hasNext();) {
+                ITestObject testObject = iter.next();
                 if (testObject instanceof ITestValue) {
                     Composite borderedComosite = createBorderComposite(dynamicArea);
                     createTestValuesSection((ITestValue)testObject, borderedComosite);
@@ -383,13 +385,13 @@ public class TestCaseDetailArea {
             markAsExpected(editField);
         }
         // mark as failure
-        String failureLastTestRun = (String)failureMessageCache.get(testPolicyCmptTypeParamPath
+        String failureLastTestRun = failureMessageCache.get(testPolicyCmptTypeParamPath
                 + attributeValue.getTestAttribute());
         if (failureLastTestRun != null) {
             if (!fixedFieldsCache.contains(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute())) {
                 testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
                 // create context menu
-                String[] failureDetails = (String[])failureDetailCache.get(testPolicyCmptTypeParamPath
+                String[] failureDetails = failureDetailCache.get(testPolicyCmptTypeParamPath
                         + attributeValue.getTestAttribute());
                 if (failureDetails != null) {
                     testCaseSection.postAddExpectedResultContextMenu(editField.getControl(), failureDetails);
@@ -565,7 +567,7 @@ public class TestCaseDetailArea {
             markAsExpected(editField);
         }
         // mark as failure
-        String failureLastTestRun = (String)failureMessageCache.get(testValue.getTestValueParameter());
+        String failureLastTestRun = failureMessageCache.get(testValue.getTestValueParameter());
         if (failureLastTestRun != null) {
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
         }
@@ -615,7 +617,7 @@ public class TestCaseDetailArea {
             markAsExpected(editField);
         }
         // mark as failure
-        String failureLastTestRun = (String)failureMessageCache.get(testCaseSection.getUniqueKey(rule));
+        String failureLastTestRun = failureMessageCache.get(testCaseSection.getUniqueKey(rule));
         if (failureLastTestRun != null) {
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
         }
@@ -763,7 +765,7 @@ public class TestCaseDetailArea {
     }
 
     private void updateValue(EditField editField, String actualValue) {
-        IIpsObjectPart object = (IIpsObjectPart)editField2ModelObject.get(editField);
+        IIpsObjectPart object = editField2ModelObject.get(editField);
         if (object != null) {
             if (object instanceof ITestValue) {
                 ((ITestValue)object).setValue(actualValue);
@@ -813,8 +815,8 @@ public class TestCaseDetailArea {
      * Remove binding of all controls
      */
     private void unbindControls() {
-        for (Iterator iter = allBindedControls.iterator(); iter.hasNext();) {
-            Control control = (Control)iter.next();
+        for (Iterator<Control> iter = allBindedControls.iterator(); iter.hasNext();) {
+            Control control = iter.next();
             bindingContext.removeBindings(control);
         }
         allBindedControls.clear();
@@ -839,10 +841,10 @@ public class TestCaseDetailArea {
      * Returns the edit field which is identified by the given unique key.
      */
     public EditField getEditField(String uniqueKey) {
-        EditField editField = (EditField)allEditFieldsCache.get(uniqueKey);
+        EditField editField = allEditFieldsCache.get(uniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
-            editField = (EditField)allEditFieldsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());
+            editField = allEditFieldsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());
         }
         return editField;
     }

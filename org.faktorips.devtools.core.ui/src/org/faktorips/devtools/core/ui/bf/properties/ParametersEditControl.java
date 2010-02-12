@@ -27,8 +27,6 @@ package org.faktorips.devtools.core.ui.bf.properties;
  * 
  *******************************************************************************/
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.CellEditor;
@@ -264,8 +262,7 @@ public class ParametersEditControl extends Composite {
             return new IParameterBFE[0];
         }
 
-        List selected = ((IStructuredSelection)selection).toList();
-        return (IParameterBFE[])selected.toArray(new IParameterBFE[selected.size()]);
+        return (IParameterBFE[])((IStructuredSelection)selection).toArray();
     }
 
     // ---- Button bar

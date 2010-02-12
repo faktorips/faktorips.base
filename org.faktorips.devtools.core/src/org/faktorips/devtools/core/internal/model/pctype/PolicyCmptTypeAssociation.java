@@ -41,7 +41,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     private boolean qualified = false;
     private String inverseAssociation = ""; //$NON-NLS-1$
 
-    public PolicyCmptTypeAssociation(IPolicyCmptType pcType, int id) {
+    public PolicyCmptTypeAssociation(IPolicyCmptType pcType, String id) {
         super(pcType, id);
     }
 
@@ -321,7 +321,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         qualified = Boolean.valueOf(element.getAttribute(PROPERTY_QUALIFIED)).booleanValue();

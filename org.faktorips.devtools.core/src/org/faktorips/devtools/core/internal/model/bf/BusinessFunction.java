@@ -106,7 +106,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    public IBFElement getBFElement(Integer id) {
+    public IBFElement getBFElement(String id) {
         if (id == null) {
             return null;
         }
@@ -127,10 +127,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return (IControlFlow)controlFlows.newPart();
     }
 
-    public IControlFlow getControlFlow(int id) {
+    public IControlFlow getControlFlow(String id) {
         IIpsObjectPart[] parts = controlFlows.getParts();
         for (IIpsObjectPart ipsObjectPart : parts) {
-            if (id == ipsObjectPart.getId()) {
+            if (id.equals(ipsObjectPart.getId())) {
                 return (IControlFlow)ipsObjectPart;
             }
         }
@@ -220,7 +220,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         int width = Integer.parseInt(element.getAttribute("parameterRectangleWidth")); //$NON-NLS-1$
         int height = Integer.parseInt(element.getAttribute("parameterRectangleHeight")); //$NON-NLS-1$

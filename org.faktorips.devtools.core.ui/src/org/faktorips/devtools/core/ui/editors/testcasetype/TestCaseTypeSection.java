@@ -1641,7 +1641,7 @@ public class TestCaseTypeSection extends IpsSection {
             ITestPolicyCmptTypeParameter parameter,
             IpsObjectUIController uiController) {
         Label label = null;
-        if (!(parameter instanceof ITestPolicyCmptTypeParameter && isAssociation(parameter))) {
+        if (!(parameter != null && isAssociation(parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
                     Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
             EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
@@ -2010,9 +2010,10 @@ public class TestCaseTypeSection extends IpsSection {
             if (selection instanceof IStructuredSelection) {
                 IStructuredSelection structuredSelection = (IStructuredSelection)selection;
                 for (Iterator<?> iter = structuredSelection.iterator(); iter.hasNext();) {
-                    ITestAttribute element = (ITestAttribute)iter.next();
+                    Object element = iter.next();
                     if (element instanceof ITestAttribute) {
-                        testAttributesSelected.add(element);
+                        ITestAttribute testAttribute = (ITestAttribute)iter.next();
+                        testAttributesSelected.add(testAttribute);
                     }
                 }
             }
@@ -2108,7 +2109,7 @@ public class TestCaseTypeSection extends IpsSection {
             return;
         }
 
-        if (selection instanceof IStructuredSelection) {
+        if (selection != null) {
             Object selectedObj = (selection).getFirstElement();
             if (selectedObj != null && selectedObj instanceof ITestParameter) {
                 // if the selected object is the previous rendered object

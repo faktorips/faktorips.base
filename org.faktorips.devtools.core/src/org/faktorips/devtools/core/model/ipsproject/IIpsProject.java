@@ -522,8 +522,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns all objects of the given type found on the classpath.
      * 
-     * @deprecated use IIpsProject#findIpsSrcFiles(IProductCmptType, boolean) due to better
-     *             performance
+     * @deprecated use {@link IIpsProject#findIpsSrcFiles(IpsObjectType)} due to better performance
      */
     @Deprecated
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException;

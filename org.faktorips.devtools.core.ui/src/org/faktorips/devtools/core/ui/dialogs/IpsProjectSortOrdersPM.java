@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,13 +36,13 @@ import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * Presentationmodel for {@link IpsPackageSortDefDialog}.
- *
- * Save the {@link IIpsPackageFragment} hierarchy in a Map:
- * key = parent; value = Array of children
- *
- * The methods getChildIpsPackageFragments and getDefautlPackageFragments are used for the {@link IpsPackageSortDefContentProvider}.
- * The moveXXX methods are used for shifting a child element (IIpsPackageFragment).
- *
+ * 
+ * Save the {@link IIpsPackageFragment} hierarchy in a Map: key = parent; value = Array of children
+ * 
+ * The methods getChildIpsPackageFragments and getDefautlPackageFragments are used for the
+ * {@link IpsPackageSortDefContentProvider}. The moveXXX methods are used for shifting a child
+ * element (IIpsPackageFragment).
+ * 
  * @author Markus Blum
  */
 public class IpsProjectSortOrdersPM implements ITreeContentProvider {
@@ -52,11 +52,10 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     private IIpsProject project;
 
     // Lookup table parent IIpsPackageFragment -> children sorted
-    private Map fragmentHierarchy = new HashMap();
+    private Map<IIpsPackageFragment, List<IIpsPackageFragment>> fragmentHierarchy = new HashMap<IIpsPackageFragment, List<IIpsPackageFragment>>();
 
     // Set default sort order or not
     private boolean restoreDefault;
-
 
     public IpsProjectSortOrdersPM(IIpsProject project) {
         Assert.isNotNull(project);
@@ -66,7 +65,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Move a IIpsPackageFragment 1 position up in the child hierarchy.
-     *
+     * 
      * @param fragment The selected {@link IIpsPackageFragment}.
      */
     public void moveOneUp(IIpsPackageFragment fragment) {
@@ -75,7 +74,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Move a IIpsPackageFragment 1 position down in the child hierarchy.
-     *
+     * 
      * @param fragment The selected {@link IIpsPackageFragment}.
      */
     public void moveOneDown(IIpsPackageFragment fragment) {
@@ -83,10 +82,12 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     }
 
     /**
-     * Move a IIpsPackageFragment <code>shift</code> positions up in the child hierarchy. IpsDefaultPackageFragments are not allowed to be moved!
-     *
+     * Move a IIpsPackageFragment <code>shift</code> positions up in the child hierarchy.
+     * IpsDefaultPackageFragments are not allowed to be moved!
+     * 
      * @param fragment The selected {@link IIpsPackageFragment}.
-     * @param shift Move <code>shift</code> positions up. <code>shift</code> hast to be greater than <code>0</code>.
+     * @param shift Move <code>shift</code> positions up. <code>shift</code> hast to be greater than
+     *            <code>0</code>.
      */
     public void moveUp(IIpsPackageFragment fragment, int shift) {
         restoreDefault = false;
@@ -95,10 +96,10 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
             IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
             if (fragmentHierarchy.containsKey(parent)) {
-                List list = (List)fragmentHierarchy.get(parent);
+                List<IIpsPackageFragment> list = fragmentHierarchy.get(parent);
 
                 int pos = list.indexOf(fragment);
-                IIpsPackageFragment shiftObj = (IIpsPackageFragment)list.remove(pos);
+                IIpsPackageFragment shiftObj = list.remove(pos);
                 int newPos = pos - shift;
                 list.add((newPos > 0) ? newPos : 0, shiftObj);
             }
@@ -106,10 +107,12 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     }
 
     /**
-     * Move a IIpsPackageFragment <code>shift</code> positions down in the child hierarchy. v are not allowed to be moved!
-     *
+     * Move a IIpsPackageFragment <code>shift</code> positions down in the child hierarchy. v are
+     * not allowed to be moved!
+     * 
      * @param fragment The selected {@link IIpsPackageFragment}.
-     * @param shift Move <code>shift</code> positions down. <code>shift</code> hast to be greater than <code>0</code>.
+     * @param shift Move <code>shift</code> positions down. <code>shift</code> hast to be greater
+     *            than <code>0</code>.
      */
     public void moveDown(IIpsPackageFragment fragment, int shift) {
         restoreDefault = false;
@@ -119,12 +122,12 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
             IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
 
             if (fragmentHierarchy.containsKey(parent)) {
-                List list = (List)fragmentHierarchy.get(parent);
+                List<IIpsPackageFragment> list = fragmentHierarchy.get(parent);
 
                 Assert.isNotNull(list);
 
                 int pos = list.indexOf(fragment);
-                IIpsPackageFragment shiftObj = (IIpsPackageFragment)list.remove(pos);
+                IIpsPackageFragment shiftObj = list.remove(pos);
                 int newPos = ((pos + shift) < list.size()) ? (pos + shift) : list.size();
                 list.add(newPos, shiftObj);
             }
@@ -132,10 +135,9 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     }
 
     /**
-     * Modelaction for ITreeContentProvider.getElements.
-     * Get all IpsDefaultPackageFragments (substitute for IpsPackageFragmentRoot) of the
-     * selected IpsProject.
-     *
+     * Modelaction for ITreeContentProvider.getElements. Get all IpsDefaultPackageFragments
+     * (substitute for IpsPackageFragmentRoot) of the selected IpsProject.
+     * 
      * @note IpsArchives are ignored!
      * @return IpsDefaultPackageFragments of the selected IpsProject.
      * @throws CoreException
@@ -144,20 +146,20 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
         // roots are not sorted
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-        List filtered = new ArrayList(roots.length);
+        List<IIpsPackageFragment> filtered = new ArrayList<IIpsPackageFragment>(roots.length);
 
         for (int i = 0; i < roots.length; i++) {
             if (roots[i].isBasedOnSourceFolder()) {
                 filtered.add(roots[i].getDefaultIpsPackageFragment());
             }
         }
-        return (IIpsPackageFragment[])filtered.toArray(new IIpsPackageFragment[filtered.size()]);
+        return filtered.toArray(new IIpsPackageFragment[filtered.size()]);
     }
 
     /**
-     * Modelaction for ITreeContentProvider.getChildren.
-     * Get all children of the IIpsPackageFragment <code>fragment</code>.
-     *
+     * Modelaction for ITreeContentProvider.getChildren. Get all children of the IIpsPackageFragment
+     * <code>fragment</code>.
+     * 
      * @param fragment Parent IIpsPackageFragment.
      * @return All children of IIpsPackageFragment <code>fragment</code>.
      * @throws CoreException
@@ -166,23 +168,23 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         IIpsPackageFragment[] fragments;
 
         if (fragmentHierarchy.containsKey(parent)) {
-            List list = (List)fragmentHierarchy.get(parent);
-            fragments = (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
+            List<IIpsPackageFragment> list = fragmentHierarchy.get(parent);
+            fragments = list.toArray(new IIpsPackageFragment[list.size()]);
         } else {
 
             if (restoreDefault == false) {
                 fragments = parent.getSortedChildIpsPackageFragments();
             } else {
                 IIpsPackageFragment[] unsortedFragments = parent.getChildIpsPackageFragments();
-                List unsortedList = Arrays.asList(unsortedFragments);
+                List<IIpsPackageFragment> unsortedList = Arrays.asList(unsortedFragments);
 
                 IpsPackageNameComparator comparator = new IpsPackageNameComparator(true);
                 Collections.sort(unsortedList, comparator);
 
-                fragments = (IIpsPackageFragment[])unsortedList.toArray(new IIpsPackageFragment[unsortedList.size()]);
+                fragments = unsortedList.toArray(new IIpsPackageFragment[unsortedList.size()]);
             }
 
-            List list = new ArrayList();
+            List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>();
             list.addAll(Arrays.asList(fragments));
             fragmentHierarchy.put(parent, list);
         }
@@ -192,41 +194,48 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Modelaction for restorePressed. Sort the IIpsPackageFragments by default sort order.
-     *
+     * 
      * @throws CoreException
      */
     public void restore() throws CoreException {
-       restoreDefault = true;
-       // force building the treeViewer with new sort order.
-       fragmentHierarchy.clear();
-     }
+        restoreDefault = true;
+        // force building the treeViewer with new sort order.
+        fragmentHierarchy.clear();
+    }
 
     /**
-     * Check the projects sort order for changes. The result is a delta between the cached sort definitions and the dialog model.
-     *
+     * Check the projects sort order for changes. The result is a delta between the cached sort
+     * definitions and the dialog model.
+     * 
      * @param pack Current IIpsPackageFragment.
-     * @param packagesList Add the IIpsPackageFragment <code>pack</code> to list if its sort order has changed.
-     * @param sortDefOrderList Add the new sort order IIPsPackageFragmentSortDefinition for <code>pack</code>.
+     * @param packagesList Add the IIpsPackageFragment <code>pack</code> to list if its sort order
+     *            has changed.
+     * @param sortDefOrderList Add the new sort order IIPsPackageFragmentSortDefinition for
+     *            <code>pack</code>.
      * @param restore Create delta for restore default sort order.
      * @throws CoreException
      */
-    private void checkSortOrder(IIpsPackageFragment parent, List packagesList, List sortDefOrderList, boolean restore) throws CoreException {
+    private void checkSortOrder(IIpsPackageFragment parent,
+            List<IIpsPackageFragment> packagesList,
+            List<IIpsPackageFragmentSortDefinition> sortDefOrderList,
+            boolean restore) throws CoreException {
 
         IIpsPackageFragment[] children = parent.getSortedChildIpsPackageFragments();
 
         if (restore == false) {
             // create delta
-            List sortDefNew = (List)fragmentHierarchy.get(parent);
+            List<IIpsPackageFragment> sortDefNew = fragmentHierarchy.get(parent);
 
             /*
-             * sortDefNew may be null because the cache depends on changes in the treeviewer. The cached elements are compared with the
-             * resources in the filesystem.
+             * sortDefNew may be null because the cache depends on changes in the treeviewer. The
+             * cached elements are compared with the resources in the filesystem.
              */
 
             // check current package first, then descent the hierarchy tree.
             if ((sortDefNew != null) && (!isEqualSortOrder(sortDefNew, Arrays.asList(children)))) {
-                /* the IIpsPackgeFragment method setSortDefinition excpects the changed package as argument. We have to save a child here
-                 * and not the parent node.
+                /*
+                 * the IIpsPackgeFragment method setSortDefinition excpects the changed package as
+                 * argument. We have to save a child here and not the parent node.
                  */
                 packagesList.add(children[0]);
                 sortDefOrderList.add(toSortDefinition(sortDefNew));
@@ -248,16 +257,16 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Create a new IIpsPackageFragmentSortDefinition object.
-     *
+     * 
      * @param fragment Sorted IIpsPackageFragments.
      * @return new IIpsPackageFragmentSortDefinition
      */
-    private IIpsPackageFragmentSortDefinition toSortDefinition(List newSortDef) {
+    private IIpsPackageFragmentSortDefinition toSortDefinition(List<IIpsPackageFragment> newSortDef) {
         String[] fragmentNames = new String[newSortDef.size()];
         int i = 0;
 
-        for (Iterator iter = newSortDef.iterator(); iter.hasNext();) {
-            IIpsPackageFragment element = (IIpsPackageFragment)iter.next();
+        for (Iterator<IIpsPackageFragment> iter = newSortDef.iterator(); iter.hasNext();) {
+            IIpsPackageFragment element = iter.next();
             fragmentNames[i++] = QNameUtil.getUnqualifiedName(element.getName());
         }
 
@@ -268,21 +277,21 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Compare two sort orders.
-     *
+     * 
      * @param sortDefNew New sort order.
      * @param sortDefOld sort order from the cache.
      * @return <code>true</code> if sort order is equal.
      */
-    private boolean isEqualSortOrder(List sortDefNew, List sortDefOld) {
+    private boolean isEqualSortOrder(List<IIpsPackageFragment> sortDefNew, List<IIpsPackageFragment> sortDefOld) {
 
         if (sortDefOld.size() != sortDefNew.size()) {
             return false;
         }
 
-        Iterator iterSortdDefsNew = sortDefNew.iterator();
-        for (Iterator iterSortdDefsOld = sortDefOld.iterator(); iterSortdDefsOld.hasNext(); ) {
-            IIpsPackageFragment elementNew = (IIpsPackageFragment) iterSortdDefsNew.next();
-            IIpsPackageFragment elementOld = (IIpsPackageFragment) iterSortdDefsOld.next();
+        Iterator<IIpsPackageFragment> iterSortdDefsNew = sortDefNew.iterator();
+        for (Iterator<IIpsPackageFragment> iterSortdDefsOld = sortDefOld.iterator(); iterSortdDefsOld.hasNext();) {
+            IIpsPackageFragment elementNew = iterSortdDefsNew.next();
+            IIpsPackageFragment elementOld = iterSortdDefsOld.next();
 
             if (!elementNew.equals(elementOld)) {
                 return false;
@@ -311,8 +320,8 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * @note IpsArchives are ignored
      */
     public void saveSortDefDelta() throws CoreException {
-        List packagesList = new ArrayList();
-        List sortOrdersNewList = new ArrayList();
+        List<IIpsPackageFragment> packagesList = new ArrayList<IIpsPackageFragment>();
+        List<IIpsPackageFragmentSortDefinition> sortOrdersNewList = new ArrayList<IIpsPackageFragmentSortDefinition>();
 
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
 
@@ -324,10 +333,10 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
             }
         }
 
-        Iterator iterSortdDefs = sortOrdersNewList.iterator();
-        for (Iterator iterFragment = packagesList.iterator(); iterFragment.hasNext(); ) {
-            IIpsPackageFragment element = (IIpsPackageFragment)iterFragment.next();
-            element.setSortDefinition((IIpsPackageFragmentSortDefinition)iterSortdDefs.next());
+        Iterator<IIpsPackageFragmentSortDefinition> iterSortdDefs = sortOrdersNewList.iterator();
+        for (Iterator<IIpsPackageFragment> iterFragment = packagesList.iterator(); iterFragment.hasNext();) {
+            IIpsPackageFragment element = iterFragment.next();
+            element.setSortDefinition(iterSortdDefs.next());
         }
     }
 
@@ -387,7 +396,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof IpsProjectSortOrdersPM) {
-            IpsProjectSortOrdersPM sortOrderPO = (IpsProjectSortOrdersPM) inputElement;
+            IpsProjectSortOrdersPM sortOrderPO = (IpsProjectSortOrdersPM)inputElement;
 
             try {
                 return sortOrderPO.getDefaultPackageFragments();

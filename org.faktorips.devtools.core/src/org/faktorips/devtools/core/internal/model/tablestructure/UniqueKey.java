@@ -32,7 +32,7 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     final static String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
 
-    public UniqueKey(TableStructure tableStructure, int id) {
+    public UniqueKey(TableStructure tableStructure, String id) {
         super(tableStructure, id);
     }
 
@@ -154,7 +154,7 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         // nothing else to do
     }

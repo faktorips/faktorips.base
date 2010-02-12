@@ -33,19 +33,21 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
     private String executableMethodName = ""; //$NON-NLS-1$
     private String target = ""; //$NON-NLS-1$
 
-    public MethodCallBFE(IIpsObject parent, int id) {
+    public MethodCallBFE(IIpsObject parent, String id) {
         super(parent, id);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        this.target = element.getAttribute("target"); //$NON-NLS-1$
-        this.executableMethodName = element.getAttribute("executableMethodName"); //$NON-NLS-1$
+        target = element.getAttribute("target"); //$NON-NLS-1$
+        executableMethodName = element.getAttribute("executableMethodName"); //$NON-NLS-1$
     }
 
+    @Override
     public String getDisplayString() {
         return target + ':' + executableMethodName;
     }
@@ -53,10 +55,11 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("executableMethodName", this.executableMethodName); //$NON-NLS-1$
-        element.setAttribute("target", this.target); //$NON-NLS-1$
+        element.setAttribute("executableMethodName", executableMethodName); //$NON-NLS-1$
+        element.setAttribute("target", target); //$NON-NLS-1$
     }
 
     public String getExecutableMethodName() {
@@ -71,21 +74,21 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
         return getBusinessFunction().getParameterBFE(getTarget());
     }
 
-    public IMethod findMethod(IIpsProject ipsProject) throws CoreException{
+    public IMethod findMethod(IIpsProject ipsProject) throws CoreException {
         IParameterBFE param = getParameter();
-        if(param != null){
+        if (param != null) {
             Datatype datatype = param.findDatatype();
-            if(datatype instanceof IType){
+            if (datatype instanceof IType) {
                 IType type = (IType)datatype;
                 return type.findMethod(getExecutableMethodName(), new String[0], ipsProject);
             }
         }
         return null;
     }
-    
+
     public void setExecutableMethodName(String name) {
-        String old = this.executableMethodName;
-        this.executableMethodName = name;
+        String old = executableMethodName;
+        executableMethodName = name;
         valueChanged(old, name);
     }
 

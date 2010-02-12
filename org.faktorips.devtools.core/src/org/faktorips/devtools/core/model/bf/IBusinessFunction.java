@@ -61,14 +61,14 @@ public interface IBusinessFunction extends IIpsObject {
     /**
      * Returns the control flow with the specified id or <code>null</code> if none is found.
      */
-    public IControlFlow getControlFlow(int id);
+    public IControlFlow getControlFlow(String id);
 
     public IBFElement newStart(Point location);
-    
+
     public IBFElement newEnd(Point location);
-    
+
     public IBFElement newMerge(Point location);
-    
+
     /**
      * Creates and returns a in line action and adds it to the set of actions that belong to this
      * business function.
@@ -102,8 +102,8 @@ public interface IBusinessFunction extends IIpsObject {
     public IDecisionBFE newDecision(Point location);
 
     /**
-     * Creates and returns a method call decision element and adds it to the set of elements that belong to this
-     * business function.
+     * Creates and returns a method call decision element and adds it to the set of elements that
+     * belong to this business function.
      * 
      * @param location the initial graphical location of the created action
      */
@@ -134,7 +134,7 @@ public interface IBusinessFunction extends IIpsObject {
      * Returns the business function element with the specified id and <code>null</code> if none is
      * found.
      */
-    public IBFElement getBFElement(Integer id);
+    public IBFElement getBFElement(String id);
 
     /**
      * Return the size of the graphical element representing the parameters of this business

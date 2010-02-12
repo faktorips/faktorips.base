@@ -11,18 +11,43 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.testcase;
+package org.faktorips.datatype.classtypes;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
+import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.ValueClassDatatype;
 
 /**
- * Listener no notify about redrawing the test case detail area.
+ * Data type for {@link BigDecimal}.
  * 
- * @author Joerg Ortmann
+ * @author Jan Ortmann
  */
-public interface ITestCaseDetailAreaRedrawListener {
-    public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws CoreException;
+public class BigDecimalDatatype extends ValueClassDatatype {
+
+    /**
+     * @param clazz
+     */
+    public BigDecimalDatatype() {
+        super(BigDecimal.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getValue(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
+        return new BigDecimal(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
+
 }

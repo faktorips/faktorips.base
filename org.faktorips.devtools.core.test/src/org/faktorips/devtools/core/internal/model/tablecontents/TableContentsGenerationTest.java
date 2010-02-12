@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,16 +21,16 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
 public class TableContentsGenerationTest extends AbstractIpsPluginTest {
 
-    private ITableContents table; 
+    private ITableContents table;
     private TableContentsGeneration generation;
     private IIpsProject project;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -39,10 +39,10 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);
-        
+
         generation.getIpsSrcFile().save(true, null);
     }
-    
+
     public void testGetChildren() {
         table.newColumn(null);
         table.newColumn(null);
@@ -53,21 +53,24 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertSame(row0, children[0]);
         assertSame(row1, children[1]);
     }
-    
+
     public void testNewRow() {
         table.newColumn(null);
         table.newColumn(null);
         IRow row0 = generation.newRow();
-        assertEquals(0, row0.getId());
+        String id0 = row0.getId();
+        assertNotNull(id0);
         assertEquals(0, row0.getRowNumber());
         assertNull(row0.getValue(0));
         assertNull(row0.getValue(1));
-        
+
         IRow row1 = generation.newRow();
-        assertEquals(1, row1.getId());
+        String id1 = row1.getId();
+        assertNotNull(id1);
+        assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
     }
-    
+
     public void testNewColumn() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
@@ -75,7 +78,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals("a", row1.getValue(3));
         assertEquals("a", row2.getValue(3));
     }
-    
+
     public void testRemoveColumn() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
@@ -91,14 +94,16 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         try {
             row1.getValue(2);
             fail();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         assertEquals("row2,col1", row2.getValue(0));
         assertEquals("row2,col3", row2.getValue(1));
         try {
             row2.getValue(2);
             fail();
-        } catch (Exception e) {}
-        
+        } catch (Exception e) {
+        }
+
     }
 
     public void testToXml() {
@@ -118,36 +123,38 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
 
     public void testNewPart() {
         // test rownumber init within newPart()
-        IRow row0 = (IRow) generation.newPart(IRow.class);
-        assertEquals(0, row0.getId());
+        IRow row0 = (IRow)generation.newPart(IRow.class);
+        String id0 = row0.getId();
+        assertNotNull(id0);
         assertEquals(0, row0.getRowNumber());
 
-        IRow row1 = (IRow) generation.newPart(IRow.class);
-        assertEquals(1, row1.getId());
+        IRow row1 = (IRow)generation.newPart(IRow.class);
+        String id1 = row1.getId();
+        assertNotNull(id1);
+        assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
-        
-        
-    	try {
-    		assertTrue(generation.newPart(IRow.class) instanceof IRow);
-    		
-    		generation.newPart(Object.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+
+        try {
+            assertTrue(generation.newPart(IRow.class) instanceof IRow);
+
+            generation.newPart(Object.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     public void testClear() {
         generation.newRow();
         generation.newRow();
         generation.clear();
         assertEquals(0, generation.getNumOfRows());
     }
-    
-    public void testGetRow(){
-        IRow row1= generation.newRow();
+
+    public void testGetRow() {
+        IRow row1 = generation.newRow();
         generation.newRow();
-        IRow row2= generation.newRow();
+        IRow row2 = generation.newRow();
 
         assertEquals(row1, generation.getRow(0));
         assertEquals(row2, generation.getRow(2));
@@ -155,8 +162,8 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.getRow(-1));
         assertNull(generation.getRow(42));
     }
-    
-    public void testGetRowIndex(){
+
+    public void testGetRowIndex() {
         IRow row = generation.newRow();
         assertEquals(0, row.getRowNumber());
         row = generation.newRow();
@@ -165,11 +172,11 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, row.getRowNumber());
     }
 
-    public void testInsertRowAfter(){
+    public void testInsertRowAfter() {
         IRow row0 = generation.insertRowAfter(999);
         assertEquals(0, row0.getRowNumber());
         assertEquals(true, generation.getIpsSrcFile().isDirty());
-        
+
         IRow row1 = generation.newRow();
         assertEquals(1, row1.getRowNumber());
         IRow row2 = generation.insertRowAfter(0);
@@ -180,5 +187,5 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         IRow row4 = generation.insertRowAfter(999);
         assertEquals(4, row4.getRowNumber());
     }
-    
+
 }

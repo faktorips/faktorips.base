@@ -55,11 +55,11 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
         updateDescriptionItems(Arrays.asList(testCase.getTestObjects()));
     }
 
-    private void updateDescriptionItems(List visibleTestObjects) throws CoreException {
-        ArrayList desrList = new ArrayList(visibleTestObjects.size());
-        Set uniqueTestObjects = new HashSet(visibleTestObjects.size());
-        for (Iterator iter = visibleTestObjects.iterator(); iter.hasNext();) {
-            ITestObject testObject = (ITestObject)iter.next();
+    private void updateDescriptionItems(List<ITestObject> visibleTestObjects) throws CoreException {
+        ArrayList<DescriptionItem> desrList = new ArrayList<DescriptionItem>(visibleTestObjects.size());
+        Set<IIpsObjectPart> uniqueTestObjects = new HashSet<IIpsObjectPart>(visibleTestObjects.size());
+        for (Iterator<ITestObject> iter = visibleTestObjects.iterator(); iter.hasNext();) {
+            ITestObject testObject = iter.next();
             ITestParameter parameter = testObject.findTestParameter(testCase.getIpsProject());
             if (parameter == null){
                 continue;
@@ -73,12 +73,12 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             }
         }
         
-        super.setDescriptionItems((DescriptionItem[]) desrList.toArray(new DescriptionItem[desrList.size()]));
+        super.setDescriptionItems(desrList.toArray(new DescriptionItem[desrList.size()]));
     }
 
     private void addUniqueDescriptionItem(IIpsObjectPart ipsObjectPart,
-            ArrayList desrList,
-            Set uniqueTestObjects,
+            ArrayList<DescriptionItem> desrList,
+            Set<IIpsObjectPart> uniqueTestObjects,
             String parameterName) {
         String name = ipsObjectPart.getName();
         if (uniqueTestObjects.contains(ipsObjectPart)) {
@@ -92,8 +92,8 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
 
     private void addChildTestObjetcs(IIpsProject ipsProject,
             ITestPolicyCmpt cmpt,
-            ArrayList desrList,
-            Set uniqueTestObjects) throws CoreException {
+            ArrayList<DescriptionItem> desrList,
+            Set<IIpsObjectPart> uniqueTestObjects) throws CoreException {
         ITestParameter parameter = cmpt.findTestParameter(testCase.getIpsProject());
         String parameterName = ""; //$NON-NLS-1$
         if (parameter != null) {
@@ -124,7 +124,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
     /**
      * {@inheritDoc}
      */
-    public void visibleTestObjectsChanges(List visibleTestObjects) throws CoreException {
+    public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws CoreException {
         updateDescriptionItems(visibleTestObjects);
     }
 

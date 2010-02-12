@@ -121,23 +121,6 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
-    public boolean contains(Object value) {
-        if (!(value instanceof EnumValue)) {
-            return false;
-        }
-        return contains(value);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsNull() {
-        return contains((String)null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfValues() {
         return values.length;
     }

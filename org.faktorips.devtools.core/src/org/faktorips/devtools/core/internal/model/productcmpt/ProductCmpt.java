@@ -157,7 +157,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     @Override
-    protected IpsObjectGeneration createNewGeneration(int id) {
+    protected IpsObjectGeneration createNewGeneration(String id) {
         return new ProductCmptGeneration(this, id);
     }
 
@@ -268,7 +268,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);

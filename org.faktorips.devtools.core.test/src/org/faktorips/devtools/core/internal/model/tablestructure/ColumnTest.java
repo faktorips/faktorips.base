@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,6 +35,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
     private TableStructure table;
     private IColumn column;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -76,14 +79,14 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column.setDatatype("Money");
         Element element = column.toXml(newDocument());
 
-        assertEquals("1", element.getAttribute(IColumn.PROPERTY_ID));
-        assertEquals("premium", element.getAttribute(IColumn.PROPERTY_NAME));
+        assertEquals(column.getId(), element.getAttribute(IIpsObjectPart.PROPERTY_ID));
+        assertEquals("premium", element.getAttribute(IIpsElement.PROPERTY_NAME));
         assertEquals("Money", element.getAttribute(IColumn.PROPERTY_DATATYPE));
     }
 
     public void testInitFromXml() {
         column.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(42, column.getId());
+        assertEquals("42", column.getId());
         assertEquals("premium", column.getName());
         assertEquals("Money", column.getDatatype());
     }

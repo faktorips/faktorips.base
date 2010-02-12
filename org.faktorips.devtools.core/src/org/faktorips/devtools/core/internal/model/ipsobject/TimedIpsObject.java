@@ -168,7 +168,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     public IIpsObjectGeneration newGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
-        int newId = getNextPartId();
+        String newId = getNextPartId();
         IpsObjectGeneration generation = newGenerationInternal(newId);
 
         if (source != null) {
@@ -184,7 +184,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generations.size();
     }
 
-    protected IpsObjectGeneration newGenerationInternal(int id) {
+    protected IpsObjectGeneration newGenerationInternal(String id) {
         IpsObjectGeneration generation = createNewGeneration(id);
         generations.add(generation);
         return generation;
@@ -206,7 +206,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * 
      * @param id the unique id for the new generation.
      */
-    protected abstract IpsObjectGeneration createNewGeneration(int id);
+    protected abstract IpsObjectGeneration createNewGeneration(String id);
 
     /**
      * Returns the object's generations.
@@ -224,7 +224,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * Overridden.
      */
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(ValueToXmlHelper.getValueFromElement(element,
                 PROPERTY_VALID_TO));
@@ -234,7 +234,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * Overridden.
      */
     @Override
-    protected final IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
 
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {

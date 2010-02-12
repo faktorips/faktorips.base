@@ -19,8 +19,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -48,11 +48,7 @@ public class TestValue extends TestObject implements ITestValue {
 
     private String value = ""; //$NON-NLS-1$
 
-    public TestValue(IIpsObject parent, int id) {
-        super(parent, id);
-    }
-
-    public TestValue(IIpsObjectPart parent, int id) {
+    public TestValue(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
@@ -62,7 +58,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         testValueParameter = element.getAttribute(PROPERTY_VALUE_PARAMETER);
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
@@ -200,7 +196,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,18 +22,18 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.w3c.dom.Element;
 
-
 /**
  *
  */
 public class RowImplTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
-    private ITableContents table; 
+    private ITableContents table;
     private ITableContentsGeneration generation;
     private Row row;
     private Row row2;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
@@ -46,14 +46,14 @@ public class RowImplTest extends AbstractIpsPluginTest {
         row2 = (Row)generation.newRow();
         ipsSrcFile = table.getIpsSrcFile();
     }
-    
+
     public void testSetValue() {
         row.setValue(0, "newValue0");
         assertEquals("newValue0", row.getValue(0));
         row.setValue(1, "newValue1");
         assertEquals("newValue1", row.getValue(1));
         assertTrue(ipsSrcFile.isDirty());
-        
+
         try {
             row.setValue(4, "newValue2");
             fail();
@@ -65,7 +65,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         // Rownumbers before delete
         assertEquals(0, row.getRowNumber());
         assertEquals(1, row2.getRowNumber());
-        
+
         row.delete();
         assertEquals(1, generation.getNumOfRows());
         assertTrue(ipsSrcFile.isDirty());
@@ -78,7 +78,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         row.setValue(0, "value0");
         row.setValue(1, "");
         row.setValue(2, null);
-        
+
         Element element = row.toXml(newDocument());
         row.setValue(0, null);
         row.setValue(1, null);
@@ -91,28 +91,29 @@ public class RowImplTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         row.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(42, row.getId());
+        assertEquals("42", row.getId());
         assertEquals("0.15", row.getValue(0));
         assertEquals("", row.getValue(1));
         assertNull(row.getValue(2));
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
+     * created.
      */
     public void testNewPart() {
-    	try {
-			row.newPart(IPolicyCmptTypeAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            row.newPart(IPolicyCmptTypeAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // nothing to do :-)
+        }
     }
-    
+
     /*
      * Test for Row#getRowNumber()
      */
-    public void testGetRowNumber(){
+    public void testGetRowNumber() {
         assertEquals(0, row.getRowNumber());
         assertEquals(1, row2.getRowNumber());
         row.delete();

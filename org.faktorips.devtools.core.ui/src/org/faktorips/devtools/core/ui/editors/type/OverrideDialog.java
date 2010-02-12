@@ -190,7 +190,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof IType) {
                 IType type = (IType)parentElement;
-                List methods = new ArrayList();
+                List<IIpsObjectPart> methods = new ArrayList<IIpsObjectPart>();
                 for (int i=0; i<candidates.length; i++) {
                     if (candidates[i].getIpsObject().equals(type)) {
                         methods.add(candidates[i]);
@@ -247,7 +247,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
     
     static class SupertypesCollector extends TypeHierarchyVisitor {
 
-        private List supertypes = new ArrayList();
+        private List<IType> supertypes = new ArrayList<IType>();
         
         public SupertypesCollector(IIpsProject ipsProject) {
             super(ipsProject);

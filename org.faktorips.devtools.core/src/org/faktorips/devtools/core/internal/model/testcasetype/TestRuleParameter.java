@@ -37,7 +37,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
 
     final static String TAG_NAME = "RuleParameter"; //$NON-NLS-1$
 
-    public TestRuleParameter(IIpsObject parent, int id) {
+    public TestRuleParameter(IIpsObject parent, String id) {
         super(parent, id);
     }
 
@@ -47,7 +47,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
     }
 
@@ -120,7 +120,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
         return null;
     }
 

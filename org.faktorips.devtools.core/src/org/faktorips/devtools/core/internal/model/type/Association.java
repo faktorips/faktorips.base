@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -49,14 +49,14 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     protected String targetRoleSingular = ""; //$NON-NLS-1$
     protected String targetRolePlural = ""; //$NON-NLS-1$
     protected int minCardinality = 0;
-    protected int maxCardinality = Integer.MAX_VALUE; 
+    protected int maxCardinality = Integer.MAX_VALUE;
     protected String subsettedDerivedUnion = ""; //$NON-NLS-1$
     protected boolean derivedUnion = false;
-    
-    public Association(IIpsObject parent, int id) {
+
+    public Association(IIpsObject parent, String id) {
         super(parent, id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,14 +71,14 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         return getAssociationType().getAggregationKind();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public AssociationType getAssociationType() {
         return type;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public void setAssociationType(AssociationType newType) {
@@ -87,7 +87,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         type = newType;
         valueChanged(oldType, newType);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -98,6 +98,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return targetRoleSingular;
     }
@@ -115,24 +116,24 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     public boolean isDerivedUnion() {
         return derivedUnion;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void setDerivedUnion(boolean flag) {
         boolean oldValue = derivedUnion;
-        this.derivedUnion = flag;
+        derivedUnion = flag;
         valueChanged(oldValue, derivedUnion);
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public String getTarget() {
         return target;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void setTarget(String newTarget) {
@@ -148,13 +149,13 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         return (IType)ipsProject.findIpsObject(getIpsObject().getIpsObjectType(), target);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public String getTargetRoleSingular() {
         return targetRoleSingular;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -162,7 +163,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         return StringUtils.capitalize(QNameUtil.getUnqualifiedName(target));
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void setTargetRoleSingular(String newRole) {
@@ -170,7 +171,6 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         targetRoleSingular = newRole;
         valueChanged(oldRole, newRole);
     }
-    
 
     /**
      * {@inheritDoc}
@@ -178,7 +178,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     public String getTargetRolePlural() {
         return targetRolePlural;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -194,7 +194,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         targetRolePlural = newRole;
         valueChanged(oldRole, newRole);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -202,14 +202,14 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         return is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public int getMinCardinality() {
         return minCardinality;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void setMinCardinality(int newValue) {
@@ -218,27 +218,27 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         valueChanged(oldValue, newValue);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public int getMaxCardinality() {
         return maxCardinality;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean is1ToMany() {
         return isQualified() || maxCardinality > 1;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public boolean is1ToManyIgnoringQualifier(){
+    public boolean is1ToManyIgnoringQualifier() {
         return maxCardinality > 1;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -255,7 +255,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         valueChanged(oldValue, newValue);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void setSubsettedDerivedUnion(String newRelation) {
@@ -263,54 +263,55 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         subsettedDerivedUnion = newRelation;
         valueChanged(oldValue, newRelation);
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public String getSubsettedDerivedUnion() {
         return subsettedDerivedUnion;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean isSubsetOfADerivedUnion() {
         return StringUtils.isNotEmpty(subsettedDerivedUnion);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
         return getType().findAssociation(subsettedDerivedUnion, project);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException {
         IType targetType = findTarget(ipsProject);
-        if (targetType==null) {
+        if (targetType == null) {
             return new IAssociation[0];
         }
         DerivedUnionCandidatesFinder finder = new DerivedUnionCandidatesFinder(targetType, ipsProject);
         finder.start(getType());
-        return (IAssociation[])finder.candidates.toArray(new IAssociation[finder.candidates.size()]);
+        return finder.candidates.toArray(new IAssociation[finder.candidates.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
-        if (derivedUnion==null) {
+        if (derivedUnion == null) {
             return false;
         }
         return derivedUnion.equals(findSubsettedDerivedUnion(project));
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -318,10 +319,11 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     /**
      * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, Integer id) {
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         type = AssociationType.getRelationType(element.getAttribute(PROPERTY_ASSOCIATION_TYPE));
-        if (type==null) {
+        if (type == null) {
             type = IAssociation.DEFAULT_RELATION_TYPE;
         }
         target = element.getAttribute(PROPERTY_TARGET);
@@ -345,10 +347,11 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_ASSOCIATION_TYPE, type.getId());
@@ -356,54 +359,53 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
         newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
-        
+
         if (maxCardinality == CARDINALITY_MANY) {
             newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "*"); //$NON-NLS-1$
         } else {
             newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
         }
-        
+
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion); 
+        newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this,  //$NON-NLS-1$
-                PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
-        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Association_msg_TargetRoleSingular, this, PROPERTY_TARGET_ROLE_SINGULAR,
-                MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
+        ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this, //$NON-NLS-1$
+                PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list);
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Association_msg_TargetRoleSingular,
+                this, PROPERTY_TARGET_ROLE_SINGULAR, MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
         if (maxCardinality == 0) {
             String text = Messages.Association_msg_MaxCardinalityMustBeAtLeast1;
-            list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this,
+                    PROPERTY_MAX_CARDINALITY));
         } else if (is1To1() && isDerivedUnion()) {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
-            list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this,
+                    new String[] { PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY }));
         } else if (minCardinality > maxCardinality) {
             String text = Messages.Association_msg_MinCardinalityGreaterThanMaxCardinality;
-            list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
+                    PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
         }
-        
+
         if (is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
-            ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural,
-                    Messages.Association_msg_TargetRolePlural, this, PROPERTY_TARGET_ROLE_PLURAL,
-                    MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
+            ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural, Messages.Association_msg_TargetRolePlural,
+                    this, PROPERTY_TARGET_ROLE_PLURAL, MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
         }
-        if (StringUtils.isNotEmpty(this.getTargetRolePlural())
-                && this.getTargetRolePlural().equals(this.getTargetRoleSingular())) {
+        if (StringUtils.isNotEmpty(getTargetRolePlural()) && getTargetRolePlural().equals(getTargetRoleSingular())) {
             String text = Messages.Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
-            list.add(new Message(
-                    MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR,
-                    text, Message.ERROR, this, new String[] {
-                            PROPERTY_TARGET_ROLE_SINGULAR,
-                            PROPERTY_TARGET_ROLE_PLURAL }));
+            list.add(new Message(MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR, text, Message.ERROR, this,
+                    new String[] { PROPERTY_TARGET_ROLE_SINGULAR, PROPERTY_TARGET_ROLE_PLURAL }));
         }
         validateDerivedUnion(list, ipsProject);
     }
-    
+
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(subsettedDerivedUnion)) {
             return;
@@ -415,43 +417,47 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
             return;
         }
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
-        if (unionAss==null) {
+        if (unionAss == null) {
             String text = NLS.bind(Messages.Association_msg_DerivedUnionDoesNotExist, subsettedDerivedUnion);
-            list.add(new Message(MSGCODE_DERIVED_UNION_NOT_FOUND, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DERIVED_UNION_NOT_FOUND, text, Message.ERROR, this,
+                    PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
         if (!unionAss.isDerivedUnion()) {
             String text = Messages.Association_msg_NotMarkedAsDerivedUnion;
-            list.add(new Message(MSGCODE_NOT_MARKED_AS_DERIVED_UNION, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_NOT_MARKED_AS_DERIVED_UNION, text, Message.ERROR, this,
+                    PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
-        if(unionAss.isQualified() && isQualified()){
-            if(unionAss.getMaxCardinality() < getMaxCardinality()){
-                list.add(new Message(MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY, 
-                        Messages.Association_msgSubsetOfDerivedUnionSameMaxCardinality, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+        if (unionAss.isQualified() && isQualified()) {
+            if (unionAss.getMaxCardinality() < getMaxCardinality()) {
+                list.add(new Message(MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY,
+                        Messages.Association_msgSubsetOfDerivedUnionSameMaxCardinality, Message.ERROR, this,
+                        PROPERTY_MAX_CARDINALITY));
             }
         }
         IType unionTarget = unionAss.findTarget(ipsProject);
-        if (unionTarget==null) {
+        if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
-            list.add(new Message(MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST, text, Message.WARNING, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST, text, Message.WARNING, this,
+                    PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
         IType targetType = findTarget(ipsProject);
-        if (targetType!=null && !targetType.isSubtypeOrSameType(unionTarget, ipsProject)) {
+        if (targetType != null && !targetType.isSubtypeOrSameType(unionTarget, ipsProject)) {
             String text = Messages.Association_msg_TargetNotSubclass;
-            list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION));     //$NON-NLS-1$
+            list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this,
+                    PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
-        
+
     }
-    
-    
+
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {
 
         private List<IAssociation> candidates = new ArrayList<IAssociation>();
         private IType targetType;
-        
+
         public DerivedUnionCandidatesFinder(IType targetType, IIpsProject ipsProject) {
             super(ipsProject);
             this.targetType = targetType;
@@ -460,25 +466,27 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAssociation[] associations = currentType.getAssociations();
             for (int j = 0; j < associations.length; j++) {
-                if (!associations[j].isDerivedUnion()){
+                if (!associations[j].isDerivedUnion()) {
                     continue;
                 }
-                if(associations[j].equals(Association.this)){
+                if (associations[j].equals(Association.this)) {
                     continue;
                 }
                 IType derivedUnionTarget = associations[j].findTarget(ipsProject);
-                if (derivedUnionTarget == null)
+                if (derivedUnionTarget == null) {
                     continue;
-                
+                }
+
                 if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
                     candidates.add(associations[j]);
                 }
             }
             return true;
         }
-        
+
     }
 }

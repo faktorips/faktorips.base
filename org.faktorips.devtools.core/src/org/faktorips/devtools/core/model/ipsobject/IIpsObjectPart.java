@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,30 +13,27 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-
-
-
 /**
  *
  */
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
-    
+
     public final static String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
     public final static String PROPERTY_ID = "id"; //$NON-NLS-1$
-        
+
     /**
      * The part's id that uniquely identifies it in it's parent.
      */
-    public int getId();
+    public String getId();
 
     /**
-     * Deletes the part. 
+     * Deletes the part.
      */
     public void delete();
-    
+
     /**
-     * Returns whether the part was deleted (<code>true</code>) or not. 
+     * Returns whether the part was deleted (<code>true</code>) or not.
      */
     public boolean isDeleted();
-    
+
 }
