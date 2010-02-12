@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -137,7 +136,7 @@ public class ArchiveComposite extends Composite {
         tableViewer.addSelectionChangedListener(archiveAdapter);
 
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
-        contentProvider.setIncludedClasses(Arrays.asList(new Class[] { IIpsArchiveEntry.class }));
+        contentProvider.setIncludedClasses(IIpsArchiveEntry.class);
         tableViewer.setContentProvider(contentProvider);
 
         tableViewer.setLabelProvider(new DecoratingLabelProvider(new IpsObjectPathLabelProvider(), IpsPlugin

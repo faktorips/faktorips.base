@@ -54,12 +54,12 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     /**
      * List of patterns to be applied to lines in getStylesForRestOfLine().
      */
-    protected List linePatternList = new ArrayList();
+    protected List<Pattern> linePatternList = new ArrayList<Pattern>();
     /**
      * Maps patterns to specific highlight colors and thus defines a colour for specific tokens 
      * should in which the should be displayed. 
      */
-    private Map highlightColorMap = new HashMap();
+    private Map<Pattern, Color> highlightColorMap = new HashMap<Pattern, Color>();
 
     public CompareViewerLineStyleListener(SourceViewer viewer) {
         // init patterns and map highlight colors for productCmpts
@@ -104,13 +104,13 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     public void lineGetStyle(LineStyleEvent event) {
         String lineText = event.lineText;
         int lineOffset = event.lineOffset;
-        List styleList = new ArrayList();
+        List<StyleRange> styleList = new ArrayList<StyleRange>();
 
         styleList.addAll(getStylesForLineStart(lineText, lineOffset));
         styleList.addAll(getStylesForRestOfLine(lineText, lineOffset));
 
         StyleRange[] styleArray = new StyleRange[styleList.size()];
-        event.styles = (StyleRange[])styleList.toArray(styleArray);
+        event.styles = styleList.toArray(styleArray);
     }
 
     /**
@@ -125,8 +125,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * @param lineOffset
      * @return
      */
-    protected List getStylesForLineStart(String lineText, int lineOffset) {
-        List styleList = new ArrayList();
+    protected List<StyleRange> getStylesForLineStart(String lineText, int lineOffset) {
+        List<StyleRange> styleList = new ArrayList<StyleRange>();
 
         Matcher genDateMatcher = genDatePattern.matcher(lineText);
         Matcher genSeparatorMatcher = genSeparatorPattern.matcher(lineText);
@@ -151,14 +151,14 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * @param lineOffset
      * @return
      */
-    protected List getStylesForRestOfLine(String lineText, int lineOffset) {
-        List styleList = new ArrayList();
-        for (Iterator iter = linePatternList.iterator(); iter.hasNext();) {
-            Pattern pattern = (Pattern)iter.next();
+    protected List<StyleRange> getStylesForRestOfLine(String lineText, int lineOffset) {
+        List<StyleRange> styleList = new ArrayList<StyleRange>();
+        for (Iterator<Pattern> iter = linePatternList.iterator(); iter.hasNext();) {
+            Pattern pattern = iter.next();
             Matcher matcher = pattern.matcher(lineText);
             if (matcher.find()) {
                 int start = matcher.start();
-                Color highlight = (Color)highlightColorMap.get(pattern); // if null, default foreground is used
+                Color highlight = highlightColorMap.get(pattern); // if null, default foreground is used
                 styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight,
                         null, SWT.BOLD));
                 break;

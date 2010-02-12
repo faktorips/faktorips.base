@@ -120,7 +120,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         if (selection instanceof IStructuredSelection) {
             try {
                 IStructuredSelection sel = (IStructuredSelection)selection;
-                for (Iterator iter = sel.iterator(); iter.hasNext();) {
+                for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                     Object selected = iter.next();
                     addElementToFix(ipsElementsToFix, selected);
                 }
@@ -175,7 +175,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(jProject.getProject());
     }
 
-    private void addIpsElement(IIpsElement element, Set ipsElementsToFix) throws CoreException {
+    private void addIpsElement(IIpsElement element, Set<IFixDifferencesToModelSupport> ipsElementsToFix) throws CoreException {
         if (element == null) {
             return;
         }
@@ -201,7 +201,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         }
     }
 
-    private void addIpsElements(IIpsPackageFragment pack, Set ipsElementsToFix) throws CoreException {
+    private void addIpsElements(IIpsPackageFragment pack, Set<IFixDifferencesToModelSupport> ipsElementsToFix) throws CoreException {
         IIpsElement[] elements = pack.getChildren();
         for (int i = 0; i < elements.length; i++) {
             IIpsElement element = elements[i];

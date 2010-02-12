@@ -313,7 +313,7 @@ public class ProductCmptTypePage extends TypePage {
      * {@inheritDoc}
      */
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
         IProductCmptType productCmptType = (IProductCmptType)newIpsObject;
         if (pageOfAssociatedType != null) {

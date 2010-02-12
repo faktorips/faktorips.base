@@ -177,7 +177,7 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
      * Returns all ips package fragments of all projects in the current workspace.
      */
     IIpsPackageFragment[] getPackageFragments() {
-        ArrayList packageFragmentList = new ArrayList();
+        ArrayList<IIpsPackageFragment> packageFragmentList = new ArrayList<IIpsPackageFragment>();
         try {
             IIpsProject[] ipsProjects;
             ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
@@ -193,7 +193,7 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
                     }
                 }
             }
-            return (IIpsPackageFragment[])packageFragmentList.toArray(new IIpsPackageFragment[0]);
+            return packageFragmentList.toArray(new IIpsPackageFragment[0]);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
@@ -114,7 +113,7 @@ public class ReferencedProjectsComposite extends Composite {
         tableViewer.addSelectionChangedListener(projectAdapter);
 
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
-        contentProvider.setIncludedClasses(Arrays.asList(new Class[] { IIpsProjectRefEntry.class }));
+        contentProvider.setIncludedClasses(IIpsProjectRefEntry.class);
         tableViewer.setContentProvider(contentProvider);
 
         tableViewer.setLabelProvider(new DecoratingLabelProvider(new IpsObjectPathLabelProvider(), IpsPlugin

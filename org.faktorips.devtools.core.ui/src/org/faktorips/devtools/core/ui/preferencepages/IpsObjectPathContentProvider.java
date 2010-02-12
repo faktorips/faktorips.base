@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -30,14 +29,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
  */
 public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
-    private List includedClasses;
+    private Class<? extends IIpsObjectPathEntry> includedClasses;
 
     /**
      * Only classes contained in the given list are returned or null.
      * 
      * @param list of classes
      */
-    public void setIncludedClasses(List includedClasses) {
+    public void setIncludedClasses(Class<? extends IIpsObjectPathEntry> includedClasses) {
         this.includedClasses = includedClasses;
     }
 
@@ -57,7 +56,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         // handling attributes of IIpsSrcFolderEntries
         if (parentElement instanceof IIpsSrcFolderEntry) {
 
-            ArrayList attributes = new ArrayList();
+            ArrayList<IIpsObjectPathEntryAttribute> attributes = new ArrayList<IIpsObjectPathEntryAttribute>();
 
             // tocPath is always configurable
             IIpsObjectPathEntryAttribute attribute = newTocPath(entry);
@@ -83,24 +82,13 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         return result;
     }
 
-    private boolean passesFilter(Object o) {
+    private boolean passesFilter(IIpsObjectPathEntry o) {
 
         if (includedClasses == null) {
             return true;
         } else {
-
-            for (int i = 0; i < includedClasses.size(); i++) {
-                Class c1 = o.getClass();
-                Class c2 = (Class)includedClasses.get(i);
-                if (c2.isAssignableFrom(c1)) {
-                    if (o instanceof IIpsArchiveEntry) {
-                        equals(o);
-                    }
-                    return true;
-                }
-            }
+            return includedClasses.isAssignableFrom(o.getClass());
         }
-        return false;
     }
 
     /**
@@ -139,10 +127,10 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
                 returnedElements = entries;
             } else {
                 // do filtering
-                List passedEntries = new ArrayList();
-                for (int i = 0; i < entries.length; i++) {
-                    if (passesFilter(entries[i])) {
-                        passedEntries.add(entries[i]);
+                List<IIpsObjectPathEntry> passedEntries = new ArrayList<IIpsObjectPathEntry>();
+                for (IIpsObjectPathEntry entrie : entries) {
+                    if (passesFilter(entrie)) {
+                        passedEntries.add(entrie);
                     }
                 }
                 returnedElements = passedEntries.toArray();

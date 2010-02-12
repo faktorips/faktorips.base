@@ -317,7 +317,7 @@ public class TestRunPane {
         tableItem.setText(qualifiedTestName);
         tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(testImageDescriptor));
 
-        TestTableEntry testTableEntry = new TestTableEntry(testId, qualifiedTestName, tableItem);
+        TestTableEntry testTableEntry = new TestTableEntry(qualifiedTestName, tableItem);
         fTableItemMap.put(testId, testTableEntry);
         tableItem.setData(testTableEntry);
         // stores the given full path of the test case file
@@ -462,7 +462,6 @@ public class TestRunPane {
         public static final int ERROR = -1;
         public static final int FAILURE = 0;
         public static final int UNKNOWN = 2;
-        private String testId;
         private String qualifiedTestName;
         private String fullPath;
         private TableItem tableItem;
@@ -471,8 +470,7 @@ public class TestRunPane {
         private List<String[]> failureDetailList = new ArrayList<String[]>();
         private String[] errorDetails = EMPTY_STRING_ARRAY;
 
-        TestTableEntry(String testId, String qualifiedTestName, TableItem tableItem) {
-            this.testId = testId;
+        TestTableEntry(String qualifiedTestName, TableItem tableItem) {
             this.qualifiedTestName = qualifiedTestName;
             this.tableItem = tableItem;
         }

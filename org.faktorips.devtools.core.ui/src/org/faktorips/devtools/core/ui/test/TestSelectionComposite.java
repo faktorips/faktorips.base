@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -58,10 +58,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public class TestSelectionComposite extends Composite  {
+public class TestSelectionComposite extends Composite {
     private UIToolkit toolkit;
 
-    private List listeners = new ArrayList(1);
+    private List<ITestConfigurationChangeListener> listeners = new ArrayList<ITestConfigurationChangeListener>(1);
 
     // buttons
     private Button newButton;
@@ -70,16 +70,17 @@ public class TestSelectionComposite extends Composite  {
     private Button downButton;
 
     private Table table;
-    
+
     private TableViewer viewer;
-    
-    private List content = new ArrayList();
+
+    private List<Object> content = new ArrayList<Object>();
 
     private IIpsProject project;
 
     private Button newSuiteButton;
-    
-    private class TestSuiteLabelProvider extends DefaultLabelProvider{
+
+    private class TestSuiteLabelProvider extends DefaultLabelProvider {
+        @Override
         public String getText(Object element) {
             String text = ""; //$NON-NLS-1$
             String pckFrgmtRootName = ""; //$NON-NLS-1$
@@ -88,22 +89,22 @@ public class TestSelectionComposite extends Composite  {
                 pckFrgmtRootName = ((IIpsObject)element).getIpsPackageFragment().getRoot().getName();
             } else {
                 text = super.getText(element);
-                if (element instanceof IIpsPackageFragment){
+                if (element instanceof IIpsPackageFragment) {
                     pckFrgmtRootName = ((IIpsPackageFragment)element).getRoot().getName();
                 }
             }
-            return text + (pckFrgmtRootName.length()>0?" (" + pckFrgmtRootName + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return text + (pckFrgmtRootName.length() > 0 ? " (" + pckFrgmtRootName + ")" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
-    
+
     public TestSelectionComposite(Composite parent) {
         super(parent, SWT.NONE);
-        this.toolkit = new UIToolkit(null);
+        toolkit = new UIToolkit(null);
 
-        this.setLayout(new GridLayout(1, true));
-        
+        setLayout(new GridLayout(1, true));
+
         Composite tableWithBtns = toolkit.createGridComposite(this, 2, false, true);
-        
+
         tableWithBtns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer = createViewer(tableWithBtns, toolkit);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -112,7 +113,7 @@ public class TestSelectionComposite extends Composite  {
                 updateButtonEnabledStates();
             }
         });
-        
+
         Composite buttons = toolkit.createComposite(tableWithBtns);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
@@ -122,7 +123,7 @@ public class TestSelectionComposite extends Composite  {
         buttons.setLayout(buttonLayout);
         createButtons(buttons, toolkit);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -145,7 +146,7 @@ public class TestSelectionComposite extends Composite  {
         viewer.setLabelProvider(new TestSuiteLabelProvider());
 
         viewer.setInput(content);
-        
+
         return viewer;
     }
 
@@ -155,7 +156,7 @@ public class TestSelectionComposite extends Composite  {
         data.heightHint = 5;
         spacer.setLayoutData(data);
     }
-    
+
     private final void createNewButton(final Composite buttons, UIToolkit toolkit) {
         newButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonAddTestCase);
         newButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -167,6 +168,7 @@ public class TestSelectionComposite extends Composite  {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -183,6 +185,7 @@ public class TestSelectionComposite extends Composite  {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -199,28 +202,29 @@ public class TestSelectionComposite extends Composite  {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
     }
 
-    private IStructuredSelection getSelectedObjects(){
+    private IStructuredSelection getSelectedObjects() {
         ISelection selection = viewer.getSelection();
         if (selection instanceof IStructuredSelection) {
             return (IStructuredSelection)selection;
         }
         return StructuredSelection.EMPTY;
     }
-    
+
     private void deleteElement() {
-        for (Iterator iter = getSelectedObjects().iterator(); iter.hasNext();) {
+        for (Iterator<?> iter = getSelectedObjects().iterator(); iter.hasNext();) {
             Object selectedObj = iter.next();
             viewer.remove(selectedObj);
             content.remove(selectedObj);
         }
         notifyListener();
     }
-    
+
     private final void createMoveButtons(Composite buttons, UIToolkit toolkit) {
         upButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonUp);
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -232,6 +236,7 @@ public class TestSelectionComposite extends Composite  {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -245,14 +250,15 @@ public class TestSelectionComposite extends Composite  {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+
     }
 
     private void moveParts(boolean up) {
-        ListElementMover mover = new ListElementMover(content);
+        ListElementMover<Object> mover = new ListElementMover<Object>(content);
         mover.move(viewer.getTable().getSelectionIndices(), up);
         viewer.refresh();
         notifyListener();
@@ -270,19 +276,18 @@ public class TestSelectionComposite extends Composite  {
                 Object[] result = dialog.getResult();
                 Object lastAdded = null;
                 for (int i = 0; i < result.length; i++) {
-                    if (!content.contains(result[i])){
+                    if (!content.contains(result[i])) {
                         content.add(result[i]);
                     }
                     lastAdded = result[i];
                 }
                 viewer.refresh();
-                if (lastAdded != null){
+                if (lastAdded != null) {
                     viewer.setSelection(new StructuredSelection(lastAdded));
                 }
                 notifyListener();
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -302,15 +307,14 @@ public class TestSelectionComposite extends Composite  {
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
-        }        
+        }
     }
-
 
     /**
      * Returns all ips package fragments of all projects in the current workspace.
      */
     private IIpsPackageFragment[] getPackageFragments() {
-        ArrayList packageFragmentList = new ArrayList();
+        ArrayList<IIpsPackageFragment> packageFragmentList = new ArrayList<IIpsPackageFragment>();
         try {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (int j = 0; j < roots.length; j++) {
@@ -322,13 +326,13 @@ public class TestSelectionComposite extends Composite  {
                     packageFragmentList.add(childs[k]);
                 }
             }
-            return (IIpsPackageFragment[])packageFragmentList.toArray(new IIpsPackageFragment[0]);
+            return packageFragmentList.toArray(new IIpsPackageFragment[0]);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return new IIpsPackageFragment[0];
     }
-    
+
     /**
      * Calls <code>IIpsProject#findAllIpsObjects()</code> on all projects in the workspace and
      * returns the collective list of <code>IIpsObject</code>s.
@@ -336,56 +340,57 @@ public class TestSelectionComposite extends Composite  {
      * @throws CoreException if getting objects from a <code>IIpsProject</code> fails.
      */
     public IIpsObject[] getAllIpsTestObjects() throws CoreException {
-        List list = new ArrayList();
-        list.addAll(new ArrayList(Arrays.asList(project.findIpsObjects(IpsObjectType.TEST_CASE))));
-        list.addAll(new ArrayList(Arrays.asList(project.findIpsObjects(IpsObjectType.PRODUCT_CMPT))));
-        return (IIpsObject[])list.toArray(new IIpsObject[list.size()]);
+        List<IIpsObject> list = new ArrayList<IIpsObject>();
+        list.addAll(new ArrayList<IIpsObject>(Arrays.asList(project.findIpsObjects(IpsObjectType.TEST_CASE))));
+        list.addAll(new ArrayList<IIpsObject>(Arrays.asList(project.findIpsObjects(IpsObjectType.PRODUCT_CMPT))));
+        return list.toArray(new IIpsObject[list.size()]);
     }
-    
-    public void initContent(IIpsProject project, String tocPaths, String testSuites) throws CoreException{
+
+    public void initContent(IIpsProject project, String tocPaths, String testSuites) throws CoreException {
         ArgumentCheck.notNull(project);
-        
+
         this.project = project;
         content.clear();
 
-        List testSuiteList = AbstractIpsTestRunner.extractListFromString(testSuites);
-        if (project == null){
+        List<String> testSuiteList = AbstractIpsTestRunner.extractListFromString(testSuites);
+        if (project == null) {
             throw new CoreException(new IpsStatus(Messages.TestSelectionComposite_errorProjectNotDetermined));
         }
-        
-        for (int i = 0; i < testSuiteList.size(); i++) {
-            String qualifiedName = (String)testSuiteList.get(i);
+
+        for (String qualifiedName : testSuiteList) {
             IIpsObject testCase = project.findIpsObject(IpsObjectType.TEST_CASE, qualifiedName);
-            if (testCase!=null){
+            if (testCase != null) {
                 content.add(testCase);
                 continue;
             }
             IProductCmpt productCmpt = project.findProductCmpt(qualifiedName);
-            if (productCmpt!=null){
+            if (productCmpt != null) {
                 content.add(productCmpt);
                 continue;
             }
             boolean found = false;
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-            for (int j = 0; j < roots.length; j++) {
-                IIpsPackageFragment[] frgmts = roots[j].getIpsPackageFragments();
+            for (IIpsPackageFragmentRoot root : roots) {
+                IIpsPackageFragment[] frgmts = root.getIpsPackageFragments();
                 for (int k = 0; k < frgmts.length; k++) {
-                    if (frgmts[k].getName().equals(qualifiedName)){
+                    if (frgmts[k].getName().equals(qualifiedName)) {
                         content.add(frgmts[k]);
                         found = true;
                         break;
                     }
                 }
-                if (found) break;
+                if (found) {
+                    break;
+                }
             }
         }
         updateButtonEnabledStates();
         viewer.refresh();
     }
-    
+
     public String getPackageFragmentRootText() throws CoreException {
-        List roots = new ArrayList();
-        for (Iterator iter = content.iterator(); iter.hasNext();) {
+        List<String> roots = new ArrayList<String>();
+        for (Iterator<Object> iter = content.iterator(); iter.hasNext();) {
             IIpsElement element = (IIpsElement)iter.next();
             if (element instanceof IIpsPackageFragment) {
                 roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(((IIpsPackageFragment)element).getRoot()));
@@ -394,9 +399,9 @@ public class TestSelectionComposite extends Composite  {
                         .getRoot()));
             }
         }
-        if (roots.size() == 0){
+        if (roots.size() == 0) {
             IIpsPackageFragmentRoot[] rootsFromProject = project.getIpsPackageFragmentRoots();
-            if (rootsFromProject.length > 0){
+            if (rootsFromProject.length > 0) {
                 roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(rootsFromProject[0]));
             }
         }
@@ -404,8 +409,8 @@ public class TestSelectionComposite extends Composite  {
     }
 
     public String getTestCasesText() throws CoreException {
-        List testSuites = new ArrayList();
-        for (Iterator iter = content.iterator(); iter.hasNext();) {
+        List<String> testSuites = new ArrayList<String>();
+        for (Iterator<Object> iter = content.iterator(); iter.hasNext();) {
             IIpsElement element = (IIpsElement)iter.next();
             if (element instanceof IIpsPackageFragment) {
                 testSuites.add(((IIpsPackageFragment)element).getName());
@@ -415,23 +420,23 @@ public class TestSelectionComposite extends Composite  {
         }
         return AbstractIpsTestRunner.toStringFromList(testSuites);
     }
-    
-    public void addChangeListener(ITestConfigurationChangeListener listener){
+
+    public void addChangeListener(ITestConfigurationChangeListener listener) {
         listeners.add(listener);
     }
-    
-    private void notifyListener(){
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            ITestConfigurationChangeListener l = (ITestConfigurationChangeListener)iter.next();
+
+    private void notifyListener() {
+        for (Iterator<ITestConfigurationChangeListener> iter = listeners.iterator(); iter.hasNext();) {
+            ITestConfigurationChangeListener l = iter.next();
             l.testConfigurationHasChanged();
         }
     }
-    
-    private void updateButtonEnabledStates(){
+
+    private void updateButtonEnabledStates() {
         setButtonStateSelBtns(getSelectedObjects().getFirstElement() != null);
     }
-    
-    private void setButtonStateSelBtns(boolean enabled){
+
+    private void setButtonStateSelBtns(boolean enabled) {
         deleteButton.setEnabled(enabled);
         upButton.setEnabled(enabled);
         downButton.setEnabled(enabled);

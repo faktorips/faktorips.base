@@ -34,10 +34,10 @@ import org.faktorips.util.ArgumentCheck;
  * @author Daniel Hohenberger
  */
 public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWizard {
-    private Set ipsElementsToFix;
+    private Set<? extends Object> ipsElementsToFix;
     private ElementSelectionPage elementSelectionPage;
 
-    public FixDifferencesToModelWizard(Set ipsElementsToFix) {
+    public FixDifferencesToModelWizard(Set<? extends Object> ipsElementsToFix) {
         ArgumentCheck.notNull(ipsElementsToFix, this);
         this.ipsElementsToFix = ipsElementsToFix;
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);

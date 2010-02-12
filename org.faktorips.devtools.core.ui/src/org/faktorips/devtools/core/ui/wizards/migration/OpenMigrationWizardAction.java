@@ -84,7 +84,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
         if (selection instanceof IStructuredSelection) {
             preSelected = new ArrayList<IIpsProject>();
             IStructuredSelection sel = (IStructuredSelection)selection;
-            for (Iterator iter = sel.iterator(); iter.hasNext();) {
+            for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
                     IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(

@@ -42,11 +42,11 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Daniel Hohenberger
  */
 public class ElementSelectionPage extends WizardPage {
-    private Set<Object> ipsElementsToFix;
+    private Set<? extends Object> ipsElementsToFix;
     private CheckboxTreeViewer treeViewer;
     private ContentProvider contentProvider;
 
-    public ElementSelectionPage(Set<Object> ipsElementsToFix) {
+    public ElementSelectionPage(Set<? extends Object> ipsElementsToFix) {
         super(Messages.ElementSelectionPage_SelectElementsMessage);
         this.ipsElementsToFix = ipsElementsToFix;
         setTitle(Messages.FixDifferencesToModelWizard_Title);

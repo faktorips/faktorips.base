@@ -181,35 +181,6 @@ public class FailurePane implements IMenuListener {
             return testName.length() > 0 && fileName.length() > 0 && line > 0;
         }
 
-        /**
-         * Returns <code>true</code> if the element is an valid element in the java projects source
-         * folder.
-         */
-        public boolean isValidProjectSourceElement() {
-            if (!isValidElement()) {
-                return false;
-            }
-            try {
-                // find the java element, all elements in the whole classpath are searched
-                IJavaElement file = findElement(viewPart.getLaunchedProject(), testName);
-                // check if there is a valid editor input for the found element,
-                // see method getEditorInput for further details. The method returns only an valid
-                // input
-                // if the element is a compilation unit, means a source file (but no classfile),
-                // therefore only elements in the source folder are valid and no class elements in
-                // jars
-                // or binary folders.
-                // This is ok, because only elements which are visible and editable by the user
-                // should be displayed in the stacktrace.
-                IEditorInput editorInput = getEditorInput(file, fileName);
-                if (editorInput != null) {
-                    return true;
-                }
-            } catch (Exception e) {
-                // ignore exception
-            }
-            return false;
-        }
     }
 
     public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart, Clipboard clipboard) {

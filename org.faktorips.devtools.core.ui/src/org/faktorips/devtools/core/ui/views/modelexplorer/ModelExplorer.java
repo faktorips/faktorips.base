@@ -511,9 +511,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         private IPartService partService;
 
-        /** indicates if the last activation event was triggered by the model explorer. */
-        private boolean activatedByModelExplorer;
-
         /**
          * Creates a new activation listener.
          * 
@@ -523,17 +520,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             this.partService = partService;
             partService.addPartListener(this);
             PlatformUI.getWorkbench().addWindowListener(this);
-        }
-
-        /**
-         * Sets the "activation by model explorer" flag. Set <code>true</code> if the next
-         * activation event was initiated by the model explorer.
-         * 
-         * @param activatedByModelExplorer Flag indicating whether the next activation event was
-         *            initiated by the model explorer.
-         */
-        public void setActivatedByModelExplorer(boolean activatedByModelExplorer) {
-            this.activatedByModelExplorer = activatedByModelExplorer;
         }
 
         /**
@@ -628,13 +614,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            editorActivationListener.setActivatedByModelExplorer(true);
-            IEditorPart editorPart = openEditorsForSelection();
-            if (editorPart == null) {
-                // editor wasn't opened, therefore the activation flag must be reseted
-                editorActivationListener.setActivatedByModelExplorer(false);
-            }
-
+            openEditorsForSelection();
             collapsOrExpandTree(event);
         }
 
