@@ -13,7 +13,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -47,7 +47,8 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			return new TableStructureContentPageElement((ITableStructure) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS)
 			return new TableContentsContentPageElement((ITableContents) object, config);
-		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " " + object.getIpsObjectType());
+		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " "
+				+ object.getIpsObjectType());
 	}
 
 	protected AbstractObjectContentPageElement(T object, DocumentorConfiguration config) {
@@ -59,11 +60,14 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	@Override
 	public void build() {
 		super.build();
-		
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new LinkPageElement("index", "_top", "Start")));
-		
-		addPageElements(new LinkPageElement(object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object.getIpsPackageFragment()), true));
-		addPageElements(new TextPageElement(object.getIpsObjectType().getDisplayName() + " " + object.getName(), TextType.HEADING_1));
+
+		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top",
+				"Overview Project " + config.getIpsProject().getName())));
+
+		addPageElements(new LinkPageElement(object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object
+				.getIpsPackageFragment()), true));
+		addPageElements(new TextPageElement(object.getIpsObjectType().getDisplayName() + " " + object.getName(),
+				TextType.HEADING_1));
 
 		// Typhierarchie
 		addTypeHierarchie();
@@ -71,7 +75,11 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 		// Strukturdaten
 		addPageElements(new TextPageElement(object.getName(), TextType.HEADING_2));
 		addStructureData();
-		addPageElements(new TextPageElement("Projektverzeichnis: " + object.getIpsSrcFile().getIpsPackageFragment()));
+
+		if (!object.getIpsProject().equals(config.getIpsProject())) {
+			addPageElements(TextPageElement.createParagraph("Projekt: " + object.getIpsProject().getName()));
+		}
+		addPageElements(TextPageElement.createParagraph("Projektverzeichnis: " + object.getIpsSrcFile().getIpsPackageFragment()));
 
 		// Beschreibung
 		addPageElements(new TextPageElement("Beschreibung", TextType.HEADING_2));
@@ -90,7 +98,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			if (messageList.isEmpty())
 				return;
 
-			WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+			WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 			wrapper.addPageElements(new TextPageElement("Validation Errors", TextType.HEADING_2));
 
 			TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
@@ -111,7 +119,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	}
 
 	/*
-	 * zum Ueberschreiben fuer Subklassen
+	 * Einhaengen von objektspezifischen Super- und Subklassen
 	 */
 	protected void addTypeHierarchie() {
 	}
@@ -120,8 +128,9 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	public String getPathToRoot() {
 		return PathUtilFactory.createPathUtil(object).getPathToRoot();
 	}
-	
-	protected PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement, String alternativeText) {
+
+	protected PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement,
+			String alternativeText) {
 		if (tablePageElement.isEmpty()) {
 			return new TextPageElement(alternativeText);
 		}

@@ -1,14 +1,14 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
 public class TableCellPageElement extends WrapperPageElement {
 
 	public TableCellPageElement(PageElement... pageElements) {
-		super(PageElementWrapperType.TABLECELL, pageElements);
+		super(WrapperType.TABLECELL, pageElements);
 	}
 	
 	@Override

@@ -9,6 +9,10 @@ public class TextPageElement extends AbstractPageElement {
     private String text;
     private TextType type;
 
+    public static TextPageElement createParagraph(String text) {
+    	return new TextPageElement(text, TextType.BLOCK);
+    }
+    
     public TextPageElement(String text, Set<Style> styles, TextType type) {
         super(styles);
         this.text = text;

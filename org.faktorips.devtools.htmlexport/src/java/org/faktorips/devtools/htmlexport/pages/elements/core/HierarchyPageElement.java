@@ -1,12 +1,12 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 public class HierarchyPageElement extends WrapperPageElement {
-	WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+	WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
 	public HierarchyPageElement(PageElement titlePageElement) {
-		super(PageElementWrapperType.BLOCK);
+		super(WrapperType.BLOCK);
 		addSubElement(titlePageElement);
 
 		wrapper.addStyles(Style.INDENTION);
@@ -20,7 +20,8 @@ public class HierarchyPageElement extends WrapperPageElement {
 	}
 
 	@Override
-	public void addPageElements(PageElement... pageElements) {
+	public AbstractCompositePageElement addPageElements(PageElement... pageElements) {
 		wrapper.addPageElements(pageElements);
+		return this;
 	}
 }

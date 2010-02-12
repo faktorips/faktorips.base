@@ -2,6 +2,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -41,7 +42,7 @@ public abstract class AbstractSpecificTablePageElement extends TablePageElement 
 	 * keine eigenen hinzugefügten Elemente werden ignoriert
 	 */
 	@Override
-	public void addPageElements(PageElement... pageElements) {
+	public AbstractCompositePageElement addPageElements(PageElement... pageElements) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -3,7 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 /**
  * HilfsElement, um Strukturen ohne eigenes Layout abzubilden z.B.
@@ -13,17 +13,17 @@ import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
  * 
  */
 public class WrapperPageElement extends AbstractCompositePageElement {
-	PageElementWrapperType wrapperType;
+	WrapperType wrapperType;
 
-	public WrapperPageElement(PageElementWrapperType wrapperType) {
+	public WrapperPageElement(WrapperType wrapperType) {
 		this.wrapperType = wrapperType;
 	}
 
-	public WrapperPageElement(PageElementWrapperType wrapperType, PageElement... pageElements) {
+	public WrapperPageElement(WrapperType wrapperType, PageElement... pageElements) {
 		this(wrapperType, null, pageElements);
 	}
 
-	public WrapperPageElement(PageElementWrapperType wrapperType, Set<Style> styles, PageElement... pageElements) {
+	public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, PageElement... pageElements) {
 		super();
 		addPageElements(pageElements);
 		if (styles != null) {
@@ -41,11 +41,11 @@ public class WrapperPageElement extends AbstractCompositePageElement {
 		layouter.layoutWrapperPageElement(this);
 	}
 
-	public PageElementWrapperType getWrapperType() {
+	public WrapperType getWrapperType() {
 		return wrapperType;
 	}
 
-	public void setWrapperType(PageElementWrapperType wrapperType) {
+	public void setWrapperType(WrapperType wrapperType) {
 		this.wrapperType = wrapperType;
 	}
 }

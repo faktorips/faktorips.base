@@ -13,7 +13,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -84,7 +84,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 		super.addStructureData();
 
 		ITableStructure tableStructure = findTableStructure();
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 				new TextPageElement("Tabellenstruktur: "),
 				new LinkPageElement(tableStructure, "content", tableStructure.getName(), true) }));
 
@@ -100,7 +100,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 	}
 
 	private PageElement createContentTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Inhalt", TextType.HEADING_2));
 
 		if (object.getNumOfGenerations() == 0) {
@@ -114,7 +114,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 			ITableContentsGeneration tableContentsGeneration = (ITableContentsGeneration) ipsObjectGeneration;
 			
 			wrapper.addPageElements(new TextPageElement("Anpassungsstufe " + tableContentsGeneration.getName(),
-					TextType.HEADING_2));
+					TextType.HEADING_3));
 			wrapper.addPageElements(new TextPageElement("Beschreibung: " + tableContentsGeneration.getDescription()));
 
 			wrapper.addPageElements(getTableOrAlternativeText(new ContentTablePageElement(tableContentsGeneration),

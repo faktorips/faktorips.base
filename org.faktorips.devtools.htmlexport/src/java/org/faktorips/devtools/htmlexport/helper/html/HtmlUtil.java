@@ -1,6 +1,9 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -9,7 +12,9 @@ import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 public class HtmlUtil {
-
+	private static final DateFormat META_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	
+	
 	public static String createDocFrame(String title, String colDefinition, String rowsDefinition) {
 		StringBuilder builder = new StringBuilder();
 
@@ -41,6 +46,7 @@ public class HtmlUtil {
 		builder.append(title);
 		builder.append("</title>");
 		builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />");
+		builder.append("<meta name=\"date\" content=\"" + META_DATE_FORMAT.format(new Date()) + "\" />");
 		if (!StringUtils.isBlank(styles)) {
 			builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
 			builder.append(styles);

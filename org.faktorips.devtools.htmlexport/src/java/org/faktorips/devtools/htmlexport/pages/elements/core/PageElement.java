@@ -8,7 +8,7 @@ public interface PageElement {
 
     public Set<Style> getStyles();
 
-    public void addStyles(Style... style);
+    public PageElement addStyles(Style... style);
 
     public void removeStyles(Style... style);
 

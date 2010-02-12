@@ -29,6 +29,15 @@ body {
 	text-align: left;
 }
 
+.SMALL {
+	font-size: 75%;	
+}
+
+.BIG {
+	font-size: 125%;	
+}
+
+
 .BORDER {
 	border-width: 1px;
 	border-style: solid;

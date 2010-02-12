@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 public abstract class AbstractCompositePageElement extends AbstractPageElement implements ICompositePageElement {
     private List<PageElement> subElements = new ArrayList<PageElement>();
     protected String title;
-    protected final PageElementWrapperType wrapperType = PageElementWrapperType.NONE;
+    protected final WrapperType wrapperType = WrapperType.NONE;
 
     public abstract void acceptLayouter(ILayouter layouter);
 
@@ -30,12 +30,14 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * fuegt dem Composite neue Elemente hinzu
      * @param pageElements
+     * @return a reference to this object.
      * @throws ClassCastException wenn nur bestimmte Typen an Elemente zugelassen werden
      */
-    public void addPageElements(PageElement... pageElements) {
+    public ICompositePageElement addPageElements(PageElement... pageElements) {
         for (PageElement pageElement : pageElements) {
         	addSubElement(pageElement);
         }
+		return this;
     }
 
     /**

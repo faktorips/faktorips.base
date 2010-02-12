@@ -13,7 +13,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -199,7 +199,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		if (subTypes.size() == 0)
 			return;
 
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 				new TextPageElement("Unterklassen"), new ListPageElement(subTypes) }));
 	}
 
@@ -239,7 +239,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 	}
 
 	protected PageElement createAttributesTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(object),"keine Attribute"));
@@ -259,7 +259,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 	}
 
 	protected PageElement createValuesTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Werte", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(object), "keine Werte"));

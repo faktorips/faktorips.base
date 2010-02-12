@@ -16,7 +16,7 @@ import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -286,7 +286,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 			throw new RuntimeException(e);
 		}
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Tabelleninhalte", TextType.HEADING_2));
 
 		if (tableContents.size() == 0) {
@@ -305,7 +305,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 	
 	protected PageElement createColumnTable() {
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Spalten", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(object), "keine Spalten"));
@@ -315,7 +315,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	protected PageElement createUniqueKeysTable() {
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("UniqueKeys", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(object), "keine Unique Keys"));
@@ -325,7 +325,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	protected PageElement createColumnRangesTable() {
 		
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Ranges", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(object), "keine ranges"));
@@ -335,7 +335,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	protected PageElement createForeignKeyTable() {
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("ForeignKeys", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(object), "keine Foreign Keys"));

@@ -27,6 +27,10 @@ public class LinkPageElement extends AbstractCompositePageElement {
         addPageElements(new TextPageElement(" " + text));
     }
 
+	public LinkPageElement(IIpsElement to) {
+		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), null, new TextPageElement(to.getName()));
+	}
+
 	public LinkPageElement(IIpsElement to, PageElement... pageElements) {
 		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), null, pageElements);
 	}

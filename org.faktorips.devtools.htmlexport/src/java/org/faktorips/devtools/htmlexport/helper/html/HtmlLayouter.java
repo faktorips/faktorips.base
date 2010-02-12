@@ -9,7 +9,7 @@ import org.eclipse.swt.SWT;
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -58,8 +58,8 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	}
 
 	public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
-		PageElementWrapperType wrapperType = wrapperPageElement.getWrapperType();
-		if (wrapperType == PageElementWrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
+		WrapperType wrapperType = wrapperPageElement.getWrapperType();
+		if (wrapperType == WrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
 			visitSubElements(wrapperPageElement);
 			return;
 		}
@@ -69,14 +69,14 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
 	}
 
-	private String getHtmlElementByWrappingType(PageElementWrapperType wrapper) {
-		if (wrapper == PageElementWrapperType.LISTITEM)
+	private String getHtmlElementByWrappingType(WrapperType wrapper) {
+		if (wrapper == WrapperType.LISTITEM)
 			return "li";
-		if (wrapper == PageElementWrapperType.TABLEROW)
+		if (wrapper == WrapperType.TABLEROW)
 			return "tr";
-		if (wrapper == PageElementWrapperType.TABLECELL)
+		if (wrapper == WrapperType.TABLECELL)
 			return "td";
-		if (wrapper == PageElementWrapperType.BLOCK)
+		if (wrapper == WrapperType.BLOCK)
 			return "div";
 		return "span";
 	}
@@ -86,9 +86,6 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		
 		append(HtmlUtil.createHtmlHead(pageElement.getTitle(), pathToRoot + getStyleDefinitionPath()));
 		visitSubElements(pageElement);
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		append(HtmlUtil.createHtmlElement("small", "Created " + sdf.format(new Date())));
 
 		append(HtmlUtil.createHtmlFoot());
 	}

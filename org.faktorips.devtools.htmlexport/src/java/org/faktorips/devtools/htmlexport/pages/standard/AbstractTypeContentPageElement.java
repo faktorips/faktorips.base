@@ -10,7 +10,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -63,7 +63,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	}
 
 	protected PageElement createMethodsTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Methoden", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(), "keine Methoden vorhanden"));
@@ -77,7 +77,9 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	@Override
 	protected void addTypeHierarchie() {
 		addPageElements(new TextPageElement("Hierarchie", TextType.HEADING_2));
+		addPageElements(new TextPageElement("Superklasse", TextType.HEADING_3));
 		addSuperTypeHierarchie();
+		addPageElements(new TextPageElement("Subklasse", TextType.HEADING_3));
 		addSubTypeHierarchie();
 	}
 
@@ -98,7 +100,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		if (subTypes.size() == 0)
 			return;
 
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new ListPageElement(subTypes)));
+		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new ListPageElement(subTypes)));
 	}
 
 	protected void addSuperTypeHierarchie() {
@@ -141,7 +143,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 			if (to == null)
 				return;
 
-			addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 					new TextPageElement("Erweitert "), new LinkPageElement(to, "content", to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
@@ -149,7 +151,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	}
 
 	protected PageElement createAssociationsTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Beziehungen", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(object),
@@ -159,7 +161,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	}
 
 	protected PageElement createAttributesTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
 		wrapper

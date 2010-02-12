@@ -10,7 +10,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -30,7 +30,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	protected void addStructureData() {
 		IProductCmptType productCmptType = getProductCmptType();
 
-		addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 				new TextPageElement("Vorlage: "),
 				new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) }));
 	}
@@ -55,7 +55,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	}
 
 	private PageElement createGenerationAttributeTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(object, getProductCmptType(), config), "keine Anpassungsstufen oder Attribute"));
@@ -66,7 +66,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	protected PageElement createGenerationsList() {
 		IIpsObjectGeneration[] generations = object.getGenerationsOrderedByValidDate();
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Anpassungsstufen", TextType.HEADING_2));
 
 		if (generations.length == 0) {

@@ -25,8 +25,9 @@ public abstract class AbstractPageElement implements PageElement {
         return styles;
     }
 
-    public void addStyles(Style... style) {
+    public PageElement addStyles(Style... style) {
         styles.addAll(Arrays.asList(style));
+        return this;
     }
     
     

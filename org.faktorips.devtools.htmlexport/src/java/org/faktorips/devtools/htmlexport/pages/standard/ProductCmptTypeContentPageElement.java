@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.generators.PageElementWrapperType;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.Util;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -116,7 +116,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 	}
 
 	private PageElement createTableStructureTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Tabellenstrukturen", TextType.HEADING_2));
 
 		wrapper.addPageElements(getTableOrAlternativeText(new TableStructureTablePageElement(getProductCmptType()),
@@ -135,7 +135,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			throw new RuntimeException(e);
 		}
 
-		WrapperPageElement wrapper = new WrapperPageElement(PageElementWrapperType.BLOCK);
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Produktbausteine", TextType.HEADING_2));
 
 		if (productCmpts.size() == 0) {
@@ -162,7 +162,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 				addPageElements(TextPageElement.newBlock("Vertragsklasse: keine"));
 				return;
 			}
-			addPageElements(new WrapperPageElement(PageElementWrapperType.BLOCK, new PageElement[] {
+			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 					new TextPageElement("Vertragsklasse: "), new LinkPageElement(to, "content", to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
