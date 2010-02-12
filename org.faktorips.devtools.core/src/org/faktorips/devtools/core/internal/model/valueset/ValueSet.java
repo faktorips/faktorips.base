@@ -76,6 +76,11 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         this.type = type;
     }
 
+    @Override
+    public String getName() {
+        return type.getName();
+    }
+
     /**
      * {@inheritDoc}
      */

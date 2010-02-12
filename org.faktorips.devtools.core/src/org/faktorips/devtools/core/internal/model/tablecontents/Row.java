@@ -82,7 +82,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     @Override
     public String getName() {
-        return String.valueOf(getId());
+        return "" + rowNumber;
     }
 
     public int getRowNumber() {

@@ -26,8 +26,10 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -44,6 +46,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
@@ -128,6 +134,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     /* Updates the title image if there are ips marker changes on the editor's input */
     private IpsObjectEditorErrorMarkerUpdater errorTickupdater;
+
+    private IContentOutlinePage outlinePage;
 
     /**
      * Creates a new <code>IpsObjectEditor</code>.
@@ -899,6 +907,30 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     private String getLogPrefix() {
         return "IpsObjectEditor"; //$NON-NLS-1$
+    }
+
+    @SuppressWarnings("unchecked")
+    // eclipse api is not generified
+    @Override
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(IContentOutlinePage.class)) {
+            if (null == outlinePage) {
+                outlinePage = new OutlinePage();
+            }
+            return outlinePage;
+        }
+        return super.getAdapter(adapter);
+    }
+
+    private class OutlinePage extends ContentOutlinePage {
+        @Override
+        public void createControl(Composite gParent) {
+            super.createControl(gParent);
+            TreeViewer treeView = super.getTreeViewer();
+            treeView.setContentProvider(new WorkbenchContentProvider());
+            treeView.setLabelProvider(new WorkbenchLabelProvider());
+            treeView.setInput(getIpsSrcFile());
+        }
     }
 
     /**
