@@ -45,8 +45,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int rowNumber = 0;
 
-    Row(TableContentsGeneration parent, String rowNum) {
-        super(parent, rowNum);
+    Row(TableContentsGeneration parent, String id) {
+        super(parent, id);
         descriptionChangable = false;
         initValues();
     }
