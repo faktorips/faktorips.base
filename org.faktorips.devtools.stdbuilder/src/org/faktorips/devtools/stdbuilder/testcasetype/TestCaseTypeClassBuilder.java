@@ -673,12 +673,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         // generate dummy assert with todo remark
         body.appendln(MARKER_BEGIN_USER_CODE);
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO_0));
-        body.appendln(MARKER_END_USER_CODE);
-        body.appendln("throw new ");
+        body.append("throw new ");
         body.appendClassName(RuntimeException.class);
         body.append("(\"");
         body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
-        body.append("\");");
+        body.appendln("\");");
+        body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
