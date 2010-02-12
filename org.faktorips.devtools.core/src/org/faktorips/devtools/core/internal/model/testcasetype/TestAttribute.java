@@ -21,8 +21,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -56,11 +55,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     private TestParameterType type = TestParameterType.COMBINED;
 
-    public TestAttribute(IIpsObject parent, String id) {
-        super(parent, id);
-    }
-
-    public TestAttribute(IIpsObjectPart parent, String id) {
+    public TestAttribute(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
