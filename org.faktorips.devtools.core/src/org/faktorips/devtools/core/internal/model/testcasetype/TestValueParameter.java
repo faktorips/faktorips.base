@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
@@ -40,11 +40,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
     private String datatype = ""; //$NON-NLS-1$
 
-    public TestValueParameter(IIpsObject parent, String id) {
-        super(parent, id);
-    }
-
-    public TestValueParameter(IIpsObjectPart parent, String id) {
+    public TestValueParameter(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
