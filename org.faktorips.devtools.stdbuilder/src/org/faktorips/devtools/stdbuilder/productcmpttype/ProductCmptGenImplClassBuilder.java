@@ -585,7 +585,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             }
             if (!ass.isDerived()) {
                 if (associationFound == false) {
-                    builder.appendln();
                     builder.appendClassName(List.class);
                     if (isUseTypesafeCollections()) {
                         builder.append("<");
