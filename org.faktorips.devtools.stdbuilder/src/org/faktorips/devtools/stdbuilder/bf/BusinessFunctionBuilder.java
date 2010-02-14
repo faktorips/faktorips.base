@@ -441,7 +441,6 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         if (!(element.getType().equals(BFElementType.DECISION)
                 || element.getType().equals(BFElementType.DECISION_METHODCALL) || element.getType().equals(
                 BFElementType.MERGE))) {
-            body.appendln();
             generateControlFlowMethodBody(body, element, methodBuilder);
         }
     }
