@@ -41,7 +41,14 @@ public class JavaCodeFragmentBuilder {
      * Creates a new fragment builder to build Java sourcecode.
      */
     public JavaCodeFragmentBuilder() {
-        fragment = new JavaCodeFragment();
+        this(false);
+    }
+
+    /**
+     * Creates a new fragment builder to build Java sourcecode.
+     */
+    public JavaCodeFragmentBuilder(boolean indent) {
+        fragment = new JavaCodeFragment(indent);
     }
 
     /**

@@ -57,6 +57,11 @@ public class JavaCodeFragment {
         importDecl = new ImportDeclaration();
     }
 
+    public JavaCodeFragment(boolean indent) {
+        this();
+        this.indent = indent;
+    }
+
     /**
      * Creates a new JavaCodeFragment with the indicated source code and no import statements.
      */
