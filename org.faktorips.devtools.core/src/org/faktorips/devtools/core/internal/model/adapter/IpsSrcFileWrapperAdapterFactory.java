@@ -14,10 +14,11 @@
 package org.faktorips.devtools.core.internal.model.adapter;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.type.IType;
 
 /**
  * This adapter factory could handle {@link IIpsSrcFileWrapper} and returns the wrapped
@@ -30,23 +31,41 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * 
  * @author dirmeier
  */
-public class IpsSrcFileWrapperAdapterFactory implements IAdapterFactory {
+public class IpsSrcFileWrapperAdapterFactory extends AbstractAdapterFactory {
 
     @SuppressWarnings("unchecked")
     // can suppress warning as eclipse IAdapterFactory is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
+        if (!(adaptableObject instanceof IIpsSrcFileWrapper)) {
+            return null;
+        }
+
         if (adapterType == null) {
             return null;
         }
-        if (adapterType.isAssignableFrom(IIpsSrcFile.class) && adaptableObject instanceof IIpsSrcFileWrapper) {
-            IIpsSrcFileWrapper wrapper = (IIpsSrcFileWrapper)adaptableObject;
-            return wrapper.getWrappedIpsSrcFile();
+
+        if (adapterType.isAssignableFrom(IIpsSrcFile.class)) {
+            return adaptToIpsSrcFile(adaptableObject);
         }
+
+        if (adapterType.isAssignableFrom(IProductCmpt.class)) {
+            return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
+        }
+
+        if (adapterType.isAssignableFrom(IType.class)) {
+            return adaptToType(adaptToIpsSrcFile(adaptableObject));
+        }
+
         return null;
     }
 
+    private IIpsSrcFile adaptToIpsSrcFile(Object adaptableObject) {
+        IIpsSrcFileWrapper wrapper = (IIpsSrcFileWrapper)adaptableObject;
+        return wrapper.getWrappedIpsSrcFile();
+    }
+
     public Class<?>[] getAdapterList() {
-        return new Class<?>[] { IIpsElement.class };
+        return new Class<?>[] { IIpsElement.class, IIpsSrcFile.class, IProductCmpt.class, IType.class };
     }
 
 }

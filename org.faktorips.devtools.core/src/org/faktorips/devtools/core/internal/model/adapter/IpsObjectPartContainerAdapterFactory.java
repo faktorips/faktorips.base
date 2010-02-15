@@ -13,27 +13,41 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.eclipse.core.runtime.IAdapterFactory;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.type.IType;
 
-public class IpsObjectPartContainerAdapterFactory implements IAdapterFactory {
+public class IpsObjectPartContainerAdapterFactory extends AbstractAdapterFactory {
 
     // required because the signature of this method is fixed by IAdapterFactory
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (!IIpsSrcFile.class.equals(adapterType)) {
+        if (!(adaptableObject instanceof IIpsObjectPartContainer)) {
             return null;
         }
 
-        if (adaptableObject instanceof IIpsObjectPartContainer) {
-            return ((IIpsObjectPartContainer)adaptableObject).getIpsSrcFile();
+        if (IIpsSrcFile.class.equals(adapterType)) {
+            return adaptToIpsSrcFile(adaptableObject);
         }
+
+        if (IProductCmpt.class.equals(adapterType)) {
+            return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
+        }
+
+        if (IType.class.equals(adapterType)) {
+            return adaptToType(adaptToIpsSrcFile(adaptableObject));
+        }
+
         return null;
     }
 
+    private IIpsSrcFile adaptToIpsSrcFile(Object adaptableObject) {
+        return ((IIpsObjectPartContainer)adaptableObject).getIpsSrcFile();
+    }
+
     public Class<?>[] getAdapterList() {
-        return new Class[] { IIpsObjectPartContainer.class };
+        return new Class[] { IIpsSrcFile.class, IProductCmpt.class, IType.class };
     }
 
 }
