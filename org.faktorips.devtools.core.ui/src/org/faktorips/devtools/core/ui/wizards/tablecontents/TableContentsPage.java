@@ -23,8 +23,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -41,7 +39,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
-import org.faktorips.util.StringUtil;
 
 /**
  *
@@ -79,14 +76,6 @@ public class TableContentsPage extends IpsObjectPage {
         structureField = new TextButtonField(structureControl);
         structureField.addChangeListener(this);
         name = addNameLabelField(toolkit, nameComposite);
-        name.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                setDefaultName();
-            }
-
-            public void focusLost(FocusEvent e) {
-            }
-        });
 
         structureControl.setFocus();
 
@@ -180,13 +169,6 @@ public class TableContentsPage extends IpsObjectPage {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
         createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
         return createdIpsSrcFile;
-    }
-
-    private void setDefaultName() {
-        if (getIpsObjectName().equals("")) { //$NON-NLS-1$
-            String structureName = structureField.getText();
-            setIpsObjectName(StringUtil.unqualifiedName(structureName));
-        }
     }
 
     /**
