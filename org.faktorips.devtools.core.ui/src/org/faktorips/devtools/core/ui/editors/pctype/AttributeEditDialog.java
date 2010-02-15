@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -67,6 +68,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -780,6 +783,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IntegerField scaleField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
+
+        uiToolkit.createFormLabel(workArea, "Temporal type:");
+        Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
+        setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
+        ComboField temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
+        bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
         uiToolkit.createFormLabel(workArea, "Datatype converter:");
         Combo converter = uiToolkit.createCombo(workArea);

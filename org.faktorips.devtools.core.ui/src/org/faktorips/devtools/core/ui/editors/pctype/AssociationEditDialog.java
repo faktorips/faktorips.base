@@ -261,20 +261,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         uiToolkit.createFormLabel(workArea, "Fetch Type:");
         Combo fetchTypeCombo = uiToolkit.createCombo(workArea);
-        setComboItems(fetchTypeCombo, FetchType.class);
+        setComboItemsForEnum(fetchTypeCombo, FetchType.class);
         ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
         bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
-    }
-
-    // TODO: code duplication in PersistentTypeInfoSection
-    private void setComboItems(Combo combo, Class<? extends Enum> class1) {
-        Enum[] allEnumConstants = class1.getEnumConstants();
-        String[] allEnumValues = new String[allEnumConstants.length];
-        for (int i = 0; i < allEnumConstants.length; i++) {
-            allEnumValues[i] = allEnumConstants[i].toString();
-        }
-        combo.setItems(allEnumValues);
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
