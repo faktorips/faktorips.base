@@ -357,6 +357,12 @@
          <adapter
                type="org.faktorips.devtools.core.model.IIpsElement">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.type.IType">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"
@@ -364,12 +370,24 @@
          <adapter
                type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.type.IType">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.core.resources.IResource"
             class="org.faktorips.devtools.core.internal.model.adapter.ResourceAdapterFactory">
          <adapter
                type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.type.IType">
          </adapter>
       </factory>
    </extension>
