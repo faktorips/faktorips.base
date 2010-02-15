@@ -192,6 +192,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public String getName() {
+        return attribute;
+    }
+
+    @Override
     public String toString() {
         return attribute + "=" + value; //$NON-NLS-1$
     }

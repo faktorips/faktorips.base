@@ -104,6 +104,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         objectHasChanged();
     }
 
+    @Override
+    public String getName() {
+        return getTableContentName();
+    }
+
     public String getTableContentName() {
         return tableContentName;
     }
