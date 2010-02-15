@@ -451,7 +451,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         if (policyTypeParams.length > 0) {
-            body.appendln();
             body.appendln("try{");
             body.append("new ");
             body.appendClassName(DefaultReferenceResolver.class);

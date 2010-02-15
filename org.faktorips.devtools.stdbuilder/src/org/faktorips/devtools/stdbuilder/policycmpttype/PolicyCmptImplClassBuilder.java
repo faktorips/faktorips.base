@@ -496,8 +496,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (getPcType().hasSupertype()) {
             methodsBuilder.appendln("return super." + MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR + "();");
         } else {
-            String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
-            methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
+            String todoLine1 = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO_LINE1");
+            methodsBuilder.append("return null; // ");
+            methodsBuilder.append(getJavaNamingConvention().getToDoMarker());
+            methodsBuilder.append(' ');
+            methodsBuilder.appendln(todoLine1);
+            methodsBuilder.append("// ");
+            methodsBuilder.appendln(getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO_LINE2"));
+            methodsBuilder.append("// ");
+            methodsBuilder.appendln(getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO_LINE3"));
         }
         methodsBuilder.methodEnd();
     }
@@ -542,7 +549,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 if (!target.isConfigurableByProductCmptType()) {
                     continue;
                 }
-                methodsBuilder.appendln();
                 String field = getGenerator(r).getFieldNameForAssociation();
                 if (r.is1ToMany()) {
                     methodsBuilder.append("for (");
@@ -551,21 +557,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                         methodsBuilder.append("<");
                         methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
                                 getGenerator(r).getTargetPolicyCmptType(), true));
-                        methodsBuilder.append(">");
+                        methodsBuilder.append('>');
                     }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
                     methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(" child = (");
                     methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(")it.next();");
-                    methodsBuilder.append("child." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
-                    methodsBuilder.append("}");
+                    methodsBuilder.append("child.");
+                    methodsBuilder.append(MethodNames.EFFECTIVE_FROM_HAS_CHANGED);
+                    methodsBuilder.append("();");
+                    methodsBuilder.appendln("}");
                 } else {
-                    methodsBuilder.append("if (" + field + "!=null) {");
+                    methodsBuilder.append("if (");
+                    methodsBuilder.append(field);
+                    methodsBuilder.append("!=null) {");
                     methodsBuilder.append("((");
                     methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
-                    methodsBuilder.append(")" + field + ")." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
-                    methodsBuilder.append("}");
+                    methodsBuilder.append(")");
+                    methodsBuilder.append(field);
+                    methodsBuilder.append(").");
+                    methodsBuilder.append(MethodNames.EFFECTIVE_FROM_HAS_CHANGED);
+                    methodsBuilder.append("();");
+                    methodsBuilder.appendln("}");
                 }
             }
         }

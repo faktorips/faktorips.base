@@ -1001,7 +1001,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         // logging
         generateMethodEnteringLoggingStmt(methodBody, keyClassName, methodName, parameterNames);
-        methodBody.appendln();
 
         generateFindMethodParameterCheckingBlock(methodBody, methodName, parameterNames, keyClassName, useNullValueRow);
 
@@ -1041,7 +1040,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(getValueFrag);
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
-        methodBody.appendln();
 
         if (useNullValueRow) {
             methodBody.append("if(");
@@ -1056,7 +1054,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendln();
             methodBody.appendCloseBracket();
         }
-        methodBody.appendln();
         methodBody.append("return ");
         methodBody.append(returnVariableName);
         methodBody.appendln();
