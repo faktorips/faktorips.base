@@ -33,7 +33,8 @@ public class PersistenceUtil {
      * numbers or the underscore character.
      * 
      * @param name The String to check
-     * @return <code>true</code> if name is valid, <code>false</code> otherwise
+     * @return <code>false</code> if it empty or <code>null</code> or contains invalid characters,
+     *         <code>true</code> otherwise
      */
     public static boolean isValidDatabaseIdentifier(String name) {
         if (StringUtils.isEmpty(name)) {

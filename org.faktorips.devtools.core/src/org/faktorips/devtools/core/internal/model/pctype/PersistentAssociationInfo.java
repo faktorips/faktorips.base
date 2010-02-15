@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -168,9 +169,27 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (isJoinTableRequired() && getPolicyComponentTypeAssociation().isInverseAssociationApplicable()) {
+            // validate join table name
             if (StringUtils.isBlank(joinTableName)) {
                 msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_EMPTY, "The join table name is empty.", Message.ERROR,
                         this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+            }
+            if (PersistenceUtil.isValidDatabaseIdentifier(joinTableName)) {
+                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, "The join table name is invalid.",
+                        Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+            }
+            // validate column names of join table if they are not blank
+            if (!StringUtils.isBlank(sourceColumnName)) {
+                if (PersistenceUtil.isValidDatabaseIdentifier(sourceColumnName)) {
+                    msgList.add(new Message(MSGCODE_SOURCE_COLUMN_NAME_INVALID, "The source column name is invalid.",
+                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME));
+                }
+            }
+            if (!StringUtils.isBlank(sourceColumnName)) {
+                if (PersistenceUtil.isValidDatabaseIdentifier(targetColumnName)) {
+                    msgList.add(new Message(MSGCODE_TARGET_COLUMN_NAME_INVALID, "The target column name is invalid.",
+                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME));
+                }
             }
         }
     }

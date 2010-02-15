@@ -20,9 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
@@ -57,18 +55,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         this.notJoinedSubclass = notJoinedSubclass;
     }
 
-    /**
-     * @param policyComponentType
-     */
-    public PersistentTypeInfo(IIpsObject ipsObject, int id) {
-        super(ipsObject, id);
-
-        ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
-
-        // TODO: use sane default values based on the inheritance strategy in use (top level
-        // ipsObject´s name)
-        tableName = tableNamingStrategy.getTableName(ipsObject.getName());
-        discriminatorValue = ipsObject.getName();
+    public PersistentTypeInfo(IPolicyCmptType pcType, int id) {
+        super(pcType, id);
     }
 
     public String getDiscriminatorColumnName() {
@@ -207,6 +195,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             String text = "The discriminator value does not conform to the specified descriminator datatype.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+            return;
         }
 
         IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
@@ -226,12 +215,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName);//$NON-NLS-1$
-        element.setAttribute(PROPERTY_SECONDARY_TABLE_NAME, "" + secondaryTableName);
-        element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy);
-        element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName);
-        element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype);
-        element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue);
+        element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_SECONDARY_TABLE_NAME, "" + secondaryTableName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
     }
 
     @Override
@@ -355,7 +344,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             discriminatorDatatype = typeInfo.getDiscriminatorDatatype();
             discriminatorColumnName = typeInfo.getDiscriminatorColumnName();
 
-            if (!PersistenceUtil.isValidDatabaseIdentifier(discriminatorValue)) {
+            if (!PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
                 conflictingTypeInfo = typeInfo;
             }
         }
@@ -363,8 +352,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             if (conflictingTypeInfo != null) {
-                errorMessage = "The discriminator value is invalid.";
-                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
+                errorMessage = "The discriminator column name is invalid.";
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME;
                 return false;
             }
 

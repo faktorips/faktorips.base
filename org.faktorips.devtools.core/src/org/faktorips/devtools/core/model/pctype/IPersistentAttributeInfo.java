@@ -20,8 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * A class that holds information of a policy component type attribute which is relevant for
  * persistence using the JPA (Java Persistence API).
  * <p/>
- * This information can be used to act as a hint to the code generator on how to realize the table
- * column(s) on the database side.
+ * This information is used as a hint to the code generator on how to realize the table column(s) on
+ * the database side.
  * 
  * @author Roman Grutza
  */
@@ -72,6 +72,12 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * The name of the column converter property.
      */
     public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter";
+
+    /**
+     * The name of the property which maps this attribute to an temporal type (date, time,
+     * timestamp) if applicable.
+     */
+    public final static String PROPERTY_TEMPORAL_MAPPING = "temporalMapping";
 
     /**
      * Prefix for all message codes of this class.
@@ -193,4 +199,50 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * @see AttributeType
      */
     public boolean isPersistentAttribute();
+
+    /**
+     * Returns <code>true</code> if the underlying attribute represents a temporal type.
+     */
+    public boolean isTemporalAttribute();
+
+    /**
+     * If this attribute corresponds to a temporal type then this method returns the temporal
+     * information (time, date or both) that should be taken into account when dealing with this
+     * attribute.
+     * 
+     * @see {@link #isTemporalAttribute} <br/> {@link DateTimeMapping}
+     * 
+     * @return the temporal mapping if any, <code>null</code> if this attribute is not of temporal
+     *         type.
+     */
+    public DateTimeMapping getTemporalMapping();
+
+    /**
+     * Sets the temporal mapping on this attribute, that is whether the date, the time or both date
+     * and time information will be considered when dealing with this attribute.
+     */
+    public void setTemporalMapping(DateTimeMapping temporalType);
+
+    /**
+     * Tags a temporal attribute for date only, time only or time-stamp (date and time) usage.
+     */
+    public enum DateTimeMapping {
+        DATE_ONLY,
+        TIME_ONLY,
+        DATE_AND_TIME;
+
+        public String toJpaTemporalType() {
+            switch (this) {
+                case DATE_ONLY:
+                    return "DATE";
+                case TIME_ONLY:
+                    return "TIME";
+                case DATE_AND_TIME:
+                    return "TIMESTAMP";
+                default:
+                    throw new RuntimeException("Error converting IPS Temporal Datatype to JPA Temporal Type.");
+            }
+        }
+    }
+
 }

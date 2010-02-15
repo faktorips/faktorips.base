@@ -20,8 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 /**
  * A class that holds information of a policy component type which is relevant for persistence.
  * <p/>
- * This information can be used to act as a hint to the code generator on how to realize the
- * table(s) on the database side.
+ * This information is used as a hint to the code generator on how to realize the table(s) on the
+ * database side.
  * 
  * @author Roman Grutza
  */
@@ -240,9 +240,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
         INTEGER;
 
         /**
-         * @return <code>true</code> if the given value can be parsed into an instance of a
-         *         {@link DiscriminatorDatatype} denoted by this object, <code>false</code>
-         *         otherwise.
+         * @return <code>true</code> if the given value can be parsed into an instance of this
+         *         {@link DiscriminatorDatatype}, <code>false</code> otherwise.
          */
         public boolean isParsableToDiscriminatorDatatype(String value) {
             switch (this) {

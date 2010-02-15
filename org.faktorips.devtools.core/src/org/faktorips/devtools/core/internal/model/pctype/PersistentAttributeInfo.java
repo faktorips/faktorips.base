@@ -20,6 +20,9 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -55,7 +58,13 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private int tableColumnScale = 16;
     private int tableColumnPrecision = 2;
 
+    private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
+
     private IIpsObjectPart policyComponentTypeAttribute;
+
+    // why are there no static fields for GregorianCalendarAsDateDatatype and DateDatatype?
+    private static Datatype[] temporalDatatypes = new Datatype[] { Datatype.GREGORIAN_CALENDAR_DATE,
+            new GregorianCalendarAsDateDatatype(), new DateDatatype() };
 
     /**
      * @param policyComponentTypeAttribute
@@ -66,9 +75,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         policyComponentTypeAttribute = ipsObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     // TODO implement
     public IPersistableTypeConverter getTableColumnConverter() {
         throw new NotImplementedException();
@@ -154,6 +160,29 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         return (attrType == AttributeType.CHANGEABLE || attrType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     }
 
+    public boolean isTemporalAttribute() {
+        String datatypeName = getPolicyComponentTypeAttribute().getDatatype();
+
+        for (Datatype temporalDatatype : temporalDatatypes) {
+            if (datatypeName.equals(temporalDatatype.getName())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public DateTimeMapping getTemporalMapping() {
+        return temporalMapping;
+    }
+
+    public void setTemporalMapping(DateTimeMapping temporalType) {
+        DateTimeMapping oldValue = temporalMapping;
+        temporalMapping = temporalType;
+
+        valueChanged(oldValue, temporalMapping);
+    }
+
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
@@ -168,17 +197,19 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         tableColumnPrecision = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_PRECISION));
         tableColumnUnique = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_UNIQE));
         tableColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_NULLABLE));
+        temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, "" + tableColumnName);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, "" + tableColumnSize);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, "" + tableColumnScale);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, "" + tableColumnPrecision);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, "" + tableColumnUnique);
-        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnNullable);
+        element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, "" + tableColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, "" + tableColumnSize); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, "" + tableColumnScale); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, "" + tableColumnPrecision); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, "" + tableColumnUnique); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnNullable); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TEMPORAL_MAPPING, "" + temporalMapping); //$NON-NLS-1$
     }
 
     @Override

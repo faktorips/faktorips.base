@@ -21,8 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * A class that holds information of a policy component type association which is relevant for
  * persistence using the JPA (Java Persistence API).
  * <p/>
- * This information can be used to act as a hint to the code generator on how to realize the table
- * column(s) on the database side.
+ * This information is used as a hint to the code generator on how to realize the table column(s) on
+ * the database side.
  * 
  * @author Roman Grutza
  */
@@ -64,6 +64,21 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Validation message code for empty join table name.
      */
     public static final String MSGCODE_JOIN_TABLE_NAME_EMPTY = MSGCODE_PREFIX + "JoinTableNameEmpty";
+
+    /**
+     * Validation message code for invalid join table name.
+     */
+    public static final String MSGCODE_JOIN_TABLE_NAME_INVALID = MSGCODE_PREFIX + "JoinTableNameInvalid";
+
+    /**
+     * Validation message code for invalid source column name.
+     */
+    public static final String MSGCODE_SOURCE_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "SourceColumnNameInvalid";
+
+    /**
+     * Validation message code for invalid target column name.
+     */
+    public static final String MSGCODE_TARGET_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "TargetColumnNameInvalid";
 
     /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
