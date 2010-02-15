@@ -45,6 +45,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     private final static String ANNOTATION_SECONDARY_TABLE = "@SecondaryTable";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
     private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
+    private static final String ANNOTATION_INHERITANCE = "@Inheritance";
 
     private static final String IMPORT_ENTITY = "javax.persistence.Entity";
     private static final String IMPORT_TABLE = "javax.persistence.Table";
@@ -52,6 +53,10 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
     private static final String IMPORT_DISCRIMINATOR_TYPE = "javax.persistence.DiscriminatorType";
     private static final String IMPORT_DISCRIMINATOR_VALUE = "javax.persistence.DiscriminatorValue";
+    private static final String IMPORT_INHERITANCE = "javax.persistence.Inheritance";
+    private static final String IMPORT_INHERITANCE_TYPE = "javax.persistence.InheritanceType";
+
+    private static final String ATTRIBUTE_INHERITANCE_TYPE = "InheritanceType";
 
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
@@ -86,6 +91,13 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
         fragment.addImport(IMPORT_TABLE);
+
+        if (inhStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
+            fragment.append(ANNOTATION_INHERITANCE).append("(strategy = ");
+            fragment.append(ATTRIBUTE_INHERITANCE_TYPE).append(".JOINED)");
+            fragment.addImport(IMPORT_INHERITANCE);
+            fragment.addImport(IMPORT_INHERITANCE_TYPE);
+        }
 
         if (inhStrategy == InheritanceStrategy.MIXED) {
             tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getSecondaryTableName());

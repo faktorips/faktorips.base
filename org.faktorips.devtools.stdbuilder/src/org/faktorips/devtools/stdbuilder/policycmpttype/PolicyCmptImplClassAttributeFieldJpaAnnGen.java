@@ -33,7 +33,13 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotationGenerator {
 
     private static final String ANNOTATION_COLUMN = "@Column";
+    private static final String ANNOTATION_TEMPORAL = "@Temporal";
+
     private static final String IMPORT_COLUMN = "javax.persistence.Column";
+    private static final String IMPORT_TEMPORAL = "javax.persistence.Temporal";
+    private static final String IMPORT_TEMPORAL_TYPE = "javax.persistence.TemporalType";
+
+    private static final String ATTRIBUTE_TEMPORAL_TYPE = "TemporalType";
 
     public PolicyCmptImplClassAttributeFieldJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -56,13 +62,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         fragment.append(ANNOTATION_COLUMN);
         fragment.append("(name = \"").append(tableColumnName).append('"');
         fragment.append(", nullable = ").append(isNullable);
-        createSecondaryTableAttributeIfMixedInheritance(fragment, jpaAttributeInfo);
+        createSecondaryTableAnnotationIfMixedInheritance(fragment, jpaAttributeInfo);
         fragment.append(')').appendln();
+        createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo);
 
         return fragment;
     }
 
-    private void createSecondaryTableAttributeIfMixedInheritance(JavaCodeFragment fragment,
+    private void createSecondaryTableAnnotationIfMixedInheritance(JavaCodeFragment fragment,
             IPersistentAttributeInfo jpaAttributeInfo) {
         IPolicyCmptType pcType = jpaAttributeInfo.getPolicyComponentTypeAttribute().getPolicyCmptType();
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
@@ -75,6 +82,20 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
             secondaryTableName = tableColumnNamingStrategy.getTableColumnName(secondaryTableName);
 
             fragment.append(", table = \"").append(secondaryTableName).append('"');
+        }
+    }
+
+    private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragment fragment,
+            IPersistentAttributeInfo jpaAttributeInfo) {
+
+        if (jpaAttributeInfo.isTemporalAttribute()) {
+            fragment.addImport(IMPORT_TEMPORAL);
+            fragment.addImport(IMPORT_TEMPORAL_TYPE);
+            fragment.append(ANNOTATION_TEMPORAL);
+
+            fragment.append('(').append(ATTRIBUTE_TEMPORAL_TYPE).append('.');
+            fragment.append(jpaAttributeInfo.getTemporalMapping().toJpaTemporalType());
+            fragment.append(')');
         }
     }
 
