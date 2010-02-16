@@ -227,12 +227,41 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }
 
-    public void testSetValueAsLiteralName() {
+    public void testSetValueAsLiteralNameNull() {
+        IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
+        testValue.setValueAsLiteralName(null);
+        assertNull(testValue.getValue());
+    }
+
+    public void testSetValueAsLiteralNameInvalidCharacters() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
         testValue.setValueAsLiteralName("foo $$%bar");
         assertEquals("FOO____BAR", testValue.getValue());
-        testValue.setValueAsLiteralName(null);
-        assertNull(testValue.getValue());
+    }
+
+    public void testSetValueAsLiteralNameUmlaut() {
+        IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
+
+        testValue.setValueAsLiteralName("fooÄbar");
+        assertEquals("FOOAEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooäbar");
+        assertEquals("FOOAEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooÖbar");
+        assertEquals("FOOOEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooöbar");
+        assertEquals("FOOOEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooÜbar");
+        assertEquals("FOOUEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooübar");
+        assertEquals("FOOUEBAR", testValue.getValue());
+
+        testValue.setValueAsLiteralName("fooßbar");
+        assertEquals("FOOSSBAR", testValue.getValue());
     }
 
 }

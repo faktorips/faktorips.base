@@ -301,6 +301,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
+        val = val.replaceAll("[Ää]", "AE");
+        val = val.replaceAll("[Öö]", "OE");
+        val = val.replaceAll("[Üü]", "UE");
+        val = val.replaceAll("[ß]", "SS");
         val = val.replaceAll("[^A-Za-z0-9]", "_");
         setValue(val);
     }
