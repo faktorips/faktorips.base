@@ -119,9 +119,9 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         
         AbstractTreeViewer viewer = (AbstractTreeViewer)page.getViewer();
         
-        Set toRemove = new HashSet();
-        Set toAdd = new HashSet();
-        Set toUpdate = new HashSet();
+        Set<Object> toRemove = new HashSet<Object>();
+        Set<Object> toAdd = new HashSet<Object>();
+        Set<Object> toUpdate = new HashSet<Object>();
         for (int i = 0; i < updatedElements.length; i++) {
             if (page.getDisplayedMatchCount(updatedElements[i]) > 0){
                 if (viewer.testFindItem(updatedElements[i])!= null){
@@ -138,12 +138,12 @@ public class SearchResultContentProvider implements ITreeContentProvider {
             viewer.remove(searchResult, toRemove.toArray());
         }
 
-        for (Iterator iter = toAdd.iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = toAdd.iterator(); iter.hasNext();) {
             Object element = iter.next();
             viewer.add(searchResult, element);
         }
 
-        for (Iterator iterator = toUpdate.iterator(); iterator.hasNext();) {
+        for (Iterator<Object> iterator = toUpdate.iterator(); iterator.hasNext();) {
             Object element = iterator.next();
             viewer.refresh(element);
         }

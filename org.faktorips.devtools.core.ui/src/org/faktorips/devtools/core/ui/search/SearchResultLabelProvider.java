@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class SearchResultLabelProvider implements ILabelProvider {
 
-    private List listeners = new ArrayList();
+    private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 
     /**
      * Overridden
