@@ -150,9 +150,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             createFieldsForNormalAttribute();
         }
 
-        // Content bindings dependent on inherited property.
+        // Content and state bindings dependent on inherited property.
         if (!literalNameAttribute) {
-            bindAndSetContentDependendOnInheritedProperty(enumAttribute);
+            inheritedPropertyChanged();
         }
 
         // Create extension properties on position bottom.
@@ -188,17 +188,19 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** Creates the UI fields for a normal <tt>IEnumAttribute</tt>. */
     private void createFieldsForNormalAttribute() {
-        // Name.
+        // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         nameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
 
-        // Datatype.
+        // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
+        bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
 
         Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
         ((GridData)marginComposite.getLayoutData()).verticalIndent = 14;
@@ -208,29 +210,35 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         layoutData.horizontalAlignment = SWT.FILL;
         layoutData.widthHint = 320;
         layoutData.minimumWidth = 320;
-
         label.getParent().setLayoutData(layoutData);
+
+        // Identifier
         identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
         identifierCheckbox.setLayoutData(createLayoutData());
+        bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
 
-        // Display name.
+        // Display name
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
         label.getParent().setLayoutData(layoutData);
         displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
         displayNameCheckbox.setLayoutData(createLayoutData());
+        bindingContext.bindContent(displayNameCheckbox, enumAttribute,
+                IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
 
         // Unique
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
         label.getParent().setLayoutData(layoutData);
         uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
         uniqueCheckbox.setLayoutData(createLayoutData());
+        bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
 
-        // Inherited.
+        // Inherited
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
         label.getParent().setLayoutData(layoutData);
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         inheritedCheckbox.setLayoutData(createLayoutData());
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
+
     }
 
     /**
@@ -284,30 +292,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
     }
 
-    /**
-     * If the <tt>IEnumAttribute</tt> to be edited is inherited from the supertype hierarchy the
-     * <tt>name</tt>, <tt>datatype</tt>, <tt>uniqueIdentifier</tt>, <tt>useAsIdInFaktorIpsUi</tt>
-     * and <tt>useAsNameInFaktorIpsUi</tt> fields will not be bound to the respective properties and
-     * their content will be set to the values of the respective super <tt>IEnumAttribute</tt> if
-     * such can be found.
-     * <p>
-     * If the <tt>IEnumAttribute</tt> to be edited is not inherited from the supertype hierarchy the
-     * fields will be bound to the respective properties.
-     */
-    private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
-        if (!(enumAttribute.isInherited())) {
-            bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
-            bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
-            bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
-            bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
-            bindingContext.bindContent(displayNameCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
-        } else {
-            bindingContext.removeBindings(nameText);
-            bindingContext.removeBindings(datatypeControl);
-            bindingContext.removeBindings(uniqueCheckbox);
-            bindingContext.removeBindings(identifierCheckbox);
-            bindingContext.removeBindings(displayNameCheckbox);
+    private void inheritedPropertyChanged() {
+        if (enumAttribute.isInherited()) {
             bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
@@ -346,18 +332,17 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
              * EnumAttributes.
              */
             if (!literalNameAttribute) {
-                IEnumAttribute changedEnumAttribute = changedPart;
-                bindAndSetContentDependendOnInheritedProperty(changedEnumAttribute);
+                inheritedPropertyChanged();
                 if (displayNamePropertyValue != enumAttribute.isUsedAsNameInFaktorIpsUi()) {
                     displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
                     if (displayNamePropertyValue) {
-                        changedEnumAttribute.setUnique(true);
+                        enumAttribute.setUnique(true);
                     }
                 }
                 if (identifierPropertyValue != enumAttribute.isIdentifier()) {
                     identifierPropertyValue = enumAttribute.isIdentifier();
                     if (identifierPropertyValue) {
-                        changedEnumAttribute.setUnique(true);
+                        enumAttribute.setUnique(true);
                     }
                 }
             }
