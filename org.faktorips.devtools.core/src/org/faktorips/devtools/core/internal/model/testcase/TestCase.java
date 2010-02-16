@@ -149,8 +149,8 @@ public class TestCase extends IpsObject implements ITestCase {
         Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
-            dependencies.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE)));
+            dependencies.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(), this,
+                    PROPERTY_TEST_CASE_TYPE, new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE)));
         }
         // add dependency to product cmpts
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
@@ -169,8 +169,9 @@ public class TestCase extends IpsObject implements ITestCase {
             return;
         }
         if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT)));
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), cmpt,
+                    ITestPolicyCmpt.PROPERTY_PRODUCTCMPT, new QualifiedNameType(cmpt.getProductCmpt(),
+                            IpsObjectType.PRODUCT_CMPT)));
         }
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
         for (int i = 0; i < testLinks.length; i++) {

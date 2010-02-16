@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -446,8 +447,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2
-                .getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), action,
+                IMethodCallBFE.PROPERTY_TARGET, bf2.getQualifiedNameType()), dependencies[0]);
 
         action.delete();
         dependencies = bf.dependsOn();
@@ -471,7 +472,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         action.setExecutableMethodName(method.getName());
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType
-                .getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), param,
+                IParameterBFE.PROPERTY_DATATYPE, pcType.getQualifiedNameType()), dependencies[0]);
     }
 }

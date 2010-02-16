@@ -45,11 +45,6 @@ import org.xml.sax.InputSource;
 
 public class TableContents extends TimedIpsObject implements ITableContents {
 
-    /**
-     * The name of the table structure property
-     */
-    public final static String PROPERTY_TABLE_STRUCTURE = "tableStructure"; //$NON-NLS-1$
-
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
 
@@ -151,8 +146,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (StringUtils.isEmpty(getTableStructure())) {
             return new IDependency[0];
         }
-        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
+        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(), this,
+                PROPERTY_TABLESTRUCTURE, new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
     }
 
     /**
@@ -193,7 +188,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
-            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
 
@@ -201,7 +196,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             Integer structCols = new Integer(tableStructure.getNumOfColumns());
             Integer contentCols = new Integer(getNumOfColumns());
             String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
-            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
         }
     }
 

@@ -125,7 +125,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
             qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
-                    new QualifiedNameType(tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
+                    tableContentUsages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT, new QualifiedNameType(
+                            tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
         }
     }
 
@@ -137,7 +138,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IProductCmptLink[] relations = getLinks();
         for (int j = 0; j < relations.length; j++) {
             qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
-                    new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT)));
+                    relations[j], IProductCmptLink.PROPERTY_TARGET, new QualifiedNameType(relations[j].getTarget(),
+                            IpsObjectType.PRODUCT_CMPT)));
         }
     }
 

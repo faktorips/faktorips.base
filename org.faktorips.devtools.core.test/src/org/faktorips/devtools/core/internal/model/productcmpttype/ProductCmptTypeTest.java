@@ -763,7 +763,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
 
         List<IDependency> dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(1, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), null, null,
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
 
@@ -771,56 +771,59 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(2, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), null, null,
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), aProductType,
+                IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, a.getQualifiedNameType(), DependencyType.REFERENCE)));
 
         IAssociation aProductTypeTobProductType = aProductType.newAssociation();
         aProductTypeTobProductType.setTarget(bProductType.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(3, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), null, null,
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), aProductType,
+                IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                aProductTypeTobProductType, IAssociation.PROPERTY_TARGET, bProductType.getQualifiedNameType(),
+                DependencyType.REFERENCE)));
 
         IAttribute aAttr = aProductType.newAttribute();
         aAttr.setDatatype(Datatype.MONEY.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(4, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), null, null,
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY
-                .getQualifiedName())));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), aProductType,
+                IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                aProductTypeTobProductType, IAssociation.PROPERTY_TARGET, bProductType.getQualifiedNameType(),
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), aAttr,
+                IAttribute.PROPERTY_DATATYPE, Datatype.MONEY.getQualifiedName())));
 
         IMethod aMethod = aProductType.newMethod();
         aMethod.setDatatype(Datatype.DECIMAL.getQualifiedName());
 
         dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(5, dependencies.size());
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), null, null,
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
                 DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), a
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), bProductType
-                .getQualifiedNameType(), DependencyType.REFERENCE)));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY
-                .getQualifiedName())));
-        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.DECIMAL
-                .getQualifiedName())));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), aProductType,
+                IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                aProductTypeTobProductType, IAssociation.PROPERTY_TARGET, bProductType.getQualifiedNameType(),
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), aAttr,
+                IAttribute.PROPERTY_DATATYPE, Datatype.MONEY.getQualifiedName())));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), aMethod,
+                IMethod.PROPERTY_DATATYPE, Datatype.DECIMAL.getQualifiedName())));
 
     }
 
@@ -889,8 +892,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         for (int i = 0; i < bPathEntries.length; i++) {
             newbPathEntries.add(bPathEntries[i]);
         }
-        bPath.setEntries(newbPathEntries
-                .toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        bPath.setEntries(newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);
 
         MessageList msgList = aPolicyProjectA.validate(a);

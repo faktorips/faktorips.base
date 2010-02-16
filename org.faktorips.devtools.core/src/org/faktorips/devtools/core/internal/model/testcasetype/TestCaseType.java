@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -112,7 +113,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public IDependency[] dependsOn() throws CoreException {
-        Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
+        Set<IDependency> dependencies = new HashSet<IDependency>();
         addQualifiedNameTypesForTestPolicyCmptTypeParams(dependencies, getTestPolicyCmptTypeParameters());
         return dependencies.toArray(new IDependency[dependencies.size()]);
 
@@ -122,15 +123,27 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      * Adds the qualified names for all test policy cmpt type parameters (root and childs) to the
      * given list
      */
-    private void addQualifiedNameTypesForTestPolicyCmptTypeParams(Set<IpsObjectDependency> qualifiedNameTypes,
+    private void addQualifiedNameTypesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
             ITestPolicyCmptTypeParameter[] parameters) {
         for (int i = 0; i < parameters.length; i++) {
             if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
-                qualifiedNameTypes.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                        new QualifiedNameType(parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), parameters[i],
+                        ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, new QualifiedNameType(parameters[i]
+                                .getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
             }
-            addQualifiedNameTypesForTestPolicyCmptTypeParams(qualifiedNameTypes, parameters[i]
+            addDependenciesForTestPolicyCmptTypeParameterAttributes(parameters[i].getTestAttributes(), dependencies);
+            addQualifiedNameTypesForTestPolicyCmptTypeParams(dependencies, parameters[i]
                     .getTestPolicyCmptTypeParamChilds());
+        }
+    }
+
+    private void addDependenciesForTestPolicyCmptTypeParameterAttributes(ITestAttribute[] attributes,
+            Set<IDependency> dependencies) {
+        for (ITestAttribute attribute : attributes) {
+            if (!StringUtils.isEmpty(attribute.getPolicyCmptType())) {
+                dependencies.add(new DatatypeDependency(getQualifiedNameType(), attribute,
+                        ITestAttribute.PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE, attribute.getPolicyCmptType()));
+            }
         }
     }
 

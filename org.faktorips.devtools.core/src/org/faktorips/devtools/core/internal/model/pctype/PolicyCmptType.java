@@ -382,12 +382,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     public IDependency[] dependsOn() throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE)));
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), this,
+                    PROPERTY_PRODUCT_CMPT_TYPE, new QualifiedNameType(getProductCmptType(),
+                            IpsObjectType.PRODUCT_CMPT_TYPE)));
         }
         // to force a check if a product component type exists with the same qualified name (hack)
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), null, null,
+                new QualifiedNameType(getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies);
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }

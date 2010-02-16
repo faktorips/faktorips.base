@@ -824,13 +824,14 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         List<IDependency> depencendiesListSubEnumType = Arrays.asList(dependenciesSubEnumType);
         IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subEnumType
-                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
-                IpsObjectType.ENUM_TYPE));
+                .getQualifiedNameType(), subEnumType, IEnumType.PROPERTY_SUPERTYPE, new QualifiedNameType(
+                genderEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubEnumType.contains(superEnumTypeDependency));
 
         List<IDependency> depencendiesListSubSubEnumType = Arrays.asList(dependenciesSubSubEnumType);
         superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subSubEnumType.getQualifiedNameType(),
-                new QualifiedNameType(subEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
+                subSubEnumType, IEnumType.PROPERTY_SUPERTYPE, new QualifiedNameType(subEnumType.getQualifiedName(),
+                        IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubSubEnumType.contains(superEnumTypeDependency));
     }
 

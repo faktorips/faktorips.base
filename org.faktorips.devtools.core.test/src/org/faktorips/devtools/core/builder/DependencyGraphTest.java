@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -45,7 +46,11 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     private IPolicyCmptType d;
     private IPolicyCmptType e;
     private IEnumType enum1;
+    private IPolicyCmptTypeAssociation cToB;
+    private IPolicyCmptTypeAssociation aToD;
+    private IMethod cMethod;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -77,10 +82,12 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         aAttr1.setName("aAttr1");
 
         // dependencies c->b, c->a, a->d,
-        a.newPolicyCmptTypeAssociation().setTarget(d.getQualifiedName());
+        aToD = a.newPolicyCmptTypeAssociation();
+        aToD.setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
-        c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
-        IMethod cMethod = c.newMethod();
+        cToB = c.newPolicyCmptTypeAssociation();
+        cToB.setTarget(b.getQualifiedName());
+        cMethod = c.newMethod();
         cMethod.setDatatype(e.getQualifiedName());
         cMethod.setModifier(Modifier.PUBLIC);
         cMethod.setName("cMethod");
@@ -99,9 +106,10 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
         IDependency[] dependants = graph.getDependants(e.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(new DatatypeDependency(c.getQualifiedNameType(), e.getQualifiedName())));
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), e
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(new DatatypeDependency(c.getQualifiedNameType(), cMethod,
+                IMethod.PROPERTY_DATATYPE, e.getQualifiedName())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), aToE,
+                IAssociation.PROPERTY_TARGET, e.getQualifiedNameType())));
         assertEquals(2, dependants.length);
     }
 
@@ -117,14 +125,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     public void testGetDependants() throws CoreException {
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), c,
+                IPolicyCmptType.PROPERTY_SUPERTYPE, a.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(b.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), cToB,
+                IAssociation.PROPERTY_TARGET, b.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(c.getQualifiedNameType());
@@ -133,13 +141,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
         dependants = graph.getDependants(d.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), d
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), aToD,
+                IAssociation.PROPERTY_TARGET, d.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(e.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(new DatatypeDependency(c.getQualifiedNameType(), e.getQualifiedName())));
+        assertTrue(dependsOnList.contains(new DatatypeDependency(c.getQualifiedNameType(), cMethod,
+                IMethod.PROPERTY_DATATYPE, e.getQualifiedName())));
         assertEquals(1, dependants.length);
     }
 
@@ -159,14 +168,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         }
 
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), c,
+                IPolicyCmptType.PROPERTY_SUPERTYPE, a.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(b.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), cToB,
+                IAssociation.PROPERTY_TARGET, b.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(c.getQualifiedNameType());

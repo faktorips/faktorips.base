@@ -647,8 +647,8 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected void dependsOn(Set<IDependency> dependencies) throws CoreException {
         if (hasSupertype()) {
-            dependencies.add(IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(), new QualifiedNameType(
-                    getSupertype(), getIpsObjectType())));
+            dependencies.add(IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(), this,
+                    PROPERTY_SUPERTYPE, new QualifiedNameType(getSupertype(), getIpsObjectType())));
         }
         addQualifiedNameTypesForRelationTargets(dependencies);
         addAttributeDatatypeDependencies(dependencies);
@@ -666,7 +666,8 @@ public abstract class Type extends BaseIpsObject implements IType {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             String datatype = attributes[i].getDatatype();
-            qualifiedNameTypes.add(new DatatypeDependency(getQualifiedNameType(), datatype));
+            qualifiedNameTypes.add(new DatatypeDependency(getQualifiedNameType(), attributes[i],
+                    IAttribute.PROPERTY_DATATYPE, datatype));
         }
     }
 
@@ -679,10 +680,11 @@ public abstract class Type extends BaseIpsObject implements IType {
             // aggregate root and the recursion will terminate too early.
             if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
                 dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(getQualifiedNameType(),
-                        new QualifiedNameType(targetQName, getIpsObjectType())));
+                        relations[i], IAssociation.PROPERTY_TARGET, new QualifiedNameType(targetQName,
+                                getIpsObjectType())));
             } else {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                        new QualifiedNameType(targetQName, getIpsObjectType())));
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), relations[i],
+                        IAssociation.PROPERTY_TARGET, new QualifiedNameType(targetQName, getIpsObjectType())));
             }
         }
     }

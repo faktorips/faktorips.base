@@ -195,7 +195,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(1, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType1.getQualifiedNameType())));
+                param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
 
         // test dependency to policy cmpt type of child
         ITestPolicyCmptTypeParameter param2 = param1.newTestPolicyCmptTypeParamChild();
@@ -203,31 +203,35 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(2, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType1.getQualifiedNameType())));
+                param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType2.getQualifiedNameType())));
+                param2, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType2.getQualifiedNameType())));
 
         // test duplicate dependency
         ITestPolicyCmptTypeParameter param3 = param1.newTestPolicyCmptTypeParamChild();
         param3.setPolicyCmptType(pcType1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
-        assertEquals(2, dependsOnList.size());
+        assertEquals(3, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType1.getQualifiedNameType())));
+                param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType2.getQualifiedNameType())));
+                param2, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType2.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                param3, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
 
         // test dependency to policy cmpt type child of child
         ITestPolicyCmptTypeParameter param4 = param3.newTestPolicyCmptTypeParamChild();
         param4.setPolicyCmptType(pcType3.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
-        assertEquals(3, dependsOnList.size());
+        assertEquals(4, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType1.getQualifiedNameType())));
+                param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType2.getQualifiedNameType())));
+                param2, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType2.getQualifiedNameType())));
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
-                pcType3.getQualifiedNameType())));
+                param3, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType1.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                param4, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, pcType3.getQualifiedNameType())));
     }
 
     public void testGetTestRuleCandidates() throws CoreException {

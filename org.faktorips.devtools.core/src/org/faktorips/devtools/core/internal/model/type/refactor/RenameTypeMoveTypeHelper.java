@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,20 +24,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.DependencyGraph;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -220,180 +223,55 @@ public final class RenameTypeMoveTypeHelper {
 
         copySourceFileToTargetLocation(targetIpsPackageFragment, newName, pm);
 
-        if (type instanceof IPolicyCmptType) {
-            updateConfiguringProductCmptTypeReference(targetIpsPackageFragment, newName);
-            updateTestCaseTypeParameterReferences(targetIpsPackageFragment, newName);
-        } else {
-            updateConfiguredPolicyCmptTypeReference(targetIpsPackageFragment, newName);
-            updateProductCmptReferences(targetIpsPackageFragment, newName);
+        String newQName = getNewQualifiedName(targetIpsPackageFragment, newName);
+
+        IDependency[] dependencies = collectDependcies();
+
+        for (IDependency dependency : dependencies) {
+            if (!isMatching(dependency)) {
+                continue;
+            }
+
+            IIpsObjectPartContainer part = dependency.getPart();
+            String propertyName = dependency.getProperty();
+
+            if (part == null || propertyName == null) {
+                continue;
+            }
+
+            PropertyDescriptor property = BeanUtil.getPropertyDescriptor(part.getClass(), propertyName);
+            try {
+                property.getWriteMethod().invoke(part, newQName);
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(e));
+            }
         }
-        updateMethodParameterReferences(targetIpsPackageFragment, newName);
-        updateAssociationReferences(targetIpsPackageFragment, newName);
-        updateSubtypeReferences(targetIpsPackageFragment, newName);
 
         deleteOldIpsSourceFile(pm);
     }
 
-    /**
-     * Updates the reference to the <tt>IPolicyCmptType</tt> to be refactored in the configuring
-     * <tt>IProductCmptType</tt>.
-     * <p>
-     * Only applicable to <tt>IPolicyCmptType</tt>s.
-     */
-    private void updateConfiguringProductCmptTypeReference(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
+    private boolean isMatching(IDependency dependency) throws CoreException {
+        Object target = dependency.getTarget();
 
-        if (!((IPolicyCmptType)type).isConfigurableByProductCmptType()) {
-            return;
-        }
-        IProductCmptType productCmptType = ((IPolicyCmptType)type).findProductCmptType(type.getIpsProject());
-        productCmptType.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-    }
-
-    /**
-     * Updates all references in <tt>ITestPolicyCmptTypeParameter</tt>s of <tt>ITestCaseType</tt>s.
-     * <p>
-     * Only applicable to <tt>IPolicyCmptType</tt>s.
-     */
-    private void updateTestCaseTypeParameterReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
-            ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
-
-            for (ITestPolicyCmptTypeParameter testParameter : testCaseType.getTestPolicyCmptTypeParameters()) {
-                updateTestCaseTypeParameter(targetIpsPackageFragment, newName, ipsSrcFile, testParameter);
-                updateTestCaseTypeParameterChildren(testParameter, targetIpsPackageFragment, newName, ipsSrcFile);
-            }
+        if (target instanceof QualifiedNameType) {
+            return (type.getQualifiedNameType().equals(target));
+        } else if (target instanceof String) {
+            return type.getQualifiedName().equals(target);
+        } else {
+            throw new CoreException(new IpsStatus("The type of the dependency-target (" + target + ") is unknown."));
         }
     }
 
-    /** Goes recursively over all child <tt>ITestPolicyCmptTypeParameter</tt>s. */
-    private void updateTestCaseTypeParameterChildren(ITestPolicyCmptTypeParameter testParameter,
-            IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            IIpsSrcFile ipsSrcFile) throws CoreException {
+    private IDependency[] collectDependcies() throws CoreException {
+        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
+        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
 
-        for (ITestPolicyCmptTypeParameter child : testParameter.getTestPolicyCmptTypeParamChilds()) {
-            if (child.hasChildren()) {
-                updateTestCaseTypeParameterChildren(child, targetIpsPackageFragment, newName, ipsSrcFile);
-            }
-            updateTestCaseTypeParameter(targetIpsPackageFragment, newName, ipsSrcFile, child);
-        }
-    }
-
-    /** Updates all references in the provided <tt>ITestPolicyCmptTypeParameter</tt>. */
-    private void updateTestCaseTypeParameter(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
-            IIpsSrcFile ipsSrcFile,
-            ITestPolicyCmptTypeParameter testParameter) throws CoreException {
-
-        // A subclass of the policy component type to be renamed could also be referenced.
-        IIpsProject ipsProject = testParameter.getIpsProject();
-        IPolicyCmptType referencedPolicyCmptType = testParameter.findPolicyCmptType(ipsProject);
-        if (referencedPolicyCmptType.isSubtypeOrSameType(type, ipsProject)) {
-
-            // Update the parameter's policy component type reference if it is not a
-            // subclass that is referenced.
-            if (testParameter.getPolicyCmptType().equals(getOriginalQualifiedName())) {
-                testParameter.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-            }
-
-            // Update the test attributes where necessary.
-            for (ITestAttribute testAttribute : testParameter.getTestAttributes()) {
-                if (testAttribute.getPolicyCmptType().equals(getOriginalQualifiedName())) {
-                    testAttribute.setPolicyCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-                }
-            }
-        }
-    }
-
-    /**
-     * Updates the reference to the <tt>IProductCmptType</tt> to be refactored in the configured
-     * <tt>IPolicyCmptType</tt>.
-     * <p>
-     * Only applicable to <tt>IProductCmptType</tt>s.
-     */
-    private void updateConfiguredPolicyCmptTypeReference(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        if (!((IProductCmptType)type).isConfigurationForPolicyCmptType()) {
-            return;
-        }
-        IPolicyCmptType policyCmptType = ((IProductCmptType)type).findPolicyCmptType(type.getIpsProject());
-        policyCmptType.setProductCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-    }
-
-    /**
-     * Updates references to the <tt>IProductCmptType</tt> in <tt>IProductCmpt</tt>s that are based
-     * on the <tt>IProductCmptType</tt> to be refactored.
-     * <p>
-     * Only applicable to <tt>IProductCmptType</tt>s.
-     */
-    private void updateProductCmptReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        if (type.isAbstract()) {
-            return;
+        for (IIpsProject project : projects) {
+            DependencyGraph graph = new DependencyGraph(project);
+            dependencies.addAll(Arrays.asList(graph.getDependants(type.getQualifiedNameType())));
         }
 
-        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
-            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            if (productCmpt.getProductCmptType().equals(getOriginalQualifiedName())) {
-                productCmpt.setProductCmptType(getNewQualifiedName(targetIpsPackageFragment, newName));
-            }
-        }
-    }
-
-    /**
-     * Updates all references in parameter data types of <tt>IMethod</tt>s to the <tt>IType</tt> to
-     * be refactored.
-     */
-    private void updateMethodParameterReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-            IType type = (IType)ipsSrcFile.getIpsObject();
-            for (IMethod method : type.getMethods()) {
-                for (IParameter parameter : method.getParameters()) {
-                    if (parameter.getDatatype().equals(getOriginalQualifiedName())) {
-                        parameter.setDatatype(getNewQualifiedName(targetIpsPackageFragment, newName));
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Updates all references in associations of <tt>IType</tt>s that target the <tt>IType</tt> to
-     * be refactored.
-     */
-    private void updateAssociationReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-            IType type = (IType)ipsSrcFile.getIpsObject();
-            for (IAssociation association : type.getAssociations()) {
-                if (association.getTarget().equals(getOriginalQualifiedName())) {
-                    association.setTarget(getNewQualifiedName(targetIpsPackageFragment, newName));
-                }
-            }
-        }
-    }
-
-    /**
-     * Updates the supertype property of all sub types that inherit from the <tt>IType</tt> to be
-     * refactored.
-     */
-    private void updateSubtypeReferences(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
-
-        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-            IType potentialSubtype = (IType)ipsSrcFile.getIpsObject();
-            if (potentialSubtype.getSupertype().equals(getOriginalQualifiedName())) {
-                potentialSubtype.setSupertype(getNewQualifiedName(targetIpsPackageFragment, newName));
-            }
-        }
+        return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     /**
@@ -414,11 +292,6 @@ public final class RenameTypeMoveTypeHelper {
     /** Deletes the original IPS source file that is now no longer needed. */
     private void deleteOldIpsSourceFile(IProgressMonitor pm) throws CoreException {
         type.getIpsSrcFile().getCorrespondingResource().delete(true, pm);
-    }
-
-    /** Returns the <tt>IType</tt>'s original qualified name. */
-    private String getOriginalQualifiedName() {
-        return getQualifiedName(type.getIpsPackageFragment(), type.getName());
     }
 
     /** Returns the <tt>IType</tt>'s new qualified name. */

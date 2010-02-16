@@ -254,8 +254,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     @Override
     public IDependency[] dependsOn() throws CoreException {
-        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
+        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), this,
+                PROPERTY_ENUM_TYPE, new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
         return new IDependency[] { enumTypeDependency };
     }
 

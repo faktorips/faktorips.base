@@ -336,9 +336,11 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     }
 
     public void dependsOn(Set<IDependency> dependencies) {
-        dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), getDatatype()));
+        dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), this, PROPERTY_DATATYPE,
+                getDatatype()));
         for (IParameter parameter : parameters) {
-            dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype()));
+            dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter,
+                    IParameter.PROPERTY_DATATYPE, parameter.getDatatype()));
         }
     }
 

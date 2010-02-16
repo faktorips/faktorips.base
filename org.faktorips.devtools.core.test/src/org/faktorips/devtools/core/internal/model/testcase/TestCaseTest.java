@@ -294,7 +294,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(1, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createInstanceOfDependency(testCase
-                .getQualifiedNameType(), testCaseType.getQualifiedNameType())));
+                .getQualifiedNameType(), testCase, ITestCase.PROPERTY_TEST_CASE_TYPE, testCaseType
+                .getQualifiedNameType())));
 
         ITestCase testCase2 = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseType2");
         List<IDependency> dependsOnList2 = CollectionUtil.toArrayList(testCase2.dependsOn());
@@ -309,7 +310,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(2, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt1.getQualifiedNameType())));
+                testCase.getQualifiedNameType(), testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT, prodCmpt1
+                        .getQualifiedNameType())));
 
         // test dependency to product cmpt, child test cmpt
         ITestPolicyCmptLink testAssociation1 = testPolicyCmpt1.newTestPolicyCmptLink();
@@ -318,9 +320,11 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(3, dependsOnList.size());
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt1.getQualifiedNameType())));
+                testCase.getQualifiedNameType(), testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT, prodCmpt1
+                        .getQualifiedNameType())));
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt2.getQualifiedNameType())));
+                testCase.getQualifiedNameType(), testPolicyCmpt2, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT, prodCmpt2
+                        .getQualifiedNameType())));
     }
 
     public void testGenerateUniqueNameForTestPolicyCmpt() {

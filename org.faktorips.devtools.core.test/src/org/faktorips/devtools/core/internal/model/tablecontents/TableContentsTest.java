@@ -67,7 +67,8 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.setTableStructure(structure.getQualifiedName());
         List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
         assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(
-                table.getQualifiedNameType(), structure.getQualifiedNameType())));
+                table.getQualifiedNameType(), table, ITableContents.PROPERTY_TABLESTRUCTURE, structure
+                        .getQualifiedNameType())));
     }
 
     public void testNewColumn() {

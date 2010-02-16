@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,28 +18,44 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
-
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
-public class DatatypeDependencyTest extends TestCase {
+public class DatatypeDependencyTest extends AbstractIpsPluginTest {
 
     private QualifiedNameType source;
     private DatatypeDependency dependency;
-    
-    
-    public void setUp(){
+
+    @Override
+    public void setUp() {
         source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        dependency = new DatatypeDependency(source, "a.b.e");
+        dependency = new DatatypeDependency(source, null, null, "a.b.e");
     }
-    
-    public final void testHashCode() {
+
+    public final void testHashCode() throws CoreException {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
 
         QualifiedNameType source2 = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency2 = new DatatypeDependency(source2, "a.b.e");
+        DatatypeDependency dependency2 = new DatatypeDependency(source2, null, null, "a.b.e");
+        assertEquals(dependency.hashCode(), dependency2.hashCode());
+
+        dependency2 = new DatatypeDependency(source2, null, "egon", "a.b.e");
+        assertFalse(dependency.hashCode() == dependency2.hashCode());
+
+        dependency = new DatatypeDependency(source, null, "egon", "a.b.e");
+        assertEquals(dependency.hashCode(), dependency2.hashCode());
+
+        IIpsProject prj = newIpsProject("test");
+        IPolicyCmptType type = newPolicyCmptType(prj, "A");
+        dependency2 = new DatatypeDependency(source2, type, "egon", "a.b.e");
+        assertFalse(dependency.hashCode() == dependency2.hashCode());
+
+        dependency = new DatatypeDependency(source, type, "egon", "a.b.e");
         assertEquals(dependency.hashCode(), dependency2.hashCode());
     }
 
@@ -61,27 +77,27 @@ public class DatatypeDependencyTest extends TestCase {
 
     public final void testEqualsObject() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
 
         QualifiedNameType source2 = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency2 = new DatatypeDependency(source2, "a.b.e");
+        DatatypeDependency dependency2 = new DatatypeDependency(source2, null, null, "a.b.e");
         assertEquals(dependency, dependency2);
     }
 
-    public void testSerializable() throws Exception{
+    public void testSerializable() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(10);
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(dependency);
-        
+
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bis);
         DatatypeDependency dependency = (DatatypeDependency)ois.readObject();
         assertEquals(this.dependency, dependency);
     }
-    
-    public void testToString(){
+
+    public void testToString() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
         assertEquals("(PolicyCmptType: a.b.c -> a.b.e, type: datatype dependency)", dependency.toString());
     }
 }

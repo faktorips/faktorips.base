@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
+import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -468,8 +469,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         for (IIpsObjectPart part : actions.getParts()) {
             IActionBFE action = (IActionBFE)part;
             if (action.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL) {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                        new QualifiedNameType(action.getTarget(), BusinessFunctionIpsObjectType.getInstance())));
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), action,
+                        IMethodCallBFE.PROPERTY_TARGET, new QualifiedNameType(action.getTarget(),
+                                BusinessFunctionIpsObjectType.getInstance())));
                 continue;
             }
             if (action.getType() == BFElementType.ACTION_METHODCALL) {
@@ -477,8 +479,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 if (param != null) {
                     String datatype = param.getDatatype();
                     if (datatype != null) {
-                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                                new QualifiedNameType(datatype, IpsObjectType.POLICY_CMPT_TYPE)));
+                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), param,
+                                IParameterBFE.PROPERTY_DATATYPE, new QualifiedNameType(datatype,
+                                        IpsObjectType.POLICY_CMPT_TYPE)));
                     }
                 }
             }

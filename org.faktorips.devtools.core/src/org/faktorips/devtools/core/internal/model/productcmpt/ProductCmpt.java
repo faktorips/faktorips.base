@@ -241,8 +241,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         Set<IDependency> dependencySet = new HashSet<IDependency>();
 
         if (!StringUtils.isEmpty(productCmptType)) {
-            dependencySet.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE)));
+            dependencySet.add(IpsObjectDependency
+                    .createInstanceOfDependency(getQualifiedNameType(), this, PROPERTY_PRODUCT_CMPT_TYPE,
+                            new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE)));
         }
 
         // add dependency to related product cmpt's and add dependency to table contents

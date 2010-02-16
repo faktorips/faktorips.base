@@ -617,12 +617,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IDependency[] dependsOn() throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getPolicyCmptType())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), this,
+                    PROPERTY_POLICY_CMPT_TYPE, new QualifiedNameType(getPolicyCmptType(),
+                            IpsObjectType.POLICY_CMPT_TYPE)));
         }
         // to force a check is a policy component type exists with the same qualified name
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), null, null,
+                new QualifiedNameType(getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
         dependsOn(dependencies);
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }

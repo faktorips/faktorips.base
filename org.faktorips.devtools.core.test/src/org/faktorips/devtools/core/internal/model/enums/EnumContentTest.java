@@ -156,8 +156,8 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         List<IDependency> depencendiesList = Arrays.asList(dependencies);
         IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(genderEnumContent
-                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
-                IpsObjectType.ENUM_TYPE));
+                .getQualifiedNameType(), genderEnumContent, IEnumContent.PROPERTY_ENUM_TYPE, new QualifiedNameType(
+                genderEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesList.contains(enumTypeDependency));
     }
 
