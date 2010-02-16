@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -102,6 +103,9 @@ import org.faktorips.util.message.MessageList;
  * @since 2.3
  */
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
+
+    /** Key to store the state of the action in the dialog settings. */
+    private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames";
 
     /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
     private IEnumValueContainer enumValueContainer;
@@ -195,6 +199,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             enumContent = (IEnumContent)enumValueContainer;
         }
 
+        loadDialogSettings();
         initControls();
         createActions();
         createToolbar();
@@ -203,12 +208,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         updateEnabledStates();
 
-        // Activate lock and sync literal names as default setting if available.
-        if (isLockAndSyncLiteralNamesPossible()) {
-            toggleLockAndSyncLiteralNames();
-        }
-
         registerAsChangeListenerToEnumValueContainer();
+    }
+
+    private void loadDialogSettings() throws CoreException {
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
+        lockAndSynchronizeLiteralNames = settings.getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
     }
 
     @Override
@@ -331,6 +336,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         if (enumTypeEditing) {
             lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
+            lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
             resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, (IEnumType)enumValueContainer);
         }
     }
@@ -370,24 +376,16 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * Returns <tt>true</tt> if it is possible to lock and synchronize literal names. This is the
-     * case if an <tt>IEnumType</tt> is being edited that is capable of holding <tt>IEnumValue</tt>
-     * s. Returns <tt>false</tt> otherwise.
-     */
-    private boolean isLockAndSyncLiteralNamesPossible() throws CoreException {
-        if (enumTypeEditing && enumValueContainer.isCapableOfContainingValues()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Toggles the 'Lock and Synchronize Literal Names' option. Updates the columns that are skipped
      * by cell editors in the process.
      */
     void toggleLockAndSyncLiteralNames() {
         lockAndSynchronizeLiteralNames = !lockAndSynchronizeLiteralNames;
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
+
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
+        settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
+
         updateCellEditorSkippedColumns();
     }
 
