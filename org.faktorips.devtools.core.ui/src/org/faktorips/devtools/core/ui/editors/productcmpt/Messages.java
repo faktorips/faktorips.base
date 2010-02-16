@@ -174,6 +174,8 @@ public class Messages extends NLS {
 
 	public static String GenerationEditDialog_msgDateToLate;
 
+    public static String GenerationPropertiesPage_openModelDescView;
+
 	public static String GenerationSelectionDialog_labelCreate;
 
 	public static String GenerationSelectionDialog_labelSwitch;

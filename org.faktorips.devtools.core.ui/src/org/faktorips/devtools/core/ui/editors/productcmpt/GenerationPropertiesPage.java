@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 
 /**
  * Page to display a generation's properties.
@@ -120,9 +122,24 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             }
         };
 
+        Action openModelDescription = new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
+
+            @Override
+            public void run() {
+                try {
+                    IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                            ModelDescriptionView.EXTENSION_ID);
+                } catch (PartInitException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        };
+
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(gotoPreviousGenerationAction);
         form.getToolBarManager().add(gotoNextGenerationAction);
+        form.getToolBarManager().add(openModelDescription);
         form.updateToolBar();
     }
 
