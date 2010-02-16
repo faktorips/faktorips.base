@@ -13,10 +13,10 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
  * This interface describes that a source depends on a target. The dependency type describes the
@@ -46,14 +46,24 @@ public interface IDependency {
     public QualifiedNameType getSource();
 
     /**
-     * For example if the source depends on the target because the target is the target of a
-     * relation, the result of this method is an {@link IAssociation}.
-     * <p>
-     * <strong>Caution:</strong> This method will return null if this object was deserialized and
-     * not gatherd from the {@link IIpsObject#dependsOn()} method.
+     * Returns the part container that is responsible for the existence of this dependency.
+     * Examples:
+     * <ul>
+     * <li>If a policy component type has a super type, the ips object representing the policy
+     * component type is responsible for the dependency (the policy component type depends on its
+     * supertype). So this method returns the ips object representing the policy component type.
+     * <li/> <li>If a policy component type has an association and the target of the association is
+     * another policy component type, the association is responsible for the dependency between the
+     * policy component type and the other type. OIn this case this method returns the association.
+     * </ul>
      * 
-     * @return The part of the source causing the dependency or <code>null</code>, if this
-     *         dependency was deserialized.
+     * <p>
+     * <strong>Caution:</strong> The result of this method is only valid when the object is directly
+     * returned from the {@link IIpsObject#dependsOn()} method. It is undefined what instances
+     * retrieved for example from the dependency graph {@link DependencyGraph} return when this
+     * method is called.
+     * 
+     * @return The part of the source causing the dependency
      */
     public IIpsObjectPartContainer getPart();
 
