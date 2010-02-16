@@ -202,7 +202,6 @@
                 <cvs module="org.faktorips.uml"/>
                 <cvs module="org.faktorips.devtools.ormext"/>
                 <cvs module="org.faktorips.devtools.ormext.ui"/>
-                <cvs module="org.faktorips.analysis"/>
                                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
