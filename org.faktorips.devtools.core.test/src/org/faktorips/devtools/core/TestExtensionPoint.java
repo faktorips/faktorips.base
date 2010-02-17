@@ -132,4 +132,8 @@ public class TestExtensionPoint implements IExtensionPoint {
         throw new RuntimeException("Not implemented yet.");
     }
 
+    // @since Eclipse 3.6 (Helios)
+    public String getLabel(String locale) throws InvalidRegistryObjectException {
+        throw new RuntimeException("Not implemented yet.");
+    }
 }

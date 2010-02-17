@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,15 +35,15 @@ import org.faktorips.util.ArgumentCheck;
 public class TestExtensionRegistry implements IExtensionRegistry {
 
     private IExtensionPoint[] extensionPoints;
-    
+
     /**
      * Creates a new TestExtensionRegistry for the provided {@link IExtensionPoint}s.
      */
-    public TestExtensionRegistry(IExtensionPoint[] extensionPoints){
+    public TestExtensionRegistry(IExtensionPoint[] extensionPoints) {
         ArgumentCheck.notNull(extensionPoints, this);
         this.extensionPoints = extensionPoints;
     }
-    
+
     /**
      * Throws RuntimeException
      */
@@ -118,13 +118,13 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      * Throws RuntimeException
      */
     public IExtensionPoint getExtensionPoint(String extensionPointId) {
-        if(extensionPointId == null){
+        if (extensionPointId == null) {
             return null;
         }
         int index = extensionPointId.lastIndexOf('.');
         String namespace = "";
         String extensionPointName = "";
-        if(index != -1){
+        if (index != -1) {
             namespace = extensionPointId.substring(0, index);
             extensionPointName = extensionPointId.substring(index + 1);
         } else {
@@ -203,30 +203,34 @@ public class TestExtensionRegistry implements IExtensionRegistry {
         throw new RuntimeException("Not implemented");
     }
 
-    
     // @since Eclipse 3.4 (Ganymede)
-	public void addListener(IRegistryEventListener arg0) {
-		throw new RuntimeException("Not implemented");
-	}
-	
+    public void addListener(IRegistryEventListener arg0) {
+        throw new RuntimeException("Not implemented");
+    }
+
     // @since Eclipse 3.4 (Ganymede)
-	public void addListener(IRegistryEventListener arg0, String arg1) {
-		throw new RuntimeException("Not implemented");
-	}
-	
+    public void addListener(IRegistryEventListener arg0, String arg1) {
+        throw new RuntimeException("Not implemented");
+    }
+
     // @since Eclipse 3.4 (Ganymede)
-	public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
-		throw new RuntimeException("Not implemented");
-	}
-	
+    public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
+        throw new RuntimeException("Not implemented");
+    }
+
     // @since Eclipse 3.4 (Ganymede)
-	public IExtension[] getExtensions(IContributor arg0) {
-		throw new RuntimeException("Not implemented");
-	}
-	
+    public IExtension[] getExtensions(IContributor arg0) {
+        throw new RuntimeException("Not implemented");
+    }
+
     // @since Eclipse 3.4 (Ganymede)
-	public void removeListener(IRegistryEventListener arg0) {
-		throw new RuntimeException("Not implemented");
-	}
+    public void removeListener(IRegistryEventListener arg0) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    // @since Eclipse 3.6 (Helios)
+    public boolean isMultiLanguage() {
+        throw new RuntimeException("Not implemented");
+    }
 
 }
