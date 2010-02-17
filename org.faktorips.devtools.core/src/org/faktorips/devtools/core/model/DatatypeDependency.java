@@ -35,11 +35,16 @@ public class DatatypeDependency implements IDependency, Serializable {
     private DependencyType type;
     private int hashCode;
 
-    private IIpsObjectPartContainer part;
-    private String propertyName;
+    private transient IIpsObjectPartContainer part;
+    private transient String propertyName;
 
     /**
-     * Creates a new instance. The provided parameters must not be null.
+     * Creates a new instance.
+     * 
+     * @param source The source of this dependency. Must not be <code>null</code>.
+     * @param part The part container that is responsible for the existence of this dependency.
+     * @param propertyName The property name of the part causing this dependency.
+     * @param target The target of this dependency. Must nott be <code>null</code>.
      */
     public DatatypeDependency(QualifiedNameType source, IIpsObjectPartContainer part, String propertyName, String target) {
         super();
