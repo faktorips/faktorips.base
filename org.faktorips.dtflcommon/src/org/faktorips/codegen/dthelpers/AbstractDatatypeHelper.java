@@ -68,9 +68,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * or the sourcecode to get an instance of the appropriate null object. Preconditions:
      * Expression may not be null or empty. When evaluated the expression must return a String.
      */
-    protected JavaCodeFragment valueOfExpression(String expression) {
-        return nullExpression();
-    }
+    protected abstract JavaCodeFragment valueOfExpression(String expression);
 
     /**
      * {@inheritDoc}

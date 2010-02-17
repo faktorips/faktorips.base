@@ -56,4 +56,14 @@ public class BigDecimalHelper extends AbstractDatatypeHelper {
         return new JavaCodeFragment("null");
     }
 
+    @Override
+    protected JavaCodeFragment valueOfExpression(String expression) {
+        JavaCodeFragment code = new JavaCodeFragment("new ");
+        code.appendClassName(BigDecimal.class);
+        code.append('(');
+        code.append(expression);
+        code.append(')');
+        return code;
+    }
+
 }
