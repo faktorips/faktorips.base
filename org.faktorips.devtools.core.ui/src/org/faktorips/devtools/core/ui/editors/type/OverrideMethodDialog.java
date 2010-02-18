@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,34 +18,39 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
+import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
+/**
+ * A dialog that enables the user to select <tt>IMethod</tt>s to overwrite.
+ * 
+ * @author Alexander Weickmann
+ */
+public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
 
-public class OverrideMethodDialog extends OverrideDialog {
-    
-	/**
-     * Creates a new dialog to select candidates for overwriting.
-     * 
-     * @param pcType The type to get the candidates for overwriting from.
+    /**
+     * @param type The type to get the candidates for overwriting from.
      * @param parent The shell to show this dialog in.
      */
-    public OverrideMethodDialog(IType pcType, Shell parent) {
-        super(pcType, parent, new CandidatesContentProvider(pcType));
+    public OverrideMethodDialog(IType type, Shell parent) {
+        super(parent, new CandidatesContentProvider(type));
         setTitle(Messages.OverrideMethodDialog_title);
         setEmptyListMessage(Messages.OverrideMethodDialog_msgEmpty);
         setSelectLabelText(Messages.OverrideMethodDialog_labelSelectMethods);
-       	selectAbstractMethods(pcType);
+        selectAbstractMethods(type);
     }
-    
+
     private void selectAbstractMethods(IType type) {
         try {
-            // select abstract mehods
             List<IMethod> selected = new ArrayList<IMethod>();
             IMethod[] method = type.findOverrideMethodCandidates(false, type.getIpsProject());
-            for (int i=0; i<method.length; i++) {
+            for (int i = 0; i < method.length; i++) {
                 if (method[i].isAbstract()) {
                     selected.add(method[i]);
                 }
@@ -56,33 +61,62 @@ public class OverrideMethodDialog extends OverrideDialog {
         }
     }
 
-	/**
-	 * Returns the methods the user has selected to override. 
-	 */
-	public IMethod[] getSelectedMethods() {
-	    List<Object> methods = new ArrayList<Object>();
-	    Object[] checked = getResult();
-	    for (int i=0; i<checked.length; i++) {
-	        if (checked[i] instanceof IMethod) {
-	            methods.add(checked[i]);
-	        }
-	    }
-	    return methods.toArray(new IMethod[methods.size()]);
-	}
+    /** Returns the <tt>IMethod</tt>s the user has selected to override. */
+    public IMethod[] getSelectedMethods() {
+        List<Object> methods = new ArrayList<Object>();
+        Object[] checked = getResult();
+        for (int i = 0; i < checked.length; i++) {
+            if (checked[i] instanceof IMethod) {
+                methods.add(checked[i]);
+            }
+        }
+        return methods.toArray(new IMethod[methods.size()]);
+    }
 
-    private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {
-        
-        CandidatesContentProvider(IType pcType) {
-        	super(pcType);
+    private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
+
+        public CandidatesContentProvider(IType type) {
+            super(type);
         }
 
-		public IIpsObjectPart[] getCandidates(IType pcType) {
-			try {
-				return pcType.findOverrideMethodCandidates(false, pcType.getIpsProject());
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-				return new IIpsObjectPart[0];
-			}
-		}
-	}
+        @Override
+        protected IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
+            IType type = (IType)ipsObject;
+            try {
+                return type.findOverrideMethodCandidates(false, type.getIpsProject());
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
+            IType type = (IType)ipsObject;
+            SupertypesCollector collector = new SupertypesCollector(type.getIpsProject());
+            try {
+                collector.start(type.findSupertype(type.getIpsProject()));
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+            return collector.supertypes.toArray(new IIpsObject[collector.supertypes.size()]);
+        }
+
+        private static class SupertypesCollector extends TypeHierarchyVisitor {
+
+            private List<IType> supertypes = new ArrayList<IType>();
+
+            public SupertypesCollector(IIpsProject ipsProject) {
+                super(ipsProject);
+            }
+
+            @Override
+            protected boolean visit(IType currentType) throws CoreException {
+                supertypes.add(currentType);
+                return true;
+            }
+
+        }
+
+    }
+
 }

@@ -46,6 +46,10 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelIsInherited;
     public static String EnumAttributeEditDialog_labelDefaultValueProviderAttribute;
 
+    public static String InheritAttributesDialog_title;
+    public static String InheritAttributesDialog_labelNoAttributes;
+    public static String InheritAttributesDialog_labelSelectAttribute;
+
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }

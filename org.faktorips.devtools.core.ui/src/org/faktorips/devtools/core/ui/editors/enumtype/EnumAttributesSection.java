@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +21,11 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -169,18 +175,22 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             super.createButtons(buttons, toolkit);
             createButtonSpace(buttons, toolkit);
 
-            // TODO AW: out commented for release 2.3.0rfinal
-            /*
-             * Button inheritButton = toolkit.createButton(buttons,
-             * Messages.EnumAttributessection_buttonInherit); inheritButton .setLayoutData(new
-             * GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-             * inheritButton.addSelectionListener(new SelectionListener() { public void
-             * widgetSelected(SelectionEvent e) { inheritClicked(); }
-             * 
-             * public void widgetDefaultSelected(SelectionEvent e) {
-             * 
-             * } });
-             */
+            Button inheritButton = toolkit.createButton(buttons, Messages.EnumAttributessection_buttonInherit);
+            inheritButton
+                    .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+            inheritButton.addSelectionListener(new SelectionListener() {
+                public void widgetSelected(SelectionEvent event) {
+                    try {
+                        inheritClicked();
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                public void widgetDefaultSelected(SelectionEvent event) {
+
+                }
+            });
 
             return true;
         }
@@ -206,12 +216,14 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * Opens a dialog enabling the user to inherit <tt>IEnumAttribute</tt>s from the supertype
          * hierarchy in a comfortable way.
          */
-        // TODO AW: out commented for release 2.3.0.rfinal
-        /*
-         * private void inheritClicked() {
-         * 
-         * }
-         */
+        private void inheritClicked() throws CoreException {
+            InheritAttributesDialog dialog = new InheritAttributesDialog(enumType, getShell());
+            if (dialog.open() == Window.OK) {
+                IEnumAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
+                enumType.inheritEnumAttributes(Arrays.asList(attributesToOverwrite));
+                refresh();
+            }
+        }
 
     }
 

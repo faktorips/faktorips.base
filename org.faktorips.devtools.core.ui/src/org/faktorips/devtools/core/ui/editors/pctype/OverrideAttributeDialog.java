@@ -22,28 +22,29 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
+import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
 
 /**
- * Dialog that enables the user to select <tt>IPolicyCmptTypeAttribute</tt>s to overwrite.
+ * A dialog that enables the user to select <tt>IPolicyCmptTypeAttribute</tt>s to overwrite.
  * 
  * @author Alexander Weickmann
  */
 public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog {
 
     /**
-     * Creates a new dialog to select candidates for overwriting attributes.
-     * 
-     * @param pcType The type to get the candidates for overwriting from.
-     * @param parent The shell to show this dialog in.
+     * @param policyCmptType The <tt>IPolicyCmptType</tt> to get the candidates to possibly
+     *            overwrite from.
+     * @param parent The <tt>Shell</tt> to show this dialog in.
      */
-    public OverrideAttributeDialog(IPolicyCmptType pcType, Shell parent) {
-        super(pcType, parent, new CandidatesContentProvider(pcType));
+    public OverrideAttributeDialog(IPolicyCmptType policyCmptType, Shell parent) {
+        super(parent, new CandidatesContentProvider(policyCmptType));
         setTitle(Messages.OverrideAttributeDialog_title);
         setEmptyListMessage(Messages.OverrideAttributeDialog_labelNoAttributes);
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
     }
 
-    /** Returns the attributes the user has selected to override. */
+    /** Returns the <tt>IPolicyCmptTypeAttribute</tt>s the user has selected to override. */
     public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         Object[] checked = getResult();
@@ -57,23 +58,21 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
     }
 
     /** Provides the <tt>IPolicyCmptTypeAttribute</tt>s available for selection. */
-    private static class CandidatesContentProvider extends SelectSupertypeHierarchyPartsDialog.PartsContentProvider {
+    private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
 
         /**
-         * Creates the <tt>CandiatesContentProvider</tt>.
-         * 
-         * @param pcType The <tt>IPolicyCmptType</tt> the <tt>IPolicyCmptTypeAttribute</tt>s
-         *            available for selection are from.
+         * @param policyCmptType The <tt>IPolicyCmptType</tt> the <tt>IPolicyCmptTypeAttribute</tt>s
+         *            available for selection belong to.
          */
-        CandidatesContentProvider(IPolicyCmptType pcType) {
-            super(pcType);
+        public CandidatesContentProvider(IPolicyCmptType policyCmptType) {
+            super(policyCmptType);
         }
 
         @Override
         public IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
-            IPolicyCmptType pcType = (IPolicyCmptType)ipsObject;
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
             try {
-                return pcType.findOverrideAttributeCandidates(pcType.getIpsProject());
+                return policyCmptType.findOverrideAttributeCandidates(policyCmptType.getIpsProject());
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
@@ -81,9 +80,10 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
 
         @Override
         protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
-            IPolicyCmptType pcType = (IPolicyCmptType)ipsObject;
-            return pcType.getSupertypeHierarchy().getAllSupertypes(pcType);
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
+            return policyCmptType.getSupertypeHierarchy().getAllSupertypes(policyCmptType);
         }
 
     }
+
 }

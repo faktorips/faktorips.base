@@ -11,16 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
@@ -31,22 +25,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
- * This dialog lets the user select a set of <tt>IIpsObjectPart</tt>s from the super type hierarchy
+ * This dialog lets the user select a set of <tt>IIpsObjectPart</tt>s from the supertype hierarchy
  * of a specified <tt>IIpsObject</tt> in a comfortable way.
  * <p>
  * The dialog is intended to be used by UI editors that are responsible for doing something useful
  * with the user's selection (e. g. the dialog may be used to let the user select a set of methods
  * from super classes of a <tt>IPolicyCmptType</tt> which are then overridden by the currently
  * edited <tt>IPolicyCmptType</tt>).
- * 
- * @author Alexander Weickmann raised abstraction level from former <tt>OverrideDialog</tt> to
- *         <tt>SelectSupertypeHierarchyPartsDialog</tt>.
  */
 public abstract class SelectSupertypeHierarchyPartsDialog extends CheckedTreeSelectionDialog {
 
@@ -66,19 +54,12 @@ public abstract class SelectSupertypeHierarchyPartsDialog extends CheckedTreeSel
     private String selectLabelText;
 
     /**
-     * Creates a new <tt>SelectSupertypeHierarchyPartsDialog</tt> where <tt>IIpsObjectPart</tt>s
-     * available for selection are parts of an <tt>IPolicyCmptType</tt>.
-     * 
-     * @param pcType The <tt>IPolicyCmptType</tt> to select <tt>IIpsObjectPart</tt>s from.
-     * @param parent The parent UI shell to show this dialog in.
-     * @param contentProvider The content provider providing this dialog with the available
-     *            <tt>IIpsObjectPart</tt>s.
+     * @param parent The parent <tt>Shell</tt> to show this dialog in.
+     * @param contentProvider A <tt>SupertypeHierarchyPartsContentProvider</tt> providing this
+     *            dialog with available <tt>IIpsObjectPart</tt>s.
      */
-    public SelectSupertypeHierarchyPartsDialog(IPolicyCmptType pcType, Shell parent,
-            PartsContentProvider contentProvider) {
-
+    public SelectSupertypeHierarchyPartsDialog(Shell parent, SupertypeHierarchyPartsContentProvider contentProvider) {
         super(parent, new DefaultLabelProvider(), contentProvider);
-
         setSize(80, 30);
         setContainerMode(true);
         setMessage(null);
@@ -197,79 +178,6 @@ public abstract class SelectSupertypeHierarchyPartsDialog extends CheckedTreeSel
         buttonComposite.setLayout(layout);
 
         return buttonComposite;
-    }
-
-    /**
-     * The <tt>PartsContentProvider</tt> provides the <tt>IIpsObjectPart</tt>s that are available
-     * for selection.
-     */
-    static abstract class PartsContentProvider implements ITreeContentProvider {
-
-        /** The <tt>IIpsObjectPart</tt>s available for selection. */
-        private IIpsObjectPart[] availableParts;
-
-        /** The super types from which. */
-        private IIpsObject[] supertypes;
-
-        /**
-         * Creates a new <tt>PartsContentProvider</tt>.
-         * 
-         * @param ipsObject The <tt>IIpsObject</tt> the <tt>IIpsObjectPart</tt>s available for
-         *            selection belong to.
-         */
-        PartsContentProvider(IIpsObject ipsObject) {
-            try {
-                supertypes = getSupertypes(ipsObject);
-                availableParts = getAvailableParts(ipsObject);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        protected abstract IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException;
-
-        public Object[] getChildren(Object parentElement) {
-            if (parentElement instanceof IIpsObject) {
-                IIpsObject ipsObject = (IIpsObject)parentElement;
-                List<IIpsObjectPart> methods = new ArrayList<IIpsObjectPart>();
-                for (int i = 0; i < availableParts.length; i++) {
-                    if (availableParts[i].getIpsObject().equals(ipsObject)) {
-                        methods.add(availableParts[i]);
-                    }
-                }
-                return methods.toArray();
-            }
-            return new Object[0];
-        }
-
-        public Object getParent(Object element) {
-            if (element instanceof IIpsObject) {
-                return null;
-            }
-            if (element instanceof IIpsObjectPart) {
-                return ((IIpsObjectPart)element).getParent();
-            }
-            throw new RuntimeException("Unknown element " + element);
-        }
-
-        public boolean hasChildren(Object element) {
-            return getChildren(element).length > 0;
-        }
-
-        public Object[] getElements(Object inputElement) {
-            return supertypes;
-        }
-
-        public void dispose() {
-            // Nothing to do.
-        }
-
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            // Nothing to do.
-        }
-
-        protected abstract IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject);
-
     }
 
 }

@@ -170,7 +170,8 @@ public class AttributesSection extends SimpleIpsPartsSection {
         private void overrideClicked() {
             OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
             if (dialog.open() == Window.OK) {
-                getPcType().overrideAttributes(dialog.getSelectedAttributes());
+                IPolicyCmptTypeAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
+                getPcType().overrideAttributes(attributesToOverwrite);
                 refresh();
             }
         }
