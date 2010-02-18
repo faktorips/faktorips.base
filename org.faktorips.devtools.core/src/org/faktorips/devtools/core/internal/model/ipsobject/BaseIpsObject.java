@@ -124,4 +124,5 @@ public abstract class BaseIpsObject extends IpsObject {
         }
         throw new IllegalArgumentException("Could not create a new part for class " + partType); //$NON-NLS-1$
     }
+
 }

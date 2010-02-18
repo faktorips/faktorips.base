@@ -17,29 +17,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 
 /**
- * This is the "Move Type" - refactoring.
+ * This is the "Rename Type" - refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class MoveTypeProcessor extends IpsMoveProcessor {
+public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename Type" and "Move Type"
      * refactorings.
      */
-    private final RenameTypeMoveTypeHelper renameMoveHelper;
+    private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * Creates a <tt>MoveTypeProcessor</tt>.
-     * 
-     * @param type The <tt>IType</tt> to be moved.
+     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be renamed.
      */
-    public MoveTypeProcessor(IType type) {
-        super(type);
-        renameMoveHelper = new RenameTypeMoveTypeHelper(this, type);
+    public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
+        super(toBeRefactored);
+        renameMoveHelper = new MoveRenameIpsObjectHelper(this, toBeRefactored);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
@@ -55,7 +53,7 @@ public final class MoveTypeProcessor extends IpsMoveProcessor {
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status, pm);
+        renameMoveHelper.validateUserInputThis(getObject().getIpsPackageFragment(), getNewName(), status, pm);
     }
 
     @Override
@@ -63,23 +61,28 @@ public final class MoveTypeProcessor extends IpsMoveProcessor {
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
 
-        renameMoveHelper.checkFinalConditionsThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status, pm,
+        renameMoveHelper.checkFinalConditionsThis(getObject().getIpsPackageFragment(), getNewName(), status, pm,
                 context);
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), pm);
+        renameMoveHelper.refactorIpsModel(getObject().getIpsPackageFragment(), getNewName(), pm);
+    }
+
+    /** Returns the <tt>IType</tt> to be renamed. */
+    private IpsObject getObject() {
+        return (IpsObject)getIpsElement();
     }
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.MoveTypeProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor";
     }
 
     @Override
     public String getProcessorName() {
-        return Messages.MoveTypeProcessor_processorName;
+        return Messages.RenameTypeProcessor_processorName;
     }
 
 }
