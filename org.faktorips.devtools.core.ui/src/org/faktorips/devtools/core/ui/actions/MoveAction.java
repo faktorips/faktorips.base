@@ -23,7 +23,7 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.MoveResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.MoveRefactoringWizard;
 
@@ -44,8 +44,8 @@ public class MoveAction extends IpsRefactoringAction {
         Object selected = selection.getFirstElement();
 
         // Open refactoring wizard if supported for selection.
-        if (selected instanceof IType) {
-            Refactoring refactoring = ((IIpsElement)selected).getMoveRefactoring();
+        if (selected instanceof IIpsObject) {
+            Refactoring refactoring = ((IIpsObject)selected).getMoveRefactoring();
 
             // Check initial conditions.
             try {
