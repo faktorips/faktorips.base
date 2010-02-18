@@ -77,10 +77,16 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * these attributes in a dialog, to create new attributes, move attributes and to delete
      * attributes.
      */
-    class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
+    static class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
         /** The <tt>IEnumType</tt> being edited by the editor. */
         private IEnumType enumType;
+
+        /**
+         * Button that opens a dialog that enables the user to inherit attributes from the supertype
+         * hierarchy.
+         */
+        private Button inheritButton;
 
         /**
          * Creates a new <tt>EnumAttributesComposite</tt> based upon the attributes of the given
@@ -175,7 +181,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             super.createButtons(buttons, toolkit);
             createButtonSpace(buttons, toolkit);
 
-            Button inheritButton = toolkit.createButton(buttons, Messages.EnumAttributessection_buttonInherit);
+            inheritButton = toolkit.createButton(buttons, Messages.EnumAttributessection_buttonInherit);
             inheritButton
                     .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
             inheritButton.addSelectionListener(new SelectionListener() {
@@ -191,8 +197,19 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
                 }
             });
+            updateInheritButtonEnabledState();
 
             return true;
+        }
+
+        void updateInheritButtonEnabledState() {
+            try {
+                IEnumType enumType = (IEnumType)getIpsObject();
+                boolean superEnumTypeExists = enumType.hasExistingSuperEnumType(enumType.getIpsProject());
+                inheritButton.setEnabled(superEnumTypeExists);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         /**
@@ -217,7 +234,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * hierarchy in a comfortable way.
          */
         private void inheritClicked() throws CoreException {
-            InheritAttributesDialog dialog = new InheritAttributesDialog(enumType, getShell());
+            InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(enumType, getShell());
             if (dialog.open() == Window.OK) {
                 IEnumAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
                 enumType.inheritEnumAttributes(Arrays.asList(attributesToOverwrite));

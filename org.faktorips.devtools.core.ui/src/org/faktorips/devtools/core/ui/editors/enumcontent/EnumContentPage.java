@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 /**
  * The <tt>EnumContentPage</tt> shows general information about an <tt>IEnumContent</tt> and
@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  * 
  * @since 2.3
  */
-public class EnumContentPage extends TypeEditorStructurePage implements ContentsChangeListener {
+public class EnumContentPage extends TypeEditorPage implements ContentsChangeListener {
 
     /**
      * The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> this page belongs to is currently
@@ -69,7 +69,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      * @param editor The <tt>EnumContentEditor</tt> this page belongs to.
      */
     public EnumContentPage(EnumContentEditor editor) {
-        super(editor, false, Messages.EnumContentValuesPage_title);
+        super(editor, false, Messages.EnumContentValuesPage_title, "EnumContentPage");
         enumContent = editor.getEnumContent();
         enumContent.getIpsModel().addChangeListener(this);
     }

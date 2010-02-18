@@ -18,14 +18,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 /**
- * The <code>TypeEditorStructurePage</code> provides an abstract base class for editor pages that
- * want to make it possible to edit ips object types.
+ * The <code>TypeEditorPage</code> provides an abstract base class for editor pages that want to
+ * make it possible to edit IPS object types.
  * 
  * @author Jan Ortmann
  */
-public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
-
-    final static String PAGEID = "Structure"; //$NON-NLS-1$
+public abstract class TypeEditorPage extends IpsObjectEditorPage {
 
     /*
      * TODO AW: Needs to be renamed because the number of sections will be defined by subclasses.
@@ -38,20 +36,18 @@ public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
     private boolean twoSectionsWhenTrueOtherwiseFour;
 
     /**
-     * Creates a new <code>TypeEditorStructurePage</code>.
+     * Creates a new <code>TypeEditorPage</code>.
      * 
      * @param editor The <code>TypeEditor</code> this page belongs to.
      * @param twoSectionsWhenTrueOtherwiseFour
      * @param title The title shown at the top of the page when the page is selected.
+     * @param pageId A unique ID for the page.
      */
-    public TypeEditorStructurePage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
-        super(editor, PAGEID, title);
+    public TypeEditorPage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title, String pageId) {
+        super(editor, pageId, title);
         this.twoSectionsWhenTrueOtherwiseFour = twoSectionsWhenTrueOtherwiseFour;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));

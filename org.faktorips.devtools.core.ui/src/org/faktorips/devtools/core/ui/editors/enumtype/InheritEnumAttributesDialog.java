@@ -30,13 +30,13 @@ import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProv
  * 
  * @author Alexander Weickmann
  */
-public class InheritAttributesDialog extends SelectSupertypeHierarchyPartsDialog {
+public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDialog {
 
     /**
      * @param enumType The <tt>IEnumType</tt> to get the candidates to possibly inherit from.
      * @param parent The <tt>Shell</tt> to show this dialog in.
      */
-    public InheritAttributesDialog(IEnumType enumType, Shell parent) {
+    public InheritEnumAttributesDialog(IEnumType enumType, Shell parent) {
         super(parent, new CandidatesContentProvider(enumType));
         setTitle(Messages.InheritAttributesDialog_title);
         setEmptyListMessage(Messages.InheritAttributesDialog_labelNoAttributes);

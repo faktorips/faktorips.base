@@ -24,16 +24,15 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
  * The structure page contain the general information section, the attributes section and the
  * relations section.
  */
-public class StructurePage extends TypeEditorStructurePage {
+class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
 
-    public StructurePage(PctEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title);
+    public PolicyCmptTypeStructurePage(PolicyCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
+        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title, "PolicyCmptTypeStructurePage");
     }
 
     @Override
@@ -45,22 +44,22 @@ public class StructurePage extends TypeEditorStructurePage {
     @Override
     protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
+        attributesSection = new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
-        new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        methodsSection = new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
     }
 
     @Override
     protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
+        attributesSection = new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
     }
 
     @Override
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
+        new GeneralInfoSection(this, (IPolicyCmptType)getIpsObject(), formBody, toolkit);
     }
 
     private void registerContentsChangeListener() {
@@ -71,12 +70,6 @@ public class StructurePage extends TypeEditorStructurePage {
          */
         final ContentsChangeListener changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
-                /*
-                 * FIXME AW: getIpsObject() returns null when this event was caused by an IpsSrcFile
-                 * rename. This happens because the rename only changes the IpsSrcFile handle it was
-                 * called on. Other IpsSrcFile handles referring to the same file are not affected.
-                 * This is a critical bug however in AbstractIpsSrcFile that needs to be addressed.
-                 */
                 if (getIpsObject() == null) {
                     return;
                 }

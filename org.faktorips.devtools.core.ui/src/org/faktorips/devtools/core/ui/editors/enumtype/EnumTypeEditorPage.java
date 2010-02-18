@@ -23,13 +23,13 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 /**
  * Base page for <tt>IEnumType</tt> editors providing controls to edit its properties and
  * attributes.
  * <p>
- * This class also adds controls to import an export <tt>IEnumValue<7tt>s.
+ * This class also adds controls to import an export <tt>IEnumValue</tt>s.
  * 
  * @see EnumTypeEditor
  * 
@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  * 
  * @since 2.3
  */
-public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
+public abstract class EnumTypeEditorPage extends TypeEditorPage {
 
     /**
      * The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> this page belongs to is currently editing.
@@ -69,7 +69,7 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
     protected ContentsChangeListener changeListener;
 
     public EnumTypeEditorPage(TypeEditor editor, IEnumType type, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, title);
+        super(editor, twoSectionsWhenTrueOtherwiseFour, title, "EnumTypeEditorPage");
 
         enumType = type;
         changeListener = new ContentsChangeListener() {
@@ -140,5 +140,7 @@ public abstract class EnumTypeEditorPage extends TypeEditorStructurePage {
                 }
             }
         }
+
     }
+
 }

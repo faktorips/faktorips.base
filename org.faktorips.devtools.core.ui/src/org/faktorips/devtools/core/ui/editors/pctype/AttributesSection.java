@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -51,6 +52,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class AttributesSection extends SimpleIpsPartsSection {
 
+    AttributesComposite attributesComposite;
+
     private IpsObjectEditorPage page;
 
     public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
@@ -62,14 +65,15 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new AttributesComposite(getIpsObject(), parent, toolkit);
+        attributesComposite = new AttributesComposite(getIpsObject(), parent, toolkit);
+        return attributesComposite;
     }
 
     /**
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
-    public class AttributesComposite extends IpsPartsComposite {
+    class AttributesComposite extends IpsPartsComposite {
 
         private Button overrideButton;
 
@@ -99,7 +103,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
                 private IValidationRule findValidationRule(IIpsObjectPart part) {
                     String name = part.getName();
-                    IValidationRule[] rules = getPcType().getRules();
+                    IValidationRule[] rules = getPolicyCmptType().getRules();
                     for (int i = 0; i < rules.length; i++) {
                         if (!rules[i].isCheckValueAgainstValueSetRule()) {
                             continue;
@@ -145,7 +149,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             overrideButton.setEnabled(flag);
         }
 
-        public IPolicyCmptType getPcType() {
+        public IPolicyCmptType getPolicyCmptType() {
             return (IPolicyCmptType)getIpsObject();
         }
 
@@ -153,6 +157,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             super.createButtons(buttons, toolkit);
             createButtonSpace(buttons, toolkit);
+
             overrideButton = toolkit.createButton(buttons, Messages.AttributesSection_OverrideButton);
             overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -164,14 +169,26 @@ public class AttributesSection extends SimpleIpsPartsSection {
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
+            updateOverrideButtonEnabledState();
+
             return true;
         }
 
+        void updateOverrideButtonEnabledState() {
+            try {
+                boolean supertypeExisting = getPolicyCmptType().hasExistingSupertype(
+                        getPolicyCmptType().getIpsProject());
+                overrideButton.setEnabled(supertypeExisting);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         private void overrideClicked() {
-            OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
+            OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPolicyCmptType(), getShell());
             if (dialog.open() == Window.OK) {
                 IPolicyCmptTypeAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
-                getPcType().overrideAttributes(attributesToOverwrite);
+                getPolicyCmptType().overrideAttributes(attributesToOverwrite);
                 refresh();
             }
         }
@@ -183,7 +200,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() {
-            return getPcType().newPolicyCmptTypeAttribute();
+            return getPolicyCmptType().newPolicyCmptTypeAttribute();
         }
 
         @Override
@@ -193,13 +210,13 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
-            return getPcType().moveAttributes(indexes, up);
+            return getPolicyCmptType().moveAttributes(indexes, up);
         }
 
         private class AttributeContentProvider implements IStructuredContentProvider {
 
             public Object[] getElements(Object inputElement) {
-                return getPcType().getPolicyCmptTypeAttributes();
+                return getPolicyCmptType().getPolicyCmptTypeAttributes();
             }
 
             public void dispose() {

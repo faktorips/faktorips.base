@@ -21,9 +21,9 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 /**
  * The editor to edit policy component types.
  */
-public class PctEditor extends TypeEditor {
+public class PolicyCmptTypeEditor extends TypeEditor {
 
-    public PctEditor() {
+    public PolicyCmptTypeEditor() {
         super();
     }
 
@@ -43,13 +43,13 @@ public class PctEditor extends TypeEditor {
 
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new StructurePage(this, false));
+        addPage(new PolicyCmptTypeStructurePage(this, false));
     }
 
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new StructurePage(this, true));
-        addPage(new BehaviourPage(this));
+        addPage(new PolicyCmptTypeStructurePage(this, true));
+        addPage(new PolicyCmptTypeBehaviourPage(this));
     }
 
 }

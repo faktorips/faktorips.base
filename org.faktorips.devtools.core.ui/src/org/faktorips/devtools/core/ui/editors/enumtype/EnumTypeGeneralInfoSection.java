@@ -120,24 +120,24 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             }
         });
 
-        // Supertype.
+        // Supertype
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);
         supertypeRefControl.setCurrentEnumType(enumType);
         bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
-        // Abstract.
+        // Abstract
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
         Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
-        // Values are part of model.
+        // Values are part of model
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
-        // EnumContent specification.
+        // EnumContent specification
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
@@ -145,13 +145,13 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
         bindingContext.bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
-        // Register controls for focus handling.
+        // Register controls for focus handling
         addFocusControl(supertypeRefControl);
         addFocusControl(abstractCheckbox);
         addFocusControl(valuesArePartOfModelCheckbox);
         addFocusControl(enumContentNameControl.getTextControl());
 
-        // Create extension properties.
+        // Extension properties
         extFactory.createControls(composite, toolkit, enumType);
         extFactory.bind(bindingContext);
     }
@@ -168,47 +168,50 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
 
         try {
-            IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
-
             switch (event.getEventType()) {
                 case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                    valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-                    enumContentNameControl.getTextControl().setEnabled(
-                            !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+                    wholeContentChanged();
                     // Here is no "break;" by intention!
 
                 case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                    /*
-                     * Initialize enumeration content field if none has been specified yet and the
-                     * values are not part of the model.
-                     */
-                    if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
-                        enumContentNameControl.setText(enumType.getQualifiedName());
-                    }
-                    enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
-                            .isCapableOfContainingValues()));
-
-                    /*
-                     * Create an EnumLiteralNameAttribute if the EnumType does not have one but
-                     * needs one.
-                     */
-                    if (enumType.isCapableOfContainingValues()) {
-                        if (!(enumType.containsEnumLiteralNameAttribute())) {
-                            IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType
-                                    .newEnumLiteralNameAttribute();
-                            IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType
-                                    .getIpsProject());
-                            if (nameAttribute != null) {
-                                newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
-                            }
-
-                        }
-                    }
+                    propertyChanged();
                     break;
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void propertyChanged() throws CoreException {
+        /*
+         * Initialize enumeration content field if none has been specified yet and the values are
+         * not part of the model.
+         */
+        if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
+            enumContentNameControl.setText(enumType.getQualifiedName());
+        }
+        enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
+                .isCapableOfContainingValues()));
+
+        // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
+        if (enumType.isCapableOfContainingValues()) {
+            if (!(enumType.containsEnumLiteralNameAttribute())) {
+                IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType.newEnumLiteralNameAttribute();
+                IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
+                if (nameAttribute != null) {
+                    newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+                }
+
+            }
+        }
+
+        enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.updateInheritButtonEnabledState();
+    }
+
+    private void wholeContentChanged() {
+        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+        enumContentNameControl.getTextControl()
+                .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
     }
 
 }

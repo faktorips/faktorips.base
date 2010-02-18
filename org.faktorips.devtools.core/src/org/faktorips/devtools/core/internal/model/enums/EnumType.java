@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
@@ -682,7 +683,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     public boolean hasSuperEnumType() {
-        return !("".equals(superEnumType));
+        return StringUtils.isNotEmpty(superEnumType);
+    }
+
+    public boolean hasExistingSuperEnumType(IIpsProject ipsProject) throws CoreException {
+        return findSuperEnumType(ipsProject) != null;
     }
 
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException {

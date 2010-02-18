@@ -447,7 +447,7 @@
 	<extension
          point="org.eclipse.ui.editors">
       	<editor
-            class="org.faktorips.devtools.core.ui.editors.pctype.PctEditor"
+            class="org.faktorips.devtools.core.ui.editors.pctype.PolicyCmptTypeEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipspolicycmpttype"

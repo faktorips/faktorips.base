@@ -623,6 +623,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.hasSuperEnumType());
     }
 
+    public void testHasExistingSuperEnumType() throws CoreException {
+        assertFalse(genderEnumType.hasExistingSuperEnumType(ipsProject));
+
+        IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+        assertTrue(genderEnumType.hasExistingSuperEnumType(ipsProject));
+
+        genderEnumType.setSuperEnumType("lila_laune_baer");
+        assertFalse(genderEnumType.hasExistingSuperEnumType(ipsProject));
+    }
+
     public void testFindAllSuperEnumTypes() throws CoreException {
         try {
             genderEnumType.findAllSuperEnumTypes(null);

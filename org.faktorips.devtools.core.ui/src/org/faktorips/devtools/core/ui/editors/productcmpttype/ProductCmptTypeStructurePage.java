@@ -17,22 +17,22 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class StructurePage extends TypeEditorStructurePage {
+class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
 
     /**
-     * Creates a new <code>StructurePage</code>.
+     * Creates a new <code>PolicyCmptTypeStructurePage</code>.
      * 
      * @param editor The editor to which the new page belongs to.
      * @param twoSectionsWhenTrueOtherwiseFour
      */
-    public StructurePage(ProductCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_structurePageTitle);
+    public ProductCmptTypeStructurePage(ProductCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
+        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_structurePageTitle,
+                "ProductCmptTypeStructurePage");
     }
 
     private IProductCmptType getProductCmptType() {
@@ -41,7 +41,7 @@ public class StructurePage extends TypeEditorStructurePage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection(getProductCmptType(), formBody, toolkit);
+        new GeneralInfoSection(this, getProductCmptType(), formBody, toolkit);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class StructurePage extends TypeEditorStructurePage {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(this, getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
-        new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
+        methodsSection = new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
 

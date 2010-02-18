@@ -70,7 +70,16 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
     }
 
     public Object[] getElements(Object inputElement) {
-        return supertypes;
+        return isNoAvailableParts() ? new Object[0] : supertypes;
+    }
+
+    private boolean isNoAvailableParts() {
+        for (IIpsObject ipsObject : supertypes) {
+            if (hasChildren(ipsObject)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void dispose() {

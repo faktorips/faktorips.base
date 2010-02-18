@@ -72,19 +72,13 @@ public abstract class Type extends BaseIpsObject implements IType {
         methods = createCollectionForMethods();
     }
 
-    /**
-     * Factory method to create the collection holding the methods.
-     */
+    /** Factory method to create the collection holding the methods. */
     protected abstract IpsObjectPartCollection<? extends IMethod> createCollectionForMethods();
 
-    /**
-     * Factory method to create the collection holding the associations.
-     */
+    /** Factory method to create the collection holding the associations. */
     protected abstract IpsObjectPartCollection<? extends IAssociation> createCollectionForAssociations();
 
-    /**
-     * Factory method to create the collection holding the attributes.
-     */
+    /** Factory method to create the collection holding the attributes. */
     protected abstract IpsObjectPartCollection<? extends IAttribute> createCollectionForAttributes();
 
     public Iterator<? extends IMethod> getIteratorForMethods() {
@@ -99,55 +93,38 @@ public abstract class Type extends BaseIpsObject implements IType {
         return attributes.iterator();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return abstractFlag;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
         abstractFlag = newValue;
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getSupertype() {
         return supertype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IType findSupertype(IIpsProject ipsProject) throws CoreException {
         return (IType)ipsProject.findIpsObject(getIpsObjectType(), supertype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasSupertype() {
         return StringUtils.isNotEmpty(supertype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException {
+        return findSupertype(ipsProject) != null;
+    }
+
     public void setSupertype(String newSupertype) {
         String oldSupertype = supertype;
         supertype = newSupertype;
         valueChanged(oldSupertype, newSupertype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (supertypeCandidate == null) {
             return false;
@@ -164,9 +141,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return visitor.isSubtype();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException {
         if (equals(candidate)) {
             return true;
@@ -174,89 +148,56 @@ public abstract class Type extends BaseIpsObject implements IType {
         return isSubtypeOf(candidate, project);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute[] getAttributes() {
         return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute getAttribute(String name) {
         return attributes.getPartByName(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException {
         AllMethodsFinder finder = new AllMethodsFinder(ipsProject);
         finder.start(this);
         return finder.getMethodes();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException {
         AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
         return finder.getAttributes();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException {
         AllAssociationFinder finder = new AllAssociationFinder(ipsProject);
         finder.start(this);
         return finder.getAssociations();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
         AttributeFinder finder = new AttributeFinder(project, name);
         finder.start(this);
         return finder.attribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAttribute newAttribute() {
         return attributes.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfAttributes() {
         return attributes.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int[] moveAttributes(int[] indexes, boolean up) {
         return attributes.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
         AssociationFinder finder = new AssociationFinder(project, name);
         finder.start(this);
         return finder.association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
             throws CoreException {
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
@@ -264,9 +205,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return finder.association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject project) throws CoreException {
@@ -278,16 +216,10 @@ public abstract class Type extends BaseIpsObject implements IType {
         return finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation getAssociation(String name) {
         return associations.getPartByName(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation getAssociationByRoleNamePlural(String roleNamePlural) {
         if (roleNamePlural == null) {
             return null;
@@ -302,9 +234,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation[] getAssociationsForTarget(String target) {
         List<IAssociation> result = new ArrayList<IAssociation>();
         for (IAssociation association : associations) {
@@ -315,9 +244,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return result.toArray(new IAssociation[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation[] getAssociations() {
         return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
     }
@@ -328,44 +254,26 @@ public abstract class Type extends BaseIpsObject implements IType {
         return collector.associations;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfAssociations() {
         return associations.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int[] moveAssociations(int[] indexes, boolean up) {
         return associations.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IAssociation newAssociation() {
         return associations.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod newMethod() {
         return methods.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod[] getMethods() {
         return (IMethod[])methods.toArray(new IMethod[methods.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod getMethod(String methodName, String[] datatypes) {
         if (datatypes == null) {
             datatypes = new String[0];
@@ -392,18 +300,12 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreException {
         MethodFinderByNameAndParamtypes finder = new MethodFinderByNameAndParamtypes(ipsProject, name, datatypes);
         finder.start(this);
         return finder.method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod getMethod(String signature) {
         for (IMethod method : methods) {
             if (method.getSignatureString().equals(signature)) {
@@ -413,32 +315,20 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException {
         MethodFinderBySignature finder = new MethodFinderBySignature(ipsProject, signature);
         finder.start(this);
         return finder.method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getNumOfMethods() {
         return methods.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int[] moveMethods(int[] indexes, boolean up) {
         return methods.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException {
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
@@ -447,9 +337,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return finder.getCandidates();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod[] overrideMethods(IMethod[] methods) {
         IMethod[] newMethods = new IMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
@@ -469,16 +356,10 @@ public abstract class Type extends BaseIpsObject implements IType {
         return newMethods;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasSameMethod(IMethod method) {
         return getMatchingMethod(method) != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IMethod getMatchingMethod(IMethod method) {
         for (IMethod thisMethod : methods) {
             if (thisMethod.isSameSignature(method)) {
@@ -488,9 +369,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -498,9 +376,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -508,9 +383,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -585,58 +457,30 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public boolean isVoid() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public boolean isValueDatatype() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public boolean isEnum() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public int compareTo(Object o) {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public String getJavaClassName() {
         throw new RuntimeException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    // Implementation of the Datatype interface.
     public boolean hasNullObject() {
         return false;
     }

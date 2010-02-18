@@ -489,6 +489,16 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Returns whether this <tt>IEnumType</tt> has a super enumeration type. */
     public boolean hasSuperEnumType();
 
+    /**
+     * Returns whether this <tt>IEnumType</tt> has a super enumeration type that really exists.
+     * 
+     * @param ipsProject The <tt>IIpsProject</tt> that provides the object path that is used to
+     *            search for the super enumeration type.
+     * 
+     * @throws CoreException If an error occurs while searching for the super enumeration type.
+     */
+    public boolean hasExistingSuperEnumType(IIpsProject ipsProject) throws CoreException;
+
     /** Returns if this <tt>IEnumType</tt> is abstract. */
     public boolean isAbstract();
 

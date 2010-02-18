@@ -13,39 +13,17 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
-/**
- * 
- * @author Jan Ortmann
- */
-public class ProductCmptTypeEditor extends TypeEditor {
+abstract class ProductCmptTypeEditorPage extends TypeEditorPage {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getUniformPageTitle() {
-        return Messages.ProductCmptTypeEditor_title + getIpsObject().getName();
+    MethodsSection methodsSection;
+
+    public ProductCmptTypeEditorPage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title,
+            String pageId) {
+        super(editor, twoSectionsWhenTrueOtherwiseFour, title, pageId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new ProductCmptTypeStructurePage(this, false));
-        addPage(new CustomIconPage(this));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new ProductCmptTypeStructurePage(this, true));
-        addPage(new ProductCmptTypeBehaviourPage(this));
-        addPage(new CustomIconPage(this));
-    }
 }

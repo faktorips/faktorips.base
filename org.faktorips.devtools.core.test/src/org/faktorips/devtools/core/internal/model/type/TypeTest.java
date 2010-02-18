@@ -862,4 +862,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals("Ziel", assocs[2].getTargetRoleSingular());
     }
 
+    public void testHasSupertype() {
+        assertFalse(type.hasSupertype());
+        type.setSupertype("xyz");
+        assertTrue(type.hasSupertype());
+    }
+
+    public void testHasExistingSupertype() throws CoreException {
+        assertFalse(type.hasExistingSupertype(ipsProject));
+
+        type.setSupertype("xyz");
+        assertFalse(type.hasExistingSupertype(ipsProject));
+
+        IType superType = newProductCmptType(ipsProject, "Product");
+        type.setSupertype(superType.getQualifiedName());
+        assertTrue(type.hasExistingSupertype(ipsProject));
+    }
+
 }

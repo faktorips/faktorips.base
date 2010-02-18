@@ -105,6 +105,16 @@ public interface IType extends IIpsObject, Datatype {
     public boolean hasSupertype();
 
     /**
+     * Returns whether this <tt>IType</tt> has a supertype that really exists.
+     * 
+     * @param ipsProject The <tt>IIpsProject</tt> providing the object path that is used to search
+     *            for the supertype.
+     * 
+     * @throws CoreException If an error occurs while searching for the supertype.
+     */
+    public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns the type's supertype if the type is derived from a supertype and the supertype can be
      * found on the project's ips object path. Returns <code>null</code> if either this type is not
      * derived from a supertype or the supertype can't be found on the project's ips object path.
