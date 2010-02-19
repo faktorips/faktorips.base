@@ -14,10 +14,15 @@
 package org.faktorips.devtools.core.internal.migration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.util.message.MessageList;
 
@@ -52,6 +57,20 @@ public class Migration_2_5_0_rc1 extends AbstractIpsProjectMigrationOperation {
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
+
+        IIpsProject ipsProject = getIpsProject();
+        List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allIpsSrcFiles);
+        for (IIpsSrcFile currentIpsSrcFile : allIpsSrcFiles) {
+            if (currentIpsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+                IPolicyCmptType policyCmptType = (IPolicyCmptType)currentIpsSrcFile.getIpsObject();
+                migratePolicyCmptType(policyCmptType);
+            }
+        }
         throw new RuntimeException("TODO: not yet implemented!");
+    }
+
+    private void migratePolicyCmptType(IPolicyCmptType policyCmptType) {
+
     }
 }
