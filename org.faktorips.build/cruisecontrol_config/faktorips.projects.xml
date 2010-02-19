@@ -395,7 +395,7 @@
         </project>
                         
         <!--=====================================================-->
-        <!--Project definition: org.faktorips.integrationtest
+        <!--Project definition: org.faktorips.integrationtest-->
         <!--set htmlemail='false' to avoid email publisher-->
         <!--=====================================================-->    
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
