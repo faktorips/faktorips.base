@@ -556,6 +556,15 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         ml = ass2.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH));
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH));
+
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        ass2.setAssociationType(AssociationType.ASSOCIATION);
+        ml = association.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH));
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH));
+        ml = ass2.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH));
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH));
     }
 
     public void testFindInverseAssociation() throws CoreException {

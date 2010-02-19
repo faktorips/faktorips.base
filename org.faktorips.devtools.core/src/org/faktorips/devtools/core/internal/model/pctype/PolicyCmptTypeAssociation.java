@@ -344,8 +344,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
 
         // b) master to detail : detail to master
-        if (!((type.isCompositionMasterToDetail() && inverseAss.isCompositionDetailToMaster()) || (type
-                .isCompositionDetailToMaster() && inverseAss.isCompositionMasterToDetail()))) {
+        if (!type.isAssoziation()
+                && !((type.isCompositionMasterToDetail() && inverseAss.isCompositionDetailToMaster()) || (type
+                        .isCompositionDetailToMaster() && inverseAss.isCompositionMasterToDetail()))) {
             String text;
             String code;
             if (type.isCompositionMasterToDetail()) {
