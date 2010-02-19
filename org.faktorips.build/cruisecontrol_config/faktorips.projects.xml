@@ -395,11 +395,13 @@
         </project>
                         
         <!--=====================================================-->
-        <!--Project definition: org.faktorips.integrationtest-->
+        <!--Project definition: org.faktorips.integrationtest
+        <!--set htmlemail='false' to avoid email publisher-->
         <!--=====================================================-->    
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
-            testmerge="*Test.xml" scheduleintervall="300">
+            testmerge="*Test.xml" scheduleintervall="300"
+            htmlemail="false">
             <jvmarg arg="-Dprg=cruise.integrationtest"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
@@ -411,7 +413,8 @@
         <!--============================================================-->    
         <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
-            testmerge="*Test.xml" scheduleintervall="300">
+            testmerge="*Test.xml" scheduleintervall="300"
+            htmlemail="false">
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
@@ -579,6 +582,7 @@ TODO bbv und msgp
         <!--   attribute spamwhilebroken=true : e-mail reports -->
         <!--     on failed builds will continue for subsequent failed builds. -->
         <!--     see http://cruisecontrol.sourceforge.net/main/configxml.html#email -->
+        <!--     NOTE: use htmlemail='false' in project node to ignore email publisher in project -->
         <!--=====================================================-->
         <publisher id="htmlemail">
             <htmlemail 

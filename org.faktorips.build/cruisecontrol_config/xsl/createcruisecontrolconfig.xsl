@@ -186,7 +186,7 @@
             <!-- publishers -->
             <publishers>
                 <!-- global htmlmail publisher -->
-                <xsl:if test="$htmlemail='true'">
+                <xsl:if test="$htmlemail='true' and not (@htmlemail='false')">
                     <htmlemail>
                         <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/@*"/>
                         <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/*"/>
