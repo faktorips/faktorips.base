@@ -27,9 +27,6 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public abstract class TypeEditor extends IpsObjectEditor {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
@@ -59,7 +56,7 @@ public abstract class TypeEditor extends IpsObjectEditor {
     /**
      * Returns whether this editor should have a description page. May be overridden by subclasses.
      * <p>
-     * Returns <code>true</code> by default.
+     * Returns <tt>true</tt> by default.
      */
     protected boolean hasDescriptionPage() {
         return true;
