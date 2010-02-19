@@ -420,9 +420,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Refreshes the controls on the active page with the data from the model.<br />
-     * Calls to this refresh method are ignored if the activate attribute is set to
-     * <code>false</code>.
+     * Refreshes the controls on the active page with the data from the model. Calls to this refresh
+     * method are ignored if the activate attribute is set to <code>false</code>.
      */
     protected void refresh() {
         if (updatingPageStructure) {
@@ -458,9 +457,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             logMethodStarted("refresh"); //$NON-NLS-1$
         }
 
-        IEditorPart editor = getActivePageInstance();
-        if (editor instanceof IpsObjectEditorPage) {
-            IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
+        IEditorPart editorPart = getActivePageInstance();
+        if (editorPart instanceof IpsObjectEditorPage) {
+            IpsObjectEditorPage page = (IpsObjectEditorPage)editorPart;
             page.refresh();
         }
 
@@ -530,9 +529,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void contentsChanged(final ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
@@ -548,9 +544,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
                 if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
                     updatePageStructure(false);
-                } else {
-                    refresh();
                 }
+
+                refresh();
 
                 if (TRACE) {
                     logMethodFinished("contentChanged()"); //$NON-NLS-1$
@@ -854,9 +850,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void propertyChange(PropertyChangeEvent event) {
         if (TRACE) {
             logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
