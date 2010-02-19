@@ -205,7 +205,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAssociation relationBtoA = typeB.newPolicyCmptTypeAssociation();
         relationBtoA.setAssociationType(AssociationType.ASSOCIATION);
-        relationBtoA.setTarget("B");
+        relationBtoA.setTarget("A");
         relationBtoA.setTargetRoleSingular("roleA");
         relationBtoA.setTargetRolePlural("roleAs");
 
