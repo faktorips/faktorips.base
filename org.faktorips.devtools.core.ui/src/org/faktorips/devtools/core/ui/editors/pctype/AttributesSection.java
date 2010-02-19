@@ -52,7 +52,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class AttributesSection extends SimpleIpsPartsSection {
 
-    AttributesComposite attributesComposite;
+    private AttributesComposite attributesComposite;
 
     private IpsObjectEditorPage page;
 
@@ -69,11 +69,17 @@ public class AttributesSection extends SimpleIpsPartsSection {
         return attributesComposite;
     }
 
+    @Override
+    protected void performRefresh() {
+        super.performRefresh();
+        attributesComposite.updateOverrideButtonEnabledState();
+    }
+
     /**
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
-    class AttributesComposite extends IpsPartsComposite {
+    private class AttributesComposite extends IpsPartsComposite {
 
         private Button overrideButton;
 
@@ -174,7 +180,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             return true;
         }
 
-        void updateOverrideButtonEnabledState() {
+        private void updateOverrideButtonEnabledState() {
             try {
                 boolean supertypeExisting = getPolicyCmptType().hasExistingSupertype(
                         getPolicyCmptType().getIpsProject());

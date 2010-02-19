@@ -63,7 +63,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
-    public class AttributesComposite extends IpsPartsComposite {
+    private class AttributesComposite extends IpsPartsComposite {
 
         public AttributesComposite(IProductCmptType type, Composite parent, UIToolkit toolkit) {
             super(type, parent, toolkit);

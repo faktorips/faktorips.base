@@ -33,11 +33,11 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
 /**
- * A section to display and edit a type's methods.
+ * A section to display and edit a type's <tt>IMethod</tt>s.
  */
 public class MethodsSection extends SimpleIpsPartsSection {
 
-    public MethodsComposite methodsComposite;
+    private MethodsComposite methodsComposite;
 
     public MethodsSection(IType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.MethodsSection_title, toolkit);
@@ -49,11 +49,17 @@ public class MethodsSection extends SimpleIpsPartsSection {
         return methodsComposite;
     }
 
+    @Override
+    protected void performRefresh() {
+        super.performRefresh();
+        methodsComposite.updateOverrideButtonEnabledState();
+    }
+
     /**
      * A composite that shows a policy component's methods in a viewer and allows to edit methods in
      * a dialog, create new methods and delete methods.
      */
-    public static class MethodsComposite extends IpsPartsComposite {
+    private static class MethodsComposite extends IpsPartsComposite {
 
         private Button overrideButton;
 
@@ -90,7 +96,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
             return true;
         }
 
-        public void updateOverrideButtonEnabledState() {
+        private void updateOverrideButtonEnabledState() {
             try {
                 boolean supertypeExisting = getType().hasExistingSupertype(getType().getIpsProject());
                 overrideButton.setEnabled(supertypeExisting);

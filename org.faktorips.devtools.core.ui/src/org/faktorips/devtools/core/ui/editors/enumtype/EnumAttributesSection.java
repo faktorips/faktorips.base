@@ -68,8 +68,23 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        enumAttributesComposite = new EnumAttributesComposite((IEnumType)getIpsObject(), parent, toolkit);
+        enumAttributesComposite = new EnumAttributesComposite(getEnumType(), parent, toolkit);
         return enumAttributesComposite;
+    }
+
+    private IEnumType getEnumType() {
+        return (IEnumType)getIpsObject();
+    }
+
+    @Override
+    protected void performRefresh() {
+        super.performRefresh();
+        enumAttributesComposite.updateInheritButtonEnabledState();
+        try {
+            enumAttributesComposite.setCanDelete(!(getEnumType().isCapableOfContainingValues()));
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -77,7 +92,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * these attributes in a dialog, to create new attributes, move attributes and to delete
      * attributes.
      */
-    static class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
+    private static class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
         /** The <tt>IEnumType</tt> being edited by the editor. */
         private IEnumType enumType;
@@ -202,7 +217,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return true;
         }
 
-        void updateInheritButtonEnabledState() {
+        private void updateInheritButtonEnabledState() {
             try {
                 IEnumType enumType = (IEnumType)getIpsObject();
                 boolean superEnumTypeExists = enumType.hasExistingSuperEnumType(enumType.getIpsProject());

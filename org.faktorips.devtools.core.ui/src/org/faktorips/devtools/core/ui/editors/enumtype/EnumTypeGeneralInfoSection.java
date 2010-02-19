@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -67,9 +65,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
 
-    /** The <tt>EnumTypeEditorPage</tt> this section belongs to. */
-    private EnumTypeEditorPage enumTypeEditorPage;
-
     /**
      * Creates a new <tt>EnumTypeGeneralInfoSection</tt>.
      * 
@@ -79,25 +74,15 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
      * 
      * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
      */
-    public EnumTypeGeneralInfoSection(EnumTypeEditorPage enumTypeEditorPage, final IEnumType enumType,
-            Composite parent, UIToolkit toolkit) {
-
+    public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumType);
 
-        this.enumTypeEditorPage = enumTypeEditorPage;
         this.enumType = enumType;
         extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
 
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
-
-        enumType.getIpsModel().addChangeListener(this);
-        addDisposeListener(new DisposeListener() {
-            public void widgetDisposed(DisposeEvent e) {
-                enumType.getIpsModel().removeChangeListener(EnumTypeGeneralInfoSection.this);
-            }
-        });
     }
 
     @Override
@@ -190,8 +175,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
             enumContentNameControl.setText(enumType.getQualifiedName());
         }
-        enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.setCanDelete(!(enumType
-                .isCapableOfContainingValues()));
 
         // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
         if (enumType.isCapableOfContainingValues()) {
@@ -204,8 +187,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
             }
         }
-
-        enumTypeEditorPage.enumAttributesSection.enumAttributesComposite.updateInheritButtonEnabledState();
     }
 
     private void wholeContentChanged() {

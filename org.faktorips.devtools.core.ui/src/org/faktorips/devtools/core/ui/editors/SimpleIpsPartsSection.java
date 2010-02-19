@@ -32,14 +32,6 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
 
     private IpsPartsComposite partsComposite;
 
-    /**
-     * Creates a new <code>SimpleIpsPartsSection</code>.
-     * 
-     * @param pdObject
-     * @param parent
-     * @param title
-     * @param toolkit
-     */
     public SimpleIpsPartsSection(IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
@@ -50,15 +42,6 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
         setText(title);
     }
 
-    /**
-     * Creates a new <code>SimpleIpsPartsSection</code>.
-     * 
-     * @param ipsObject
-     * @param parent
-     * @param style
-     * @param title
-     * @param toolkit
-     */
     public SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, int style, String title, UIToolkit toolkit) {
         super(parent, style, GridData.FILL_BOTH, toolkit);
 
@@ -87,9 +70,6 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
      */
     protected abstract IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit);
 
-    /**
-     * 
-     */
     public IIpsObject getIpsObject() {
         return ipsObject;
     }

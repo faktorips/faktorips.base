@@ -41,7 +41,7 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection(this, getProductCmptType(), formBody, toolkit);
+        new GeneralInfoSection(getProductCmptType(), formBody, toolkit);
     }
 
     @Override
@@ -49,7 +49,7 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(this, getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
-        methodsSection = new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
+        new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
 

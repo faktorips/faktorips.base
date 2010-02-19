@@ -13,16 +13,14 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 abstract class ProductCmptTypeEditorPage extends TypeEditorPage {
 
-    MethodsSection methodsSection;
-
     public ProductCmptTypeEditorPage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title,
             String pageId) {
+
         super(editor, twoSectionsWhenTrueOtherwiseFour, title, pageId);
     }
 

@@ -13,14 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 abstract class PolicyCmptTypeEditorPage extends TypeEditorPage {
-
-    AttributesSection attributesSection;
-
-    MethodsSection methodsSection;
 
     public PolicyCmptTypeEditorPage(PolicyCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour,
             String title, String pageId) {

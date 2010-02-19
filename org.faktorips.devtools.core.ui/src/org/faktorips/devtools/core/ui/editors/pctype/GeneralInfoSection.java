@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,8 +21,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -37,33 +33,21 @@ import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
-public class GeneralInfoSection extends IpsSection implements ContentsChangeListener {
+public class GeneralInfoSection extends IpsSection {
 
     private IPolicyCmptType policyCmptType;
 
-    private PolicyCmptTypeEditorPage policyCmptTypeEditorPage;
-
     private ExtensionPropertyControlFactory extFactory;
 
-    public GeneralInfoSection(PolicyCmptTypeEditorPage policyCmptTypeEditorPage, final IPolicyCmptType policyCmptType,
-            Composite parent, UIToolkit toolkit) {
-
+    public GeneralInfoSection(IPolicyCmptType policyCmptType, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(policyCmptType);
 
         this.policyCmptType = policyCmptType;
-        this.policyCmptTypeEditorPage = policyCmptTypeEditorPage;
         extFactory = new ExtensionPropertyControlFactory(policyCmptType.getClass());
 
         initControls();
         setText(Messages.GeneralInfoSection_title);
-
-        policyCmptType.getIpsModel().addChangeListener(this);
-        addDisposeListener(new DisposeListener() {
-            public void widgetDisposed(DisposeEvent e) {
-                policyCmptType.getIpsModel().removeChangeListener(GeneralInfoSection.this);
-            }
-        });
     }
 
     @Override
@@ -141,30 +125,6 @@ public class GeneralInfoSection extends IpsSection implements ContentsChangeList
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
-    }
-
-    public void contentsChanged(ContentChangeEvent event) {
-        // Return if the content changed was not the PolicyCmptType to be edited.
-        if (!(event.getIpsSrcFile().equals(policyCmptType.getIpsSrcFile()))) {
-            return;
-        }
-
-        switch (event.getEventType()) {
-            case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                // Here is no "break;" by intention!
-            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                propertyChanged();
-                break;
-        }
-    }
-
-    private void propertyChanged() {
-        if (policyCmptTypeEditorPage.attributesSection != null) {
-            policyCmptTypeEditorPage.attributesSection.attributesComposite.updateOverrideButtonEnabledState();
-        }
-        if (policyCmptTypeEditorPage.methodsSection != null) {
-            policyCmptTypeEditorPage.methodsSection.methodsComposite.updateOverrideButtonEnabledState();
-        }
     }
 
 }

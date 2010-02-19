@@ -44,22 +44,22 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
     @Override
     protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        attributesSection = new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
+        new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
-        methodsSection = new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
     }
 
     @Override
     protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        attributesSection = new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
+        new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
     }
 
     @Override
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection(this, (IPolicyCmptType)getIpsObject(), formBody, toolkit);
+        new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
     }
 
     private void registerContentsChangeListener() {

@@ -65,7 +65,7 @@ public class EnumTypeStructurePage extends EnumTypeEditorPage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        new EnumTypeGeneralInfoSection(this, enumType, parentContainer, toolkit);
+        new EnumTypeGeneralInfoSection(enumType, parentContainer, toolkit);
         createToolbarActions();
     }
 
