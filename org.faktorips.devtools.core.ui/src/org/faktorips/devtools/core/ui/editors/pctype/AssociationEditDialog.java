@@ -174,10 +174,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
         bindingContext.bindEnabled(reverseRelationText, association,
                 IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
-        InverseAssociationCompletionProcessor reverseRelationCompletionProcessor = new InverseAssociationCompletionProcessor(
+        InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
                 association);
-        reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText(reverseRelationText, reverseRelationCompletionProcessor);
+        inverseAssociationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
+        CompletionUtil.createHandlerForText(reverseRelationText, inverseAssociationCompletionProcessor);
 
         Composite info = uiToolkit.createGridComposite(c, 1, true, false);
         Label note = uiToolkit.createLabel(info, pmoAssociation.getConstrainedNote());

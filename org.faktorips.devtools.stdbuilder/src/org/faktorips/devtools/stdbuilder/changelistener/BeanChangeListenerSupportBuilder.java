@@ -142,10 +142,9 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
     /**
      * {@inheritDoc}
      */
-    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
-            String parentModelObjectName,
-            boolean generateParentNotification) {
-        generateMethodNotifyChangeListeners(methodBuilder, parentModelObjectName, generateParentNotification);
+    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder, String[] parentObjectFieldNames) {
+        generateMethodNotifyChangeListeners(methodBuilder, parentObjectFieldNames);
+
         generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener",
                 new String[] { "listener" }, new Class[] { PropertyChangeListener.class },
                 propertyChangeSupportFieldName);
@@ -173,15 +172,17 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      *     } else {
      *         propertyChangeSupport.firePropertyChange(event);
      *     }
-     *     if (parentModelObject != null) {
-     *         parentModelObject.notifyChangeListeners(event);
+     *
+     * for each parent object:
+     *     if (parentObject != null) {
+     *         parentObject.notifyChangeListeners(event);
      *     }
+     *     ...
      * }
      * </pre>
      */
     public void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder,
-            String parentModelObjectName,
-            boolean generateParentNotification) {
+            String parentModelObjectNames[]) {
         methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS,
@@ -195,12 +196,17 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
         methodBuilder.append("} else {");
         methodBuilder.appendln(propertyChangeSupportFieldName + ".firePropertyChange(event);");
         methodBuilder.append("}");
-        if (generateParentNotification) {
-            methodBuilder.appendln("if (" + parentModelObjectName + "!=null) {");
+        for (int i = 0; i < parentModelObjectNames.length; i++) {
+            methodBuilder.append("if (");
+            methodBuilder.append(parentModelObjectNames[i]);
+            methodBuilder.appendln("!=null) {");
             methodBuilder.append("((");
             methodBuilder.appendClassName(INotificationSupport.class);
-            methodBuilder.appendln(")" + parentModelObjectName + ")." + MethodNames.NOTIFIY_CHANGE_LISTENERS
-                    + "(event);");
+            methodBuilder.append(")");
+            methodBuilder.append(parentModelObjectNames[i]);
+            methodBuilder.append(").");
+            methodBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS);
+            methodBuilder.appendln("(event);");
             methodBuilder.appendln("}");
         }
         methodBuilder.methodEnd();

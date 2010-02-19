@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
@@ -26,9 +27,9 @@ import org.faktorips.runtime.test.IpsTestCase2;
 import org.w3c.dom.Element;
 
 /**
- * Gives access to the method names defined in the runtime that the generated code refers to,
- * e.g. by implementing a method with the given name. The reference to the acutal
- * method is documented in the Javadoc "see" tags.
+ * Gives access to the method names defined in the runtime that the generated code refers to, e.g.
+ * by implementing a method with the given name. The reference to the acutal method is documented in
+ * the Javadoc "see" tags.
  * <p>
  * The constants are used by the code generator.
  * 
@@ -89,22 +90,23 @@ public class MethodNames {
     public final static String GET_PARENT = "getParentModelObject";
 
     /**
-     * @see AbstractModelObjectPart#setParentModelObjectInternal(IModelObject)
-     */
-    public final static String SET_PARENT = "setParentModelObjectInternal";
-
-    /**
      * @see AbstractModelObject#removeChildModelObjectInternal(IModelObject)
      */
     public final static String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
-
+    /**
+     * @see IConfigurableModelObject#getProductCmptGeneration()
+     */
     public final static String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
+    /**
+     * @see AbstractConfigurableModelObject#copyProductCmptAndGenerationInternal(AbstractConfigurableModelObject)
+     */
     public final static String COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL = "copyProductCmptAndGenerationInternal";
 
     /**
-     * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String, Calendar)
+     * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String,
+     *      Calendar)
      */
     public final static String GET_EXISTING_PRODUCT_COMPONENT_GENERATION = "getExistingProductComponentGeneration";
 
@@ -139,7 +141,8 @@ public class MethodNames {
     public final static String GET_VALID_FROM = "getValidFrom";
 
     /**
-     * @see IDeltaSupport#computeDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see IDeltaSupport#computeDelta(org.faktorips.runtime.IModelObject,
+     *      org.faktorips.runtime.IDeltaComputationOptions)
      */
     public final static String COMPUTE_DELTA = "computeDelta";
 
@@ -159,12 +162,14 @@ public class MethodNames {
     public final static String MODELOBJECTDELTA_CREATE_CHILD_DELTAS = "createChildDeltas";
 
     /**
-     * @see ModelObjectDelta#newEmptyDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject)
+     * @see ModelObjectDelta#newEmptyDelta(org.faktorips.runtime.IModelObject,
+     *      org.faktorips.runtime.IModelObject)
      */
     public final static String MODELOBJECTDELTA_NEW_EMPTY_DELTA = "newEmptyDelta";
 
     /**
-     * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject)
+     * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject,
+     *      org.faktorips.runtime.IModelObject)
      */
     public final static String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
 

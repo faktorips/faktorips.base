@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -64,12 +64,10 @@ public interface IChangeListenerSupportBuilder {
      * change listeners. Here filtering and propagation of events can happen.
      * 
      * @param methodBuilder the builder used for writing the code.
-     * @param parentModelObjectName the name of the parent model object (used for propagation).
-     * @param generateParentNotification
+     * @param String[] parentObjectFieldNames the field names of all parent objects (used for
+     *            propagation).
      */
-    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
-            String parentModelObjectName,
-            boolean generateParentNotification);
+    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder, String[] parentObjectFieldNames);
 
     /**
      * Generates the constants the change listener methods need.

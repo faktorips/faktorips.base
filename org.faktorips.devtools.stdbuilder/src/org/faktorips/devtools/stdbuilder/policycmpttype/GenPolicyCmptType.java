@@ -289,12 +289,15 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodsBuilder,
-            String parentModelObjectName,
-            boolean generateParentNotification) {
-
+            List<IPolicyCmptTypeAssociation> detailToMasterAssociations) throws CoreException {
         if (isGenerateChangeListenerSupport()) {
-            changeListenerSupportBuilder.generateChangeListenerMethods(methodsBuilder, parentModelObjectName,
-                    generateParentNotification);
+            String[] parentObjectFieldNames = new String[detailToMasterAssociations.size()];
+            for (int i = 0; i < detailToMasterAssociations.size(); i++) {
+                String parentObjectFieldName = getGenerator(detailToMasterAssociations.get(i))
+                        .getFieldNameForAssociation();
+                parentObjectFieldNames[i] = parentObjectFieldName;
+            }
+            changeListenerSupportBuilder.generateChangeListenerMethods(methodsBuilder, parentObjectFieldNames);
         }
     }
 

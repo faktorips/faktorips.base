@@ -31,7 +31,6 @@ import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
-import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -46,7 +45,7 @@ public abstract class GenAssociation extends GenTypePart {
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAssociation.class);
 
     protected IPolicyCmptTypeAssociation association;
-    protected IPolicyCmptTypeAssociation reverseAssociation;
+    protected IPolicyCmptTypeAssociation inverseAssociation;
     protected IPolicyCmptType target;
 
     /** The qualified name of the target's published interface. */
@@ -66,7 +65,7 @@ public abstract class GenAssociation extends GenTypePart {
             throws CoreException {
         super(genPolicyCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
-        reverseAssociation = association.findInverseAssociation(getGenType().getIpsPart().getIpsProject());
+        inverseAssociation = association.findInverseAssociation(getGenType().getIpsPart().getIpsProject());
         target = association.findTargetPolicyCmptType(association.getIpsProject());
         targetInterfaceName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), true);
         targetImplClassName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), false);
@@ -234,6 +233,20 @@ public abstract class GenAssociation extends GenTypePart {
     }
 
     /**
+     * Returns the internal name of the method to set the parent object.
+     */
+    public String getMethodNameSetParentObjectInternal(boolean useInverse) {
+        return "set" + (useInverse ? inverseAssociation : association).getTargetRoleSingular() + "Internal";
+    }
+
+    /**
+     * Returns the name of the method to get the parent object.
+     */
+    public String getMethodNameGetParentObject(boolean useInverse) {
+        return "get" + (useInverse ? inverseAssociation : association).getTargetRoleSingular();
+    }
+
+    /**
      * Returns the name of the parameter in the new child method, e.g. coverageType.
      */
     protected String getParamNameForProductCmptInNewChildMethod(IProductCmptType targetProductCmptType)
@@ -245,17 +258,19 @@ public abstract class GenAssociation extends GenTypePart {
 
     /**
      * <pre>
-     * ((DependantObject)parentModelObject).setParentModelObjectInternal(this);
+     * ((Policy)parentModelObject).setPolicyInternal(this);
      * </pre>
      */
     protected JavaCodeFragment generateCodeToSynchronizeReverseComposition(String varName, String newValue)
             throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
+
         code.append("((");
-        code.appendClassName(DependantObject.class);
+        code.appendClassName(getQualifiedClassName(getTargetPolicyCmptType(), false));
         code.append(')');
         code.append(varName);
-        code.append(")." + MethodNames.SET_PARENT);
+        code.append(").");
+        code.append(getMethodNameSetParentObjectInternal(true));
         code.append('(');
         code.append(newValue);
         code.appendln(");");
@@ -895,7 +910,7 @@ public abstract class GenAssociation extends GenTypePart {
      * <pre>
      * if (child1 != null) {
      *     copy.child1 = (CpChild1)child1.newCopy();
-     *     copy.child1.setParentModelObjectInternal(copy);
+     *     copy.child1.setCpChild1Internal(copy);
      * }
      * </pre>
      * 
@@ -905,7 +920,7 @@ public abstract class GenAssociation extends GenTypePart {
      * for (Iterator it = child2s.iterator(); it.hasNext();) {
      *     ICpChild2 cpChild2 = (ICpChild2)it.next();
      *     ICpChild2 copycpChild2 = (ICpChild2)cpChild2.newCopy();
-     *     ((DependantObject)copycpChild2).setParentModelObjectInternal(copy);
+     *     ((CpChild2)copycpChild2).setCpChild1Internal(copy); // generated only if inverse association is given
      *     copy.child2s.add(copycpChild2);
      * }
      * </pre>
@@ -921,12 +936,28 @@ public abstract class GenAssociation extends GenTypePart {
             return;
         }
         // 1-1
-        methodsBuilder.appendln("if (" + field + "!=null) {");
-        methodsBuilder.append(paramName + "." + field + " = (");
+        methodsBuilder.appendln("if (");
+        methodsBuilder.append(field);
+        methodsBuilder.appendln("!=null) {");
+        methodsBuilder.append(paramName);
+        methodsBuilder.append(".");
+        methodsBuilder.append(field);
+        methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(targetTypeQName);
-        methodsBuilder.appendln(")" + field + "." + MethodNames.NEW_COPY + "();");
-        if (targetType.isDependantType()) {
-            methodsBuilder.appendln(paramName + "." + field + "." + MethodNames.SET_PARENT + "(" + paramName + ");");
+        methodsBuilder.append(")");
+        methodsBuilder.append(field);
+        methodsBuilder.append(".");
+        methodsBuilder.append(MethodNames.NEW_COPY);
+        methodsBuilder.appendln("();");
+        if (targetType.isDependantType() && inverseAssociation != null) {
+            methodsBuilder.append(paramName);
+            methodsBuilder.append(".");
+            methodsBuilder.append(field);
+            methodsBuilder.append(".");
+            methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
+            methodsBuilder.append("(");
+            methodsBuilder.append(paramName);
+            methodsBuilder.appendln(");");
         }
         methodsBuilder.appendln("}");
     }
@@ -1002,4 +1033,15 @@ public abstract class GenAssociation extends GenTypePart {
 
     public abstract void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder)
             throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the association is the inverse of a derived union association,
+     * otherwise <code>false</code>
+     */
+    public boolean isInverseOfDerivedUnionAssociation() throws CoreException {
+        if (inverseAssociation == null) {
+            return false;
+        }
+        return inverseAssociation.isDerivedUnion();
+    }
 }

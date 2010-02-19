@@ -29,16 +29,16 @@ import org.faktorips.util.ArgumentCheck;
 public class InverseAssociationCompletionProcessor extends AbstractCompletionProcessor {
 
     private IPolicyCmptType pcType;
-    private IPolicyCmptTypeAssociation relation;
+    private IPolicyCmptTypeAssociation association;
 
     public InverseAssociationCompletionProcessor() {
 
     }
 
-    public InverseAssociationCompletionProcessor(IPolicyCmptTypeAssociation relation) {
-        ArgumentCheck.notNull(relation);
-        this.relation = relation;
-        pcType = (IPolicyCmptType)relation.getIpsObject();
+    public InverseAssociationCompletionProcessor(IPolicyCmptTypeAssociation association) {
+        ArgumentCheck.notNull(association);
+        this.association = association;
+        pcType = (IPolicyCmptType)association.getIpsObject();
         setIpsProject(pcType.getIpsProject());
     }
 
@@ -49,14 +49,21 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
         prefix = prefix.toLowerCase();
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(ipsProject);
+        IPolicyCmptType target = association.findTargetPolicyCmptType(ipsProject);
         if (target == null) {
             return;
         }
-        IPolicyCmptTypeAssociation[] relations = target.getPolicyCmptTypeAssociations();
-        for (int j = 0; j < relations.length; j++) {
-            if (relations[j].getName().toLowerCase().startsWith(prefix)) {
-                addToResult(result, relations[j], documentOffset);
+        IPolicyCmptTypeAssociation[] associationCandidates = target.getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associationCandidates.length; i++) {
+            // only association candidates with target policy component type equal to the policy
+            // component type this association belongs to
+            if (!associationCandidates[i].getTarget().equals(association.getPolicyCmptType().getQualifiedName())) {
+                continue;
+            }
+
+            // only association with name starts with prefix
+            if (associationCandidates[i].getName().toLowerCase().startsWith(prefix)) {
+                addToResult(result, associationCandidates[i], documentOffset);
             }
         }
     }

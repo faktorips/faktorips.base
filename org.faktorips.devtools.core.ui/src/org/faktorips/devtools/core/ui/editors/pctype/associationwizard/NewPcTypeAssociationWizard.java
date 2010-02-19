@@ -132,7 +132,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public void addPages() {
         associationTargetPage = new AssociationTargetPage(this, association, toolkit, bindingContext);
         propertyPage = new PropertyPage(this, association, toolkit, bindingContext);
-        inverseAssociationPage = new InverseAssociationPage(this, association, toolkit);
+        inverseAssociationPage = new InverseAssociationPage(this, toolkit);
         inverseAssociationPropertyPage = new InverseAssociationPropertyPage(this, toolkit, bindingContext);
         configureProductCmptTypePage = new ConfigureProductCmptTypePage(this, toolkit);
         confProdCmptTypePropertyPage = new ConfProdCmptTypePropertyPage(this, toolkit, bindingContext);
@@ -706,7 +706,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     private void storeInverseAssociation(IPolicyCmptTypeAssociation inverseAssociation) {
         this.inverseAssociation = inverseAssociation;
-        if (inverseAssociation != null && inverseAssociation.isAssoziation()) {
+        if (inverseAssociation != null) {
             association.setInverseAssociation(inverseAssociation.getTargetRoleSingular());
             inverseAssociation.setInverseAssociation(association.getTargetRoleSingular());
         } else {

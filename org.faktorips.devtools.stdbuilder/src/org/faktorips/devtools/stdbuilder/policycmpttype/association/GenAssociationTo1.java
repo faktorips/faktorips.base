@@ -204,21 +204,20 @@ public class GenAssociationTo1 extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public void setCoverage(ICoverage newObject) {
-     *     if (homeContract!=null) {
-     *         ((DependantObject)homeContract).setParentModelObjectInternal(null);
+     *     if (coverage != null) {
+     *         ((Coverage)coverage).setContractInternal(null);
      *     }
-     *     homeContract = (HomeContract)newObject;
-     *     if (homeContract!=null) {
-     *         ((DependantObject)homeContract).setParentModelObjectInternal(this);
+     *     if (newObject != null) {
+     *         ((Coverage)newObject).setContractInternal(this);
      *     }
      * }
      * </pre>
      */
     protected void generateMethodSetRefObjectForComposition(JavaCodeFragmentBuilder builder) throws CoreException {
-
         if (association.isCompositionDetailToMaster()) {
             return; // setter defined in base class.
         }
+
         String paramName = getParamNameForSetObject();
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(builder);
@@ -227,13 +226,11 @@ public class GenAssociationTo1 extends GenAssociation {
 
         generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
 
-        if (target.isDependantType()) {
+        if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
             builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));;
             builder.appendln("}");
-        }
 
-        if (target.isDependantType()) {
             builder.appendln("if(" + paramName + " != null) {");
             builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));;
             builder.appendln("}");
@@ -279,7 +276,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append("if(" + paramName + " == ");
         methodsBuilder.append(fieldName);
         methodsBuilder.append(") return;");
-        if (reverseAssociation != null) {
+        if (inverseAssociation != null) {
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append(" oldRefObject = ");
             methodsBuilder.append(fieldName);
@@ -293,8 +290,8 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(targetImplClassName);
         methodsBuilder.append(")" + paramName + ";");
-        if (reverseAssociation != null) {
-            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
+        if (inverseAssociation != null) {
+            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(inverseAssociation)
                     .generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
@@ -306,11 +303,11 @@ public class GenAssociationTo1 extends GenAssociation {
         if (!association.is1ToMany()) {
             body.append("if (" + varToCleanUp + "!=null) {");
         }
-        if (reverseAssociation.is1ToMany()) {
-            String removeMethod = getMethodNameRemoveObject(reverseAssociation);
+        if (inverseAssociation.is1ToMany()) {
+            String removeMethod = getMethodNameRemoveObject(inverseAssociation);
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
-            String setMethod = getMethodNameSetObject(reverseAssociation);
+            String setMethod = getMethodNameSetObject(inverseAssociation);
             body.append(varToCleanUp);
             body.append("." + setMethod + "(null);");
         }
@@ -325,7 +322,7 @@ public class GenAssociationTo1 extends GenAssociation {
             throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
-        if (!reverseAssociation.is1ToMany()) {
+        if (!inverseAssociation.is1ToMany()) {
             code.append(varName + " != null && ");
         }
         code.append(varName + ".");
@@ -376,17 +373,35 @@ public class GenAssociationTo1 extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
-     *     return (ICoverage)getParentModelObject();
+     *     return coverage; // if inverse is not derived union
+     *     return (ICoverage) getParentModelObject(); // if inverse is derived union
      * }
+     * 
      * </pre>
      */
     protected void generateMethodGetTypesafeParentObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
-        methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(targetInterfaceName);
-        methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
+        methodsBuilder.append("return ");
+
+        if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
+            // in case of inverse of derived union
+            // we must use the getParentModelObject method to return
+            // the parent, because no field is generated for the parent
+            methodsBuilder.append("(");
+            methodsBuilder.appendClassName(targetInterfaceName);
+            methodsBuilder.append(")");
+            methodsBuilder.append(MethodNames.GET_PARENT);
+            methodsBuilder.appendln("()");
+        } else {
+            // in case of non derived union we can directly return the field
+            // note this is necessary because this getter method is used
+            // to assert that a child is only related to one parent
+            methodsBuilder.append(getFieldNameForAssociation());
+        }
+        methodsBuilder.append(";");
         methodsBuilder.closeBracket();
     }
 

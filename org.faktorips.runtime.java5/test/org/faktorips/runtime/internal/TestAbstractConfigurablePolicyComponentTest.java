@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -74,16 +74,16 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         PcA a = new PcA(productA, null);
         assertEquals(productA, a.getProductComponent());
     }
-    
+
     public void testSetProductComponent() {
         PcA policy = new PcA(productA, null);
         assertEquals(productA, policy.getProductComponent());
         assertEquals(productGenA, policy.getProductCmptGeneration());
-        
+
         policy.setProductComponent(productB);
         assertEquals(productB, policy.getProductComponent());
         assertEquals(productGenB, policy.getProductCmptGeneration());
-        
+
         policy.setProductComponent(null);
         assertNull(policy.getProductComponent());
         assertNull(policy.getProductCmptGeneration());
@@ -92,16 +92,15 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
     public void testSetProductCmptGeneration() {
         PcA policy = new PcA(productA, null);
         assertEquals(productGenA, policy.getProductCmptGeneration());
-        
+
         policy.setProductCmptGeneration(productGenB);
         assertEquals(productB, policy.getProductComponent());
         assertEquals(productGenB, policy.getProductCmptGeneration());
-        
+
         policy.setProductCmptGeneration(null);
         assertNull(policy.getProductComponent());
         assertNull(policy.getProductCmptGeneration());
     }
-
 
     public void testValidate() {
         PcB b = new PcB(productA);
@@ -312,7 +311,8 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         @Override
         protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
             if (propMap.containsKey("effectiveDate")) {
-                effectiveDate = DateTime.parseIso(propMap.get("effectiveDate")).toGregorianCalendar(TimeZone.getDefault());
+                effectiveDate = DateTime.parseIso(propMap.get("effectiveDate")).toGregorianCalendar(
+                        TimeZone.getDefault());
             }
             if (propMap.containsKey("prop0")) {
                 prop0 = propMap.get("prop0");
@@ -346,9 +346,10 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * {@inheritDoc}
          */
         @Override
-        protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId) throws SecurityException, NoSuchMethodException {
+        protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
+                throws SecurityException, NoSuchMethodException {
             if ("InsuredPerson".equals(targetRole)) {
-                Method m = getClass().getMethod("setInsuredPerson", new Class[]{PcA.class});
+                Method m = getClass().getMethod("setInsuredPerson", new Class[] { PcA.class });
                 return new DefaultUnresolvedReference(this, objectId, m, PcA.class, targetId);
             }
             return null;
@@ -370,7 +371,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
 
     }
 
-    private class ChildXmlPc extends AbstractConfigurableModelObject implements DependantObject {
+    private class ChildXmlPc extends AbstractConfigurableModelObject {
 
         private AbstractModelObject parent;
         String prop0;
