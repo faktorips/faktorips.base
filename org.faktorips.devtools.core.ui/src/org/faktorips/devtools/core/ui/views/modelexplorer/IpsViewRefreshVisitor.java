@@ -148,11 +148,15 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             IIpsElement parentEl = (IIpsElement)getParent(ipsElement);
             if (parentEl instanceof IIpsPackageFragment) {
                 IIpsPackageFragment pack = (IIpsPackageFragment)parentEl;
-                if (pack.isDefaultPackage() && pack.getChildren().length == 1) {
-                    // This is the first element in the default package. As the default package is
-                    // only
-                    // shown, when it contains at least one file/element, we must refresh the
-                    // package root!
+                if (pack.isDefaultPackage()) {
+                    // in version up to 2.5.0.rc2 we have the following optimization coded here
+                    // if ( pack.isDefaultPackage() && pack.getChildren().length == 1) {
+                    // We wanted to refresh the package fragment root only if the default package
+                    // has
+                    // been empty before. This optimization fails, when several files are created at
+                    // one
+                    // in a single workspace operation.
+                    // See Bug
                     parentEl = pack.getParent();
                 }
 
