@@ -436,12 +436,19 @@ assertValidParameters()
 	  showUsageAndExit
 	fi
 	
-	# check unnecessary parameter
+	# check unnecessary parameter cvs
 	if [ "$SKIPTAGCVS" = "true" -a -n "$BRANCH" ] ; then
 	  echo "=> Cancel build: the branch parameter must not be given (unnecessary) because an existing tag will be used."
 	  echo "   (Skip tagging projects is true)"
 	  echo "   Note: The tag '$FETCH_TAG' will be used for the build, make sure that this is a tag in the branch tree!" 
 	  echo "         And try again without using the branch parameter" 
+	  showUsageAndExit
+	fi
+	
+	# check unnecessary parameter overwrite
+	if [ "$OVERWRITE" = "true" -a "$SKIPPUBLISH" = "true" ] ; then
+	  echo "=> Cancel build: the -overwrite parameter must not be given (unnecessary) because -skipPublish is true."
+	  echo "                 use script without -overwrite and try again" 
 	  showUsageAndExit
 	fi
 }
