@@ -423,7 +423,8 @@
 		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-win32.x86-${productProject}-${build.version}.zip"/>
         <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-linux.gtk.x86-${productProject}-${build.version}.zip"/>
         <!--    runtime and valuetypes zip -->
-		<property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/faktorips-runtime-valuetypes-${build.version}.zip"/>
+		<property name="faktoripsRuntimeAndValuetypesZipName" value="faktorips-runtime-valuetypes-${build.version}.zip"/>
+		<property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/${faktoripsRuntimeAndValuetypesZipName}"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -546,7 +547,7 @@ ${faktoripsProductLinuxZipPath}
     	</ant>
         <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
     </target>
-	<target name="-publish.release.runtimeAndValutypesJars" unless="isSkipPublish">
+	<target name="-publish.release.runtimeAndValutypesJars">
        <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
        <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
@@ -556,7 +557,11 @@ ${faktoripsProductLinuxZipPath}
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
 	   </copy>
-       <zip destfile="${faktoripsRuntimeAndValuetypesZipPath}" basedir="${zip.dir}" />
+       <zip destfile="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}" basedir="${zip.dir}" />
+       <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+           <param name="source" value="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}" />
+           <param name="dest.name" value="${faktoripsRuntimeAndValuetypesZipPath}" />
+       </antcall>
     </target>
 	<target name="-assert.product.exists" if="is.product.build">
         <antcall inheritall="true" target="-fail.if.file.exists">
