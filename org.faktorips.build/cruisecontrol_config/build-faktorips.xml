@@ -549,7 +549,9 @@ ${faktoripsProductLinuxZipPath}
     </target>
 	<target name="-publish.release.runtimeAndValutypesJars">
        <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
-       <delete includeemptydirs="true" dir="${zip.dir}"/>
+       <property name="zipFile" value="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}"/>
+       <echo message="Create runtime and valuetypes zip file: ${zipFile}"/> 
+	   <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar *.zip"/>
@@ -557,9 +559,9 @@ ${faktoripsProductLinuxZipPath}
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
 	   </copy>
-       <zip destfile="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}" basedir="${zip.dir}" />
+       <zip destfile="${zipFile}" basedir="${zip.dir}" />
        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-           <param name="source" value="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}" />
+           <param name="source" value="${zipFile}" />
            <param name="dest.name" value="${faktoripsRuntimeAndValuetypesZipPath}" />
        </antcall>
     </target>
