@@ -470,7 +470,9 @@ showParameter()
   echo -e "    CVS_ROOT=\e[35m$CVS_ROOT\e[0m"
   echo -e "    cvs logfile=\e[35m$CVS_LOG\e[0m"
   echo "  --------------------------------------------------------------------------------------"
-  echo -e "  -overwite        : Fail if version exists "$(printBoolean $( negation $OVERWRITE))
+  if [ ! "$SKIPPUBLISH" = "true" ] ; then
+    echo -e "  -overwite        : Fail if version exists "$(printBoolean $( negation $OVERWRITE))
+  fi
   echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
   echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
   echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
