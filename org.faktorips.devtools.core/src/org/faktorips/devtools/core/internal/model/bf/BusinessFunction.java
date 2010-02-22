@@ -14,6 +14,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -464,14 +465,15 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         List<IDependency> dependencies = new ArrayList<IDependency>();
         for (IIpsObjectPart part : actions.getParts()) {
             IActionBFE action = (IActionBFE)part;
             if (action.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL) {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), action,
-                        IMethodCallBFE.PROPERTY_TARGET, new QualifiedNameType(action.getTarget(),
-                                BusinessFunctionIpsObjectType.getInstance())));
+                IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                        new QualifiedNameType(action.getTarget(), BusinessFunctionIpsObjectType.getInstance()));
+                dependencies.add(dependency);
+                addDetails(details, dependency, action, IMethodCallBFE.PROPERTY_TARGET);
                 continue;
             }
             if (action.getType() == BFElementType.ACTION_METHODCALL) {
@@ -479,9 +481,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 if (param != null) {
                     String datatype = param.getDatatype();
                     if (datatype != null) {
-                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), param,
-                                IParameterBFE.PROPERTY_DATATYPE, new QualifiedNameType(datatype,
-                                        IpsObjectType.POLICY_CMPT_TYPE)));
+                        IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                                new QualifiedNameType(datatype, IpsObjectType.POLICY_CMPT_TYPE));
+                        dependencies.add(dependency);
+                        addDetails(details, dependency, param, IParameterBFE.PROPERTY_DATATYPE);
                     }
                 }
             }

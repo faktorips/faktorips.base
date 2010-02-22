@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -642,33 +644,40 @@ public abstract class Type extends BaseIpsObject implements IType {
      * Collects the dependencies of this type. Subclasses need to call this method in their
      * dependsOn() methods. The provided parameter must not be <code>null</code>.
      */
-    protected void dependsOn(Set<IDependency> dependencies) throws CoreException {
+    protected void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details)
+            throws CoreException {
         if (hasSupertype()) {
-            dependencies.add(IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(), this,
-                    PROPERTY_SUPERTYPE, new QualifiedNameType(getSupertype(), getIpsObjectType())));
+            IDependency dependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getSupertype(), getIpsObjectType()));
+            dependencies.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_SUPERTYPE);
         }
-        addQualifiedNameTypesForRelationTargets(dependencies);
-        addAttributeDatatypeDependencies(dependencies);
-        addMethodDatatypeDependencies(dependencies);
+        addQualifiedNameTypesForRelationTargets(dependencies, details);
+        addAttributeDatatypeDependencies(dependencies, details);
+        addMethodDatatypeDependencies(dependencies, details);
     }
 
-    private void addMethodDatatypeDependencies(Set<IDependency> dependencies) {
+    private void addMethodDatatypeDependencies(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
         for (Iterator<? extends IMethod> it = methods.iterator(); it.hasNext();) {
             Method method = (Method)it.next();
-            method.dependsOn(dependencies);
+            method.dependsOn(dependencies, details);
         }
     }
 
-    private void addAttributeDatatypeDependencies(Set<IDependency> qualifiedNameTypes) throws CoreException {
+    private void addAttributeDatatypeDependencies(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             String datatype = attributes[i].getDatatype();
-            qualifiedNameTypes.add(new DatatypeDependency(getQualifiedNameType(), attributes[i],
-                    IAttribute.PROPERTY_DATATYPE, datatype));
+            IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
+            dependencies.add(dependency);
+            addDetails(details, dependency, attributes[i], IAttribute.PROPERTY_DATATYPE);
         }
     }
 
-    private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies) throws CoreException {
+    private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         IAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
             String targetQName = relations[i].getTarget();
@@ -676,12 +685,16 @@ public abstract class Type extends BaseIpsObject implements IType {
             // this method is called recursively for the detail and so on. But this detail is not an
             // aggregate root and the recursion will terminate too early.
             if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
-                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(getQualifiedNameType(),
-                        relations[i], IAssociation.PROPERTY_TARGET, new QualifiedNameType(targetQName,
-                                getIpsObjectType())));
+                IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(
+                        getQualifiedNameType(), new QualifiedNameType(targetQName, getIpsObjectType()));
+
+                dependencies.add(dependency);
+                addDetails(details, dependency, relations[i], IAssociation.PROPERTY_TARGET);
             } else {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), relations[i],
-                        IAssociation.PROPERTY_TARGET, new QualifiedNameType(targetQName, getIpsObjectType())));
+                IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                        new QualifiedNameType(targetQName, getIpsObjectType()));
+                dependencies.add(dependency);
+                addDetails(details, dependency, relations[i], IAssociation.PROPERTY_TARGET);
             }
         }
     }

@@ -13,9 +13,7 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
@@ -30,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
  * {@link DatatypeDependency}.
  * 
  * @author Peter Erzberger
- * @author Thorsten Günther
  */
 public interface IDependency {
 
@@ -44,39 +41,6 @@ public interface IDependency {
      * since a source must always be an IpsObject.
      */
     public QualifiedNameType getSource();
-
-    /**
-     * Returns the part container that is responsible for the existence of this dependency.
-     * Examples:
-     * <ul>
-     * <li>If a policy component type has a super type, the ips object representing the policy
-     * component type is responsible for the dependency (the policy component type depends on its
-     * supertype). So this method returns the ips object representing the policy component type.
-     * <li/> <li>If a policy component type has an association and the target of the association is
-     * another policy component type, the association is responsible for the dependency between the
-     * policy component type and the other type. OIn this case this method returns the association.
-     * </ul>
-     * 
-     * <p>
-     * <strong>Caution:</strong> The result of this method is only valid when the object is directly
-     * returned from the {@link IIpsObject#dependsOn()} method. It is undefined what instances
-     * retrieved for example from the dependency graph {@link DependencyGraph} return when this
-     * method is called.
-     * 
-     * @return The part of the source causing the dependency
-     */
-    public IIpsObjectPartContainer getPart();
-
-    /**
-     * The property name of the part causing this dependency.
-     * <p>
-     * <strong>Caution:</strong> This method will return null if this object was deserialized and
-     * not gatherd from the {@link IIpsObject#dependsOn()} method.
-     * 
-     * @return The name of the property causing this dependency or <code>null</code>, if this
-     *         dependency was deserialized.
-     */
-    public String getProperty();
 
     /**
      * The target from which the source depends on.

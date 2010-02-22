@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -196,18 +198,24 @@ public final class MoveRenameIpsObjectHelper {
                 continue;
             }
 
-            IIpsObjectPartContainer part = dependency.getPart();
-            String propertyName = dependency.getProperty();
+            List<IDependencyDetail> details = dependencyToProject.get(dependency).findIpsObject(dependency.getSource())
+                    .getDependencyDetails(dependency);
 
-            if (part == null || propertyName == null) {
-                continue;
-            }
+            for (IDependencyDetail detail : details) {
 
-            PropertyDescriptor property = BeanUtil.getPropertyDescriptor(part.getClass(), propertyName);
-            try {
-                property.getWriteMethod().invoke(part, newQName);
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(e));
+                IIpsObjectPartContainer part = detail.getPart();
+                String propertyName = detail.getPropertyName();
+
+                if (part == null || propertyName == null) {
+                    continue;
+                }
+
+                PropertyDescriptor property = BeanUtil.getPropertyDescriptor(part.getClass(), propertyName);
+                try {
+                    property.getWriteMethod().invoke(part, newQName);
+                } catch (Exception e) {
+                    throw new CoreException(new IpsStatus(e));
+                }
             }
         }
 

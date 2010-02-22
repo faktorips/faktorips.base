@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -112,9 +114,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
-        addQualifiedNameTypesForTestPolicyCmptTypeParams(dependencies, getTestPolicyCmptTypeParameters());
+        addDependenciesForTestPolicyCmptTypeParams(dependencies, details, getTestPolicyCmptTypeParameters());
         return dependencies.toArray(new IDependency[dependencies.size()]);
 
     }
@@ -122,27 +124,34 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Adds the qualified names for all test policy cmpt type parameters (root and childs) to the
      * given list
+     * 
+     * @param details
      */
-    private void addQualifiedNameTypesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
+    private void addDependenciesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details,
             ITestPolicyCmptTypeParameter[] parameters) {
         for (int i = 0; i < parameters.length; i++) {
             if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), parameters[i],
-                        ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE, new QualifiedNameType(parameters[i]
-                                .getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+                IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                        new QualifiedNameType(parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
+                dependencies.add(dependency);
+                addDetails(details, dependency, parameters[i], ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
             }
-            addDependenciesForTestPolicyCmptTypeParameterAttributes(parameters[i].getTestAttributes(), dependencies);
-            addQualifiedNameTypesForTestPolicyCmptTypeParams(dependencies, parameters[i]
+            addDependenciesForTestPolicyCmptTypeParameterAttributes(parameters[i].getTestAttributes(), details,
+                    dependencies);
+            addDependenciesForTestPolicyCmptTypeParams(dependencies, details, parameters[i]
                     .getTestPolicyCmptTypeParamChilds());
         }
     }
 
     private void addDependenciesForTestPolicyCmptTypeParameterAttributes(ITestAttribute[] attributes,
+            Map<IDependency, List<IDependencyDetail>> details,
             Set<IDependency> dependencies) {
         for (ITestAttribute attribute : attributes) {
             if (!StringUtils.isEmpty(attribute.getPolicyCmptType())) {
-                dependencies.add(new DatatypeDependency(getQualifiedNameType(), attribute,
-                        ITestAttribute.PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE, attribute.getPolicyCmptType()));
+                IDependency dependency = new DatatypeDependency(getQualifiedNameType(), attribute.getPolicyCmptType());
+                dependencies.add(dependency);
+                addDetails(details, dependency, attribute, ITestAttribute.PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE);
             }
         }
     }

@@ -20,7 +20,9 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -447,8 +449,12 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), action,
-                IMethodCallBFE.PROPERTY_TARGET, bf2.getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2
+                .getQualifiedNameType()), dependencies[0]);
+
+        List<IDependencyDetail> details = bf.getDependencyDetails(dependencies[0]);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(new DependencyDetail(action, IMethodCallBFE.PROPERTY_TARGET)));
 
         action.delete();
         dependencies = bf.dependsOn();
@@ -472,7 +478,12 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         action.setExecutableMethodName(method.getName());
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), param,
-                IParameterBFE.PROPERTY_DATATYPE, pcType.getQualifiedNameType()), dependencies[0]);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType
+                .getQualifiedNameType()), dependencies[0]);
+
+        details = bf.getDependencyDetails(dependencies[0]);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(new DependencyDetail(param, IParameterBFE.PROPERTY_DATATYPE)));
+
     }
 }

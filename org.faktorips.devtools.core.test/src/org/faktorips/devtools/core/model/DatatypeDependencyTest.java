@@ -18,14 +18,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import junit.framework.TestCase;
+
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
-public class DatatypeDependencyTest extends AbstractIpsPluginTest {
+public class DatatypeDependencyTest extends TestCase {
 
     private QualifiedNameType source;
     private DatatypeDependency dependency;
@@ -33,29 +31,15 @@ public class DatatypeDependencyTest extends AbstractIpsPluginTest {
     @Override
     public void setUp() {
         source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        dependency = new DatatypeDependency(source, null, null, "a.b.e");
+        dependency = new DatatypeDependency(source, "a.b.e");
     }
 
-    public final void testHashCode() throws CoreException {
+    public final void testHashCode() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
 
         QualifiedNameType source2 = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency2 = new DatatypeDependency(source2, null, null, "a.b.e");
-        assertEquals(dependency.hashCode(), dependency2.hashCode());
-
-        dependency2 = new DatatypeDependency(source2, null, "egon", "a.b.e");
-        assertFalse(dependency.hashCode() == dependency2.hashCode());
-
-        dependency = new DatatypeDependency(source, null, "egon", "a.b.e");
-        assertEquals(dependency.hashCode(), dependency2.hashCode());
-
-        IIpsProject prj = newIpsProject("test");
-        IPolicyCmptType type = newPolicyCmptType(prj, "A");
-        dependency2 = new DatatypeDependency(source2, type, "egon", "a.b.e");
-        assertFalse(dependency.hashCode() == dependency2.hashCode());
-
-        dependency = new DatatypeDependency(source, type, "egon", "a.b.e");
+        DatatypeDependency dependency2 = new DatatypeDependency(source2, "a.b.e");
         assertEquals(dependency.hashCode(), dependency2.hashCode());
     }
 
@@ -77,10 +61,10 @@ public class DatatypeDependencyTest extends AbstractIpsPluginTest {
 
     public final void testEqualsObject() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
 
         QualifiedNameType source2 = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency2 = new DatatypeDependency(source2, null, null, "a.b.e");
+        DatatypeDependency dependency2 = new DatatypeDependency(source2, "a.b.e");
         assertEquals(dependency, dependency2);
     }
 
@@ -97,7 +81,7 @@ public class DatatypeDependencyTest extends AbstractIpsPluginTest {
 
     public void testToString() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
-        DatatypeDependency dependency = new DatatypeDependency(source, null, null, "a.b.e");
+        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
         assertEquals("(PolicyCmptType: a.b.c -> a.b.e, type: datatype dependency)", dependency.toString());
     }
 }

@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObje
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsObjectProcessor;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -149,6 +153,16 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     public IDependency[] dependsOn() throws CoreException {
+        return dependsOn(null);
+    }
+
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException {
+        Map<IDependency, List<IDependencyDetail>> detailMap = new HashMap<IDependency, List<IDependencyDetail>>();
+        dependsOn(detailMap);
+        return detailMap.get(dependency);
+    }
+
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         return new IDependency[0];
     }
 

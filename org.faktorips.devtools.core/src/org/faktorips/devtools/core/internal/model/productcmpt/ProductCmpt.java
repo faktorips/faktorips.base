@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -236,20 +239,20 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     @Override
-    public IDependency[] dependsOn() throws CoreException {
-
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencySet = new HashSet<IDependency>();
 
         if (!StringUtils.isEmpty(productCmptType)) {
-            dependencySet.add(IpsObjectDependency
-                    .createInstanceOfDependency(getQualifiedNameType(), this, PROPERTY_PRODUCT_CMPT_TYPE,
-                            new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE)));
+            IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                    new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE));
+            dependencySet.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
 
         // add dependency to related product cmpt's and add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
-            ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet);
+            ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet, details);
         }
 
         return dependencySet.toArray(new IDependency[dependencySet.size()]);

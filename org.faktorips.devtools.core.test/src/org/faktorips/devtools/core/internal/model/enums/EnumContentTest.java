@@ -19,7 +19,9 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -156,9 +158,14 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         List<IDependency> depencendiesList = Arrays.asList(dependencies);
         IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(genderEnumContent
-                .getQualifiedNameType(), genderEnumContent, IEnumContent.PROPERTY_ENUM_TYPE, new QualifiedNameType(
-                genderEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
+                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
+                IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesList.contains(enumTypeDependency));
+
+        List<IDependencyDetail> details = genderEnumContent.getDependencyDetails(dependencies[0]);
+        DependencyDetail detail = new DependencyDetail(genderEnumContent, IEnumContent.PROPERTY_ENUM_TYPE);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(detail));
     }
 
     public void testGetEnumAttributeReferencesCount() throws CoreException {

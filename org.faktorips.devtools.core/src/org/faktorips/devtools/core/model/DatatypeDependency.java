@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model;
 
 import java.io.Serializable;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
@@ -35,25 +34,18 @@ public class DatatypeDependency implements IDependency, Serializable {
     private DependencyType type;
     private int hashCode;
 
-    private transient IIpsObjectPartContainer part;
-    private transient String propertyName;
-
     /**
      * Creates a new instance.
      * 
      * @param source The source of this dependency. Must not be <code>null</code>.
-     * @param part The part container that is responsible for the existence of this dependency.
-     * @param propertyName The property name of the part causing this dependency.
      * @param target The target of this dependency. Must nott be <code>null</code>.
      */
-    public DatatypeDependency(QualifiedNameType source, IIpsObjectPartContainer part, String propertyName, String target) {
+    public DatatypeDependency(QualifiedNameType source, String target) {
         super();
         ArgumentCheck.notNull(source, this);
         ArgumentCheck.notNull(target, this);
         this.source = source;
         this.target = target;
-        this.part = part;
-        this.propertyName = propertyName;
         type = DependencyType.DATATYPE;
         calculateHashCode();
     }
@@ -90,12 +82,6 @@ public class DatatypeDependency implements IDependency, Serializable {
         int result = 17;
         result = result * 37 + source.hashCode();
         result = result * 37 + target.hashCode();
-        if (part != null) {
-            result = result * 37 + part.hashCode();
-        }
-        if (propertyName != null) {
-            result = result * 37 + propertyName.hashCode();
-        }
         hashCode = result;
     }
 
@@ -109,22 +95,6 @@ public class DatatypeDependency implements IDependency, Serializable {
         }
 
         DatatypeDependency other = (DatatypeDependency)obj;
-
-        if (part != null) {
-            if (!part.equals(other.part)) {
-                return false;
-            }
-        } else if (other.part != null) {
-            return false;
-        }
-
-        if (propertyName != null) {
-            if (!propertyName.equals(other.propertyName)) {
-                return false;
-            }
-        } else if (other.propertyName != null) {
-            return false;
-        }
 
         return getSource().equals(other.getSource()) && getTarget().equals(other.getTarget())
                 && getType().equals(other.getType());
@@ -144,13 +114,5 @@ public class DatatypeDependency implements IDependency, Serializable {
     @Override
     public String toString() {
         return "(" + source.toString() + " -> " + target.toString() + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    }
-
-    public IIpsObjectPartContainer getPart() {
-        return part;
-    }
-
-    public String getProperty() {
-        return propertyName;
     }
 }

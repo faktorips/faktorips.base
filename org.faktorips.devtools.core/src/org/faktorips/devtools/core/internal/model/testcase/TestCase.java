@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -145,17 +147,20 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
-            dependencies.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(), this,
-                    PROPERTY_TEST_CASE_TYPE, new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE)));
+            IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                    new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE));
+            dependencies.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_TEST_CASE_TYPE);
+
         }
         // add dependency to product cmpts
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
         for (int i = 0; i < testCmpts.length; i++) {
-            addQualifiedNameTypesForTestPolicyCmpt(dependencies, testCmpts[i]);
+            addDependenciesForTestPolicyCmpt(dependencies, details, testCmpts[i]);
         }
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
@@ -163,21 +168,23 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Adds the dependencies to the given list for the given test policy cmpt and their childs
      */
-    private void addQualifiedNameTypesForTestPolicyCmpt(Set<IpsObjectDependency> dependencies, ITestPolicyCmpt cmpt)
-            throws CoreException {
+    private void addDependenciesForTestPolicyCmpt(Set<IpsObjectDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details,
+            ITestPolicyCmpt cmpt) throws CoreException {
         if (cmpt == null) {
             return;
         }
         if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), cmpt,
-                    ITestPolicyCmpt.PROPERTY_PRODUCTCMPT, new QualifiedNameType(cmpt.getProductCmpt(),
-                            IpsObjectType.PRODUCT_CMPT)));
+            IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
+            dependencies.add(dependency);
+            addDetails(details, dependency, cmpt, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
         }
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
         for (int i = 0; i < testLinks.length; i++) {
             // get the dependencies for the childs of the given test policy cmpt
             if (testLinks[i].isComposition()) {
-                addQualifiedNameTypesForTestPolicyCmpt(dependencies, testLinks[i].findTarget());
+                addDependenciesForTestPolicyCmpt(dependencies, details, testLinks[i].findTarget());
             }
         }
     }

@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -614,17 +615,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getPolicyCmptType())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), this,
-                    PROPERTY_POLICY_CMPT_TYPE, new QualifiedNameType(getPolicyCmptType(),
-                            IpsObjectType.POLICY_CMPT_TYPE)));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
+            dependencies.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_POLICY_CMPT_TYPE);
         }
         // to force a check is a policy component type exists with the same qualified name
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), null, null,
-                new QualifiedNameType(getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
-        dependsOn(dependencies);
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
+        dependsOn(dependencies, details);
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 

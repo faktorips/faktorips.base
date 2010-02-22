@@ -23,7 +23,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -824,15 +826,24 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         List<IDependency> depencendiesListSubEnumType = Arrays.asList(dependenciesSubEnumType);
         IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subEnumType
-                .getQualifiedNameType(), subEnumType, IEnumType.PROPERTY_SUPERTYPE, new QualifiedNameType(
-                genderEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
+                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
+                IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubEnumType.contains(superEnumTypeDependency));
+
+        List<IDependencyDetail> details = subEnumType.getDependencyDetails(dependenciesSubEnumType[0]);
+        DependencyDetail detail = new DependencyDetail(subEnumType, IEnumType.PROPERTY_SUPERTYPE);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(detail));
 
         List<IDependency> depencendiesListSubSubEnumType = Arrays.asList(dependenciesSubSubEnumType);
         superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subSubEnumType.getQualifiedNameType(),
-                subSubEnumType, IEnumType.PROPERTY_SUPERTYPE, new QualifiedNameType(subEnumType.getQualifiedName(),
-                        IpsObjectType.ENUM_TYPE));
+                new QualifiedNameType(subEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubSubEnumType.contains(superEnumTypeDependency));
+
+        details = subSubEnumType.getDependencyDetails(dependenciesSubSubEnumType[0]);
+        detail = new DependencyDetail(subSubEnumType, IEnumType.PROPERTY_SUPERTYPE);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(detail));
     }
 
     public void testFindAllMetaObjects() throws CoreException {

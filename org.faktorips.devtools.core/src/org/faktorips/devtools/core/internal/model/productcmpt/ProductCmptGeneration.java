@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -112,21 +114,25 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
-    public void dependsOn(Set<IDependency> dependencies) throws CoreException {
-        addRelatedProductCmptQualifiedNameTypes(dependencies);
-        addRelatedTableContentsQualifiedNameTypes(dependencies);
+    public void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details)
+            throws CoreException {
+        addRelatedProductCmptQualifiedNameTypes(dependencies, details);
+        addRelatedTableContentsQualifiedNameTypes(dependencies, details);
     }
 
     /*
      * Add the qualified name types of all related table contents inside the given generation to the
      * given set
      */
-    private void addRelatedTableContentsQualifiedNameTypes(Set<IDependency> qaTypes) {
+    private void addRelatedTableContentsQualifiedNameTypes(Set<IDependency> qaTypes,
+            Map<IDependency, List<IDependencyDetail>> details) {
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
-            qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
-                    tableContentUsages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT, new QualifiedNameType(
-                            tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
+                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsages[i].getTableContentName(),
+                    IpsObjectType.TABLE_CONTENTS));
+            qaTypes.add(dependency);
+            addDetails(details, dependency, tableContentUsages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
     }
 
@@ -134,12 +140,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * Add the qualified name types of all related product cmpt's inside the given generation to the
      * given set
      */
-    private void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes) {
+    private void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
+            Map<IDependency, List<IDependencyDetail>> details) {
         IProductCmptLink[] relations = getLinks();
         for (int j = 0; j < relations.length; j++) {
-            qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
-                    relations[j], IProductCmptLink.PROPERTY_TARGET, new QualifiedNameType(relations[j].getTarget(),
-                            IpsObjectType.PRODUCT_CMPT)));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
+                    .getQualifiedNameType(),
+                    new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT));
+            qaTypes.add(dependency);
+            addDetails(details, dependency, relations[j], IProductCmptLink.PROPERTY_TARGET);
         }
     }
 

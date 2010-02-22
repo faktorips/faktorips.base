@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
@@ -24,6 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -793,10 +795,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         if (hasSuperEnumType()) {
             IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    this, PROPERTY_SUPERTYPE, new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
+                    new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
+            addDetails(details, superEnumTypeDependency, this, PROPERTY_SUPERTYPE);
             return new IDependency[] { superEnumTypeDependency };
         } else {
             return new IDependency[0];

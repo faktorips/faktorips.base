@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model;
 
 import java.io.Serializable;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
@@ -33,11 +32,8 @@ public class IpsObjectDependency implements IDependency, Serializable {
     private QualifiedNameType target;
     private int hashCode;
     private DependencyType dependencyType;
-    private transient IIpsObjectPartContainer part;
-    private transient String propertyName;
 
-    private IpsObjectDependency(QualifiedNameType source, IIpsObjectPartContainer part, String propertyName,
-            QualifiedNameType target, DependencyType dependencyType) {
+    private IpsObjectDependency(QualifiedNameType source, QualifiedNameType target, DependencyType dependencyType) {
         super();
         ArgumentCheck.notNull(source, this);
         ArgumentCheck.notNull(target, this);
@@ -45,8 +41,6 @@ public class IpsObjectDependency implements IDependency, Serializable {
         this.source = source;
         this.target = target;
         this.dependencyType = dependencyType;
-        this.part = part;
-        this.propertyName = propertyName;
         calculateHashCode();
     }
 
@@ -55,11 +49,9 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * a transitive dependency.
      */
     public final static IpsObjectDependency create(QualifiedNameType source,
-            IIpsObjectPartContainer part,
-            String propertyName,
             QualifiedNameType target,
             DependencyType dependencyType) {
-        return new IpsObjectDependency(source, part, propertyName, target, dependencyType);
+        return new IpsObjectDependency(source, target, dependencyType);
     }
 
     /**
@@ -67,11 +59,8 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * source and target objects. A Dependency instance indicates that the source is subtype of the
      * target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createSubtypeDependency(QualifiedNameType source,
-            IIpsObjectPartContainer part,
-            String propertyName,
-            QualifiedNameType target) {
-        return new IpsObjectDependency(source, part, propertyName, target, DependencyType.SUBTYPE);
+    public final static IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.SUBTYPE);
     }
 
     /**
@@ -79,11 +68,8 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * source and target objects. A Dependency instance indicates that the source references the
      * target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createReferenceDependency(QualifiedNameType source,
-            IIpsObjectPartContainer part,
-            String propertyName,
-            QualifiedNameType target) {
-        return new IpsObjectDependency(source, part, propertyName, target, DependencyType.REFERENCE);
+    public final static IpsObjectDependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.REFERENCE);
     }
 
     /**
@@ -93,11 +79,8 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * target.
      */
     public final static IpsObjectDependency createCompostionMasterDetailDependency(QualifiedNameType source,
-            IIpsObjectPartContainer part,
-            String propertyName,
             QualifiedNameType target) {
-        return new IpsObjectDependency(source, part, propertyName, target,
-                DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL);
+        return new IpsObjectDependency(source, target, DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL);
     }
 
     /**
@@ -106,10 +89,8 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * the target and hence the source depends on the target.
      */
     public final static IpsObjectDependency createInstanceOfDependency(QualifiedNameType source,
-            IIpsObjectPartContainer part,
-            String propertyName,
             QualifiedNameType target) {
-        return new IpsObjectDependency(source, part, propertyName, target, DependencyType.INSTANCEOF);
+        return new IpsObjectDependency(source, target, DependencyType.INSTANCEOF);
     }
 
     /**
@@ -140,14 +121,6 @@ public class IpsObjectDependency implements IDependency, Serializable {
         return dependencyType;
     }
 
-    public IIpsObjectPartContainer getPart() {
-        return part;
-    }
-
-    public String getProperty() {
-        return propertyName;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -157,21 +130,6 @@ public class IpsObjectDependency implements IDependency, Serializable {
             return false;
         }
         IpsObjectDependency other = (IpsObjectDependency)o;
-        if (part != null) {
-            if (!part.equals(other.part)) {
-                return false;
-            }
-        } else if (other.part != null) {
-            return false;
-        }
-
-        if (propertyName != null) {
-            if (!propertyName.equals(other.propertyName)) {
-                return false;
-            }
-        } else if (other.propertyName != null) {
-            return false;
-        }
         return dependencyType.equals(other.getType()) && target.equals(other.getTarget())
                 && source.equals(other.getSource());
     }
@@ -181,12 +139,6 @@ public class IpsObjectDependency implements IDependency, Serializable {
         result = result * 37 + target.hashCode();
         result = result * 37 + source.hashCode();
         result = result * 37 + dependencyType.hashCode();
-        if (part != null) {
-            result = result * 37 + part.hashCode();
-        }
-        if (propertyName != null) {
-            result = result * 37 + propertyName.hashCode();
-        }
         hashCode = result;
     }
 

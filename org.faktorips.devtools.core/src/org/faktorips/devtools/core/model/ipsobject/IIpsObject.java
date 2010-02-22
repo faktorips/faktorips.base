@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
@@ -63,14 +66,14 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public String getQualifiedName();
 
     /**
-     * Returns the object's name without the leading package name (if any).
-     * For IpsObjects this method returns same as the method <code>getName()</code> which is defined in IIpsElement.
+     * Returns the object's name without the leading package name (if any). For IpsObjects this
+     * method returns same as the method <code>getName()</code> which is defined in IIpsElement.
      * 
      * @see #getQualifiedName()
      * @see IIpsElement#getName()
      */
     public String getUnqualifiedName();
-    
+
     /**
      * Returns the qualified name type for this ips object which is the combination of this ips
      * objects qualified name and its ips object type.
@@ -98,5 +101,14 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * @throws CoreException
      */
     public IDependency[] dependsOn() throws CoreException;
+
+    /**
+     * @param dependency The dependency to get the details for.
+     * 
+     * @return The details to the given Dependency.
+     * 
+     * @throws CoreException
+     */
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException;
 
 }

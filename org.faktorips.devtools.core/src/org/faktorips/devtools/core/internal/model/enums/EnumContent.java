@@ -15,11 +15,13 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -253,10 +255,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
-        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), this,
-                PROPERTY_ENUM_TYPE, new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
+        addDetails(details, enumTypeDependency, this, PROPERTY_ENUM_TYPE);
         return new IDependency[] { enumTypeDependency };
+
     }
 
     public List<IEnumAttributeReference> getEnumAttributeReferences() {

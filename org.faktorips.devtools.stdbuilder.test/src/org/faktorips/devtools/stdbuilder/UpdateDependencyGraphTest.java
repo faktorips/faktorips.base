@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IType;
 
 /**
  * 
@@ -50,8 +49,8 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         DependencyGraph graph = ((IpsModel)project.getIpsModel()).getDependencyGraph(project);
         IDependency[] dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
-        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeB,
-                IType.PROPERTY_SUPERTYPE, typeA.getQualifiedNameType()), dependency[0]);
+        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA
+                .getQualifiedNameType()), dependency[0]);
 
         // delete the dependency
         typeB.setSupertype("");
@@ -66,8 +65,8 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
-        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeB,
-                IType.PROPERTY_SUPERTYPE, typeA.getQualifiedNameType()), dependency[0]);
+        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA
+                .getQualifiedNameType()), dependency[0]);
 
         typeB.setSupertype("");
         typeB.getIpsSrcFile().save(true, null);
