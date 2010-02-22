@@ -84,8 +84,8 @@
 	<!-- build faktorips runtime client -->
 	<target name="buildclientjar" >
 		<ant antfile="${buildproject.path}/build.xml" target="buildSpecificJar">
-			<property name="projectname" value="client" />
-			<property name="jarfile" location="results/faktorips-runtime-client.jar" />		
+			<property name="projectname" value="client.java5" />
+			<property name="jarfile" location="results/faktorips-runtime-client.java5.jar" />		
 			<property name="selectedDir" value="${clientJarClassDir}" />			
 			<property name="selectedFiles" value="${clientJarClasses}" />			
 			<reference refid="classpath" torefid="classpath"/>
@@ -95,9 +95,9 @@
 	<!-- build faktorips runtime client -->
 	<target name="buildclientsrcjar" >
 		<ant antfile="${buildproject.path}/build.xml" target="buildSpecificJar">
-			<property name="projectname" value="client" />
+			<property name="projectname" value="client.java5" />
 			<property name="manifest-title" value="FaktorIPS-Runtime client-jar" />
-			<property name="jarfile" location="results/faktorips-runtime-client-src.zip" />	
+			<property name="jarfile" location="results/faktorips-runtime-client-src.java5.zip" />	
 			<property name="selectedDir" value="${clientJarSrcDir}" />	
 			<property name="selectedFiles" value="${clientJarSrc}" />			
 			<reference refid="classpath" torefid="classpath"/>
