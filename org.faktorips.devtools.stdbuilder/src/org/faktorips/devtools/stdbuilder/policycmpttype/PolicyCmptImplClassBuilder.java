@@ -234,11 +234,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String varName = "newCopy";
         methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
                 .append(" = ").append(MethodNames.NEW_COPY).append('(').append(varCopyMap).appendln(");");
-        if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
-            // call method newCopy.copyProductCmptAndGenerationInternal(this)
-            methodsBuilder.append("newCopy.") //
-                    .append(MethodNames.COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL).appendln("(this);");
-        }
         // copyAssociations(newCopy, copyMap);
         methodsBuilder.methodCall(METHOD_COPY_ASSOCIATIONS, new String[] { varName, varCopyMap }, true);
         // return newCopy
@@ -276,6 +271,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // TODO jDoc
         methodsBuilder.javaDoc("jDoc", ANNOTATION_GENERATED);
         String varCopyMap = "copyMap";
+        CheckForOverrideAnnotationForNewCopyMethod checkVisitor = new CheckForOverrideAnnotationForNewCopyMethod();
+        checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
+        appendOverrideAnnotation(methodsBuilder, checkVisitor.implementsInterfaceMethod);
         methodsBuilder.methodBegin(Modifier.PROTECTED, getUnqualifiedClassName(), MethodNames.NEW_COPY,
                 new String[] { varCopyMap }, new String[] { getHashMapFragment().getSourcecode() });
 
@@ -283,6 +281,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String varName = "newCopy";
         methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
                 .append(" = new ").append(getUnqualifiedClassName()).appendln("();");
+        if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
+            // call method newCopy.copyProductCmptAndGenerationInternal(this)
+            methodsBuilder.append("newCopy.") //
+                    .append(MethodNames.COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL).appendln("(this);");
+        }
         // call method copyProperties(newCopy)
         methodsBuilder.methodCall(getMethodNameCopyProperties(), new String[] { varName, varCopyMap }, true);
         methodsBuilder.append("return ").append(varName).append(';');
@@ -317,6 +320,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.javaDoc(null, ANNOTATION_GENERATED);
         String paramName = "copy";
         String varCopyMap = "copyMap";
+        methodsBuilder.addImport(HashMap.class);
         methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(),
                 new String[] { paramName, varCopyMap }, new String[] { getUnqualifiedClassName(),
                         getHashMapFragment().getSourcecode() });

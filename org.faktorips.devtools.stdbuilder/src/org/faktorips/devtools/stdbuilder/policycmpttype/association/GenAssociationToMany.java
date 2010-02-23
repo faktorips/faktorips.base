@@ -1077,7 +1077,7 @@ public class GenAssociationToMany extends GenAssociation {
 
     private JavaCodeFragment getForLoopCodeJ4(String className, String varName, String collectionName) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.append("for (").appendClassName(Iterator.class).append("iterator = ").append(collectionName).append(
+        builder.append("for (").appendClassName(Iterator.class).append(" iterator = ").append(collectionName).append(
                 ".iterator()").append("; ") //
                 .appendln("iterator.hasNext();) {");
         builder.append(className).append(' ').append(varName).append(" = ").append('(').append(className).append(')') //
