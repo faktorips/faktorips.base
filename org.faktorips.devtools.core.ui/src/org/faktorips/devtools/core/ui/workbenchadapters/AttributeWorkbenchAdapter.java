@@ -37,7 +37,7 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             }
             return IpsUIPlugin.getImageHandling().getSharedOverlayImage(BASE_IMAGE, overlays);
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
