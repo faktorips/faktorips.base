@@ -323,7 +323,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.openBracket();
 
         if (getPcType().hasSupertype()) {
-            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ");");
+            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ", " + varCopyMap
+                    + ");");
         }
 
         GenPolicyCmptType genPolicyCmptType = getGenerator();
