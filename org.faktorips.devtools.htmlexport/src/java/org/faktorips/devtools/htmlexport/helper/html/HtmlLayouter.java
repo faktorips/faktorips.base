@@ -1,8 +1,6 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;

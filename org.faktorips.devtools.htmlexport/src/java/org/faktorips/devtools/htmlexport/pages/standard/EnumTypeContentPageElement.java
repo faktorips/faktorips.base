@@ -7,14 +7,15 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierachyVisitor;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -90,59 +91,6 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 
 		public boolean isEmpty() {
 			return attributes.isEmpty();
-		}
-	}
-
-	protected class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
-
-		protected IEnumType type;
-		private List<IEnumAttribute> enumAttributes;
-
-		public EnumValuesTablePageElement(IEnumType type) {
-			super();
-			this.type = type;
-			try {
-				enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
-			} catch (CoreException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		@Override
-		protected void addDataRows() {
-			List<IEnumValue> values = type.getEnumValues();
-			for (IEnumValue value : values) {
-				addValueRow(value);
-			}
-		}
-
-		protected void addValueRow(IEnumValue value) {
-			addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getValueData(value))));
-		}
-
-		protected List<String> getValueData(IEnumValue value) {
-			List<String> valueData = new ArrayList<String>();
-
-			for (IEnumAttribute enumAttribute : enumAttributes) {
-				valueData.add(value.getEnumAttributeValue(enumAttribute).getValue());
-			}
-
-			return valueData;
-		}
-
-		@Override
-		protected List<String> getHeadline() {
-			List<String> headline = new ArrayList<String>();
-
-			for (IEnumAttribute enumAttribute : enumAttributes) {
-				headline.add(enumAttribute.getName());
-			}
-
-			return headline;
-		}
-
-		public boolean isEmpty() {
-			return enumAttributes.isEmpty() || type.getEnumValues().isEmpty();
 		}
 	}
 
@@ -242,8 +190,10 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(object),"keine Attribute"));
-		
+		wrapper
+				.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(object),
+						"keine Attribute"));
+
 		return wrapper;
 	}
 
@@ -254,8 +204,31 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		// Attribute
 		addPageElements(createAttributesTable());
 
-		// Werte
-		addPageElements(createValuesTable());
+		// Werte oder EnumContents
+		if (object.isContainingValues())
+			addPageElements(createValuesTable());
+		else {
+			addPageElements(createEnumContentsList());
+		}
+
+	}
+
+	protected PageElement createEnumContentsList() {
+		try {
+			IEnumContent enumContent = object.findEnumContent(config.getIpsProject());
+
+			ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK)
+					.addPageElements(new TextPageElement("EnumContent", TextType.HEADING_2));
+
+			if (enumContent == null) {
+				return wrapper.addPageElements(TextPageElement.createParagraph("Kein EnumContent"));
+			}
+			return wrapper.addPageElements(new LinkPageElement(enumContent, "content", enumContent.getQualifiedName(),
+					true));
+
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected PageElement createValuesTable() {

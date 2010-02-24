@@ -280,7 +280,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		IIpsSrcFile[] allTableContentsSrcFiles;
 		List<IProductCmpt> tableContents;
 		try {
-			allTableContentsSrcFiles = object.findAllMetaObjectSrcFiles(object.getIpsProject(), true);
+			allTableContentsSrcFiles = object.searchMetaObjectSrcFiles(true);
 			tableContents = Util.getIpsObjects(allTableContentsSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);

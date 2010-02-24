@@ -106,7 +106,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 		wrapper.addPageElements(new TextPageElement("Referenzierende Projekte", TextType.HEADING_3));
 		IIpsProject[] referencingProjectLeavesOrSelf;
 		try {
-			referencingProjectLeavesOrSelf = objectPath.getIpsProject().getReferencingProjectLeavesOrSelf();
+			referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}

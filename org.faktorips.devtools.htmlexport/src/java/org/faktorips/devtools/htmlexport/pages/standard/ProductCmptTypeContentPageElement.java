@@ -129,7 +129,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		IIpsSrcFile[] allProductCmptSrcFiles;
 		List<IProductCmpt> productCmpts;
 		try {
-			allProductCmptSrcFiles = getProductCmptType().findAllMetaObjectSrcFiles(object.getIpsProject(), true);
+			allProductCmptSrcFiles = getProductCmptType().searchMetaObjectSrcFiles(true);
 			productCmpts = Util.getIpsObjects(allProductCmptSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);

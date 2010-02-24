@@ -4,7 +4,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 public class ImagePageElement extends AbstractPageElement {
@@ -14,21 +14,19 @@ public class ImagePageElement extends AbstractPageElement {
 	protected String path;
 
 	public ImagePageElement(IIpsElement element, String title, String path) {
-		imageData = element.getImage().getImageData();
+		imageData = createImageDataByIpsElement(element);
 		this.title = title;
 		this.path = path;
 	}
 
 	public ImagePageElement(IIpsElement element) {
-		imageData = element.getImage().getImageData();
+		imageData = createImageDataByIpsElement(element);
 		title = element.getName();
 		path = getIpsElementImageName(element);
 	}
 
-	public ImagePageElement(TestParameterType testParameterType) {
-		imageData = testParameterType.getImage().getImageData();
-		this.title = testParameterType.getName();
-		this.path = "testparametertype." + testParameterType.getId().toLowerCase();
+	private ImageData createImageDataByIpsElement(IIpsElement element) {
+		return IpsUIPlugin.getImageHandling().getImage(element, true).getImageData();
 	}
 
 	private String getIpsElementImageName(IIpsElement element) {

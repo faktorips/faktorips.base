@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -11,6 +12,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
@@ -39,14 +41,18 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 			return new ProductCmptTypeContentPageElement((IProductCmptType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT)
 			return new ProductCmptContentPageElement((IProductCmpt) object, config);
-		if (object.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE)
-			return new TestCaseTypeContentPageElement((ITestCaseType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.ENUM_TYPE)
 			return new EnumTypeContentPageElement((IEnumType) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.ENUM_CONTENT)
+			return new EnumContentContentPageElement((IEnumContent) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE)
 			return new TableStructureContentPageElement((ITableStructure) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS)
 			return new TableContentsContentPageElement((ITableContents) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE)
+			return new TestCaseTypeContentPageElement((ITestCaseType) object, config);
+		if (object.getIpsObjectType() == IpsObjectType.TEST_CASE)
+			return new TestCaseContentPageElement((ITestCase) object, config);
 		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " "
 				+ object.getIpsObjectType());
 	}
