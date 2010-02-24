@@ -109,4 +109,10 @@ public class DefaultLabelProvider extends LabelProvider {
         return element.toString();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        resourceManager.dispose();
+    }
 }
