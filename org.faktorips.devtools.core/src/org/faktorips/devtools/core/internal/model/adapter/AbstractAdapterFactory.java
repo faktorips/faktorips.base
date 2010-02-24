@@ -24,6 +24,10 @@ import org.faktorips.devtools.core.model.type.IType;
 public abstract class AbstractAdapterFactory implements IAdapterFactory {
 
     protected IType adaptToType(IIpsSrcFile file) {
+        if (file == null) {
+            return null;
+        }
+
         IpsObjectType type = file.getIpsObjectType();
         if (type.equals(IpsObjectType.PRODUCT_CMPT_TYPE) || type.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             try {
@@ -38,6 +42,9 @@ public abstract class AbstractAdapterFactory implements IAdapterFactory {
     }
 
     protected IProductCmpt adaptToProductCmpt(IIpsSrcFile file) {
+        if (file == null) {
+            return null;
+        }
         if (file.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             try {
                 return (IProductCmpt)file.getIpsObject();
