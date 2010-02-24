@@ -70,6 +70,10 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
+    public final static String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";
+
+    public final static String METHOD_NEW_COPY = "newCopyInternal";
+
     private final static String FIELD_PARENT_MODEL_OBJECT = "parentModelObject";
 
     public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
@@ -196,7 +200,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if ((getClassModifier() & java.lang.reflect.Modifier.ABSTRACT) == 0) {
                 generateMethodNewCopy(methodsBuilder);
             }
+            generateMethodNewCopy_CopyMap(methodsBuilder);
             generateMethodCopyProperties(methodsBuilder);
+            generateMethodCopyAssociations(methodsBuilder);
         }
         if (isGenerateVisitorSupport()) {
             generateMethodAccept(methodsBuilder);
@@ -223,28 +229,94 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY,
                 new String[0], new String[0]);
         methodsBuilder.openBracket();
+        // declare Map<AbstractModelObject, AbstractModelObject> copyMap = new HashMap<...>()
+        String varCopyMap = "copyMap";
+        methodsBuilder.append(getHashMapFragment(false)).append(' ').append(varCopyMap).append(" = ") //
+                .append("new ").append(getHashMapFragment(true)).appendln("();");
+
+        // declare variable: CpParent newCopy = newCopy(copyMap);
         String varName = "newCopy";
-        methodsBuilder.append(getUnqualifiedClassName());
-        methodsBuilder.append(' ');
-        methodsBuilder.append(varName);
-        methodsBuilder.append(" = new ");
-        methodsBuilder.append(getUnqualifiedClassName());
-        methodsBuilder.appendln("();");
-        if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
-            methodsBuilder.append("newCopy.");
-            methodsBuilder.append(MethodNames.COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL);
-            methodsBuilder.appendln("(this);");
-        }
-        methodsBuilder.appendln(getMethodNameCopyProperties() + "(" + varName + ");");
+        methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
+                .append(" = (").append(getUnqualifiedClassName()).append(')') //
+                .append(METHOD_NEW_COPY).append('(').append(varCopyMap).appendln(");");
+        // copyAssociations(newCopy, copyMap);
+        methodsBuilder.methodCall(METHOD_COPY_ASSOCIATIONS, new String[] { varName, varCopyMap }, true);
+        // return newCopy
         methodsBuilder.appendln("return " + varName + ";");
         methodsBuilder.closeBracket();
+    }
+
+    private JavaCodeFragment getHashMapFragment(boolean instance) {
+        JavaCodeFragmentBuilder hashMapFragmentBuilder = new JavaCodeFragmentBuilder();
+        if (instance) {
+            hashMapFragmentBuilder.appendClassName(HashMap.class);
+        } else {
+            hashMapFragmentBuilder.appendClassName(Map.class);
+        }
+        hashMapFragmentBuilder.append(' ');
+        appendGenerics(hashMapFragmentBuilder, AbstractModelObject.class, AbstractModelObject.class);
+        return hashMapFragmentBuilder.getFragment();
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * protected IModelObject newCopy(HashMap&lt;AbstractModelObject, AbstractModelObject&gt; copyMap) {
+     *     Policy newCopy = new Policy();
+     *     copyProperties(newCopy, copyMap);
+     *     return newCopy;
+     * }
+     * </pre>
+     * 
+     * @param methodsBuilder
+     * @throws CoreException
+     */
+    private void generateMethodNewCopy_CopyMap(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // TODO jDoc
+        methodsBuilder.javaDoc("jDoc", ANNOTATION_GENERATED);
+        String varCopyMap = "copyMap";
+        if (getPcType().hasSupertype()) {
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
+
+        boolean isAbstract = getPcType().isAbstract();
+        int modifier = Modifier.PUBLIC;
+        if (isAbstract) {
+            modifier |= Modifier.ABSTRACT;
+        }
+
+        methodsBuilder.addImport(Map.class);
+
+        methodsBuilder.signature(modifier, IModelObject.class.getName(), METHOD_NEW_COPY, new String[] { varCopyMap },
+                new String[] { getHashMapFragment(false).getSourcecode() });
+
+        if (isAbstract) {
+            methodsBuilder.appendln(';');
+        } else {
+            methodsBuilder.openBracket();
+
+            // declare variable: Policy newCopy = new Policy();
+            String varName = "newCopy";
+            methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
+                    .append(" = new ").append(getUnqualifiedClassName()).appendln("();");
+            if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
+                // call method newCopy.copyProductCmptAndGenerationInternal(this)
+                methodsBuilder.append("newCopy.") //
+                        .append(MethodNames.COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL).appendln("(this);");
+            }
+            // call method copyProperties(newCopy)
+            methodsBuilder.methodCall(getMethodNameCopyProperties(), new String[] { varName, varCopyMap }, true);
+            methodsBuilder.append("return ").append(varName).append(';');
+            methodsBuilder.methodEnd();
+        }
     }
 
     /**
      * Code sample
      * 
      * <pre>
-     * protected void copyProperties(CpParent copy) {
+     * protected void copyProperties(CpParent copy, HashMap&lt;AbstractModelObject, AbstractModelObject&gt; copyMap) {
      *     super.copyProperties(copy); // if class has superclass
      *     copy.changeableAttr = changeableAttr;
      *     copy.derivedExplicitCall = derivedExplicitCall;
@@ -267,12 +339,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(null, ANNOTATION_GENERATED);
         String paramName = "copy";
+        String varCopyMap = "copyMap";
+        methodsBuilder.addImport(Map.class);
         methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(),
-                new String[] { paramName }, new String[] { getUnqualifiedClassName() });
+                new String[] { paramName, varCopyMap }, new String[] { getUnqualifiedClassName(),
+                        getHashMapFragment(false).getSourcecode() });
         methodsBuilder.openBracket();
 
         if (getPcType().hasSupertype()) {
-            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ");");
+            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ", " + varCopyMap
+                    + ");");
         }
 
         GenPolicyCmptType genPolicyCmptType = getGenerator();
@@ -296,10 +372,80 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (associations[i].isAssoziation()) {
                 getGenerator(associations[i]).generateMethodCopyPropertiesForAssociation(paramName, methodsBuilder);
             } else {
-                getGenerator(associations[i]).generateMethodCopyPropertiesForComposition(paramName, methodsBuilder);
+                getGenerator(associations[i]).generateCodeForCopyPropertiesForComposition(paramName, varCopyMap,
+                        methodsBuilder);
             }
         }
         methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * // Rekursion for compositions
+     * protected void copyAssociations(Policy newCopy, HashMap<...> copyMap) {
+     *  for (IPerson iPerson : persons) {
+     *      Person person = (Person)iPerson;
+     *      Person copyPerson = (Person)copyMap.get(person);
+     *      person.copyAssociations(copyPerson, copyMap);
+     *  }
+     *  
+     *  for associations: 
+     *  // ..1
+     *  if (copyMap.containsKey(policyHolder)) {
+     *      copy.policyHolder = (Person)copyMap.get(policyHolder);
+     *  }
+     *  // ..*
+     *  for (IPerson insuredPerson : insuredPersons) {
+     *      if (copyMap.containsKey(insuredPerson)) {
+     *          copy.insuredPersons.remove(insuredPerson);
+     *          copy.insuredPersons.add((Person)copyMap.get(insuredPerson));
+     *      }
+     *  }
+     * }
+     * </pre>
+     * 
+     * @param methodsBuilder
+     * @throws CoreException
+     */
+    protected void generateMethodCopyAssociations(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // TODO jDoc
+        methodsBuilder.javaDoc("jDoc", ANNOTATION_GENERATED);
+        String varAbstractCopy = "abstractCopy";
+        String varCopyMap = "copyMap";
+
+        if (getPcType().hasSupertype()) {
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
+
+        methodsBuilder.methodBegin(Modifier.PUBLIC, "void", METHOD_COPY_ASSOCIATIONS, new String[] { varAbstractCopy,
+                varCopyMap }, new String[] { AbstractModelObject.class.getName(),
+                getHashMapFragment(false).getSourcecode() });
+
+        if (getPcType().hasSupertype()) {
+            methodsBuilder.appendln("super.").append(METHOD_COPY_ASSOCIATIONS) //
+                    .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
+        }
+
+        String varCopy = "newCopy";
+        methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
+                + varAbstractCopy);
+
+        for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
+            if (!association.isValid() || association.isDerived()) {
+                continue;
+            }
+            if (association.isCompositionDetailToMaster()) {
+                continue;
+            }
+            if (association.isAssoziation()) {
+                getGenerator(association).generateCodeForCopyAssociation(varCopy, varCopyMap, methodsBuilder);
+            } else {
+                getGenerator(association).generateCodeForCopyComposition(varCopy, varCopyMap, methodsBuilder);
+            }
+        }
+        methodsBuilder.methodEnd();
     }
 
     private GenAssociation getGenerator(IPolicyCmptTypeAssociation policyCmptTypeAssociation) throws CoreException {

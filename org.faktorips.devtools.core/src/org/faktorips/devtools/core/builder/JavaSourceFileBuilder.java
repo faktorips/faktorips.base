@@ -87,7 +87,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
@@ -788,6 +788,42 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation) {
         JavaGeneratiorHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
+    }
+
+    /**
+     * Appends the list of classNames as a list of generics to the given fragmentBuilder if
+     * comliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classNames
+     */
+    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, String... classeNames) {
+        JavaGeneratiorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classeNames);
+    }
+
+    /**
+     * Appends the list of classes as a list of generics to the given fragmentBuilder if comliance
+     * level is at least Java5. e.g. if your classes are [Integer.class, String.class], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classes
+     */
+    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
+        JavaGeneratiorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
     }
 
     /**

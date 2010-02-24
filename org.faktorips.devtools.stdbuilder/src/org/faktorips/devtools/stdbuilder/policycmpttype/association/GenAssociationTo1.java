@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -419,6 +420,37 @@ public class GenAssociationTo1 extends GenAssociation {
         builder.appendln(";");
     }
 
+    /**
+     * Code sample for 1-1 composition
+     * 
+     * <pre>
+     * if (child1 != null) {
+     *     copy.child1 = (CpChild1)child1.newCopy();
+     *     copy.child1.setParentModelObjectInternal(copy);
+     * }
+     * </pre>
+     */
+    @Override
+    protected void generateCodeForCopyPropertiesForComposition(String paramName,
+            String copyMapName,
+            JavaCodeFragmentBuilder methodsBuilder,
+            String field,
+            org.faktorips.devtools.core.model.pctype.IPolicyCmptType targetType,
+            String targetTypeQName) throws CoreException {
+        methodsBuilder.append("if (").append(field).appendln("!=null) {");
+        methodsBuilder.append(paramName).append(".").append(field).append(" = (");
+        methodsBuilder.appendClassName(targetTypeQName);
+        methodsBuilder.append(")").append(field).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY) //
+                .append("(").append(copyMapName).appendln(");");
+        if (targetType.isDependantType()) {
+            methodsBuilder.append(paramName).append(".").append(field).append(".").append(MethodNames.SET_PARENT)
+                    .append("(").append(paramName).appendln(");");
+        }
+        methodsBuilder.append(copyMapName).append(".put(").append(field).append(", ").append(paramName).append('.')
+                .append(field).appendln(");");
+        methodsBuilder.appendln("}");
+    }
+
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
@@ -540,6 +572,51 @@ public class GenAssociationTo1 extends GenAssociation {
             IIpsElement ipsElement) {
 
         // TODO AW: Not implemented yet.
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * if (copyMap.containsKey(policyHolder)) {
+     *     copy.policyHolder = (Person)copyMap.get(policyHolder);
+     * }
+     * </pre>
+     * 
+     * {@inheritDoc}
+     * 
+     * @throws CoreException
+     */
+    @Override
+    public void generateCodeForCopyAssociation(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        methodsBuilder.append("if (") //
+                .append(varCopyMap).append(".containsKey(").append(getFieldNameForAssociation()) //
+                .appendln("))").openBracket();
+        methodsBuilder.append(varCopy).append('.').append(getFieldNameForAssociation()).append(" = ") //
+                .append('(').append(getUnqualifiedClassName(getTargetPolicyCmptType(), false)).append(')') //
+                .append(varCopyMap).append(".get(").append(getFieldNameForAssociation()).appendln(");");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample for associated person:
+     * 
+     * <pre>
+     * if (person != null)
+     *   Person copyPerson = (Person)copyMap.get(person);
+     *   ((Person)person).copyAssociations(copyPerson, copyMap);
+     * }
+     * </pre> {@inheritDoc}
+     * 
+     * @throws CoreException
+     */
+    @Override
+    public void generateCodeForCopyComposition(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        methodsBuilder.append("if (").append(fieldName).append(" != null)").openBracket();
+        generateSnippetForCopyCompositions(varCopyMap, fieldName, methodsBuilder);
+        methodsBuilder.closeBracket();
     }
 
 }

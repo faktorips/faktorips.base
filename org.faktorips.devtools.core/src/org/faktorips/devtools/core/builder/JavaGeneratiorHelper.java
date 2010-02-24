@@ -53,6 +53,50 @@ public final class JavaGeneratiorHelper {
     }
 
     /**
+     * Appends the list of classNames as a list of generics to the given fragmentBuilder if
+     * comliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classNames
+     */
+    public final static void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder,
+            IIpsProject ipsProject,
+            String... classNames) {
+        if (ComplianceCheck.isComplianceLevelAtLeast5(ipsProject)) {
+            fragmentBuilder.appendGenerics(classNames);
+        }
+    }
+
+    /**
+     * Appends the list of classes as a list of generics to the given fragmentBuilder if comliance
+     * level is at least Java5. e.g. if your classes are [Integer.class, String.class], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classNames
+     */
+    public final static void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder,
+            IIpsProject ipsProject,
+            Class<?>... classes) {
+        if (ComplianceCheck.isComplianceLevelAtLeast5(ipsProject)) {
+            fragmentBuilder.appendGenerics(classes);
+        }
+    }
+
+    /**
      * Returns the default java doc comment for overriden methods.
      */
     public final static String getJavaDocCommentForOverriddenMethod() {
