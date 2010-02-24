@@ -429,8 +429,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         String varCopy = "newCopy";
-        methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
-                + varAbstractCopy);
+        if (getPcType().getPolicyCmptTypeAssociations().length > 0) {
+            methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
+                    + varAbstractCopy);
+        }
 
         for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
             if (!association.isValid() || association.isDerived()) {
