@@ -10,17 +10,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.htmlexport.Documentor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
 
 public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTestCase {
 
@@ -29,6 +26,19 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
 	protected DocumentorConfiguration documentorConfig;
 	protected Documentor documentor;
 
+	private IWorkspace workspace;
+	
+	public StandardDocumentorScriptTutorialProjectTest() throws Exception {
+    	IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
+            }
+        };
+        workspace = ResourcesPlugin.getWorkspace();
+        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+
+	}
+	/*
     @Override
     protected void setUp() throws Exception {
     	IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -38,8 +48,11 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-        
-		IProject project = workspace.getRoot().getProject("org.faktorips.tutorial.de.Hausratprodukte");
+    }
+	*/
+	
+	private void setUpProject(IWorkspace workspace, String projectName) {
+		IProject project = workspace.getRoot().getProject(projectName);
 
 		IpsModel model = new IpsModel();
 		ipsProject = model.getIpsProject(project);
@@ -57,12 +70,28 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
         
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
         documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
-    }
+	}
 
-    public void testWriteWithoutException()  {
+    public void testWriteWithoutExceptionHausratmodell()  {
+		String projectName = "org.faktorips.tutorial.de.Hausratmodell";
+		setUpProject(workspace, projectName);
+    	
         deletePreviousGeneratedFiles();
         
+        long start = System.currentTimeMillis();
         documentor.run();
+        System.out.println("=====================\nMODELL: " + (System.currentTimeMillis() - start) + "\n=====================");
+    }
+
+    public void testWriteWithoutExceptionHausratprodukte()  {
+		String projectName = "org.faktorips.tutorial.de.Hausratprodukte";
+		setUpProject(workspace, projectName);
+    	
+        deletePreviousGeneratedFiles();
+
+        long start = System.currentTimeMillis();
+        documentor.run();
+        System.out.println("=====================\nPRODUKTE: " + (System.currentTimeMillis() - start) + "\n=====================");
     }
 
 	protected void deletePreviousGeneratedFiles() {
