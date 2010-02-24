@@ -27,10 +27,10 @@ public class GridTableViewerTraversalStrategy extends TableTraversalStrategy {
     @Override
     protected void editCell(int rowIndex, int columnIndex) {
         /**
-         * Grid verhindert weiteres zeilenspringen per Enter, da es bei Cell-Editor-Aufruf seine
-         * Selection NICHT verändert (es bleibt die ursprüngliche Zeile markiert).
+         * Grid prevents further line-jumping using Enter, as it does not select the following line
+         * in this case (even though a cell editor in the following line is activated).
          * <p>
-         * Fix: Selection setzen und hoffen, dass ihn das nicht durcheinander bringt...
+         * Fix: Set selection to the following line. Caution this may have unexpected side effects.
          */
         if (columnIndex != getColumnIndex() || rowIndex != getCurrentRow()) {
             viewer.getGrid().setSelection(rowIndex);

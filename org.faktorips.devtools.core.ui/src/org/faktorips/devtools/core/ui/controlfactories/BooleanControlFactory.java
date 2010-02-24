@@ -163,8 +163,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
         IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
-        // gridViewer, columnIndex));
         return cellEditor;
     }
 }

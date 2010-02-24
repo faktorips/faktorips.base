@@ -163,9 +163,6 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             IIpsProject ipsProject) {
         EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
-        ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
-        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
-        // gridViewer, columnIndex));
         return new ComboCellEditor((Combo)editField.getControl());
     }
 }

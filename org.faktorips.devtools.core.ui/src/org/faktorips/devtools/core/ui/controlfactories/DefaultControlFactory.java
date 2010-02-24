@@ -150,8 +150,6 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
         Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
-        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
-        // gridViewer, columnIndex));
         return cellEditor;
     }
 
