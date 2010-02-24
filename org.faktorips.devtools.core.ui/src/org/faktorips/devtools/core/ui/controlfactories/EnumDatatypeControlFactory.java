@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -139,7 +141,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
     @Override
-    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             GridTableViewer gridViewer,
@@ -173,6 +175,20 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         // will be used to map between the displayed text and id
         EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype);
         combo.setData(enumDatatypeField);
+    }
+
+    @Override
+    public CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            GridTreeViewer gridViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+
+        ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid());
+        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
+        // gridViewer, columnIndex));
+        return cellEditor;
     }
 
 }

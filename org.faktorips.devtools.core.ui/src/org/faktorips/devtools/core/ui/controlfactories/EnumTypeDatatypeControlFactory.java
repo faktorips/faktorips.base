@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -139,7 +141,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
      * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
      */
     @Override
-    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             GridTableViewer gridViewer,
@@ -149,6 +151,21 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
         editField.getControl().setData(editField);
         ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return new ComboCellEditor((Combo)editField.getControl());
+    }
+
+    @Override
+    public CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            GridTreeViewer gridViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
+        editField.getControl().setData(editField);
+        ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
+        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
+        // gridViewer, columnIndex));
         return new ComboCellEditor((Combo)editField.getControl());
     }
 }

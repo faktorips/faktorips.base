@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -125,7 +127,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
      */
     @Override
-    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             GridTableViewer gridViewer,
@@ -151,5 +153,18 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             comboControl.setData(new BooleanDatatype());
         }
         return tableCellEditor;
+    }
+
+    @Override
+    public CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            IValueSet valueSet,
+            GridTreeViewer gridViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
+        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
+        // gridViewer, columnIndex));
+        return cellEditor;
     }
 }

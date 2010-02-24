@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -127,7 +129,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
      * columnIndex and a <code>Text</code> control. {@inheritDoc}
      */
     @Override
-    public IpsCellEditor createGridCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             GridTableViewer gridViewer,
@@ -136,6 +138,20 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return cellEditor;
+    }
+
+    @Override
+    public CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            GridTreeViewer gridViewer,
+            int columnIndex,
+            IIpsProject ipsProject) {
+        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
+        TextCellEditor cellEditor = new TextCellEditor(textControl);
+        // cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor,
+        // gridViewer, columnIndex));
         return cellEditor;
     }
 

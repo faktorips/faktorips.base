@@ -28,7 +28,7 @@ public class GridTableViewerTraversalStrategy extends TableTraversalStrategy {
     protected void editCell(int rowIndex, int columnIndex) {
         /**
          * Grid verhindert weiteres zeilenspringen per Enter, da es bei Cell-Editor-Aufruf seine
-         * Selection NICHT verändert.
+         * Selection NICHT verändert (es bleibt die ursprüngliche Zeile markiert).
          * <p>
          * Fix: Selection setzen und hoffen, dass ihn das nicht durcheinander bringt...
          */
