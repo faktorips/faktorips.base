@@ -298,8 +298,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
             // declare variable: Policy newCopy = new Policy();
             String varName = "newCopy";
-            methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
-                    .append(" = new ").append(getUnqualifiedClassName()).appendln("();");
+            methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName).append(" = ") //
+                    .append('(').append(getUnqualifiedClassName()).append(')').append(varCopyMap).appendln(
+                            ".get(this);");
+            methodsBuilder.append("if (").append(varName).append(" == null)").openBracket() //
+                    .append(varName).append(" = new ").append(getUnqualifiedClassName()).appendln("();");
             if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
                 // call method newCopy.copyProductCmptAndGenerationInternal(this)
                 methodsBuilder.append("newCopy.") //
@@ -307,6 +310,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             // call method copyProperties(newCopy)
             methodsBuilder.methodCall(getMethodNameCopyProperties(), new String[] { varName, varCopyMap }, true);
+
+            methodsBuilder.closeBracket();
             methodsBuilder.append("return ").append(varName).append(';');
             methodsBuilder.methodEnd();
         }
@@ -428,10 +433,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
         }
 
+        // casted variable newCopy is only necessary if there is at least on association
         String varCopy = "newCopy";
-        if (getPcType().getPolicyCmptTypeAssociations().length > 0) {
-            methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
-                    + varAbstractCopy);
+        for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
+            if (association.isAssoziation()) {
+                methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
+                        + varAbstractCopy);
+                break;
+            }
         }
 
         for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
