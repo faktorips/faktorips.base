@@ -1015,7 +1015,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         /**
          * Getting an image descriptor by calling the {@link IWorkbenchAdapter} of the ips element
          * If there is no registered adapter this method returns null. If the registered adapter has
-         * no image, this method also returns null
+         * no image, this method returns the missing image
          * 
          * @param adaptable
          * @return the image descriptor or null if there is no image or no registered adapter
@@ -1025,9 +1025,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
             }
             IWorkbenchAdapter adapter = (IWorkbenchAdapter)adaptable.getAdapter(IWorkbenchAdapter.class);
-            if (adapter == null) {
-                return ImageDescriptor.getMissingImageDescriptor();
-            } else {
+            if (adapter != null) {
                 ImageDescriptor descriptor = adapter.getImageDescriptor(adaptable);
                 if (descriptor != null) {
                     return descriptor;
@@ -1035,6 +1033,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     return ImageDescriptor.getMissingImageDescriptor();
                 }
             }
+            return null;
         }
 
         /**
@@ -1048,7 +1047,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @return
          */
         public Image getImage(IAdaptable adaptable) {
-            return getImage(getImageDescriptor(adaptable));
+            return getImage(getImageDescriptor(adaptable), false);
         }
 
         /**

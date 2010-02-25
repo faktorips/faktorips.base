@@ -75,7 +75,15 @@ public class DefaultLabelProvider extends LabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)element;
-            return IpsUIPlugin.getImageHandling().getImage(adaptable);
+            Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
+            if (result != null) {
+                return result;
+            }
+            // check adaptable to IIpsSrcFile
+            IIpsSrcFile adaptedIpsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+            if (adaptedIpsSrcFile != null) {
+                return IpsUIPlugin.getImageHandling().getImage(adaptedIpsSrcFile);
+            }
         }
         if (element instanceof Datatype) {
             return (Image)resourceManager.get(datatypeImageDescriptor);
@@ -83,8 +91,6 @@ public class DefaultLabelProvider extends LabelProvider {
             return (Image)resourceManager.get(functionImageDescriptor);
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
-        } else if (element instanceof IpsSrcFileViewItem) {
-            return getImage(((IpsSrcFileViewItem)element).getIpsSrcFile());
         }
         return super.getImage(element);
     }
