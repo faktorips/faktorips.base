@@ -20,6 +20,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * Adapts {@link IResource}s to all classes listed in {@link #getAdapterList()}
+ * 
+ * @author Thorsten Günther, Faktor Zehn AG
+ */
 public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
     // required because the signature of this method is fixed by IAdapterFactory
