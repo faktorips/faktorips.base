@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -43,6 +42,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
@@ -94,7 +94,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     private TableViewer tableViewer;
     private InstanceContentProvider contentProvider = new InstanceContentProvider();
     private Composite panel;
-    private CLabel selectedElementLabel;
+    private ImageHyperlink selectedElementLink;
 
     private SubtypeSearchAction subtypeSearchAction;
 
@@ -111,14 +111,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPartControl(Composite parent) {
         display = parent.getDisplay();
@@ -134,22 +126,22 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
 
-        selectedElementLabel = new CLabel(panel, SWT.LEFT);
-        selectedElementLabel.setLayout(new GridLayout());
-        selectedElementLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        // selectedElementLabel.setLabelProvider(labelProvider);
-        selectedElementLabel.addMouseListener(new MouseListener() {
+        selectedElementLink = new ImageHyperlink(panel, SWT.FILL);
+        selectedElementLink.setText("");
+        selectedElementLink.setUnderlined(true);
+        selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        selectedElementLink.addMouseListener(new MouseListener() {
 
             public void mouseDoubleClick(MouseEvent e) {
-                if (contentProvider.getActualElement() != null) {
-                    IpsUIPlugin.getDefault().openEditor(contentProvider.getActualElement());
-                }
             }
 
             public void mouseDown(MouseEvent e) {
             }
 
             public void mouseUp(MouseEvent e) {
+                if (contentProvider.getActualElement() != null) {
+                    IpsUIPlugin.getDefault().openEditor(contentProvider.getActualElement());
+                }
             }
 
         });
@@ -293,9 +285,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         // nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void resourceChanged(IResourceChangeEvent event) {
         display.syncExec(new Runnable() {
 
@@ -318,13 +307,13 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
                 } else {
                     showMessgeOrTableView(MessageTableSwitch.TABLE);
                 }
-                if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
+                if (selectedElementLink != null && !selectedElementLink.isDisposed()) {
                     if (element != null) {
-                        selectedElementLabel.setText(decoratedLabelProvider.getText(ipsObject));
+                        selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
                     } else {
-                        selectedElementLabel.setText("");
+                        selectedElementLink.setText("");
                     }
-                    selectedElementLabel.setImage(decoratedLabelProvider.getImage(ipsObject));
+                    selectedElementLink.setImage(decoratedLabelProvider.getImage(ipsObject));
                 }
                 tableViewer.refresh();
             }

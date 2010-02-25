@@ -1025,9 +1025,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
             }
             IWorkbenchAdapter adapter = (IWorkbenchAdapter)adaptable.getAdapter(IWorkbenchAdapter.class);
-            if (adapter == null) {
-                return ImageDescriptor.getMissingImageDescriptor();
-            } else {
+            if (adapter != null) {
                 ImageDescriptor descriptor = adapter.getImageDescriptor(adaptable);
                 if (descriptor != null) {
                     return descriptor;
@@ -1035,6 +1033,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     return ImageDescriptor.getMissingImageDescriptor();
                 }
             }
+            return null;
         }
 
         /**
