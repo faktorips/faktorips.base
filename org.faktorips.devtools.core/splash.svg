@@ -17,7 +17,7 @@
    inkscape:version="0.47 r22583"
    version="1.0"
    sodipodi:docname="splash.svg"
-   inkscape:export-filename="C:\ws\fips\org.faktorips.devtools.core\splash.bmp.png"
+   inkscape:export-filename="C:\ws\fips\org.faktorips.devtools.core\splash.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -490,6 +490,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -507,17 +508,17 @@
     <image
        sodipodi:absref="C:\ws\fips\org.faktorips.devtools.core\icons\splashbg.jpg"
        xlink:href="icons\splashbg.jpg"
-       y="0.0023006205"
-       x="-0.0020940709"
-       id="image18403"
+       width="500"
        height="330"
-       width="500" />
+       id="image18403"
+       x="-0.0020940709"
+       y="0.0023006205" />
     <g
        id="g16535"
        transform="translate(-42.30769,7.75641)"
        style="stroke:white;stroke-opacity:0.33000001;stroke-linejoin:round;stroke-linecap:round;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none">
       <path
-         d="M 354.32692 150.54488 A 113.17308 113.17308 0 1 1  127.98076,150.54488 A 113.17308 113.17308 0 1 1  354.32692 150.54488 z"
+         d="m 354.32692,150.54488 c 0,62.50376 -50.66931,113.17308 -113.17308,113.17308 -62.50377,0 -113.17308,-50.66932 -113.17308,-113.17308 0,-62.50377 50.66931,-113.173084 113.17308,-113.173084 62.50377,0 113.17308,50.669314 113.17308,113.173084 z"
          sodipodi:ry="113.17308"
          sodipodi:rx="113.17308"
          sodipodi:cy="150.54488"
@@ -533,7 +534,7 @@
          sodipodi:cy="150.54488"
          sodipodi:rx="113.17308"
          sodipodi:ry="113.17308"
-         d="M 354.32692 150.54488 A 113.17308 113.17308 0 1 1  127.98076,150.54488 A 113.17308 113.17308 0 1 1  354.32692 150.54488 z" />
+         d="m 354.32692,150.54488 c 0,62.50376 -50.66931,113.17308 -113.17308,113.17308 -62.50377,0 -113.17308,-50.66932 -113.17308,-113.17308 0,-62.50377 50.66931,-113.173084 113.17308,-113.173084 62.50377,0 113.17308,50.669314 113.17308,113.173084 z" />
     </g>
     <g
        style="stroke:#576bbf;stroke-opacity:0.5;stroke-linejoin:round;stroke-linecap:round;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
@@ -547,9 +548,9 @@
          sodipodi:cy="150.54488"
          sodipodi:rx="113.17308"
          sodipodi:ry="113.17308"
-         d="M 354.32692 150.54488 A 113.17308 113.17308 0 1 1  127.98076,150.54488 A 113.17308 113.17308 0 1 1  354.32692 150.54488 z" />
+         d="m 354.32692,150.54488 c 0,62.50376 -50.66931,113.17308 -113.17308,113.17308 -62.50377,0 -113.17308,-50.66932 -113.17308,-113.17308 0,-62.50377 50.66931,-113.173084 113.17308,-113.173084 62.50377,0 113.17308,50.669314 113.17308,113.173084 z" />
       <path
-         d="M 354.32692 150.54488 A 113.17308 113.17308 0 1 1  127.98076,150.54488 A 113.17308 113.17308 0 1 1  354.32692 150.54488 z"
+         d="m 354.32692,150.54488 c 0,62.50376 -50.66931,113.17308 -113.17308,113.17308 -62.50377,0 -113.17308,-50.66932 -113.17308,-113.17308 0,-62.50377 50.66931,-113.173084 113.17308,-113.173084 62.50377,0 113.17308,50.669314 113.17308,113.173084 z"
          sodipodi:ry="113.17308"
          sodipodi:rx="113.17308"
          sodipodi:cy="150.54488"
@@ -560,7 +561,7 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="71"
        y="300"
        id="text19291"><tspan
@@ -568,7 +569,7 @@
          id="tspan19293"
          x="71"
          y="300"
-         style="font-size:12px;font-family:MetaMedium-Caps">Copyright (c) 2005-2009 Faktor Zehn AG and others. All rights reserved.</tspan><tspan
+         style="font-size:12px;font-family:MetaMedium-Caps">Copyright (c) 2005-2010 Faktor Zehn AG and others. All rights reserved.</tspan><tspan
          sodipodi:role="line"
          x="71"
          y="315"
@@ -687,7 +688,7 @@
              style="opacity:0.5;fill:url(#linearGradient22063);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.5" />
         </g>
         <path
-           d="M 202.72437 127.6282 A 42.307693 8.4615383 0 1 1  118.10898,127.6282 A 42.307693 8.4615383 0 1 1  202.72437 127.6282 z"
+           d="m 202.72437,127.6282 c 0,4.67318 -18.9418,8.46154 -42.3077,8.46154 -23.36589,0 -42.30769,-3.78836 -42.30769,-8.46154 0,-4.67318 18.9418,-8.46154 42.30769,-8.46154 23.3659,0 42.3077,3.78836 42.3077,8.46154 z"
            sodipodi:ry="8.4615383"
            sodipodi:rx="42.307693"
            sodipodi:cy="127.6282"
@@ -742,7 +743,7 @@
              style="opacity:0.5;fill:url(#linearGradient22141);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.5" />
         </g>
         <path
-           d="M 202.72437 127.6282 A 42.307693 8.4615383 0 1 1  118.10898,127.6282 A 42.307693 8.4615383 0 1 1  202.72437 127.6282 z"
+           d="m 202.72437,127.6282 c 0,4.67318 -18.9418,8.46154 -42.3077,8.46154 -23.36589,0 -42.30769,-3.78836 -42.30769,-8.46154 0,-4.67318 18.9418,-8.46154 42.30769,-8.46154 23.3659,0 42.3077,3.78836 42.3077,8.46154 z"
            sodipodi:ry="8.4615383"
            sodipodi:rx="42.307693"
            sodipodi:cy="127.6282"
@@ -800,7 +801,7 @@
            sodipodi:cy="127.6282"
            sodipodi:rx="42.307693"
            sodipodi:ry="8.4615383"
-           d="M 202.72437 127.6282 A 42.307693 8.4615383 0 1 1  118.10898,127.6282 A 42.307693 8.4615383 0 1 1  202.72437 127.6282 z" />
+           d="m 202.72437,127.6282 c 0,4.67318 -18.9418,8.46154 -42.3077,8.46154 -23.36589,0 -42.30769,-3.78836 -42.30769,-8.46154 0,-4.67318 18.9418,-8.46154 42.30769,-8.46154 23.3659,0 42.3077,3.78836 42.3077,8.46154 z" />
       </g>
     </g>
     <path
