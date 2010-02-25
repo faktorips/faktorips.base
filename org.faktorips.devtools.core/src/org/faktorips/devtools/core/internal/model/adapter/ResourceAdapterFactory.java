@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class ResourceAdapterFactory extends AbstractAdapterFactory {
+public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
     // required because the signature of this method is fixed by IAdapterFactory
     @SuppressWarnings("unchecked")
