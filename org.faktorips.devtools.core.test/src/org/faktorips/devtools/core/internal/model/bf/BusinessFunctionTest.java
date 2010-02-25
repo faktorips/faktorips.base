@@ -20,7 +20,9 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -28,6 +30,7 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -449,6 +452,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2
                 .getQualifiedNameType()), dependencies[0]);
 
+        List<IDependencyDetail> details = bf.getDependencyDetails(dependencies[0]);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(new DependencyDetail(action, IMethodCallBFE.PROPERTY_TARGET)));
+
         action.delete();
         dependencies = bf.dependsOn();
         assertEquals(0, dependencies.length);
@@ -473,5 +480,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(1, dependencies.length);
         assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType
                 .getQualifiedNameType()), dependencies[0]);
+
+        details = bf.getDependencyDetails(dependencies[0]);
+        assertEquals(1, details.size());
+        assertTrue(details.contains(new DependencyDetail(param, IParameterBFE.PROPERTY_DATATYPE)));
+
     }
 }

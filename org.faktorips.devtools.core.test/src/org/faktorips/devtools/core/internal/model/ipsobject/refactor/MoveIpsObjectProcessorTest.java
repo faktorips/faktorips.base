@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -20,9 +20,12 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 
@@ -31,7 +34,7 @@ import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class MoveTypeProcessorTest extends RenameTypeMoveTypeTest {
+public class MoveIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
     private static final String TARGET_PACKAGE_NAME = "level.targetipspackage";
 
@@ -142,6 +145,23 @@ public class MoveTypeProcessorTest extends RenameTypeMoveTypeTest {
 
         // Check for association update.
         assertEquals(movedQualifiedName, otherProductToProductAssociation.getTarget());
+    }
+
+    public void testMoveProductCmpt() throws CoreException {
+        String newQName = TARGET_PACKAGE_NAME + "." + productCmpt.getName();
+        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
+
+        // Find the new product
+        IIpsSrcFile file = targetIpsPackageFragment.getIpsSrcFile(productCmpt.getName(), IpsObjectType.PRODUCT_CMPT);
+
+        assertNotNull(file);
+        assertTrue(file.exists());
+
+        // Check for update of referring product cmpt
+        IProductCmptGeneration gen = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+        IProductCmptLink[] links = gen.getLinks();
+        assertEquals(1, links.length);
+        assertEquals(newQName, links[0].getTarget());
     }
 
     public void testMoveSuperProductCmptType() throws CoreException {

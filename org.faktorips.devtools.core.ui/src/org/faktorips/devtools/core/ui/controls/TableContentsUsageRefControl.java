@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,15 +18,15 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Control enter a reference to a table contents. Candidates for the reference are defined by
- * a given table structure usage.
+ * Control enter a reference to a table contents. Candidates for the reference are defined by a
+ * given table structure usage.
  * 
  * @see ITableStructureUsage
  * 
@@ -35,24 +35,26 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public class TableContentsUsageRefControl extends TableContentsRefControl {
 
     private ITableStructureUsage structureUsage;
-    
+
     /**
      * @param project
      * @param parent
      * @param toolkit
      */
-    public TableContentsUsageRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, ITableStructureUsage structureUsage) {
+    public TableContentsUsageRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
+            ITableStructureUsage structureUsage) {
         super(project, parent, toolkit);
         this.structureUsage = structureUsage;
         setDialogFilterEnabled(false);
     }
 
+    @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (structureUsage==null) {
+        if (structureUsage == null) {
             return new IIpsSrcFile[0];
         }
         IIpsSrcFile[] allTableContents = super.getIpsSrcFiles();
-        if (allTableContents.length==0) {
+        if (allTableContents.length == 0) {
             return allTableContents;
         }
         String[] structures = structureUsage.getTableStructures();
@@ -61,13 +63,13 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
         // a configurated table structures in the table structure usage
         for (int i = 0; i < structures.length; i++) {
             for (int j = 0; j < allTableContents.length; j++) {
-                String tableStructure = allTableContents[j].getPropertyValue(TableContents.PROPERTY_TABLE_STRUCTURE);
+                String tableStructure = allTableContents[j].getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
                 if (tableStructure != null && tableStructure.equals(structures[i])) {
                     result.add(allTableContents[j]);
                 }
             }
         }
-        
+
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 }

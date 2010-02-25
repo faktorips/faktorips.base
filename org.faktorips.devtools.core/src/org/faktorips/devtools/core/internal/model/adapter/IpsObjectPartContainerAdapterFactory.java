@@ -18,7 +18,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class IpsObjectPartContainerAdapterFactory extends AbstractAdapterFactory {
+/**
+ * Adapts {@link IIpsObjectPartContainer}s to all classes listed in {@link #getAdapterList()}
+ * 
+ * @author Thorsten Günther, Faktor Zehn AG
+ */
+public class IpsObjectPartContainerAdapterFactory extends AbstractIpsAdapterFactory {
 
     // required because the signature of this method is fixed by IAdapterFactory
     @SuppressWarnings("unchecked")

@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +31,9 @@ import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.DependencyDetail;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -708,6 +714,26 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public int hashCode() {
         return System.identityHashCode(this);
+    }
+
+    /**
+     * Helper to easily add details to the given map.
+     * 
+     * @param details The map of dependencies to the list of details.
+     * @param dependency The dependency to add the details for
+     * @param part The details part
+     * @param propertyName The details property name
+     */
+    protected void addDetails(Map<IDependency, List<IDependencyDetail>> details, IDependency dependency, IIpsObjectPartContainer part, String propertyName) {
+        if (details == null) {
+            return;
+        }
+        List<IDependencyDetail> detailList = details.get(dependency);
+        if (detailList == null) {
+            detailList = new ArrayList<IDependencyDetail>();
+            details.put(dependency, detailList);
+        }
+        detailList.add(new DependencyDetail(part, propertyName));
     }
 
     /**

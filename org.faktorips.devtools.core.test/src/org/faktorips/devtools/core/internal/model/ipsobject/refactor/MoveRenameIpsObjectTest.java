@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
@@ -19,7 +19,11 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -29,9 +33,11 @@ import org.faktorips.devtools.core.model.type.IMethod;
  * 
  * @author Alexander Weickmann
  */
-public abstract class RenameTypeMoveTypeTest extends AbstractIpsRefactoringTest {
+public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest {
 
     protected static final String OTHER_POLICY_NAME = "OtherPolicy";
+
+    protected static final String OTHER_PRODUCT_TYPE_NAME = "OtherProductType";
 
     protected static final String OTHER_PRODUCT_NAME = "OtherProduct";
 
@@ -39,13 +45,17 @@ public abstract class RenameTypeMoveTypeTest extends AbstractIpsRefactoringTest 
 
     protected IProductCmptType otherProductCmptType;
 
+    protected IProductCmpt otherProductCmpt;
+
     protected IMethod policyMethod;
 
     protected IMethod productMethod;
 
     protected IAssociation otherPolicyToPolicyAssociation;
 
-    protected IAssociation otherProductToProductAssociation;
+    protected IProductCmptTypeAssociation otherProductToProductAssociation;
+
+    protected IProductCmptLink otherProductToProductLink;
 
     protected ITestAttribute superTestAttribute;
 
@@ -55,7 +65,7 @@ public abstract class RenameTypeMoveTypeTest extends AbstractIpsRefactoringTest 
 
         // Create another policy component type and another product component type.
         otherPolicyCmptType = newPolicyCmptType(ipsProject, OTHER_POLICY_NAME);
-        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_NAME);
+        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_TYPE_NAME);
 
         // Setup policy method.
         policyMethod = otherPolicyCmptType.newMethod();
@@ -78,7 +88,7 @@ public abstract class RenameTypeMoveTypeTest extends AbstractIpsRefactoringTest 
         otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
 
         // Setup product associations.
-        otherProductToProductAssociation = otherProductCmptType.newAssociation();
+        otherProductToProductAssociation = otherProductCmptType.newProductCmptTypeAssociation();
         otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_NAME);
 
         // Create a test attribute based on an attribute of the super policy component type.
@@ -92,6 +102,12 @@ public abstract class RenameTypeMoveTypeTest extends AbstractIpsRefactoringTest 
         superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
 
         createProductCmpt();
+
+        otherProductCmpt = newProductCmpt(otherProductCmptType, OTHER_PRODUCT_NAME);
+        IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+        otherProductToProductLink = productCmptGeneration.newLink(otherProductToProductAssociation);
+        otherProductToProductLink.setTarget(productCmpt.getQualifiedName());
+
     }
 
 }

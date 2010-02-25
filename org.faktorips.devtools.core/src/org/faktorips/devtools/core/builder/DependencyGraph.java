@@ -90,7 +90,7 @@ public class DependencyGraph implements Serializable {
         dependsOnMap = new HashMap<QualifiedNameType, List<IDependency>>();
         List<IIpsSrcFile> allSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allSrcFiles);
-        for (IIpsSrcFile file: allSrcFiles) {
+        for (IIpsSrcFile file : allSrcFiles) {
             if (!file.exists()) {
                 continue;
             }
@@ -123,9 +123,9 @@ public class DependencyGraph implements Serializable {
      * Returns the qualified names of the ips objects that depend on the object identified by the
      * given qualified name.
      * 
-     * @param identifier the identifier for an ips object or datatype for which the dependant
-     *            objects should be returned. Identifier for IpsObjects are QualifiedNameType
-     *            instances for Datatypes qualified name strings.
+     * @param id the identifier for an ips object or datatype for which the dependant objects should
+     *            be returned. Identifier for IpsObjects are QualifiedNameType instances for
+     *            Datatypes qualified name strings.
      */
     public IDependency[] getDependants(QualifiedNameType id) {
         List<IDependency> qualfiedNameTypes = getDependantsAsList(id);
@@ -143,7 +143,7 @@ public class DependencyGraph implements Serializable {
         if (qualfiedNameTypes == null) {
             return new IDependency[0];
         }
-        return (IDependency[])qualfiedNameTypes.toArray(new IDependency[qualfiedNameTypes.size()]);
+        return qualfiedNameTypes.toArray(new IDependency[qualfiedNameTypes.size()]);
     }
 
     private List<IDependency> getDependantsAsList(Object target) {
@@ -188,7 +188,7 @@ public class DependencyGraph implements Serializable {
                 List<IDependency> dependants = getDependantsAsList(dependency.getTarget());
                 if (dependants != null) {
                     for (Iterator<IDependency> itDependants = dependants.iterator(); itDependants.hasNext();) {
-                        IDependency dependency2 = (IDependency)itDependants.next();
+                        IDependency dependency2 = itDependants.next();
                         if (dependency2.getSource().equals(qName)) {
                             itDependants.remove();
                         }
@@ -201,6 +201,7 @@ public class DependencyGraph implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
     }

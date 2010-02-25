@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,13 +27,13 @@ public class DatatypeDependencyTest extends TestCase {
 
     private QualifiedNameType source;
     private DatatypeDependency dependency;
-    
-    
-    public void setUp(){
+
+    @Override
+    public void setUp() {
         source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         dependency = new DatatypeDependency(source, "a.b.e");
     }
-    
+
     public final void testHashCode() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
@@ -68,18 +68,18 @@ public class DatatypeDependencyTest extends TestCase {
         assertEquals(dependency, dependency2);
     }
 
-    public void testSerializable() throws Exception{
+    public void testSerializable() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(10);
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(dependency);
-        
+
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bis);
         DatatypeDependency dependency = (DatatypeDependency)ois.readObject();
         assertEquals(this.dependency, dependency);
     }
-    
-    public void testToString(){
+
+    public void testToString() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
         assertEquals("(PolicyCmptType: a.b.c -> a.b.e, type: datatype dependency)", dependency.toString());

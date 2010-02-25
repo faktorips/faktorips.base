@@ -11,35 +11,33 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 
 /**
  * This is the "Move Type" - refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class MoveTypeProcessor extends IpsMoveProcessor {
+public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename Type" and "Move Type"
      * refactorings.
      */
-    private final RenameTypeMoveTypeHelper renameMoveHelper;
+    private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * Creates a <tt>MoveTypeProcessor</tt>.
-     * 
-     * @param type The <tt>IType</tt> to be moved.
+     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be moved.
      */
-    public MoveTypeProcessor(IType type) {
-        super(type);
-        renameMoveHelper = new RenameTypeMoveTypeHelper(this, type);
+    public MoveIpsObjectProcessor(IpsObject toBeMoved) {
+        super(toBeMoved);
+        renameMoveHelper = new MoveRenameIpsObjectHelper(this, toBeMoved);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 

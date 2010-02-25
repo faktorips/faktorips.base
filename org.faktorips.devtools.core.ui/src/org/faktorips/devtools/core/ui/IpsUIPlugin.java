@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -887,8 +888,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @param ipsElement
          * @return
          */
-        public Image getDisabledImage(IIpsElement ipsElement) {
-            return getImage(getDisabledImageDescriptor(ipsElement));
+        public Image getDisabledImage(IAdaptable adaptable) {
+            return getImage(getDisabledImageDescriptor(adaptable));
         }
 
         /**
@@ -897,8 +898,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @param enabledImageDescriptor
          * @return
          */
-        public ImageDescriptor getDisabledImageDescriptor(IIpsElement ipsElement) {
-            ImageDescriptor enabledImageDescriptor = getImageDescriptor(ipsElement);
+        public ImageDescriptor getDisabledImageDescriptor(IAdaptable adaptable) {
+            ImageDescriptor enabledImageDescriptor = getImageDescriptor(adaptable);
             ImageDescriptor disabledImageDescriptor = enableDisableMap.get(enabledImageDescriptor);
             if (disabledImageDescriptor == null) {
                 disabledImageDescriptor = createDisabledImageDescriptor(enabledImageDescriptor);
@@ -1016,18 +1017,18 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * If there is no registered adapter this method returns null. If the registered adapter has
          * no image, this method also returns null
          * 
-         * @param ipsElement
+         * @param adaptable
          * @return the image descriptor or null if there is no image or no registered adapter
          */
-        public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-            if (ipsElement == null) {
+        public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {
+            if (adaptable == null) {
                 return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
             }
-            IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+            IWorkbenchAdapter adapter = (IWorkbenchAdapter)adaptable.getAdapter(IWorkbenchAdapter.class);
             if (adapter == null) {
                 return ImageDescriptor.getMissingImageDescriptor();
             } else {
-                ImageDescriptor descriptor = adapter.getImageDescriptor(ipsElement);
+                ImageDescriptor descriptor = adapter.getImageDescriptor(adaptable);
                 if (descriptor != null) {
                     return descriptor;
                 } else {
@@ -1046,24 +1047,24 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @param ipsElement
          * @return
          */
-        public Image getImage(IIpsElement ipsElement) {
-            return getImage(getImageDescriptor(ipsElement));
+        public Image getImage(IAdaptable adaptable) {
+            return getImage(getImageDescriptor(adaptable));
         }
 
         /**
          * Get the enabled or disabled image for the given element.
          * 
-         * @see #getImage(IIpsElement) and @see {@link #getDisabledImage(IIpsElement)}
+         * @see #getImage(IAdaptable) and @see {@link #getDisabledImage(IAdaptable)}
          * 
          * @param ipsElement
          * @param enabled
          * @return
          */
-        public Image getImage(IIpsElement ipsElement, boolean enabled) {
+        public Image getImage(IAdaptable adaptable, boolean enabled) {
             if (enabled) {
-                return getImage(ipsElement);
+                return getImage(adaptable);
             } else {
-                return getDisabledImage(ipsElement);
+                return getDisabledImage(adaptable);
             }
         }
 

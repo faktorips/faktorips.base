@@ -2012,8 +2012,7 @@ public class TestCaseTypeSection extends IpsSection {
                 for (Iterator<?> iter = structuredSelection.iterator(); iter.hasNext();) {
                     Object element = iter.next();
                     if (element instanceof ITestAttribute) {
-                        ITestAttribute testAttribute = (ITestAttribute)iter.next();
-                        testAttributesSelected.add(testAttribute);
+                        testAttributesSelected.add((ITestAttribute)element);
                     }
                 }
             }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,11 +19,12 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An implementation of the {@link IDependency} interface that describes a dependency between two IpsObjects.
- *  
+ * An implementation of the {@link IDependency} interface that describes a dependency between two
+ * IpsObjects.
+ * 
  * @author Peter Erzberger
  */
-public class IpsObjectDependency implements IDependency, Serializable{
+public class IpsObjectDependency implements IDependency, Serializable {
 
     private static final long serialVersionUID = -4763466997240470890L;
 
@@ -87,7 +88,8 @@ public class IpsObjectDependency implements IDependency, Serializable{
      * source and target objects. A Dependency instance indicates that the source is an instance of
      * the target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createInstanceOfDependency(QualifiedNameType source, QualifiedNameType target) {
+    public final static IpsObjectDependency createInstanceOfDependency(QualifiedNameType source,
+            QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.INSTANCEOF);
     }
 
@@ -122,13 +124,14 @@ public class IpsObjectDependency implements IDependency, Serializable{
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object o) {
-        if (o instanceof IDependency) {
-            IDependency other = (IDependency)o;
-            return this.dependencyType.equals(other.getType()) && this.target.equals(other.getTarget())
-                    && this.source.equals(other.getSource());
+        if (!(o instanceof IpsObjectDependency)) {
+            return false;
         }
-        return false;
+        IpsObjectDependency other = (IpsObjectDependency)o;
+        return dependencyType.equals(other.getType()) && target.equals(other.getTarget())
+                && source.equals(other.getSource());
     }
 
     private void calculateHashCode() {
@@ -142,6 +145,7 @@ public class IpsObjectDependency implements IDependency, Serializable{
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return hashCode;
     }
@@ -149,7 +153,9 @@ public class IpsObjectDependency implements IDependency, Serializable{
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "(" + source.toString() + " -> " + target.toString() + ", type: " + dependencyType + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
+
 }

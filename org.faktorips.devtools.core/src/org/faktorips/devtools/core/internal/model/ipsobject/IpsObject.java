@@ -13,13 +13,20 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
+import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsObjectProcessor;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -146,6 +153,16 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     public IDependency[] dependsOn() throws CoreException {
+        return dependsOn(null);
+    }
+
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException {
+        Map<IDependency, List<IDependencyDetail>> detailMap = new HashMap<IDependency, List<IDependencyDetail>>();
+        dependsOn(detailMap);
+        return detailMap.get(dependency);
+    }
+
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         return new IDependency[0];
     }
 
@@ -223,6 +240,16 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);
         }
+    }
+
+    @Override
+    public ProcessorBasedRefactoring getRenameRefactoring() {
+        return new ProcessorBasedRefactoring(new RenameIpsObjectProcessor(this));
+    }
+
+    @Override
+    public ProcessorBasedRefactoring getMoveRefactoring() {
+        return new ProcessorBasedRefactoring(new MoveIpsObjectProcessor(this));
     }
 
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,17 +25,20 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Peter Erzberger
  */
-public class DatatypeDependency implements IDependency, Serializable{
+public class DatatypeDependency implements IDependency, Serializable {
 
     private static final long serialVersionUID = 6487956167551523725L;
-    
+
     private QualifiedNameType source;
     private String target;
     private DependencyType type;
     private int hashCode;
-    
+
     /**
-     * Creates a new instance. The provided parameters must not be null.
+     * Creates a new instance.
+     * 
+     * @param source The source of this dependency. Must not be <code>null</code>.
+     * @param target The target of this dependency. Must nott be <code>null</code>.
      */
     public DatatypeDependency(QualifiedNameType source, String target) {
         super();
@@ -43,7 +46,7 @@ public class DatatypeDependency implements IDependency, Serializable{
         ArgumentCheck.notNull(target, this);
         this.source = source;
         this.target = target;
-        this.type = DependencyType.DATATYPE;
+        type = DependencyType.DATATYPE;
         calculateHashCode();
     }
 
@@ -55,7 +58,7 @@ public class DatatypeDependency implements IDependency, Serializable{
     }
 
     /**
-     * Returns the target as string which is the actual datatype of the target property. 
+     * Returns the target as string which is the actual datatype of the target property.
      */
     public String getTargetAsQualifiedName() {
         return target;
@@ -75,36 +78,41 @@ public class DatatypeDependency implements IDependency, Serializable{
         return type;
     }
 
-    private void calculateHashCode(){
+    private void calculateHashCode() {
         int result = 17;
-        result = result*37 + source.hashCode();
-        result = result*37 + target.hashCode();
+        result = result * 37 + source.hashCode();
+        result = result * 37 + target.hashCode();
         hashCode = result;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object obj) {
-        if (obj instanceof IDependency) {
-            IDependency other = (IDependency)obj;
-            return getSource().equals(other.getSource()) && getTarget().equals(other.getTarget())
-                    && getType().equals(other.getType());
+        if (!(obj instanceof DatatypeDependency)) {
+            return false;
         }
-        return false;
+
+        DatatypeDependency other = (DatatypeDependency)obj;
+
+        return getSource().equals(other.getSource()) && getTarget().equals(other.getTarget())
+                && getType().equals(other.getType());
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public int hashCode(){
+    @Override
+    public int hashCode() {
         return hashCode;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public String toString(){
+    @Override
+    public String toString() {
         return "(" + source.toString() + " -> " + target.toString() + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

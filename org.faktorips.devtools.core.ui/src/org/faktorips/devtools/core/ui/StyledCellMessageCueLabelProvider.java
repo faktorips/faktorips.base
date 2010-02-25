@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
@@ -51,6 +53,19 @@ public class StyledCellMessageCueLabelProvider extends StyledCellLabelProvider {
 
         internalBaseLabelProvider = new InternalBaseLabelProvider(baseProvider);
         messageLabelProvider = new MessageCueLabelProvider(internalBaseLabelProvider, ipsProject);
+        baseProvider.addListener(new ILabelProviderListener() {
+            public void labelProviderChanged(LabelProviderChangedEvent event) {
+                propagateEvent();
+            }
+        });
+    }
+
+    /**
+     * Propagates a {@link LabelProviderChangedEvent} from the wrapped <code>baseProvider</code> to
+     * all registered listeners of this label provider.
+     */
+    private void propagateEvent() {
+        fireLabelProviderChanged(new LabelProviderChangedEvent(this));
     }
 
     @Override

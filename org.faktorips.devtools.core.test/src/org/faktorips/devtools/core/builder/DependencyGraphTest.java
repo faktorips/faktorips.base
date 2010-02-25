@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -45,7 +46,11 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     private IPolicyCmptType d;
     private IPolicyCmptType e;
     private IEnumType enum1;
+    private IPolicyCmptTypeAssociation cToB;
+    private IPolicyCmptTypeAssociation aToD;
+    private IMethod cMethod;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -77,10 +82,12 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         aAttr1.setName("aAttr1");
 
         // dependencies c->b, c->a, a->d,
-        a.newPolicyCmptTypeAssociation().setTarget(d.getQualifiedName());
+        aToD = a.newPolicyCmptTypeAssociation();
+        aToD.setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
-        c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
-        IMethod cMethod = c.newMethod();
+        cToB = c.newPolicyCmptTypeAssociation();
+        cToB.setTarget(b.getQualifiedName());
+        cMethod = c.newMethod();
         cMethod.setDatatype(e.getQualifiedName());
         cMethod.setModifier(Modifier.PUBLIC);
         cMethod.setName("cMethod");

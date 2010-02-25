@@ -248,7 +248,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet,
             MultiStatus buildStatus,
             BuildCommand command,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) {
         // Despite the fact that generating is disabled in the faktor ips
         // preferences the
         // validation of the modell class instances and marker updating of the
@@ -617,7 +617,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return ipsObject;
     }
 
-    private void fillMultiStatusWithMessageList(MultiStatus status, MessageList list) throws CoreException {
+    private void fillMultiStatusWithMessageList(MultiStatus status, MessageList list) {
         for (int i = 0; i < list.getNoOfMessages(); i++) {
             Message msg = list.getMessage(i);
             status.add(new IpsStatus(getMarkerSeverity(msg), msg.getText(), null));
@@ -781,14 +781,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
         private IncBuildVisitor() throws CoreException {
             outputFolders = getIpsProject().getOutputFolders();
-        }
-
-        public List<IIpsSrcFile> getRemovedIpsSrcFiles() {
-            return removedIpsSrcFiles;
-        }
-
-        public List<IIpsSrcFile> getChangedOrAddedIpsSrcFiles() {
-            return changedAndAddedIpsSrcFiles;
         }
 
         /**

@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.AbstractDependencyTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTest extends AbstractIpsPluginTest {
+public class TestCaseTest extends AbstractDependencyTest {
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;
     private ITestCase testCase;
@@ -293,8 +293,10 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     public void testDependsOn() throws Exception {
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(1, dependsOnList.size());
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createInstanceOfDependency(testCase
-                .getQualifiedNameType(), testCaseType.getQualifiedNameType())));
+        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(testCase.getQualifiedNameType(),
+                testCaseType.getQualifiedNameType());
+        assertTrue(dependsOnList.contains(dependency));
+        assertSingleDependencyDetail(testCase, dependency, testCase, ITestCase.PROPERTY_TEST_CASE_TYPE);
 
         ITestCase testCase2 = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseType2");
         List<IDependency> dependsOnList2 = CollectionUtil.toArrayList(testCase2.dependsOn());
@@ -308,8 +310,10 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testPolicyCmpt1.setProductCmpt(prodCmpt1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(2, dependsOnList.size());
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt1.getQualifiedNameType())));
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt1
+                .getQualifiedNameType());
+        assertTrue(dependsOnList.contains(dependency));
+        assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
 
         // test dependency to product cmpt, child test cmpt
         ITestPolicyCmptLink testAssociation1 = testPolicyCmpt1.newTestPolicyCmptLink();
@@ -317,10 +321,15 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(3, dependsOnList.size());
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt1.getQualifiedNameType())));
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(
-                testCase.getQualifiedNameType(), prodCmpt2.getQualifiedNameType())));
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt1
+                .getQualifiedNameType());
+        assertTrue(dependsOnList.contains(dependency));
+        assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
+
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt2
+                .getQualifiedNameType());
+        assertTrue(dependsOnList.contains(dependency));
+        assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt2, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
     }
 
     public void testGenerateUniqueNameForTestPolicyCmpt() {

@@ -129,4 +129,13 @@ public class TestConfigurationElement implements IConfigurationElement {
         throw new RuntimeException("Not implemented.");
     }
 
+    // @since Eclipse 3.6 (Helios)
+    public String getAttribute(String attrName, String locale) throws InvalidRegistryObjectException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    // @since Eclipse 3.6 (Helios)
+    public String getValue(String locale) throws InvalidRegistryObjectException {
+        throw new RuntimeException("Not implemented.");
+    }
 }

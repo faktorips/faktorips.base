@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -20,7 +20,10 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
@@ -29,7 +32,7 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
+public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
     public void testCheckInitialConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
@@ -139,6 +142,24 @@ public class RenameTypeProcessorTest extends RenameTypeMoveTypeTest {
 
         // Check for association update.
         assertEquals(qualifiedNewName, otherProductToProductAssociation.getTarget());
+    }
+
+    public void testRenameProductCmpt() throws CoreException {
+        String newElementName = "NewProductCmptName";
+        performRenameRefactoring(productCmpt, newElementName);
+
+        // Find the new product
+        IIpsSrcFile file = productCmpt.getIpsPackageFragment()
+                .getIpsSrcFile(newElementName, IpsObjectType.PRODUCT_CMPT);
+
+        assertNotNull(file);
+        assertTrue(file.exists());
+
+        // Check for update of referring product cmpt
+        IProductCmptGeneration gen = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+        IProductCmptLink[] links = gen.getLinks();
+        assertEquals(1, links.length);
+        assertEquals(newElementName, links[0].getTarget());
     }
 
     public void testRenameSuperProductCmptType() throws CoreException {

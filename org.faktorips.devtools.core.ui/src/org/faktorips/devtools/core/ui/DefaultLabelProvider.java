@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -72,9 +73,9 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     @Override
     public Image getImage(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
-            return IpsUIPlugin.getImageHandling().getImage(ipsElement);
+        if (element instanceof IAdaptable) {
+            IAdaptable adaptable = (IAdaptable)element;
+            return IpsUIPlugin.getImageHandling().getImage(adaptable);
         }
         if (element instanceof Datatype) {
             return (Image)resourceManager.get(datatypeImageDescriptor);
@@ -108,4 +109,10 @@ public class DefaultLabelProvider extends LabelProvider {
         return element.toString();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        resourceManager.dispose();
+    }
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -335,10 +337,14 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return buffer.toString();
     }
 
-    public void dependsOn(Set<IDependency> dependencies) {
-        dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), getDatatype()));
+    public void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
+        IDependency dependency = new DatatypeDependency(getType().getQualifiedNameType(), getDatatype());
+        dependencies.add(dependency);
+        addDetails(details, dependency, this, PROPERTY_DATATYPE);
         for (IParameter parameter : parameters) {
-            dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype()));
+            dependency = new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype());
+            dependencies.add(dependency);
+            addDetails(details, dependency, parameter, IParameter.PROPERTY_DATATYPE);
         }
     }
 

@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.io.InputStream;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -28,6 +30,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -44,11 +47,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class TableContents extends TimedIpsObject implements ITableContents {
-
-    /**
-     * The name of the table structure property
-     */
-    public final static String PROPERTY_TABLE_STRUCTURE = "tableStructure"; //$NON-NLS-1$
 
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
@@ -147,12 +145,15 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         if (StringUtils.isEmpty(getTableStructure())) {
             return new IDependency[0];
         }
-        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
+        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE));
+        addDetails(details, dependency, this, PROPERTY_TABLESTRUCTURE);
+
+        return new IDependency[] { dependency };
     }
 
     /**
@@ -193,7 +194,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
-            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
 
@@ -201,7 +202,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             Integer structCols = new Integer(tableStructure.getNumOfColumns());
             Integer contentCols = new Integer(getNumOfColumns());
             String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
-            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
         }
     }
 

@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
@@ -114,10 +116,27 @@ public abstract class ValueDatatypeControlFactory {
      * @param grifViewer
      * @param columnIndex The index of the column.
      */
-    public abstract IpsCellEditor createGridCellEditor(UIToolkit toolkit,
+    public abstract IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             GridTableViewer gridViewer,
+            int columnIndex,
+            IIpsProject ipsProject);
+
+    /**
+     * Creates a cell editor that allows to edit a value of the value datatype this is a factory
+     * for.
+     * 
+     * @param toolkit The ui toolkit to use for creating ui elements.
+     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param valueSet An optional valueset.
+     * @param grifViewer
+     * @param columnIndex The index of the column.
+     */
+    public abstract CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject);
 

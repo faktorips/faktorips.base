@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -379,16 +380,18 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE)));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE));
+            dependencies.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
         // to force a check if a product component type exists with the same qualified name (hack)
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
-        dependsOn(dependencies);
+        dependsOn(dependencies, details);
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 

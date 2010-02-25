@@ -16,14 +16,29 @@ package org.faktorips.devtools.core.internal.model.adapter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
-public abstract class AbstractAdapterFactory implements IAdapterFactory {
+/**
+ * An abstract class for IPS adapter factories, providing standard adaptation methods
+ * 
+ */
+public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
 
+    /**
+     * Getting the {@link IType} of an {@link IpsSrcFile} if the file is of this type
+     * 
+     * @param file
+     * @return
+     */
     protected IType adaptToType(IIpsSrcFile file) {
+        if (file == null) {
+            return null;
+        }
+
         IpsObjectType type = file.getIpsObjectType();
         if (type.equals(IpsObjectType.PRODUCT_CMPT_TYPE) || type.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             try {
@@ -37,7 +52,16 @@ public abstract class AbstractAdapterFactory implements IAdapterFactory {
         return null;
     }
 
+    /**
+     * Getting the ProductCmptType of an {@link IpsSrcFile} if the file is of this type
+     * 
+     * @param file
+     * @return
+     */
     protected IProductCmpt adaptToProductCmpt(IIpsSrcFile file) {
+        if (file == null) {
+            return null;
+        }
         if (file.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             try {
                 return (IProductCmpt)file.getIpsObject();

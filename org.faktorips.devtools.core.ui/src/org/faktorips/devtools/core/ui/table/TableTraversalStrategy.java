@@ -117,8 +117,9 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
             editCell(getNextRow(), getNextColumn());
+        } else {
+            editCell(getCurrentRow(), getNextColumn());
         }
-        editCell(getCurrentRow(), getNextColumn());
     }
 
     /**

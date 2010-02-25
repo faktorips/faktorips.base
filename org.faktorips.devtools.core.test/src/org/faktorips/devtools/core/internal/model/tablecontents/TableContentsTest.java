@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.AbstractDependencyTest;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.IDependency;
@@ -41,7 +41,7 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
 
-public class TableContentsTest extends AbstractIpsPluginTest {
+public class TableContentsTest extends AbstractDependencyTest {
 
     private IIpsProject project;
     private IIpsSrcFile pdSrcFile;
@@ -66,8 +66,10 @@ public class TableContentsTest extends AbstractIpsPluginTest {
 
         table.setTableStructure(structure.getQualifiedName());
         List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
-        assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(
-                table.getQualifiedNameType(), structure.getQualifiedNameType())));
+        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(), structure
+                .getQualifiedNameType());
+        assertTrue(dependsOnAsList.contains(dependency));
+        assertSingleDependencyDetail(table, dependency, table, ITableContents.PROPERTY_TABLESTRUCTURE);
     }
 
     public void testNewColumn() {

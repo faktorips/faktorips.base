@@ -22,7 +22,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
+import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;

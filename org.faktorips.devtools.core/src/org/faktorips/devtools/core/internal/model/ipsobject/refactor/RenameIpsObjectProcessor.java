@@ -11,35 +11,33 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type.refactor;
+package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 
 /**
  * This is the "Rename Type" - refactoring.
  * 
  * @author Alexander Weickmann
  */
-public final class RenameTypeProcessor extends IpsRenameProcessor {
+public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename Type" and "Move Type"
      * refactorings.
      */
-    private final RenameTypeMoveTypeHelper renameMoveHelper;
+    private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * Creates a <tt>RenameTypeProcessor</tt>.
-     * 
-     * @param type The <tt>IType</tt> to be renamed.
+     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be renamed.
      */
-    public RenameTypeProcessor(IType type) {
-        super(type);
-        renameMoveHelper = new RenameTypeMoveTypeHelper(this, type);
+    public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
+        super(toBeRefactored);
+        renameMoveHelper = new MoveRenameIpsObjectHelper(this, toBeRefactored);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
@@ -55,7 +53,7 @@ public final class RenameTypeProcessor extends IpsRenameProcessor {
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getType().getIpsPackageFragment(), getNewName(), status, pm);
+        renameMoveHelper.validateUserInputThis(getObject().getIpsPackageFragment(), getNewName(), status, pm);
     }
 
     @Override
@@ -63,17 +61,18 @@ public final class RenameTypeProcessor extends IpsRenameProcessor {
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
 
-        renameMoveHelper.checkFinalConditionsThis(getType().getIpsPackageFragment(), getNewName(), status, pm, context);
+        renameMoveHelper.checkFinalConditionsThis(getObject().getIpsPackageFragment(), getNewName(), status, pm,
+                context);
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.refactorIpsModel(getType().getIpsPackageFragment(), getNewName(), pm);
+        renameMoveHelper.refactorIpsModel(getObject().getIpsPackageFragment(), getNewName(), pm);
     }
 
     /** Returns the <tt>IType</tt> to be renamed. */
-    private IType getType() {
-        return (IType)getIpsElement();
+    private IpsObject getObject() {
+        return (IpsObject)getIpsElement();
     }
 
     @Override
