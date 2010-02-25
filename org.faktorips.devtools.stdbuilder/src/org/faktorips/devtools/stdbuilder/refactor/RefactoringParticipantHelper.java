@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -152,7 +153,7 @@ public abstract class RefactoringParticipantHelper {
     private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) throws CoreException {
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
-                PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
+                IWorkspaceRunnable operation = new PerformRefactoringOperation(refactoring,
                         CheckConditionsOperation.FINAL_CONDITIONS);
                 try {
                     operation.run(pm);
