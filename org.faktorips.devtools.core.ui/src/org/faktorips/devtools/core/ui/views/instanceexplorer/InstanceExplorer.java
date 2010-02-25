@@ -111,14 +111,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPartControl(Composite parent) {
         display = parent.getDisplay();
@@ -293,9 +285,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         // nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void resourceChanged(IResourceChangeEvent event) {
         display.syncExec(new Runnable() {
 
