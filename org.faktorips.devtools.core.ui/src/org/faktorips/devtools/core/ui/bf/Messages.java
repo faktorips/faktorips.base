@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,22 +13,34 @@
 
 package org.faktorips.devtools.core.ui.bf;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.osgi.util.NLS;
 
-public class Messages {
+public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.bf.messages"; //$NON-NLS-1$
-
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-
-    private Messages() {
+    public static String BusinessFunctionLabelProvider_bf;
+    public static String BusinessFunctionLabelProvider_callBfAction;
+    public static String BusinessFunctionLabelProvider_callMethodAction;
+    public static String BusinessFunctionLabelProvider_callMethodDecision;
+    public static String BusinessFunctionLabelProvider_controlFlow;
+    public static String BusinessFunctionLabelProvider_decision;
+    public static String BusinessFunctionLabelProvider_inlineAction;
+    public static String BusinessFunctionLabelProvider_merge;
+    public static String BusinessFunctionLabelProvider_parameters;
+    public static String PaletteBuilder_bfCallActionDesc;
+    public static String PaletteBuilder_controlflow;
+    public static String PaletteBuilder_controlFlowDesc;
+    public static String PaletteBuilder_decisionDesc;
+    public static String PaletteBuilder_endDesc;
+    public static String PaletteBuilder_inlineActionDesc;
+    public static String PaletteBuilder_mergeDesc;
+    public static String PaletteBuilder_methodCallActionDesc;
+    public static String PaletteBuilder_methodCallDecisionDesc;
+    public static String PaletteBuilder_startDec;
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String getString(String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+    private Messages() {
     }
 }

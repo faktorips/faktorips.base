@@ -55,60 +55,56 @@ public class PaletteBuilder {
         List<ToolEntry> entries = new ArrayList<ToolEntry>();
 
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "obj16/CallOperationAction.gif");
+                "obj16/CallOperationAction.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry actionEntry = new CombinedTemplateCreationEntry(BFElementType.ACTION_METHODCALL
-                .getName(), Messages.getString("PaletteBuilder.methodCallActionDesc"), //$NON-NLS-1$
-                new BFElementFactory(BFElementType.ACTION_METHODCALL), imageDescriptor, imageDescriptor);
+                .getName(), Messages.PaletteBuilder_methodCallActionDesc, new BFElementFactory(BFElementType.ACTION_METHODCALL),
+                imageDescriptor, imageDescriptor);
         entries.add(actionEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/CallBehaviorAction.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/CallBehaviorAction.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry bfCallEntry = new CombinedTemplateCreationEntry(
-                BFElementType.ACTION_BUSINESSFUNCTIONCALL.getName(),
-                Messages.getString("PaletteBuilder.bfCallActionDesc"), new BFElementFactory(BFElementType.ACTION_BUSINESSFUNCTIONCALL), imageDescriptor, imageDescriptor); //$NON-NLS-1$
+                BFElementType.ACTION_BUSINESSFUNCTIONCALL.getName(), Messages.PaletteBuilder_bfCallActionDesc,
+                new BFElementFactory(BFElementType.ACTION_BUSINESSFUNCTIONCALL), imageDescriptor, imageDescriptor);
         entries.add(bfCallEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry inlineActionEntry = new CombinedTemplateCreationEntry(BFElementType.ACTION_INLINE
-                .getName(), Messages.getString("PaletteBuilder.inlineActionDesc"), //$NON-NLS-1$
-                new BFElementFactory(BFElementType.ACTION_INLINE), imageDescriptor, imageDescriptor);
+                .getName(), Messages.PaletteBuilder_inlineActionDesc, new BFElementFactory(BFElementType.ACTION_INLINE),
+                imageDescriptor, imageDescriptor);
         entries.add(inlineActionEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif");
-        CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(
-                BFElementType.DECISION.getName(),
-                Messages.getString("PaletteBuilder.decisionDesc"), new BFElementFactory(BFElementType.DECISION), imageDescriptor, imageDescriptor); //$NON-NLS-1$ 
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$
+        CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(BFElementType.DECISION
+                .getName(), Messages.PaletteBuilder_decisionDesc, new BFElementFactory(BFElementType.DECISION), imageDescriptor,
+                imageDescriptor);
         entries.add(decisionEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry methodCallDecisionEntry = new CombinedTemplateCreationEntry(
-                BFElementType.DECISION_METHODCALL.getName(),
-                Messages.getString("PaletteBuilder.methodCallDecisionDesc"), new BFElementFactory(BFElementType.DECISION_METHODCALL), imageDescriptor, imageDescriptor); //$NON-NLS-1$ 
+                BFElementType.DECISION_METHODCALL.getName(), Messages.PaletteBuilder_methodCallDecisionDesc, new BFElementFactory(
+                        BFElementType.DECISION_METHODCALL), imageDescriptor, imageDescriptor);
         entries.add(methodCallDecisionEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/InitialNode.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/InitialNode.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry startEntry = new CombinedTemplateCreationEntry(BFElementType.START.getName(),
-                Messages.getString("PaletteBuilder.startDec"), //$NON-NLS-1$ 
-                new BFElementFactory(BFElementType.START), imageDescriptor, imageDescriptor);
+                Messages.PaletteBuilder_startDec, new BFElementFactory(BFElementType.START), imageDescriptor, imageDescriptor);
         entries.add(startEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ActivityFinalNode.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ActivityFinalNode.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry endEntry = new CombinedTemplateCreationEntry(BFElementType.END.getName(),
-                Messages.getString("PaletteBuilder.endDesc"), new BFElementFactory(BFElementType.END), //$NON-NLS-1$ 
-                imageDescriptor, imageDescriptor);
+                Messages.PaletteBuilder_endDesc, new BFElementFactory(BFElementType.END), imageDescriptor, imageDescriptor);
         entries.add(endEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/MergeNode.gif");
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/MergeNode.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry mergeEntry = new CombinedTemplateCreationEntry(BFElementType.MERGE.getName(),
-                Messages.getString("PaletteBuilder.mergeDesc"), //$NON-NLS-1$ 
-                new BFElementFactory(BFElementType.MERGE), imageDescriptor, imageDescriptor);
+                Messages.PaletteBuilder_mergeDesc, new BFElementFactory(BFElementType.MERGE), imageDescriptor, imageDescriptor);
         entries.add(mergeEntry);
 
         // UMLElementTypes.ActivityParameterNode_3052
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ControlFlow.gif");
-        ToolEntry controlflowEntry = new ConnectionCreationToolEntry(Messages.getString("PaletteBuilder.controlflow"), //$NON-NLS-1$
-                Messages.getString("PaletteBuilder.controlFlowDesc"), //$NON-NLS-1$
-                null, imageDescriptor, imageDescriptor);
+        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ControlFlow.gif"); //$NON-NLS-1$
+        ToolEntry controlflowEntry = new ConnectionCreationToolEntry(Messages.PaletteBuilder_controlflow, Messages.PaletteBuilder_controlFlowDesc, null,
+                imageDescriptor, imageDescriptor);
         entries.add(controlflowEntry);
 
         PaletteDrawer drawer = new PaletteDrawer("", null); //$NON-NLS-1$

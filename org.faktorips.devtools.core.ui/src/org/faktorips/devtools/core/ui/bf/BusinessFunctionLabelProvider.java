@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
 
-// TODO string externalization
 /**
  * Provides display text and images for business function elements. It is used by the property view.
  */
@@ -83,36 +82,36 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         EditPart editPart = (EditPart)sel.getFirstElement();
         if (editPart instanceof BusinessFunctionEditPart) {
             IBusinessFunction bf = (IBusinessFunction)editPart.getModel();
-            return Messages.getString("BusinessFunctionLabelProvider.bf") + bf.getName(); //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_bf + bf.getName();
         }
         if (editPart instanceof ParameterEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.parameters"); //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_parameters;
         }
         IIpsElement ipsElement = (IIpsElement)editPart.getModel();
         if (ipsElement == null) {
             return ""; //$NON-NLS-1$
         }
         if (editPart instanceof ControlFlowEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.controlFlow"); //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_controlFlow;
         }
         String displayName = ((IBFElement)ipsElement).getDisplayString();
         if (editPart instanceof CallBusinessFunctionActionEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.callBfAction") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_callBfAction + displayName;
         }
         if (editPart instanceof InlineActionEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.inlineAction") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_inlineAction + displayName;
         }
         if (editPart instanceof CallMethodActionEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.callMethodAction") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_callMethodAction + displayName;
         }
         if (editPart instanceof DecisionEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.decision") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_decision + displayName;
         }
         if (editPart instanceof CallMethodDecisionEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.decision") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_callMethodDecision + displayName;
         }
         if (editPart instanceof MergeEditPart) {
-            return Messages.getString("BusinessFunctionLabelProvider.merge") + displayName; //$NON-NLS-1$
+            return Messages.BusinessFunctionLabelProvider_merge + displayName;
         }
         return ""; //$NON-NLS-1$
     }
