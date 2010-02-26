@@ -103,11 +103,16 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public IDependency[] dependsOn() throws CoreException;
 
     /**
-     * @param dependency The dependency to get the details for.
+     * Returns the dependency details describing which parts and properties are causing the given
+     * dependency.
      * 
-     * @return The details to the given Dependency.
+     * @param dependency The dependency to get the details for, must not be <code>null</code>.
+     * 
+     * @return The details to the given Dependency. If no details exist for this dependency, an
+     *         empty list is returned.
      * 
      * @throws CoreException
+     * @throws NullPointerException If the given dependency is <code>null</code>.
      */
     public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException;
 

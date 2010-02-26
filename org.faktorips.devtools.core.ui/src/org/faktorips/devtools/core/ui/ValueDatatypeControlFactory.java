@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
@@ -133,7 +132,7 @@ public abstract class ValueDatatypeControlFactory {
      * @param grifViewer
      * @param columnIndex The index of the column.
      */
-    public abstract CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+    public abstract IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             GridTreeViewer gridViewer,
