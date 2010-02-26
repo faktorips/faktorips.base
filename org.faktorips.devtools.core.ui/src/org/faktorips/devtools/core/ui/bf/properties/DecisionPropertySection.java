@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 
 /**
- * A section that is displayed in the property view. The properties of a control flow object
- * can be edited with it. 
+ * A section that is displayed in the property view. The properties of a control flow object can be
+ * edited with it.
  * 
  * @author Peter Erzberger
  */
@@ -31,8 +31,9 @@ public class DecisionPropertySection extends NamedOnlyBFElementsPropertySection 
 
     private DatatypeRefControl datatypeField;
 
+    @Override
     protected void createControlsInternal(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
-        uiToolkit.createLabel(parent, Messages.getString("DecisionPropertySection.datatypeLabel")); //$NON-NLS-1$
+        uiToolkit.createLabel(parent, Messages.DecisionPropertySection_datatypeLabel);
         datatypeField = uiToolkit.createDatatypeRefEdit(null, parent);
         datatypeField.setOnlyValueDatatypesAllowed(true);
         datatypeField.setPrimitivesAllowed(false);

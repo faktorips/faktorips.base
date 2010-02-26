@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.bf.edit.NodeEditPart;
@@ -49,7 +49,7 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         Composite content = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(content, Messages.getString("NamedOnlyBFElementsPropertySection.nameLabel")); //$NON-NLS-1$
+        uiToolkit.createLabel(content, Messages.NamedOnlyBFElementsPropertySection_nameLabel);
         nameField = uiToolkit.createText(content);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;
@@ -59,7 +59,7 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
     }
 
     /**
-     * This method can be overridden by subclasses to add additional editing field to this section. 
+     * This method can be overridden by subclasses to add additional editing field to this section.
      */
     protected void createControlsInternal(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
     }
@@ -77,7 +77,7 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
         bindingContext.removeBindings(nameField);
-        bindingContext.bindContent(nameField, getBFElement(), IActionBFE.PROPERTY_NAME);
+        bindingContext.bindContent(nameField, getBFElement(), IIpsElement.PROPERTY_NAME);
         bindingContext.updateUI();
     }
 

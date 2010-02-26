@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,8 +31,8 @@ import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 /**
- * A section that is displayed in the property view. The properties of a control flow object
- * can be edited with it. 
+ * A section that is displayed in the property view. The properties of a control flow object can be
+ * edited with it.
  * 
  * @author Peter Erzberger
  */
@@ -42,7 +42,6 @@ public class ControlFlowPropertySection extends AbstractPropertySection {
     private Text conditionValueField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
-    
 
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -52,7 +51,7 @@ public class ControlFlowPropertySection extends AbstractPropertySection {
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         contentPanel = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(contentPanel, Messages.getString("ControlFlowPropertySection.valueLabel")); //$NON-NLS-1$
+        uiToolkit.createLabel(contentPanel, Messages.ControlFlowPropertySection_valueLabel);
         conditionValueField = uiToolkit.createText(contentPanel);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;
@@ -60,17 +59,17 @@ public class ControlFlowPropertySection extends AbstractPropertySection {
         conditionValueField.setLayoutData(data);
     }
 
-    public IControlFlow getControlFlow(){
+    public IControlFlow getControlFlow() {
         return ((ControlFlowEditPart)((IStructuredSelection)getSelection()).getFirstElement()).getControlFlow();
     }
-    
+
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
         bindingContext.removeBindings(conditionValueField);
         IControlFlow cf = getControlFlow();
         IBFElement source = cf.getSource();
-        if(source instanceof IDecisionBFE){
+        if (source instanceof IDecisionBFE) {
             bindingContext.bindContent(conditionValueField, getControlFlow(), IControlFlow.PROPERTY_CONDITION_VALUE);
             contentPanel.setVisible(true);
         } else {

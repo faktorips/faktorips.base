@@ -63,7 +63,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
     private ParameterMethodCompletionProcessor processor;
 
     public ParameterMethodRefControl(Composite parent, UIToolkit toolkit) {
-        super(parent, toolkit, Messages.getString("ParameterMethodRefControl.ChooseMethodLabel")); //$NON-NLS-1$
+        super(parent, toolkit, Messages.ParameterMethodRefControl_ChooseMethodLabel);
         processor = new ParameterMethodCompletionProcessor();
         processor.setComputeProposalForEmptyPrefix(true);
         SubjectControlContentAssistant assistant = CompletionUtil.createContentAssistant(processor);
@@ -101,15 +101,15 @@ public class ParameterMethodRefControl extends TextButtonControl {
                 public String getText(Object element) {
                     String text = super.getText(element);
                     if (element instanceof IAttribute || element instanceof IMethod) {
-                        text += (" - ") + ((IIpsObjectPart)element).getParent().getName();
+                        text += (" - ") + ((IIpsObjectPart)element).getParent().getName(); //$NON-NLS-1$
                     }
                     return text;
                 }
 
             };
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), lp);
-            selectDialog.setTitle(Messages.getString("ParameterMethodRefControl.ChooseMethodTitle")); //$NON-NLS-1$
-            selectDialog.setMessage(Messages.getString("ParameterMethodRefControl.dialogDescription") //$NON-NLS-1$
+            selectDialog.setTitle(Messages.ParameterMethodRefControl_ChooseMethodTitle);
+            selectDialog.setMessage(Messages.ParameterMethodRefControl_dialogDescription
                     + (parameterType == null ? "" : parameterType.getName())); //$NON-NLS-1$
             selectDialog.setElements(getSelectableMethods());
             selectDialog.setFilter(StringUtil.unqualifiedName(super.getText()));

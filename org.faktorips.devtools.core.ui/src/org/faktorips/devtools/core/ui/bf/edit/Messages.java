@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,22 +13,17 @@
 
 package org.faktorips.devtools.core.ui.bf.edit;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.osgi.util.NLS;
 
-public class Messages {
+public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.bf.edit.messages"; //$NON-NLS-1$
-
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-
-    private Messages() {
+    public static String BusinessFunctionXYLayoutEditPolicy_createBFE;
+    public static String ParameterEditPart_Parameters;
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String getString(String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+    private Messages() {
     }
 }

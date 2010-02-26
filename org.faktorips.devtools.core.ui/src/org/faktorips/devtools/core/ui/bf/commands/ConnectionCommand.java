@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -44,6 +44,7 @@ public class ConnectionCommand extends Command {
         this.businessFunction = businessFunction;
     }
 
+    @Override
     public boolean canExecute() {
         if (sourceNode != null) {
             if (sourceNode.getType() == BFElementType.START && !sourceNode.getOutgoingControlFlow().isEmpty()) {
@@ -81,6 +82,7 @@ public class ConnectionCommand extends Command {
         return true;
     }
 
+    @Override
     public void execute() {
         businessFunctionState = businessFunction.newMemento();
         if (!reconnect) {
@@ -124,8 +126,9 @@ public class ConnectionCommand extends Command {
         }
     }
 
+    @Override
     public String getLabel() {
-        return Messages.getString("ConnectionCommand.createConnection"); //$NON-NLS-1$
+        return Messages.ConnectionCommand_createConnection;
     }
 
     public IBFElement getSource() {
@@ -140,6 +143,7 @@ public class ConnectionCommand extends Command {
         return controlFlow;
     }
 
+    @Override
     public void redo() {
         undo();
     }
@@ -156,6 +160,7 @@ public class ConnectionCommand extends Command {
         this.controlFlow = controlFlow;
     }
 
+    @Override
     public void undo() {
         Memento currentState = businessFunction.newMemento();
         businessFunction.setState(businessFunctionState);

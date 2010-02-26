@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,9 +42,9 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  * The edit part for the parameter business function element. Since there is only one figure that
  * displays all parameters of a business function this edit part cannot be created via the
  * {@link BusinessFunctionEditPartFactory} like all other edit parts. Instead it is created within
- * the <code>refreshchildren()</code> method of the {@link BusinessFunctionEditPart}. The rectangular
- * figure that displays all parameters is always position in the upper left corner of the business
- * function editor.
+ * the <code>refreshchildren()</code> method of the {@link BusinessFunctionEditPart}. The
+ * rectangular figure that displays all parameters is always position in the upper left corner of
+ * the business function editor.
  * 
  * @author Peter Erzberger
  */
@@ -54,18 +54,20 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
     private DefaultLabelProvider labelProvider = new DefaultLabelProvider();
     private SelectionListener viewportScolllistener;
 
-
     @Override
     public void activate() {
-        if (isActive())
+        if (isActive()) {
             return;
+        }
         super.activate();
-        //unfortunately this listener is neccessary to ensure that the parameter rectangle is always in
-        //the upper left corner while scrolling the viewport of the editor
-        viewportScolllistener = new SelectionListener(){
+        // unfortunately this listener is neccessary to ensure that the parameter rectangle is
+        // always in
+        // the upper left corner while scrolling the viewport of the editor
+        viewportScolllistener = new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
             }
+
             public void widgetSelected(SelectionEvent e) {
                 refreshVisuals();
             }
@@ -77,8 +79,9 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
 
     @Override
     public void deactivate() {
-        if (!isActive())
+        if (!isActive()) {
             return;
+        }
         super.deactivate();
         ((FigureCanvas)getViewer().getControl()).getVerticalBar().removeSelectionListener(viewportScolllistener);
         ((FigureCanvas)getViewer().getControl()).getHorizontalBar().removeSelectionListener(viewportScolllistener);
@@ -103,7 +106,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         upperRectangle.setLayoutManager(layout);
         figure.add(upperRectangle, BorderLayout.TOP);
 
-        Label parameterLabel = new Label(Messages.getString("ParameterEditPart.parameter")); //$NON-NLS-1$
+        Label parameterLabel = new Label(Messages.ParameterEditPart_Parameters);
         parameterLabel.setForegroundColor(ColorConstants.black);
         MarginBorder border = new MarginBorder(10);
         parameterLabel.setBorder(border);

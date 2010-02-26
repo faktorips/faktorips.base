@@ -29,23 +29,25 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 public class CallMethodDecisionPropertySection extends CallMethodPropertySection {
 
     private Label valueLabel;
-    
+
+    @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
         update();
     }
-    
-    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext){
-        uiToolkit.createLabel(area, Messages.getString("CallMethodDecisionPropertySection.labelDatatype")); //$NON-NLS-1$
+
+    @Override
+    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext) {
+        uiToolkit.createLabel(area, Messages.CallMethodDecisionPropertySection_labelDatatype);
         valueLabel = uiToolkit.createLabel(area, ""); //$NON-NLS-1$
     }
 
-    private void update(){
+    private void update() {
         IDecisionBFE decisionBFE = (IDecisionBFE)getBFElement();
         IMethod method;
         try {
             method = decisionBFE.findMethod(getBFElement().getIpsProject());
-            if(method != null){
+            if (method != null) {
                 valueLabel.setText(method.getDatatype());
             } else {
                 valueLabel.setText(""); //$NON-NLS-1$
@@ -54,8 +56,9 @@ public class CallMethodDecisionPropertySection extends CallMethodPropertySection
             IpsPlugin.log(e1);
         }
     }
-    
-    protected void updateFromModel(ContentChangeEvent event){
+
+    @Override
+    protected void updateFromModel(ContentChangeEvent event) {
         update();
     }
 }

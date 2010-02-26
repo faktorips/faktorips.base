@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,10 +38,12 @@ public class DeleteConnectionCommand extends Command {
         ArgumentCheck.notNull(businessFunction, this);
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public void execute() {
         businessFunctionState = businessFunction.newMemento();
         controlFlow.setTarget(null);
@@ -49,20 +51,23 @@ public class DeleteConnectionCommand extends Command {
         controlFlow.delete();
     }
 
+    @Override
     public String getLabel() {
-        return Messages.getString("DeleteConnectionCommand.deleteConnection"); //$NON-NLS-1$
+        return Messages.DeleteConnectionCommand_deleteConnection;
     }
 
     public IControlFlow getControlFlow() {
         return controlFlow;
     }
 
+    @Override
     public void redo() {
         Memento currentState = businessFunction.newMemento();
         businessFunction.setState(businessFunctionState);
         businessFunctionState = currentState;
     }
 
+    @Override
     public void undo() {
         redo();
     }

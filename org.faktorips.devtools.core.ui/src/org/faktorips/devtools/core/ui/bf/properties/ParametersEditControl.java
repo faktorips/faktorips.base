@@ -170,12 +170,12 @@ public class ParametersEditControl extends Composite {
         tc = new TableColumn(table, SWT.NONE, TYPE_PROP);
         tc.setResizable(true);
         tc.setWidth(200);
-        tc.setText(Messages.getString("ParametersEditControl.datatypeLabel")); //$NON-NLS-1$
+        tc.setText(Messages.ParametersEditControl_datatypeLabel);
 
         tc = new TableColumn(table, SWT.NONE, NEWNAME_PROP);
         tc.setResizable(true);
         tc.setWidth(200);
-        tc.setText(Messages.getString("ParametersEditControl.parameterNameLabel")); //$NON-NLS-1$
+        tc.setText(Messages.ParametersEditControl_parameterNameLabel);
 
         fTableViewer = new TableViewer(table);
         fTableViewer.setUseHashlookup(true);
@@ -318,7 +318,7 @@ public class ParametersEditControl extends Composite {
     }
 
     private Button createAddButton(Composite buttonComposite) {
-        Button button = uiToolkit.createButton(buttonComposite, Messages.getString("ParametersEditControl.AddLabel")); //$NON-NLS-1$
+        Button button = uiToolkit.createButton(buttonComposite, Messages.ParametersEditControl_AddLabel);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -337,8 +337,7 @@ public class ParametersEditControl extends Composite {
     }
 
     private Button createRemoveButton(Composite buttonComposite) {
-        final Button button = uiToolkit.createButton(buttonComposite, Messages
-                .getString("ParametersEditControl.RemoveLabel")); //$NON-NLS-1$
+        final Button button = uiToolkit.createButton(buttonComposite, Messages.ParametersEditControl_RemoveLabel);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
             @Override

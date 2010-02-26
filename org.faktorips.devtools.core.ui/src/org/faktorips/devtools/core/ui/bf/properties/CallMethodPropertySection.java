@@ -40,12 +40,12 @@ import org.faktorips.devtools.core.ui.bf.edit.NodeEditPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 /**
- * A section that is displayed in the property view. The properties of a method
- * call action can be edited with it. 
+ * A section that is displayed in the property view. The properties of a method call action can be
+ * edited with it.
  * 
  * @author Peter Erzberger
  */
-public class CallMethodPropertySection extends AbstractPropertySection implements ContentsChangeListener{
+public class CallMethodPropertySection extends AbstractPropertySection implements ContentsChangeListener {
 
     protected Text parameterSelectionControl;
     protected ParameterMethodRefControl methodSelectionField;
@@ -71,13 +71,13 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         Composite content = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(content, Messages.getString("CallMethodActionPropertySection.parameterLabel")); //$NON-NLS-1$
+        uiToolkit.createLabel(content, Messages.CallMethodPropertySection_parameterLabel);
         parameterSelectionControl = uiToolkit.createText(content);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;
         data.widthHint = 300;
         parameterSelectionControl.setLayoutData(data);
-        uiToolkit.createLabel(content, Messages.getString("CallMethodActionPropertySection.MethodLabel")); //$NON-NLS-1$
+        uiToolkit.createLabel(content, Messages.CallMethodPropertySection_MethodLabel);
         methodSelectionField = new ParameterMethodRefControl(content, uiToolkit);
         data = new GridData();
         data.grabExcessHorizontalSpace = false;
@@ -90,10 +90,10 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
         ContentAssistHandler.createHandlerForText(parameterSelectionControl, assistant);
     }
 
-    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext){
-        
+    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext) {
+
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();
@@ -113,20 +113,21 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
         bindingContext.removeBindings(parameterSelectionControl);
         bindingContext.removeBindings(methodSelectionField);
         bindingContext.bindContent(parameterSelectionControl, getBFElement(), IMethodCallBFE.PROPERTY_TARGET);
-        bindingContext.bindContent(methodSelectionField, getBFElement(), IMethodCallBFE.PROPERTY_EXECUTABLE_METHOD_NAME);
+        bindingContext
+                .bindContent(methodSelectionField, getBFElement(), IMethodCallBFE.PROPERTY_EXECUTABLE_METHOD_NAME);
         updateMethodSelectionControl();
         bindingContext.updateUI();
     }
 
-    private void updateMethodSelectionControl(){
+    private void updateMethodSelectionControl() {
         try {
             IMethodCallBFE methodCallBFE = (IMethodCallBFE)getBFElement();
-            if(methodCallBFE.getParameter() == null){
+            if (methodCallBFE.getParameter() == null) {
                 methodSelectionField.setParameterType(null);
                 return;
             }
             Datatype datatype = methodCallBFE.getParameter().findDatatype();
-            if(datatype instanceof IType){
+            if (datatype instanceof IType) {
                 methodSelectionField.setParameterType((IType)datatype);
             } else {
                 methodSelectionField.setParameterType(null);
@@ -134,14 +135,14 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        
+
     }
-    
-    protected void updateFromModel(ContentChangeEvent event){
+
+    protected void updateFromModel(ContentChangeEvent event) {
     }
-    
+
     public void contentsChanged(ContentChangeEvent event) {
-        if(!event.getIpsSrcFile().equals(getBFElement().getIpsSrcFile())){
+        if (!event.getIpsSrcFile().equals(getBFElement().getIpsSrcFile())) {
             return;
         }
         updateMethodSelectionControl();
