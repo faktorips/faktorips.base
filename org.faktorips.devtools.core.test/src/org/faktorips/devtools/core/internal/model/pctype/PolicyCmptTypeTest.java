@@ -68,6 +68,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
@@ -579,7 +580,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         r2.setTarget("t2");
 
-        Element element = policyCmptType.toXml(this.newDocument());
+        Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copy = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copy.setConfigurableByProductCmptType(false);
@@ -747,6 +748,14 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         method.newParameter(Datatype.STRING.getQualifiedName(), "aParam");
         msgList = policyCmptType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+    }
+
+    public void testPersistenceSupport() throws CoreException {
+        assertFalse(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
+        IIpsProjectProperties properties = policyCmptType.getIpsProject().getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        assertTrue(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
