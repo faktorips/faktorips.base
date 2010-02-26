@@ -75,9 +75,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
         rules = new IpsObjectPartCollection(this, ValidationRule.class, IValidationRule.class, ValidationRule.TAG_NAME);
-        if (getIpsProject().isPersistenceSupportEnabled()) {
-            persistenceTypeInfo = newPart(PersistentTypeInfo.class);
-        }
+        internalInitPersistenceTypeInfo();
     }
 
     /**
@@ -600,7 +598,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected void reinitPartCollections() {
         super.reinitPartCollections();
-        persistenceTypeInfo = newPart(PersistentTypeInfo.class);
+        internalInitPersistenceTypeInfo();
     }
 
     @Override
@@ -647,5 +645,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
             persistenceTypeInfo.setDiscriminatorValue(getName());
         }
+    }
+
+    private void internalInitPersistenceTypeInfo() {
+        IIpsProject ipsProject = getIpsProject();
+        if (ipsProject == null || !ipsProject.isPersistenceSupportEnabled()) {
+            persistenceTypeInfo = null;
+            return;
+        }
+        persistenceTypeInfo = newPart(PersistentTypeInfo.class);
     }
 }
