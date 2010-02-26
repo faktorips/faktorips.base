@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -157,11 +158,32 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException {
+        if (dependency == null) {
+            throw new NullPointerException("Can not get dependency details for null as dependency."); //$NON-NLS-1$
+        }
+
         Map<IDependency, List<IDependencyDetail>> detailMap = new HashMap<IDependency, List<IDependencyDetail>>();
         dependsOn(detailMap);
-        return detailMap.get(dependency);
+
+        List<IDependencyDetail> result = detailMap.get(dependency);
+
+        if (result == null) {
+            result = new ArrayList<IDependencyDetail>();
+        }
+
+        return result;
     }
 
+    /**
+     * Hook for subclasses to implement their own dependency examination. This method returns
+     * allways an empty array.
+     * 
+     * @param details The map to collect dependency details for all found dependencies. Can be
+     *            <code>null</code> - no details have to be collected in this case.
+     * @return An array of found dependencies. If no dependencies are found, this method has to
+     *         return an empty array.
+     * @throws CoreException
+     */
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         return new IDependency[0];
     }
