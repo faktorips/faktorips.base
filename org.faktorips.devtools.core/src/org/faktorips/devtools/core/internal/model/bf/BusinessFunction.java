@@ -278,7 +278,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             if (list.size() > 1) {
                 for (IBFElement element : list) {
                     if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list) || checkIfOnlyMethodCallDecisions(list))) {
-                        String text = NLS.bind(Messages.getString("BusinessFunction.duplicateNames"), key); //$NON-NLS-1$
+                        String text = NLS.bind(
+                                Messages.BusinessFunction_duplicateNames, key);
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
                 }
@@ -324,7 +325,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             }
         }
         if (startElements.size() > 1) {
-            String text = NLS.bind(Messages.getString("BusinessFunction.elementOnlyOnce"), type.getName()); //$NON-NLS-1$ 
+            String text = NLS.bind(Messages.BusinessFunction_elementOnlyOnce, type.getName());
             for (IBFElement element : startElements) {
                 msgList.add(new Message(msgCode, text, Message.ERROR, element));
             }
@@ -335,11 +336,11 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         boolean startOrEndMissing = false;
         if (getStart() == null) {
             list.add(new Message(MSGCODE_START_DEFINITION_MISSING,
-                    Messages.getString("BusinessFunction.startMissing"), Message.ERROR, this)); //$NON-NLS-1$
+                    Messages.BusinessFunction_startMissing, Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (getEnd() == null) {
-            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, Messages.getString("BusinessFunction.endMissing"), //$NON-NLS-1$
+            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, Messages.BusinessFunction_endMissing,
                     Message.ERROR, this));
             startOrEndMissing = true;
         }
@@ -363,8 +364,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                String text = NLS.bind(Messages.getString("BusinessFunction.elementNotConnectedWithStart"), //$NON-NLS-1$
-                        element.getDisplayString());
+                String text = NLS
+                        .bind(
+                                Messages.BusinessFunction_elementNotConnectedWithStart,
+                                element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }
@@ -374,8 +377,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForEnd.contains(element)) {
-                String text = NLS.bind(Messages.getString("BusinessFunction.elementNotConnectedWithEnd"), //$NON-NLS-1$
-                        element.getDisplayString());
+                String text = NLS
+                        .bind(
+                                Messages.BusinessFunction_elementNotConnectedWithEnd,
+                                element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
         }

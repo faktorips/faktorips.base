@@ -211,8 +211,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
                 && (source.getType().equals(BFElementType.DECISION) || source.getType().equals(
                         BFElementType.DECISION_METHODCALL))) {
             if (StringUtils.isEmpty(getConditionValue())) {
-                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages
-                        .getString("ControlFlow.valueMustBeSpecified"), //$NON-NLS-1$
+                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages.ControlFlow_valueMustBeSpecified,
                         Message.ERROR, this));
                 return;
             }
@@ -220,8 +219,10 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             ValueDatatype datatype = decisionSource.findDatatype(ipsProject);
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
-                    String text = NLS.bind(Messages.getString("ControlFlow.valueNotValid"), new String[] {
-                            getConditionValue(), datatype.getQualifiedName() });
+                    String text = NLS
+                            .bind(
+                                    Messages.ControlFlow_valueNotValid,
+                                    new String[] { getConditionValue(), datatype.getQualifiedName() });
                     list.add(new Message(MSGCODE_VALUE_NOT_VALID, text, Message.ERROR, this));
                 }
             }
@@ -241,7 +242,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             if (controlFlow.getConditionValue().equals(getConditionValue())) {
                 String text = NLS
                         .bind(
-                                Messages.getString("ControlFlow.duplicateControlFlowValue"), new String[] { decision.getName(), getConditionValue() }); //$NON-NLS-1$
+                                Messages.ControlFlow_duplicateControlFlowValue,
+                                new String[] { decision.getName(), getConditionValue() });
                 msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }

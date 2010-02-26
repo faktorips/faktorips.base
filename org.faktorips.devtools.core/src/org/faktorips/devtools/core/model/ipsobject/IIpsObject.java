@@ -95,7 +95,7 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * <p>
      * We use <code>Dependency</code> instances instead of ips object references because an object
      * can depend on another object that does not exist, e.g. because the other object has been
-     * deleted. However, if the deleted object is created again, we must rebuild this dependant
+     * deleted. However, if the deleted object is created again, we must rebuild this dependent
      * object so that the problem marker will be removed.
      * 
      * @throws CoreException

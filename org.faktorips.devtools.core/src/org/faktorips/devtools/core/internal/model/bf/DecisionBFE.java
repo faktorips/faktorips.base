@@ -103,23 +103,21 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
         super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
-            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED,
-                    Messages.getString("DecisionBFE.datatypeNotSpecified"), Message.ERROR, //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.DecisionBFE_datatypeNotSpecified, Message.ERROR,
                     this));
             return;
         }
         // datatype exists
         Datatype datatype = findDatatype(ipsProject);
         if (datatype == null) {
-            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages
-                    .getString("DecisionBFE.datatypeDoesNotExist"), //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages.DecisionBFE_datatypeDoesNotExist,
                     Message.ERROR, this));
             return;
         }
         // datatype only none primitive valuedatatype
         if (!datatype.isValueDatatype() || datatype.isPrimitive()) {
-            list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE, Messages
-                    .getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE,
+                    Messages.DecisionBFE_DatatypeMustBeNotPrimitive, Message.ERROR, this));
         }
     }
 }

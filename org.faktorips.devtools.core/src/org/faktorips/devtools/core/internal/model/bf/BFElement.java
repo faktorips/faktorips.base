@@ -283,12 +283,12 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      */
     protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getName())) {
-            msgList.add(new Message(MSGCODE_NAME_NOT_SPECIFIED,
-                    Messages.getString("BFElement.nameNotSpecified"), Message.ERROR, this)); //$NON-NLS-1$
+            msgList
+                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, Messages.BFElement_nameNotSpecified, Message.ERROR, this));
             return;
         }
         Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(getName(),
-                Messages.getString("BFElement.nameNotValid"), this, ipsProject); //$NON-NLS-1$
+                Messages.BFElement_nameNotValid, this, ipsProject);
         if (msg != null) {
             msgList.add(msg);
             return;
@@ -310,7 +310,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
         String uncapName = StringUtils.uncapitalize(name);
         if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            String text = NLS.bind(Messages.getString("BFElement.nameNotAllowed"), name); //$NON-NLS-1$ 
+            String text = NLS.bind(Messages.BFElement_nameNotAllowed, name);
             msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
         }
     }

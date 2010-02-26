@@ -85,16 +85,15 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             // business function has to be specified
             if (StringUtils.isEmpty(getTarget())) {
-                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED,
-                        Messages.getString("ActionBFE.bfMustBeSpecified"), //$NON-NLS-1$
+                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.ActionBFE_bfMustBeSpecified,
                         Message.ERROR, this));
             }
-            validateNotAllowedNames(getTarget(), Messages.getString("ActionBFE.bfName"), msgList); //$NON-NLS-1$
+            validateNotAllowedNames(getTarget(), Messages.ActionBFE_bfName, msgList);
             // business function exists
             IBusinessFunction refBf = findReferencedBusinessFunction();
             if (refBf == null) {
-                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, Messages.getString("ActionBFE.bfDoesNotExist"), //$NON-NLS-1$
-                        Message.ERROR, this));
+                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST,
+                        Messages.ActionBFE_bfDoesNotExist, Message.ERROR, this));
             }
         }
     }

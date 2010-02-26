@@ -87,13 +87,13 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         validateName(list, ipsProject);
         validateDuplicateName(list);
         if (StringUtils.isEmpty(getDatatype())) {
-            String text = Messages.getString("ParameterBFE.datatypeNotSpecified"); //$NON-NLS-1$
+            String text = Messages.ParameterBFE_datatypeNotSpecified;
             list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, text, Message.ERROR, this));
             return;
         }
         Datatype datatype = findDatatype();
         if (datatype == null) {
-            String text = NLS.bind(Messages.getString("ParameterBFE.parameterOrDatatypeMissing"), new String[] { //$NON-NLS-1$
+            String text = NLS.bind(Messages.ParameterBFE_parameterOrDatatypeMissing, new String[] {
                     getDatatype(), getName() });
             list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXISIT, text, Message.ERROR, this));
         }
@@ -106,7 +106,7 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
                 continue;
             }
             if (parameter.getName().equals(getName())) {
-                msgList.add(new Message(MSGCODE_NAME_DUBLICATE, Messages.getString("ParameterBFE.duplicateParameter"), //$NON-NLS-1$
+                msgList.add(new Message(MSGCODE_NAME_DUBLICATE, Messages.ParameterBFE_duplicateParameter,
                         Message.ERROR, parameter));
             }
         }
