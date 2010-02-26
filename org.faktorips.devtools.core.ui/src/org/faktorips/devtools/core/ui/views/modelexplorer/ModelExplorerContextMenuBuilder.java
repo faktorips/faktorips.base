@@ -13,10 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -66,7 +62,6 @@ import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsEditSortOrderAction;
@@ -202,16 +197,25 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         selected = mapIpsSrcFile2IpsObject(selected);
         createNewMenu(manager, selected);
 
-        manager.add(new Separator());
+        manager.add(new Separator("copy"));
+        // Add copy actions depending on selected ips object type
+        if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
+            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
+            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
+        } else if (selected instanceof ITestCase) {
+            manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
+        }
+
+        manager.add(new Separator("open"));
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
-        manager.add(new Separator());
+        manager.add(new Separator("reorg"));
         createReorgActions(manager, selected);
-        manager.add(new Separator());
+        manager.add(new Separator("info"));
         createObjectInfoActions(manager, selected);
-        manager.add(new Separator());
+        manager.add(new Separator("misc"));
         createRefreshAction(manager, selected);
         createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
-        manager.add(new Separator());
+        manager.add(new Separator("manage"));
 
         createImportExportTableContentsActions(manager, selected);
         createImportExportEnumActions(manager, selected);
@@ -223,13 +227,13 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         // Menus with sub menus.
         createRefactorMenu(manager, selected);
-        manager.add(new Separator());
+        manager.add(new Separator("global"));
 
         manager.add(new GroupMarker("faktorIpsGroup"));
-        manager.add(new Separator());
+        manager.add(new Separator("additions"));
         createAdditionalActions(manager, structuredSelection);
 
-        manager.add(new Separator());
+        manager.add(new Separator("properties"));
         createPropertiesActions(manager, selected);
     }
 
@@ -291,24 +295,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             newMenu.add(new NewIpsPacketAction(viewSite.getShell(), treeViewer));
             newMenu.add(new NewFileResourceAction(viewSite.getShell(), treeViewer));
 
-            // Add copy actions depending on selected ips object type
-            List<IpsAction> ipsCopyActions = new ArrayList<IpsAction>(3);
-            if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
-                ipsCopyActions.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer,
-                        DeepCopyWizard.TYPE_NEW_VERSION));
-                ipsCopyActions.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer,
-                        DeepCopyWizard.TYPE_COPY_PRODUCT));
-            } else if (selected instanceof ITestCase) {
-                ipsCopyActions.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
-            }
-
-            if (ipsCopyActions.size() > 0) {
-                newMenu.add(new Separator());
-                for (Iterator<IpsAction> iter = ipsCopyActions.iterator(); iter.hasNext();) {
-                    newMenu.add(iter.next());
-                }
-
-            }
         }
 
         manager.add(newMenu);
