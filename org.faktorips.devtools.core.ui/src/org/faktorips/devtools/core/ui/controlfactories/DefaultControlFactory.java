@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
@@ -142,7 +141,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public CellEditor createGridTreeCellEditor(UIToolkit toolkit,
+    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             GridTreeViewer gridViewer,

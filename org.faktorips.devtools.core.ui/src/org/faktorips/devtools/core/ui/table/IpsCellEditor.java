@@ -152,10 +152,10 @@ public abstract class IpsCellEditor extends CellEditor {
     }
 
     /**
-     * Overwritten to make method package-visible.
+     * Overwritten to make method visible.
      */
     @Override
-    protected void fireApplyEditorValue() {
+    public void fireApplyEditorValue() {
         super.fireApplyEditorValue();
     }
 
