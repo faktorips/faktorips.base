@@ -23,55 +23,55 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public enum BFElementType {
 
-    ACTION_INLINE("inlineAction", Messages.getString("BFElementType.inlineAction")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    ACTION_INLINE("inlineAction", Messages.BFElementType_inlineAction) { //$NON-NLS-1$  
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newOpaqueAction(location);
         }
     },
-    ACTION_METHODCALL("methodCallAction", Messages.getString("BFElementType.methodCallAction")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    ACTION_METHODCALL("methodCallAction", Messages.BFElementType_methodCallAction) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallAction(location);
         }
     },
-    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.getString("BFElementType.bfCallAction")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.BFElementType_bfCallAction) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newBusinessFunctionCallAction(location);
         }
     },
-    DECISION("decision", Messages.getString("BFElementType.decision")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    DECISION("decision", Messages.BFElementType_decision) { //$NON-NLS-1$  
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newDecision(location);
         }
     },
-    DECISION_METHODCALL("methodCallDecision", Messages.getString("BFElementType.methodCallDecision")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    DECISION_METHODCALL("methodCallDecision", Messages.BFElementType_methodCallDecision) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallDecision(location);
         }
     },
-    MERGE("merge", Messages.getString("BFElementType.merge")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    MERGE("merge", Messages.BFElementType_merge) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMerge(location);
         }
     },
-    END("end", Messages.getString("BFElementType.end")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    END("end", Messages.BFElementType_end) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newEnd(location);
         }
     },
-    START("start", Messages.getString("BFElementType.start")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+    START("start", Messages.BFElementType_start) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newStart(location);
         }
     },
-    PARAMETER("parameter", Messages.getString("BFElementType.parameter")) { //$NON-NLS-1$ //$NON-NLS-2$
+    PARAMETER("parameter", Messages.BFElementType_parameter) { //$NON-NLS-1$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newParameter();
