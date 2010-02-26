@@ -1015,7 +1015,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         /**
          * Getting an image descriptor by calling the {@link IWorkbenchAdapter} of the ips element
          * If there is no registered adapter this method returns null. If the registered adapter has
-         * no image, this method also returns null
+         * no image, this method returns the missing image
          * 
          * @param adaptable
          * @return the image descriptor or null if there is no image or no registered adapter
@@ -1047,7 +1047,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @return
          */
         public Image getImage(IAdaptable adaptable) {
-            return getImage(getImageDescriptor(adaptable));
+            return getImage(getImageDescriptor(adaptable), false);
         }
 
         /**

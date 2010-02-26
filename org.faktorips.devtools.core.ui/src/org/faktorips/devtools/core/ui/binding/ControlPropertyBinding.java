@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.util.BeanUtil;
  * abitrary object, usually a domain model object or presentation model object.
  * 
  * @author $Author: dirmeier $
- * @version $Revision: 1.3 $
  */
 public abstract class ControlPropertyBinding {
 
