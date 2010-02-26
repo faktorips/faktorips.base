@@ -33,38 +33,38 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * The name of the (primary) table name property.
      */
-    public final static String PROPERTY_TABLE_NAME = "tableName";
+    public final static String PROPERTY_TABLE_NAME = "tableName"; //$NON-NLS-1$
 
     /**
      * The name of the secondary table name property.
      */
-    public final static String PROPERTY_SECONDARY_TABLE_NAME = "secondaryTableName";
+    public final static String PROPERTY_SECONDARY_TABLE_NAME = "secondaryTableName"; //$NON-NLS-1$
 
     /**
      * The name of the inheritance strategy property.
      */
-    public final static String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy";
+    public final static String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator column name property.
      */
-    public final static String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName";
+    public final static String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator value property.
      */
-    public final static String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue";
+    public final static String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator datatype property.
      */
-    public final static String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype";
+    public final static String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the joines sublass inheritance strategy is not
      * used.
      */
-    public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass";
+    public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -117,6 +117,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * <code>newTableName</code> by means of an ITableNamingStrategy which is set on a per
      * IpsProject basis.
      * 
+     * @param newTableName The name of the table, must not be <code>null</code>.
+     * 
      * @see InheritanceStrategy
      * @see ITableNamingStrategy
      */
@@ -142,6 +144,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * <code>newSecondaryTableName</code> by means of an ITableNamingStrategy which is set on a per
      * IpsProject basis.
      * 
+     * @param The name of the secondary table, must not be <code>null</code>.
+     * 
      * @see ITableNamingStrategy
      */
     public void setSecondaryTableName(String newSecondaryTableName);
@@ -154,6 +158,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     /**
      * Sets the inheritance strategy to use for the {@link IPolicyCmptType} this object is part of.
+     * 
+     * @param newStrategy The inheritance strategy to use, must not be <code>null</code>.
      */
     public void setInheritanceStrategy(InheritanceStrategy newStrategy);
 
@@ -166,6 +172,9 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Sets the discriminator column name. This only makes sense if the SINGLE_TABLE inheritance
      * strategy is used.
+     * 
+     * @param newDiscriminatorColumnName The name of the discriminator column, must not be
+     *            <code>null</code>.
      * 
      * @see InheritanceStrategy
      */
@@ -183,7 +192,10 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Sets the discriminator value of the {@link IPolicyCmptType} this object is part of. This only
      * makes sense in conjunction with SINGLE_TABLE inheritance strategy where the concrete type of
-     * an entity is determines by storing this value in a the discriminator column of the table.
+     * an entity is determined by storing this value in a the discriminator column of the table.
+     * 
+     * @param newDiscriminatorValue The value of the discriminator which has to match the currently
+     *            set discriminator datatype. Must not be <code>null</code>.
      */
     public void setDiscriminatorValue(String newDiscriminatorValue);
 
@@ -199,6 +211,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Sets the discriminator datatype. Discriminator datatypes/values/columns are used only in
      * conjunction with the SINGLE_TABLE inheritance strategy.
+     * 
+     * @param newDiscriminatorDatatype A discriminator datatype, must not be <code>null</code>.
      * 
      * @see DiscriminatorDatatype
      * @see InheritanceStrategy

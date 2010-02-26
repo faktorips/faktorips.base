@@ -92,6 +92,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     public void setDiscriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype) {
+        ArgumentCheck.notNull(newDescriminatorDatatype);
         DiscriminatorDatatype oldValue = discriminatorDatatype;
         discriminatorDatatype = newDescriminatorDatatype;
 
@@ -328,7 +329,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
 
         private final InheritanceStrategy inheritanceStrategy;
-        private final String discriminatorValue;
         private final String discriminatorColumnName;
         private final DiscriminatorDatatype discriminatorDatatype;
         private final List<String> discriminatorValues = new ArrayList<String>();
@@ -340,7 +340,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         public DiscriminatorValidator(IPersistentTypeInfo typeInfo) {
             inheritanceStrategy = typeInfo.getInheritanceStrategy();
-            discriminatorValue = typeInfo.getDiscriminatorValue();
             discriminatorDatatype = typeInfo.getDiscriminatorDatatype();
             discriminatorColumnName = typeInfo.getDiscriminatorColumnName();
 

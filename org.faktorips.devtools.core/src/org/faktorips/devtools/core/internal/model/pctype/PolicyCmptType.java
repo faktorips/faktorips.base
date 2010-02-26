@@ -25,7 +25,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -601,13 +600,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected void reinitPartCollections() {
         super.reinitPartCollections();
-        newPart(PersistentTypeInfo.class);
+        persistenceTypeInfo = newPart(PersistentTypeInfo.class);
     }
 
     @Override
     protected void removePart(IIpsObjectPart part) {
-        if (persistenceTypeInfo.equals(part)) {
-            newPart(PersistentTypeInfo.class);
+        if (PersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
+            persistenceTypeInfo = newPart(PersistentTypeInfo.class);
         } else {
             super.removePart(part);
         }
@@ -633,21 +632,16 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
 
         if (hasSupertype()) {
-            // initialize with sane defaults derived from supertype
-            try {
-                IPolicyCmptType pcSupertype = (IPolicyCmptType)findSupertype(getIpsProject());
-                IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();
-                if (pcSupertypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
-                    persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
-                    persistenceTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
-                } else {
-                    String rawTableName = pcSupertype.getName();
-                    persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(rawTableName));
-                    persistenceTypeInfo.setDiscriminatorDatatype(pcSupertypeInfo.getDiscriminatorDatatype());
-                    persistenceTypeInfo.setDiscriminatorValue(getName());
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+            IPolicyCmptType pcSupertype = (IPolicyCmptType)findSupertype(getIpsProject());
+            IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();
+            persistenceTypeInfo.setInheritanceStrategy(pcSupertypeInfo.getInheritanceStrategy());
+            if (pcSupertypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
+                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
+            } else {
+                String rawTableName = pcSupertype.getName();
+                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(rawTableName));
+                persistenceTypeInfo.setDiscriminatorDatatype(pcSupertypeInfo.getDiscriminatorDatatype());
+                persistenceTypeInfo.setDiscriminatorValue(getName());
             }
         } else {
             persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
