@@ -51,7 +51,8 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        // TODO - set to false when migration is implemented
+        return true;
     }
 
     @Override
