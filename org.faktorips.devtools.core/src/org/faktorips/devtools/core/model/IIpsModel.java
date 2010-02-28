@@ -204,9 +204,9 @@ public interface IIpsModel extends IIpsElement {
      * 
      * @param type The published interface of the ips object or part e.g.
      *            <code>org.faktorips.plugin.model.pctype.IAttribute</code>
-     * @param <code>true</code> if not only the extension properties defined for for the type itself
-     *        should be returned, but also the ones registered for it's supertype(s) and it's
-     *        interfaces.
+     * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
+     *            defined for for the type itself should be returned, but also the ones registered
+     *            for it's supertype(s) and it's interfaces.
      */
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces);

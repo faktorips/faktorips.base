@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * s * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -64,6 +64,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private Label existingRelLabel;
 
     private String prevSelExistingAssociation;
+    private IPolicyCmptTypeAssociation prevInverseAssociation;
     private Text description;
 
     // Composites to dispose an recreate the page content if the inverse association wil be
@@ -188,30 +189,33 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     }
 
     private void updateDefaultTargetRoleSingular() {
-        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+        if (association != null && StringUtils.isEmpty(association.getTargetRoleSingular())) {
             association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
     }
 
     /**
-     * Sets or resets the inverers association.
+     * Sets or resets the inverse association.
      * 
      * @param inverseAssociation The inverse association which will be edit in this page
      */
     public void setAssociationAndUpdatePage(IPolicyCmptTypeAssociation inverseAssociation) {
         association = inverseAssociation;
 
-        resetControlsAndBinding(inverseAssociation);
+        if (inverseAssociation != null) {
+            if (inverseAssociation != prevInverseAssociation) {
+                prevInverseAssociation = inverseAssociation;
 
-        if (association != null) {
-            // recreate the page depending on the given association
-            dynamicComposite.dispose();
-            dynamicComposite = createGeneralControls(pageComposite);
+                resetControlsAndBinding(inverseAssociation);
 
-            bindAllControls(inverseAssociation);
+                dynamicComposite.dispose();
+                dynamicComposite = createGeneralControls(pageComposite);
+
+                bindAllControls(inverseAssociation);
+
+                refreshPageConrolLayouts();
+            }
         }
-
-        refreshPageConrolLayouts();
     }
 
     private void resetControlsAndBinding(IPolicyCmptTypeAssociation association) {

@@ -42,6 +42,8 @@ public class Messages extends NLS {
 
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
 
+    public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;
+
     public static String PolicyCmptTypeAssociation_Association_msg_InverseOfMasterToDetailMustBeADetailToMaster;
 
     public static String PolicyCmptTypeAssociation_InverseOfDetailToMasterMustBeAMasterToDetail;

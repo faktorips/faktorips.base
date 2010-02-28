@@ -28,6 +28,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * <li>create or use no inverse association
  * </ul>
  * 
+ * Note that the first option is only visible for association type master to detail. The creation of
+ * a detail to master and a master to detail as inverse in one step is not supported.
+ * 
  * @author Joerg Ortmann
  */
 public class InverseAssociationPage extends WizardPage {
@@ -39,6 +42,10 @@ public class InverseAssociationPage extends WizardPage {
     private Button useExistingAssociation;
     private Button noInverseAssociation;
     private Button prevSelection;
+
+    // stores if this page shows the detail to master state
+    // means only use existing association is visible
+    private boolean detailToMasterState = false;
 
     public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
         super(Messages.InverseAssociationPage_pageName, Messages.InverseAssociationPage_pageTitle, null);
@@ -98,6 +105,22 @@ public class InverseAssociationPage extends WizardPage {
 
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
+        }
+    }
+
+    public void setVisibleStateForDetailToMasterAssociation(boolean detailToMasterAssociation) {
+        newInverseAssociation.setVisible(!detailToMasterAssociation);
+        noInverseAssociation.setVisible(!detailToMasterAssociation);
+        if (detailToMasterAssociation) {
+            if (detailToMasterState) {
+                return;
+            }
+            detailToMasterState = true;
+            wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
+            newInverseAssociation.setSelection(false);
+            useExistingAssociation.setSelection(true);
+            noInverseAssociation.setSelection(false);
+            // wizard.handleInverseAssociationSelectionState();
         }
     }
 }

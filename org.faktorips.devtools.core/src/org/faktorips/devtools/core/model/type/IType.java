@@ -276,15 +276,18 @@ public interface IType extends IIpsObject, Datatype {
 
     /**
      * Returns all associations that have the indicated target and association type in the current
-     * type and it's supertype hierarchy. Returns an empty array if no such association exists or
-     * target or association type is <code>null</code>.
+     * type and optional it's supertype hierarchy. Returns an empty array if no such association
+     * exists or target or association type is <code>null</code>.
      * 
      * @param target The qualified name of the target type.
      * @param associationType The association type
+     * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
+     *            the search
      */
     public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject,
+            boolean includeSupertypes) throws CoreException;
 
     /**
      * Returns the type's associations.

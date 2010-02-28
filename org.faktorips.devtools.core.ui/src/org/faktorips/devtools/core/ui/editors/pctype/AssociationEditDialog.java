@@ -172,8 +172,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Text reverseRelationText = uiToolkit.createText(workArea);
         bindingContext.bindContent(reverseRelationText, association,
                 IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
-        bindingContext.bindEnabled(reverseRelationText, association,
-                IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
         InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
                 association);
         inverseAssociationCompletionProcessor.setComputeProposalForEmptyPrefix(true);

@@ -436,7 +436,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
 
         IAssociation[] associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
         assertEquals(0, associations.length);
 
         // Association: motor -> injection
@@ -445,26 +445,32 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // Association: baseMotor -> injection
-        IAssociation associationInBase = motor.newAssociation();
+        IAssociation associationInBase = baseMotor.newAssociation();
         associationInBase.setTarget(injection.getQualifiedName());
         associationInBase.setAssociationType(AssociationType.ASSOCIATION);
 
         // result = 1, because super not set
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
         assertEquals(1, associations.length);
 
         motor.setSupertype(baseMotor.getQualifiedName());
 
-        // result = 1, because asssociation type of super type association not equal
+        // result = 1, because association type of super type association not equal
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
         assertEquals(1, associations.length);
 
-        // result = 2
+        // result = 1 using search without supertype
         associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.length);
+
+        // result = 1 using search with supertype included
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
         assertEquals(2, associations.length);
     }
 

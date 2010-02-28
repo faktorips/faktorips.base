@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -43,7 +42,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
-    public final static String PROPERTY_INVERSE_ASSOCIATION_APPLICABLE = "inverseAssociationApplicable"; //$NON-NLS-1$
     public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
 
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
@@ -63,7 +61,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
             + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate the inverse relation definition is inkonsistent with the
+     * Validation message code to indicate the inverse relation definition is inconsistent with the
      * container relation.
      */
     public final static String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX
@@ -107,7 +105,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     /**
      * Validation message code to indicate that the inverse detail to mater composition must be a
-     * master to datil composition.
+     * master to detail composition.
      */
     public final static String MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseDetailToMasterTypeMissmatch"; //$NON-NLS-1$
@@ -118,6 +116,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public final static String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
             + "InverseAssociationMustBeSetIfTypeIsDetailToMaster"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that if the inverse of a derived union exists then the
+     * inverse of all subsetted derived union must be specified
+     */
+    public final static String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
+            + "SubsettedDerivedUnionInverseMustBeExistsIfInverseDerivedUnionExists"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
@@ -141,19 +146,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * otherwise <code>false</code>.
      */
     public boolean isCompositionDetailToMaster();
-
-    /**
-     * Returns <code>true</code> if the definition of an inverse relation makes sense for the this
-     * relation. This is the case for
-     * <ul>
-     * <li>bidirectional associations and</li>
-     * <li>master-to-detail compositions if the artefact builder set needs this information</li>
-     * </ul>
-     * Returns <code>false</code> if the definition of an inverse relation is superfluous.
-     * 
-     * @see IIpsArtefactBuilderSet#isInverseRelationLinkRequiredFor2WayCompositions()
-     */
-    public boolean isInverseAssociationApplicable();
 
     /**
      * Returns <code>true</code> if this relation can be marked as container relation or can

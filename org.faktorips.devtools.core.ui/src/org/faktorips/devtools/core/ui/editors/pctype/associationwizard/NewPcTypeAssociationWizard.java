@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -53,6 +52,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
+    private static final ArrayList<IAssociation> EMPTY_ASSOCIATION_ARRAY_LIST = new ArrayList<IAssociation>(0);
     final static int NEW_INVERSE_ASSOCIATION = 0;
     final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
     final static int NONE_INVERSE_ASSOCIATION = 2;
@@ -146,8 +146,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         addPage(confProdCmptTypePropertyPage);
         addPage(errorPage);
 
-        detailToMasterHiddenPages.add(inverseAssociationPage);
-        detailToMasterHiddenPages.add(inverseAssociationPropertyPage);
         detailToMasterHiddenPages.add(configureProductCmptTypePage);
         detailToMasterHiddenPages.add(confProdCmptTypePropertyPage);
 
@@ -235,6 +233,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
         }
 
+        inverseAssociationPage.setVisibleStateForDetailToMasterAssociation(association.isCompositionDetailToMaster());
+
         // handle validate state of current page
         if (currentPage instanceof IBlockedValidationWizardPage) {
             handleValidationOfPage((IBlockedValidationWizardPage)currentPage);
@@ -287,7 +287,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Validates the given page
      */
     private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
-        Validatable association = getAssociationFor(page);
+        IAssociation association = getAssociationFor(page);
         if (association == null) {
             return true;
         }
@@ -298,7 +298,14 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         MessageList list;
         try {
-            list = association.validate(ipsProject);
+            if (association instanceof IPolicyCmptTypeAssociation) {
+                // in case of policy component type associations we must
+                // validate using the parent, because the check for duplicate
+                // attributes/associations is implemented in type#validateThis() method
+                list = ((IPolicyCmptTypeAssociation)association).getPolicyCmptType().validate(ipsProject);
+            } else {
+                list = association.validate(ipsProject);
+            }
         } catch (CoreException e) {
             showAndLogError(e);
             return false;
@@ -333,7 +340,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /*
      * Returns the association which could be edit by the give page
      */
-    private Validatable getAssociationFor(IBlockedValidationWizardPage page) {
+    private IAssociation getAssociationFor(IBlockedValidationWizardPage page) {
         if (page instanceof InverseAssociationPropertyPage) {
             return inverseAssociation;
         } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage) {
@@ -586,11 +593,14 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     // TODO pk 30-09-2008 shouldn't this method be a method of IPolicyCmptTypeAssociation?
     public static List<IAssociation> getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
             IPolicyCmptType target) throws CoreException {
+        if (target == null) {
+            return EMPTY_ASSOCIATION_ARRAY_LIST;
+        }
         String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
         AssociationType correspondingAssociationType = sourceAssociation.getAssociationType()
                 .getCorrespondingAssociationType();
         IAssociation[] associations = target.findAssociationsForTargetAndAssociationType(source,
-                correspondingAssociationType, sourceAssociation.getIpsProject());
+                correspondingAssociationType, sourceAssociation.getIpsProject(), false);
         return Arrays.asList(associations);
     }
 
@@ -942,6 +952,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     public boolean areExistingAssociationsAvailable() {
+        if (targetPolicyCmptType == null) {
+            return false;
+        }
         List<IAssociation> correspondingAssociations = getExistingInverseAssociationCandidates();
         if (correspondingAssociations.size() == 0) {
             return false;

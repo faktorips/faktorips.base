@@ -61,18 +61,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return type.isCompositionDetailToMaster();
     }
 
-    public boolean isInverseAssociationApplicable() {
-        return true; // TODO JOERG die Methode kann weg oder?
-        // if (isAssoziation()) {
-        // return true;
-        // }
-        // if (isCompositionDetailToMaster()) {
-        // return false;
-        // }
-        // return
-        // getIpsProject().getIpsArtefactBuilderSet().isInverseRelationLinkRequiredFor2WayCompositions();
-    }
-
     public boolean isContainerRelationApplicable() {
         return isAssoziation() || isCompositionMasterToDetail();
     }
@@ -309,9 +297,24 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
 
         if (StringUtils.isEmpty(inverseAssociation)) {
+            // special check in case of subsetted derived union the inverse must be set if the
+            // derived union has specified an inverse association
+            if (isSubsetOfADerivedUnion()) {
+                IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)findSubsettedDerivedUnion(ipsProject);
+                if (subsettedDerivedUnion == null) {
+                    return; // different validation error
+                }
+                if (StringUtils.isNotEmpty(subsettedDerivedUnion.getInverseAssociation())) {
+                    String text = Messages.PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;
+                    list.add(new Message(
+                            MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS,
+                            text, Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION));
+                }
+            }
             return;
         }
 
+        // inverse association must exists
         IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss == null) {
             String text = NLS.bind(Messages.Association_msg_AssociationNotFoundInTarget, inverseAssociation, target);
@@ -320,11 +323,13 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             return;
         }
 
+        // target of inverse must be this
         if (!inverseAss.getInverseAssociation().equals(targetRoleSingular)) {
             String text = Messages.Association_msg_InverseAssociationMismatch;
             list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this,
                     PROPERTY_INVERSE_ASSOCIATION));
         } else {
+            // inverse must match both sites
             IPolicyCmptTypeAssociation targetSiteAssociation = findTargetAssociationWithCorrespondingInverse(ipsProject);
             if (targetSiteAssociation == null || !inverseAssociation.equals(targetSiteAssociation.getName())) {
                 String text = Messages.Association_msg_InverseAssociationMismatch;

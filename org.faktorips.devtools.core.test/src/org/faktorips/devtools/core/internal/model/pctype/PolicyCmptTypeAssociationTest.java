@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -23,6 +22,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -262,30 +263,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationBtoA.setTargetRoleSingular("roleB");
         ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
-    }
-
-    public void testIsInverseAssociationApplicable() throws CoreException {
-        association = pcType.newPolicyCmptTypeAssociation();
-
-        association.setAssociationType(AssociationType.ASSOCIATION);
-        assertTrue(association.isInverseAssociationApplicable());
-
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertTrue(association.isInverseAssociationApplicable());
-
-        TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
-        builderset.setIpsProject(pcType.getIpsProject());
-        setArtefactBuildset(pcType.getIpsProject(), builderset);
-
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        builderset.setInverseRelationLinkRequiredFor2WayCompositions(false);
-        assertTrue(association.isInverseAssociationApplicable());
-
-        builderset.setInverseRelationLinkRequiredFor2WayCompositions(true);
-        assertTrue(association.isInverseAssociationApplicable());
-
-        testPropertyAccessReadOnly(PolicyCmptTypeAssociation.class,
-                IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
     }
 
     public void testRemove() {
@@ -707,10 +684,117 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
                 .findTargetAssociationWithCorrespondingInverse(ipsProject));
     }
 
+    public void testInverseOfSubsettedDerivedUnionMustExistsIfInverseOfDerivedUnionExists() throws CoreException {
+        IPolicyCmptType policy = newPolicyCmptType(ipsProject, "my.Policy");
+        IPolicyCmptType coverage = newPolicyCmptType(ipsProject, "my.Coverage");
+
+        IPolicyCmptTypeAssociation policyToCoverage = policy.newPolicyCmptTypeAssociation();
+        policyToCoverage.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        policyToCoverage.setMinCardinality(1);
+        policyToCoverage.setMinCardinality(Integer.MAX_VALUE);
+        policyToCoverage.setDerivedUnion(true);
+        policyToCoverage.setTarget(coverage.getQualifiedName());
+        policyToCoverage.setTargetRoleSingular("Coverage");
+        policyToCoverage.setTargetRolePlural("Coverages");
+        policyToCoverage.setInverseAssociation("Policy");
+
+        IPolicyCmptTypeAssociation coverageToPolicy = coverage.newPolicyCmptTypeAssociation();
+        coverageToPolicy.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        coverageToPolicy.setMinCardinality(1);
+        coverageToPolicy.setMinCardinality(1);
+        coverageToPolicy.setTarget(policy.getQualifiedName());
+        coverageToPolicy.setTargetRoleSingular("Policy");
+        coverageToPolicy.setInverseAssociation("Coverage");
+
+        MessageList messageList = policyToCoverage.validate(ipsProject);
+        assertTrue(messageList.isEmpty());
+
+        IPolicyCmptType homePolicy = newPolicyCmptType(ipsProject, "HomePolicy");
+        homePolicy.setSupertype(policy.getQualifiedName());
+        IPolicyCmptType homeCoverage = newPolicyCmptType(ipsProject, "HomeCoverage");
+        homeCoverage.setSupertype(coverage.getQualifiedName());
+
+        IPolicyCmptTypeAssociation homePolicyToHomeCoverage = homePolicy.newPolicyCmptTypeAssociation();
+        homePolicyToHomeCoverage.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        homePolicyToHomeCoverage.setMinCardinality(1);
+        homePolicyToHomeCoverage.setMinCardinality(Integer.MAX_VALUE);
+        homePolicyToHomeCoverage.setSubsettedDerivedUnion("Coverage");
+        homePolicyToHomeCoverage.setTarget(homeCoverage.getQualifiedName());
+        homePolicyToHomeCoverage.setTargetRoleSingular("HomeCoverage");
+        homePolicyToHomeCoverage.setTargetRolePlural("HomeCoverages");
+
+        // test that the inverse of a subsetted derived union is mandatory if the inverse of the
+        // derived union exists
+        // a) derived union without inverse
+        policyToCoverage.setInverseAssociation("");
+        messageList = homePolicyToHomeCoverage.validate(ipsProject);
+        assertNull(messageList
+                .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS));
+
+        // b) derived union with inverse
+        policyToCoverage.setInverseAssociation("Policy");
+        messageList = homePolicyToHomeCoverage.validate(ipsProject);
+        assertNotNull(messageList
+                .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS));
+
+        homePolicyToHomeCoverage.setInverseAssociation("HomePolicy");
+        // the inverse must exists
+        messageList = homePolicyToHomeCoverage.validate(ipsProject);
+        assertNotNull(messageList
+                .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
+
+        IPolicyCmptTypeAssociation homeCoverageToHomePolicy = homeCoverage.newPolicyCmptTypeAssociation();
+        homeCoverageToHomePolicy.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        homeCoverageToHomePolicy.setMinCardinality(1);
+        homeCoverageToHomePolicy.setMinCardinality(1);
+        homeCoverageToHomePolicy.setTarget(homePolicy.getQualifiedName());
+        homeCoverageToHomePolicy.setTargetRoleSingular("HomePolicy");
+        homeCoverageToHomePolicy.setInverseAssociation("HomeCoverage");
+
+        messageList = homePolicyToHomeCoverage.validate(ipsProject);
+        assertNull(messageList
+                .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
+        assertNull(messageList
+                .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS));
+    }
+
     private void checkNewInverseAssociation(AssociationType associationType) throws CoreException {
         IPolicyCmptTypeAssociation targetAssociation = association.newInverseAssociation();
         assertEquals(association.getAssociationType().getCorrespondingAssociationType(), targetAssociation
                 .getAssociationType());
         assertEquals(association.getTarget(), targetAssociation.getPolicyCmptType().getQualifiedName());
+    }
+
+    public void testDuplicateAssociationNameDifferentCardinality() throws CoreException {
+        IPolicyCmptTypeAssociation association2 = pcType.newPolicyCmptTypeAssociation();
+        association2.setTarget(targetType.getQualifiedName());
+
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTargetRoleSingular("a");
+        association.setTargetRolePlural("as");
+        association.setMinCardinality(0);
+        association.setMaxCardinality(2);
+
+        association2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association2.setTargetRoleSingular("a");
+        association2.setTargetRolePlural("");
+        association2.setMinCardinality(0);
+        association2.setMaxCardinality(1);
+
+        MessageList ml = pcType.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        // assume that the duplicate property is the only error
+        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, ml.getMessagesFor(association2).getFirstMessage(
+                Message.ERROR));
+        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, ml.getMessagesFor(association2).getFirstMessage(
+                Message.ERROR));
+
+        association2.setTargetRoleSingular("b");
+        association2.setTargetRolePlural("");
+        association2.setMinCardinality(0);
+        association2.setMaxCardinality(1);
+
+        ml = pcType.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
 }

@@ -206,13 +206,26 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
-            IIpsProject project) throws CoreException {
+            IIpsProject project,
+            boolean includeSupertypes) throws CoreException {
         if (target == null || associationType == null) {
             return new IAssociation[0];
         }
-        AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
-        finder.start(this);
-        return finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
+
+        if (includeSupertypes) {
+            AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
+            finder.start(this);
+            return finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
+        } else {
+            List<IAssociation> result = new ArrayList<IAssociation>();
+            IAssociation[] associations = getAssociationsForTarget(target);
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].getAssociationType() == associationType) {
+                    result.add(associations[i]);
+                }
+            }
+            return result.toArray(new IAssociation[result.size()]);
+        }
     }
 
     public IAssociation getAssociation(String name) {
