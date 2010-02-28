@@ -600,7 +600,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         AssociationType correspondingAssociationType = sourceAssociation.getAssociationType()
                 .getCorrespondingAssociationType();
         IAssociation[] associations = target.findAssociationsForTargetAndAssociationType(source,
-                correspondingAssociationType, sourceAssociation.getIpsProject(), false);
+                correspondingAssociationType, sourceAssociation.getIpsProject(), true);
         return Arrays.asList(associations);
     }
 
