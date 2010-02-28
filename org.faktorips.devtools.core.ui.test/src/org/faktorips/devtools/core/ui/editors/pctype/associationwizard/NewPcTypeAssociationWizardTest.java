@@ -66,15 +66,14 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
         List result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
         assertEquals(0, result.size());
 
+        // don't find associations from supertype
         superRelation.setTarget(policyCmptType2.getName());
         result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
-        assertEquals(1, result.size());
-        assertTrue(result.contains(superRelation));
+        assertEquals(0, result.size());
 
         relation12.setTarget(policyCmptType2.getName());
         result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(superRelation));
+        assertEquals(1, result.size());
         assertTrue(result.contains(relation12));
 
         superRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -89,8 +88,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
 
         relation21.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
-        assertEquals(1, result.size());
-        assertTrue(result.contains(superRelation));
+        assertEquals(0, result.size());
     }
 
     /**
