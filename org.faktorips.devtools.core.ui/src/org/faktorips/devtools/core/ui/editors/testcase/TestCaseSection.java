@@ -49,7 +49,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -978,19 +977,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Initialization of the main section. {@inheritDoc}
      */
     @Override
-    protected void initClientComposite(Composite cdlient, UIToolkit toolkit) {
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
         this.toolkit = toolkit;
 
         hookeSectionTitleHyperlink();
 
         configureToolBar();
 
-        SashForm sashForm = new SashForm(cdlient, SWT.NULL);
-        toolkit.getFormToolkit().adapt(sashForm, false, false);
-        sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // Layout main section with two columns
+        client.setLayout(new GridLayout(2, true));
+        client.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // Tree structure section
-        Section structureSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
+        Section structureSection = toolkit.getFormToolkit().createSection(client, ExpandableComposite.TITLE_BAR);
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
 
@@ -1037,7 +1036,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // Details section
         testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this, bindingContext);
-        Section detailAreaSection = testCaseDetailArea.createInitialDetailArea(sashForm, sectionDetailTitle);
+        Section detailAreaSection = testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
 
         createDetailAreaSectionToolbar(detailAreaSection);
 
