@@ -19,6 +19,7 @@ import java.lang.reflect.Modifier;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.LocalizedTextHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
@@ -142,60 +143,85 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
     /**
      * {@inheritDoc}
      */
-    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder, String[] parentObjectFieldNames) {
-        generateMethodNotifyChangeListeners(methodBuilder, parentObjectFieldNames);
+    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
+            String[] parentObjectFieldNames,
+            boolean createPropertyChangeListenerMethods) {
+        generateMethodNotifyChangeListeners(methodBuilder, parentObjectFieldNames, createPropertyChangeListenerMethods);
 
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener",
-                new String[] { "listener" }, new Class[] { PropertyChangeListener.class },
-                propertyChangeSupportFieldName);
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener", new String[] {
-                "listener", "propagateEventsFromChildren" },
-                new Class[] { PropertyChangeListener.class, boolean.class }, propertyChangeSupportFieldName);
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener", new String[] {
-                "propertyName", "listener" }, new Class[] { String.class, PropertyChangeListener.class },
-                propertyChangeSupportFieldName);
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, boolean.class, "hasListeners",
-                new String[] { "propertyName" }, new Class[] { String.class }, propertyChangeSupportFieldName);
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "removePropertyChangeListener",
-                new String[] { "listener" }, new Class[] { PropertyChangeListener.class },
-                propertyChangeSupportFieldName);
-        generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "removePropertyChangeListener",
-                new String[] { "propertyName", "listener" },
-                new Class[] { String.class, PropertyChangeListener.class }, propertyChangeSupportFieldName);
+        if (createPropertyChangeListenerMethods) {
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener",
+                    new String[] { "listener" }, new Class[] { PropertyChangeListener.class },
+                    propertyChangeSupportFieldName);
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener",
+                    new String[] { "listener", "propagateEventsFromChildren" }, new Class[] {
+                            PropertyChangeListener.class, boolean.class }, propertyChangeSupportFieldName);
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "addPropertyChangeListener",
+                    new String[] { "propertyName", "listener" }, new Class[] { String.class,
+                            PropertyChangeListener.class }, propertyChangeSupportFieldName);
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, boolean.class, "hasListeners",
+                    new String[] { "propertyName" }, new Class[] { String.class }, propertyChangeSupportFieldName);
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "removePropertyChangeListener",
+                    new String[] { "listener" }, new Class[] { PropertyChangeListener.class },
+                    propertyChangeSupportFieldName);
+            generateMethodDelegation(methodBuilder, Modifier.PUBLIC, Void.TYPE, "removePropertyChangeListener",
+                    new String[] { "propertyName", "listener" }, new Class[] { String.class,
+                            PropertyChangeListener.class }, propertyChangeSupportFieldName);
+        }
     }
 
     /**
      * <pre>
      * public void notifyChangeListeners(PropertyChangeEvent event) {
+     * -if createPropertyChangeListenerMethods=true:
      *     if (event instanceof AssociationChangedEvent) {
      *         propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
      *     } else {
      *         propertyChangeSupport.firePropertyChange(event);
      *     }
-     *
-     * for each parent object:
+     * -else
+     *     super.notifyChangeListeners(event);
+     * -for each parent object:
      *     if (parentObject != null) {
      *         parentObject.notifyChangeListeners(event);
      *     }
      *     ...
      * }
+     * note that this method will only be created if 
+     * a) createPropertyChangeListenerMethods=true or
+     * b) parentModelObjectNames.length > 0
+     * 
      * </pre>
      */
     public void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder,
-            String parentModelObjectNames[]) {
+            String parentModelObjectNames[],
+            boolean createPropertyChangeListenerMethods) {
+        if (!createPropertyChangeListenerMethods && parentModelObjectNames.length == 0) {
+            return;
+        }
+
         methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (!createPropertyChangeListenerMethods) {
+            JavaGeneratiorHelper.appendOverrideAnnotation(methodBuilder, genPolicyCmptType.getPolicyCmptType()
+                    .getIpsProject(), false);
+        }
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS,
                 new String[] { "event" }, new Class[] { PropertyChangeEvent.class });
-        methodBuilder.append("if (event instanceof ");
-        methodBuilder.appendClassName(AssociationChangedEvent.class);
-        methodBuilder.append(") {");
-        methodBuilder.append(propertyChangeSupportFieldName + ".fireAssociationChange((");
-        methodBuilder.appendClassName(AssociationChangedEvent.class);
-        methodBuilder.appendln(")event);");
-        methodBuilder.append("} else {");
-        methodBuilder.appendln(propertyChangeSupportFieldName + ".firePropertyChange(event);");
-        methodBuilder.append("}");
+        if (createPropertyChangeListenerMethods) {
+            methodBuilder.append("if (event instanceof ");
+            methodBuilder.appendClassName(AssociationChangedEvent.class);
+            methodBuilder.append(") {");
+            methodBuilder.append(propertyChangeSupportFieldName + ".fireAssociationChange((");
+            methodBuilder.appendClassName(AssociationChangedEvent.class);
+            methodBuilder.appendln(")event);");
+            methodBuilder.append("} else {");
+            methodBuilder.appendln(propertyChangeSupportFieldName + ".firePropertyChange(event);");
+            methodBuilder.append("}");
+        } else {
+            methodBuilder.append("super.");
+            methodBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS);
+            methodBuilder.append("(event);");
+        }
         for (int i = 0; i < parentModelObjectNames.length; i++) {
             methodBuilder.append("if (");
             methodBuilder.append(parentModelObjectNames[i]);

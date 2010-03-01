@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,7 +31,12 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from version 2.5.0.rc1 to version 2.6.0.rc1
+ * Migration from version 2.5.0.rc1 to version 2.6.0.rc1 Manually steps: if the master to detail
+ * association is not unique then the inverse must be set to the corresponding detail to master
+ * association. In some cases the interface DependantObject could not removed from classes with
+ * annotation (e.g. XmlRootElement) if there is a compile error like: ... must implement the
+ * inherited abstract method DependantObject.setParentModelObjectInternal(AbstractModelObject) then
+ * the implementation of the interface DependantObject must be removed manually.
  * 
  * @author Joerg Ortmann
  */
@@ -55,12 +59,12 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "2.5.0.rc2"; //$NON-NLS-1$
+        return "2.6.0.rc1"; //$NON-NLS-1$
     }
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
@@ -120,9 +124,8 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
         IPolicyCmptType targetPolicyCmptType = association.findTargetPolicyCmptType(ipsProject);
         if (targetPolicyCmptType == null) {
             // can't fix inverse because target not found
-            String text = "Detail to master association couldn't be fixed {0}, target policy component type not found!";
-            msgList.add(new Message(MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS, NLS.bind(text, association.toString()),
-                    Message.WARNING));
+            String text = "Detail to master association couldn't be fixed, target policy component type not found";
+            msgList.add(new Message(MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS, text, Message.WARNING, association));
             return true;
         }
         IAssociation[] associationCandidates = targetPolicyCmptType.getAssociationsForTarget(association
@@ -137,13 +140,14 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
             masterDetailAssociationToFix.setInverseAssociation(association.getName());
         } else if (masterDetailcanditates.size() == 0) {
             // error: no master detail found
-            String text = "Detail to master association couldn't be fixed {0}, no corresponding master to detail association found!";
-            msgList.add(new Message(MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS, NLS.bind(text, association
-                    .toString()), Message.WARNING));
+            String text = "Detail to master association couldn't be fixed, no corresponding master to detail association found";
+            msgList.add(new Message(MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS, text, Message.WARNING,
+                    association));
         } else {
             // error: to many master detail found, not unique
-            String text = "Detail to master association couldn't be fixed {0}, no unique master to detail association found!";
-            msgList.add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING));
+            String text = "Detail to master association couldn't be fixed, no unique master to detail association found";
+            msgList
+                    .add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
         }
         return true;
     }

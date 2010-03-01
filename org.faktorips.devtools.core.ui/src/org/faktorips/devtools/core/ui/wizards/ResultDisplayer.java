@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * This class can be used to display a <code>MessageList</code> by using the
@@ -90,7 +91,7 @@ public class ResultDisplayer implements Runnable {
                                 .add(new IpsStatus(
                                         IStatus.ERROR,
                                         0,
-                                        (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") + msg.getText(), null)); //$NON-NLS-1$
+                                        (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") + getMessageText(msg), null)); //$NON-NLS-1$
                         break;
                 }
             }
@@ -102,11 +103,14 @@ public class ResultDisplayer implements Runnable {
                 switch (msg.getSeverity()) {
                     case Message.WARNING:
                         multiStatus.add(new IpsStatus(IStatus.WARNING, 0,
-                                (containsErrors ? Messages.ResultDisplayer_Warnings : "") + msg.getText(), null)); //$NON-NLS-1$
+                                (containsErrors ? Messages.ResultDisplayer_Warnings : "") + getMessageText(msg), null)); //$NON-NLS-1$
                         break;
                     case Message.INFO:
-                        multiStatus.add(new IpsStatus(IStatus.INFO, 0,
-                                (containsErrors ? Messages.ResultDisplayer_Informations : "") + msg.getText(), null)); //$NON-NLS-1$
+                        multiStatus
+                                .add(new IpsStatus(
+                                        IStatus.INFO,
+                                        0,
+                                        (containsErrors ? Messages.ResultDisplayer_Informations : "") + getMessageText(msg), null)); //$NON-NLS-1$
                         break;
                 }
             }
@@ -123,5 +127,25 @@ public class ResultDisplayer implements Runnable {
 
         ErrorDialog.openError(shell, NLS.bind(Messages.ResultDisplayer_titleResults, operationName), messageText,
                 multiStatus);
+    }
+
+    /*
+     * Returns the message text and if available adds the string representation of the object the
+     * message was created for
+     */
+    private String getMessageText(Message msg) {
+        String text = msg.getText();
+        ObjectProperty[] invalidObjectProperties = msg.getInvalidObjectProperties();
+        if (invalidObjectProperties == null || invalidObjectProperties.length == 0) {
+            return text;
+        }
+        text += ": ";
+        for (int i = 0; i < invalidObjectProperties.length; i++) {
+            text += invalidObjectProperties[i].getObject();
+            if (i + 1 < invalidObjectProperties.length) {
+                text += "\n  ";
+            }
+        }
+        return text;
     }
 }

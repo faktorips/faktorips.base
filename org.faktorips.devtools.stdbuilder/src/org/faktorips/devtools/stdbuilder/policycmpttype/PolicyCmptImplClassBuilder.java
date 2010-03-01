@@ -171,7 +171,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         List<IPolicyCmptTypeAssociation> detailToMasterAssociations = getAllDetailToMasterAssociations(type);
         generateCodeForDependantObject(memberVarsBuilder, methodsBuilder, detailToMasterAssociations);
-        getGenerator().generateChangeListenerMethods(methodsBuilder, detailToMasterAssociations);
+        getGenerator().generateChangeListenerMethods(methodsBuilder, detailToMasterAssociations,
+                getPcType().getSupertype().length() == 0);
 
         generateMethodInitPropertiesFromXml(methodsBuilder);
         generateMethodCreateChildFromXml(methodsBuilder);

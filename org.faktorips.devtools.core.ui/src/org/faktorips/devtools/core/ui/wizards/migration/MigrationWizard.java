@@ -14,34 +14,22 @@
 package org.faktorips.devtools.core.ui.wizards.migration;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.util.message.Message;
+import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -78,18 +66,9 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
             MigrateProjects migrationOperation = new MigrateProjects();
             getContainer().run(false, true, migrationOperation);
             MessageList messageList = migrationOperation.getMessageList();
-            StringBuilder sb = new StringBuilder();
-            for (Iterator<Message> iterator = messageList.iterator(); iterator.hasNext();) {
-                Message msg = iterator.next();
-                IpsPlugin.log(new IpsStatus(IStatus.WARNING, msg.getText()));
-                sb.append(msg.getText());
-                if (iterator.hasNext()) {
-                    sb.append("\n");
-                }
-            }
-            if (sb.length() > 0) {
-                ResultStatusDialog resultStatusDialog = new ResultStatusDialog(getShell(), sb.toString());
-                resultStatusDialog.open();
+            if (!messageList.isEmpty()) {
+                getShell().getDisplay().syncExec(
+                        new ResultDisplayer(getShell(), Messages.MigrationWizard_title, messageList));
             }
         } catch (InvocationTargetException e1) {
             MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
@@ -100,34 +79,6 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                     Messages.MigrationWizard_msgAbortion);
         }
         return true;
-    }
-
-    private class ResultStatusDialog extends StatusDialog {
-        private String text;
-
-        @Override
-        public void create() {
-            super.create();
-            setTitle("Mirgate finished with warnings");
-        }
-
-        @Override
-        public Control createDialogArea(Composite parent) {
-            Composite composite = new Composite(parent, 0);
-            composite.setLayout(new GridLayout(1, true));
-            Label title = new Label(composite, SWT.NONE);
-            title.setText("Result (also be reported in log):");
-            Text resultText = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-            resultText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-            resultText.setEditable(false);
-            resultText.setText(text);
-            return composite;
-        }
-
-        public ResultStatusDialog(Shell parent, String text) {
-            super(parent);
-            this.text = text;
-        }
     }
 
     /**
@@ -162,6 +113,5 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         public MessageList getMessageList() {
             return messageList;
         }
-
     }
 }
