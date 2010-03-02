@@ -120,6 +120,8 @@ import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.StyledCellMessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -994,8 +996,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
 
-        createStructureSectionToolbar(structureSection);
-
         Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
         structureComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout structureLayout = new GridLayout(2, false);
@@ -1022,6 +1022,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, new DragListener(
                 treeViewer));
 
+        createStructureSectionToolbar(structureSection);
         buildContextMenu();
 
         // Buttons belongs to the tree structure
@@ -1082,8 +1083,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
         actionAssociation.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(structureSection);
+        toolBarManager.add(new ExpandAllAction(treeViewer));
+        toolBarManager.add(new CollapseAllAction(treeViewer));
         toolBarManager.add(actionAssociation);
         toolBarManager.update(true);
         structureSection.setTextClient(toolbar);

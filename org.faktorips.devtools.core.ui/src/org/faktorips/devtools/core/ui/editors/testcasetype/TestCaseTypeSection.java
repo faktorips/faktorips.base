@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -75,6 +76,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -105,6 +107,8 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -1030,6 +1034,7 @@ public class TestCaseTypeSection extends IpsSection {
         hookTreeListeners();
         treeViewer.expandToLevel(2);
         buildContextMenu();
+        createToolbar(structureSection);
 
         // Buttons belongs to the tree structure
         Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
@@ -1072,6 +1077,15 @@ public class TestCaseTypeSection extends IpsSection {
 
         sashForm.setWeights(new int[] { 50, 50 });
         redrawForm();
+    }
+
+    private void createToolbar(Section section) {
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        ToolBar toolbar = toolBarManager.createControl(section);
+        toolBarManager.add(new ExpandAllAction(treeViewer));
+        toolBarManager.add(new CollapseAllAction(treeViewer));
+        toolBarManager.update(true);
+        section.setTextClient(toolbar);
     }
 
     /*

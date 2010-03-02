@@ -25,6 +25,8 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+    public static String ExpandAllAction_Description;
+    public static String CollapseAllAction_Description;
     public static String AddIpsNatureAction_basePackage_default;
     public static String AddIpsNatureAction_basePackageName;
     public static String AddIpsNatureAction_basePackageNameNotValid;
@@ -143,9 +145,6 @@ public class Messages extends NLS {
 
     public static String IpsTestAction_titleCantRunTest;
     public static String IpsTestAction_msgCantRunTest;
-
-    public static String ExpandCollapseAllAction_Expand_Description;
-    public static String ExpandCollapseAllAction_Collapse_Description;
 
     public static String TableImportExportAction_confirmDialogDirtyTableContentsText;
     public static String TableImportExportAction_confirmDialogDirtyTableContentsTitle;

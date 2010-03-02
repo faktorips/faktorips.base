@@ -60,7 +60,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -335,7 +335,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
-        getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
+        getViewSite().getActionBars().getToolBarManager().add(new CollapseAllAction(treeViewer));
         getViewSite().getActionBars().getToolBarManager().add(toggleLinking);
 
     }
