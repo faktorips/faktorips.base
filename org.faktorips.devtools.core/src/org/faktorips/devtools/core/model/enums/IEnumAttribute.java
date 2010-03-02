@@ -132,6 +132,21 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this <tt>IEnumAttribute</tt> is inherited from the
+     * supertype hierarchy but the containing <tt>IEnumType</tt> has no super enumeration type.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX
+            + "EnumAttributeInheritedButNoSupertype"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this <tt>IEnumAttribute</tt> is inherited from the
+     * supertype hierarchy but the super enumeration type of the containing <tt>IEnumType</tt> does
+     * not exist.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_EXISTING_SUPERTYPE = MSGCODE_PREFIX
+            + "EnumAttributeInheritedButNoExistingSupertype"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that there is at least one other <tt>IEnumAttribute</tt>
      * marked as literal name in the parent <tt>IEnumType</tt>.
      */

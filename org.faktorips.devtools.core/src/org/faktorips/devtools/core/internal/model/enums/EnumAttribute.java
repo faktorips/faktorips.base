@@ -131,12 +131,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super.validateThis(list, ipsProject);
 
         validateName(list, ipsProject);
-        if (!inherited) {
+        if (!(inherited)) {
             validateDatatype(list, ipsProject);
             validateDuplicateIndicator(list, new IdentifierIndictionProvider());
             validateDuplicateIndicator(list, new DisplayNameIndictionProvider());
+        } else {
+            validateInherited(list, ipsProject);
         }
-        validateInherited(list, ipsProject);
     }
 
     /** Validates the <tt>name</tt> property. */
@@ -263,17 +264,29 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the <tt>inherited</tt> property. */
+    /** Checks the existence of the attribute in the supertype hierarchy. */
     private void validateInherited(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // Check existence in supertype hierarchy if this EnumAttribute is inherited.
-        if (inherited) {
-            if (findSuperEnumAttribute(ipsProject) == null) {
-                String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
-                Message validationMessage = new Message(
-                        MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text, Message.ERROR, this,
-                        PROPERTY_INHERITED);
-                list.add(validationMessage);
-            }
+        if (!(getEnumType().hasSuperEnumType())) {
+            String text = Messages.EnumAttribute_InheritedButNoSupertype;
+            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE, text,
+                    Message.ERROR, this, PROPERTY_INHERITED);
+            list.add(validationMessage);
+            return;
+        }
+
+        if (!(getEnumType().hasExistingSuperEnumType(ipsProject))) {
+            String text = Messages.EnumAttribute_InheritedButNoExistingSupertype;
+            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_EXISTING_SUPERTYPE, text,
+                    Message.ERROR, this, PROPERTY_INHERITED);
+            list.add(validationMessage);
+            return;
+        }
+
+        if (findSuperEnumAttribute(ipsProject) == null) {
+            String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
+            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY,
+                    text, Message.ERROR, this, PROPERTY_INHERITED);
+            list.add(validationMessage);
         }
     }
 

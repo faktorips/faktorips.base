@@ -237,10 +237,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES));
     }
 
-    public void testValidateInherited() throws CoreException {
-        IIpsModel ipsModel = getIpsModel();
-
-        // Test no such attribute in supertype hierarchy for inherited attribute.
+    public void testValidateInheritedNoSuchAttributeInSupertypeHierarchy() throws CoreException {
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
@@ -252,11 +249,43 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY));
+    }
+
+    public void testValidateInheritedNoSupertype() throws CoreException {
+        IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
+        inheritedAttribute.setName("foo");
+        inheritedAttribute.setInherited(true);
+
+        MessageList validationMessageList = inheritedAttribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE));
+    }
+
+    public void testValidateInheritedNoExistingSupertype() throws CoreException {
+        genderEnumType.setSuperEnumType("foo");
+        IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
+        inheritedAttribute.setName("foo");
+        inheritedAttribute.setInherited(true);
+
+        MessageList validationMessageList = inheritedAttribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_EXISTING_SUPERTYPE));
+    }
+
+    public void testValidateInherited() throws CoreException {
+        IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        superEnumType.setAbstract(true);
+        genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+        IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
+        inheritedAttribute.setName("foo");
+        inheritedAttribute.setInherited(true);
+
         IEnumAttribute toInheritAttribute = superEnumType.newEnumAttribute();
         toInheritAttribute.setName("foo");
         toInheritAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
-        ipsModel.clearValidationCache();
         assertTrue(inheritedAttribute.isValid());
     }
 

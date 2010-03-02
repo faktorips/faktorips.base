@@ -37,8 +37,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     private String windowTitle;
     private boolean tabFolderUsed;
     private boolean dataChangeable = true;
-    
-    /** The ui toolkit to use for creating new ui elements. */
+
     protected UIToolkit uiToolkit = new UIToolkit(null);
 
     public EditDialog(Shell shell, String windowTitle) {
@@ -49,28 +48,26 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         super(shell);
         setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
         this.windowTitle = windowTitle;
-        this.tabFolderUsed = useTabFolder;
+        tabFolderUsed = useTabFolder;
         IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page == null) {
             return;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDataChangeable(boolean changeable) {
         if (dataChangeable = changeable) {
             return;
         }
-        this.dataChangeable = changeable;
+        dataChangeable = changeable;
+        setDataChangeableThis(changeable);
+    }
+
+    protected void setDataChangeableThis(boolean changeable) {
         uiToolkit.setDataChangeable(getDialogArea(), dataChangeable);
     }
 
@@ -81,9 +78,6 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final Control createDialogArea(Composite parent) {
         getShell().setText(windowTitle);
@@ -92,6 +86,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         composite.setLayout(new GridLayout(1, false));
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         Composite panel;
+
         if (tabFolderUsed) {
             panel = new TabFolder(composite, SWT.TOP);
         } else {
@@ -104,23 +99,22 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         }
         try {
             Composite workArea = createWorkArea(panel);
-            uiToolkit.setDataChangeable(workArea, dataChangeable);
             if (workArea.getLayoutData() == null) {
                 workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+
+        setDataChangeable(dataChangeable);
         return composite;
     }
 
     /**
-     * This method must create and return the ui composite containing the actual contents of the
+     * This method must create and return the UI composite containing the actual contents of the
      * dialog.
      * 
-     * @param parent The parent ui composite.
-     * 
-     * @return The ui composite containing the actual contents of this dialog.
+     * @param parent The parent UI composite.
      * 
      * @throws CoreException May be thrown at any time.
      */
