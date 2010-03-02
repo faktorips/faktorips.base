@@ -133,8 +133,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         validateName(list, ipsProject);
         if (!(inherited)) {
             validateDatatype(list, ipsProject);
-            validateDuplicateIndicator(list, new IdentifierIndictionProvider());
-            validateDuplicateIndicator(list, new DisplayNameIndictionProvider());
+            validateDuplicateIndicator(list, new IdentifierIndicationProvider());
+            validateDuplicateIndicator(list, new DisplayNameIndicationProvider());
         } else {
             validateInherited(list, ipsProject);
         }
@@ -487,7 +487,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         public String getPropertyDisplayName();
     }
 
-    private class IdentifierIndictionProvider implements IndicationProvider {
+    private class IdentifierIndicationProvider implements IndicationProvider {
 
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsIdInFaktorIpsUi;
@@ -513,7 +513,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     }
 
-    private class DisplayNameIndictionProvider implements IndicationProvider {
+    private class DisplayNameIndicationProvider implements IndicationProvider {
 
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
