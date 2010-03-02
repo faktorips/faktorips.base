@@ -114,7 +114,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 if (literalNameAttribute) {
                     super.setDataChangeable(changeable);
                 } else {
-                    bindContents();
+                    rebindContents();
                 }
             }
         }
@@ -148,7 +148,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             createFieldsForNormalAttribute();
         }
 
-        bindContents();
+        rebindContents();
 
         // Create extension properties on position bottom.
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -286,7 +286,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * <p>
      * Also handles the enabled states of the fields.
      */
-    private void bindContents() {
+    private void rebindContents() {
         bindingContext.removeBindings(nameText);
         bindingContext.removeBindings(datatypeControl);
         bindingContext.removeBindings(identifierCheckbox);
@@ -347,7 +347,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            bindContents();
+            rebindContents();
             bindingContext.updateUI();
             if (dialogArea != null) {
                 dialogArea.redraw();
