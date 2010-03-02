@@ -146,9 +146,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             createFieldsForLiteralNameAttribute();
         } else {
             createFieldsForNormalAttribute();
+            rebindContents();
         }
-
-        rebindContents();
 
         // Create extension properties on position bottom.
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -186,6 +185,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         nameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
 
         // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
@@ -226,6 +226,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         label.getParent().setLayoutData(layoutData);
         inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         inheritedCheckbox.setLayoutData(createLayoutData());
+        bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
     }
 
     /**
@@ -281,34 +282,30 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /**
      * Binds the contents of the fields to the contents of the super enumeration attribute if the
-     * <tt>IEnumAttribute</tt> to be edited is marked as being inherited. The contents are bound to
-     * the respective properties if it is not.
+     * <tt>IEnumAttribute</tt> to be edited is marked as being inherited. Otherwise the contens are
+     * bound to the respective properties of the attribute.
      * <p>
      * Also handles the enabled states of the fields.
+     * <p>
+     * Only applicable if the enumeration attribute isn't marked as literal name.
      */
     private void rebindContents() {
-        bindingContext.removeBindings(nameText);
         bindingContext.removeBindings(datatypeControl);
         bindingContext.removeBindings(identifierCheckbox);
         bindingContext.removeBindings(displayNameCheckbox);
         bindingContext.removeBindings(uniqueCheckbox);
-        bindingContext.removeBindings(inheritedCheckbox);
 
-        bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
-
-        if (!(literalNameAttribute)) {
-            if (enumAttribute.isInherited()) {
-                obtainContentsFromSuperEnumAttribute();
-            } else {
-                bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
-                bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
-                bindingContext.bindContent(displayNameCheckbox, enumAttribute,
-                        IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
-                bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
-            }
-            bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
-            bindEnabledStates();
+        if (enumAttribute.isInherited()) {
+            obtainContentsFromSuperEnumAttribute();
+        } else {
+            bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
+            bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
+            bindingContext.bindContent(displayNameCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
+            bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
         }
+
+        bindEnabledStates();
     }
 
     private void obtainContentsFromSuperEnumAttribute() {
@@ -329,13 +326,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindEnabledStates() {
-        if (!(literalNameAttribute)) {
-            bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-        }
+        bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        bindingContext.bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
     }
 
     @Override
@@ -347,7 +342,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            rebindContents();
+            if (!(literalNameAttribute)) {
+                rebindContents();
+            }
             bindingContext.updateUI();
             if (dialogArea != null) {
                 dialogArea.redraw();
