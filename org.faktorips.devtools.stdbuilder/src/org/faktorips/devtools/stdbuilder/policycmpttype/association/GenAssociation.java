@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -1036,12 +1037,87 @@ public abstract class GenAssociation extends GenTypePart {
 
     /**
      * Returns <code>true</code> if the association is the inverse of a derived union association,
-     * otherwise <code>false</code>
+     * otherwise <code>false</code>. Note that due to performance reason this method should be used
+     * instead of calling PolicyCmptTypeAssociation#isInverseOfDerivedUnion because this method used
+     * the cached inverse association instead searching the inverse again.
      */
     public boolean isInverseOfDerivedUnionAssociation() throws CoreException {
         if (inverseAssociation == null) {
             return false;
         }
         return inverseAssociation.isDerivedUnion();
+    }
+
+    /**
+     * Returns the association generator of the corresponding inverse of a derived union. Returns
+     * <code>null</code> if the inverse of this association is missing or this association is no
+     * subset of a derived union. Note that more than one generators could be returned if the
+     * derived union is itself a subset of a derived union.
+     */
+    public List<GenAssociation> getGeneratorForInverseOfDerivedUnion() throws CoreException {
+        if (inverseAssociation == null || !inverseAssociation.isSubsetOfADerivedUnion()
+                || !isCompositionDetailToMaster()) {
+            return null;
+        }
+        // find the derived union the inverse of this (the master to detail association) is the
+        // subset for
+        IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
+                .findSubsettedDerivedUnion(getIpsProject());
+        if (subsettedDerivedUnion == null) {
+            return null;
+        }
+
+        // find generator for the policy component type of the derived union
+        GenPolicyCmptType generatorForDerivedUnionHost = getGeneratorFor(subsettedDerivedUnion.getPolicyCmptType());
+        if (generatorForDerivedUnionHost == null) {
+            return null;
+        }
+
+        // find the generator for the derived union association
+        GenAssociation generatorForDerivedUnion = generatorForDerivedUnionHost.getGenerator(subsettedDerivedUnion);
+        if (generatorForDerivedUnion == null) {
+            return null;
+        }
+
+        List<GenAssociation> result = new ArrayList<GenAssociation>();
+        if (subsettedDerivedUnion.isSubsetOfADerivedUnion()) {
+            // special case if the derived union is itself a subset of a derived union
+            // then we need to add the corresponding generators too
+            GenAssociation generatorForInverseAssociation = generatorForDerivedUnion
+                    .getGeneratorForInverseAssociation();
+            if (generatorForInverseAssociation != null) {
+                List<GenAssociation> generatorForInverseOfDerivedUnion = generatorForInverseAssociation
+                        .getGeneratorForInverseOfDerivedUnion();
+                if (generatorForInverseOfDerivedUnion != null) {
+                    result.addAll(generatorForInverseOfDerivedUnion);
+                }
+            }
+        }
+
+        GenAssociation generatorForInverseAssociation = generatorForDerivedUnion.getGeneratorForInverseAssociation();
+        if (generatorForInverseAssociation != null) {
+            result.add(generatorForInverseAssociation);
+        }
+        if (result.size() == 0) {
+            return null;
+        }
+        // returns the generators of the inverse association of the derived union
+        return result;
+    }
+
+    private GenAssociation getGeneratorForInverseAssociation() throws CoreException {
+        if (inverseAssociation == null) {
+            return null;
+        }
+        GenPolicyCmptType generatorForTargetSide = getGeneratorFor(target);
+        if (generatorForTargetSide == null) {
+            return null;
+        }
+        return generatorForTargetSide.getGenerator(inverseAssociation);
+    }
+
+    private GenPolicyCmptType getGeneratorFor(IPolicyCmptType policyCmptType) throws CoreException {
+        StandardBuilderSet builderSet = getGenType().getBuilderSet();
+        return builderSet.getGenerator(policyCmptType);
     }
 }

@@ -65,6 +65,18 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return isAssoziation() || isCompositionMasterToDetail();
     }
 
+    public boolean isInverseOfDerivedUnion() throws CoreException {
+        if (!isCompositionDetailToMaster()) {
+            return false;
+        }
+        IPolicyCmptTypeAssociation masterToDetail = findInverseAssociation(getIpsProject());
+        if (masterToDetail == null) {
+            // no master association found, will be a validation error
+            return false;
+        }
+        return masterToDetail.isDerivedUnion();
+    }
+
     @Override
     public void setAssociationType(AssociationType newType) {
         if (newType.isCompositionDetailToMaster()) {
@@ -412,5 +424,4 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
     }
-
 }

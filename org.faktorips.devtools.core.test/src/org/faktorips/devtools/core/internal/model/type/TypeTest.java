@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -221,6 +222,68 @@ public class TypeTest extends AbstractIpsPluginTest {
         superType.overrideMethods(new IMethod[] { supersuperMethod });
         list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+    }
+
+    public void testValidate_MustImplementInverseDerivedUnion() throws Exception {
+        IPolicyCmptType source = newPolicyCmptType(ipsProject, "SourceType");
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
+
+        MessageList ml = new MessageList();
+        // ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        PolicyCmptTypeAssociation union = (PolicyCmptTypeAssociation)source.newAssociation();
+        union.setDerivedUnion(true);
+        union.setTargetRoleSingular("Target");
+        union.setTarget(target.getQualifiedName());
+
+        // ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        PolicyCmptTypeAssociation inverseOfUnion = (PolicyCmptTypeAssociation)target.newAssociation();
+        inverseOfUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseOfUnion.setTargetRoleSingular(source.getUnqualifiedName());
+        inverseOfUnion.setTarget(source.getQualifiedName());
+
+        union.setInverseAssociation(inverseOfUnion.getName());
+        inverseOfUnion.setInverseAssociation(union.getName());
+
+        ml = target.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        // test if the rule is not executed when disabled
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setDerivedUnionIsImplementedRuleEnabled(false);
+        ipsProject.setProperties(props);
+        ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        props.setDerivedUnionIsImplementedRuleEnabled(true);
+        ipsProject.setProperties(props);
+
+        // type is valid, if it is abstract
+        target.setAbstract(true);
+        ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        target.setAbstract(false);
+
+        // implement the derived union in the same type
+        PolicyCmptTypeAssociation associationM2D = (PolicyCmptTypeAssociation)source.newAssociation();
+        associationM2D.setDerivedUnion(false);
+        associationM2D.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associationM2D.setSubsettedDerivedUnion(union.getName());
+        associationM2D.setTarget(target.getQualifiedName());
+        associationM2D.setTargetRoleSingular("M2D");
+
+        PolicyCmptTypeAssociation associationD2M = (PolicyCmptTypeAssociation)target.newAssociation();
+        associationD2M.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        associationD2M.setTarget(source.getQualifiedName());
+        associationD2M.setTargetRoleSingular("D2M");
+
+        associationM2D.setInverseAssociation(associationD2M.getName());
+        associationD2M.setInverseAssociation(associationM2D.getName());
+
+        ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
     }
 
     public void testValidate_MustImplementDerivedUnion() throws Exception {

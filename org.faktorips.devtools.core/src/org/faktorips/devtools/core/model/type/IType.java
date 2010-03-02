@@ -71,9 +71,18 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a property name is used at least twice.
+     * Validation message code to indicate that in case of a derived union the type must be abstract
+     * or at lease one implementation of the derived union must exists in the type.
      */
     public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that in case of an inverse derived union the type must be
+     * abstract or at lease one inverse of an implementation of the derived union must exists in the
+     * type.
+     */
+    public final static String MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION = MSGCODE_PREFIX
+            + "MustSpecifyInverseDerivedUnion"; //$NON-NLS-1$
 
     public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameExists"; //$NON-NLS-1$

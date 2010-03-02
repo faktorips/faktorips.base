@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -875,6 +876,24 @@ public abstract class Type extends BaseIpsObject implements IType {
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR,
                                 Type.this, IType.PROPERTY_ABSTRACT));
                     }
+                } else if (associations[i] instanceof IPolicyCmptTypeAssociation) {
+                    // special check for policy component type associations
+                    // with type detail to master, if this association is a inverse of a derived
+                    // union then we need to check either the class is abstract or an inverse
+                    // implementation of the derived union exists
+                    IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)associations[i];
+                    if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
+                        continue;
+                    }
+
+                    // now check if there is another detail to master
+                    // which is the inverse of a subset derived union
+                    if (!isInverseSubsetted(policyCmptTypeAssociation)) {
+                        String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion, associations[i]
+                                .getName(), associations[i].getType().getQualifiedName());
+                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text,
+                                Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
+                    }
                 }
             }
             return true;
@@ -889,6 +908,34 @@ public abstract class Type extends BaseIpsObject implements IType {
             return false;
         }
 
+        private boolean isInverseSubsetted(IPolicyCmptTypeAssociation inverseOfDerivedUnion) throws CoreException {
+            IPolicyCmptTypeAssociation derivedUnion = inverseOfDerivedUnion.findInverseAssociation(getIpsProject());
+            if (derivedUnion == null) {
+                // must be an error
+                return false;
+            }
+            // now check if one of the candidate is the inverse of the implementation of the derived
+            // union
+            for (IAssociation candidate : candidateSubsets) {
+                if (!(candidate instanceof IPolicyCmptTypeAssociation)) {
+                    continue;
+                }
+                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)candidate;
+                if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+                    continue;
+                }
+                IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation
+                        .findInverseAssociation(getIpsProject());
+                if (inverseAssociationOfCandidate == null) {
+                    continue;
+                }
+                // test if the inverse is the subset of the derived union
+                if (inverseAssociationOfCandidate.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor {

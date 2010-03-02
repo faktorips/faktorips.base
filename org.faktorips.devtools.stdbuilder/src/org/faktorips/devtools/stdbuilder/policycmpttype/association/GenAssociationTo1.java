@@ -370,37 +370,33 @@ public class GenAssociationTo1 extends GenAssociation {
     /**
      * Code sample:
      * 
+     * Note that if this is the inverse of a derived union then no code is generated (see comment
+     * below).
+     * 
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
      *     return coverage; // if inverse is not derived union
-     *     return (ICoverage) getParentModelObject(); // if inverse is derived union
      * }
      * 
      * </pre>
      */
     protected void generateMethodGetTypesafeParentObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
+        if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
+            // in case of inverse of derived union
+            // we don't need to generate this method
+            // because no field is generated for the parent
+            return;
+        }
+        // in case of non derived union we can directly return the field
+        // note this is necessary because this getter method is used
+        // to assert that a child is only related to one parent
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
 
-        if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
-            // in case of inverse of derived union
-            // we must use the getParentModelObject method to return
-            // the parent, because no field is generated for the parent
-            methodsBuilder.append("(");
-            methodsBuilder.appendClassName(targetInterfaceName);
-            methodsBuilder.append(")");
-            methodsBuilder.append(MethodNames.GET_PARENT);
-            methodsBuilder.appendln("()");
-        } else {
-            // in case of non derived union we can directly return the field
-            // note this is necessary because this getter method is used
-            // to assert that a child is only related to one parent
-            methodsBuilder.append(getFieldNameForAssociation());
-        }
+        methodsBuilder.append(getFieldNameForAssociation());
         methodsBuilder.append(";");
         methodsBuilder.closeBracket();
     }

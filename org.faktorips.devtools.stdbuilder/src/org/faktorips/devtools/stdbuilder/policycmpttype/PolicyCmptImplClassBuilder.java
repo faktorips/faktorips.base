@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
@@ -169,8 +171,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
 
-        List<IPolicyCmptTypeAssociation> detailToMasterAssociations = getAllDetailToMasterAssociations(type);
+        List<IPolicyCmptTypeAssociation> detailToMasterAssociations = getAllDependantDetailToMasterAssociations(type);
+
         generateCodeForDependantObject(memberVarsBuilder, methodsBuilder, detailToMasterAssociations);
+
         getGenerator().generateChangeListenerMethods(methodsBuilder, detailToMasterAssociations,
                 getPcType().getSupertype().length() == 0);
 
@@ -198,11 +202,50 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /*
+     * Returns a set of association generators and their corresponding associations. Return all
+     * generators for the inverse of a derived union. Returns an empty map if this type has no
+     * inverse subset derived union associations.
+     */
+    private Map<GenAssociation, List<IPolicyCmptTypeAssociation>> getAllInverseOfDerivedUnionAssociationsGenerator(IPolicyCmptType type)
+            throws CoreException {
+        Map<GenAssociation, List<IPolicyCmptTypeAssociation>> result = new HashMap<GenAssociation, List<IPolicyCmptTypeAssociation>>();
+        IPolicyCmptTypeAssociation[] associations = type.getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            GenAssociation generator = getGenerator(associations[i]);
+            if (generator == null) {
+                continue;
+            }
+            if (generator.isInverseOfDerivedUnionAssociation()
+                    || !(associations[i].getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
+                continue;
+            }
+            // regards only detail to master associations (which are no inverse of a derived union)
+            List<GenAssociation> generatorsForInverseOfDerivedUnion = generator.getGeneratorForInverseOfDerivedUnion();
+            if (generatorsForInverseOfDerivedUnion == null) {
+                continue;
+            }
+
+            for (Iterator<GenAssociation> iterator = generatorsForInverseOfDerivedUnion.iterator(); iterator.hasNext();) {
+                GenAssociation genAssociation = iterator.next();
+                // the derived union could be implemented by different associations in the same
+                // class thus we need a list of associations
+                List<IPolicyCmptTypeAssociation> associationsInResult = result.get(genAssociation);
+                if (associationsInResult == null) {
+                    associationsInResult = new ArrayList<IPolicyCmptTypeAssociation>();
+                    result.put(genAssociation, associationsInResult);
+                }
+                associationsInResult.add(associations[i]);
+            }
+        }
+        return result;
+    }
+
+    /*
      * Returns a list of all detail to mater associations. Note that the detail to master
      * composition of a derived union association (the inverse of a master to detail derived union)
      * is not included.
      */
-    private List<IPolicyCmptTypeAssociation> getAllDetailToMasterAssociations(IPolicyCmptType type)
+    private List<IPolicyCmptTypeAssociation> getAllDependantDetailToMasterAssociations(IPolicyCmptType type)
             throws CoreException {
         List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
         IPolicyCmptTypeAssociation[] associations = type.getPolicyCmptTypeAssociations();
@@ -1131,6 +1174,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateFieldForParent(memberVarsBuilder, association);
             generateMethodSetParentObjectInternal(methodBuilder, association);
         }
+
+        // methods for subset of derived union associations
+        // we must first collect a map of all inverse-of-derived-union-association-generators
+        // containing a list of the corresponding subset-derived-union-associations
+        // because a subset of a derived union could be added in the same class multiple times
+        // but we need to create the getter for the parent object only once
+        Map<GenAssociation, List<IPolicyCmptTypeAssociation>> inverseOfDerivedUnionAssociationGenerators = getAllInverseOfDerivedUnionAssociationsGenerator(getPcType());
+        for (Iterator<Map.Entry<GenAssociation, List<IPolicyCmptTypeAssociation>>> iterator = inverseOfDerivedUnionAssociationGenerators
+                .entrySet().iterator(); iterator.hasNext();) {
+            Entry<GenAssociation, List<IPolicyCmptTypeAssociation>> entry = iterator.next();
+            generateMethodGetParentModelObjectForSubsetDerivedUnion(methodBuilder, entry.getKey(), entry.getValue());
+        }
     }
 
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -1177,11 +1232,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     /**
      * <pre>
-     * public IModelObject getParentModelObject() {
-     *     if (contract != null) {
-     *         return contract;
+     * public IModelObject getPolicy() {
+     *     if (optionalPolicy != null) {
+     *         return optionalPolicy;
      *     }
-     *     if (police != null) {
+     *     if (policy != null) {
      *         return police;
      *     }
      *     return null;
@@ -1190,7 +1245,40 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * 
      * @throws CoreException
      */
+    private void generateMethodGetParentModelObjectForSubsetDerivedUnion(JavaCodeFragmentBuilder methodBuilder,
+            GenAssociation genAssociation,
+            List<IPolicyCmptTypeAssociation> associations) throws CoreException {
+        generateMethodGetParentModelObject(methodBuilder, genAssociation.getQualifiedClassName(genAssociation
+                .getTargetPolicyCmptType(), true), genAssociation.getMethodNameGetParentObject(false), false,
+                associations);
+    }
+
+    /**
+     * <pre>
+     * public IModelObject getParentModelObject() {
+     *     if (contract != null) {
+     *         return contract;
+     *     }
+     *     if (police != null) {
+     *         return police;
+     *     }
+     *     return null; // if class has no supertype 
+     *     return super.getParentModelObject; // if class has supertype
+     * }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
     private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder,
+            List<IPolicyCmptTypeAssociation> detailToMasterAssociations) throws CoreException {
+        generateMethodGetParentModelObject(methodBuilder, IModelObject.class.getName(), MethodNames.GET_PARENT, true,
+                detailToMasterAssociations);
+    }
+
+    private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder,
+            String qualifiedReturnType,
+            String methodName,
+            boolean callSupertype,
             List<IPolicyCmptTypeAssociation> detailToMasterAssociations) throws CoreException {
         List<IPolicyCmptTypeAssociation> inverseAssociationsWithoutDerivedUnion = new ArrayList<IPolicyCmptTypeAssociation>(
                 detailToMasterAssociations.size());
@@ -1208,8 +1296,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // create the get parent method to return the field of all inverse associations which are no
         // the inverse of a derived union
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodBuilder.methodBegin(Modifier.PUBLIC, IModelObject.class, MethodNames.GET_PARENT, EMPTY_STRING_ARRAY,
-                new Class[0]);
+        boolean isSubtype = getPcType().getSupertype().length() > 0;
+
+        if (isSubtype) {
+            getGenerator().appendOverrideAnnotation(methodBuilder, getIpsProject(), false);
+        }
+        methodBuilder.methodBegin(Modifier.PUBLIC, qualifiedReturnType, methodName, EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY);
         for (Iterator<IPolicyCmptTypeAssociation> iterator = inverseAssociationsWithoutDerivedUnion.iterator(); iterator
                 .hasNext();) {
             IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)iterator.next();
@@ -1222,9 +1315,26 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodBuilder.appendln(";");
             methodBuilder.appendln("}");
         }
-
-        methodBuilder.appendln("return null;");
+        if (callSupertype && isSupertypeDependant()) {
+            methodBuilder.appendln("return super.");
+            methodBuilder.appendln(MethodNames.GET_PARENT);
+            methodBuilder.appendln("();");
+        } else {
+            methodBuilder.appendln("return null;");
+        }
         methodBuilder.methodEnd();
+    }
+
+    /*
+     * Returns true if the supertype has dependant fields, means that the supertypes has at least
+     * one detail to master association which is no inverse of a derived union association.
+     */
+    private boolean isSupertypeDependant() throws CoreException {
+        if (getPcType().getSupertype().length() == 0) {
+            return false;
+        }
+        IType supertype = getPcType().findSupertype(getIpsProject());
+        return getAllDependantDetailToMasterAssociations((IPolicyCmptType)supertype).size() > 0;
     }
 
     /**

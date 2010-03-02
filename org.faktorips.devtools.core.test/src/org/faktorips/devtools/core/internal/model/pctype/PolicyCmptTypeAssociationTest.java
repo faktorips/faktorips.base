@@ -797,4 +797,24 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         ml = pcType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
+
+    public void testIsInverseOfDerivedUnion() throws CoreException {
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setDerivedUnion(true);
+
+        IPolicyCmptTypeAssociation inverse = targetType.newPolicyCmptTypeAssociation();
+        inverse.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverse.setTarget(association.getPolicyCmptType().getQualifiedName());
+
+        inverse.setInverseAssociation(association.getName());
+        association.setInverseAssociation(inverse.getName());
+
+        assertTrue(inverse.isInverseOfDerivedUnion());
+        assertFalse(association.isInverseOfDerivedUnion());
+
+        association.setDerivedUnion(false);
+
+        assertFalse(inverse.isInverseOfDerivedUnion());
+        assertFalse(association.isInverseOfDerivedUnion());
+    }
 }

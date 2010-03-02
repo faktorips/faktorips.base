@@ -293,6 +293,14 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns <code>true</code> if this association is the inverse of a derived union association,
+     * otherwise <code>false</code>.
+     * 
+     * @throws CoreException if an error occurs while searching for the derived union association.
+     */
+    public boolean isInverseOfDerivedUnion() throws CoreException;
+
+    /**
      * Returns the (fully qualified) name of the product component type that can qualify this
      * association. Candidate for a qualifier is *the* product component type that configures the
      * target of this association. In contrast to {@link #findQualifier(IIpsProject)} this method
@@ -325,4 +333,5 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * association wasn't found.
      */
     public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException;
+
 }
