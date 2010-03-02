@@ -120,7 +120,6 @@ public abstract class RefactoringParticipantHelper {
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
         for (int i = 0; i < originalJavaElements.size(); i++) {
             IJavaElement originalJavaElement = originalJavaElements.get(i);
-            IJavaElement targetJavaElement = targetJavaElements.get(i);
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -141,6 +140,7 @@ public abstract class RefactoringParticipantHelper {
              * become invalid when refactorings are performed. Because of that new instances are
              * created here.
              */
+            IJavaElement targetJavaElement = targetJavaElements.get(i);
             Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus());
             if (jdtRefactoring != null) {
