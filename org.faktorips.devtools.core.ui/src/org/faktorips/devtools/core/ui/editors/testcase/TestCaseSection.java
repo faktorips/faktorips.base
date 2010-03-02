@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -123,6 +124,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.core.ui.actions.ToggleAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
@@ -1012,7 +1014,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         treeViewer.setContentProvider(contentProvider);
-        labelProvider = new TestCaseLabelProvider(ipsProject);
+
+        WritableValue canShowExtension = new WritableValue(Boolean.TRUE, Boolean.class);
+        createStructureSectionToolbar(structureSection, canShowExtension);
+        labelProvider = new TestCaseLabelProvider(ipsProject, canShowExtension);
+
         treeViewer.setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
@@ -1022,7 +1028,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, new DragListener(
                 treeViewer));
 
-        createStructureSectionToolbar(structureSection);
         buildContextMenu();
 
         // Buttons belongs to the tree structure
@@ -1071,7 +1076,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         detailAreaSection.setTextClient(toolbar);
     }
 
-    private void createStructureSectionToolbar(Section structureSection) {
+    private void createStructureSectionToolbar(Section structureSection, WritableValue canShowExtension) {
         // Toolbar item show without association
         actionAssociation = new Action("withoutAssociation", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
             @Override
@@ -1088,6 +1093,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         ToolBar toolbar = toolBarManager.createControl(structureSection);
         toolBarManager.add(new ExpandAllAction(treeViewer));
         toolBarManager.add(new CollapseAllAction(treeViewer));
+        toolBarManager.add(new ToggleAction(Messages.TestCaseSection_ToolBar_TogglePolicyComponentTypeDisplay,
+                "PolicyCmptType.gif", canShowExtension)); //$NON-NLS-1$
         toolBarManager.add(actionAssociation);
         toolBarManager.update(true);
         structureSection.setTextClient(toolbar);

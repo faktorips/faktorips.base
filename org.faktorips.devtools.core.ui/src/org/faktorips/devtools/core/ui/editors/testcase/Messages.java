@@ -70,6 +70,7 @@ public class Messages extends NLS {
     public static String TestCaseSection_ToolBar_FlatStructure;
     public static String TestCaseSection_ToolBar_RunTest;
     public static String TestCaseSection_ToolBar_ShowAssociations;
+    public static String TestCaseSection_ToolBar_TogglePolicyComponentTypeDisplay;
     public static String TestCaseEditor_Combined_Title;
     public static String TestCaseLabelProvider_undefined;
     public static String TestCaseSection_MessageDialog_TitleStoreExpectedResults;

@@ -19,7 +19,8 @@ Require-Bundle: org.faktorips.devtools.core.ui,
  org.eclipse.search;bundle-version="3.4.0",
  org.faktorips.valuetypes,
  org.eclipse.ui.ide;bundle-version="3.4.0",
- org.junit
+ org.junit,
+ org.eclipse.core.databinding;bundle-version="1.1.1"
 Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
  org.faktorips.devtools.core.ui.editors.pctype,

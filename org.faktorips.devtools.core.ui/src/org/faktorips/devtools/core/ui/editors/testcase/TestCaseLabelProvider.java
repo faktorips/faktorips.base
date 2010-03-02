@@ -14,13 +14,17 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.IValueChangeListener;
+import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
+import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -58,13 +62,35 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     private ResourceManager resourceManager;
 
     /** Provides default images for the elements. */
-    private DefaultLabelProvider defaultLabelProvider;
+    private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
+
+    /**
+     * Determines whether the extension (i.e. the actual policy class name) is shown for product
+     * components.
+     */
+    private final IObservableValue canShowExtension;
 
     public TestCaseLabelProvider(IIpsProject ipsProject) {
-        // super();
+        this(ipsProject, new WritableValue(Boolean.TRUE, Boolean.class));
+    }
+
+    public TestCaseLabelProvider(IIpsProject ipsProject, IObservableValue canShowExtension) {
         this.ipsProject = ipsProject;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        defaultLabelProvider = new DefaultLabelProvider();
+        this.canShowExtension = canShowExtension;
+        this.canShowExtension.addValueChangeListener(new IValueChangeListener() {
+            public void handleValueChange(ValueChangeEvent event) {
+                propagateEvent();
+            }
+        });
+    }
+
+    /**
+     * Propagates the {@link ValueChangeEvent} of the property {@link #canShowExtension} to all
+     * registered listeners of this label provider.
+     */
+    protected void propagateEvent() {
+        fireLabelProviderChanged(new LabelProviderChangedEvent(this));
     }
 
     /**
@@ -193,22 +219,29 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         } else if (object instanceof ITestRule) {
             return getLabelExtensionForTestRule((ITestRule)object);
         }
-        return ""; //$NON-NLS-1$
+        return StringUtils.EMPTY;
     }
 
     private String getLabelExtensionForTestPolicyCmpt(ITestPolicyCmpt object) {
+        if (hideExtension()) {
+            return StringUtils.EMPTY;
+        }
         ITestPolicyCmpt tstPolicyCmpt = object;
         String name = tstPolicyCmpt.getName();
         IPolicyCmptType policyCmptType = tstPolicyCmpt.findPolicyCmptType();
         if (policyCmptType == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
 
         String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
         if (name.equals(unqualifiedPolicyCmptTypeName)) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         return " : " + unqualifiedPolicyCmptTypeName; //$NON-NLS-1$
+    }
+
+    private boolean hideExtension() {
+        return canShowExtension.getValue() != Boolean.TRUE;
     }
 
     /*
@@ -297,20 +330,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeListener(ILabelProviderListener listener) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addListener(ILabelProviderListener listener) {
     }
 
     private Display getCurrentDisplay() {
