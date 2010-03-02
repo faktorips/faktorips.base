@@ -353,6 +353,12 @@ public class BindingContext {
         }
     }
 
+    /** Removes all bindings. */
+    public void clear() {
+        controlBindings.clear();
+        mappings.clear();
+    }
+
     /**
      * Removes the registered listener.
      */
