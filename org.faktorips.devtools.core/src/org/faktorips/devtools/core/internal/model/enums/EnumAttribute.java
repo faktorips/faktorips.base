@@ -279,7 +279,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
                 Message validationMessage = new Message(
                         MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text, Message.ERROR, this,
-                        PROPERTY_INHERITED);
+                        new String[] { PROPERTY_NAME, PROPERTY_INHERITED });
                 list.add(validationMessage);
             }
         }
