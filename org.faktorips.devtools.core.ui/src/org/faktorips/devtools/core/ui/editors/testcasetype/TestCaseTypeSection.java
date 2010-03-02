@@ -52,6 +52,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
@@ -994,14 +995,15 @@ public class TestCaseTypeSection extends IpsSection {
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         this.toolkit = toolkit;
 
-        // Layout main section with two columns
-        client.setLayout(new GridLayout(2, true));
-        client.setLayoutData(new GridData(GridData.FILL_BOTH));
+        SashForm sashForm = new SashForm(client, SWT.NULL);
+        toolkit.getFormToolkit().adapt(sashForm, false, false);
+        sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // Tree structure section
-        Section structureSection = toolkit.getFormToolkit().createSection(client, ExpandableComposite.TITLE_BAR);
+        Section structureSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
+
         Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
         structureComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout structureLayout = new GridLayout(2, false);
@@ -1049,7 +1051,7 @@ public class TestCaseTypeSection extends IpsSection {
         hookButtonListeners();
 
         // Details section
-        Section detailsSection = toolkit.getFormToolkit().createSection(client, ExpandableComposite.TITLE_BAR);
+        Section detailsSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
         detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         detailsSection.setText(sectionDetailsTitle);
 
@@ -1068,6 +1070,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         configureToolBar();
 
+        sashForm.setWeights(new int[] { 50, 50 });
         redrawForm();
     }
 
@@ -1216,7 +1219,7 @@ public class TestCaseTypeSection extends IpsSection {
                     "Association.gif"));
             ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
                     .getSeverity());
-            formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$ 
+            formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
             section.setDescriptionControl(formText);
