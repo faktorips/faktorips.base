@@ -18,9 +18,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
- * This is the "Rename Type" - refactoring.
+ * This is the "Rename Ips Object" - refactoring.
+ * <p>
+ * If an {@link IIpsObject} is renamed, the complete workspace is scanned for other
+ * {@link IIpsObject}s, depending on the modified one. Every found dependant is refactored to use
+ * the {@link IIpsObject} with the new name.
  * 
  * @author Alexander Weickmann
  */
@@ -33,7 +38,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be renamed.
+     * @param toBeRefactored The object to be renamed.
      */
     public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
         super(toBeRefactored);

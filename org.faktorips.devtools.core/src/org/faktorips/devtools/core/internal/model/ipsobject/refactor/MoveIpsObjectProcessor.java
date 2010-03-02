@@ -18,9 +18,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
- * This is the "Move Type" - refactoring.
+ * This is the "Move Ips Object" - refactoring.
+ * <p>
+ * If an {@link IIpsObject} is moved, the complete workspace is scanned for other {@link IIpsObject}
+ * s, depending on the modified one. Every found dependant is refactored to use the new
+ * {@link IIpsObject}.
  * 
  * @author Alexander Weickmann
  */
@@ -33,7 +38,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be moved.
+     * @param toBeRefactored The object to be moved.
      */
     public MoveIpsObjectProcessor(IpsObject toBeMoved) {
         super(toBeMoved);
