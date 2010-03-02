@@ -356,6 +356,9 @@ public class BindingContext {
     /** Removes all bindings. */
     public void clear() {
         controlBindings.clear();
+        for (FieldPropertyMapping mapping : mappings) {
+            mapping.getField().setMessages(new MessageList());
+        }
         mappings.clear();
     }
 
