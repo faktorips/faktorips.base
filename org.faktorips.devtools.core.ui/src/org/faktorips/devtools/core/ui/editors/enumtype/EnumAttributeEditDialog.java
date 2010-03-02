@@ -114,7 +114,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 if (literalNameAttribute) {
                     super.setDataChangeable(changeable);
                 } else {
-                    updateEnabledStates();
+                    bindContents();
                 }
             }
         }
@@ -148,8 +148,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             createFieldsForNormalAttribute();
         }
 
-        updateEnabledStates();
-        updateFields();
+        bindContents();
 
         // Create extension properties on position bottom.
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -187,7 +186,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         nameText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
 
         // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
@@ -196,7 +194,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
-        bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
 
         Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
         ((GridData)marginComposite.getLayoutData()).verticalIndent = 14;
@@ -211,30 +208,24 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Identifier
         identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
         identifierCheckbox.setLayoutData(createLayoutData());
-        bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
 
         // Display name
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
         label.getParent().setLayoutData(layoutData);
         displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
         displayNameCheckbox.setLayoutData(createLayoutData());
-        bindingContext.bindContent(displayNameCheckbox, enumAttribute,
-                IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
 
         // Unique
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
         label.getParent().setLayoutData(layoutData);
         uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
         uniqueCheckbox.setLayoutData(createLayoutData());
-        bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
 
         // Inherited
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
         label.getParent().setLayoutData(layoutData);
         inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         inheritedCheckbox.setLayoutData(createLayoutData());
-        bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
-
     }
 
     /**
@@ -288,33 +279,62 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
     }
 
-    private void updateEnabledStates() {
+    /**
+     * Binds the contents of the fields to the contents of the super enumeration attribute if the
+     * <tt>IEnumAttribute</tt> to be edited is marked as being inherited. The contents are bound to
+     * the respective properties if it is not.
+     * <p>
+     * Also handles the enabled states of the fields.
+     */
+    private void bindContents() {
+        bindingContext.removeBindings(nameText);
+        bindingContext.removeBindings(datatypeControl);
+        bindingContext.removeBindings(identifierCheckbox);
+        bindingContext.removeBindings(displayNameCheckbox);
+        bindingContext.removeBindings(uniqueCheckbox);
+        bindingContext.removeBindings(inheritedCheckbox);
+
+        bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
+
+        if (!(literalNameAttribute)) {
+            if (enumAttribute.isInherited()) {
+                obtainContentsFromSuperEnumAttribute();
+            } else {
+                bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
+                bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
+                bindingContext.bindContent(displayNameCheckbox, enumAttribute,
+                        IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
+                bindingContext.bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
+            }
+            bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
+            bindEnabledStates();
+        }
+    }
+
+    private void obtainContentsFromSuperEnumAttribute() {
+        try {
+            String name = enumAttribute.getName();
+            nameText.setText(name);
+            IIpsProject ipsProject = enumAttribute.getIpsProject();
+            Datatype datatype = enumAttribute.findDatatype(ipsProject);
+            String datatypeName = (datatype == null) ? "" : datatype.getName();
+            datatypeControl.setText(datatypeName);
+            uniqueCheckbox.setChecked(EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject));
+            identifierCheckbox.setChecked(EnumUtil.findEnumAttributeIsIdentifier(enumAttribute, ipsProject));
+            displayNameCheckbox.setChecked(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(enumAttribute,
+                    ipsProject));
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void bindEnabledStates() {
         if (!(literalNameAttribute)) {
             bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-        }
-    }
-
-    private void updateFields() {
-        if (enumAttribute.isInherited()) {
-            // Obtain the properties from the super EnumAttribute.
-            try {
-                String name = enumAttribute.getName();
-                nameText.setText(name);
-                IIpsProject ipsProject = enumAttribute.getIpsProject();
-                Datatype datatype = enumAttribute.findDatatype(ipsProject);
-                String datatypeString = (datatype == null) ? "" : datatype.getName();
-                datatypeControl.setText(datatypeString);
-                uniqueCheckbox.setChecked(EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject));
-                identifierCheckbox.setChecked(EnumUtil.findEnumAttributeIsIdentifier(enumAttribute, ipsProject));
-                displayNameCheckbox.setChecked(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(enumAttribute,
-                        ipsProject));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -327,9 +347,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            updateEnabledStates();
-            updateFields();
-
+            bindContents();
             bindingContext.updateUI();
             if (dialogArea != null) {
                 dialogArea.redraw();
