@@ -145,20 +145,13 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME));
-        genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+    }
 
-        // Test with supertype hierarchy.
-        genderEnumType.setAbstract(true);
-        IEnumType subEnumType = newEnumType(ipsProject, "AbstractEnumType");
-        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        IEnumAttribute idDuplicate = subEnumType.newEnumAttribute();
-        idDuplicate.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
-        getIpsModel().clearValidationCache();
-        validationMessageList = idDuplicate.validate(ipsProject);
-        assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME));
-        idDuplicate.setInherited(true);
-        getIpsModel().clearValidationCache();
-        assertTrue(idDuplicate.isValid());
+    public void testValidateDuplicateNameInSupertypeHierarchy() throws CoreException {
+        inheritedEnumAttributeId.setInherited(false);
+        MessageList validationMessageList = inheritedEnumAttributeId.validate(ipsProject);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY));
     }
 
     public void testValidateDatatype() throws CoreException {

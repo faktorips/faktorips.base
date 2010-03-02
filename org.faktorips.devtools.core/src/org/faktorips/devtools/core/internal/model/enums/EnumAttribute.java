@@ -151,30 +151,48 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING, text, Message.ERROR, this,
                     PROPERTY_NAME);
             list.add(validationMessage);
-        } else {
-            // Check for valid java field name.
-            String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-            IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
-            if (!status.isOK()) {
-                text = NLS.bind(Messages.EnumAttribute_NameNotAValidFieldName, name);
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME, text,
-                        Message.ERROR, this, PROPERTY_NAME);
-                list.add(validationMessage);
-            }
+            return;
         }
 
-        // Check for other attributes with the same name.
+        // Check for valid java field name.
+        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+        if (!(status.isOK())) {
+            text = NLS.bind(Messages.EnumAttribute_NameNotAValidFieldName, name);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME, text, Message.ERROR,
+                    this, PROPERTY_NAME);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Check for other attributes with the same name in the containing enum type.
         int numberEnumAttributesThisName = 0;
-        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributesIncludeSupertypeOriginals(true,
-                ipsProject)) {
-            if (currentEnumAttribute.getName().equals(name)) {
+        for (IEnumAttribute enumAttribute : getEnumType().getEnumAttributes(true)) {
+            if (enumAttribute.getName().equals(name)) {
                 numberEnumAttributesThisName++;
             }
             if (numberEnumAttributesThisName > 1) {
                 text = NLS.bind(Messages.EnumAttribute_DuplicateName, name);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
+                list.add(validationMessage);
+                return;
+            }
+        }
+
+        // Check for other attributes with the same name in the supertype hierarchy.
+        List<IEnumAttribute> allEnumAttributes = getEnumType().findAllEnumAttributesIncludeSupertypeOriginals(true,
+                ipsProject);
+        numberEnumAttributesThisName = 0;
+        for (IEnumAttribute enumAttribute : allEnumAttributes) {
+            if (enumAttribute.getName().equals(name)) {
+                numberEnumAttributesThisName++;
+            }
+            if (numberEnumAttributesThisName > 1) {
+                text = NLS.bind(Messages.EnumAttribute_DuplicateNameInSupertypeHierarchy, name);
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY, text,
+                        Message.ERROR, this, PROPERTY_NAME);
                 list.add(validationMessage);
                 break;
             }
@@ -189,7 +207,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
 
         // The data type must be specified.
-        if (datatype.equals("")) { //$NON-NLS-1$
+        if (datatype.equals("")) {
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
@@ -295,7 +313,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         valueChanged(oldIsInherited, isInherited);
 
         if (isInherited) {
-            setDatatype(""); //$NON-NLS-1$
+            setDatatype("");
             setUnique(false);
             setIdentifier(false);
             setUsedAsNameInFaktorIpsUi(false);

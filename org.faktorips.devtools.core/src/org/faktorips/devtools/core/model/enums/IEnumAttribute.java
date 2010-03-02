@@ -74,7 +74,14 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Validation message code to indicate that the name of this <tt>IEnumAttribute</tt> is already
      * used.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME = MSGCODE_PREFIX + "EnumAttributeNameMissing"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME = MSGCODE_PREFIX + "EnumAttributeDuplicateName"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the name of this <tt>IEnumAttribute</tt> is already
+     * used in the supertype hierarchy.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+            + "EnumAttributeDuplicateNameInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <tt>IEnumAttribute</tt> is
