@@ -119,7 +119,8 @@ public abstract class RefactoringParticipantHelper {
      */
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
         for (int i = 0; i < originalJavaElements.size(); i++) {
-            IJavaElement javaElement = originalJavaElements.get(i);
+            IJavaElement originalJavaElement = originalJavaElements.get(i);
+            IJavaElement targetJavaElement = targetJavaElements.get(i);
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -130,16 +131,17 @@ public abstract class RefactoringParticipantHelper {
              * encountered will be refactored. The second no longer exists then because the JDT
              * rename method refactoring renamed it already.
              */
-            if (!(javaElement.exists())) {
+            if (!(originalJavaElement.exists())) {
                 continue;
             }
 
             /*
              * We can't use the refactoring instances created during condition checking because the
              * Java references are build upon creation of the refactoring instance. These might
-             * become invalid when refactorings are performed.
+             * become invalid when refactorings are performed. Because of that new instances are
+             * created here.
              */
-            Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElements.get(i), targetJavaElements.get(i),
+            Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus());
             if (jdtRefactoring != null) {
                 performRefactoring(jdtRefactoring, pm);

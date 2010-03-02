@@ -81,6 +81,12 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                 IJavaElement targetJavaElement,
                 RefactoringStatus status) throws CoreException {
 
+            String oldName = originalJavaElement.getElementName();
+            String newName = targetJavaElement.getElementName();
+            if (newName.equals(oldName)) {
+                return null;
+            }
+
             String javaRefactoringContributionId;
             switch (originalJavaElement.getElementType()) {
                 case IJavaElement.FIELD:
@@ -100,7 +106,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                     .getRefactoringContribution(javaRefactoringContributionId);
             RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();
             descriptor.setJavaElement(originalJavaElement);
-            descriptor.setNewName(targetJavaElement.getElementName());
+            descriptor.setNewName(newName);
             descriptor.setUpdateReferences(getArguments().getUpdateReferences());
             return descriptor.createRefactoring(status);
         }
