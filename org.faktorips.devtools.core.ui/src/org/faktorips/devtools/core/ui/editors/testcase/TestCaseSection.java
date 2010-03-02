@@ -1288,7 +1288,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         prevTestObjects = null;
                         break;
                     }
-                    objectsToDisplay.add(testPolicyCmpt.getRoot());
+                    objectsToDisplay.add(testPolicyCmpt);
                 }
             }
             // if the selection has changed redraw the detail section
@@ -2030,11 +2030,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void showAll(boolean showAll) {
         this.showAll = showAll;
         if (showAll) {
-            // show all test objects wich are provided by the content provider
+            // show all test objects which are provided by the content provider
             createDetailsSectionsForAll();
             treeViewer.expandAll();
         } else {
-            // show only the selected test objetcs
+            // show only the selected test objects
             ISelection selection = treeViewer.getSelection();
             if (selection instanceof IStructuredSelection) {
                 Object domainObject = ((IStructuredSelection)selection).getFirstElement();
@@ -2047,7 +2047,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } else {
                     ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
                     if (testPolicyCmpt != null) {
-                        list.addAll(Arrays.asList(new ITestPolicyCmpt[] { (ITestPolicyCmpt)testPolicyCmpt.getRoot() }));
+                        list.addAll(Arrays.asList(new ITestPolicyCmpt[] { testPolicyCmpt }));
                         testCaseDetailArea.createTestObjectSections(list);
                         prevTestObjects = list;
                     } else {
