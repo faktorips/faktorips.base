@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -53,6 +54,7 @@ public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
             return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON,
                     overlayList.toArray(new String[overlayList.size()]));
         }
+
         return null;
     }
 
@@ -66,8 +68,14 @@ public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
         if (ipsObjectPart instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPart;
             String label = enumAttribute.getName();
-            if (!StringUtils.isEmpty(enumAttribute.getDatatype())) {
-                label += " : " + enumAttribute.getDatatype();
+            try {
+                Datatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
+                String datatypeName = (datatype == null) ? "" : datatype.getName();
+                if (!(StringUtils.isEmpty(datatypeName))) {
+                    label += " : " + datatypeName;
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
             return label;
         } else {
