@@ -274,19 +274,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        if (!(getEnumType().hasExistingSuperEnumType(ipsProject))) {
-            String text = Messages.EnumAttribute_InheritedButNoExistingSupertype;
-            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_EXISTING_SUPERTYPE, text,
-                    Message.ERROR, this, PROPERTY_INHERITED);
-            list.add(validationMessage);
-            return;
-        }
-
-        if (findSuperEnumAttribute(ipsProject) == null) {
-            String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
-            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR, this, PROPERTY_INHERITED);
-            list.add(validationMessage);
+        if (getEnumType().hasExistingSuperEnumType(ipsProject)) {
+            if (findSuperEnumAttribute(ipsProject) == null) {
+                String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
+                Message validationMessage = new Message(
+                        MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text, Message.ERROR, this,
+                        PROPERTY_INHERITED);
+                list.add(validationMessage);
+            }
         }
     }
 

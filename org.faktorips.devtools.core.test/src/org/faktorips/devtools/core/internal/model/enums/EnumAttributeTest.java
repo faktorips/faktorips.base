@@ -268,10 +268,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         inheritedAttribute.setName("foo");
         inheritedAttribute.setInherited(true);
 
-        MessageList validationMessageList = inheritedAttribute.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_EXISTING_SUPERTYPE));
+        assertTrue(inheritedAttribute.isValid());
     }
 
     public void testValidateInherited() throws CoreException {
