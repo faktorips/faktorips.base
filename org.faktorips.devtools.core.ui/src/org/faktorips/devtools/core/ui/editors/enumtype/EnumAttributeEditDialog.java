@@ -75,27 +75,14 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The UI control to set the <tt>identifier</tt> property. */
     private Checkbox identifierCheckbox;
 
+    /** The UI control to set the <tt>inherited</tt> property. */
+    private Checkbox inheritedCheckbox;
+
     /** The UI control to set the <tt>usedAsNameInFaktorIpsUi</tt> property. */
     private Checkbox displayNameCheckbox;
 
     /** The canvas. */
     private Composite workArea;
-
-    /**
-     * Keeps the last value of the usedAsNameInFaktorIpsUi property. This ContentsChangedListener
-     * adjusts the value of the property according to the model value. It is necessary to keep the
-     * last state of the property to determine which property has changed when the contents changed
-     * event is fired.
-     */
-    private boolean displayNamePropertyValue;
-
-    /**
-     * Keeps the last value of the identifier property. This ContentsChangedListener adjusts the
-     * value of the property according to the model value. It is necessary to keep the last state of
-     * the property to determine which property has changed when the contents changed event is
-     * fired.
-     */
-    private boolean identifierPropertyValue;
 
     /**
      * Flag indicating whether the given <tt>IEnumAttribute</tt> is a
@@ -119,12 +106,28 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
+    public void setDataChangeable(boolean changeable) {
+        if (getDialogArea() != null) {
+            if (!(changeable)) {
+                super.setDataChangeable(changeable);
+            } else {
+                if (literalNameAttribute) {
+                    super.setDataChangeable(changeable);
+                } else {
+                    updateEnabledStates();
+                }
+            }
+        }
+    }
+
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);
         page.setText(Messages.EnumAttributeEditDialog_generalTitle);
-        page.setControl(createGeneralPage(tabFolder));
+        Control generalPage = createGeneralPage(tabFolder);
+        page.setControl(generalPage);
 
         createDescriptionTabItem(tabFolder);
 
@@ -133,11 +136,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** Creates the general tab. */
     private Control createGeneralPage(TabFolder tabFolder) {
-        if (!literalNameAttribute) {
-            displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
-            identifierPropertyValue = enumAttribute.isIdentifier();
-        }
-
         Composite control = createTabItemComposite(tabFolder, 1, false);
         workArea = uiToolkit.createLabelEditColumnComposite(control);
 
@@ -150,10 +148,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             createFieldsForNormalAttribute();
         }
 
-        // Content and state bindings dependent on inherited property.
-        if (!literalNameAttribute) {
-            inheritedPropertyChanged();
-        }
+        updateEnabledStates();
+        updateFields();
 
         // Create extension properties on position bottom.
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -235,7 +231,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Inherited
         label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
         label.getParent().setLayoutData(layoutData);
-        Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
+        inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         inheritedCheckbox.setLayoutData(createLayoutData());
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
 
@@ -292,14 +288,18 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
     }
 
-    private void inheritedPropertyChanged() {
-        if (enumAttribute.isInherited()) {
+    private void updateEnabledStates() {
+        if (!(literalNameAttribute)) {
             bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        }
+    }
 
+    private void updateFields() {
+        if (enumAttribute.isInherited()) {
             // Obtain the properties from the super EnumAttribute.
             try {
                 String name = enumAttribute.getName();
@@ -327,25 +327,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            /*
-             * Ensure correct enabling / disabling of the inherited fields. Only needed for normal
-             * EnumAttributes.
-             */
-            if (!literalNameAttribute) {
-                inheritedPropertyChanged();
-                if (displayNamePropertyValue != enumAttribute.isUsedAsNameInFaktorIpsUi()) {
-                    displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
-                    if (displayNamePropertyValue) {
-                        enumAttribute.setUnique(true);
-                    }
-                }
-                if (identifierPropertyValue != enumAttribute.isIdentifier()) {
-                    identifierPropertyValue = enumAttribute.isIdentifier();
-                    if (identifierPropertyValue) {
-                        enumAttribute.setUnique(true);
-                    }
-                }
-            }
+            updateEnabledStates();
+            updateFields();
 
             bindingContext.updateUI();
             if (dialogArea != null) {
