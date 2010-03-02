@@ -27,11 +27,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.testcase.TestPolicyCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
@@ -39,6 +42,7 @@ import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
@@ -53,16 +57,35 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
 
     private ResourceManager resourceManager;
 
+    /** Provides default images for the elements. */
+    private DefaultLabelProvider defaultLabelProvider;
+
     public TestCaseLabelProvider(IIpsProject ipsProject) {
         // super();
         this.ipsProject = ipsProject;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        defaultLabelProvider = new DefaultLabelProvider();
     }
 
     /**
      * {@inheritDoc}
      */
     public Image getImage(Object element) {
+        if (element instanceof TestPolicyCmpt) {
+            TestPolicyCmpt component = (TestPolicyCmpt)element;
+            try {
+                IProductCmpt productComponent = component.findProductCmpt();
+                if (productComponent != null) {
+                    Image image = defaultLabelProvider.getImage(productComponent);
+                    if (image != null) {
+                        return image;
+                    }
+                }
+            } catch (CoreException exception) {
+                IpsPlugin.log(exception);
+            }
+        }
+
         return (Image)resourceManager.get(getImageDescriptor(element));
     }
 
@@ -265,6 +288,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     @Override
     public void dispose() {
         resourceManager.dispose();
+        defaultLabelProvider.dispose();
     }
 
     /**
