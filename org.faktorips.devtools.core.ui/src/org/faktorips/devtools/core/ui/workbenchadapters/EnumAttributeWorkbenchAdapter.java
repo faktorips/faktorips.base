@@ -13,10 +13,12 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -32,36 +34,24 @@ public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPart;
+            List<String> overlayList = new ArrayList<String>(2);
+
             try {
                 IIpsProject ipsProject = enumAttribute.getIpsProject();
-                // TODO warum dieser Fall extra???
-                if (enumAttribute.isInherited() && enumAttribute.findSuperEnumAttribute(ipsProject) == null) {
-                    return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON, OverlayIcons.OVERRIDE_OVR,
-                            IDecoration.TOP_RIGHT);
-                }
-
                 boolean isUniqueIdentifier = EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject);
-                if (enumAttribute.isInherited() && isUniqueIdentifier
-                        && enumAttribute.findSuperEnumAttribute(ipsProject) == null) {
-                    return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON,
-                            new String[] { OverlayIcons.KEY_OVR, OverlayIcons.OVERRIDE_OVR });
-                }
-
                 if (isUniqueIdentifier) {
-                    return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON, OverlayIcons.KEY_OVR,
-                            IDecoration.TOP_LEFT);
+                    overlayList.add(OverlayIcons.KEY_OVR);
                 }
-
-                if (enumAttribute.isInherited()) {
-                    return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON, OverlayIcons.OVERRIDE_OVR,
-                            IDecoration.TOP_RIGHT);
-                }
-
-                return getDefaultImageDescriptor();
-
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+
+            if (enumAttribute.isInherited()) {
+                overlayList.add(OverlayIcons.OVERRIDE_OVR);
+            }
+
+            return IpsUIPlugin.getImageHandling().getSharedOverlayImage(ICON,
+                    overlayList.toArray(new String[overlayList.size()]));
         }
         return null;
     }
