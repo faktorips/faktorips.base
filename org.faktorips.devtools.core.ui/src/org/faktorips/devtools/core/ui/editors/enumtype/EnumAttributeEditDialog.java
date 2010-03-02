@@ -18,10 +18,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -90,6 +88,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      */
     private boolean literalNameAttribute;
 
+    private boolean inherited;
+
     /**
      * Creates a new <tt>EnumAttributeEditDialog</tt> for the user to edit the given
      * <tt>IEnumAttribute</tt> with.
@@ -101,6 +101,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         super(enumAttribute, parentShell, Messages.EnumAttributeEditDialog_title, true);
 
         this.enumAttribute = enumAttribute;
+        inherited = enumAttribute.isInherited();
         extFactory = new ExtensionPropertyControlFactory(enumAttribute.getClass());
         literalNameAttribute = enumAttribute instanceof IEnumLiteralNameAttribute;
     }
@@ -159,21 +160,14 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         return control;
     }
 
-    private GridData createLayoutData() {
-        GridData gridData = new GridData();
-        gridData.horizontalIndent = 4;
-        gridData.horizontalAlignment = SWT.LEFT;
-        return gridData;
-    }
-
     /** Creates the UI fields for a <tt>IEnumLiteralNameAttribute</tt>. */
     private void createFieldsForLiteralNameAttribute() {
-        // Name.
+        // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         nameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
 
-        // Default Value Provider Attribute.
+        // Default Value Provider Attribute
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDefaultValueProviderAttribute);
         defaultValueProviderAttributeText = uiToolkit.createText(workArea);
         bindingContext.bindContent(defaultValueProviderAttributeText, enumAttribute,
@@ -194,37 +188,21 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
 
-        Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
-        ((GridData)marginComposite.getLayoutData()).verticalIndent = 14;
-        Label label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIdentifier);
-        GridData layoutData = new GridData();
-        layoutData.verticalAlignment = SWT.CENTER;
-        layoutData.horizontalAlignment = SWT.FILL;
-        layoutData.widthHint = 320;
-        layoutData.minimumWidth = 320;
-        label.getParent().setLayoutData(layoutData);
-
         // Identifier
-        identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
-        identifierCheckbox.setLayoutData(createLayoutData());
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIdentifier);
+        identifierCheckbox = uiToolkit.createCheckbox(workArea);
 
         // Display name
-        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
-        label.getParent().setLayoutData(layoutData);
-        displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
-        displayNameCheckbox.setLayoutData(createLayoutData());
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDisplayName);
+        displayNameCheckbox = uiToolkit.createCheckbox(workArea);
 
         // Unique
-        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
-        label.getParent().setLayoutData(layoutData);
-        uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
-        uniqueCheckbox.setLayoutData(createLayoutData());
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUnique);
+        uniqueCheckbox = uiToolkit.createCheckbox(workArea);
 
         // Inherited
-        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
-        label.getParent().setLayoutData(layoutData);
-        inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
-        inheritedCheckbox.setLayoutData(createLayoutData());
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
+        inheritedCheckbox = uiToolkit.createCheckbox(workArea);
     }
 
     /**
@@ -307,8 +285,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     private void obtainContentsFromSuperEnumAttribute() {
         try {
-            String name = enumAttribute.getName();
-            nameText.setText(name);
             IIpsProject ipsProject = enumAttribute.getIpsProject();
             Datatype datatype = enumAttribute.findDatatype(ipsProject);
             String datatypeName = (datatype == null) ? "" : datatype.getName();
@@ -323,7 +299,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindEnabledStates() {
-        bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
@@ -339,14 +314,17 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            if (!(literalNameAttribute)) {
-                rebindContents();
+            if (inherited != enumAttribute.isInherited()) {
+                inherited = !(inherited);
+                inheritedChanged();
             }
+        }
+    }
+
+    private void inheritedChanged() {
+        if (!(literalNameAttribute)) {
+            rebindContents();
             bindingContext.updateUI();
-            if (dialogArea != null) {
-                dialogArea.redraw();
-                dialogArea.update();
-            }
         }
     }
 
