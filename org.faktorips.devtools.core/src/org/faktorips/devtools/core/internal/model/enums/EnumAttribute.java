@@ -133,8 +133,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         validateName(list, ipsProject);
         if (!inherited) {
             validateDatatype(list, ipsProject);
-            validateDuplicateIndicator(list, ipsProject, new IdentifierIndictionProvider());
-            validateDuplicateIndicator(list, ipsProject, new DisplayNameIndictionProvider());
+            validateDuplicateIndicator(list, new IdentifierIndictionProvider());
+            validateDuplicateIndicator(list, new DisplayNameIndictionProvider());
         }
         validateInherited(list, ipsProject);
     }
@@ -430,9 +430,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 name);
     }
 
-    private void validateDuplicateIndicator(MessageList list,
-            IIpsProject ipsProject,
-            IndicationProvider indicationProvider) throws CoreException {
+    private void validateDuplicateIndicator(MessageList list, IndicationProvider indicationProvider) {
 
         List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(false);
         if (indicationProvider.uiValue()) {
