@@ -35,7 +35,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -203,7 +202,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        ArgumentCheck.notNull(ipsTypeName);
         String generationConceptAbbreviation = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
                 .getGenerationConceptNameAbbreviation();
         if (isBuildingPublishedSourceFile()) {

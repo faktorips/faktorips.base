@@ -43,14 +43,14 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         // The former Java elements must no longer exist.
         assertFalse(policyInterface.getField("PROPERTY_POLICYATTRIBUTE").exists());
         assertFalse(policyInterface.getMethod("getPolicyAttribute", new String[] {}).exists());
-        assertFalse(policyInterface.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertFalse(policyInterface.getMethod("setPolicyAttribute", new String[] { "QMoney;" }).exists());
         assertFalse(productGenInterface.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
         assertFalse(productGenInterface.getMethod("getSetOfAllowedValuesForPolicyAttribute",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
 
         assertFalse(policyClass.getField("policyAttribute").exists());
         assertFalse(policyClass.getMethod("getPolicyAttribute", new String[] {}).exists());
-        assertFalse(policyClass.getMethod("setPolicyAttribute", new String[] { "QString;" }).exists());
+        assertFalse(policyClass.getMethod("setPolicyAttribute", new String[] { "QMoney;" }).exists());
         assertFalse(productGenClass.getField("defaultValuePolicyAttribute").exists());
         assertFalse(productGenClass.getField("setOfAllowedValuesPolicyAttribute").exists());
         assertFalse(productGenClass.getMethod("getDefaultValuePolicyAttribute", new String[] {}).exists());
@@ -60,7 +60,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         // Expect new Java elements for published interface.
         assertTrue(policyInterface.getField("PROPERTY_TEST").exists());
         assertTrue(policyInterface.getMethod("getTest", new String[] {}).exists());
-        assertTrue(policyInterface.getMethod("setTest", new String[] { "QString;" }).exists());
+        assertTrue(policyInterface.getMethod("setTest", new String[] { "QMoney;" }).exists());
         assertTrue(productGenInterface.getMethod("getDefaultValueTest", new String[] {}).exists());
         assertTrue(productGenInterface.getMethod("getSetOfAllowedValuesForTest",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
@@ -68,7 +68,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         // Expect new Java elements for implementation.
         assertTrue(policyClass.getField("test").exists());
         assertTrue(policyClass.getMethod("getTest", new String[] {}).exists());
-        assertTrue(policyClass.getMethod("setTest", new String[] { "QString;" }).exists());
+        assertTrue(policyClass.getMethod("setTest", new String[] { "QMoney;" }).exists());
         assertTrue(productGenClass.getField("defaultValueTest").exists());
         assertTrue(productGenClass.getField("setOfAllowedValuesTest").exists());
         assertTrue(productGenClass.getMethod("getDefaultValueTest", new String[] {}).exists());
@@ -76,15 +76,56 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
     }
 
-    public void testRenamePolicyCmptTypeAttributeValidationRule() throws CoreException {
-        performFullBuild();
-
-        policyCmptTypeAttribute.createValueSetRule();
+    public void testRenamePolicyCmptTypeAttributeValueSetEnum() throws CoreException {
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
 
-        // Rename the attribute.
-        performRenameRefactoring(productCmptTypeAttribute, "test");
+        performFullBuild();
 
+        // Rename the attribute.
+        performRenameRefactoring(policyCmptTypeAttribute, "test");
+
+        // The former Java elements must no longer exist.
+        assertFalse(productGenInterface.getMethod("getAllowedValuesForPolicyAttribute",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        assertFalse(productGenClass.getField("allowedValuesForPolicyAttribute").exists());
+        assertFalse(productGenClass.getMethod("getAllowedValuesForPolicyAttribute",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        // Expect new Java elements for published interface.
+        assertTrue(productGenInterface.getMethod("getAllowedValuesForTest",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        // Expect new Java elements for implementation.
+        assertTrue(productGenClass.getField("allowedValuesForTest").exists());
+        assertTrue(productGenClass.getMethod("getAllowedValuesForTest",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+    }
+
+    public void testRenamePolicyCmptTypeAttributeValueSetRange() throws CoreException {
+        policyCmptTypeAttribute.setValueSetType(ValueSetType.RANGE);
+
+        performFullBuild();
+
+        // Rename the attribute.
+        performRenameRefactoring(policyCmptTypeAttribute, "test");
+
+        // The former Java elements must no longer exist.
+        assertFalse(productGenInterface.getMethod("getRangeForPolicyAttribute",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        assertFalse(productGenClass.getField("rangeForPolicyAttribute").exists());
+        assertFalse(productGenClass.getMethod("getRangeForPolicyAttribute",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        // Expect new Java elements for published interface.
+        assertTrue(productGenInterface.getMethod("getRangeForTest",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+
+        // Expect new Java elements for implementation.
+        assertTrue(productGenClass.getField("rangeForTest").exists());
+        assertTrue(productGenClass.getMethod("getRangeForTest",
+                new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
     }
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {

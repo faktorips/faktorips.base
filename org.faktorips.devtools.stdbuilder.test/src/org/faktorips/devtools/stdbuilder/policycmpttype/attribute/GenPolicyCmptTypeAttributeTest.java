@@ -63,13 +63,13 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
 
         publishedAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         publishedAttribute.setName("publishedAttribute");
-        publishedAttribute.setDatatype(Datatype.STRING.getName());
+        publishedAttribute.setDatatype(Datatype.MONEY.getName());
         publishedAttribute.setModifier(Modifier.PUBLISHED);
         publishedAttribute.setAttributeType(attributeType);
 
         publicAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         publicAttribute.setName("publicAttribute");
-        publicAttribute.setDatatype(Datatype.STRING.getName());
+        publicAttribute.setDatatype(Datatype.MONEY.getName());
         publicAttribute.setModifier(Modifier.PUBLIC);
         publicAttribute.setAttributeType(attributeType);
     }
@@ -85,15 +85,14 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
 
     /** Expects, that the getter method is contained in the given list. */
     protected final void expectGetterMethod(List<IJavaElement> javaElements, GenAttribute genAttribute) {
-        IMethod expectedGetterMethod = getGeneratedJavaType().getMethod(
-                genAttribute.getGetterMethodName(), new String[] {});
+        IMethod expectedGetterMethod = getGeneratedJavaType().getMethod(genAttribute.getGetterMethodName(),
+                new String[] {});
         assertTrue(javaElements.contains(expectedGetterMethod));
     }
 
     /** Expects, that the setter method is contained in the given list. */
     protected final void expectSetterMethod(List<IJavaElement> javaElements, GenAttribute genAttribute) {
-        IMethod expectedSetterMethod = getGeneratedJavaType().getMethod(
-                genAttribute.getSetterMethodName(),
+        IMethod expectedSetterMethod = getGeneratedJavaType().getMethod(genAttribute.getSetterMethodName(),
                 new String[] { "Q" + genAttribute.getDatatype().getName() + ";" });
         assertTrue(javaElements.contains(expectedSetterMethod));
     }

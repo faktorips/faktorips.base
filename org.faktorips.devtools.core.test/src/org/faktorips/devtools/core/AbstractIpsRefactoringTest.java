@@ -133,7 +133,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         // Create a policy component type attribute.
         policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttribute.setName(POLICY_CMPT_TYPE_ATTRIBUTE_NAME);
-        policyCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        policyCmptTypeAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
         policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setProductRelevant(true);

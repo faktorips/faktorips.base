@@ -565,7 +565,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
         if (isProductRelevant()) {
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             IType javaTypeProductCmptTypeGen = null;
             try {
                 javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(false);
@@ -575,9 +575,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
             if (javaTypeProductCmptTypeGen != null) {
                 addDefaultValueMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-                addSetOfAllowedValuesMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addValueSetMemberVarToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
                 addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetValueSetMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
             }
         }
     }
@@ -598,7 +598,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         }
         if (isProductRelevant()) {
-            addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             IType javaTypeProductCmptTypeGen = null;
             try {
                 javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
@@ -608,7 +608,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
             if (javaTypeProductCmptTypeGen != null) {
                 addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-                addGetSetOfAllowedValuesMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                addGetValueSetMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
             }
         }
     }
@@ -646,14 +646,14 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         javaElements.add(field);
     }
 
-    private void addSetOfAllowedValuesMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
+    private void addValueSetMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         IField field = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
         javaElements.add(field);
     }
 
-    private void addGetSetOfAllowedValuesMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+    private void addGetValueSetMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGetSetOfAllowedValues(), new String[] { "Q"

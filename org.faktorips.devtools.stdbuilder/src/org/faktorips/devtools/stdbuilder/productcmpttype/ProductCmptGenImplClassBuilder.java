@@ -62,7 +62,6 @@ import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -874,7 +873,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        ArgumentCheck.notNull(ipsTypeName);
         String generationConceptAbbreviation = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
                 .getGenerationConceptNameAbbreviation();
         if (isBuildingPublishedSourceFile()) {

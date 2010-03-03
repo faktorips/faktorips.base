@@ -65,4 +65,8 @@ _+ PROPERTY_PRICE : String_
 - setOfAllowedValuesPrice : ValueSet&lt;Integer&gt; 
 --
 + getDefaultPrice() : Integer
-+ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element></umlet_diagram>
++ getSetOfAllowedValuesForPrice(IValidationContext) : ValueSet&lt;Integer&gt;</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>20</x><y>800</y><w>1030</w><h>100</h></coordinates><panel_attributes>Attention:
+  - If the ValueSetType for an attribute is Enum rather than Unrestricted, any setOfAllowedValuesFor literal is replaced with allowedValuesFor !
+    The member variable setOfAllowedValuesXXX is than also named allowedValuesForXXX
+ 
+  - If the ValueSetType for an attribute is Range rather than Unrestricted, any setOfAllowedValuesFor literal is replaced with rangeFor !</panel_attributes><additional_attributes/></element></umlet_diagram>

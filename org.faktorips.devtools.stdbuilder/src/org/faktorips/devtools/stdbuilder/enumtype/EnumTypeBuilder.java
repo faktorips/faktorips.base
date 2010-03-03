@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -1128,14 +1129,24 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
+    protected String getGeneratedJavaTypeName(String ipsTypeName) {
+        return getJavaNamingConvention().getImplementationClassName(ipsTypeName);
+    }
+
+    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        // TODO AW: Not implemented yet.
+        if (!(ipsElement instanceof IEnumType)) {
+            return;
+        }
+
+        IEnumType enumType = (IEnumType)ipsElement;
+        IType javaType = getGeneratedJavaType(enumType.getQualifiedName(), enumType.getIpsPackageFragment().getRoot());
+        javaElements.add(javaType);
     }
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return true;
     }
 
 }
