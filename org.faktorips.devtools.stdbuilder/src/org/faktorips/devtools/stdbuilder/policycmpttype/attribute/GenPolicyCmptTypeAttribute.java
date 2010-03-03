@@ -298,12 +298,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         throw new RuntimeException("Can't handle value set " + getValueSet());
     }
 
-    public String getMethodNameGetRangeFor() throws CoreException {
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(getAttribute().getName())),
-                getDatatype());
-    }
-
     public GenPolicyCmptTypeAttribute getGeneratorForOverwrittenAttribute() throws CoreException {
         if (!getAttribute().isOverwrite()) {
             return null;
