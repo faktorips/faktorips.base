@@ -123,6 +123,7 @@ import org.faktorips.devtools.core.ui.StyledCellMessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandSelectedAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.ToggleAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -1486,6 +1487,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void buildContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(false);
+        manager.add(new ExpandSelectedAction(treeViewer));
+        manager.add(new Separator());
         manager.add(new AddAction());
         manager.add(new RemoveAction());
         manager.add(new ProductCmptAction());
