@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
@@ -100,7 +101,8 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         if (element instanceof TestPolicyCmpt) {
             TestPolicyCmpt component = (TestPolicyCmpt)element;
             try {
-                IProductCmpt productComponent = component.findProductCmpt();
+                ITestCase testCase = component.getTestCase();
+                IProductCmpt productComponent = component.findProductCmpt(testCase.getIpsProject());
                 if (productComponent != null) {
                     Image image = defaultLabelProvider.getImage(productComponent);
                     if (image != null) {

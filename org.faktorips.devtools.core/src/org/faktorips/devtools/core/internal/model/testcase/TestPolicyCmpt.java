@@ -163,10 +163,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return productCmpt;
     }
 
-    public IProductCmpt findProductCmpt() throws CoreException {
-        return findProductCmpt(getTestCase().getIpsProject());
-    }
-
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;

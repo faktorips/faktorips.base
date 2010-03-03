@@ -143,13 +143,6 @@ public interface ITestPolicyCmpt extends ITestObject {
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the product component or <code>null</code> if the product component does not exists.
-     * 
-     * @throws CoreException if an error occurs while searching for the product component.
-     */
-    public IProductCmpt findProductCmpt() throws CoreException;
-
-    /**
      * Returns <code>true</code> if the given test policy cmpt is product relevant, otherwise
      * <code>false</code>
      */
