@@ -69,17 +69,17 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * Determines whether the extension (i.e. the actual policy class name) is shown for product
      * components.
      */
-    private final IObservableValue canShowExtension;
+    private final IObservableValue canShowPolicyComponentType;
 
     public TestCaseLabelProvider(IIpsProject ipsProject) {
         this(ipsProject, new WritableValue(Boolean.TRUE, Boolean.class));
     }
 
-    public TestCaseLabelProvider(IIpsProject ipsProject, IObservableValue canShowExtension) {
+    public TestCaseLabelProvider(IIpsProject ipsProject, IObservableValue canShowPolicyComponentType) {
         this.ipsProject = ipsProject;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        this.canShowExtension = canShowExtension;
-        this.canShowExtension.addValueChangeListener(new IValueChangeListener() {
+        this.canShowPolicyComponentType = canShowPolicyComponentType;
+        this.canShowPolicyComponentType.addValueChangeListener(new IValueChangeListener() {
             public void handleValueChange(ValueChangeEvent event) {
                 propagateEvent();
             }
@@ -87,8 +87,8 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     }
 
     /**
-     * Propagates the {@link ValueChangeEvent} of the property {@link #canShowExtension} to all
-     * registered listeners of this label provider.
+     * Propagates the {@link ValueChangeEvent} of the property {@link #canShowPolicyComponentType}
+     * to all registered listeners of this label provider.
      */
     protected void propagateEvent() {
         fireLabelProviderChanged(new LabelProviderChangedEvent(this));
@@ -243,7 +243,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     }
 
     private boolean hideExtension() {
-        return canShowExtension.getValue() != Boolean.TRUE;
+        return canShowPolicyComponentType.getValue() != Boolean.TRUE;
     }
 
     /*

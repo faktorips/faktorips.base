@@ -142,6 +142,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Used for saving the current layout style and filter in a eclipse memento.
     private static final String DIALOG_SETTINGS_KEY = "TestCaseSection"; //$NON-NLS-1$
     private static final String CONTENT_TYPE_KEY = "contenttype"; //$NON-NLS-1$
+    private static final String SHOW_POLICY_COMPONENT_TYPE = "showpolicycomponenttype"; //$NON-NLS-1$
     private static final String SHOW_ASSOCIATION_KEY = "associations"; //$NON-NLS-1$
     private static final String SHOW_ALL_KEY = "all"; //$NON-NLS-1$
 
@@ -238,6 +239,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private IIpsProject ipsProject;
 
     private OpenInNewEditorAction openInNewEditorAction;
+
+    private WritableValue canShowPolicyComponentType = new WritableValue(Boolean.TRUE, Boolean.class);
 
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
@@ -1015,9 +1018,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         hookTreeListeners();
         treeViewer.setContentProvider(contentProvider);
 
-        WritableValue canShowExtension = new WritableValue(Boolean.TRUE, Boolean.class);
-        createStructureSectionToolbar(structureSection, canShowExtension);
-        labelProvider = new TestCaseLabelProvider(ipsProject, canShowExtension);
+        createStructureSectionToolbar(structureSection, canShowPolicyComponentType);
+        labelProvider = new TestCaseLabelProvider(ipsProject, canShowPolicyComponentType);
 
         treeViewer.setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
@@ -3134,6 +3136,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             contentProvider.setContentType(section.getInt(CONTENT_TYPE_KEY));
             contentProvider.setWithoutAssociations(section.getBoolean(SHOW_ASSOCIATION_KEY));
             showAll = section.getBoolean(SHOW_ALL_KEY);
+            canShowPolicyComponentType.setValue(!section.getBoolean(SHOW_POLICY_COMPONENT_TYPE));
 
             // init menu state
             actionAll.setChecked(showAll);
@@ -3170,6 +3173,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         section.put(CONTENT_TYPE_KEY, contentProvider.getContentType());
         section.put(SHOW_ASSOCIATION_KEY, contentProvider.isWithoutAssociations());
         section.put(SHOW_ALL_KEY, showAll);
+        section.put(SHOW_POLICY_COMPONENT_TYPE, !(Boolean)canShowPolicyComponentType.getValue());
     }
 
     public void setReadOnly(boolean readOnly) {

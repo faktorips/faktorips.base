@@ -22,6 +22,9 @@ import org.eclipse.core.databinding.observable.value.WritableValue;
  */
 @SuppressWarnings("nls")
 public class ToggleActionTest extends TestCase {
+    private static final String WRONG_OBSERVABLE_STATE = "Wrong observable state";
+    private static final String WRONG_ACTION_CHECKED_STATE = "Wrong action checked state";
+
     /**
      * Tests whether the action works as expected when starting with <code>true</code> or
      * <code>false</code>.
@@ -35,11 +38,23 @@ public class ToggleActionTest extends TestCase {
         WritableValue observable = new WritableValue(startValue, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);
 
-        assertEquals("Wrong action checked state", startValue, action.isChecked());
-        assertEquals("Wrong observable state", startValue, observable.getValue());
+        assertEquals(WRONG_ACTION_CHECKED_STATE, startValue, action.isChecked());
+        assertEquals(WRONG_OBSERVABLE_STATE, startValue, observable.getValue());
         action.run();
-        assertEquals("Wrong observable state", !startValue, observable.getValue());
+        assertEquals(WRONG_OBSERVABLE_STATE, !startValue, observable.getValue());
         action.run();
-        assertEquals("Wrong observable state", startValue, observable.getValue());
+        assertEquals(WRONG_OBSERVABLE_STATE, startValue, observable.getValue());
+    }
+
+    /**
+     * Verifies that the action toggles its state if the model changes.
+     */
+    public void testActionStateUpdateFromModel() {
+        WritableValue observable = new WritableValue(true, Boolean.class);
+        ToggleAction action = new ToggleAction("description", "icon", observable);
+
+        assertTrue(WRONG_ACTION_CHECKED_STATE, action.isChecked());
+        observable.setValue(false);
+        assertFalse(WRONG_ACTION_CHECKED_STATE, action.isChecked());
     }
 }

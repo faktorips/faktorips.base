@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.IValueChangeListener;
+import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -35,12 +37,19 @@ public class ToggleAction extends Action {
     public ToggleAction(String description, String iconName, IObservableValue value) {
         super(null, SWT.TOGGLE);
 
+        ArgumentCheck.notNull(value);
         ArgumentCheck.isTrue(value.getValueType() == Boolean.class);
         this.value = value;
 
         setChecked(value.getValue() == Boolean.TRUE ? true : false);
         setToolTipText(description);
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(iconName));
+
+        value.addValueChangeListener(new IValueChangeListener() {
+            public void handleValueChange(ValueChangeEvent event) {
+                ToggleAction.this.setChecked((Boolean)event.getObservableValue().getValue());
+            }
+        });
     }
 
     @Override
