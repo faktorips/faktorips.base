@@ -87,7 +87,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; // $NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
@@ -1083,11 +1083,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * <tt>getGeneratedJavaType(String, IIpsProject)</tt>.
      * 
      * @param ipsTypeName The IPS type name to obtain the the Java type name for.
-     * 
-     * @throws NullPointerException If <tt>ipsTypeName</tt> is <tt>null</tt>.
      */
     protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        ArgumentCheck.notNull(ipsTypeName);
         return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(ipsTypeName)
                 : getJavaNamingConvention().getImplementationClassName(ipsTypeName);
     }
