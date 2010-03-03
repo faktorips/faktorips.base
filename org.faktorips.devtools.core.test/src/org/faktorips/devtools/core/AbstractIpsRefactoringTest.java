@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.util.ArgumentCheck;
@@ -137,6 +138,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.createValueSetRule();
+        policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
 
         // Create a product component type attribute.
         productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();

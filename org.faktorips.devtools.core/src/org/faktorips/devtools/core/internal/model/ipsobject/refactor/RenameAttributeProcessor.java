@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -57,6 +58,11 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      */
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute);
+        addIgnoredValidationMessageCodes();
+    }
+
+    private void addIgnoredValidationMessageCodes() {
+        getIgnoredValidationMessageCodes().add(IValidationRule.MSGCODE_UNDEFINED_ATTRIBUTE);
     }
 
     @Override
@@ -109,6 +115,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         if (getAttribute() instanceof IProductCmptTypeAttribute) {
             updateProductCmptAttributeValueReferences();
         } else {
+            updateValidationRule();
             updateProductCmptConfigElementReferences();
             updateTestCaseTypeReferences();
         }
@@ -138,6 +145,26 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 IAttributeValue attributeValue = generation.getAttributeValue(getOriginalName());
                 if (attributeValue != null) {
                     attributeValue.setAttribute(getNewName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the reference to the <tt>IAttribute</tt> in the corresponding
+     * <tt>IValidationRule</tt> if any exists.
+     * <p>
+     * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
+     */
+    private void updateValidationRule() {
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)getAttribute();
+        IValidationRule validationRule = policyCmptTypeAttribute.findValueSetRule(getIpsProject());
+        if (validationRule != null) {
+            for (int i = 0; i < validationRule.getValidatedAttributes().length; i++) {
+                String attributeName = validationRule.getValidatedAttributes()[i];
+                if (attributeName.equals(getOriginalName())) {
+                    validationRule.setValidatedAttributeAt(i, getNewName());
+                    break;
                 }
             }
         }
