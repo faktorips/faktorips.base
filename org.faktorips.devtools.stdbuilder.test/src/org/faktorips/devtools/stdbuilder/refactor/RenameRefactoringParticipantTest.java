@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -73,6 +74,17 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(productGenClass.getMethod("getDefaultValueTest", new String[] {}).exists());
         assertTrue(productGenClass.getMethod("getSetOfAllowedValuesForTest",
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
+    }
+
+    public void testRenamePolicyCmptTypeAttributeValidationRule() throws CoreException {
+        performFullBuild();
+
+        policyCmptTypeAttribute.createValueSetRule();
+        policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
+
+        // Rename the attribute.
+        performRenameRefactoring(productCmptTypeAttribute, "test");
+
     }
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
