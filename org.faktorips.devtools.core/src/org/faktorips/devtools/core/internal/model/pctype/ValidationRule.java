@@ -52,7 +52,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     private MessageSeverity msgSeverity = MessageSeverity.ERROR;
 
-    // the qualified name of the business functions this rule is used in
+    /** The qualified names of the business functions this rule is used in. */
     private ArrayList<String> functions = new ArrayList<String>(0);
 
     private boolean appliedForAllBusinessFunction = true;
@@ -189,7 +189,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateCheckValueAgainstValueSet(MessageList msgList) {
-
         if (isCheckValueAgainstValueSetRule()) {
             String attributeName = getValidatedAttributeAt(0);
             IPolicyCmptTypeAttribute attribute = getPolicyCmptType().getPolicyCmptTypeAttribute(attributeName);
@@ -209,7 +208,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-
         IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(
                 getPolicyCmptType());
         Set<String> attributeNames = new HashSet<String>(attributes.length);
@@ -220,8 +218,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             String validatedAttribute = validatedAttributes.get(i);
             if (!attributeNames.contains(validatedAttribute)) {
                 String text = Messages.ValidationRule_msgUndefinedAttribute;
-                list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR,
-                        new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_UNDEFINED_ATTRIBUTE, text, Message.ERROR, new ObjectProperty(this,
+                        "validatedAttributes", i))); //$NON-NLS-1$
             } else {
                 IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findPolicyCmptTypeAttribute(
                         validatedAttribute, ipsProject);
@@ -234,7 +232,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
 
         for (int i = 0; i < validatedAttributes.size() - 1; i++) {
-
             for (int r = i + 1; r < validatedAttributes.size(); r++) {
                 if (validatedAttributes.get(i).equals(validatedAttributes.get(r))) {
                     String text = Messages.ValidationRule_msgDuplicateEntries;
@@ -381,7 +378,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         boolean oldValue = isCheckValueAgainstValueSetRule();
         checkValueAgainstValueSetRule = isAttributeValueValidationRule;
         valueChanged(oldValue, isAttributeValueValidationRule);
-
     }
 
 }
