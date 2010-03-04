@@ -306,8 +306,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        super.contentsChanged(event);
+    protected void contentsChangedInternal(ContentChangeEvent event) {
         IEnumAttribute changedPart = (IEnumAttribute)event.getPart();
         if (changedPart == null) {
             return;

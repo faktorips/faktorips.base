@@ -87,7 +87,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     /**
      * {@inheritDoc}
-     * 
      * <p>
      * Overwritten to be sure to get the cancel-button as soon as possible ...
      */
@@ -156,9 +155,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         return item;
     }
 
-    /**
-     * Returns the part being edited.
-     */
     public IIpsObjectPart getIpsPart() {
         return part;
     }
@@ -192,14 +188,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
             updateTitleInTitleArea();
             updateMessageArea();
-            contentsChangedInternal();
+            contentsChangedInternal(event);
         }
     }
 
@@ -209,7 +202,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      */
     protected void updateMessageArea() {
         try {
-
             MessageList msgList = part.validate(part.getIpsProject());
             MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
             msgList.add(objMsgList.getMessagesFor(part));
@@ -249,8 +241,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     /**
      * Method for sub classes to hook into the contents changed notification.
      */
-    // TODO AW: Can't use this because it doesn't get the event as parameter
-    protected void contentsChangedInternal() {
+    protected void contentsChangedInternal(ContentChangeEvent event) {
 
     }
+
 }
