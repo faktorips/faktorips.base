@@ -116,4 +116,12 @@ public interface IIpsElement extends IAdaptable {
      */
     public ProcessorBasedRefactoring getMoveRefactoring();
 
+    /**
+     * Returns whether this element supports refactoring of java code or not.
+     * 
+     * @return <code>true</code> if java code is refactored in addition to model refactoring,
+     *         <code>false</code> otherwise.
+     */
+    public boolean isJavaRefactoringSupported();
+
 }

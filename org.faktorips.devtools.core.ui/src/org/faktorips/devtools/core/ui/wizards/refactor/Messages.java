@@ -23,6 +23,8 @@ public class Messages extends NLS {
     public static String ElementNames_Method;
     public static String ElementNames_Type;
 
+    public static String RefactoringWizard_JavaRefactoringNotAvailable;
+
     public static String RenameRefactoringWizard_title;
     public static String MoveRefactoringWizard_title;
 

@@ -836,4 +836,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
+    @Override
+    public boolean isJavaRefactoringSupported() {
+        return true;
+    }
+
 }

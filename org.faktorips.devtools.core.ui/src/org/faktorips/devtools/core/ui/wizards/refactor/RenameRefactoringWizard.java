@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
@@ -77,6 +78,10 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
          */
         RenamePage(IIpsElement ipsElement) {
             super(ipsElement, "RenamePage");
+
+            if (!ipsElement.isJavaRefactoringSupported()) {
+                setMessage(Messages.RefactoringWizard_JavaRefactoringNotAvailable, IMessageProvider.WARNING);
+            }
         }
 
         @Override

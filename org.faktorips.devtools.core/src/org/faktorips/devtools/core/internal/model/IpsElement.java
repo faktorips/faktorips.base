@@ -206,4 +206,8 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return null;
     }
 
+    public boolean isJavaRefactoringSupported() {
+        return false;
+    }
+
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -55,8 +56,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
      */
     public MoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/MoveWizard.png"));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png"));
         setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
     }
 
@@ -89,6 +89,9 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
          */
         MovePage(IIpsElement ipsElement) {
             super(ipsElement, "MovePage");
+            if (!ipsElement.isJavaRefactoringSupported()) {
+                setMessage(Messages.RefactoringWizard_JavaRefactoringNotAvailable, IMessageProvider.WARNING);
+            }
         }
 
         @Override

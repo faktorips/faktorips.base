@@ -456,4 +456,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    @Override
+    public boolean isJavaRefactoringSupported() {
+        return true;
+    }
 }
