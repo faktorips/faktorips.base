@@ -211,7 +211,6 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             boolean forInterface) {
 
         if (ipsElement instanceof IType) {
-            javaElements.add(generatedJavaType);
             getGeneratedJavaElementsForType(javaElements, generatedJavaType, forInterface);
 
         } else if (ipsElement instanceof IIpsObjectPart) {
