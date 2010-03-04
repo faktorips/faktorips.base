@@ -41,10 +41,10 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
-    public static final String MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS = "TargetPolicyCmptNotExists";
-    public static final String MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS = "NoMasterToDetailCandidateNotExists";
-    public static final String MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE = "MasterToDetailCandidatesNotUnique";
-    public static final String MSGCODE_SUBSETTED_DERIVED_UNION_NOT_FOUND = "SubsettedDerivedUnionNotFound";
+    public static final String MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS = "TargetPolicyCmptNotExists"; //$NON-NLS-1$
+    public static final String MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS = "NoMasterToDetailCandidateNotExists"; //$NON-NLS-1$
+    public static final String MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE = "MasterToDetailCandidatesNotUnique"; //$NON-NLS-1$
+    public static final String MSGCODE_SUBSETTED_DERIVED_UNION_NOT_FOUND = "SubsettedDerivedUnionNotFound"; //$NON-NLS-1$
 
     public Migration_2_5_0_rc2(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
@@ -52,9 +52,8 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "The modeling of composition has changed.\n"
-                + "Now every child model object becomes a concrete parent model object variable for each parent they belongs to.\n"
-                + "This migration fix the inverse of all detail to master associations";
+        return "The modeling of composition has changed.\n" //$NON-NLS-1$
+                + "Now every child model object becomes a concrete parent model object variable for each parent they belongs to."; //$NON-NLS-1$
     }
 
     @Override
@@ -78,6 +77,10 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)currentIpsSrcFile.getIpsObject();
                 migratePolicyCmptType(msgResultList, policyCmptType);
             }
+        }
+        if (msgResultList.getNoOfMessages() > 0) {
+            String text = "Migration finished with warnings. Some manually migration steps are necessary. See other messages for details."; //$NON-NLS-1$
+            msgResultList.add(new Message("finishedWithWarnings", text, Message.WARNING)); //$NON-NLS-1$
         }
         return msgResultList;
     }
@@ -124,7 +127,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
         IPolicyCmptType targetPolicyCmptType = association.findTargetPolicyCmptType(ipsProject);
         if (targetPolicyCmptType == null) {
             // can't fix inverse because target not found
-            String text = "Detail to master association couldn't be fixed, target policy component type not found";
+            String text = "Detail to master association couldn't be fixed, target policy component type not found"; //$NON-NLS-1$
             msgList.add(new Message(MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS, text, Message.WARNING, association));
             return true;
         }
@@ -140,12 +143,12 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
             masterDetailAssociationToFix.setInverseAssociation(association.getName());
         } else if (masterDetailcanditates.size() == 0) {
             // error: no master detail found
-            String text = "Detail to master association couldn't be fixed, no corresponding master to detail association found";
+            String text = "Detail to master association couldn't be fixed, no corresponding master to detail association found"; //$NON-NLS-1$
             msgList.add(new Message(MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS, text, Message.WARNING,
                     association));
         } else {
             // error: to many master detail found, not unique
-            String text = "Detail to master association couldn't be fixed, no unique master to detail association found";
+            String text = "Detail to master association couldn't be fixed, no unique master to detail association found"; //$NON-NLS-1$
             msgList
                     .add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
         }
