@@ -27,9 +27,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -117,11 +117,11 @@ public class RenameRefactoringParticipant extends RenameParticipant {
             if (ipsElement instanceof IAttribute) {
                 success = initializeTargetJavaElementsForAttribute((IAttribute)ipsElement, builderSet);
 
-            } else if (ipsElement instanceof IType) {
-                IType type = (IType)ipsElement;
-                IIpsPackageFragment targetIpsPackageFragment = type.getIpsPackageFragment();
+            } else if (ipsElement instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)ipsElement;
+                IIpsPackageFragment targetIpsPackageFragment = ipsObject.getIpsPackageFragment();
                 String newName = getArguments().getNewName();
-                success = initTargetJavaElements(type, targetIpsPackageFragment, newName, builderSet);
+                success = initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
 
             } else {
                 success = false;

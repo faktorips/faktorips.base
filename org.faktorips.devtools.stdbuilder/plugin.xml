@@ -92,7 +92,7 @@
                      value="org.faktorips.devtools.core.model.type.IAttribute">
                </instanceof>
                <instanceof
-                     value="org.faktorips.devtools.core.model.type.IType">
+                     value="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                </instanceof>
             </or></enablement>
       </renameParticipant>
@@ -105,7 +105,7 @@
             name="StdBuilderMoveParticipant">
          <enablement>
             <instanceof
-                  value="org.faktorips.devtools.core.model.type.IType">
+                  value="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
             </instanceof></enablement>
       </moveParticipant>
    </extension>

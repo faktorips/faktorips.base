@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -202,9 +201,9 @@ public abstract class RefactoringParticipantHelper {
     protected abstract boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
 
     /**
-     * Initializes the target <tt>IJavaElement</tt>s for the given <tt>IType</tt>.
+     * Initializes the target <tt>IJavaElement</tt>s for the given <tt>IIpsObject</tt>.
      * 
-     * @param type The <tt>IType</tt> to be refactored.
+     * @param ipsObject The <tt>IIpsObject</tt> to be refactored.
      * @param targetIpsPackageFragment The new <tt>IIpsPackageFragment</tt> of the <tt>IType</tt>.
      * @param newName The new name of the <tt>IType</tt>.
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
@@ -212,17 +211,17 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final boolean initTargetJavaElements(IType type,
+    protected final boolean initTargetJavaElements(IIpsObject ipsObject,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             StandardBuilderSet builderSet) {
 
-        ArgumentCheck.notNull(new Object[] { type, targetIpsPackageFragment, newName, builderSet });
+        ArgumentCheck.notNull(new Object[] { ipsObject, targetIpsPackageFragment, newName, builderSet });
 
-        // Create a copy of the type's source file.
-        IResource sourceFileResource = type.getIpsSrcFile().getCorrespondingResource();
+        // Create a copy of the object's source file.
+        IResource sourceFileResource = ipsObject.getIpsSrcFile().getCorrespondingResource();
         IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
-        String targetSrcFileName = newName + "." + type.getIpsObjectType().getFileExtension();
+        String targetSrcFileName = newName + "." + ipsObject.getIpsObjectType().getFileExtension();
         IPath destinationPath = destinationFolder.append(targetSrcFileName);
         try {
             sourceFileResource.copy(destinationPath, true, new NullProgressMonitor());
@@ -233,8 +232,8 @@ public abstract class RefactoringParticipantHelper {
 
         IIpsSrcFile copiedSrcFile = targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
         try {
-            IIpsObject ipsObject = copiedSrcFile.getIpsObject();
-            targetJavaElements = builderSet.getGeneratedJavaElements(ipsObject);
+            IIpsObject copiedIpsObject = copiedSrcFile.getIpsObject();
+            targetJavaElements = builderSet.getGeneratedJavaElements(copiedIpsObject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
