@@ -20,6 +20,37 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// This text will be stored with each diagram;  use it for notes.</help_text><zoom_level>10</zoom_level><element><type>com.umlet.element.base.Package</type><coordinates><x>70</x><y>160</y><w>320</w><h>110</h></coordinates><panel_attributes>Abstract &amp; Use Enums</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>10</x><y>10</y><w>390</w><h>20</h></coordinates><panel_attributes>Generated Java code for enumeration type TestEnumType.</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>10</x><y>60</y><w>260</w><h>20</h></coordinates><panel_attributes>Attributes</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>90</x><y>200</y><w>280</w><h>50</h></coordinates><panel_attributes>ITestEnumType
+// This text will be stored with each diagram;  use it for notes.</help_text><zoom_level>10</zoom_level><element><type>com.umlet.element.base.Package</type><coordinates><x>60</x><y>130</y><w>340</w><h>160</h></coordinates><panel_attributes>Abstract &amp; Use Enums</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>10</x><y>10</y><w>390</w><h>20</h></coordinates><panel_attributes>Generated Java code for enumeration type TestEnumType.</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>10</x><y>60</y><w>260</w><h>20</h></coordinates><panel_attributes>Attributes</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>80</x><y>170</y><w>300</w><h>100</h></coordinates><panel_attributes>ITestEnumType
 --
-/+ getPlz() : String/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>30</x><y>90</y><w>260</w><h>20</h></coordinates><panel_attributes>Attribute plz of datatype String</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>50</x><y>120</y><w>260</w><h>20</h></coordinates><panel_attributes>No other properties</panel_attributes><additional_attributes/></element></umlet_diagram>
+/+ getPlz() : String/
+--
+- With any property configuration.
+- Inherited attributes don't generate any
+code in this scenario.</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>30</x><y>90</y><w>260</w><h>20</h></coordinates><panel_attributes>Attribute plz of datatype String</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>430</x><y>130</y><w>340</w><h>180</h></coordinates><panel_attributes>Abstract &amp; No Enums</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>450</x><y>170</y><w>300</w><h>120</h></coordinates><panel_attributes>TestEnumType
+--
+# plz : String
+--
+/+ getPlz() : String/
+--
+- With any property configuration.
+- Inherited attributes don't generate any
+code in this scenario.</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>430</x><y>340</y><w>340</w><h>250</h></coordinates><panel_attributes>No Enums</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>60</x><y>340</y><w>340</w><h>200</h></coordinates><panel_attributes>Use Enums</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>80</x><y>380</y><w>300</w><h>140</h></coordinates><panel_attributes>TestEnumType
+--
+- plz : String
+--
++ getPlz() : String
+ 
+when unique identifier:
+_+ getValueByPlz(String plz) : TestEnumType_
+_+ isValueByPlz(String plz) : boolean_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>450</x><y>380</y><w>300</w><h>190</h></coordinates><panel_attributes>TestEnumType
+--
+only if not inherited:
+- plz : String
+ 
+--
+only if not inherited:
++ getPlz() : String
+ 
+when unique identifier:
+_+ getValueByPlz(String plz) : TestEnumType_
+_+ isValueByPlz(String plz) : boolean_</panel_attributes><additional_attributes/></element></umlet_diagram>
