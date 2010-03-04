@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
@@ -110,6 +111,21 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
         assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
         assertEquals(newAttributeName, productCmptGenerationConfigElement.getPolicyCmptTypeAttribute());
+    }
+
+    public void testRenamePolicyCmptTypeAttributeWithValidationRule() throws CoreException {
+        policyCmptTypeAttribute.createValueSetRule();
+        policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
+        String newAttributeName = "test";
+        performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
+
+        // Check for changed attribute name.
+        assertNull(policyCmptType.getAttribute(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
+        assertNotNull(policyCmptType.getAttribute(newAttributeName));
+        assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
+
+        // Check for validation rule update.
+        assertNotNull(policyCmptTypeAttribute.findValueSetRule(ipsProject));
     }
 
     /**
