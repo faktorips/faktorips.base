@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -25,7 +26,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
@@ -51,7 +51,7 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
 
     protected IMethod productMethod;
 
-    protected IAssociation otherPolicyToPolicyAssociation;
+    protected IPolicyCmptTypeAssociation otherPolicyToPolicyAssociation;
 
     protected IProductCmptTypeAssociation otherProductToProductAssociation;
 
@@ -84,7 +84,7 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         productMethod.newParameter(QUALIFIED_POLICY_NAME, "withPolicyDatatype");
 
         // Setup policy associations.
-        otherPolicyToPolicyAssociation = otherPolicyCmptType.newAssociation();
+        otherPolicyToPolicyAssociation = otherPolicyCmptType.newPolicyCmptTypeAssociation();
         otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
 
         // Setup product associations.

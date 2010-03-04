@@ -22,6 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -76,6 +77,32 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
     }
 
     public void testRenamePolicyCmptType() throws CoreException {
+        performRenamePolicyCmptType();
+    }
+
+    public void testRenameSuperPolicyCmptType() throws CoreException {
+        String newElementName = "NewSuperPolicy";
+        performRenameRefactoring(superPolicyCmptType, newElementName);
+
+        // Check for test attribute update.
+        assertEquals(newElementName, superTestAttribute.getPolicyCmptType());
+
+        // Check for subtype update.
+        assertEquals(newElementName, policyCmptType.getSupertype());
+    }
+
+    public void testRenamePolicyCmptTypeWithInverseAssociation() throws CoreException {
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setInverseAssociation(otherPolicyToPolicyAssociation.getName());
+        association.setTarget(otherPolicyCmptType.getQualifiedName());
+        association.setTargetRoleSingular("foo");
+        association.setTargetRolePlural("foobar");
+        otherPolicyToPolicyAssociation.setInverseAssociation(association.getName());
+
+        performRenamePolicyCmptType();
+    }
+
+    private void performRenamePolicyCmptType() throws CoreException {
         String newElementName = "NewPolicy";
         performRenameRefactoring(policyCmptType, newElementName);
         String qualifiedNewName = PACKAGE + "." + newElementName;
@@ -104,17 +131,6 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
         // Check for association update.
         assertEquals(qualifiedNewName, otherPolicyToPolicyAssociation.getTarget());
-    }
-
-    public void testRenameSuperPolicyCmptType() throws CoreException {
-        String newElementName = "NewSuperPolicy";
-        performRenameRefactoring(superPolicyCmptType, newElementName);
-
-        // Check for test attribute update.
-        assertEquals(newElementName, superTestAttribute.getPolicyCmptType());
-
-        // Check for subtype update.
-        assertEquals(newElementName, policyCmptType.getSupertype());
     }
 
     public void testRenameProductCmptType() throws CoreException {
