@@ -383,8 +383,8 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             }
         }
 
-        public void setParent(XmlPc parent) {
-            setParentModelObjectInternal(parent);
+        public void setParent(XmlPc newParent) {
+            parent = newParent;
         }
 
         /**
@@ -401,13 +401,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void setParentModelObjectInternal(AbstractModelObject newParent) {
-            parent = newParent;
         }
 
         /**
