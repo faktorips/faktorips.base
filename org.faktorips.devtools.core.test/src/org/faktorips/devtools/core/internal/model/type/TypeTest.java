@@ -233,11 +233,12 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation union = (PolicyCmptTypeAssociation)source.newAssociation();
+        union.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         union.setDerivedUnion(true);
         union.setTargetRoleSingular("Target");
         union.setTarget(target.getQualifiedName());
 
-        // ml = target.validate(ipsProject);
+        ml = target.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation inverseOfUnion = (PolicyCmptTypeAssociation)target.newAssociation();
@@ -268,8 +269,8 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         // implement the derived union in the same type
         PolicyCmptTypeAssociation associationM2D = (PolicyCmptTypeAssociation)source.newAssociation();
-        associationM2D.setDerivedUnion(false);
         associationM2D.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associationM2D.setDerivedUnion(false);
         associationM2D.setSubsettedDerivedUnion(union.getName());
         associationM2D.setTarget(target.getQualifiedName());
         associationM2D.setTargetRoleSingular("M2D");
@@ -284,6 +285,82 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         ml = target.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+    }
+
+    /**
+     * Test if the target must be marked as abstract because there is no inverse of a subset of a
+     * derived union association. The source must not be marked as abstract because it defines a
+     * subset of the derived union.
+     */
+    public void testValidate_MustImplementInverseDerivedUnionOnlyTarget() throws Exception {
+        IPolicyCmptType source = newPolicyCmptType(ipsProject, "SourceType");
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
+        IPolicyCmptType subTarget = newPolicyCmptType(ipsProject, "SubTargetType");
+        subTarget.setSupertype(target.getQualifiedName());
+
+        MessageList ml = new MessageList();
+        // ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        PolicyCmptTypeAssociation union = (PolicyCmptTypeAssociation)source.newAssociation();
+        union.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        union.setDerivedUnion(true);
+        union.setTargetRoleSingular("Target");
+        union.setTargetRolePlural("Targets");
+        union.setTarget(target.getQualifiedName());
+
+        ml = target.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        PolicyCmptTypeAssociation inverseOfUnion = (PolicyCmptTypeAssociation)target.newAssociation();
+        inverseOfUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseOfUnion.setTargetRoleSingular(source.getUnqualifiedName());
+        inverseOfUnion.setTargetRolePlural(source.getUnqualifiedName() + "s");
+        inverseOfUnion.setTarget(source.getQualifiedName());
+
+        union.setInverseAssociation(inverseOfUnion.getName());
+        inverseOfUnion.setInverseAssociation(union.getName());
+
+        // test both source and target must be marked as abstract
+        ml = target.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        ml = source.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+
+        // now implement a derived union from source to a subtype of target
+
+        // create derived union implementation to subtype of target
+        PolicyCmptTypeAssociation subsetOfUnion = (PolicyCmptTypeAssociation)source.newAssociation();
+        subsetOfUnion.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subsetOfUnion.setTargetRoleSingular("SubTarget");
+        subsetOfUnion.setTargetRolePlural("SubTargets");
+        subsetOfUnion.setTarget(subTarget.getQualifiedName());
+        subsetOfUnion.setSubsettedDerivedUnion(union.getName());
+
+        PolicyCmptTypeAssociation inverseSubsetOfUnion = (PolicyCmptTypeAssociation)subTarget.newAssociation();
+        inverseSubsetOfUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseSubsetOfUnion.setTargetRoleSingular("Source2");
+        inverseSubsetOfUnion.setTarget(source.getQualifiedName());
+        inverseSubsetOfUnion.setTargetRolePlural(source.getUnqualifiedName() + "2s");
+
+        subsetOfUnion.setInverseAssociation(inverseSubsetOfUnion.getName());
+        inverseSubsetOfUnion.setInverseAssociation(subsetOfUnion.getName());
+
+        source.getIpsSrcFile().save(true, null);
+        target.getIpsSrcFile().save(true, null);
+        subTarget.getIpsSrcFile().save(true, null);
+
+        ml = source.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+
+        // test that in this case the super type (target) needs to be abstract, but the source not
+
+        ml = subTarget.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
+        ml = target.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+
     }
 
     public void testValidate_MustImplementDerivedUnion() throws Exception {

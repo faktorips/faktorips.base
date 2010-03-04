@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
@@ -848,7 +847,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the <code>GenPolicyCmptType</code> for this builder.
      */
     private GenPolicyCmptType getGenerator() throws CoreException {
-        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+        return getGeneratorFor(getPcType());
+    }
+
+    /**
+     * Returns the <code>GenPolicyCmptType</code> for the given policy component type.
+     */
+    private GenPolicyCmptType getGeneratorFor(IPolicyCmptType policyCmptType) throws CoreException {
+        return ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType);
     }
 
     /**
@@ -1200,6 +1206,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * private Police police;
      * </pre>
      * 
+     * Note that the field is declared using the class, otherwise it is not possible to use the
+     * field with jaxb.
+     * 
      * @param association
      */
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder,
@@ -1218,7 +1227,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         memberVarsBuilder.append("private ");
-        memberVarsBuilder.appendClassName(getTargetQualifiedName(association, true));
+        memberVarsBuilder.appendClassName(getTargetQualifiedName(association, false));
         memberVarsBuilder.append(' ');
         memberVarsBuilder.append(fieldName);
         memberVarsBuilder.appendln(";");
@@ -1296,11 +1305,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // create the get parent method to return the field of all inverse associations which are no
         // the inverse of a derived union
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        boolean isSubtype = getPcType().getSupertype().length() > 0;
 
-        if (isSubtype) {
+        if (isOverriddenMethodGetParentModel(getPcType())) {
+            // future change: if we generate code for Java 6 only then we can always generate the
+            // overwrite annotation. Because in Java 6 it is possible to add the override annotation
+            // to methods that implement methods of an interface which is not allowed in Java 5.
             getGenerator().appendOverrideAnnotation(methodBuilder, getIpsProject(), false);
         }
+
         methodBuilder.methodBegin(Modifier.PUBLIC, qualifiedReturnType, methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
         for (Iterator<IPolicyCmptTypeAssociation> iterator = inverseAssociationsWithoutDerivedUnion.iterator(); iterator
@@ -1326,15 +1338,42 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /*
+     * Returns true if one of the parent object has a getParentModelObject method. See also
+     * isTypeDependant()
+     */
+    private boolean isOverriddenMethodGetParentModel(IPolicyCmptType policyCmptType) throws CoreException {
+        if (StringUtils.isEmpty(policyCmptType.getSupertype())) {
+            return false;
+        }
+        IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType.findSupertype(getIpsProject());
+        if (supertype == null) {
+            return false;
+        }
+        return isTypeDependant(supertype);
+    }
+
+    /*
      * Returns true if the supertype has dependant fields, means that the supertypes has at least
      * one detail to master association which is no inverse of a derived union association.
      */
-    private boolean isSupertypeDependant() throws CoreException {
-        if (getPcType().getSupertype().length() == 0) {
+    protected boolean isSupertypeDependant() throws CoreException {
+        if (StringUtils.isEmpty(getPcType().getSupertype())) {
             return false;
         }
-        IType supertype = getPcType().findSupertype(getIpsProject());
-        return getAllDependantDetailToMasterAssociations((IPolicyCmptType)supertype).size() > 0;
+        IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
+        if (supertype == null) {
+            return false;
+        }
+        return isTypeDependant(supertype);
+    }
+
+    /*
+     * Returns true if the given type has dependant fields, means that the type has at least one
+     * detail to master association which is no inverse of a derived union association.
+     */
+    protected boolean isTypeDependant(IPolicyCmptType policyCmptType) throws CoreException {
+        return getAllDependantDetailToMasterAssociations((IPolicyCmptType)policyCmptType).size() > 0;
+
     }
 
     /**
@@ -1349,9 +1388,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      *           "Coverage can't be assigned to parent object of class Policy, "+
      *           "because object already belongs to a different parent object.");
      *     }
-     *     policy = newParent;
+     *     policy = (Policy) newParent;
      * }
      * </pre>
+     * 
+     * Note that the cast is necessary because the field is declared using the class type (because
+     * of jaxb see above).
      * 
      * @throws CoreException
      */
@@ -1393,7 +1435,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         // set the new parent
         methodBuilder.append(parentObjectFieldName);
-        methodBuilder.appendln("=newParent;");
+        methodBuilder.append(" = (");
+        methodBuilder.appendClassName(getTargetQualifiedName(association, false));
+        methodBuilder.appendln(") newParent;");
         methodBuilder.methodEnd();
     }
 
