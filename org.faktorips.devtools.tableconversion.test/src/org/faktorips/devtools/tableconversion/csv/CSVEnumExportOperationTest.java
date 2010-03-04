@@ -61,8 +61,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         new File(filename).delete();
     }
 
-    // TODO AW: Test broken because CSV export needs to be fixed
-    public void _testExportValid() throws Exception {
+    public void testExportValid() throws Exception {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
         MessageList ml = new MessageList();
@@ -96,8 +95,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         assertFalse(ml.isEmpty());
     }
 
-    // TODO AW: Test broken because CSV export needs to be fixed
-    public void _testExportInvalid() throws Exception {
+    public void testExportInvalid() throws Exception {
         IEnumType enumType = createInvalidEnumTypeWithValues(ipsProject);
 
         MessageList ml = new MessageList();

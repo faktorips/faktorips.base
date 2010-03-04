@@ -212,7 +212,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time.
      */
-    // TODO AW: Subclasses need the ability to search for references, we need a reference search.
     protected abstract void refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
     /** Saves all registered <tt>IIpsSrcFile</tt>s. */
