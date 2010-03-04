@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -25,22 +26,30 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest {
 
+    protected final static String PRODUCT_NAME = "ProductCmptType";
+
+    protected final static String POLICY_NAME = "PolicyCmptType";
+
     protected IProductCmptType productCmptType;
 
-    protected IPolicyCmptType policyCmptType;
-
     protected GenProductCmptType genProductCmptType;
+
+    private IPolicyCmptType policyCmptType;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        productCmptType = newProductCmptType(ipsProject, "PolicyCmptType");
-        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        productCmptType = newProductCmptType(ipsProject, PRODUCT_NAME);
+        policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         genProductCmptType = new GenProductCmptType(productCmptType, (StandardBuilderSet)ipsProject
                 .getIpsArtefactBuilderSet());
+    }
+
+    protected final IType getGeneratedJavaType() {
+        return getGeneratedJavaType(PRODUCT_NAME);
     }
 
 }

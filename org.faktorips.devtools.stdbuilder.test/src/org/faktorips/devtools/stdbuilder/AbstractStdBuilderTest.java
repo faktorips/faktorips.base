@@ -39,10 +39,10 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      * Creates and returns a Java type that can be used to test whether the generator correctly
      * returns generated <tt>IJavaElement</tt>s.
      */
-    protected final IType getGeneratedJavaType() {
-        IFile javaSourceFile = ipsProject.getProject().getFile("Type.java");
+    protected final IType getGeneratedJavaType(String typeName) {
+        IFile javaSourceFile = ipsProject.getProject().getFile(typeName + ".java");
         ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(javaSourceFile);
-        return compilationUnit.getType("Type");
+        return compilationUnit.getType(typeName);
     }
 
 }

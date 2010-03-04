@@ -11,36 +11,40 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.enumtype;
 
+import java.util.List;
+
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
-public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
+public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
-    protected final static String POLICY_NAME = "PolicyCmptType";
+    private final static String ENUM_TYPE_NAME = "TestEnumType";
 
-    protected IPolicyCmptType policyCmptType;
+    private StandardBuilderSet builderSet;
 
-    protected GenPolicyCmptType genPolicyCmptType;
+    private IEnumType enumType;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
-        genPolicyCmptType = new GenPolicyCmptType(policyCmptType, (StandardBuilderSet)ipsProject
-                .getIpsArtefactBuilderSet());
+
+        builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
     }
 
-    protected final IType getGeneratedJavaType() {
-        return getGeneratedJavaType(POLICY_NAME);
+    private IType getGeneratedJavaType() {
+        return getGeneratedJavaType(ENUM_TYPE_NAME);
+    }
+
+    public void testGetGeneratedJavaElements() {
+        List<IJavaElement> javaElements = builderSet.getGeneratedJavaElements(enumType);
+        assertEquals(1, javaElements.size());
+        assertEquals(IJavaElement.TYPE, javaElements.get(0).getElementType());
     }
 
 }
