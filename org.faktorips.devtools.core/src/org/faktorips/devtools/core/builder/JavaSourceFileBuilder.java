@@ -693,7 +693,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Implementation of the build procedure of this builder.
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-
         if (!isBuilderFor(ipsSrcFile)) {
             return;
         }
@@ -716,13 +715,15 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
         String javaFileContentsStr = getJavaFileContents(javaFile, charset);
         if (isMergeEnabled()) {
-            content = merge(javaFile, javaFileContentsStr, content, charset);
+            content = merge(javaFile, javaFileContentsStr, content);
         }
         content = writeFeatureVersions(content);
         String formattedContent = format(content);
-        // if merging is not activated and the content of the file is
-        // equal compared to the generated and formatted
-        // content then the new content is not written to the file
+
+        /*
+         * If merging is not activated and the content of the file is equal compared to the
+         * generated and formatted content then the new content is not written to the file.
+         */
         if (formattedContent.equals(javaFileContentsStr)) {
             return;
         }
@@ -875,7 +876,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return model;
     }
 
-    private String merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
+    private String merge(IFile javaFile, String oldContent, String newContent) throws CoreException {
         JMerger merger;
         try {
             merger = new JMerger(getJControlModel());
@@ -1047,20 +1048,33 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         try {
             IIpsProject ipsProject = ipsObject.getIpsProject();
             IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-            IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
-            String basePackageNameMergable = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+            IFolder outputFolder;
+            String basePackageName;
+            if (buildsDerivedArtefacts()) {
+                outputFolder = ipsObjectPath.getOutputFolderForDerivedSources();
+                basePackageName = ipsObjectPath.getBasePackageNameForDerivedJavaClasses();
+            } else {
+                outputFolder = ipsObjectPath.getOutputFolderForMergableSources();
+                basePackageName = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+            }
+
             if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
                 IIpsPackageFragmentRoot ipsRoot = ipsObject.getIpsPackageFragment().getRoot();
                 for (IIpsSrcFolderEntry entry : ipsObjectPath.getSourceFolderEntries()) {
                     if (entry.getIpsPackageFragmentRoot().equals(ipsRoot)) {
-                        outputFolderMergable = entry.getOutputFolderForMergableJavaFiles();
-                        basePackageNameMergable = entry.getBasePackageNameForMergableJavaClasses();
+                        if (buildsDerivedArtefacts()) {
+                            outputFolder = entry.getOutputFolderForDerivedJavaFiles();
+                            basePackageName = entry.getBasePackageNameForDerivedJavaClasses();
+                        } else {
+                            outputFolder = entry.getOutputFolderForMergableJavaFiles();
+                            basePackageName = entry.getBasePackageNameForMergableJavaClasses();
+                        }
                         break;
                     }
                 }
             }
 
-            IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolderMergable);
+            IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolder);
             String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
             String qualifiedIpsObjectName = ipsObject.getQualifiedName();
             String packageName = "";
@@ -1069,7 +1083,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 packageName = "."
                         + qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.')).toLowerCase();
             }
-            IPackageFragment fragment = javaRoot.getPackageFragment(basePackageNameMergable + internalPackageSeparator
+            IPackageFragment fragment = javaRoot.getPackageFragment(basePackageName + internalPackageSeparator
                     + packageName);
 
             String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
