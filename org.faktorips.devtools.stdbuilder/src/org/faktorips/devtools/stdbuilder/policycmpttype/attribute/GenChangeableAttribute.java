@@ -635,8 +635,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         if (productCmptType == null) {
             return null;
         }
-        return productCmptTypeBuilder.getGeneratedJavaType(policyCmptType.getProductCmptType(), productCmptType
-                .getIpsPackageFragment().getRoot());
+        return productCmptTypeBuilder.getGeneratedJavaType(productCmptType);
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
@@ -646,15 +645,13 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         javaElements.add(field);
     }
 
-    private void addValueSetMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,
-            IType generatedJavaType) {
+    private void addValueSetMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
 
         IField field = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
         javaElements.add(field);
     }
 
-    private void addGetValueSetMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
-            IType generatedJavaType) {
+    private void addGetValueSetMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
                 + IValidationContext.class.getSimpleName() + ";" });

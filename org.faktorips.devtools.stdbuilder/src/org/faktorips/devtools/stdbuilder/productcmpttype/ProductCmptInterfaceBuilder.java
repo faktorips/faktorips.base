@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -225,8 +226,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
          */
         if (ipsElement instanceof IProductCmptType) {
             IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-            javaElements.add(getGeneratedJavaType(productCmptType.getQualifiedName(), productCmptType
-                    .getIpsPackageFragment().getRoot()));
+            IType javaType = getGeneratedJavaType(productCmptType);
+            javaElements.add(javaType);
         }
     }
 

@@ -453,7 +453,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @return the requested text
      */
     public String getLocalizedText(IIpsElement element, String key) {
-
         if (localizedStringsSet == null) {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
@@ -1022,8 +1021,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             try {
                 IIpsObject ipsObject = (IIpsObject)ipsElement;
                 if (isBuilderFor(ipsObject.getIpsSrcFile())) {
-                    IType javaType = getGeneratedJavaType(ipsObject.getQualifiedName(), ipsObject
-                            .getIpsPackageFragment().getRoot());
+                    IType javaType = getGeneratedJavaType(ipsObject);
                     javaElements.add(javaType);
                 }
             } catch (CoreException e) {
@@ -1037,29 +1035,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the Java type that this builder generates for the <tt>IIpsObject</tt> identified by
-     * it's provided qualified name.
+     * Returns the Java type that this builder generates for the given <tt>IIpsObject</tt>.
      * 
-     * @param qualifiedIpsObjectName The qualified name of the <tt>IIpsObject</tt> to obtain the
-     *            generated Java type for.
-     * @param ipsPackageFragmentRoot The <tt>IIpsPackageFragmentRoot</tt> the <tt>IIpsObject</tt>
-     *            identified by it's provided qualified name is stored in.
+     * @param ipsObject The <tt>IIpsObject</tt> to obtain the generated Java type for.
      * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * @throws NullPointerException If <tt>ipsObject</tt> is <tt>null</tt>.
      */
-    public final IType getGeneratedJavaType(String qualifiedIpsObjectName,
-            IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
+    public final IType getGeneratedJavaType(IIpsObject ipsObject) {
+        ArgumentCheck.notNull(ipsObject);
 
-        ArgumentCheck.notNull(new Object[] { qualifiedIpsObjectName, ipsPackageFragmentRoot });
-
-        IIpsProject ipsProject = ipsPackageFragmentRoot.getIpsProject();
         try {
+            IIpsProject ipsProject = ipsObject.getIpsProject();
             IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
             IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
             String basePackageNameMergable = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
             if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+                IIpsPackageFragmentRoot ipsRoot = ipsObject.getIpsPackageFragment().getRoot();
                 for (IIpsSrcFolderEntry entry : ipsObjectPath.getSourceFolderEntries()) {
-                    if (entry.getIpsPackageFragmentRoot().equals(ipsPackageFragmentRoot)) {
+                    if (entry.getIpsPackageFragmentRoot().equals(ipsRoot)) {
                         outputFolderMergable = entry.getOutputFolderForMergableJavaFiles();
                         basePackageNameMergable = entry.getBasePackageNameForMergableJavaClasses();
                         break;
@@ -1067,39 +1060,25 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 }
             }
 
-            IPackageFragmentRoot root = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolderMergable);
+            IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolderMergable);
             String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal";
+            String qualifiedIpsObjectName = ipsObject.getQualifiedName();
             String packageName = "";
-            String typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName);
             if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) {
                 // FIXME FS#1684 AW: applied toLowerCase as a workaround.
                 packageName = "."
                         + qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.')).toLowerCase();
-                typeName = getGeneratedJavaTypeName(qualifiedIpsObjectName.substring(qualifiedIpsObjectName
-                        .lastIndexOf('.') + 1));
             }
-            IPackageFragment fragment = root.getPackageFragment(basePackageNameMergable + internalPackageSeparator
+            IPackageFragment fragment = javaRoot.getPackageFragment(basePackageNameMergable + internalPackageSeparator
                     + packageName);
-            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + ".java");
 
+            String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
             return compilationUnit.getType(typeName);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Returns the name of the Java type this builder generates for the given IPS type name.
-     * <p>
-     * May be overwritten by subclasses. This method is used by
-     * <tt>getGeneratedJavaType(String, IIpsProject)</tt>.
-     * 
-     * @param ipsTypeName The IPS type name to obtain the the Java type name for.
-     */
-    protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        return isBuildingPublishedSourceFile() ? getJavaNamingConvention().getPublishedInterfaceName(ipsTypeName)
-                : getJavaNamingConvention().getImplementationClassName(ipsTypeName);
     }
 
     /**

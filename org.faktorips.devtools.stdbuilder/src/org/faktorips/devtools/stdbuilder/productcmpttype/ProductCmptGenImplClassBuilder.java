@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -872,17 +873,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        String generationConceptAbbreviation = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
-                .getGenerationConceptNameAbbreviation();
-        if (isBuildingPublishedSourceFile()) {
-            return getJavaNamingConvention().getPublishedInterfaceName(ipsTypeName + generationConceptAbbreviation);
-        } else {
-            return getJavaNamingConvention().getImplementationClassName(ipsTypeName + generationConceptAbbreviation);
-        }
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
         IProductCmptType productCmptType = null;
         if (ipsElement instanceof IProductCmptType) {
@@ -898,10 +888,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return;
         }
 
-        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(
-                javaElements,
-                getGeneratedJavaType(productCmptType.getQualifiedName(), productCmptType.getIpsPackageFragment()
-                        .getRoot()), ipsElement);
+        IType javaType = getGeneratedJavaType(productCmptType);
+        GenProductCmptType genProductCmptType = getGenProductCmptType(productCmptType);
+        genProductCmptType.getGeneratedJavaElementsForImplementation(javaElements, javaType,
+                ipsElement);
     }
 
     @Override

@@ -24,39 +24,18 @@ import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
 
 public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
 
-    public void testGetGeneratedJavaElementsForPublishedInterface() {
-        productCmptType.setConfigurationForPolicyCmptType(false);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genProductCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                productCmptType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
-        assertEquals(1, generatedJavaElements.size());
-    }
-
-    public void testGetGeneratedJavaElementsForImplementation() {
-        productCmptType.setConfigurationForPolicyCmptType(false);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genProductCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
-                productCmptType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
-        assertEquals(1, generatedJavaElements.size());
-    }
-
     public void testGetGeneratedJavaElementsForPublishedInterfaceConfiguring() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genProductCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
                 productCmptType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectGetProductCmptMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(true));
         expectGetProductCmptGenMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(true));
         expectSetProductCmptMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(true));
-        assertEquals(4, generatedJavaElements.size());
+        assertEquals(3, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationConfiguring() throws CoreException {
@@ -64,14 +43,13 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
 
         genProductCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
                 productCmptType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaType()));
         expectGetProductCmptMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(false));
         expectGetProductCmptGenMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(false));
         expectSetProductCmptMethod(generatedJavaElements, genProductCmptType
                 .findGeneratedJavaTypeForPolicyCmptType(false));
-        assertEquals(4, generatedJavaElements.size());
+        assertEquals(3, generatedJavaElements.size());
     }
 
     private void expectGetProductCmptMethod(List<IJavaElement> javaElements, IType javaType) {

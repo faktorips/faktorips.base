@@ -1121,17 +1121,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected String getGeneratedJavaTypeName(String ipsTypeName) {
-        return getJavaNamingConvention().getImplementationClassName(ipsTypeName);
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
         if (ipsElement instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)ipsElement;
             IEnumType enumType = enumAttribute.getEnumType();
-            IType javaType = getGeneratedJavaType(enumType.getQualifiedName(), enumType.getIpsPackageFragment()
-                    .getRoot());
+            IType javaType = getGeneratedJavaType(enumType);
             if (isJava5EnumsAvailable()) {
                 getGeneratedJavaElementsForAttributeJava5EnumsAvailable(javaElements, enumAttribute, javaType);
             } else {

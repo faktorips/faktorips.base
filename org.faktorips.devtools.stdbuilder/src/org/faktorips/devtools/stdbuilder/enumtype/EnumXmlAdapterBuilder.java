@@ -87,6 +87,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
+    public String getUnqualifiedClassName() throws CoreException {
+        return super.getUnqualifiedClassName() + "XmlAdapter"; //$NON-NLS-1$
+    }
+
+    @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.getJavaDocForTypeBuilder().javaDoc(
@@ -212,13 +217,12 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        // TODO AW: Not implemented yet.
+
     }
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return false;
     }
 
 }

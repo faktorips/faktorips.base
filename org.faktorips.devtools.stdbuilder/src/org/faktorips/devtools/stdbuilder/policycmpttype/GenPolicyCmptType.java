@@ -349,8 +349,7 @@ public class GenPolicyCmptType extends GenType {
         if (productCmptType == null) {
             return null;
         }
-        return productCmptTypeBuilder.getGeneratedJavaType(getPolicyCmptType().getProductCmptType(), productCmptType
-                .getIpsPackageFragment().getRoot());
+        return productCmptTypeBuilder.getGeneratedJavaType(productCmptType);
     }
 
 }
