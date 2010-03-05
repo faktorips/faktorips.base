@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.table;
 
 import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
@@ -29,7 +28,7 @@ import org.eclipse.swt.events.TraverseEvent;
  * between.
  * <p/>
  * Again this class (as {@link AbstractPermanentTraversalStrategy}) is designed to be used with a
- * {@link EditingSupport} that holds one instance of this class during its lifetime.
+ * {@link CellTrackingEditingSupport} that holds one instance of this class during its lifetime.
  * 
  * <p/>
  * This {@link TraversalStrategy} supports two kinds of traversal in the ColumnViewer:
@@ -48,11 +47,8 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
     private LinkedColumnsTraversalStrategy follower = null;
     private LinkedColumnsTraversalStrategy predecessor = null;
 
-    private ColumnViewer viewer;
-
-    public LinkedColumnsTraversalStrategy(ColumnViewer viewer, EditingSupport editingSupport) {
+    public LinkedColumnsTraversalStrategy(CellTrackingEditingSupport editingSupport) {
         super(editingSupport);
-        this.viewer = viewer;
     }
 
     public void keyTraversed(TraverseEvent e) {
@@ -117,7 +113,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
             return;
         }
         if (canEdit(currentViewItem)) {
-            viewer.editElement(currentViewItem, getColumnIndex());
+            getViewer().editElement(currentViewItem, getColumnIndex());
         } else {
             editNextColumnFor(currentViewItem);
         }
@@ -128,13 +124,11 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
             return;
         }
         if (canEdit(currentViewItem)) {
-            viewer.editElement(currentViewItem, getColumnIndex());
+            getViewer().editElement(currentViewItem, getColumnIndex());
         } else {
             editPreviousColumnFor(currentViewItem);
         }
     }
-
-    /* ROW Operations */
 
     private void editNextRow() {
         Object nextItem = getNextVisibleViewItem(getCurrentViewItem());
@@ -155,7 +149,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
             return;
         }
         if (canEdit(currentViewItem)) {
-            viewer.editElement(currentViewItem, getColumnIndex());
+            getViewer().editElement(currentViewItem, getColumnIndex());
         } else {
             editCellOrRowFollowerFor(getNextVisibleViewItem(currentViewItem));
         }
@@ -166,7 +160,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
             return;
         }
         if (canEdit(currentViewItem)) {
-            viewer.editElement(currentViewItem, getColumnIndex());
+            getViewer().editElement(currentViewItem, getColumnIndex());
         } else {
             editCellOrRowPredecessorFor(getPreviousVisibleViewItem(currentViewItem));
         }
@@ -259,6 +253,6 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
     }
 
     protected ColumnViewer getViewer() {
-        return viewer;
+        return getEditingSupport().getViewer();
     }
 }
