@@ -13,13 +13,18 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
  * 
@@ -27,11 +32,17 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
  */
 public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
 
+    private PolicyCmptImplClassBuilder builder;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
         IIpsProjectProperties props = ipsProject.getProperties();
         ipsProject.setProperties(props);
+
+        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_IMPL);
     }
 
     public void testBuild() throws CoreException {
@@ -53,6 +64,11 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
             printOriginalStatus(e.getStatus());
             fail();
         }
+    }
+
+    public void testGetGeneratedJavaElements() {
+        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(policyCmptType);
+        assertTrue(javaElements.contains(getGeneratedJavaType(false)));
     }
 
 }

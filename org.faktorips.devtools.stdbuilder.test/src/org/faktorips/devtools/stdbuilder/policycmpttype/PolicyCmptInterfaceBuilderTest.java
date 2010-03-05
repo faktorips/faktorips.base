@@ -11,40 +11,34 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.enumtype;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
+/**
+ * 
+ * 
+ * @author Alexander Weickmann
+ */
+public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
 
-    private final static String ENUM_TYPE_NAME = "TestEnumType";
-
-    private EnumTypeBuilder builder;
-
-    private IEnumType enumType;
+    private PolicyCmptInterfaceBuilder builder;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        builder = new EnumTypeBuilder(builderSet);
-        enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
-    }
-
-    private IType getGeneratedJavaEnum() {
-        return getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
+        builder = new PolicyCmptInterfaceBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_INTERFACE);
     }
 
     public void testGetGeneratedJavaElements() {
-        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(enumType);
-        assertTrue(javaElements.contains(getGeneratedJavaEnum()));
+        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(policyCmptType);
+        assertTrue(javaElements.contains(getGeneratedJavaType(true)));
     }
 
 }

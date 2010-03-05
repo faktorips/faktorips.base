@@ -76,25 +76,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         setMergeEnabled(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean generatesInterface() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getSuperclass() throws CoreException {
         IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
@@ -108,35 +99,23 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
         return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalize(name));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         String publishedInterface = GenType.getQualifiedName(getPcType(), (StandardBuilderSet)getBuilderSet(), true);
         return new String[] { publishedInterface };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(null, ANNOTATION_GENERATED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         generateConstructorDefault(builder);
@@ -145,9 +124,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -200,7 +176,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    /*
+    /**
      * Returns a set of association generators and their corresponding associations. Return all
      * generators for the inverse of a derived union. Returns an empty map if this type has no
      * inverse subset derived union associations.
@@ -239,7 +215,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return result;
     }
 
-    /*
+    /**
      * Returns a list of all detail to mater associations. Note that the detail to master
      * composition of a derived union association (the inverse of a master to detail derived union)
      * is not included.
@@ -658,9 +634,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForContainerAssociationImplementation(IPolicyCmptTypeAssociation derivedUnionAssociation,
             List<IAssociation> associations,
@@ -1337,7 +1310,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.methodEnd();
     }
 
-    /*
+    /**
      * Returns true if one of the parent object has a getParentModelObject method. See also
      * isTypeDependant()
      */
@@ -1352,7 +1325,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return isTypeDependant(supertype);
     }
 
-    /*
+    /**
      * Returns true if the supertype has dependant fields, means that the supertypes has at least
      * one detail to master association which is no inverse of a derived union association.
      */
@@ -1367,7 +1340,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return isTypeDependant(supertype);
     }
 
-    /*
+    /**
      * Returns true if the given type has dependant fields, means that the type has at least one
      * detail to master association which is no inverse of a derived union association.
      */
@@ -1566,10 +1539,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     /**
      * {@inheritDoc}
-     * 
      * <p>
      * Outputs a @XmlRootElement annotation if JAXB support is enabled.
-     * </p>
      */
     @Override
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
