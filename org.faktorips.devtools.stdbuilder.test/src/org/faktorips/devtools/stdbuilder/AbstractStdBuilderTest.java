@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -35,14 +38,28 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
     }
 
-    /**
-     * Creates and returns a Java type that can be used to test whether the generator correctly
-     * returns generated <tt>IJavaElement</tt>s.
-     */
-    protected final IType getGeneratedJavaType(String typeName) {
-        IFile javaSourceFile = ipsProject.getProject().getFile(typeName + ".java");
-        ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(javaSourceFile);
-        return compilationUnit.getType(typeName);
+    /** Returns the generated Java type for the given <tt>IIpsObject</tt>. */
+    protected final IType getGeneratedJavaType(IIpsObject ipsObject,
+            boolean derivedSource,
+            boolean internalSource,
+            String javaTypeName) {
+
+        String rootFolderName = derivedSource ? OUTPUT_FOLDER_NAME_DERIVED : OUTPUT_FOLDER_NAME_MERGABLE;
+        IFolder rootFolder = ipsProject.getProject().getFolder(rootFolderName);
+        IPackageFragmentRoot javaPackageRoot = ipsProject.getJavaProject().getPackageFragmentRoot(rootFolder);
+
+        String basePackageName = derivedSource ? BASE_PACKAGE_NAME_DERIVED : BASE_PACKAGE_NAME_MERGABLE;
+        String internalSeparator = internalSource ? "internal" : "";
+        String ipsFragmentName = ipsObject.getIpsPackageFragment().getName();
+        String ipsPackageName = (ipsFragmentName.length() > 0) ? internalSeparator + "."
+                + ipsFragmentName : internalSeparator;
+        String javaPackageName = (ipsPackageName.length() > 0) ? basePackageName + "." + ipsPackageName
+                : basePackageName;
+
+        IPackageFragment javaPackage = javaPackageRoot.getPackageFragment(javaPackageName);
+        ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
+                + JavaSourceFileBuilder.JAVA_EXTENSION);
+        return javaCompilationUnit.getType(javaTypeName);
     }
 
 }

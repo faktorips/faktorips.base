@@ -127,7 +127,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
-    protected final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
+    public final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 
     private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 

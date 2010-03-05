@@ -48,8 +48,16 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
                 .getIpsArtefactBuilderSet());
     }
 
-    protected final IType getGeneratedJavaType() {
-        return getGeneratedJavaType(PRODUCT_NAME);
+    protected final IType getGeneratedJavaType(boolean publishedSource) {
+        return (publishedSource) ? getGeneratedJavaInterface() : getGeneratedJavaClass();
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME);
+    }
+
+    private IType getGeneratedJavaInterface() {
+        return getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME);
     }
 
 }

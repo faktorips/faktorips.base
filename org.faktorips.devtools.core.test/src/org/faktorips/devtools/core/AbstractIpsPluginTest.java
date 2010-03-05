@@ -102,6 +102,11 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
+    protected static final String OUTPUT_FOLDER_NAME_DERIVED = "extension";
+    protected static final String OUTPUT_FOLDER_NAME_MERGABLE = "src";
+    protected static final String BASE_PACKAGE_NAME_DERIVED = "org.faktorips.sample.model";
+    protected static final String BASE_PACKAGE_NAME_MERGABLE = "org.faktorips.sample.model";
+
     public AbstractIpsPluginTest() {
         super();
     }
@@ -263,12 +268,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         if (!binFolder.exists()) {
             binFolder.create(true, true, null);
         }
-        IFolder srcFolder = project.getFolder("src");
+        IFolder srcFolder = project.getFolder(OUTPUT_FOLDER_NAME_MERGABLE);
         javaProject.setOutputLocation(binFolder.getFullPath(), null);
         if (!srcFolder.exists()) {
             srcFolder.create(true, true, null);
         }
-        IFolder extFolder = project.getFolder("extension");
+        IFolder extFolder = project.getFolder(OUTPUT_FOLDER_NAME_DERIVED);
         if (!extFolder.exists()) {
             extFolder.create(true, true, null);
         }
@@ -299,10 +304,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.setOutputDefinedPerSrcFolder(true);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
-        entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
-        entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("src"));
-        entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model");
-        entry.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("extension"));
+        entry.setSpecificBasePackageNameForMergableJavaClasses(BASE_PACKAGE_NAME_MERGABLE);
+        entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder(OUTPUT_FOLDER_NAME_MERGABLE));
+        entry.setSpecificBasePackageNameForDerivedJavaClasses(BASE_PACKAGE_NAME_DERIVED);
+        entry.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder(OUTPUT_FOLDER_NAME_DERIVED));
 
         ipsProject.setIpsObjectPath(path);
 

@@ -26,8 +26,8 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterfaceConfigured() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, getGeneratedJavaType(),
-                policyCmptType);
+        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                getGeneratedJavaType(true), policyCmptType);
         expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
                 .findGeneratedJavaTypeForProductCmptType(true));
         assertEquals(1, generatedJavaElements.size());
@@ -36,7 +36,7 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForImplementationConfigured() throws CoreException {
         List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(),
+        genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(false),
                 policyCmptType);
         expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
                 .findGeneratedJavaTypeForProductCmptType(false));

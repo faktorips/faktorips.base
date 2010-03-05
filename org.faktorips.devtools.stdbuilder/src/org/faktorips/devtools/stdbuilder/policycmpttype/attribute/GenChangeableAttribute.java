@@ -620,15 +620,15 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * <p>
      * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
      * 
-     * @param forInterface Flag indicating whether to search for the published interface of the
+     * @param forPublishedInterface Flag indicating whether to search for the published interface of the
      *            product component type generation (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
      * 
      * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
-    public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forInterface) throws CoreException {
+    public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forPublishedInterface) throws CoreException {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
-        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+        BaseProductCmptTypeBuilder productCmptTypeBuilder = forPublishedInterface ? getGenType().getBuilderSet()
                 .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
 
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());

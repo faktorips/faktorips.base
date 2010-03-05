@@ -25,7 +25,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
     private final static String ENUM_TYPE_NAME = "TestEnumType";
 
-    private StandardBuilderSet builderSet;
+    private EnumTypeBuilder enumTypeBuilder;
 
     private IEnumType enumType;
 
@@ -33,21 +33,19 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        enumTypeBuilder = new EnumTypeBuilder(builderSet);
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
     }
 
-    @SuppressWarnings("unused")
-    // In work
-    private IType getGeneratedJavaType() {
-        return getGeneratedJavaType(ENUM_TYPE_NAME);
+    private IType getGeneratedJavaEnum() {
+        return getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
     }
 
     public void testGetGeneratedJavaElements() {
-        List<IJavaElement> javaElements = builderSet.getGeneratedJavaElements(enumType);
-        assertEquals(2, javaElements.size());
-        assertEquals(IJavaElement.TYPE, javaElements.get(0).getElementType());
-        assertEquals(IJavaElement.TYPE, javaElements.get(1).getElementType());
+        List<IJavaElement> javaElements = enumTypeBuilder.getGeneratedJavaElements(enumType);
+        assertEquals(1, javaElements.size());
+        assertTrue(javaElements.contains(getGeneratedJavaEnum()));
     }
 
 }

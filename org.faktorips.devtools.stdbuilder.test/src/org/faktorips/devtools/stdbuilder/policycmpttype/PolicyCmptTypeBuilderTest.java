@@ -39,8 +39,16 @@ public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
                 .getIpsArtefactBuilderSet());
     }
 
-    protected final IType getGeneratedJavaType() {
-        return getGeneratedJavaType(POLICY_NAME);
+    protected final IType getGeneratedJavaType(boolean publishedSource) {
+        return (publishedSource) ? getGeneratedJavaInterface() : getGeneratedJavaClass();
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
+    }
+
+    private IType getGeneratedJavaInterface() {
+        return getGeneratedJavaType(policyCmptType, false, false, "I" + POLICY_NAME);
     }
 
 }
