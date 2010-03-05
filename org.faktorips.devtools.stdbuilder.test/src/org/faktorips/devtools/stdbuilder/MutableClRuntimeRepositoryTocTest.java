@@ -32,9 +32,6 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
 
     private MutableClRuntimeRepositoryToc toc;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         toc = new MutableClRuntimeRepositoryToc();
@@ -266,7 +263,6 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         toc2.addOrReplaceTocEntry(entry0);
         String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
         assertEquals(tocString, toc2String);
-
     }
 
 }

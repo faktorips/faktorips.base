@@ -13,10 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 
 /**
@@ -44,49 +40,45 @@ public class GenDerivedAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterface() {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublishedDerivedAttribute, true);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, true);
+                javaInterface, publishedAttribute);
+        expectPropertyConstant(javaInterface, genPublishedDerivedAttribute);
+        expectGetterMethod(javaInterface, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
+                javaInterface, publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevant() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublishedDerivedAttribute, true);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, true);
+                javaInterface, publishedAttribute);
+        expectPropertyConstant(javaInterface, genPublishedDerivedAttribute);
+        expectGetterMethod(javaInterface, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
@@ -95,67 +87,62 @@ public class GenDerivedAttributeTest extends GenPolicyCmptTypeAttributeTest {
         publicAttribute.setProductRelevant(true);
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
+                javaInterface, publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, false);
+        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicDerivedAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublicDerivedAttribute, false);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(javaClass, genPublicDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, false);
+        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicDerivedAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublicDerivedAttribute, false);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(javaClass, genPublicDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationProductRelevant() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, false);
+        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicDerivedAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublicDerivedAttribute, false);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(javaClass, genPublicDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
@@ -164,18 +151,17 @@ public class GenDerivedAttributeTest extends GenPolicyCmptTypeAttributeTest {
         publicAttribute.setProductRelevant(true);
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectGetterMethod(generatedJavaElements, genPublishedDerivedAttribute, false);
+        genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicDerivedAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublicDerivedAttribute, false);
+        genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(javaClass, genPublicDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,15 +32,16 @@ public class InvalidPcTypeHierarchyTest extends AbstractIpsPluginTest {
         IPolicyCmptType type1 = newPolicyCmptType(project, "Type1");
         IPolicyCmptType type2 = newPolicyCmptType(project, "Type2");
         IPolicyCmptType type3 = newPolicyCmptType(project, "Type3");
-        
+
         type3.setSupertype(type2.getQualifiedName());
         type2.setSupertype(type1.getQualifiedName());
         type1.setSupertype(type3.getQualifiedName());
-        
+
         type1.getIpsSrcFile().save(true, null);
         type2.getIpsSrcFile().save(true, null);
         type3.getIpsSrcFile().save(true, null);
-        
+
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
+
 }

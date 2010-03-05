@@ -34,11 +34,24 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
 
     protected GenProductCmptType genProductCmptType;
 
-    private IPolicyCmptType policyCmptType;
+    protected IPolicyCmptType policyCmptType;
+
+    protected IType javaClassConfiguredPolicy;
+
+    protected IType javaInterfaceConfiguredPolicy;
+
+    protected IType javaClassGeneration;
+
+    protected IType javaInterfaceGeneration;
+
+    protected IType javaClass;
+
+    protected IType javaInterface;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
         productCmptType = newProductCmptType(ipsProject, PRODUCT_NAME);
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
@@ -46,18 +59,13 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         genProductCmptType = new GenProductCmptType(productCmptType, (StandardBuilderSet)ipsProject
                 .getIpsArtefactBuilderSet());
-    }
 
-    protected final IType getGeneratedJavaType(boolean publishedSource) {
-        return (publishedSource) ? getGeneratedJavaInterface() : getGeneratedJavaClass();
-    }
-
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME);
-    }
-
-    private IType getGeneratedJavaInterface() {
-        return getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME);
+        javaClassConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
+        javaInterfaceConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, false, POLICY_NAME);
+        javaClassGeneration = getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME + "Gen");
+        javaInterfaceGeneration = getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME + "Gen");
+        javaClass = getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME);
+        javaInterface = getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME);
     }
 
 }

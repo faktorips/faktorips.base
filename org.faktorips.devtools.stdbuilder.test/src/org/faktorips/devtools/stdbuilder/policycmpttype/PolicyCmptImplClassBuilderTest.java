@@ -13,11 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -67,8 +64,8 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
     }
 
     public void testGetGeneratedJavaElements() {
-        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(policyCmptType);
-        assertTrue(javaElements.contains(getGeneratedJavaType(false)));
+        generatedJavaElements = builder.getGeneratedJavaElements(policyCmptType);
+        assertTrue(generatedJavaElements.contains(javaClass));
     }
 
 }

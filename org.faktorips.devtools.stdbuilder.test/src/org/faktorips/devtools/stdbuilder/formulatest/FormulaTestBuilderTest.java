@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,10 +29,8 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
     private IProductCmpt productCmpt;
     private IProductCmptType productCmptType;
     private IFormula formula;
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
@@ -44,20 +42,21 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
         formula.newFormulaTestCase();
     }
 
-    public void testDelete() throws CoreException{
+    public void testDelete() throws CoreException {
         productCmpt.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        
+
         assertTrue(productCmpt.getIpsSrcFile().exists());
 
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertFalse(productCmpt.getIpsSrcFile().exists());
-        
+
         IProductCmpt productCmpt2 = newProductCmpt(productCmptType, "productCmptWithoutFormula");
         productCmpt2.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         productCmpt2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
+
 }

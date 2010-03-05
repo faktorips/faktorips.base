@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,10 +25,8 @@ public class TestCaseBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ITestCaseType testCaseType;
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -38,11 +36,12 @@ public class TestCaseBuilderTest extends AbstractIpsPluginTest {
         testCaseType.getIpsSrcFile().save(true, null);
     }
 
-    public void testBuildInvalidTestCase() throws CoreException{
+    public void testBuildInvalidTestCase() throws CoreException {
         ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "testCase");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
         testCase.getIpsSrcFile().save(true, null);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
+
 }

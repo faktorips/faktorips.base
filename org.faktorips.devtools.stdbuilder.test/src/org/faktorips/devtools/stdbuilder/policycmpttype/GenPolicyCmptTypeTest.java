@@ -13,39 +13,33 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 
+/**
+ * 
+ * 
+ * @author Alexander Weickmann
+ */
 public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
 
     public void testGetGeneratedJavaElementsForPublishedInterfaceConfigured() throws CoreException {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), policyCmptType);
-        expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
-                .findGeneratedJavaTypeForProductCmptType(true));
+        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                policyCmptType);
+        expectCreatePolicyCmptMethod(genPolicyCmptType.findGeneratedJavaTypeForProductCmptType(true));
         assertEquals(1, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationConfigured() throws CoreException {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, getGeneratedJavaType(false),
-                policyCmptType);
-        expectCreatePolicyCmptMethod(generatedJavaElements, genPolicyCmptType
-                .findGeneratedJavaTypeForProductCmptType(false));
+        genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, policyCmptType);
+        expectCreatePolicyCmptMethod(genPolicyCmptType.findGeneratedJavaTypeForProductCmptType(false));
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectCreatePolicyCmptMethod(List<IJavaElement> javaElements, IType javaType) {
+    private void expectCreatePolicyCmptMethod(IType javaType) {
         IMethod expectedMethod = javaType.getMethod(genPolicyCmptType.getMethodNameCreatePolicyCmpt(), new String[] {});
-        assertTrue(javaElements.contains(expectedMethod));
+        assertTrue(generatedJavaElements.contains(expectedMethod));
     }
 
 }

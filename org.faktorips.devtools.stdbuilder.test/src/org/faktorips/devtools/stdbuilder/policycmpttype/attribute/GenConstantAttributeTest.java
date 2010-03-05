@@ -13,11 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 
@@ -46,75 +42,67 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterface() {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublishedConstantAttribute, true);
-        expectMemberConstant(generatedJavaElements, genPublishedConstantAttribute, getGeneratedJavaType(true));
+                javaInterface, publishedAttribute);
+        expectPropertyConstant(javaInterface, genPublishedConstantAttribute);
+        expectMemberConstant(javaInterface, genPublishedConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublishedConstantAttribute, true);
-        expectMemberConstant(generatedJavaElements, genPublishedConstantAttribute, getGeneratedJavaType(true));
+                javaInterface, publishedAttribute);
+        expectPropertyConstant(javaInterface, genPublishedConstantAttribute);
+        expectMemberConstant(javaInterface, genPublishedConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
+        genPublicConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
+        genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
-        genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicConstantAttribute, false);
-        expectMemberConstant(generatedJavaElements, genPublicConstantAttribute, getGeneratedJavaType(false));
+        genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicConstantAttribute);
+        expectMemberConstant(javaClass, genPublicConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
 
-        genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
+        genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
 
         generatedJavaElements.clear();
-        genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectPropertyConstant(generatedJavaElements, genPublicConstantAttribute, false);
-        expectMemberConstant(generatedJavaElements, genPublicConstantAttribute, getGeneratedJavaType(false));
+        genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publicAttribute);
+        expectPropertyConstant(javaClass, genPublicConstantAttribute);
+        expectMemberConstant(javaClass, genPublicConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
-    private void expectMemberConstant(List<IJavaElement> javaElements,
-            GenConstantAttribute genConstantAttribute,
-            IType javaType) {
-
-        IField expectedMemberConstant = javaType.getField(genConstantAttribute.getConstantMemberVarName());
-        assertTrue(javaElements.contains(expectedMemberConstant));
+    private void expectMemberConstant(IType javaType, GenConstantAttribute genConstantAttribute) {
+        String fieldName = genConstantAttribute.getConstantMemberVarName();
+        IField expectedMemberConstant = javaType.getField(fieldName);
+        assertTrue(generatedJavaElements.contains(expectedMemberConstant));
     }
 
 }

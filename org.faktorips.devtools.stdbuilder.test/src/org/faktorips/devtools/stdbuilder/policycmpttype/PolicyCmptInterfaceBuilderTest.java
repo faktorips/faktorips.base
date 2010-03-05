@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.List;
-
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
@@ -37,8 +34,8 @@ public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
     }
 
     public void testGetGeneratedJavaElements() {
-        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(policyCmptType);
-        assertTrue(javaElements.contains(getGeneratedJavaType(true)));
+        generatedJavaElements = builder.getGeneratedJavaElements(policyCmptType);
+        assertTrue(generatedJavaElements.contains(javaInterface));
     }
 
 }

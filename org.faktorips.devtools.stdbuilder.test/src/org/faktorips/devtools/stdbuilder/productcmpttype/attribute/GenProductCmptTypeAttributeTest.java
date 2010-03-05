@@ -13,12 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
@@ -64,92 +60,71 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublicAttribute = new GenProductCmptTypeAttribute(genProductCmptType, publicAttribute);
     }
 
-    /** Expects, that the getter method is contained in the given list. */
-    private final void expectGetterMethod(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            GenAttribute genAttribute) {
-
-        IMethod expectedGetterMethod = generatedJavaType.getMethod(genAttribute.getGetterMethodName(), new String[] {});
-        assertTrue(javaElements.contains(expectedGetterMethod));
-    }
-
-    /** Expects, that the setter method is contained in the given list. */
-    private final void expectSetterMethod(List<IJavaElement> javaElements,
-            GenAttribute genAttribute,
-            boolean forPublishedInterface) {
-
-        IMethod expectedSetterMethod = getGeneratedJavaType(forPublishedInterface).getMethod(
-                genAttribute.getSetterMethodName(), new String[] { "Q" + genAttribute.getDatatype().getName() + ";" });
-        assertTrue(javaElements.contains(expectedSetterMethod));
-    }
-
-    /** Expects, that the member variable is contained in the given list. */
-    private final void expectMemberVar(List<IJavaElement> javaElements,
-            GenAttribute genAttribute,
-            boolean forPublishedInterface) {
-
-        IField expectedMemberVar = getGeneratedJavaType(forPublishedInterface)
-                .getField(genAttribute.getMemberVarName());
-        assertTrue(javaElements.contains(expectedMemberVar));
-    }
-
     public void testGetGeneratedJavaElementsForPublishedInterface() {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publishedAttribute);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(true), genPublishedAttribute);
+                javaInterfaceGeneration, publishedAttribute);
+        expectGetterMethod(javaInterfaceGeneration, genPublishedAttribute);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                getGeneratedJavaType(true), publicAttribute);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(true), genPublicAttribute);
+                javaInterfaceGeneration, publicAttribute);
+        expectGetterMethod(javaInterfaceGeneration, genPublicAttribute);
         assertEquals(1, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementation() throws CoreException {
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectMemberVar(generatedJavaElements, genPublishedAttribute, false);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(false), genPublishedAttribute);
-        expectSetterMethod(generatedJavaElements, genPublishedAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublishedAttribute.findGeneratedJavaTypeForPolicyCmptType(false),
-                genPublishedAttribute);
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
+                publishedAttribute);
+        expectMemberVar(javaClassGeneration, genPublishedAttribute);
+        expectGetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectSetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectGetterMethod(genPublishedAttribute.findGeneratedJavaTypeForPolicyCmptType(false), genPublishedAttribute);
         assertEquals(4, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectMemberVar(generatedJavaElements, genPublicAttribute, false);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(false), genPublicAttribute);
-        expectSetterMethod(generatedJavaElements, genPublicAttribute, false);
-        expectGetterMethod(generatedJavaElements, genPublicAttribute.findGeneratedJavaTypeForPolicyCmptType(false),
-                genPublicAttribute);
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
+                publicAttribute);
+        expectMemberVar(javaClassGeneration, genPublicAttribute);
+        expectGetterMethod(javaClassGeneration, genPublicAttribute);
+        expectSetterMethod(javaClassGeneration, genPublicAttribute);
+        expectGetterMethod(genPublicAttribute.findGeneratedJavaTypeForPolicyCmptType(false), genPublicAttribute);
         assertEquals(4, generatedJavaElements.size());
     }
 
     public void testGetGeneratedJavaElementsForImplementationNotConfiguring() {
         productCmptType.setConfigurationForPolicyCmptType(false);
 
-        List<IJavaElement> generatedJavaElements = new ArrayList<IJavaElement>();
-
-        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publishedAttribute);
-        expectMemberVar(generatedJavaElements, genPublishedAttribute, false);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(false), genPublishedAttribute);
-        expectSetterMethod(generatedJavaElements, genPublishedAttribute, false);
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
+                publishedAttribute);
+        expectMemberVar(javaClassGeneration, genPublishedAttribute);
+        expectGetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectSetterMethod(javaClassGeneration, genPublishedAttribute);
         assertEquals(3, generatedJavaElements.size());
 
         generatedJavaElements.clear();
-        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements,
-                getGeneratedJavaType(false), publicAttribute);
-        expectMemberVar(generatedJavaElements, genPublicAttribute, false);
-        expectGetterMethod(generatedJavaElements, getGeneratedJavaType(false), genPublicAttribute);
-        expectSetterMethod(generatedJavaElements, genPublicAttribute, false);
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
+                publicAttribute);
+        expectMemberVar(javaClassGeneration, genPublicAttribute);
+        expectGetterMethod(javaClassGeneration, genPublicAttribute);
+        expectSetterMethod(javaClassGeneration, genPublicAttribute);
         assertEquals(3, generatedJavaElements.size());
+    }
+
+    private final void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+        IMethod expectedGetterMethod = javaType.getMethod(genAttribute.getGetterMethodName(), new String[] {});
+        assertTrue(generatedJavaElements.contains(expectedGetterMethod));
+    }
+
+    private final void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+        IMethod expectedSetterMethod = javaType.getMethod(genAttribute.getSetterMethodName(), new String[] { "Q"
+                + genAttribute.getDatatype().getName() + ";" });
+        assertTrue(generatedJavaElements.contains(expectedSetterMethod));
+    }
+
+    private final void expectMemberVar(IType javaType, GenAttribute genAttribute) {
+        IField expectedMemberVar = javaType.getField(genAttribute.getMemberVarName());
+        assertTrue(generatedJavaElements.contains(expectedMemberVar));
     }
 
 }

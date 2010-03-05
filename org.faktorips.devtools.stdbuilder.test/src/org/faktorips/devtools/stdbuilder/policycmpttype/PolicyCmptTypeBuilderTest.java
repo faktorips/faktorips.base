@@ -27,28 +27,24 @@ public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
 
     protected final static String POLICY_NAME = "PolicyCmptType";
 
+    protected GenPolicyCmptType genPolicyCmptType;
+
     protected IPolicyCmptType policyCmptType;
 
-    protected GenPolicyCmptType genPolicyCmptType;
+    protected IType javaClass;
+
+    protected IType javaInterface;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
-        genPolicyCmptType = new GenPolicyCmptType(policyCmptType, (StandardBuilderSet)ipsProject
-                .getIpsArtefactBuilderSet());
-    }
+        genPolicyCmptType = new GenPolicyCmptType(policyCmptType, builderSet);
 
-    protected final IType getGeneratedJavaType(boolean publishedSource) {
-        return (publishedSource) ? getGeneratedJavaInterface() : getGeneratedJavaClass();
-    }
-
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
-    }
-
-    private IType getGeneratedJavaInterface() {
-        return getGeneratedJavaType(policyCmptType, false, false, "I" + POLICY_NAME);
+        javaClass = getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
+        javaInterface = getGeneratedJavaType(policyCmptType, false, false, "I" + POLICY_NAME);
     }
 
 }

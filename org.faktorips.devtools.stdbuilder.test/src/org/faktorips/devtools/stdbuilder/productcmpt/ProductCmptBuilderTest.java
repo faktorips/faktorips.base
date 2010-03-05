@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,19 +41,17 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration productCmptGen;
-    
+
     private ProductCmptBuilder builder;
-    
-    /*
-     * @see IpsPluginTest#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
         project.setProperties(props);
         type = newPolicyAndProductCmptType(project, "Policy", "Product");
-        
+
         productCmptType = type.findProductCmptType(project);
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -62,7 +60,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         method.setFormulaName("AgeCalculation");
         assertFalse(type.validate(project).containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
-        
+
         productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
@@ -71,7 +69,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         ce.setExpression("42");
         productCmpt.getIpsSrcFile().save(true, null);
         assertFalse(productCmpt.validate(project).containsErrorMsg());
-        
+
         IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
             if (builders[i] instanceof ProductCmptBuilder) {
@@ -80,7 +78,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         }
         assertNotNull(builder);
     }
-    
+
     public void testBuild() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
         productCmpt.getIpsSrcFile().save(true, null);
@@ -95,16 +93,14 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         assertNull(builder.getGeneratedJavaFile(productCmptGen));
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder.delete(IIpsSrcFile)'
-     */ 
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IFile javaFile = builder.getGeneratedJavaFile(productCmptGen);
         assertTrue(javaFile.exists());
-        
+
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(javaFile.exists());
     }
+
 }

@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
-import java.util.List;
-
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -43,8 +40,8 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     }
 
     public void testGetGeneratedJavaElements() {
-        List<IJavaElement> javaElements = builder.getGeneratedJavaElements(enumType);
-        assertTrue(javaElements.contains(getGeneratedJavaEnum()));
+        generatedJavaElements = builder.getGeneratedJavaElements(enumType);
+        assertTrue(generatedJavaElements.contains(getGeneratedJavaEnum()));
     }
 
 }

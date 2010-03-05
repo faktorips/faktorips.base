@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,16 +27,17 @@ public class TableImplBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ITableStructure structure;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
         project.setProperties(props);
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
-    
-    public void testDelete() throws CoreException{
+
+    public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         IFile file = getTableImpleBuilder().getJavaFile(structure.getIpsSrcFile());
         assertTrue(file.exists());
@@ -45,14 +46,15 @@ public class TableImplBuilderTest extends AbstractIpsPluginTest {
         file = getTableImpleBuilder().getJavaFile(structure.getIpsSrcFile());
         assertFalse(file.exists());
     }
-    
-    private TableImplBuilder getTableImpleBuilder() throws CoreException{
+
+    private TableImplBuilder getTableImpleBuilder() throws CoreException {
         IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
-            if(builders[i].getClass() == TableImplBuilder.class){
+            if (builders[i].getClass() == TableImplBuilder.class) {
                 return (TableImplBuilder)builders[i];
             }
         }
         throw new RuntimeException("The " + TableImplBuilder.class + " is not in the builder set.");
     }
+
 }

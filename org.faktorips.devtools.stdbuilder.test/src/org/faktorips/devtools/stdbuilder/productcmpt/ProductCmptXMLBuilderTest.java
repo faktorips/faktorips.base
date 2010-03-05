@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -40,10 +40,8 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
-    
-    /*
-     * @see IpsPluginTest#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -51,52 +49,49 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(project);
-        
+
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
         method.setName("age");
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
-        
+
         assertTrue(productCmptType.isValid());
-        
+
         IProductCmptTypeAssociation rel = productCmptType.newProductCmptTypeAssociation();
         rel.setTargetRoleSingular("role");
         rel.setTargetRolePlural("roles");
         rel.setTarget(productCmptType.getQualifiedName());
-        
+
         productCmptType.getIpsSrcFile().save(true, null);
-        
+
         productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
-        IFormula ce= gen.newFormula();
+        IFormula ce = gen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
-        
+
         IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.newGeneration(gen.getValidFrom());
         refTarget.setRuntimeId("RefProductRuntimeId");
-        
+
         IProductCmptLink link = gen.newLink("role");
         link.setTarget(refTarget.getQualifiedName());
-        
+
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);
-        
+
         assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
     }
-    
+
     public void testBuild() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder.delete(IIpsSrcFile)'
-     */
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        
+
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

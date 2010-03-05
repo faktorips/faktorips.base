@@ -13,11 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
-import java.util.List;
-
 import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -74,44 +72,28 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
         publicAttribute.setAttributeType(attributeType);
     }
 
-    /** Expects, that the property constant field is contained in the given list. */
-    protected final void expectPropertyConstant(List<IJavaElement> javaElements,
-            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute,
-            boolean forPublishedInterface) {
-
-        IField expectedPropertyConstant = getGeneratedJavaType(forPublishedInterface).getField(
-                genPolicyCmptTypeAttribute.getStaticConstantPropertyName());
-        assertTrue(javaElements.contains(expectedPropertyConstant));
+    protected final void expectPropertyConstant(IType javaType, GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute) {
+        IField expectedPropertyConstant = javaType.getField(genPolicyCmptTypeAttribute.getStaticConstantPropertyName());
+        assertTrue(generatedJavaElements.contains(expectedPropertyConstant));
     }
 
-    /** Expects, that the getter method is contained in the given list. */
-    protected final void expectGetterMethod(List<IJavaElement> javaElements,
-            GenAttribute genAttribute,
-            boolean forPublishedInterface) {
-
-        IMethod expectedGetterMethod = getGeneratedJavaType(forPublishedInterface).getMethod(
-                genAttribute.getGetterMethodName(), new String[] {});
-        assertTrue(javaElements.contains(expectedGetterMethod));
+    protected final void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+        String methodName = genAttribute.getGetterMethodName();
+        IMethod expectedGetterMethod = javaType.getMethod(methodName, new String[] {});
+        assertTrue(generatedJavaElements.contains(expectedGetterMethod));
     }
 
-    /** Expects, that the setter method is contained in the given list. */
-    protected final void expectSetterMethod(List<IJavaElement> javaElements,
-            GenAttribute genAttribute,
-            boolean forPublishedInterface) {
-
-        IMethod expectedSetterMethod = getGeneratedJavaType(forPublishedInterface).getMethod(
-                genAttribute.getSetterMethodName(), new String[] { "Q" + genAttribute.getDatatype().getName() + ";" });
-        assertTrue(javaElements.contains(expectedSetterMethod));
+    protected final void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+        String methodName = genAttribute.getSetterMethodName();
+        String[] parameterTypeSignatures = new String[] { "Q" + genAttribute.getDatatype().getName() + ";" };
+        IMethod expectedSetterMethod = javaType.getMethod(methodName, parameterTypeSignatures);
+        assertTrue(generatedJavaElements.contains(expectedSetterMethod));
     }
 
-    /** Expects, that the member variable is contained in the given list. */
-    protected final void expectMemberVar(List<IJavaElement> javaElements,
-            GenAttribute genAttribute,
-            boolean forPublishedInterface) {
-
-        IField expectedMemberVar = getGeneratedJavaType(forPublishedInterface)
-                .getField(genAttribute.getMemberVarName());
-        assertTrue(javaElements.contains(expectedMemberVar));
+    protected final void expectMemberVar(IType javaType, GenAttribute genAttribute) {
+        String fieldName = genAttribute.getMemberVarName();
+        IField expectedMemberVar = javaType.getField(fieldName);
+        assertTrue(generatedJavaElements.contains(expectedMemberVar));
     }
 
 }

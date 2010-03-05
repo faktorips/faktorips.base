@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,13 +43,14 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         IPolicyCmptType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "B");
         typeB.setSupertype(typeA.getQualifiedName());
         typeB.getIpsSrcFile().save(true, null);
-        
+
         // B depends on A
         fullBuild();
         DependencyGraph graph = ((IpsModel)project.getIpsModel()).getDependencyGraph(project);
         IDependency[] dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
-        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA.getQualifiedNameType()), dependency[0]);
+        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA
+                .getQualifiedNameType()), dependency[0]);
 
         // delete the dependency
         typeB.setSupertype("");
@@ -57,15 +58,16 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(0, dependency.length);
-        
+
         // recreate the dependeny
         typeB.setSupertype(typeA.getQualifiedName());
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
-        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA.getQualifiedNameType()), dependency[0]);
-        
+        assertEquals(IpsObjectDependency.createSubtypeDependency(typeB.getQualifiedNameType(), typeA
+                .getQualifiedNameType()), dependency[0]);
+
         typeB.setSupertype("");
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();

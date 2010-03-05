@@ -27,9 +27,10 @@ public class MissingPolicyCmptSupertypeTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptType(project, "Type1");
         type.setSupertype("MissingSupertype");
-        
+
         type.getIpsSrcFile().save(true, null);
-        
+
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
+
 }
