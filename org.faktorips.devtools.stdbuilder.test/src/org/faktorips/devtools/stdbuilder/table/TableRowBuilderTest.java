@@ -13,56 +13,32 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class TableImplBuilderTest extends AbstractStdBuilderTest {
+public class TableRowBuilderTest extends AbstractStdBuilderTest {
 
     private final static String TABLE_STRUCTURE_NAME = "TestTable";
 
     private ITableStructure structure;
 
-    private TableImplBuilder builder;
+    private TableRowBuilder builder;
 
     @Override
-    public void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
 
         structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
 
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        builder = new TableImplBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_IMPL);
-    }
-
-    public void testDelete() throws CoreException {
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        IFile file = getTableImpleBuilder().getJavaFile(structure.getIpsSrcFile());
-        assertTrue(file.exists());
-        structure.getIpsSrcFile().getCorrespondingFile().delete(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        file = getTableImpleBuilder().getJavaFile(structure.getIpsSrcFile());
-        assertFalse(file.exists());
-    }
-
-    private TableImplBuilder getTableImpleBuilder() throws CoreException {
-        IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (int i = 0; i < builders.length; i++) {
-            if (builders[i].getClass() == TableImplBuilder.class) {
-                return (TableImplBuilder)builders[i];
-            }
-        }
-        throw new RuntimeException("The " + TableImplBuilder.class + " is not in the builder set.");
+        builder = new TableRowBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_ROW);
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME);
+        return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME + "Row");
     }
 
     public void testGetGeneratedJavaElements() {
