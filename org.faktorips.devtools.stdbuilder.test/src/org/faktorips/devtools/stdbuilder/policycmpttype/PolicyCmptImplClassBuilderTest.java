@@ -39,7 +39,7 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
         ipsProject.setProperties(props);
 
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_IMPL);
+        builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL);
     }
 
     public void testBuild() throws CoreException {

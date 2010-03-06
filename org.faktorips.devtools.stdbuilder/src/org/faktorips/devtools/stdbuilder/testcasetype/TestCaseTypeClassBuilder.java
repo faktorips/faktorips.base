@@ -307,7 +307,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             throw new CoreException(new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType()
                     + " not found for test policy component type parameter " + testPolicyTypeParam.getName()));
         }
-        String pcTypePackage = getBuilderSet().getPackage(DefaultBuilderSet.KIND_POLICY_CMPT_IMPL,
+        String pcTypePackage = getBuilderSet().getPackage(DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL,
                 policyCmptType.getIpsSrcFile());
         return StringUtil.qualifiedName(pcTypePackage, policyCmptType.getName());
     }

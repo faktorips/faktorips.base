@@ -49,13 +49,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     // implementations. Since the JavaSourceFileBuilder implementations might get used in other
     // artefact builder sets using these constants would introduce a dependency to this builder set.
     // however the constants are public for use in test cases
-    public final static String KIND_PRODUCT_CMPT_INTERFACE = "productcmptinterface"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_IMPL = "productcmptimplementation"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productCmptGenerationImpl"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent"; //$NON-NLS-1$
-    public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
-    public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TYPE_INTERFACE = "productcmptinterface"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TYPE_IMPL = "productcmptimplementation"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL = "productCmptGenerationImpl"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT = "productcmptcontent"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_GENERATION = "productcmptgeneration"; //$NON-NLS-1$
+    public final static String KIND_POLICY_CMPT_TYPE_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
+    public final static String KIND_POLICY_CMPT_TYPE_IMPL = "policycmptimpl"; //$NON-NLS-1$
     public final static String KIND_MODEL_TYPE = "modeltype"; //$NON-NLS-1$
     public final static String KIND_TABLE_IMPL = "tableimpl"; //$NON-NLS-1$
     public final static String KIND_TABLE_CONTENT = "tablecontent"; //$NON-NLS-1$
@@ -63,7 +64,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_TEST_CASE_TYPE_CLASS = "testcasetypeclass"; //$NON-NLS-1$
     public final static String KIND_TEST_CASE_XML = "testcasexml"; //$NON-NLS-1$
     public final static String KIND_FORMULA_TEST_CASE = "formulatestcase"; //$NON-NLS-1$
+    public final static String KIND_ENUM_TYPE = "enumtype"; //$NON-NLS-1$
     public final static String KIND_ENUM_CONTENT = "enumcontent"; //$NON-NLS-1$
+    public final static String KIND_BUSINESS_FUNCTION = "businessfunction"; // %NON-NLS-1$
 
     public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
@@ -86,7 +89,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * @param publishedArtefact <code>true</code> if the artefacts are published (ussable by
      *            clients), <code>false</code> if they are internal.
      * @param mergableArtefact <code>true</code> if the generated artefacte is mergable (at the
-     *            moment this applies to Java Source files only). <code>false</code) if the artefact is 100% generated and can't be modified by the user.
+     *            moment this applies to Java Source files only). <code>false</code) if the artefact
+     *            is 100% generated and can't be modified by the user.
      */
     public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
             boolean publishedArtefact,
@@ -117,18 +121,12 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         String basePackName = entry.getBasePackageNameForDerivedJavaClasses();
         return QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
         if (root == null) {
             return null;
@@ -152,9 +150,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return entry.getOutputFolderForDerivedJavaFiles();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
         IFile tocFile = getRuntimeRepositoryTocFile(root);
         if (tocFile == null) {
@@ -164,9 +159,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return tocFile.getFullPath().removeFirstSegments(tocFileLocation.getFullPath().segmentCount()).toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         // TODO v2 - das koenner wir effizienter implementieren
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
@@ -176,11 +168,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         }
 
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_POLICY_CMPT_INTERFACE.equals(kind)) {
+            if (KIND_POLICY_CMPT_TYPE_INTERFACE.equals(kind)) {
                 return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
 
-            if (KIND_POLICY_CMPT_IMPL.equals(kind)) {
+            if (KIND_POLICY_CMPT_TYPE_IMPL.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
 
@@ -191,17 +183,17 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         }
 
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_PRODUCT_CMPT_INTERFACE.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_TYPE_INTERFACE.equals(kind)) {
                 return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
 
-            if (KIND_PRODUCT_CMPT_IMPL.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_TYPE_IMPL.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
-            if (KIND_PRODUCT_CMPT_GENERATION_INTERFACE.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE.equals(kind)) {
                 return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
             }
-            if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
 
@@ -211,13 +203,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         }
 
         if (IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_PRODUCT_CMPT_CONTENT.equals(kind)) {
+            if (KIND_PRODUCT_CMPT.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_TOCENTRY.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
-            if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_FORMULA_TEST_CASE.equals(kind)) {
@@ -258,9 +250,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    /**
-     * Overridden.
-     */
     public boolean isSupportTableAccess() {
         return false;
     }
@@ -271,27 +260,19 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public CompilationResult getTableAccessCode(ITableContents tableContents,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
+
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSupportFlIdentifierResolver() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;

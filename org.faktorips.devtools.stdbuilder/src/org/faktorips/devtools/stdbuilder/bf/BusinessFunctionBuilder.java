@@ -585,13 +585,12 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return true;
     }
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        // TODO AW: Not implemented yet.
+
     }
 
 }

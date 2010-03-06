@@ -407,22 +407,22 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
-        policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this, KIND_POLICY_CMPT_IMPL);
-        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE);
+        policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this, KIND_POLICY_CMPT_TYPE_IMPL);
+        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_TYPE_INTERFACE);
 
         // create product component type builders
-        productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this, KIND_PRODUCT_CMPT_INTERFACE);
-        productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_IMPL);
+        productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this, KIND_PRODUCT_CMPT_TYPE_INTERFACE);
+        productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_TYPE_IMPL);
         productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this,
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE);
         productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL);
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
 
         // product component builders
         ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this,
-                KIND_PRODUCT_CMPT_GENERATION_IMPL);
+                KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
         IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
-                KIND_PRODUCT_CMPT_CONTENT);
+                KIND_PRODUCT_CMPT);
 
         // table structure builders
         tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);

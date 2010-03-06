@@ -22,6 +22,7 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.valuetypes
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.stdbuilder,
+ org.faktorips.devtools.stdbuilder.bf,
  org.faktorips.devtools.stdbuilder.enumtype,
  org.faktorips.devtools.stdbuilder.policycmpttype,
  org.faktorips.devtools.stdbuilder.policycmpttype.attribute,

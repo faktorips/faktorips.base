@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,9 +41,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     private MultiStatus buildStatus;
     private ProductCmptGenerationCuBuilder generationBuilder;
 
-    /**
-     * 
-     */
     public ProductCmptBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet);
         generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId);
@@ -57,48 +54,36 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 
-    /**
-     * @return Returns the generationBuilder.
-     */
     public ProductCmptGenerationCuBuilder getGenerationBuilder() {
         return generationBuilder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return "ProductCmptBuilder"; //$NON-NLS-1$
     }
 
+    @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
+    @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (!mustFileBeBuild(productCmpt)) {
@@ -144,13 +129,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
             // if the type can't be found, nothing can be generated.
             return false;
         }
-        //TODO pk 25-09-2008 I think at this point it needs to be checked if file comes from an archive
+        // TODO pk 25-09-2008 I think at this point it needs to be checked if file comes from an
+        // archive
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void delete(IIpsSrcFile deletedFile) throws CoreException {
         // the problem here, is that the file is deleted and so we can't access the generations.
         // so we can get the exact file names, as the generation's valid from is part of the file
@@ -169,7 +152,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /*
+    /**
      * Constructs a virtual ips source file. the name is derived from the product component and the
      * generation's valid from date. This is done to use the superclass' mechanism to derive the (to
      * bo generated) Java sourcefile for a given ips src file.
@@ -186,7 +169,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
-    /*
+    /**
      * Returns the prefix that is common to the Java source file for all generations.
      */
     private String getJavaSrcFilePrefix(IIpsSrcFile file) throws CoreException {
@@ -194,7 +177,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 getUnchangedJavaSrcFilePrefix(file));
     }
 
-    /*
+    /**
      * Returns the prefix that is common to the Java source file for all generations before the
      * project's naming strategy is applied to replace characters that aren't allowed in Java class
      * names.
@@ -208,6 +191,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      * 
      * Returns true.
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }

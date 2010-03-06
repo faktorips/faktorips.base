@@ -50,7 +50,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Generates the compilation unit that represents the product component generation. Note that only
  * for product component's that contain a config element of type formula a Java compilation unit is
- * generated. This is neccessary as the formula is compiled into Java sourcecode and this Java
+ * generated. This is necessary as the formula is compiled into Java sourcecode and this Java
  * sourcecode is placed in the compilation unit generated for a product component's generation.
  * 
  * @author Jan Ortmann
@@ -67,9 +67,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    /**
-     * Constructs a new builder.
-     */
     public ProductCmptGenerationCuBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
     }
@@ -87,9 +84,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         productCmptGenImplBuilder = builder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return true;
     }
@@ -98,9 +92,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         return generation.getProductCmpt().findProductCmptType(getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         if (generation == null) {
@@ -127,10 +118,17 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
     }
 
-    /*
-     * Generates the constructor. <p> Example: <p> <pre> public MotorPolicyPk0(RuntimeRepository
-     * repository, String qName, Class policyComponentType) { super(registry, qName,
-     * policyComponentType); } </pre>
+    /**
+     * Generates the constructor.
+     * <p>
+     * Example:
+     * <p>
+     * 
+     * <pre>
+     * public MotorPolicyPk0(RuntimeRepository repository, String qName, Class policyComponentType) {
+     *     super(registry, qName, policyComponentType);
+     * }
+     * </pre>
      */
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         Locale language = getLanguageUsedInGeneratedSourceCode();
@@ -144,7 +142,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
     }
 
-    /*
+    /**
      * Generates the method to compute a value as specified by a formula configuration element and
      */
     private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
@@ -310,13 +308,12 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        // TODO AW: Not implemented yet.
+
     }
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return false;
     }
 
 }
