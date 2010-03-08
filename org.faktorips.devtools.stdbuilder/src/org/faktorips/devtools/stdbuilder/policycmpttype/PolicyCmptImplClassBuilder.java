@@ -273,8 +273,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * @throws CoreException
      */
     private void generateMethodNewCopy_CopyMap(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // TODO jDoc
-        methodsBuilder.javaDoc("jDoc", ANNOTATION_GENERATED);
+        String javaDoc = getLocalizedText(getPcType(), "METHOD_NEW_COPY_INTERNAL");
+        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String varCopyMap = "copyMap";
         if (getPcType().hasSupertype()) {
             appendOverrideAnnotation(methodsBuilder, false);
@@ -415,8 +415,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * @throws CoreException
      */
     protected void generateMethodCopyAssociations(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // TODO jDoc
-        methodsBuilder.javaDoc("jDoc", ANNOTATION_GENERATED);
+        String javaDoc = getLocalizedText(getPcType(), "METHOD_COPY_ASSOCIATIONS_INTERNAL");
+        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String varAbstractCopy = "abstractCopy";
         String varCopyMap = "copyMap";
 
