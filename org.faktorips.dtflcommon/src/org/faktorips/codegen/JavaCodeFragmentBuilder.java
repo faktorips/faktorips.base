@@ -1381,6 +1381,52 @@ public class JavaCodeFragmentBuilder {
         return this;
     }
 
+    /**
+     * Appends the generic parameters to the builder: <className1, className2, ...>
+     * <p>
+     * Note: You have to make sure that generics are supported by target compiler
+     * 
+     * @param strings
+     * @return
+     */
+    public JavaCodeFragmentBuilder appendGenerics(String... classNames) {
+        if (classNames.length > 0) {
+            append('<');
+            for (String className : classNames) {
+                append(className);
+                if (!className.equals(classNames[classNames.length - 1])) {
+                    append(", ");
+                }
+            }
+            append('>');
+        }
+        return this;
+    }
+
+    /**
+     * Appends the generic parameters to the builder: <class1, class2, ...>
+     * <p>
+     * Note: You have to make sure that generics are supported by target compiler
+     * 
+     * @param strings
+     * @return
+     */
+    public JavaCodeFragmentBuilder appendGenerics(Class<?>... classes) {
+        if (classes.length > 0) {
+            append('<');
+            int i = 1;
+            for (Class<?> clazz : classes) {
+                appendClassName(clazz);
+                if (i < classes.length) {
+                    append(", ");
+                    i++;
+                }
+            }
+            append('>');
+        }
+        return this;
+    }
+
     @Override
     public String toString() {
         return fragment.toString();

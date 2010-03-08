@@ -791,6 +791,42 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
+     * Appends the list of classNames as a list of generics to the given fragmentBuilder if
+     * comliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classNames
+     */
+    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, String... classeNames) {
+        JavaGeneratiorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classeNames);
+    }
+
+    /**
+     * Appends the list of classes as a list of generics to the given fragmentBuilder if comliance
+     * level is at least Java5. e.g. if your classes are [Integer.class, String.class], the code
+     * 
+     * <pre>
+     * <Integer, String>
+     * </pre>
+     * 
+     * is added to the fragment builder.
+     * 
+     * @param fragmentBuilder
+     * @param ipsProject
+     * @param classes
+     */
+    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
+        JavaGeneratiorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
+    }
+
+    /**
      * Returns the localized string set of this builder.
      */
     private LocalizedStringsSet getLocalizedStringSet() {
