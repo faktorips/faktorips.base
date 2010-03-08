@@ -20,7 +20,10 @@ import java.util.Locale;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -29,11 +32,16 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -64,11 +72,15 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private IProductCmptGeneration generation;
 
     // builders needed
+    private ProductCmptBuilder productCmptBuilder;
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    public ProductCmptGenerationCuBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public ProductCmptGenerationCuBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+            ProductCmptBuilder productCmptBuilder) {
+
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
+        this.productCmptBuilder = productCmptBuilder;
     }
 
     public void setProductCmptGeneration(IProductCmptGeneration generation) {
@@ -85,7 +97,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     }
 
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return true;
+        return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
     public IProductCmptType getProductCmptType() throws CoreException {
@@ -249,6 +261,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private JavaCodeFragment compileFormulaToJava(IFormula formula,
             IProductCmptTypeMethod formulaSignature,
             boolean formulaTest) {
+
         String expression = formula.getExpression();
         if (StringUtils.isEmpty(expression)) {
             JavaCodeFragment fragment = new JavaCodeFragment();
@@ -288,7 +301,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             addToBuildStatus(new IpsStatus("Error compiling formula " + formula.getExpression() //$NON-NLS-1$
                     + " of config element " + formula + ".", e)); //$NON-NLS-1$ //$NON-NLS-2$
             JavaCodeFragment fragment = new JavaCodeFragment();
-            fragment.appendln("// An excpetion occurred while compiling the following formula:"); //$NON-NLS-1$
+            fragment.appendln("// An exception occurred while compiling the following formula:"); //$NON-NLS-1$
             fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(expression);
             fragment.append("// See the error log for details."); //$NON-NLS-1$
@@ -296,14 +309,23 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Returns <tt>true</tt>.
-     */
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
+    }
+
+    @Override
+    protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
+            throws CoreException {
+
+        IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+        for (IIpsObjectGeneration generation : productCmpt.getGenerations()) {
+            IIpsSrcFile generationSrcFile = productCmptBuilder.getVirtualIpsSrcFile((IProductCmptGeneration)generation);
+            String typeName = getUnqualifiedClassName(generationSrcFile);
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName
+                    + JavaSourceFileBuilder.JAVA_EXTENSION);
+            javaTypes.add(compilationUnit.getType(typeName));
+        }
     }
 
     @Override

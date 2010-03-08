@@ -217,9 +217,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
             return;
         }
 
-        IType javaType = getGeneratedJavaType(productCmptType);
-        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                javaType, ipsElement);
+        IType javaType = getGeneratedJavaTypes(productCmptType).get(0);
+        getGenProductCmptType(productCmptType).getGeneratedJavaElementsForPublishedInterface(javaElements, javaType,
+                ipsElement);
     }
 
     @Override

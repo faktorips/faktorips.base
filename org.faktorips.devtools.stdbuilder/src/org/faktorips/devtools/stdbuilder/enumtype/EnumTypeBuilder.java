@@ -1125,7 +1125,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (ipsElement instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)ipsElement;
             IEnumType enumType = enumAttribute.getEnumType();
-            IType javaType = getGeneratedJavaType(enumType);
+            IType javaType = getGeneratedJavaTypes(enumType).get(0);
             if (isJava5EnumsAvailable()) {
                 getGeneratedJavaElementsForAttributeJava5EnumsAvailable(javaElements, enumAttribute, javaType);
             } else {

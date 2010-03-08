@@ -183,7 +183,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
 
         GenType genType = getGenType(type);
-        org.eclipse.jdt.core.IType javaType = getGeneratedJavaType(type);
+        org.eclipse.jdt.core.IType javaType = getGeneratedJavaTypes(type).get(0);
         if (isBuildingPublishedSourceFile()) {
             genType.getGeneratedJavaElementsForPublishedInterface(javaElements, javaType, ipsElement);
         } else {

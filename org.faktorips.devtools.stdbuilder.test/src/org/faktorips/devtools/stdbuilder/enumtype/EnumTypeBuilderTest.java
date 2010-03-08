@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
@@ -30,7 +29,6 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new EnumTypeBuilder(builderSet);
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
     }

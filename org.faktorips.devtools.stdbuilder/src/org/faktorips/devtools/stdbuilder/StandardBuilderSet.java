@@ -577,6 +577,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
+            if (builder instanceof ProductCmptBuilder) {
+                builder = ((ProductCmptBuilder)builder).getGenerationBuilder();
+            }
             if (!(builder instanceof JavaSourceFileBuilder)) {
                 continue;
             }

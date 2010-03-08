@@ -314,7 +314,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         if (policyCmptType == null) {
             return null;
         }
-        return policyCmptTypeBuilder.getGeneratedJavaType(policyCmptType);
+        return policyCmptTypeBuilder.getGeneratedJavaTypes(policyCmptType).get(0);
     }
 
     /** Returns the <tt>IProductCmptType</tt> of the parent <tt>GenType</tt>. */

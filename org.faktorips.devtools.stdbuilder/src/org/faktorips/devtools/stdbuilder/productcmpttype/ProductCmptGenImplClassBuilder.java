@@ -888,10 +888,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return;
         }
 
-        IType javaType = getGeneratedJavaType(productCmptType);
+        IType javaType = getGeneratedJavaTypes(productCmptType).get(0);
         GenProductCmptType genProductCmptType = getGenProductCmptType(productCmptType);
-        genProductCmptType.getGeneratedJavaElementsForImplementation(javaElements, javaType,
-                ipsElement);
+        genProductCmptType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsElement);
     }
 
     @Override

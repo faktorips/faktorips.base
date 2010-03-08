@@ -382,7 +382,7 @@ public class GenProductCmptType extends GenType {
         if (policyCmptType == null) {
             return null;
         }
-        return policyCmptTypeBuilder.getGeneratedJavaType(policyCmptType);
+        return policyCmptTypeBuilder.getGeneratedJavaTypes(policyCmptType).get(0);
     }
 
 }

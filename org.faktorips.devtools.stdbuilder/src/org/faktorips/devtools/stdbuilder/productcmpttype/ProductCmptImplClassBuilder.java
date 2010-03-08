@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -431,17 +430,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        /*
-         * TODO AW: I can't delegate this to the GenProductCmptType generator because this generator
-         * cannot be configured whether to generate the generation or the product itself. But this
-         * makes a lot of difference in the returned generated Java elements. Making the
-         * GenProductCmptType configurable in such a way would require many changes.
-         */
-        if (ipsElement instanceof IProductCmptType) {
-            IProductCmptType productCmptType = (IProductCmptType)ipsElement;
-            IType javaType = getGeneratedJavaType(productCmptType);
-            javaElements.add(javaType);
-        }
+
     }
 
     @Override

@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class TableImplBuilderTest extends AbstractStdBuilderTest {
 
@@ -36,8 +35,6 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
 
         structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
-
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new TableImplBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_IMPL);
     }
 

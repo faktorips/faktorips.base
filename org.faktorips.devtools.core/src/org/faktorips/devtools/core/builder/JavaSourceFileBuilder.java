@@ -1058,8 +1058,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             try {
                 IIpsObject ipsObject = (IIpsObject)ipsElement;
                 if (isBuilderFor(ipsObject.getIpsSrcFile())) {
-                    IType javaType = getGeneratedJavaType(ipsObject);
-                    javaElements.add(javaType);
+                    javaElements.addAll(getGeneratedJavaTypes(ipsObject));
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);
@@ -1072,13 +1071,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the Java type that this builder generates for the given <tt>IIpsObject</tt>.
+     * Returns the Java types that this builder generates for the given <tt>IIpsObject</tt>.
      * 
-     * @param ipsObject The <tt>IIpsObject</tt> to obtain the generated Java type for.
+     * @param ipsObject The <tt>IIpsObject</tt> to obtain the generated Java types for.
      * 
      * @throws NullPointerException If <tt>ipsObject</tt> is <tt>null</tt>.
      */
-    public final IType getGeneratedJavaType(IIpsObject ipsObject) {
+    public final List<IType> getGeneratedJavaTypes(IIpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
 
         try {
@@ -1122,13 +1121,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             IPackageFragment fragment = javaRoot.getPackageFragment(basePackageName + internalPackageSeparator
                     + packageName);
 
-            String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
-            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
-            return compilationUnit.getType(typeName);
+            List<IType> javaTypes = new ArrayList<IType>(1);
+            getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
+            return javaTypes;
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Adds the Java types generated to the given list. This method may be overridden by subclasses.
+     */
+    protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
+            throws CoreException {
+
+        String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
+        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
+        javaTypes.add(compilationUnit.getType(typeName));
     }
 
     /**

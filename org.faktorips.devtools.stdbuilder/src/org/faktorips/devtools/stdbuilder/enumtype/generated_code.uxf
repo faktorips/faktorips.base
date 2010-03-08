@@ -40,7 +40,7 @@ code in this scenario.</panel_attributes><additional_attributes/></element><elem
 --
 + getPlz() : String
  
-when unique identifier:
+when unique:
 _+ getValueByPlz(String plz) : TestEnumType_
 _+ isValueByPlz(String plz) : boolean_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>450</x><y>380</y><w>300</w><h>190</h></coordinates><panel_attributes>TestEnumType
 --
@@ -51,6 +51,6 @@ only if not inherited:
 only if not inherited:
 + getPlz() : String
  
-when unique identifier:
+when unique:
 _+ getValueByPlz(String plz) : TestEnumType_
 _+ isValueByPlz(String plz) : boolean_</panel_attributes><additional_attributes/></element></umlet_diagram>

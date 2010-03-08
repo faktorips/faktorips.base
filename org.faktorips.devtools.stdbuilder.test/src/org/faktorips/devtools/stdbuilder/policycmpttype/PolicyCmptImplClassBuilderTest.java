@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
  * 
@@ -38,7 +37,6 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
         IIpsProjectProperties props = ipsProject.getProperties();
         ipsProject.setProperties(props);
 
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL);
     }
 

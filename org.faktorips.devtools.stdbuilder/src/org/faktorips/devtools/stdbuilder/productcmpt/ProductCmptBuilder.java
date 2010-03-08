@@ -43,7 +43,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     public ProductCmptBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet);
-        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId);
+        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId, this);
     }
 
     public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
@@ -155,9 +155,9 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     /**
      * Constructs a virtual ips source file. the name is derived from the product component and the
      * generation's valid from date. This is done to use the superclass' mechanism to derive the (to
-     * bo generated) Java sourcefile for a given ips src file.
+     * be generated) Java sourcefile for a given ips src file.
      */
-    private IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
+    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(Calendar.MONTH) + 1;
         int date = validFrom.get(Calendar.DATE);
@@ -186,11 +186,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return file.getQualifiedNameType().getUnqualifiedName() + ' ';
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Returns true.
-     */
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;

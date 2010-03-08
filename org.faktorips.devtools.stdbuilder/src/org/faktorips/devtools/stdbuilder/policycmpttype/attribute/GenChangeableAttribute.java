@@ -620,8 +620,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * <p>
      * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
      * 
-     * @param forPublishedInterface Flag indicating whether to search for the published interface of the
-     *            product component type generation (<tt>true</tt>) or for it's implementation (
+     * @param forPublishedInterface Flag indicating whether to search for the published interface of
+     *            the product component type generation (<tt>true</tt>) or for it's implementation (
      *            <tt>false</tt>).
      * 
      * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
@@ -635,7 +635,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         if (productCmptType == null) {
             return null;
         }
-        return productCmptTypeBuilder.getGeneratedJavaType(productCmptType);
+        return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,

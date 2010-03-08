@@ -39,11 +39,15 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     /** A list that can be used by test cases to store the list of Java elements generated. */
     protected List<IJavaElement> generatedJavaElements;
 
+    protected StandardBuilderSet builderSet;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
         ipsProject = newIpsProject();
         generatedJavaElements = new ArrayList<IJavaElement>();
+        builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 
     /** Returns the generated Java type for the given <tt>IIpsObject</tt>. */

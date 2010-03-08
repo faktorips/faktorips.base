@@ -11,36 +11,25 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.table;
+package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 
-public class TableRowBuilderTest extends AbstractStdBuilderTest {
+public class ProductCmptGenImplClassBuilderTest extends ProductCmptTypeBuilderTest {
 
-    private final static String TABLE_STRUCTURE_NAME = "TestTable";
-
-    private ITableStructure structure;
-
-    private TableRowBuilder builder;
+    private ProductCmptGenImplClassBuilder builder;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
-        builder = new TableRowBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_ROW);
-    }
-
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME + "Row");
+        builder = new ProductCmptGenImplClassBuilder(builderSet,
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
     }
 
     public void testGetGeneratedJavaElements() {
-        generatedJavaElements = builder.getGeneratedJavaElements(structure);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
+        generatedJavaElements = builder.getGeneratedJavaElements(productCmptType);
+        assertTrue(generatedJavaElements.contains(javaClassGeneration));
     }
 
 }

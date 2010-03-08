@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
 
@@ -32,7 +31,6 @@ public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new BusinessFunctionBuilder(builderSet, DefaultBuilderSet.KIND_BUSINESS_FUNCTION);
         businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 BUSINESS_FUNCTION_NAME);

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
  * 
@@ -29,7 +28,6 @@ public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new PolicyCmptInterfaceBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE);
     }
 

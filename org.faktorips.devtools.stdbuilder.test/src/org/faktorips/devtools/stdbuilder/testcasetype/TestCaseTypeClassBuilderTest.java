@@ -17,7 +17,6 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
@@ -32,8 +31,6 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
 
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
-
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
         builder = new TestCaseTypeClassBuilder(builderSet, DefaultBuilderSet.KIND_TEST_CASE_TYPE_CLASS);
     }
 
