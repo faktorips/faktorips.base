@@ -13,22 +13,69 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class PersistentAttributeInfoTest extends PersistenceIpsTest {
 
-    private IPersistentAttributeInfo persistenceAttributeInfo;
     private IPolicyCmptTypeAttribute pcAttribute;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
     }
 
     public void testValidate() {
 
+    }
+
+    public void testInitFromXml() throws CoreException {
+        NodeList nodeList = getTestDocument().getElementsByTagName(IPersistentAttributeInfo.XML_TAG);
+        assertEquals(1, nodeList.getLength());
+
+        Element element = (Element)nodeList.item(0);
+        IPersistentAttributeInfo persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
+        persistenceAttributeInfo.initFromXml(element);
+
+        assertEquals("PREMIUM", persistenceAttributeInfo.getTableColumnName());
+        assertTrue(persistenceAttributeInfo.getTableColumnNullable());
+        assertEquals(2, persistenceAttributeInfo.getTableColumnPrecision());
+        assertEquals(16, persistenceAttributeInfo.getTableColumnScale());
+        assertEquals(255, persistenceAttributeInfo.getTableColumnSize());
+        assertFalse(persistenceAttributeInfo.getTableColumnUnique());
+        assertEquals(DateTimeMapping.DATE_ONLY, persistenceAttributeInfo.getTemporalMapping());
+    }
+
+    public void testToXml() throws CoreException {
+        IPersistentAttributeInfo persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
+        persistenceAttributeInfo.setTableColumnName("TEST_COLUMN");
+        persistenceAttributeInfo.setTableColumnNullable(true);
+        persistenceAttributeInfo.setTableColumnPrecision(3);
+        persistenceAttributeInfo.setTableColumnScale(17);
+        persistenceAttributeInfo.setTableColumnSize(256);
+        persistenceAttributeInfo.setTableColumnUnique(false);
+        persistenceAttributeInfo.setTemporalMapping(DateTimeMapping.DATE_AND_TIME);
+        Element element = policyCmptType.toXml(newDocument());
+
+        PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
+        copyOfPcType.initFromXml(element);
+
+        assertEquals(1, copyOfPcType.getPolicyCmptTypeAttributes().length);
+        IPersistentAttributeInfo persistenceAttributeInfoCopy = copyOfPcType.getPolicyCmptTypeAttributes()[0]
+                .getPersistenceAttributeInfo();
+
+        assertEquals("TEST_COLUMN", persistenceAttributeInfoCopy.getTableColumnName());
+        assertTrue(persistenceAttributeInfoCopy.getTableColumnNullable());
+        assertEquals(3, persistenceAttributeInfoCopy.getTableColumnPrecision());
+        assertEquals(17, persistenceAttributeInfoCopy.getTableColumnScale());
+        assertEquals(256, persistenceAttributeInfoCopy.getTableColumnSize());
+        assertFalse(persistenceAttributeInfoCopy.getTableColumnUnique());
+        assertEquals(DateTimeMapping.DATE_AND_TIME, persistenceAttributeInfoCopy.getTemporalMapping());
     }
 }

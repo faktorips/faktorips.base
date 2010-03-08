@@ -309,9 +309,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             return valueSet;
         }
         if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
-            return new PersistentAttributeInfo(this, id);
+            return newPersistentAttributeInfoInternal(this, id);
         }
         return null;
+    }
+
+    private IIpsObjectPart newPersistentAttributeInfoInternal(PolicyCmptTypeAttribute policyCmptTypeAttribute, String id) {
+        persistenceAttributeInfo = new PersistentAttributeInfo(this, id);
+        return persistenceAttributeInfo;
     }
 
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
