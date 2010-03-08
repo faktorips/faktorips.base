@@ -94,7 +94,7 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * @see org.eclipse.jface.viewers.ISelectionProvider
  */
 public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
-        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener {
+        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
 
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
 

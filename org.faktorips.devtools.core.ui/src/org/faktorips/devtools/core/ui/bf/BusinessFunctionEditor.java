@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPartFactory;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
+import org.faktorips.devtools.core.ui.editors.IIpsSrcFileEditor;
 import org.faktorips.devtools.core.ui.editors.Messages;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
@@ -65,7 +66,7 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * @author Peter Erzberger
  */
 public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
-        ITabbedPropertySheetPageContributor, IIpsProblemChangedListener {
+        ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
 
     private IIpsSrcFile ipsSrcFile;
     private IBusinessFunction businessFunction;
@@ -89,6 +90,10 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     @Override
     protected PaletteRoot getPaletteRoot() {
         return paletteRoot;
+    }
+
+    public IIpsSrcFile getIpsSrcFile() {
+        return ipsSrcFile;
     }
 
     /**
