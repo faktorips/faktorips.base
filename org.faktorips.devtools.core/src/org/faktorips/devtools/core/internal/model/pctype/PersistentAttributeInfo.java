@@ -254,11 +254,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         }
     }
 
-    // TODO Joerg Merge PersistenceBranch: loeschen
-    // public Image getImage() {
-    // return policyComponentTypeAttribute.getImage();
-    // }
-
     private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
 
         private List<String> columnNames = new ArrayList<String>();

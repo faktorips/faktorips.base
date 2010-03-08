@@ -192,10 +192,4 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             }
         }
     }
-
-    // TODO Joerg Merge PersistenceBranch: loeschen
-    // public Image getImage() {
-    // return policyComponentTypeAssociation.getImage();
-    // }
-
 }

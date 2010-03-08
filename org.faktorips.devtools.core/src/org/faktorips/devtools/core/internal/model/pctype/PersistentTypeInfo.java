@@ -234,11 +234,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
     }
 
-    // TODO Joerg Merge PersistenceBranch: loeschen
-    // public Image getImage() {
-    // return getParent().getImage();
-    // }
-
     /**
      * Adds error messages to MessageList if the type hierarchy is inconsistent relating to the
      * inheritance strategy.
