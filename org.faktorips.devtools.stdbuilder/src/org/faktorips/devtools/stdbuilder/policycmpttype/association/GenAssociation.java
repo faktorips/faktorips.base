@@ -33,7 +33,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
-import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.IntegerRange;
@@ -1025,7 +1024,6 @@ public abstract class GenAssociation extends GenTypePart {
             String varCopyMap,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-
     /**
      * Returns <code>true</code> if the association is the inverse of a derived union association,
      * otherwise <code>false</code>. Note that due to performance reason this method should be used
@@ -1111,8 +1109,8 @@ public abstract class GenAssociation extends GenTypePart {
         StandardBuilderSet builderSet = getGenType().getBuilderSet();
         return builderSet.getGenerator(policyCmptType);
     }
-    
-        /**
+
+    /**
      * generate a snippet for the generateCodeForComposition method, this part is equal for *To1 and
      * *ToMany
      * 
@@ -1134,5 +1132,5 @@ public abstract class GenAssociation extends GenTypePart {
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
 
     }
-    
+
 }

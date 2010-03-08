@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -448,8 +447,8 @@ public class GenAssociationTo1 extends GenAssociation {
             String field,
             org.faktorips.devtools.core.model.pctype.IPolicyCmptType targetType,
             String targetTypeQName) throws CoreException {
-            
-                    methodsBuilder.appendln("if (");
+
+        methodsBuilder.appendln("if (");
         methodsBuilder.append(field);
         methodsBuilder.appendln("!=null) {");
         methodsBuilder.append(paramName);
@@ -473,19 +472,20 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.appendln(");");
         }
         methodsBuilder.appendln("}");
-// TODO           2.5 - code - compare
-//        methodsBuilder.append("if (").append(field).appendln("!=null) {");
-//        methodsBuilder.append(paramName).append(".").append(field).append(" = (");
-//        methodsBuilder.appendClassName(targetTypeQName);
-//        methodsBuilder.append(")").append(field).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY) //
-//                .append("(").append(copyMapName).appendln(");");
-//        if (targetType.isDependantType()) {
-//            methodsBuilder.append(paramName).append(".").append(field).append(".").append(MethodNames.SET_PARENT)
-//                    .append("(").append(paramName).appendln(");");
-//        }
-//        methodsBuilder.append(copyMapName).append(".put(").append(field).append(", ").append(paramName).append('.')
-//                .append(field).appendln(");");
-//        methodsBuilder.appendln("}");
+        // TODO 2.5 - code - compare
+        // methodsBuilder.append("if (").append(field).appendln("!=null) {");
+        // methodsBuilder.append(paramName).append(".").append(field).append(" = (");
+        // methodsBuilder.appendClassName(targetTypeQName);
+        // methodsBuilder.append(")").append(field).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY)
+        // //
+        // .append("(").append(copyMapName).appendln(");");
+        // if (targetType.isDependantType()) {
+        // methodsBuilder.append(paramName).append(".").append(field).append(".").append(MethodNames.SET_PARENT)
+        // .append("(").append(paramName).appendln(");");
+        // }
+        // methodsBuilder.append(copyMapName).append(".put(").append(field).append(", ").append(paramName).append('.')
+        // .append(field).appendln(");");
+        // methodsBuilder.appendln("}");
     }
 
     @Override
